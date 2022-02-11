@@ -2,6 +2,8 @@ name: test-configuration
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'config/**'
       - 'tests/**'
@@ -24,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 1
+          fetch-depth: 0
       - uses: graalvm/setup-graalvm@v1
         with:
           version: ${{ matrix.version }}
@@ -33,4 +35,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
         run: |
-          python3 tests/run.py all
+          python3 tests/run.py diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }}

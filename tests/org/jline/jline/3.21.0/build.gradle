@@ -1,0 +1,54 @@
+plugins {
+    id 'java-library'
+    id 'org.graalvm.buildtools.native'
+}
+
+repositories {
+    mavenCentral()
+}
+
+def junitVersion = providers.gradleProperty('junit.vintage.version')
+    .forUseAtConfigurationTime()
+    .get()
+
+def jlineVersion = providers.gradleProperty('jline.version')
+    .forUseAtConfigurationTime()
+    .get()
+
+def configPath = providers.gradleProperty('config.dir')
+    .forUseAtConfigurationTime()
+    .get()
+
+File configFile;
+if (!configPath.startsWith("/")) {
+    configFile = file("${project.rootDir}/../../../../config/${configPath}")
+} else {
+    configFile = file(configPath)
+}
+
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
+    testImplementation("org.junit.vintage:junit-vintage-engine")
+    testImplementation("org.jline:jline:${jlineVersion}")
+    testImplementation("org.jline:jline-terminal-jansi:${jlineVersion}")
+
+}
+
+test {
+    useJUnitPlatform()
+    environment "LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so" // Hack in order to use JANSI on GH Actions
+}
+
+graalvmNative {
+    binaries {
+        test {
+            configurationFileDirectories.from(configFile)
+            buildArgs.add('--allow-incomplete-classpath')
+            buildArgs.add('-H:+StrictConfiguration')
+            agent {
+                enabled = false
+            }
+            verbose = true
+        }
+    }
+}

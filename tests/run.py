@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 import __init__
 import argparse
 import json
@@ -7,7 +6,9 @@ import logging
 import os
 import subprocess
 import sys
+from json import JSONDecodeError
 from logging import Logger
+from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Dict, List, Optional, Set, Tuple, Union, Iterable
 from zipfile import ZipFile
@@ -53,7 +54,7 @@ def coordinates_match(coordinates: str, group_id: Optional[str], artifact_id: Op
     :param coordinates: maven coordinate
     :param group_id: group ID to match
     :param artifact_id: artifact ID to match
-    :return: boolean if coordinates matches said group ID / artifact ID combo
+    :return: bool if coordinates matches said group ID / artifact ID combo
     """
     test_group, test_artifact, _ = split_coordinates(coordinates)
     if group_id != test_group and group_id is not None:
@@ -92,18 +93,17 @@ def get_matching_dirs(group_id: Optional[str], artifact_id: Optional[str]) -> Se
             if "requires" in library:
                 for dep in library["requires"]:
                     dep_group, dep_artifact, _ = split_coordinates(dep)
-                    dirs |= get_matching_dirs(dep_group, dep_artifact)
+                    dirs.update(get_matching_dirs(dep_group, dep_artifact))
 
     if group_id is not None and artifact_id is not None:
         default_dir = os.path.join(CONFIG_ROOT, group_id.replace(".", "/"), artifact_id)
         if os.path.exists(os.path.join(default_dir, "index.json")):
             dirs.add(default_dir)
-
     return dirs
 
 
 def generate_test_invocations(group_id: Optional[str], artifact_id: Optional[str], version: Optional[str]) -> \
-        Iterable[Dict[str, str]]:
+        Iterable[Dict[str, Union[str, Dict[str, str]]]]:
     """
     Generates a list of all test invocations that match given group ID, artifact ID and version combination.
     None values match every possible value (None artifact ID matches all artifacts in given group).
@@ -113,9 +113,10 @@ def generate_test_invocations(group_id: Optional[str], artifact_id: Optional[str
     :param version: version to match
     :return: list in which every entry holds complete information required to perform a single test invocation
     """
-    invocations: List[Dict[str, str]] = []
+    invocations: List[Dict[str, Union[str, Dict[str, str]]]] = []
 
-    for directory in get_matching_dirs(group_id, artifact_id):
+    matching_dirs = get_matching_dirs(group_id, artifact_id)
+    for directory in matching_dirs:
         full_dir: str = os.path.join(CONFIG_ROOT, directory)
         index: str = os.path.join(full_dir, "index.json")
         with open(index) as f:
@@ -128,7 +129,12 @@ def generate_test_invocations(group_id: Optional[str], artifact_id: Optional[str
 
                 test_index_path: str = os.path.join(TEST_ROOT, library["test-directory"], "index.json")
                 with open(test_index_path) as test_index:
-                    cmd = json.load(test_index)["test-command"]
+                    tests: Dict[str, Union[str, Dict[str, str]]] \
+                        = json.load(test_index)
+                    cmd: str = tests["test-command"]
+                    env: Optional[Dict[str, str]] = None
+                    if "test-environment" in tests:
+                        env = tests["test-environment"]
 
                 for tested in library["tested-versions"]:
                     if version is None or tested == version:
@@ -138,8 +144,25 @@ def generate_test_invocations(group_id: Optional[str], artifact_id: Optional[str
                             "config-directory": config_dir,
                             "test-directory": library["test-directory"],
                             "test-command": cmd,
+                            "test-environment": env
                         })
-        return invocations
+    # Lets filter out duplicate invocations:
+    invocations = {json.dumps(inv, sort_keys=True): inv for inv in invocations}.values()
+    return invocations
+
+
+def get_config_file_list(directory: str) -> List[str]:
+    """
+    Returns a list of configuration files in a given directory.
+    :param directory:
+    :return: list of json files contained in it
+    """
+    index_file: str = os.path.join(directory, "index.json")
+    if os.path.exists(index_file):
+        with open(index_file) as f:
+            return json.load(f)
+    else:
+        return [f for f in os.listdir(directory) if f.endswith('.json') or f.endswith('.properties')]
 
 
 def package_config_jar(config_dir: str, output_dir: str, group_id: str, artifact_id: str, version: str) -> str:
@@ -153,13 +176,7 @@ def package_config_jar(config_dir: str, output_dir: str, group_id: str, artifact
     :param version: version of artifact that is being tested
     :return: path to a jar file that contains configuration
     """
-    index_file: str = os.path.join(config_dir, "index.json")
-    if os.path.exists(index_file):
-        with open(index_file) as f:
-            files: List[str] = json.load(f)
-    else:
-        files: List[str] = [f for f in os.listdir(config_dir) if f.endswith('.json') or f.endswith('.properties')]
-
+    files: List[str] = get_config_file_list(config_dir)
     filename: str = f'{group_id}.{artifact_id}.{version}.jar'
     output_file: str = os.path.join(output_dir, filename)
 
@@ -186,13 +203,13 @@ def process_command(cmd: str, config_dir: str, jar_file: str, group_id: str, art
     :return: final command
     """
     return cmd.replace("<config_dir>", config_dir) \
-             .replace("<jar_file>", jar_file) \
-             .replace("<group_id>", group_id) \
-             .replace("<artifact_id>", artifact_id) \
-             .replace("<version>", version)
+        .replace("<jar_file>", jar_file) \
+        .replace("<group_id>", group_id) \
+        .replace("<artifact_id>", artifact_id) \
+        .replace("<version>", version)
 
 
-def run_invocations(invocations: Iterable[Dict[str, str]]) -> None:
+def run_invocations(invocations: Iterable[Dict[str, Union[str, Dict[str, str]]]]) -> None:
     """
     Runs test invocations sequentially.
     Terminates the process with error code if test wasn't successful.
@@ -208,16 +225,20 @@ def run_invocations(invocations: Iterable[Dict[str, str]]) -> None:
                 log.info("====================")
                 log.info("Testing library: %s", inv["coordinates"])
 
-                cmd: str = process_command(inv["test-command"], inv["config-directory"], jar_file, \
-                    group_id, artifact_id, version)
+                cmd: str = process_command(inv["test-command"], inv["config-directory"], jar_file, group_id,
+                                           artifact_id, version)
                 log.info("Command: %s", cmd)
+
+                env: Dict[str, str] = os.environ.copy()
+                if "test-environment" in inv and inv["test-environment"]:
+                    env.update(inv["test-environment"])
 
                 test_directory: str = os.path.join(TEST_ROOT, inv["test-directory"])
 
                 log.info("Executing test...")
-                ret_code: int = subprocess.call(cmd, cwd=test_directory, shell=True)
+                ret_code: int = subprocess.call(cmd, cwd=test_directory, env=env, shell=True)
                 if ret_code != 0:
-                    msg = f'Test for {inv["coordinates"]} failed with exit code {ret_code}.'
+                    msg: str = f'Test for {inv["coordinates"]} failed with exit code {ret_code}.'
                     raise Exception(msg)
                 log.info("Test for %s passed.", inv["coordinates"])
             except Exception as e:
@@ -227,18 +248,98 @@ def run_invocations(invocations: Iterable[Dict[str, str]]) -> None:
                 log.info("====================")
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="tests native configuration for given artifact coordinates")
-    parser.add_argument("coordinates", type=str, help="maven coordinates for argument to test or 'all'")
-    args = parser.parse_args()
+def json_check(fix_issues: bool = False) -> None:
+    """
+    Checks if JSON configuration files are formatted properly.
 
-    group_id, artifact_id, version = split_coordinates(args.coordinates)
+    :param fix_issues: fix encountered issues instead of failing
+    :return: list in which every entry holds complete information required to perform a single test invocation
+    """
+    for path in Path(CONFIG_ROOT).rglob('*.json'):
+        abs_path = path.absolute()
+        with open(abs_path) as f:
+            original: str = f.read()
+        try:
+            parsed = json.loads(original)
+        except JSONDecodeError as e:
+            log.error("Failed parsing JSON file '%s'", abs_path)
+            raise e
+        formatted: str = json.dumps(parsed, sort_keys=True, indent='  ', separators=(',', ': ')) + "\n"
+        if original != formatted:
+            if not fix_issues:
+                raise Exception(f'JSON file {abs_path} isn\'t formatted properly. Please run tests/run.py format.')
+            log.info("Formatting file: '%s'", abs_path)
+            with open(abs_path, "w") as f:
+                f.write(formatted)
+
+
+def run_tests(coordinates: str) -> None:
+    group_id, artifact_id, version = split_coordinates(coordinates)
 
     if group_id in ("all", "any"):
         group_id = None
 
     invocations = generate_test_invocations(group_id, artifact_id, version)
     run_invocations(invocations)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="tests and utilities for testing native configuration")
+    sub_parsers = parser.add_subparsers(help="command to execute", dest="command")
+    parser_test = sub_parsers.add_parser("test", help="test native configuration")
+    parser_test.add_argument("coordinates", type=str, help="maven coordinates for argument to test or 'all'")
+    parser_diff = sub_parsers.add_parser("diff", help="test native configuration that was changed between commits")
+    parser_diff.add_argument("base_commit", type=str, help="base commit hash")
+    parser_diff.add_argument("new_commit", type=str, nargs='?', default='HEAD', help="new commit hash")
+    sub_parsers.add_parser("format", help="properly format native configuration")
+    args = parser.parse_args()
+
+    if args.command == "test":
+        json_check(fix_issues=False)
+        run_tests(args.coordinates)
+
+    elif args.command == "diff":
+        json_check(fix_issues=False)
+        base_commit: str = args.base_commit
+        new_commit: str = args.new_commit
+        command: str = f"git diff --name-only --diff-filter=ACMRT {base_commit} {new_commit}"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        diff_files: List[str] = process.stdout.read().decode("utf-8").splitlines()
+
+        changed_tests: Set[str] = set()
+        changed_config: Set[str] = set()
+
+        for line in diff_files:
+            dir_abspath: str = os.path.join(REPO_ROOT, os.path.dirname(line))
+            if line.startswith("tests/"):
+                changed_tests.add(dir_abspath)
+            elif line.startswith("config/"):
+                changed_config.add(dir_abspath)
+
+        invocations = generate_test_invocations(None, None, None)
+        matching_coordinates: Set[str] = set()
+
+        for inv in invocations:
+            added: bool = False
+            for config in changed_config:
+                if config.startswith(inv["config-directory"]):
+                    matching_coordinates.add(inv["coordinates"])
+                    added = True
+                    continue
+
+            if added:
+                continue
+
+            for test in changed_tests:
+                if test.startswith(inv["test-directory"]):
+                    matching_coordinates.add(inv["coordinates"])
+                    continue
+
+        for coordinate in matching_coordinates:
+            run_tests(coordinate)
+
+    elif args.command == "format":
+        json_check(fix_issues=True)
 
 
 if __name__ == "__main__":
