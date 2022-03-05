@@ -8,6 +8,8 @@ on:
       - 'config/**'
       - 'tests/**'
   pull_request:
+    branches:
+      - master
     paths:
       - 'config/**'
       - 'tests/**'
@@ -33,6 +35,11 @@ jobs:
           java-version: ${{ matrix.java-version }}
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run tests
+      - name: Run tests on changed config
+        if: github.event_name == 'pull_request'
         run: |
           python3 tests/run.py diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+      - name: Run all tests
+        if: github.event_name != 'pull_request'
+        run: |
+          python3 tests/run.py test all
