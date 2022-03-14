@@ -9,25 +9,25 @@ In order to ensure that all contributions follow the same standards of quality w
 
 ### Metadata
 * [ ] Add a new folder structure in `metadata` directory in root of this repository.
-Per convention this should mirror Maven central notation (`com.example:library` metadata should be located in `metadata/com/example/library`).
+Per convention this should mirror Maven central notation (`org.example:library` metadata should be located in `metadata/org/example/library`).
 * [ ] Add a new entry in `metadata/index.json` that points to metadata being added. For example:
     ```json
     [
       ...
       {
-        "directory": "com/example/library",
-        "module": "com.example:library"
+        "directory": "org/example/library",
+        "module": "org.example:library"
       },
       {
-        "module": "com.example:dependant-library",
+        "module": "org.example:dependant-library",
         "requires": [
-          "com.example:library"
+          "org.example:library"
         ]
       }
     ]
     ```
     Note that `dependant-library` can feature its own metadata as well if `directory` key is specified.
-* [ ] Add `index.json` file to the metadata directory. In aforementioned case that would be `metadata/com/example/library/index.json`.
+* [ ] Add `index.json` file to the metadata directory. In aforementioned case that would be `metadata/org/example/library/index.json`.
 It should contain the following entries:
     ```json
     [
@@ -41,8 +41,8 @@ It should contain the following entries:
       },
       {
         "metadata-version": "2",
-        "module": "com.example:library",
-        "test-directory": "com/example/library/1.0.0",
+        "module": "org.example:library",
+        "test-directory": "org/example/library/1.0.0",
         "tested-versions": [
           "1.0.0", "1.1.0-M1", "1.1.0"
         ]
@@ -73,7 +73,7 @@ Every submitted library must feature tests that serve as a safeguard against reg
 We recommend that tests use our [native-gradle-plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
 and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support).
 
-* [ ] Add tests to the `test-directory`. For this example that would be `tests/com/example/library/0.0.1`.
+* [ ] Add tests to the `test-directory`. For this example that would be `tests/org/example/library/0.0.1`.
 
   Each test directory should contain `index.json` with content as follows:
   ```json
@@ -93,5 +93,5 @@ and its included [JUnit Platform support](https://graalvm.github.io/native-build
 
 * [ ] Verify locally that test is running correctly. In this example this can be done by invoking:
   ```bash
-  python3 tests/run.py test com.example:library:0.0.1
+  python3 tests/run.py test org.example:library:0.0.1
   ```
