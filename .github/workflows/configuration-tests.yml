@@ -1,22 +1,22 @@
-name: test-configuration
+name: test-metadata
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'config/**'
+      - 'metadata/**'
       - 'tests/**'
   pull_request:
     branches:
       - master
     paths:
-      - 'config/**'
+      - 'metadata/**'
       - 'tests/**'
   workflow_dispatch:
 
 jobs:
-  test-configuration:
+  test-metadata:
     name: GraalVM ${{ matrix.version }} JDK${{ matrix.java-version }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -35,7 +35,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run tests on changed config
+      - name: Run tests for changed metadata
         if: github.event_name == 'pull_request'
         run: |
           python3 tests/run.py diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }}

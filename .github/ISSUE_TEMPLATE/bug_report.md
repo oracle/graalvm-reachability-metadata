@@ -16,7 +16,7 @@ Steps to reproduce the behavior:
 <!-- project configuration -->
 ```
 ```bash
-$ # command invocation 
+$ # command invocation
 ```
 Please use backticks to [properly format code](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks#syntax-highlighting).
 If possible please attach a complete reproducer here (either as [a zip file](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/attaching-files) or as a link to public repository/branch).
@@ -25,11 +25,11 @@ If possible please attach a complete reproducer here (either as [a zip file](htt
 A clear and concise description of what you expected to happen.
 
 **Logs**
-Add logs to help explain your problem. 
+Add logs to help explain your problem.
 Please use backticks to [properly format big logs](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks#fenced-code-blocks). Example:
 ````
 ```
-<log content> 
+<log content>
 ```
 ````
 

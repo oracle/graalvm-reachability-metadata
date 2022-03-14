@@ -15,15 +15,15 @@ def jlineVersion = providers.gradleProperty('jline.version')
     .forUseAtConfigurationTime()
     .get()
 
-def configPath = providers.gradleProperty('config.dir')
+def metadataPath = providers.gradleProperty('metadata.dir')
     .forUseAtConfigurationTime()
     .get()
 
-File configFile;
-if (!configPath.startsWith("/")) {
-    configFile = file("${project.rootDir}/../../../../config/${configPath}")
+File metadataFile;
+if (!metadataPath.startsWith("/")) {
+    metadataFile = file("${project.rootDir}/../../../../metadata/${metadataPath}")
 } else {
-    configFile = file(configPath)
+    metadataFile = file(metadataPath)
 }
 
 dependencies {
@@ -42,7 +42,7 @@ test {
 graalvmNative {
     binaries {
         test {
-            configurationFileDirectories.from(configFile)
+            configurationFileDirectories.from(metadataFile)
             buildArgs.add('--allow-incomplete-classpath')
             buildArgs.add('-H:+StrictConfiguration')
             agent {

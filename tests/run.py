@@ -14,13 +14,13 @@ from typing import Dict, List, Optional, Set, Tuple, Union, Iterable
 from zipfile import ZipFile
 
 REPO_ROOT: str = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
-CONFIG_ROOT: str = os.path.join(REPO_ROOT, "config")
+METADATA_ROOT: str = os.path.join(REPO_ROOT, "metadata")
 TEST_ROOT: str = os.path.join(REPO_ROOT, "tests")
 
 assert __init__, "Python version checking failed!"
 
 logging.basicConfig(stream=sys.stdout, format="%(levelname)s: %(message)s", level=logging.DEBUG)  # %(asctime)s
-log: Logger = logging.getLogger("config-tests")
+log: Logger = logging.getLogger("metadata-tests")
 
 MAVEN_COORDINATES_PARTS = 3  # group_id, artifact_id, version
 
@@ -66,11 +66,11 @@ def coordinates_match(coordinates: str, group_id: Optional[str], artifact_id: Op
 
 def get_all_libraries_index() -> Iterable[Dict[str, Union[str, List[str]]]]:
     """
-    Returns all libraries that are specified in index.json file from config directory.
+    Returns all libraries that are specified in index.json file from metadata directory.
 
     :return: list of all library definitions
     """
-    with open(os.path.join(CONFIG_ROOT, "index.json")) as f:
+    with open(os.path.join(METADATA_ROOT, "index.json")) as f:
         all_libraries: List[Dict[str, Union[str, List[str]]]] = json.load(f)
     return all_libraries
 
@@ -96,7 +96,7 @@ def get_matching_dirs(group_id: Optional[str], artifact_id: Optional[str]) -> Se
                     dirs.update(get_matching_dirs(dep_group, dep_artifact))
 
     if group_id is not None and artifact_id is not None:
-        default_dir = os.path.join(CONFIG_ROOT, group_id.replace(".", "/"), artifact_id)
+        default_dir = os.path.join(METADATA_ROOT, group_id.replace(".", "/"), artifact_id)
         if os.path.exists(os.path.join(default_dir, "index.json")):
             dirs.add(default_dir)
     return dirs
@@ -117,7 +117,7 @@ def generate_test_invocations(group_id: Optional[str], artifact_id: Optional[str
 
     matching_dirs = get_matching_dirs(group_id, artifact_id)
     for directory in matching_dirs:
-        full_dir: str = os.path.join(CONFIG_ROOT, directory)
+        full_dir: str = os.path.join(METADATA_ROOT, directory)
         index: str = os.path.join(full_dir, "index.json")
         with open(index) as f:
             data: List[Dict[str, Union[str, List[str]]]]
@@ -125,7 +125,7 @@ def generate_test_invocations(group_id: Optional[str], artifact_id: Optional[str
 
         for library in data:
             if coordinates_match(library["module"], group_id, artifact_id):
-                config_dir: str = os.path.join(full_dir, library["config-version"])
+                metadata_dir: str = os.path.join(full_dir, library["metadata-version"])
 
                 test_index_path: str = os.path.join(TEST_ROOT, library["test-directory"], "index.json")
                 with open(test_index_path) as test_index:
@@ -141,7 +141,7 @@ def generate_test_invocations(group_id: Optional[str], artifact_id: Optional[str
                         coordinates = f'{library["module"]}:{tested}'
                         invocations.append({
                             "coordinates": coordinates,
-                            "config-directory": config_dir,
+                            "metadata-directory": metadata_dir,
                             "test-directory": library["test-directory"],
                             "test-command": cmd,
                             "test-environment": env
@@ -151,9 +151,9 @@ def generate_test_invocations(group_id: Optional[str], artifact_id: Optional[str
     return invocations
 
 
-def get_config_file_list(directory: str) -> List[str]:
+def get_metadata_file_list(directory: str) -> List[str]:
     """
-    Returns a list of configuration files in a given directory.
+    Returns a list of metadata files in a given directory.
     :param directory:
     :return: list of json files contained in it
     """
@@ -165,44 +165,44 @@ def get_config_file_list(directory: str) -> List[str]:
         return [f for f in os.listdir(directory) if f.endswith('.json') or f.endswith('.properties')]
 
 
-def package_config_jar(config_dir: str, output_dir: str, group_id: str, artifact_id: str, version: str) -> str:
+def package_metadata_jar(metadata_dir: str, output_dir: str, group_id: str, artifact_id: str, version: str) -> str:
     """
-    Creates a jar file that contains all configuration from given directory.
+    Creates a jar file that contains all metadata from given directory.
 
-    :param config_dir: directory where configuration is located
+    :param metadata_dir: directory where metadata is located
     :param output_dir: directory where jar file should be created
     :param group_id: group ID of artifact that is being tested
     :param artifact_id: artifact ID of artifact that is being tested
     :param version: version of artifact that is being tested
-    :return: path to a jar file that contains configuration
+    :return: path to a jar file that contains metadata
     """
-    files: List[str] = get_config_file_list(config_dir)
+    files: List[str] = get_metadata_file_list(metadata_dir)
     filename: str = f'{group_id}.{artifact_id}.{version}.jar'
     output_file: str = os.path.join(output_dir, filename)
 
     with ZipFile(output_file, "w") as zf:
         for file in files:
-            file_path: str = os.path.join(config_dir, file)
+            file_path: str = os.path.join(metadata_dir, file)
             zip_name: str = f"META-INF/native-image/{group_id}/{artifact_id}/{file}"
             zf.write(file_path, zip_name)
 
     return output_file
 
 
-def process_command(cmd: str, config_dir: str, jar_file: str, group_id: str, artifact_id: str, version: str) -> str:
+def process_command(cmd: str, metadata_dir: str, jar_file: str, group_id: str, artifact_id: str, version: str) -> str:
     """
     Fills in template parameters in the command invocation.
     Parameters are defined as <param_name> in cmd.
 
     :param cmd: command line with parameters
-    :param config_dir: configuration directory location
+    :param metadata_dir: metadata directory location
     :param jar_file: jar file location
     :param group_id: group ID
     :param artifact_id: artifact ID
     :param version: version
     :return: final command
     """
-    return cmd.replace("<config_dir>", config_dir) \
+    return cmd.replace("<metadata_dir>", metadata_dir) \
         .replace("<jar_file>", jar_file) \
         .replace("<group_id>", group_id) \
         .replace("<artifact_id>", artifact_id) \
@@ -220,12 +220,12 @@ def run_invocations(invocations: Iterable[Dict[str, Union[str, Dict[str, str]]]]
     with TemporaryDirectory() as temp_dir:
         for inv in invocations:
             group_id, artifact_id, version = split_coordinates(inv["coordinates"])
-            jar_file = package_config_jar(inv["config-directory"], temp_dir, group_id, artifact_id, version)
+            jar_file = package_metadata_jar(inv["metadata-directory"], temp_dir, group_id, artifact_id, version)
             try:
                 log.info("====================")
                 log.info("Testing library: %s", inv["coordinates"])
 
-                cmd: str = process_command(inv["test-command"], inv["config-directory"], jar_file, group_id,
+                cmd: str = process_command(inv["test-command"], inv["metadata-directory"], jar_file, group_id,
                                            artifact_id, version)
                 log.info("Command: %s", cmd)
 
@@ -250,12 +250,12 @@ def run_invocations(invocations: Iterable[Dict[str, Union[str, Dict[str, str]]]]
 
 def json_check(fix_issues: bool = False) -> None:
     """
-    Checks if JSON configuration files are formatted properly.
+    Checks if JSON metadata files are formatted properly.
 
     :param fix_issues: fix encountered issues instead of failing
     :return: list in which every entry holds complete information required to perform a single test invocation
     """
-    for path in Path(CONFIG_ROOT).rglob('*.json'):
+    for path in Path(METADATA_ROOT).rglob('*.json'):
         abs_path = path.absolute()
         with open(abs_path) as f:
             original: str = f.read()
@@ -284,14 +284,14 @@ def run_tests(coordinates: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="tests and utilities for testing native configuration")
+    parser = argparse.ArgumentParser(description="tests and utilities for testing metadata")
     sub_parsers = parser.add_subparsers(help="command to execute", dest="command")
-    parser_test = sub_parsers.add_parser("test", help="test native configuration")
+    parser_test = sub_parsers.add_parser("test", help="test metadata")
     parser_test.add_argument("coordinates", type=str, help="maven coordinates for argument to test or 'all'")
-    parser_diff = sub_parsers.add_parser("diff", help="test native configuration that was changed between commits")
+    parser_diff = sub_parsers.add_parser("diff", help="test metadata that was changed between commits")
     parser_diff.add_argument("base_commit", type=str, help="base commit hash")
     parser_diff.add_argument("new_commit", type=str, nargs='?', default='HEAD', help="new commit hash")
-    sub_parsers.add_parser("format", help="properly format native configuration")
+    sub_parsers.add_parser("format", help="properly format metadata")
     args = parser.parse_args()
 
     if args.command == "test":
@@ -307,22 +307,22 @@ def main() -> None:
         diff_files: List[str] = process.stdout.read().decode("utf-8").splitlines()
 
         changed_tests: Set[str] = set()
-        changed_config: Set[str] = set()
+        changed_metadata: Set[str] = set()
 
         for line in diff_files:
             dir_abspath: str = os.path.join(REPO_ROOT, os.path.dirname(line))
             if line.startswith("tests/"):
                 changed_tests.add(dir_abspath)
-            elif line.startswith("config/"):
-                changed_config.add(dir_abspath)
+            elif line.startswith("metadata/"):
+                changed_metadata.add(dir_abspath)
 
         invocations = generate_test_invocations(None, None, None)
         matching_coordinates: Set[str] = set()
 
         for inv in invocations:
             added: bool = False
-            for config in changed_config:
-                if config.startswith(inv["config-directory"]):
+            for metadata in changed_metadata:
+                if metadata.startswith(inv["metadata-directory"]):
                     matching_coordinates.add(inv["coordinates"])
                     added = True
                     continue

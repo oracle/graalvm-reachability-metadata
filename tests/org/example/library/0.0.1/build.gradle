@@ -15,15 +15,15 @@ def libraryVersion = providers.gradleProperty('library.version')
     .forUseAtConfigurationTime()
     .get() // This value can be used to request specific library version to test with.
 
-def configPath = providers.gradleProperty('config.dir')
+def metadataPath = providers.gradleProperty('metadata.dir')
     .forUseAtConfigurationTime()
     .get()
 
-File configFile;
-if (!configPath.startsWith("/")) {
-    configFile = file("${project.rootDir}/../../../../config/${configPath}")
+File metadataFile;
+if (!metadataPath.startsWith("/")) {
+    metadataFile = file("${project.rootDir}/../../../../metadata/${metadataPath}")
 } else {
-    configFile = file(configPath)
+    metadataFile = file(metadataPath)
 }
 
 dependencies {
@@ -40,13 +40,8 @@ test {
 graalvmNative {
     binaries {
         test {
-            configurationFileDirectories.from(configFile)
-            buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test configuration properly
-            agent {
-                enabled = false
-                options.add("experimental-conditional-configuration-for-packages=org.example.library")
-                options.add("conditional-configuration-class-name-exclude-patterns=Test")
-            }
+            configurationFileDirectories.from(metadataFile)
+            buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test metadata properly
             verbose = true
         }
     }
