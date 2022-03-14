@@ -32,6 +32,7 @@ It should contain the following entries:
     ```json
     [
       {
+        "latest": false,
         "metadata-version": "1",
         "module": "org.example:library",
         "test-directory": "org/example/library/0.0.1",
@@ -40,6 +41,7 @@ It should contain the following entries:
         ]
       },
       {
+        "latest": true,
         "metadata-version": "2",
         "module": "org.example:library",
         "test-directory": "org/example/library/1.0.0",
