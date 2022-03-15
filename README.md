@@ -1,6 +1,6 @@
-# JVM Metadata Repository
+# JVM Reachability Metadata Repository
 
-JVM Metadata for various libraries.
+JVM Reachability Metadata for various libraries.
 
 Used primarily for [GraalVM Native Image](https://www.graalvm.org/) building through [Native Build Tools](https://github.com/graalvm/native-build-tools).
 
