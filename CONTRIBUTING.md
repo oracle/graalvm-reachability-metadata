@@ -7,6 +7,14 @@ Only pull requests from committers that can be verified as having signed the OCA
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
 `org.example:library` project is also included as template for new libraries.
 
+> ℹ️ **Note** :
+>
+> JVM Reachability Metadata in this repo contains only JSON files as described in [Manual Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration) section of the Native Image documentation.
+>
+>  All other library tweaks (such as build time initialization through `native-image.properties`) should not be included here. By default it should be assumed that all user libraries are runtime initialized. Build-time can not be included here as it does not compose and can break code in unpredictable ways.
+>
+> Make sure that you are using [Conditional Configuration syntax](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#conditional-configuration) in order to precisely define metadata scope. This is a hard requirement as that way we can ensure both increased compatibility and minimal image sizes.
+
 ### Metadata
 * [ ] Add a new folder structure in `metadata` directory in root of this repository.
 Per convention this should mirror Maven central notation (`org.example:library` metadata should be located in `metadata/org/example/library`).
