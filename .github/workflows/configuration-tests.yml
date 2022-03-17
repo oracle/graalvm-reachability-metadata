@@ -38,8 +38,8 @@ jobs:
       - name: Run tests for changed metadata
         if: github.event_name == 'pull_request'
         run: |
-          python3 tests/run.py diff ${{ github.event.pull_request.base.sha }} ${{ github.sha }}
+          gradle diff -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.sha }}
       - name: Run all tests
         if: github.event_name != 'pull_request'
         run: |
-          python3 tests/run.py test all
+          gradle test -Pcoordinates=all
