@@ -11,7 +11,7 @@ def junitVersion = providers.gradleProperty('junit.vintage.version')
     .forUseAtConfigurationTime()
     .get()
 
-def jlineVersion = providers.gradleProperty('jline.version')
+def jlineVersion = providers.gradleProperty('library.version')
     .forUseAtConfigurationTime()
     .get()
 
@@ -51,4 +51,8 @@ graalvmNative {
             verbose = true
         }
     }
+}
+
+tasks.named("nativeTest") {
+    environment.put("LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so") // Hack in order to use JANSI on GH Actions
 }

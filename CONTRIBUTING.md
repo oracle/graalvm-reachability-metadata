@@ -73,9 +73,9 @@ It should contain the following entries:
     "resource-config.json"
   ]
   ```
-* [ ] Ensure that metadata is properly formatted. This can be done by running following command from root of the repository:
+* [ ] Ensure that metadata is properly formatted. This can be done by running following command from root of the repository, and then following instructions:
   ```bash
-  python3 tests/run.py format
+  gradle check
   ```
 
 ### Tests
@@ -88,20 +88,16 @@ and its included [JUnit Platform support](https://graalvm.github.io/native-build
   Each test directory should contain `index.json` with content as follows:
   ```json
   {
-    "test-command": "gradle clean nativeTest -metadata.dir=<metadata_dir> -Plibrary.version=<version>",
-    "test-environment": {
-      "ENVIRONMENT_KEY": "VALUE"
-    }
+    "test-command": ["gradle", "clean", "nativeTest", "-Pmetadata.dir=<metadata_dir>", "-Plibrary.version=<version>"]
   }
   ```
   Supported template parameters for `test-command` are:
   * `<metadata_dir>` - absolute path to directory where metadata is stored
-  * `<jar_file>` - absolute path to jar file that contains metadata in its `META-INF/native-image`
   * `<group_id>` - Maven groupID of artifact that is being tested
   * `<artifact_id>`- Maven artifactID of artifact that is being tested
   * `<version>` - Version of artifact that is being tested
 
 * [ ] Verify locally that test is running correctly. In this example this can be done by invoking:
   ```bash
-  python3 tests/run.py test org.example:library:0.0.1
+  gradle test -Pcoordinates=org.example:library:0.0.1
   ```

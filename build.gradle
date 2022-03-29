@@ -14,6 +14,8 @@ allprojects {
     }
 }
 
+group = "metadata-tests"
+
 spotless {
     json {
         target('metadata/**/*.json')
@@ -31,23 +33,12 @@ import groovy.json.JsonSlurper
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.stream.Collectors
 import java.util.stream.Stream
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
 
 class TestLogic {
-    final Path METADATA_ROOT
-    final Path TEST_ROOT
-    final Logger logger
-
-    TestLogic(Path metadataDir, Path testDir, Logger logger) {
-        this.METADATA_ROOT = metadataDir
-        this.TEST_ROOT = testDir
-        this.logger = logger
-    }
-
     /**
-     * For path to a JSON file return its parsed content
+     * Given path to a JSON file return its parsed content
      *
      * @param jsonPath path to a JSON file
      * @return parsed contents
@@ -98,8 +89,8 @@ class TestLogic {
      *
      * @return list of all library definitions
      */
-    List<Map<String, ?>> getAllLibrariesIndex() {
-        return (List<Map<String, ?>>) extractJsonFile(METADATA_ROOT.resolve('index.json'))
+    static List<Map<String, ?>> getAllLibrariesIndex(Path metadataDir) {
+        return (List<Map<String, ?>>) extractJsonFile(metadataDir.resolve('index.json'))
     }
 
     /**
@@ -108,9 +99,9 @@ class TestLogic {
      *
      * @return set of all directories that match given criteria
      */
-    Set<String> getMatchingDirs(String groupId, String artifactId) {
+    static Set<String> getMatchingDirs(Path metadataRoot, String groupId, String artifactId) {
         Set<String> dirs = new HashSet<String>()
-        for (Map<String, ?> library in getAllLibrariesIndex()) {
+        for (Map<String, ?> library in getAllLibrariesIndex(metadataRoot)) {
             if (coordinatesMatch((String) library["module"], groupId, artifactId)) {
                 if (library.containsKey("directory")) {
                     dirs.add((String) library["directory"])
@@ -118,14 +109,14 @@ class TestLogic {
                 if (library.containsKey("requires")) {
                     for (String dep in library["requires"]) {
                         def (String depGroup, String depArtifact) = splitCoordinates((String) dep)
-                        dirs.addAll(getMatchingDirs(depGroup, depArtifact))
+                        dirs.addAll(getMatchingDirs(metadataRoot, depGroup, depArtifact))
                     }
                 }
             }
         }
 
         if (groupId != null && artifactId != null) {
-            Path defaultDir = METADATA_ROOT.resolve(groupId.replace(".", "/")).resolve(artifactId)
+            Path defaultDir = metadataRoot.resolve(groupId.replace(".", "/")).resolve(artifactId)
             if (defaultDir.resolve("index.json").toFile().exists()) {
                 dirs.add(defaultDir.toString())
             }
@@ -142,12 +133,12 @@ class TestLogic {
      * @param version version to match
      * @return list in which every entry holds complete information required to perform a single test invocation
      */
-    List<Map<String, ?>> generateTestInvocations(String groupId, String artifactId, String version) {
+    static List<Map<String, ?>> generateTestInvocations(Path metadataRoot, Path testRoot, String groupId, String artifactId, String version) {
         List<Map<String, ?>> invocations = new ArrayList<>()
 
-        Set<String> matchingDirs = getMatchingDirs(groupId, artifactId)
+        Set<String> matchingDirs = getMatchingDirs(metadataRoot, groupId, artifactId)
         for (String directory in matchingDirs) {
-            Path fullDir = METADATA_ROOT.resolve(directory)
+            Path fullDir = metadataRoot.resolve(directory)
             Path index = fullDir.resolve("index.json")
             def data = extractJsonFile(index)
 
@@ -155,7 +146,9 @@ class TestLogic {
                 if (coordinatesMatch((String) library["module"], groupId, artifactId)) {
                     Path metadataDir = fullDir.resolve((String) library["metadata-version"])
 
-                    Path testIndexPath = TEST_ROOT.resolve((String) library["test-directory"]).resolve("index.json")
+
+                    Path testDir = testRoot.resolve((String) library["test-directory"])
+                    Path testIndexPath = testDir.resolve("index.json")
                     def tests = extractJsonFile(testIndexPath)
                     List<String> cmd
                     if (tests["test-command"] instanceof String) {
@@ -163,6 +156,7 @@ class TestLogic {
                     } else {
                         cmd = tests["test-command"]
                     }
+
                     Map<String, String> env = null
                     if (tests.hasProperty("test-environment")) {
                         env = (Map<String, String>) tests["test-environment"]
@@ -171,10 +165,17 @@ class TestLogic {
                     for (String tested in library["tested-versions"]) {
                         if (version == null || tested == version) {
                             String coordinates = library["module"] + ":" + tested
+                            def (String libraryGroup, String libraryArtifact, String libraryVersion) = splitCoordinates(coordinates)
+                            List<String> versionCmd = cmd.stream()
+                                    .map((String c) -> processCommand(c, metadataDir,
+                                            libraryGroup, libraryArtifact, libraryVersion))
+                                    .collect(Collectors.toList())
+
                             invocations.add(["coordinates"       : coordinates,
+                                             "library-version"   : libraryVersion,
                                              "metadata-directory": metadataDir,
-                                             "test-directory"    : library["test-directory"],
-                                             "test-command"      : cmd,
+                                             "test-directory"    : testDir,
+                                             "test-command"      : versionCmd,
                                              "test-environment"  : env])
                         }
                     }
@@ -192,52 +193,22 @@ class TestLogic {
      * @return list of json files contained in it
      */
     static List<String> getMetadataFileList(Path directory) {
+        List<String> foundFiles = new ArrayList<>()
+        try (Stream<Path> paths = Files.walk(directory)) {
+            paths.filter(Files::isRegularFile)
+                    .map(p -> p.fileName.toString())
+                    .filter(s -> s.endsWith(".json"))
+                    .filter(s -> !s.endsWith("index.json"))
+                    .forEach(s -> foundFiles.add(s))
+        }
         Path indexFile = directory.resolve("index.json")
         if (indexFile.toFile().exists()) {
-            return (List<String>) extractJsonFile(indexFile)
+            List<String> indexFiles = extractJsonFile(indexFile)
+            assert indexFiles.toSet() == foundFiles.toSet(), String.format("Metadata file list in '%s' is not up to date!", indexFile.toAbsolutePath())
+            return indexFiles
         } else {
-            List<String> ret = new ArrayList<>()
-            try (Stream<Path> paths = Files.walk(directory)) {
-                paths.filter(Files::isRegularFile)
-                        .map(p -> p.fileName.toString())
-                        .filter(s -> s.endsWith(".json"))
-                        .forEach(s -> ret.add(s))
-            }
-            return ret
+            return foundFiles
         }
-    }
-
-    /**
-     * Creates a jar file that contains all metadata from given directory.
-     *
-     * @param metadataDir directory where metadata is located
-     * @param outputDir directory where jar file should be created
-     * @param groupId group ID of artifact that is being tested
-     * @param artifactId artifact ID of artifact that is being tested
-     * @param version version of artifact that is being tested
-     * @return path to a jar file that contains metadata
-     */
-    static Path packageMetadataJar(Path metadataDir, Path outputDir, String groupId, String artifactId, String version) {
-        List<String> files = getMetadataFileList(metadataDir)
-        String filename = groupId + "." + artifactId + "." + version + ".jar"
-        Path outputFile = outputDir.resolve(filename)
-
-        try (ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(outputFile.toFile()))) {
-            for (String file in files) {
-                Path filePath = metadataDir.resolve(file)
-                String zipName = "META-INF/native-image/" + groupId + "/" + artifactId + "/" + file
-                try (FileInputStream inputStream = new FileInputStream(filePath.toFile())) {
-                    ZipEntry entry = new ZipEntry(zipName)
-                    zipFile.putNextEntry(entry)
-
-                    byte[] readBuffer = new byte[2048]
-                    for (int read; (read = inputStream.read(readBuffer)) > 0;) {
-                        zipFile.write(readBuffer, 0, read)
-                    }
-                }
-            }
-        }
-        return outputFile
     }
 
     /**
@@ -246,140 +217,29 @@ class TestLogic {
      *
      * @param cmd command line with parameters
      * @param metadataDir metadata directory location
-     * @param jarFile jar file location
      * @param groupId group ID
      * @param artifactId artifact ID
      * @param version version
      * @return final command
      */
-    static String processCommand(String cmd, Path metadataDir, Path jarFile, String groupId, String artifactId, String version) {
+    static String processCommand(String cmd, Path metadataDir, String groupId, String artifactId, String version) {
         return cmd.replace("<metadata_dir>", metadataDir.toAbsolutePath().toString())
-                .replace("<jar_file>", jarFile.toAbsolutePath().toString())
                 .replace("<group_id>", groupId)
                 .replace("<artifact_id>", artifactId)
                 .replace("<version>", version)
     }
 
     /**
-     * Runs test invocations sequentially.
-     * Terminates the process with error code if test wasn't successful.
-     *
-     * @param invocations all test invocations that should be executed
+     * Returns a list of test invocations that matches changed files between base and new commit.
+     * @param baseCommit
+     * @param newCommit
+     * @param rootDir
+     * @return List of test invocations
      */
-    void runInvocations(List<Map<String, ?>> invocations) {
-        Path tempDir = Files.createTempDirectory("InvocationRun")
-        try {
-            for (def inv in invocations) {
-                def (String groupId, String artifactId, String version) = splitCoordinates((String) inv["coordinates"])
-                Path jarFile = packageMetadataJar((Path) inv["metadata-directory"], tempDir, groupId, artifactId, version)
-                try {
-                    logger.lifecycle("====================")
-                    logger.lifecycle("Testing library: {}", inv["coordinates"])
-
-                    List<String> cmd = List.of(inv["test-command"].stream()
-                            .map((String s) -> processCommand(s, (Path) inv["metadata-directory"],
-                                    jarFile, groupId, artifactId, version)).toArray())
-                    logger.lifecycle("Command: {}", String.join(" ", cmd))
-
-                    Map<String, String> env = new HashMap<>(System.getenv())
-                    if (inv.containsKey("test-environment") && inv["test-environment"] != null) {
-                        env.putAll((Map<String, String>) inv["test-environment"])
-                    }
-
-                    Path testDirectory = TEST_ROOT.resolve((String) inv["test-directory"])
-
-                    logger.lifecycle("Executing test...")
-                    ProcessBuilder pb = new ProcessBuilder()
-                    pb.command(cmd)
-                    pb.directory(testDirectory.toFile())
-                    pb.environment().putAll(env)
-
-                    Process p = pb.start()
-                    p.consumeProcessOutput(System.out, System.err)
-                    int exitCode = p.waitFor()
-                    if (exitCode != 0) {
-                        logger.error("Test for {} failed with exit code {}.",
-                                (String) inv["coordinates"], exitCode)
-                        System.exit(exitCode)
-                    } else {
-                        logger.lifecycle("Test for {} passed.", inv["coordinates"])
-                    }
-                } finally {
-                    logger.lifecycle("====================")
-                }
-            }
-        } finally {
-            Files.walk(tempDir)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete)
-        }
-
-    }
-
-    @SuppressWarnings("unused")
-    void runTests(String coordinates) {
-        def (String groupId, String artifactId, String version) = splitCoordinates(coordinates)
-
-        List<Map<String, ?>> invocations = generateTestInvocations(groupId, artifactId, version)
-        runInvocations(invocations)
-    }
-}
-
-abstract class AbstractMetadataTestTask extends DefaultTask {
-    @Input
-    abstract Property<Path> getMetadataDir()
-
-    @Input
-    abstract Property<Path> getTestDir()
-
-    @Input
-    abstract Property<TestLogic> getHandler()
-
-    AbstractMetadataTestTask() {
-        this.dependsOn("spotlessJsonCheck")
-        this.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-
-        Path rootDir = getProject().getProjectDir().toPath()
-        metadataDir.convention(rootDir.resolve("metadata"))
-        testDir.convention(rootDir.resolve("tests"))
-
-        handler.convention(new TestLogic(metadataDir.get(), testDir.get(), getProject().getLogger()))
-    }
-}
-
-abstract class MetadataTestTask extends AbstractMetadataTestTask {
-    @Input
-    abstract Property<String> getCoordinates()
-
-    MetadataTestTask() {
-        coordinates.convention("")
-        inputs.dir(metadataDir.get())
-        inputs.dir(testDir.get())
-    }
-
-    @TaskAction
-    def test() {
-        handler.get().runTests(coordinates.get())
-    }
-}
-
-abstract class DiffMetadataTestTask extends AbstractMetadataTestTask {
-    @Input
-    abstract Property<String> getBaseCommit()
-
-    @Input
-    abstract Property<String> getNewCommit()
-
-    DiffMetadataTestTask() {
-        newCommit.convention("HEAD")
-    }
-
-    @TaskAction
-    def diff() {
+    static List<Map<String, ?>> diffTestInvocations(String baseCommit, String newCommit, Path rootDir) {
         String cmd = String.format("git diff --name-only --diff-filter=ACMRT %s %s",
-                baseCommit.get(),
-                newCommit.get())
+                baseCommit,
+                newCommit)
 
         Process p = cmd.execute()
         String output = p.in.text
@@ -388,7 +248,7 @@ abstract class DiffMetadataTestTask extends AbstractMetadataTestTask {
         Set<Path> changedMetadata = new HashSet<String>()
 
         for (String line in diffFiles) {
-            Path dirAbspath = rootDir.get().resolve(line)
+            Path dirAbspath = rootDir.resolve(line)
             if (line.startsWith("tests/")) {
                 changedTests.add(dirAbspath)
             } else if (line.startsWith("metadata/")) {
@@ -396,15 +256,17 @@ abstract class DiffMetadataTestTask extends AbstractMetadataTestTask {
             }
         }
 
-        List<Map<String, ?>> invocations = handler.get().generateTestInvocations(null, null, null)
+        List<Map<String, ?>> invocations
+        invocations = TestLogic.generateTestInvocations(rootDir.resolve("metadata"),
+                rootDir.resolve("tests"), null, null, null)
 
-        Set<String> matchingCoordinates = new HashSet<String>()
+        Set<Map<String, ?>> matchingInvocations = new HashSet<>()
         for (Map<String, ?> inv in invocations) {
             boolean added = false
 
             for (Path metadata in changedMetadata) {
                 if (metadata.startsWith(inv["metadata-directory"])) {
-                    matchingCoordinates.add(inv["coordinates"])
+                    matchingInvocations.add(inv)
                     added = true
                 }
             }
@@ -415,34 +277,151 @@ abstract class DiffMetadataTestTask extends AbstractMetadataTestTask {
 
             for (Path test in changedTests) {
                 if (test.startsWith(inv["test-directory"])) {
-                    matchingCoordinates.add(inv["coordinates"])
+                    matchingInvocations.add(inv)
                 }
             }
         }
-
-        for (String coordinate in matchingCoordinates) {
-            handler.get().runTests(coordinate)
-        }
+        return matchingInvocations.toList()
     }
 }
 
+/**
+ * Creates a task that executes test invocation
+ * @param inv
+ * @returns Task that executes said invocation
+ */
+Task invocationToTask(Map<String, ?> inv) {
+    List<String> cmd = inv["test-command"]
+    Path metadataDir = inv["metadata-directory"]
+    Path testDir = inv["test-directory"]
+
+    Map<String, String> env = new HashMap<>(System.getenv())
+    if (inv.containsKey("test-environment") && inv["test-environment"] != null) {
+        env.putAll((Map<String, String>) inv["test-environment"])
+    }
+
+    String taskName = "test-" + inv["coordinates"].replace(":", "-")
+
+    def existing = getProject().getTasksByName(taskName, true)
+    if (!existing.isEmpty()) {
+        // We already added this task, so lets just return it.
+        return existing.iterator().next()
+    }
+
+    Task testTask
+
+    if (cmd.get(0) == "gradle" || cmd.get(0) == "./gradlew") {
+        // This is a gradle project so lets use GradleBuild to avoid running new Gradle process.
+        cmd.remove(0)
+
+        List<String> taskList = cmd.stream()
+                .filter(arg -> !arg.startsWith("-"))
+                .collect(Collectors.toList())
+
+        Map<String, String> projectProperties = new HashMap()
+        projectProperties.put("metadata.dir", metadataDir.toString())
+        projectProperties.put("library.version", inv["library-version"])
+
+        projectProperties.putAll(cmd.stream()
+                .filter(arg -> arg.startsWith("-P"))
+                .map(s -> s.split("-P", 2)[1])
+                .map(s -> s.split("=", 2))
+                .collect(Collectors.toMap(s -> s[0], s -> s[1]))
+        )
+
+        testTask = tasks.register(taskName, GradleBuild) { task ->
+            task.dependsOn("spotlessJsonCheck")
+            task.setBuildName(inv["coordinates"])
+            task.setDir(testDir)
+            task.setTasks(taskList)
+            task.startParameter.projectProperties.putAll(projectProperties)
+            task.getInputs().dir(metadataDir)
+            task.getInputs().files(TestLogic.getMetadataFileList(metadataDir))
+            task.getOutputs()
+        }.get()
+    } else {
+        testTask = tasks.register(taskName, Exec) { task ->
+            task.dependsOn("spotlessJsonCheck")
+            task.commandLine(cmd)
+            task.workingDir(testDir.toFile())
+            task.environment(env)
+            task.getInputs().dir(metadataDir)
+            task.getInputs().files(TestLogic.getMetadataFileList(metadataDir))
+            task.getInputs().dir(testDir)
+
+            task.ignoreExitValue(true)
+
+            task.doLast(() -> {
+                int exitCode = task.getExecutionResult().get().getExitValue()
+                if (exitCode != 0) {
+                    String msg = String.format("Test for %s failed with exit code %d.", inv["coordinates"], exitCode)
+                    throw new GradleException(msg)
+                } else {
+                    logger.lifecycle("Test for {} passed.", inv["coordinates"])
+                    logger.lifecycle("====================")
+                }
+            })
+        }.get()
+    }
+
+    testTask.doFirst(() -> {
+        logger.lifecycle("====================")
+        logger.lifecycle("Testing library: {}", inv["coordinates"])
+        logger.lifecycle("Command: {}", String.join(" ", cmd))
+        logger.lifecycle("Executing test...")
+    })
+    return testTask
+}
+
+Path rootDir = getProject().getProjectDir().toPath()
+Path metadataRoot = rootDir.resolve("metadata")
+Path testRoot = rootDir.resolve("tests")
+
+String coordinates = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
+def (String groupId, String artifactId, String version) = TestLogic.splitCoordinates(coordinates)
+
+
+// gradle check
 tasks.register('check', DefaultTask) { task ->
     task.setDescription("Alias for 'spotlessJsonCheck'")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.dependsOn("spotlessJsonCheck")
 }
 
-tasks.register('test', MetadataTestTask) { task ->
+
+// gradle test -Pcoordinates=<maven-coordinates>
+Task test = tasks.register('test', DefaultTask) { task ->
     task.setDescription("Tests JVM Reflection Metadata that matches given coordinates")
-    task.coordinates = project.findProperty("coordinates")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}.get()
+
+for (Map<String, ?> inv in TestLogic.generateTestInvocations(metadataRoot, testRoot, groupId, artifactId, version)) {
+    Task task = invocationToTask(inv)
+    test.dependsOn(task)
 }
 
-tasks.register('diff', DiffMetadataTestTask) { task ->
+
+// gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Task diff = tasks.register('diff', DefaultTask) { task ->
     task.setDescription("Tests JVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'")
-    task.baseCommit = project.findProperty("baseCommit")
-    task.newCommit = project.findProperty("newCommit")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}.get()
+
+if (project.hasProperty("baseCommit")) {
+    String baseCommit = project.findProperty("baseCommit")
+    String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
+    for (def inv in TestLogic.diffTestInvocations(baseCommit, newCommit, project.getRootDir().toPath())) {
+        Task task = invocationToTask(inv)
+        diff.dependsOn(task)
+    }
+} else {
+    diff.doFirst(() -> {
+        throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+    })
 }
 
+
+// gradle package
 tasks.register('package', Zip) { task ->
     task.setDescription("Packages current repository to 'build/repository.zip'")
     task.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP)
