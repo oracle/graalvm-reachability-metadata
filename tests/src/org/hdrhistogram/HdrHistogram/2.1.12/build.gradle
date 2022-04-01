@@ -1,0 +1,23 @@
+import org.graalvm.internal.tck.TestUtils
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = TestUtils.testedLibraryVersion
+
+dependencies {
+	testImplementation("org.hdrhistogram:HdrHistogram:$libraryVersion")
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--allow-incomplete-classpath')
+            agent {
+                enabled = false
+            }
+        }
+    }
+}
+
