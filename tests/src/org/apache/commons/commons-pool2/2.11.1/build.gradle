@@ -1,0 +1,23 @@
+import org.graalvm.internal.tck.TestUtils
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = TestUtils.testedLibraryVersion
+
+dependencies {
+	testImplementation("org.apache.commons:commons-pool2:$libraryVersion")
+	testImplementation("org.assertj:assertj-core:3.22.0")
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--allow-incomplete-classpath')
+            agent {
+                enabled = false
+            }
+        }
+    }
+}
