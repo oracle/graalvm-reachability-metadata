@@ -83,7 +83,7 @@ Every submitted library must feature tests that serve as a safeguard against reg
 We recommend that tests use our [native-gradle-plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
 and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support).
 
-* [ ] Add tests to the `test-directory`. For this example that would be `tests/org/example/library/0.0.1`.
+* [ ] Add tests to the `test-directory`. For this example that would be `tests/src/org/example/library/0.0.1`.
 
   Each test directory should contain `index.json` with content as follows:
   ```json

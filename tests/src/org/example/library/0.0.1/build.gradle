@@ -19,9 +19,9 @@ def metadataPath = providers.gradleProperty('metadata.dir')
     .forUseAtConfigurationTime()
     .get()
 
-File metadataFile;
+File metadataFile
 if (!metadataPath.startsWith("/")) {
-    metadataFile = file("${project.rootDir}/../../../../metadata/${metadataPath}")
+    metadataFile = file("${project.rootDir}/../../../../../metadata/${metadataPath}")
 } else {
     metadataFile = file(metadataPath)
 }
@@ -32,6 +32,11 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
+tasks.named("nativeTest").configure {
+    doFirst {
+        println("Testing ${libraryVersion}...")
+    }
+}
 
 test {
     useJUnitPlatform()
