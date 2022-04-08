@@ -1,7 +1,30 @@
 plugins {
     id 'groovy-gradle-plugin'
+    id 'maven-publish'
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
+
+project.group = "org.graalvm"
+project.version = "1.0.0-SNAPSHOT"
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = uri("${buildDir}/publishing-repository")
+        }
+    }
+}
+
+dependencies {
+    implementation(libs.nativeGradlePlugin)
+}
+

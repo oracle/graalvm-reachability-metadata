@@ -9,9 +9,9 @@ In order to ensure that all contributions follow the same standards of quality w
 
 > ℹ️ **Note** :
 >
-> JVM Reachability Metadata in this repo contains only JSON files as described in [Manual Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration) section of the Native Image documentation.
+> JVM Reachability Metadata in this repo only contains JSON files as described in [Manual Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration) section of the Native Image documentation.
 >
->  All other library tweaks (such as build time initialization through `native-image.properties`) should not be included here. By default it should be assumed that all user libraries are runtime initialized. Build-time can not be included here as it does not compose and can break code in unpredictable ways.
+>  All other library tweaks (such as build time initialization through `native-image.properties`) should not be included here. By default, it should be assumed that all user libraries are runtime initialized. Build-time can not be included here as it does not compose and can break code in unpredictable ways.
 >
 > Make sure that you are using [Conditional Configuration syntax](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#conditional-configuration) in order to precisely define metadata scope. This is a hard requirement as that way we can ensure both increased compatibility and minimal image sizes.
 
@@ -73,19 +73,20 @@ It should contain the following entries:
     "resource-config.json"
   ]
   ```
-* [ ] Ensure that metadata is properly formatted. This can be done by running following command from root of the repository, and then following instructions:
+* [ ] Ensure that metadata is properly formatted. This can be done by running following command from root of the repository, and then following instructions from command output if necessary:
   ```bash
   gradle check
   ```
 
 ### Tests
 Every submitted library must feature tests that serve as a safeguard against regressions.
-We recommend that tests use our [native-gradle-plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
-and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support).
+For easier test development we've provided a TCK plugin that automatically configures our [native-gradle-plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
+and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support). 
 
-* [ ] Add tests to the `test-directory`. For this example that would be `tests/src/org/example/library/0.0.1`.
+* [ ] Add tests to the `test-directory`. In this example that would be `tests/src/org/example/library/0.0.1`.
+  You should use `tests/src/org/example/library/0.0.1` as a template for your tests.
 
-  Each test directory should contain `index.json` with content as follows:
+  **Optionally** test directory may contain `index.json` with content as follows:
   ```json
   {
     "test-command": ["gradle", "clean", "nativeTest", "-Pmetadata.dir=<metadata_dir>", "-Plibrary.version=<version>"]
@@ -97,7 +98,9 @@ and its included [JUnit Platform support](https://graalvm.github.io/native-build
   * `<artifact_id>`- Maven artifactID of artifact that is being tested
   * `<version>` - Version of artifact that is being tested
 
-* [ ] Verify locally that test is running correctly. In this example this can be done by invoking:
+  **Note that if `index.json` is omitted `gradle nativeTest` is executed by default.**
+
+* [ ] Verify locally that test is running correctly. In this example this can be done by invoking following command from the repository root:
   ```bash
   gradle test -Pcoordinates=org.example:library:0.0.1
   ```

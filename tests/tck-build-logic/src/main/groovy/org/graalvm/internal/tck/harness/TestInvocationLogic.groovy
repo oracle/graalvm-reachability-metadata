@@ -1,4 +1,4 @@
-package org.graalvm.internal.tck
+package org.graalvm.internal.tck.harness
 
 import groovy.json.JsonSlurper
 
@@ -6,6 +6,10 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.Stream
+
+import static org.graalvm.internal.tck.TestUtils.repoRoot
+import static org.graalvm.internal.tck.TestUtils.metadataRoot
+import static org.graalvm.internal.tck.TestUtils.testRoot
 
 class TestInvocationLogic {
     /**
@@ -70,7 +74,7 @@ class TestInvocationLogic {
      *
      * @return set of all directories that match given criteria
      */
-    static Set<String> getMatchingDirs(Path metadataRoot, String groupId, String artifactId) {
+    static Set<String> getMatchingDirs(String groupId, String artifactId) {
         Set<String> dirs = new HashSet<String>()
         for (Map<String, ?> library in getAllLibrariesIndex(metadataRoot)) {
             if (coordinatesMatch((String) library["module"], groupId, artifactId)) {
@@ -80,7 +84,7 @@ class TestInvocationLogic {
                 if (library.containsKey("requires")) {
                     for (String dep in library["requires"]) {
                         def (String depGroup, String depArtifact) = splitCoordinates((String) dep)
-                        dirs.addAll(getMatchingDirs(metadataRoot, depGroup, depArtifact))
+                        dirs.addAll(getMatchingDirs(depGroup, depArtifact))
                     }
                 }
             }
@@ -104,10 +108,10 @@ class TestInvocationLogic {
      * @param version version to match
      * @return list in which every entry holds complete information required to perform a single test invocation
      */
-    static List<Map<String, ?>> generateTestInvocations(Path metadataRoot, Path testRoot, String groupId, String artifactId, String version) {
+    static List<Map<String, ?>> generateTestInvocations(String groupId, String artifactId, String version) {
         List<Map<String, ?>> invocations = new ArrayList<>()
 
-        Set<String> matchingDirs = getMatchingDirs(metadataRoot, groupId, artifactId)
+        Set<String> matchingDirs = getMatchingDirs(groupId, artifactId)
         for (String directory in matchingDirs) {
             Path fullDir = metadataRoot.resolve(directory)
             Path index = fullDir.resolve("index.json")
@@ -120,17 +124,21 @@ class TestInvocationLogic {
 
                     Path testDir = testRoot.resolve((String) library["test-directory"])
                     Path testIndexPath = testDir.resolve("index.json")
-                    def tests = extractJsonFile(testIndexPath)
                     List<String> cmd
-                    if (tests["test-command"] instanceof String) {
-                        cmd = tests["test-command"].split()
-                    } else {
-                        cmd = (List<String>) tests["test-command"]
-                    }
-
                     Map<String, String> env = null
-                    if (tests.hasProperty("test-environment")) {
-                        env = (Map<String, String>) tests["test-environment"]
+
+                    if (testIndexPath.toFile().exists()) {
+                        def tests = extractJsonFile(testIndexPath)
+                        if (tests["test-command"] instanceof String) {
+                            cmd = tests["test-command"].split()
+                        } else {
+                            cmd = (List<String>) tests["test-command"]
+                        }
+                        if (tests.hasProperty("test-environment")) {
+                            env = (Map<String, String>) tests["test-environment"]
+                        }
+                    } else {
+                        cmd = ["gradle", "nativeTest"]
                     }
 
                     for (String tested in library["tested-versions"]) {
@@ -208,7 +216,7 @@ class TestInvocationLogic {
      * @return List of test invocations
      */
     @SuppressWarnings("unused")
-    static List<Map<String, ?>> diffTestInvocations(String baseCommit, String newCommit, Path rootDir) {
+    static List<Map<String, ?>> diffTestInvocations(String baseCommit, String newCommit) {
         String cmd = "git diff --name-only --diff-filter=ACMRT ${baseCommit} ${newCommit}"
 
         Process p = cmd.execute()
@@ -218,17 +226,16 @@ class TestInvocationLogic {
         Set<Path> changedMetadata = new HashSet<Path>()
 
         for (String line in diffFiles) {
-            Path dirAbspath = rootDir.resolve(line)
-            if (line.startsWith("tests/")) {
+            Path dirAbspath = repoRoot.resolve(line)
+            if (dirAbspath.startsWith(testRoot)) {
                 changedTests.add(dirAbspath)
-            } else if (line.startsWith("metadata/")) {
+            } else if (dirAbspath.startsWith(metadataRoot)) {
                 changedMetadata.add(dirAbspath)
             }
         }
 
         List<Map<String, ?>> invocations
-        invocations = generateTestInvocations(rootDir.resolve("metadata"),
-                rootDir.resolve("tests").resolve("src"), null, null, null)
+        invocations = generateTestInvocations(null, null, null)
 
         Set<Map<String, ?>> matchingInvocations = new HashSet<>()
         for (Map<String, ?> inv in invocations) {

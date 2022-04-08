@@ -1,53 +1,18 @@
+import org.graalvm.internal.tck.TestUtils
+
 plugins {
-    id 'java-library'
-    id 'org.graalvm.buildtools.native'
+    id "org.graalvm.internal.tck"
 }
 
-repositories {
-    mavenCentral()
-}
-
-def junitVersion = providers.gradleProperty('junit.jupiter.version')
-    .forUseAtConfigurationTime()
-    .get()
-
-def libraryVersion = providers.gradleProperty('library.version')
-    .forUseAtConfigurationTime()
-    .get() // This value can be used to request specific library version to test with.
-
-def metadataPath = providers.gradleProperty('metadata.dir')
-    .forUseAtConfigurationTime()
-    .get()
-
-File metadataFile
-if (!metadataPath.startsWith("/")) {
-    metadataFile = file("${project.rootDir}/../../../../../metadata/${metadataPath}")
-} else {
-    metadataFile = file(metadataPath)
-}
-
-dependencies {
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-}
-
-tasks.named("nativeTest").configure {
-    doFirst {
-        println("Testing ${libraryVersion}...")
-    }
-}
-
-test {
-    useJUnitPlatform()
-}
+String libraryVersion = TestUtils.testedLibraryVersion
+println("Testing example library version: ${libraryVersion}")
+// This value should be used to declare a dependency to specific library version here.
 
 graalvmNative {
     binaries {
         test {
-            configurationFileDirectories.from(metadataFile)
-            buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test metadata properly
-            verbose = true
+            buildArgs.add('--no-fallback')
+            // Other options can be customized here as well.
         }
     }
 }

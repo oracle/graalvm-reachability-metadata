@@ -1,58 +1,31 @@
+import org.graalvm.internal.tck.TestUtils
+
 plugins {
-    id 'java-library'
-    id 'org.graalvm.buildtools.native'
+    id "org.graalvm.internal.tck"
 }
 
-repositories {
-    mavenCentral()
-}
-
-def junitVersion = providers.gradleProperty('junit.vintage.version')
-    .forUseAtConfigurationTime()
-    .get()
-
-def jlineVersion = providers.gradleProperty('library.version')
-    .forUseAtConfigurationTime()
-    .get()
-
-def metadataPath = providers.gradleProperty('metadata.dir')
-    .forUseAtConfigurationTime()
-    .get()
-
-File metadataFile;
-if (!metadataPath.startsWith("/")) {
-    metadataFile = file("${project.rootDir}/../../../../../metadata/${metadataPath}")
-} else {
-    metadataFile = file(metadataPath)
-}
+String libraryVersion = TestUtils.testedLibraryVersion
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
-    testImplementation("org.junit.vintage:junit-vintage-engine")
-    testImplementation("org.jline:jline:${jlineVersion}")
-    testImplementation("org.jline:jline-terminal-jansi:${jlineVersion}")
-
+    testImplementation("org.jline:jline:${libraryVersion}")
+    testImplementation("org.jline:jline-terminal-jansi:${libraryVersion}")
 }
 
 test {
-    useJUnitPlatform()
     environment "LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so" // Hack in order to use JANSI on GH Actions
+}
+
+tasks.named("nativeTest") {
+    environment.put("LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so") // Hack in order to use JANSI on GH Actions
 }
 
 graalvmNative {
     binaries {
         test {
-            configurationFileDirectories.from(metadataFile)
             buildArgs.add('--allow-incomplete-classpath')
-            buildArgs.add('-H:+StrictConfiguration')
             agent {
                 enabled = false
             }
-            verbose = true
         }
     }
-}
-
-tasks.named("nativeTest") {
-    environment.put("LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so") // Hack in order to use JANSI on GH Actions
 }

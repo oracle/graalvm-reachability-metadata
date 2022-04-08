@@ -1,6 +1,7 @@
-package org.graalvm.internal.tck
+package org.graalvm.internal.tck.harness
 
 import groovy.transform.Internal
+import org.graalvm.internal.tck.TestUtils
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Input
@@ -13,7 +14,7 @@ import java.util.stream.Collectors
 import static groovy.io.FileType.FILES
 
 @SuppressWarnings("unused")
-class TestInvocationTask extends Exec {
+abstract class TestInvocationTask extends Exec {
 
     @Input
     String coordinates
@@ -29,9 +30,15 @@ class TestInvocationTask extends Exec {
             env.putAll((Map<String, String>) inv["test-environment"])
         }
 
+        // Environment variables for setting up test execution
+        env.put("GVM_TCK_LV", (String) inv["library-version"])
+        env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString())
+        env.put("GVM_TCK_TCKDIR", TestUtils.tckRoot.toAbsolutePath().toString())
+
+        ArrayList<String> cmd = (ArrayList<String>) inv["test-command"]
         dependsOn("check")
-        commandLine(inv["test-command"])
-        workingDir(testDir.toFile())
+        commandLine(cmd)
+        workingDir(testDir.toAbsolutePath().toFile())
         environment(env)
 
         def (inputs, outputs) = getInputsOutputs(testDir)
@@ -47,7 +54,7 @@ class TestInvocationTask extends Exec {
     void exec() {
         getLogger().lifecycle("====================")
         getLogger().lifecycle("Testing library: {}", coordinates)
-        getLogger().lifecycle("Command: {}", String.join(" ", getCommandLine()))
+        getLogger().lifecycle("Command: `{}`", String.join(" ", getCommandLine()))
         getLogger().lifecycle("Executing test...")
         getLogger().lifecycle("-------")
 
@@ -75,11 +82,11 @@ class TestInvocationTask extends Exec {
         def excludedSubdirNames = [".gradle", ".mvn"]
         def outputSubdirNames = ["build", "target", "bin"]
 
-        def excludedSubdirs = excludedSubdirNames.stream()
+        List<String> excludedSubdirs = excludedSubdirNames.stream()
                 .map(name -> projectDir.resolve(name).toFile().getCanonicalPath() + File.separator)
                 .collect(Collectors.toList())
 
-        def outputSubdirs = outputSubdirNames.stream()
+        List<String> outputSubdirs = outputSubdirNames.stream()
                 .map(name -> projectDir.resolve(name).toFile().getCanonicalPath() + File.separator)
                 .collect(Collectors.toList())
 

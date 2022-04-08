@@ -1,93 +1,29 @@
-buildscript {
-    dependencies {
-        classpath('org.codehaus.groovy:groovy-all:3.0.10')
-    }
-}
-
 plugins {
+    id 'base'
     id "com.diffplug.spotless" version "6.3.0"
-    id "org.graalvm.internal.tck"
+    id "org.graalvm.internal.tck-harness"
 }
 
 allprojects {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
 }
 
-group = "metadata-tests"
+import static org.graalvm.internal.tck.TestUtils.metadataRoot
+import static org.graalvm.internal.tck.TestUtils.testRoot
 
+// gradle check
 spotless {
     json {
-        target('metadata/**/*.json')
-        target('tests/**/*.json')
-        targetExclude('tests/**/build/**/*.json')
+        target(metadataRoot + '/**/*.json')
+        target(testRoot + '/**/*.json')
+        targetExclude(testRoot + '/**/build/**/*.json')
         gson()
                 .indentWithSpaces(2)
                 .sortByKeys()
                 .version("2.9.0")
-    }
-}
-
-
-import org.graalvm.internal.tck.TestInvocationLogic
-import org.graalvm.internal.tck.TestInvocationTask
-
-import java.nio.file.Path
-
-Path rootDir = getProject().getProjectDir().toPath()
-Path metadataRoot = rootDir.resolve("metadata")
-Path testRoot = rootDir.resolve("tests").resolve("src")
-
-String coordinates = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
-def (String groupId, String artifactId, String version) = TestInvocationLogic.splitCoordinates(coordinates)
-
-// gradle check
-tasks.register('check', DefaultTask) { task ->
-    task.setDescription("Alias for 'spotlessJsonCheck'")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-    task.dependsOn("spotlessJsonCheck")
-}
-
-// gradle test -Pcoordinates=<maven-coordinates>
-Provider<Task> test = tasks.register("test", DefaultTask) { task ->
-    task.setDescription("Tests JVM Reflection Metadata that matches given coordinates")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-}
-
-for (Map<String, ?> inv in TestInvocationLogic.generateTestInvocations(metadataRoot, testRoot, groupId, artifactId, version)) {
-    String taskName = "test-" + inv["coordinates"].replace(":", "-")
-    if ((!tasks.getNames().contains(taskName)) ) {
-        tasks.register(taskName, TestInvocationTask, inv)
-    }
-    test.configure {
-        dependsOn(taskName)
-    }
-}
-
-// gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
-    task.setDescription("Tests JVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-
-    if (!project.hasProperty("baseCommit")) {
-        task.doFirst {
-            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
-        }
-    }
-}
-
-if (project.hasProperty("baseCommit")) {
-    String baseCommit = project.findProperty("baseCommit")
-    String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
-    for (def inv in TestInvocationLogic.diffTestInvocations(baseCommit, newCommit, project.getRootDir().toPath())) {
-        String taskName = "test-" + inv["coordinates"].replace(":", "-")
-        if ((!tasks.getNames().contains(taskName)) ) {
-            tasks.register(taskName, TestInvocationTask, inv)
-        }
-        diff.configure {
-            dependsOn(taskName)
-        }
     }
 }
 
@@ -97,10 +33,5 @@ tasks.register('package', Zip) { task ->
     task.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP)
     task.archiveFileName = "repository.zip"
     task.destinationDirectory = layout.buildDirectory
-    from(layout.projectDirectory.dir("metadata"))
-}
-
-// gradle clean
-tasks.register('clean', DefaultTask) { task ->
-    logger.lifecycle("Instead of 'clean' use '--rerun-tasks' parameter!")
+    from(metadataRoot)
 }
