@@ -1,0 +1,31 @@
+import org.graalvm.internal.tck.TestUtils
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = TestUtils.testedLibraryVersion
+
+dependencies {
+    testImplementation("org.jline:jline:${libraryVersion}")
+    testImplementation("org.jline:jline-terminal-jansi:${libraryVersion}")
+}
+
+test {
+    environment "LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so" // Hack in order to use JANSI on GH Actions
+}
+
+tasks.named("nativeTest") {
+    environment.put("LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so") // Hack in order to use JANSI on GH Actions
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--allow-incomplete-classpath')
+            agent {
+                enabled = false
+            }
+        }
+    }
+}

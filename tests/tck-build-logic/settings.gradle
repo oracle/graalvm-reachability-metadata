@@ -1,0 +1,28 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+final String TOML_FILE = "gradle/libs.versions.toml"
+
+var baseDir = rootDir
+var catalogFile = baseDir.toPath().resolve(TOML_FILE).toFile()
+while (!catalogFile.exists()) {
+    baseDir = baseDir.parentFile
+    catalogFile = baseDir.toPath().resolve(TOML_FILE).toFile()
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+    versionCatalogs {
+        libs {
+            from(files(catalogFile))
+        }
+    }
+}
+
+rootProject.name = "tck-build-logic"

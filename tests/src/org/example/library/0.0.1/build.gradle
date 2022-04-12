@@ -1,0 +1,18 @@
+import org.graalvm.internal.tck.TestUtils
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = TestUtils.testedLibraryVersion
+println("Testing example library version: ${libraryVersion}")
+// This value should be used to declare a dependency to specific library version here.
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--no-fallback')
+            // Other options can be customized here as well.
+        }
+    }
+}

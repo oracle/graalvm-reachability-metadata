@@ -1,0 +1,55 @@
+import org.graalvm.internal.tck.TestUtils
+
+import static org.graalvm.internal.tck.TestUtils.metadataRoot
+
+plugins {
+    id 'java-library'
+    id 'org.graalvm.buildtools.native'
+}
+
+repositories {
+    mavenCentral()
+}
+
+TestUtils.locateRepoDirs(project) // Find relevant directories for the test harness.
+
+
+def metadataPath = Objects.requireNonNullElse(
+        System.getenv("GVM_TCK_MD"),
+        providers.gradleProperty('metadata.dir').get()
+)
+
+File metadataFile
+if (!metadataPath.startsWith("/")) {
+    metadataFile = metadataRoot.resolve(metadataPath).toFile()
+} else {
+    metadataFile = file(metadataPath)
+}
+
+String libraryVersion = Objects.requireNonNullElse(
+        System.getenv("GVM_TCK_LV"),
+        providers.gradleProperty('library.version').get()
+)
+
+TestUtils.testedLibraryVersion = libraryVersion
+// This value can be used to request specific library version to test with.
+
+dependencies {
+    testImplementation(platform(libs.test.junit.bom))
+    testImplementation(libs.test.junit.jupiter.core)
+    testImplementation(libs.test.junit.vintage)
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+graalvmNative {
+    binaries {
+        test {
+            configurationFileDirectories.from(metadataFile)
+            buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test metadata properly
+            verbose = true
+        }
+    }
+}

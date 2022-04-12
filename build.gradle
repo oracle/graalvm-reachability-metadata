@@ -1,0 +1,37 @@
+plugins {
+    id 'base'
+    id "com.diffplug.spotless" version "6.3.0"
+    id "org.graalvm.internal.tck-harness"
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+import static org.graalvm.internal.tck.TestUtils.metadataRoot
+import static org.graalvm.internal.tck.TestUtils.testRoot
+
+// gradle check
+spotless {
+    json {
+        target(metadataRoot + '/**/*.json')
+        target(testRoot + '/**/*.json')
+        targetExclude(testRoot + '/**/build/**/*.json')
+        gson()
+                .indentWithSpaces(2)
+                .sortByKeys()
+                .version("2.9.0")
+    }
+}
+
+// gradle package
+tasks.register('package', Zip) { task ->
+    task.setDescription("Packages current repository to 'build/repository.zip'")
+    task.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP)
+    task.archiveFileName = "repository.zip"
+    task.destinationDirectory = layout.buildDirectory
+    from(metadataRoot)
+}
