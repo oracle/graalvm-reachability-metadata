@@ -1,0 +1,24 @@
+import org.graalvm.internal.tck.TestUtils
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = TestUtils.testedLibraryVersion
+
+dependencies {
+	testImplementation "org.apache.tomcat.embed:tomcat-embed-core:$libraryVersion"
+	testImplementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+	testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--allow-incomplete-classpath')
+            agent {
+                enabled = false
+            }
+        }
+    }
+}
