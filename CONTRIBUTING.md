@@ -1,15 +1,11 @@
 # Contributing
-We welcome your contributions. To get started, you will need to sign the [Oracle Contributor Agreement](https://oca.opensource.oracle.com) (OCA).
-
-Only pull requests from committers that can be verified as having signed the OCA can be accepted.
-
 ## Checklist
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
 `org.example:library` project is also included as template for new libraries.
 
 > ℹ️ **Note** :
 >
-> JVM Reachability Metadata in this repo only contains JSON files as described in [Manual Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration) section of the Native Image documentation.
+> GraalVM Reachability Metadata in this repo only contains JSON files as described in [Manual Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration) section of the Native Image documentation.
 >
 >  All other library tweaks (such as build time initialization through `native-image.properties`) should not be included here. By default, it should be assumed that all user libraries are runtime initialized. Build-time can not be included here as it does not compose and can break code in unpredictable ways.
 >
