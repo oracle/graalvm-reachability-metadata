@@ -1,3 +1,14 @@
+/*
+ * Licensed under Public Domain (CC0)
+ *
+ * To the extent possible under law, the person who associated CC0 with
+ * this code has waived all copyright and related or neighboring
+ * rights to this code.
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 package org.graalvm.jline;
 
 import org.jline.terminal.Attributes;
@@ -8,7 +19,11 @@ import org.jline.terminal.Cursor;
 import org.jline.terminal.impl.ExternalTerminal;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+
 import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
 
@@ -48,7 +63,7 @@ public class BasicTerminalTests {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ExternalTerminal terminal = new ExternalTerminal("foo", "ansi", in, out, StandardCharsets.UTF_8);
 
-        outIn.write(new byte[] { '\033', '[', '2', ';', '3', 'R', 'f'});
+        outIn.write(new byte[]{'\033', '[', '2', ';', '3', 'R', 'f'});
         outIn.flush();
 
         Cursor cursor = terminal.getCursorPosition(c -> {
