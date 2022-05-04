@@ -39,7 +39,6 @@ It should contain the following entries:
         "latest": false,
         "metadata-version": "1",
         "module": "org.example:library",
-        "test-directory": "org/example/library/0.0.1",
         "tested-versions": [
           "0.0.1", "0.0.2"
         ]
@@ -48,7 +47,6 @@ It should contain the following entries:
         "latest": true,
         "metadata-version": "2",
         "module": "org.example:library",
-        "test-directory": "org/example/library/1.0.0",
         "tested-versions": [
           "1.0.0", "1.1.0-M1", "1.1.0"
         ]
@@ -79,7 +77,36 @@ Every submitted library must feature tests that serve as a safeguard against reg
 For easier test development we've provided a TCK plugin that automatically configures our [native-gradle-plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
 and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support). 
 
-* [ ] Add tests to the `test-directory`. In this example that would be `tests/src/org/example/library/0.0.1`.
+* [ ] Add information about your tests to `tests/src/index.json`. It should look something like this:
+  ```json
+  [
+    {
+      "test-project-path": "org/example/library/0.0.1",
+      "libraries": [
+        {
+          "name": "org.example:library",
+          "versions": [
+            "0.0.1", "0.0.2"
+          ]
+        }
+      ]
+    },
+    {
+      "test-project-path": "org/example/library/1.0.0",
+      "libraries": [
+        {
+          "name": "org.example:library",
+          "versions": [
+            "1.0.0", "1.1.0-M1", "1.1.0"
+          ]
+        }
+      ]
+    },
+    ...
+  ]
+  ```
+
+* [ ] Add tests to the `test-project-path`. In this example that would be `tests/src/org/example/library/0.0.1`.
   You should use `tests/src/org/example/library/0.0.1` as a template for your tests.
 
   **Optionally** test directory may contain `index.json` with content as follows:

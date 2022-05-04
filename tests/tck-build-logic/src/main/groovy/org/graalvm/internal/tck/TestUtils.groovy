@@ -11,6 +11,7 @@
 
 package org.graalvm.internal.tck
 
+
 import org.gradle.api.Project
 
 import java.nio.file.Path
@@ -23,7 +24,6 @@ class TestUtils {
     public static Path tckRoot
 
     public static String testedLibraryVersion
-    public static Path metadataDir
 
     static final ArrayList<String> REPO_ROOT_FILES = ["CONTRIBUTING.md", "metadata"]
 

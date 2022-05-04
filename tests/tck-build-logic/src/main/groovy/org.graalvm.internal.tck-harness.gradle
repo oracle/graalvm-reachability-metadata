@@ -10,16 +10,20 @@
  */
 
 import org.graalvm.internal.tck.TestUtils
-import org.graalvm.internal.tck.harness.TestInvocationLogic
-import org.graalvm.internal.tck.harness.TestInvocationTask
+import org.graalvm.internal.tck.harness.MetadataLookupLogic
+import org.graalvm.internal.tck.harness.TestLookupLogic
+import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
+import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
+
+import static org.graalvm.internal.tck.Utils.generateTaskName
 
 TestUtils.locateRepoDirs(project) // Find relevant directories for the test harness.
 
 logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
 
-String coordinates = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
-def (String groupId, String artifactId, String version) = TestInvocationLogic.splitCoordinates(coordinates)
+String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
+List<String> matchingCoordinates = MetadataLookupLogic.getMatchingCoordinates(coordinateFilter)
 
 // gradle test -Pcoordinates=<maven-coordinates>
 Provider<Task> test = tasks.register("test", DefaultTask) { task ->
@@ -27,13 +31,32 @@ Provider<Task> test = tasks.register("test", DefaultTask) { task ->
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
-for (Map<String, ?> inv in TestInvocationLogic.generateTestInvocations(groupId, artifactId, version)) {
-    String taskName = "test-" + inv["coordinates"].replace(":", "-")
-    if ((!tasks.getNames().contains(taskName))) {
-        tasks.register(taskName, TestInvocationTask, inv)
+// gradle checkstyle -Pcoordinates=<maven-coordinates>
+Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
+    task.setDescription("Runs checkstyle on all subprojects")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+tasks.named("check").configure {
+    dependsOn(checkstyle)
+}
+
+// Here we want to configure all test and checkstyle tasks for all filtered subprojects
+for (String coordinates in matchingCoordinates) {
+    String testTaskName = generateTaskName("test", coordinates)
+    if ((!tasks.getNames().contains(testTaskName))) {
+        tasks.register(testTaskName, TestInvocationTask, coordinates)
     }
     test.configure {
-        dependsOn(taskName)
+        dependsOn(testTaskName)
+    }
+
+    String checkstyleTaskName = generateTaskName("checkstyle", coordinates)
+    if ((!tasks.getNames().contains(checkstyleTaskName))) {
+        tasks.register(checkstyleTaskName, CheckstyleInvocationTask, coordinates)
+    }
+    checkstyle.configure {
+        dependsOn(checkstyleTaskName)
     }
 }
 
@@ -52,38 +75,13 @@ Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
 if (project.hasProperty("baseCommit")) {
     String baseCommit = project.findProperty("baseCommit")
     String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
-    for (def inv in TestInvocationLogic.diffTestInvocations(baseCommit, newCommit)) {
-        String taskName = "test-" + inv["coordinates"].replace(":", "-")
-        if ((!tasks.getNames().contains(taskName))) {
-            tasks.register(taskName, TestInvocationTask, inv)
+    for (def coordinates in TestLookupLogic.diffCoordinates(baseCommit, newCommit)) {
+        String taskTaskName = generateTaskName("test", coordinates)
+        if ((!tasks.getNames().contains(taskTaskName))) {
+            tasks.register(taskTaskName, TestInvocationTask, coordinates)
         }
         diff.configure {
-            dependsOn(taskName)
+            dependsOn(taskTaskName)
         }
     }
-}
-Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
-    task.setDescription("Runs checkstyle on all subprojects")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-}
-
-// We want to create a dedicated checkstyle task for every present test.
-// TODO: Merge this with test invocation logic in order to register only tasks that are within filtered scope.
-fileTree(TestUtils.testRoot).matching {
-    include "**/build.gradle"
-}.each { buildFile ->
-    def projectDir = buildFile.parentFile.toPath()
-    String name = TestUtils.testRoot.relativize(projectDir).toString().replace("/", "-").replace("\\", "-")
-    Provider<Task> subtask = tasks.register("checkstyle-${name}", Exec) { task ->
-        task.setCommandLine("gradle", "checkstyle")
-        // We've created this task in TCK as a wrapper for "checkstyle<SourceSet>" tasks
-        task.setWorkingDir(projectDir)
-    }
-    checkstyle.configure { it ->
-        it.dependsOn(subtask)
-    }
-}
-
-tasks.named("check").configure {
-    dependsOn(checkstyle)
 }

@@ -9,77 +9,49 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package org.graalvm.internal.tck.harness
+package org.graalvm.internal.tck.harness.tasks
 
 import groovy.transform.Internal
-import org.graalvm.internal.tck.TestUtils
-import org.gradle.api.GradleException
+import org.graalvm.internal.tck.harness.MetadataLookupLogic
+import org.graalvm.internal.tck.harness.TestLookupLogic
 import org.gradle.api.tasks.Exec
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.TaskAction
 
 import javax.inject.Inject
 import java.nio.file.Path
 import java.util.stream.Collectors
 
 import static groovy.io.FileType.FILES
+import static org.graalvm.internal.tck.TestUtils.tckRoot
+import static org.graalvm.internal.tck.Utils.splitCoordinates
 
+/**
+ * Abstract task that is used to invoke test subprojects.
+ */
 @SuppressWarnings("unused")
-abstract class TestInvocationTask extends Exec {
-
-    @Input
-    String coordinates
+abstract class AbstractSubprojectTask extends Exec {
 
     @Inject
-    TestInvocationTask(Map<String, ?> inv) {
-        this.coordinates = inv["coordinates"]
-        Path metadataDir = (Path) inv["metadata-directory"]
-        Path testDir = (Path) inv["test-directory"]
+    AbstractSubprojectTask(String coordinates, List<String> cmd) {
+        def (String groupId, String artifactId, String version) = splitCoordinates(coordinates)
+        Path metadataDir = MetadataLookupLogic.getMetadataDir(coordinates)
+        Path testDir = TestLookupLogic.getTestDir(coordinates)
 
         Map<String, String> env = new HashMap<>(System.getenv())
-        if (inv.containsKey("test-environment") && inv["test-environment"] != null) {
-            env.putAll((Map<String, String>) inv["test-environment"])
-        }
-
-        // Environment variables for setting up test execution
-        env.put("GVM_TCK_LV", (String) inv["library-version"])
+        // Environment variables for setting up TCK
+        env.put("GVM_TCK_LV", version)
         env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString())
-        env.put("GVM_TCK_TCKDIR", TestUtils.tckRoot.toAbsolutePath().toString())
-
-        ArrayList<String> cmd = (ArrayList<String>) inv["test-command"]
-        dependsOn("check")
-        commandLine(cmd)
-        workingDir(testDir.toAbsolutePath().toFile())
+        env.put("GVM_TCK_TCKDIR", tckRoot.toAbsolutePath().toString())
         environment(env)
 
+        commandLine(cmd)
+        workingDir(testDir.toAbsolutePath().toFile())
+
         def (inputs, outputs) = getInputsOutputs(testDir)
-        getInputs().files(TestInvocationLogic.getMetadataFileList(metadataDir))
+        getInputs().files(MetadataLookupLogic.getMetadataFileList(metadataDir))
         getInputs().files(inputs)
         getOutputs().files(outputs)
 
         setIgnoreExitValue(true)
-    }
-
-    @TaskAction
-    @Override
-    void exec() {
-        getLogger().lifecycle("====================")
-        getLogger().lifecycle("Testing library: {}", coordinates)
-        getLogger().lifecycle("Command: `{}`", String.join(" ", getCommandLine()))
-        getLogger().lifecycle("Executing test...")
-        getLogger().lifecycle("-------")
-
-        super.exec()
-
-        getLogger().lifecycle("-------")
-
-        int exitCode = getExecutionResult().get().getExitValue()
-        if (exitCode != 0) {
-            throw new GradleException("Test for ${coordinates} failed with exit code ${exitCode}.")
-        } else {
-            getLogger().lifecycle("Test for {} passed.", coordinates)
-            getLogger().lifecycle("====================")
-        }
     }
 
     /**
