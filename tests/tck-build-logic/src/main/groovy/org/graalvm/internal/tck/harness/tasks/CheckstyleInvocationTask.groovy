@@ -11,6 +11,9 @@
 
 package org.graalvm.internal.tck.harness.tasks
 
+import org.gradle.api.GradleException
+import org.gradle.api.tasks.TaskAction
+
 import javax.inject.Inject
 
 /**
@@ -24,5 +27,15 @@ abstract class CheckstyleInvocationTask extends AbstractSubprojectTask {
     @Inject
     CheckstyleInvocationTask(String coordinates, List<String> cmd) {
         super(coordinates, CHECKSTYLE_COMMAND)
+    }
+
+    @TaskAction
+    @Override
+    void exec() {
+        super.exec()
+        int exitCode = getExecutionResult().get().getExitValue()
+        if (exitCode != 0) {
+            throw new GradleException("Checkstyle failed.")
+        }
     }
 }
