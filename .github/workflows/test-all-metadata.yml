@@ -1,0 +1,45 @@
+name: "Test all metadata"
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'metadata/**'
+      - 'tests/**'
+  workflow_dispatch:
+
+jobs:
+  get-all-metadata:
+    name: "📋 Get list of all supported libraries"
+    runs-on: "ubuntu-20.04"
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v2
+      - name: "🕸️ Populate matrix"
+        id: set-matrix
+        run: |
+          gradle generateMatrixMatchingCoordinates -Pcoordinates=all
+
+  test-all-metadata:
+    name: "${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
+    runs-on: ${{ matrix.os }}
+    needs: get-all-metadata
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.get-all-metadata.outputs.matrix)}}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v2
+      - name: "🔧 Prepare environment"
+        uses: graalvm/setup-graalvm@main
+        with:
+          version: ${{ matrix.version }}
+          java-version: ${{ matrix.java-version }}
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: "🧪 Run '${{ matrix.coordinates }}' tests"
+        run: |
+          gradle test -Pcoordinates=${{ matrix.coordinates }}
