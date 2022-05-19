@@ -8,6 +8,10 @@ on:
       - 'metadata/**'
       - 'tests/**'
 
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
+  cancel-in-progress: true
+
 jobs:
   get-changed-metadata:
     name: "📋 Get list of all changed libraries"
@@ -25,7 +29,7 @@ jobs:
           gradle generateMatrixDiffCoordinates -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.sha }}
 
   test-changed-metadata:
-    name: "${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     needs: get-changed-metadata
     strategy:

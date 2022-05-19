@@ -9,6 +9,10 @@ on:
       - 'tests/**'
   workflow_dispatch:
 
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
+  cancel-in-progress: true
+
 jobs:
   get-all-metadata:
     name: "📋 Get list of all supported libraries"
@@ -24,7 +28,7 @@ jobs:
           gradle generateMatrixMatchingCoordinates -Pcoordinates=all
 
   test-all-metadata:
-    name: "${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     needs: get-all-metadata
     strategy:

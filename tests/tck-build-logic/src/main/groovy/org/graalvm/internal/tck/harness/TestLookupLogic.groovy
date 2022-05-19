@@ -16,6 +16,7 @@ import java.util.stream.Collectors
 
 import static org.graalvm.internal.tck.TestUtils.metadataRoot
 import static org.graalvm.internal.tck.TestUtils.repoRoot
+import static org.graalvm.internal.tck.TestUtils.tckRoot
 import static org.graalvm.internal.tck.TestUtils.testRoot
 import static org.graalvm.internal.tck.Utils.coordinatesMatch
 import static org.graalvm.internal.tck.Utils.readIndexFile
@@ -52,19 +53,7 @@ class TestLookupLogic {
                 return testRoot.resolve((String) entry.get("test-project-path"))
             }
         }
-
-        // If that failed let's try looking up the old way of storing test executions (as a field in metadata index).
-        // TODO: Remove this when all PR's are merged and updated to new format.
-        index = readIndexFile(getMetadataDir(coordinates).parent) as List<Map<String, ?>>
-        def result = index.stream()
-                .filter(l -> l.containsKey("test-directory") && coordinatesMatch((String) l.get("module"), groupId, artifactId) && ((ArrayList<String>) l.get("tested-versions")).contains(version))
-                .map(l -> l.get("test-directory"))
-                .findFirst()
-
-        if (!result.present) {
-            throw new RuntimeException("Missing test-directory for coordinates `${coordinates}`")
-        }
-        return testRoot.resolve((String) result.get())
+        throw new RuntimeException("Missing test-directory for coordinates `${coordinates}`")
     }
 
     /**
@@ -81,11 +70,15 @@ class TestLookupLogic {
         String output = p.in.text
         List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"))
 
+        boolean testAll = false
         // Group files by if they belong to 'metadata' or 'test' directory structures.
         Map<String, List<Path>> changed = diffFiles.stream()
                 .map(line -> repoRoot.resolve(line))
                 .collect(Collectors.groupingBy(path -> {
-                    if (path.startsWith(testRoot)) {
+                    if (path.startsWith(tckRoot)) {
+                        testAll = true
+                        return "other"
+                    } else if (path.startsWith(testRoot)) {
                         return "test"
                     } else if (path.startsWith(metadataRoot)) {
                         return "metadata"
@@ -93,6 +86,11 @@ class TestLookupLogic {
                         return "other"
                     }
                 }))
+
+        if (testAll) {
+            // If tck was changed we should retest everything, just to be safe.
+            return MetadataLookupLogic.getMatchingCoordinates("")
+        }
 
         // First get all available coordinates, then filter them by if their corresponding metadata / tests directories
         // contain changed files.
