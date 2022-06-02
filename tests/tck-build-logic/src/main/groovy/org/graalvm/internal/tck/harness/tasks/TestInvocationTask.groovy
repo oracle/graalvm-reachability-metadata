@@ -11,7 +11,7 @@
 
 package org.graalvm.internal.tck.harness.tasks
 
-
+import org.graalvm.internal.tck.TestUtils
 import org.graalvm.internal.tck.harness.MetadataLookupLogic
 import org.graalvm.internal.tck.harness.TestLookupLogic
 import org.gradle.api.GradleException
@@ -31,7 +31,7 @@ import static org.graalvm.internal.tck.Utils.splitCoordinates
 @SuppressWarnings("unused")
 abstract class TestInvocationTask extends AbstractSubprojectTask {
 
-    static final DEFAULT_ARGS = List.of("gradle", "nativeTest")
+    static final DEFAULT_ARGS = List.of(TestUtils.repoRoot.resolve("gradlew").toString(), "nativeTest")
 
     @Input
     String coordinates
