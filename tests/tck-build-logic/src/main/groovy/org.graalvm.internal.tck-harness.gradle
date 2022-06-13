@@ -113,6 +113,10 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
         if (!project.hasProperty("baseCommit")) {
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
+        if (diffCoordinates.isEmpty()) {
+            throw new GradleException("No coordinates are found for diff testing. Check if your index.json files " +
+                    "are set properly.")
+        }
         def matrix = [
                 "coordinates": diffCoordinates
         ]
