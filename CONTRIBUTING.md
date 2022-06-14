@@ -10,7 +10,8 @@ In order to ensure that all contributions follow the same standards of quality w
 >  All other library tweaks (such as build time initialization through `native-image.properties`) should not be included here. By default, it should be assumed that all user libraries are runtime initialized. Build-time can not be included here as it does not compose and can break code in unpredictable ways.
 >
 > Make sure that you are using [Conditional Configuration syntax](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#conditional-configuration) in order to precisely define metadata scope. This is a hard requirement as that way we can ensure both increased compatibility and minimal image sizes.
-
+>
+> To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
 ### Metadata
 * [ ] Add a new folder structure in `metadata` directory in root of this repository.
 Per convention this should mirror Maven central notation (`org.example:library` metadata should be located in `metadata/org/example/library`).
@@ -75,7 +76,7 @@ It should contain the following entries:
 ### Tests
 Every submitted library must feature tests that serve as a safeguard against regressions.
 For easier test development we've provided a TCK plugin that automatically configures our [native-gradle-plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
-and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support). 
+and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support).
 
 * [ ] Add information about your tests to `tests/src/index.json`. It should look something like this:
   ```json
