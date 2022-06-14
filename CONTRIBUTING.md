@@ -1,4 +1,7 @@
 # Contributing
+
+Before contributing to this repository, please try to include the reachability metadata directly into the library. If that does not work, open a ticket on the target library issue tracker so the community can upvote and discuss metadata addition. Only after these steps, follow the checklist for adding the metadata to this repository.
+
 ## Checklist
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
 `org.example:library` project is also included as template for new libraries.
@@ -7,10 +10,11 @@ In order to ensure that all contributions follow the same standards of quality w
 >
 > GraalVM Reachability Metadata in this repo only contains JSON files as described in [Manual Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration) section of the Native Image documentation.
 >
->  All other library tweaks (such as build time initialization through `native-image.properties`) should not be included here. By default, it should be assumed that all user libraries are runtime initialized. Build-time can not be included here as it does not compose and can break code in unpredictable ways.
+>  All other library tweaks (such as build time initialization through `native-image.properties`) must not be included here. By default, it should be assumed that all user libraries are runtime initialized.Build-time initialization can not be included as it does not compose and can break code in unpredictable ways.
 >
-> Make sure that you are using [Conditional Configuration syntax](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#conditional-configuration) in order to precisely define metadata scope. This is a hard requirement as that way we can ensure both increased compatibility and minimal image sizes.
-
+> Make sure that you are using [Conditional Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/ReachabilityMetadata/#specifying-metadata-with-json) in order to precisely the define metadata scope. This is a hard requirement as it prevents unnecessary bloating of images.
+>
+> To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
 ### Metadata
 * [ ] Add a new folder structure in `metadata` directory in root of this repository.
 Per convention this should mirror Maven central notation (`org.example:library` metadata should be located in `metadata/org/example/library`).
@@ -75,7 +79,7 @@ It should contain the following entries:
 ### Tests
 Every submitted library must feature tests that serve as a safeguard against regressions.
 For easier test development we've provided a TCK plugin that automatically configures our [native-gradle-plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
-and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support). 
+and its included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support).
 
 * [ ] Add information about your tests to `tests/src/index.json`. It should look something like this:
   ```json
