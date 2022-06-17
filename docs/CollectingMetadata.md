@@ -32,9 +32,9 @@ The conditional mode requires the users to pass an agent filter file that tells 
 A sample filter file (user-code-filter.json) for a library whose classes are all contained in `com.acme`:
 ```json
 {
-  ”rules”: [
-    {”excludeClasses”: ”**”},
-    {”includeClasses”: ”com.acme.**”}
+  "rules": [
+    {"excludeClasses": "**"},
+    {"includeClasses": "com.acme.**"}
   ]
 }
 ```
@@ -47,7 +47,7 @@ graalvmNative {
     modes {
       conditional {
         userCodeFilterPath = "user-code-filter.json"
-        extraFilterPath = “extra-code-filter.json”
+        extraFilterPath = "extra-code-filter.json"
       }
     }
 }
