@@ -69,7 +69,7 @@ class MetadataLookupLogic {
 
         if (groupId != null && artifactId != null) {
             // Let's see if library wasn't added to index but is present on the disk.
-            Path defaultDir = metadataRoot.resolve(groupId.replace(".", "/")).resolve(artifactId)
+            Path defaultDir = metadataRoot.resolve(groupId).resolve(artifactId)
             if (defaultDir.resolve("index.json").toFile().exists()) {
                 dirs.add(defaultDir.toString())
             }

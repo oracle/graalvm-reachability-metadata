@@ -4,26 +4,26 @@ Before contributing to this repository, please try to include the reachability m
 
 ## Checklist
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
-`org.example:library` project is also included as template for new libraries.
+`org.example:library` project is also included as a template for new libraries.
 
 > ℹ️ **Note** :
 >
 > GraalVM Reachability Metadata in this repo only contains JSON files as described in [Manual Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration) section of the Native Image documentation.
 >
->  All other library tweaks (such as build time initialization through `native-image.properties`) must not be included here. By default, it should be assumed that all user libraries are runtime initialized.Build-time initialization can not be included as it does not compose and can break code in unpredictable ways.
+>  All other library tweaks (such as build time initialization through `native-image.properties`) must not be included here. By default, it should be assumed that all user libraries are runtime initialized. Build-time initialization can not be included as it does not compose and can break code in unpredictable ways.
 >
-> Make sure that you are using [Conditional Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/ReachabilityMetadata/#specifying-metadata-with-json) in order to precisely the define metadata scope. This is a hard requirement as it prevents unnecessary bloating of images.
+> Make sure that you are using [Conditional Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/ReachabilityMetadata/#specifying-metadata-with-json) in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of images.
 >
 > To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
 ### Metadata
 * [ ] Add a new folder structure in `metadata` directory in root of this repository.
-Per convention this should mirror Maven central notation (`org.example:library` metadata should be located in `metadata/org/example/library`).
+Per convention, it should be like this: `org.example:library` metadata should be located at `metadata/org.example/library`.
 * [ ] Add a new entry in `metadata/index.json` that points to metadata being added. For example:
     ```json
     [
       ...
       {
-        "directory": "org/example/library",
+        "directory": "org.example/library",
         "module": "org.example:library"
       },
       {
@@ -35,13 +35,13 @@ Per convention this should mirror Maven central notation (`org.example:library` 
     ]
     ```
     Note that `dependant-library` can feature its own metadata as well if `directory` key is specified.
-* [ ] Add `index.json` file to the metadata directory. In aforementioned case that would be `metadata/org/example/library/index.json`.
+* [ ] Add `index.json` file to the metadata directory. In aforementioned case that would be `metadata/org.example/library/index.json`.
 It should contain the following entries:
     ```json
     [
       {
         "latest": false,
-        "metadata-version": "1",
+        "metadata-version": "0.0.1",
         "module": "org.example:library",
         "tested-versions": [
           "0.0.1", "0.0.2"
@@ -49,7 +49,7 @@ It should contain the following entries:
       },
       {
         "latest": true,
-        "metadata-version": "2",
+        "metadata-version": "1.0.0",
         "module": "org.example:library",
         "tested-versions": [
           "1.0.0", "1.1.0-M1", "1.1.0"
@@ -59,10 +59,10 @@ It should contain the following entries:
     ]
     ```
     `metadata-version` key specifies the subdirectory where metadata for tested versions "lives".
-    So, the metadata for `org.example:library:0.0.1` and `org.example:library:0.0.2` is located at `metadata/org/example/library/1`.
+    So, the metadata for `org.example:library:0.0.1` and `org.example:library:0.0.2` is located at `metadata/org.example/library/0.0.1`.
 
    Make sure that each supported version is listed in `tested-version`, as that value is used in build tools to match metadata to a specific library.
-* [ ] Add `index.json` file for specific metadata. For this example `metadata/org/example/library/1/index.json` would contain:
+* [ ] Add `index.json` file for specific metadata. For this example `metadata/org.example/library/0.0.1/index.json` would contain:
   ```json
   [
     "jni-config.json",
@@ -85,7 +85,7 @@ and its included [JUnit Platform support](https://graalvm.github.io/native-build
   ```json
   [
     {
-      "test-project-path": "org/example/library/0.0.1",
+      "test-project-path": "org.example/library/0.0.1",
       "libraries": [
         {
           "name": "org.example:library",
@@ -96,7 +96,7 @@ and its included [JUnit Platform support](https://graalvm.github.io/native-build
       ]
     },
     {
-      "test-project-path": "org/example/library/1.0.0",
+      "test-project-path": "org.example/library/1.0.0",
       "libraries": [
         {
           "name": "org.example:library",
@@ -110,8 +110,8 @@ and its included [JUnit Platform support](https://graalvm.github.io/native-build
   ]
   ```
 
-* [ ] Add tests to the `test-project-path`. In this example that would be `tests/src/org/example/library/0.0.1`.
-  You should use `tests/src/org/example/library/0.0.1` as a template for your tests.
+* [ ] Add tests to the `test-project-path`. In this example that would be `tests/src/org.example/library/0.0.1`.
+  You should use `tests/src/org.example/library/0.0.1` as a template for your tests.
 
   **Optionally** test directory may contain `index.json` with content as follows:
   ```json
