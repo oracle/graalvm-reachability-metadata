@@ -19,14 +19,14 @@ allprojects {
 }
 
 import static org.graalvm.internal.tck.TestUtils.metadataRoot
+import static org.graalvm.internal.tck.TestUtils.repoRoot
 import static org.graalvm.internal.tck.TestUtils.testRoot
 
 // gradle check
 spotless {
     json {
-        target(metadataRoot + '/**/*.json')
-        target(testRoot + '/**/*.json')
-        targetExclude(testRoot + '/**/build/**/*.json')
+        target(metadataRoot + '/**/*.json', testRoot + '/**/*.json')
+        targetExclude(testRoot + '/**/build/**/*.json', repoRoot + '/.github/**/*.json')
         gson()
             .indentWithSpaces(2)
             .sortByKeys()

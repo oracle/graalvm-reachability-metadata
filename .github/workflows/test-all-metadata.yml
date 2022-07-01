@@ -7,6 +7,7 @@ on:
     paths:
       - 'metadata/**'
       - 'tests/**'
+      - '.github/**'
   workflow_dispatch:
 
 concurrency:
@@ -37,8 +38,10 @@ jobs:
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v2
+        with:
+          submodules: 'true'
       - name: "🔧 Prepare environment"
-        uses: graalvm/setup-graalvm@main
+        uses: ./.github/actions/setup-graalvm
         with:
           version: ${{ matrix.version }}
           java-version: ${{ matrix.java-version }}
