@@ -2,5 +2,5 @@
 
 
 ## Checklist before merging
-- [ ] I have properly formatted metadata files (see [CONTRIBUTING](/graalvm/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md) document)
-- [ ] I have added thorough tests. (see [this](/graalvm/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md#Tests))
+- [ ] I have properly formatted metadata files (see [CONTRIBUTING](/oracle/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md) document)
+- [ ] I have added thorough tests. (see [this](/oracle/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md#Tests))
