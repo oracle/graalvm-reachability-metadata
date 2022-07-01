@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   get-changed-metadata:
-    name: "📋 Get list of all changed libraries"
+    name: "📋 Get a list of all changed libraries"
     runs-on: "ubuntu-20.04"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -26,7 +26,7 @@ jobs:
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
-          gradle generateMatrixDiffCoordinates -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.sha }}
+          ./gradlew generateMatrixDiffCoordinates -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.sha }} --stacktrace
 
   test-changed-metadata:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
@@ -49,4 +49,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
-          gradle test -Pcoordinates=${{ matrix.coordinates }}
+          ./gradlew test -Pcoordinates=${{ matrix.coordinates }}

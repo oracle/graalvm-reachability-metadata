@@ -17,7 +17,8 @@ import static org.graalvm.internal.tck.TestUtils.testRoot
 import static org.graalvm.internal.tck.Utils.coordinatesMatch
 import static org.graalvm.internal.tck.Utils.readIndexFile
 import static org.graalvm.internal.tck.Utils.splitCoordinates
-import static org.graalvm.internal.tck.harness.MetadataLookupLogic.getMetadataDir
+import static org.graalvm.internal.tck.harness.MetadataLookupLogic.getMetadataDirs
+import static org.graalvm.internal.tck.harness.MetadataLookupLogic.universe
 
 /**
  * Class that provides static methods that are used to fetch tests for metadata.
@@ -65,6 +66,8 @@ class TestLookupLogic {
         Process p = cmd.execute()
         String output = p.in.text
         List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"))
+        println("Diff files are")
+        println(diffFiles)
 
         boolean testAll = false
         // Group files by if they belong to 'metadata' or 'test' directory structures.
@@ -85,14 +88,16 @@ class TestLookupLogic {
 
         if (testAll) {
             // If tck was changed we should retest everything, just to be safe.
-            return MetadataLookupLogic.getMatchingCoordinates("")
+            return universe.keySet().toList()
         }
 
         // First get all available coordinates, then filter them by if their corresponding metadata / tests directories
         // contain changed files.
-        return MetadataLookupLogic.getMatchingCoordinates("").stream().filter(c -> {
-            Path metadataDir = getMetadataDir(c)
-            if (changed["metadata"].stream().anyMatch(f -> f.startsWith(metadataDir))) {
+        return universe.keySet().stream().filter(c -> {
+            List<Path> metadataDirs = getMetadataDirs(c)
+            if (changed["metadata"].stream().anyMatch(f -> {
+                metadataDirs.stream().anyMatch(dir -> f.startsWith(dir))
+            })) {
                 return true
             }
             Path testDir = getTestDir(c)

@@ -29,13 +29,15 @@ abstract class AbstractSubprojectTask extends Exec {
     @Inject
     AbstractSubprojectTask(String coordinates, List<String> cmd) {
         def (String groupId, String artifactId, String version) = splitCoordinates(coordinates)
-        Path metadataDir = MetadataLookupLogic.getMetadataDir(coordinates)
+        List<Path> metadataDirs = MetadataLookupLogic.getMetadataDirs(coordinates)
         Path testDir = TestLookupLogic.getTestDir(coordinates)
+
+        String metadataCp = String.join(":", metadataDirs.stream().map(m -> m.toAbsolutePath().toString()).toList())
 
         Map<String, String> env = new HashMap<>(System.getenv())
         // Environment variables for setting up TCK
         env.put("GVM_TCK_LV", version)
-        env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString())
+        env.put("GVM_TCK_MD", metadataCp)
         env.put("GVM_TCK_TCKDIR", tckRoot.toAbsolutePath().toString())
         environment(env)
 
@@ -43,7 +45,9 @@ abstract class AbstractSubprojectTask extends Exec {
         workingDir(testDir.toAbsolutePath().toFile())
 
         def (inputs, outputs) = getInputsOutputs(testDir)
-        getInputs().files(MetadataLookupLogic.getMetadataFileList(metadataDir))
+        metadataDirs.forEach(entry -> {
+            getInputs().files(MetadataLookupLogic.getMetadataFileList(entry))
+        })
         getInputs().files(inputs)
         getOutputs().files(outputs)
 

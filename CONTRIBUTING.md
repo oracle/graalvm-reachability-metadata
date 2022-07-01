@@ -116,11 +116,11 @@ and its included [JUnit Platform support](https://graalvm.github.io/native-build
   **Optionally** test directory may contain `index.json` with content as follows:
   ```json
   {
-    "test-command": ["gradle", "clean", "nativeTest", "-Pmetadata.dir=<metadata_dir>", "-Plibrary.version=<version>"]
+    "test-command": ["gradle", "clean", "nativeTest", "-Pmetadata.dirs=<metadata_dir1>:<metadata_dir2>", "-Plibrary.version=<version>"]
   }
   ```
   Supported template parameters for `test-command` are:
-  * `<metadata_dir>` - absolute path to directory where metadata is stored
+  * `<metadata_dirs>` - absolute paths to directories where metadata is stored (colon separated)
   * `<group_id>` - Maven groupID of artifact that is being tested
   * `<artifact_id>`- Maven artifactID of artifact that is being tested
   * `<version>` - Version of artifact that is being tested
