@@ -22,6 +22,8 @@ import static org.graalvm.internal.tck.TestUtils.metadataRoot
 import static org.graalvm.internal.tck.TestUtils.repoRoot
 import static org.graalvm.internal.tck.TestUtils.testRoot
 
+project.version("0.1.0")
+
 // gradle check
 spotless {
     json {
@@ -36,9 +38,10 @@ spotless {
 
 // gradle package
 tasks.register('package', Zip) { task ->
-    task.setDescription("Packages current repository to 'build/repository.zip'")
+    String outputFileName = "graalvm-reachability-metadata-${project.version}.zip"
+    task.setDescription("Packages current repository to 'build/${outputFileName}'")
     task.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP)
-    task.archiveFileName = "repository.zip"
+    task.archiveFileName = outputFileName
     task.destinationDirectory = layout.buildDirectory
     from(metadataRoot)
 }
