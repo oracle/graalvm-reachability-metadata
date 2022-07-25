@@ -5,6 +5,7 @@ To include elements whose reachability is undiscoverable, the Native Image build
 
 The GraalVM Reachability Metadata Repository enables Native Image users to share and reuse metadata for libraries and frameworks in the Java ecosystem, and thus simplify maintaining third-party dependencies. The repository is integrated with [GraalVM Native Build Tools](https://github.com/graalvm/native-build-tools) beginning with version 0.9.13: you can enable automatic use of the metadata repository for [Gradle projects](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#metadata-support) or for [Maven projects](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#metadata-support).
 
-### Contributing Metadata
+### Contributing
 
-We welcome your contributions. To get started, please take a look at [contributing docs](CONTRIBUTING.md) for more information.
+We welcome contributions from the community. Before submitting a pull
+request, please [review our contribution guide](./CONTRIBUTING.md).
