@@ -32,16 +32,18 @@ task checkstyle() {
     dependsOn tasks.withType(Checkstyle)
 }
 
-def metadataPath = Objects.requireNonNullElse(
-        System.getenv("GVM_TCK_MD"),
-        providers.gradleProperty('metadata.dir').get()
+def metadataPaths = Objects.requireNonNullElse(
+        System.getenv("GVM_TCK_MD").split(":"),
+        providers.gradleProperty('metadata.dirs').get().split(":")
 )
 
-File metadataFile
-if (!metadataPath.startsWith("/")) {
-    metadataFile = metadataRoot.resolve(metadataPath).toFile()
-} else {
-    metadataFile = file(metadataPath)
+List<File> metadataFiles = []
+for (def metadataPath : metadataPaths) {
+    if (!metadataPath.startsWith("/")) {
+        metadataFiles.add(metadataRoot.resolve(metadataPath).toFile())
+    } else {
+        metadataFiles.add(file(metadataPath))
+    }
 }
 
 String libraryVersion = Objects.requireNonNullElse(
@@ -65,7 +67,9 @@ tasks.named('test') {
 graalvmNative {
     binaries {
         test {
-            configurationFileDirectories.from(metadataFile)
+            metadataFiles.forEach(metadataFile -> {
+                configurationFileDirectories.from(metadataFile)
+            })
             buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test metadata properly
             verbose = true
         }

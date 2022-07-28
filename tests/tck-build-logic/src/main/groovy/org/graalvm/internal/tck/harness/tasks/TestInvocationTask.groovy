@@ -51,9 +51,11 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
                 return DEFAULT_ARGS
             }
 
-            Path metadataDir = MetadataLookupLogic.getMetadataDir(coordinates)
+            List<Path> metadataDirs = MetadataLookupLogic.getMetadataDirs(coordinates)
+            String metadataCp = String.join(":", metadataDirs.stream().map(m -> m.toAbsolutePath().toString()).toList())
+
             return testIndex.get("test-command").stream()
-                    .map(c -> processCommand(c, metadataDir, coordinates))
+                    .map(c -> processCommand(c, metadataCp, coordinates))
                     .collect(Collectors.toList())
         } catch (FileNotFoundException ignored) {
             return DEFAULT_ARGS
@@ -65,13 +67,13 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
      * Parameters are defined as <param_name> in cmd.
      *
      * @param cmd command line with parameters
-     * @param metadataDir metadata directory location
+     * @param metadataDirs metadata directory locations (colon separated)
      * @param coordinates
      * @return final command
      */
-    static String processCommand(String cmd, Path metadataDir, String coordinates) {
+    static String processCommand(String cmd, String metadataDirs, String coordinates) {
         def (String groupId, String artifactId, String version) = splitCoordinates(coordinates)
-        return cmd.replace("<metadata_dir>", metadataDir.toAbsolutePath().toString())
+        return cmd.replace("<metadata_dirs>", metadataDirs)
                 .replace("<group_id>", groupId)
                 .replace("<artifact_id>", artifactId)
                 .replace("<version>", version)

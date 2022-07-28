@@ -21,6 +21,66 @@ import static org.graalvm.internal.tck.Utils.splitCoordinates
  * Class that provides static methods that are used to fetch correct metadata.
  */
 class MetadataLookupLogic {
+    static Map<String, List<Path>> universe
+    private static List<Path> processedIndexes = []
+
+    private static Map<String, List<Path>> initMetadataUniverse() {
+        universe = new HashMap<>()
+
+        // We are looking for metadata/<group_id>/<artifact_id>/index.json
+        try (Stream<Path> paths = Files.walk(metadataRoot, 3)) {
+            paths.filter(Files::isRegularFile)
+                    .filter(e -> e.getNameCount() - metadataRoot.getNameCount() == 3)
+                    .filter(s -> s.endsWith("index.json"))
+                    .forEach(this::explodeLibraryIndex)
+        }
+    }
+
+    /**
+     * Populates universe with data contained in the given index file
+     * @param index
+     */
+    private static void explodeLibraryIndex(Path index) {
+        println("Explodes for ${index}")
+        if (processedIndexes.contains(index)) {
+            return
+        }
+        processedIndexes.add(index)
+
+        List<Map<String, Object>> metadataIndex = extractJsonFile(index)
+        for (entry in metadataIndex) {
+            String module = (String) entry["module"]
+            List<String> tested_versions = (List<String>) entry["tested-versions"]
+
+            List<Path> metadataPaths = []
+            if (entry.containsKey("metadata-version")) {
+                metadataPaths.add(index.toFile().parentFile.toPath().resolve((String) entry["metadata-version"]))
+            }
+            if (entry.containsKey("requires-metadata")) {
+                for (String gav : ((List<String>) entry["requires-metadata"])) {
+                    if (!universe.containsKey(gav)) {
+                        def (String groupId, String artifactId, _) = splitCoordinates(gav)
+                        println("Trying ${gav}")
+                        explodeLibraryIndex(metadataRoot.resolve(groupId).resolve(artifactId).resolve(index))
+                    }
+                    if (!universe.containsKey(gav)) {
+                        println(universe)
+                        throw new RuntimeException("Missing metadata for ${gav}")
+                    }
+                    metadataPaths.addAll((List<Path>) universe.get(gav))
+                }
+            }
+            for (String tested_version : tested_versions) {
+                String resultingGav = "${module}:${tested_version}"
+                universe.put(resultingGav, metadataPaths)
+            }
+        }
+    }
+
+    static {
+        initMetadataUniverse() // Make sure we can use this ASAP
+    }
+
     /**
      * Returns a list of metadata files in a given directory.
      *
@@ -78,57 +138,33 @@ class MetadataLookupLogic {
     }
 
     /**
-     * Returns metadata directory for given full coordinates
+     * Returns metadata directories for given full coordinates
      * @param coordinates
-     * @return path to metadata directory
+     * @return list of paths to metadata directories
      */
-    static Path getMetadataDir(String coordinates) {
+    static List<Path> getMetadataDirs(String coordinates) {
         def (String groupId, String artifactId, String version) = splitCoordinates((String) coordinates)
         Objects.requireNonNull(groupId, "Group ID must be specified")
         Objects.requireNonNull(artifactId, "Artifact ID must be specified")
         Objects.requireNonNull(version, "Version must be specified")
 
-        Set<String> matchingDirs = getMatchingMetadataDirs(groupId, artifactId)
-        for (String directory in matchingDirs) {
-            Path fullDir = metadataRoot.resolve(directory)
-            Path index = fullDir.resolve("index.json")
-            def metadataIndex = extractJsonFile(index)
-
-            for (def entry in metadataIndex) {
-                if (coordinatesMatch((String) entry["module"], groupId, artifactId) && ((List<String>) entry["tested-versions"]).contains(version)) {
-                    Path metadataDir = fullDir.resolve((String) entry["metadata-version"])
-                    return metadataDir
-                }
-            }
+        if (!universe.containsKey(coordinates)) {
+            throw new RuntimeException("Missing metadata for ${coordinates}")
         }
-        throw new RuntimeException("Missing metadata for ${coordinates}")
+        return universe.get(coordinates)
     }
 
     /**
      * Returns all coordinates that match given coordinate filter.
      * @param coordinateFilter
-     * @return list of all coordinates that
+     * @return list of all coordinates that match given filter
      */
     static List<String> getMatchingCoordinates(String coordinateFilter) {
         def (String groupId, String artifactId, String version) = splitCoordinates(coordinateFilter)
-
-        Set<String> matchingCoordinates = new HashSet<>()
-
-        for (String directory in getMatchingMetadataDirs(groupId, artifactId)) {
-            Path index = metadataRoot.resolve(directory).resolve("index.json")
-            def metadataIndex = extractJsonFile(index)
-
-            for (def entry in metadataIndex) {
-                List<String> testedVersions = entry["tested-versions"] as List<String>
-                if (coordinatesMatch((String) entry["module"], groupId, artifactId) && (version == null || testedVersions.contains(version))) {
-                    if (version == null) { // We want all library versions, so let's add them.
-                        testedVersions.stream().forEach(t -> matchingCoordinates.add("${entry["module"]}:${t}"))
-                    } else { // We have a specific version pinned.
-                        matchingCoordinates.add("${entry["module"]}:${version}")
-                    }
-                }
-            }
-        }
-        return matchingCoordinates.toList()
+        return universe.keySet().stream()
+                .filter(gav -> groupId == null || gav.startsWith("${groupId}"))
+                .filter(gav -> artifactId == null || gav.startsWith("${groupId}:${artifactId}"))
+                .filter(gav -> version == null || gav.startsWith("${groupId}:${artifactId}:${version}"))
+                .toList()
     }
 }
