@@ -2,21 +2,6 @@
 
 Before contributing to this repository, please try to include the reachability metadata directly into the library. If that does not work, open a ticket on the target library issue tracker so the community can upvote and discuss metadata addition. Only after these steps, follow the checklist for adding the metadata to this repository.
 
-Before submitting code via a pull request, you will need to have signed the [Oracle Contributor Agreement](https://oca.opensource.oracle.com/) and your commits need to include the following line using the name and e-mail address you used to sign the OCA:
-
-```text
-Signed-off-by: Your Name <you@example.org>
-```
-
-This can be automatically added to pull requests by committing with `--sign-off`
-or `-s`, e.g.
-
-```text
-git commit --signoff
-```
-
-Only pull requests from committers that can be verified as having signed the OCA can be accepted.
-
 ## Checklist
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
 `org.example:library` project is also included as a template for new libraries.
