@@ -12,7 +12,7 @@ In order to ensure that all contributions follow the same standards of quality w
 >
 >  All other library tweaks (such as build time initialization through `native-image.properties`) must not be included here. By default, it should be assumed that all user libraries are runtime initialized. Build-time initialization can not be included as it does not compose and can break code in unpredictable ways.
 >
-> Make sure that you are using [Conditional Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/ReachabilityMetadata/#specifying-metadata-with-json) in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of images.
+> Make sure that you are using [Conditional Configuration](https://www.graalvm.org/22.2/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json) in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of images.
 >
 > To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
 ### Metadata
