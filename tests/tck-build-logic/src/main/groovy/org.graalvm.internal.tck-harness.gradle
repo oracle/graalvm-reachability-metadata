@@ -89,7 +89,8 @@ if (project.hasProperty("baseCommit")) {
 def matrixDefault = [
         "version"     : ["22.1.0"], // TODO: Add "dev" after NBT release 0.9.13
         "java-version": ["11"], // TODO: Add "17"
-        "os"          : ["ubuntu-latest"] // TODO: Add support for "windows-latest", "macos-latest"
+        "os"          : ["ubuntu-latest"], // TODO: Add support for "windows-latest", "macos-latest"
+        "none-found"  : ["false"]
 ]
 
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
@@ -114,13 +115,21 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
         if (diffCoordinates.isEmpty()) {
-            throw new GradleException("No coordinates are found for diff testing. Check if your index.json files " +
-                    "are set properly.")
+            def matrix = [
+                    "none-found": ["true"],
+                    "coordinates": ["No tests found"],
+                    "version": [""],
+                    "java-version": [""],
+                    "os": [""],
+                    "exclude": [ "none-found": "true" ]
+            ]
+            println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
+        } else {
+            def matrix = [
+                    "coordinates": diffCoordinates
+            ]
+            matrix.putAll(matrixDefault)
+            println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
         }
-        def matrix = [
-                "coordinates": diffCoordinates
-        ]
-        matrix.putAll(matrixDefault)
-        println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
     }
 }
