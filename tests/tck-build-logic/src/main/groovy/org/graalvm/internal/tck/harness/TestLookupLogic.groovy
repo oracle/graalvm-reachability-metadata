@@ -66,12 +66,13 @@ class TestLookupLogic {
         String output = p.in.text
         List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"))
 
+        Path workflowsRoot = repoRoot.resolve(".github").resolve("workflows")
         boolean testAll = false
         // Group files by if they belong to 'metadata' or 'test' directory structures.
         Map<String, List<Path>> changed = diffFiles.stream()
                 .map(line -> repoRoot.resolve(line))
                 .collect(Collectors.groupingBy(path -> {
-                    if (path.startsWith(tckRoot)) {
+                    if (path.startsWith(tckRoot) || path.startsWith(workflowsRoot)) {
                         testAll = true
                         return "other"
                     } else if (path.startsWith(testRoot)) {
