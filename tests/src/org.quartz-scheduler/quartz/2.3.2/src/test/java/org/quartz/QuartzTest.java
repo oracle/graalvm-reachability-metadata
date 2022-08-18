@@ -7,9 +7,11 @@
 package org.quartz;
 
 import java.io.InputStream;
+import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.simpl.SimpleThreadPool;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,4 +44,29 @@ public class QuartzTest {
         Scheduler scheduler = factory.getScheduler();
         assertThat(scheduler.getSchedulerName()).isEqualTo("DefaultQuartzScheduler");
     }
+
+    @Test
+    void typicalUseCase() throws SchedulerException, InterruptedException {
+        Properties properties = new Properties();
+
+        properties.put(StdSchedulerFactory.PROP_THREAD_POOL_CLASS, SimpleThreadPool.class.getName());
+        properties.put(StdSchedulerFactory.PROP_THREAD_POOL_PREFIX + ".threadCount", Integer.toString(2));
+
+        StdSchedulerFactory factory = new StdSchedulerFactory(properties);
+        Scheduler scheduler = factory.getScheduler();
+        scheduler.start();
+
+        JobDetail jobDetail = JobBuilder.newJob(SimpleJob.class).withIdentity("simpleJob").build();
+
+        SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(10).repeatForever();
+        Trigger trigger = TriggerBuilder.newTrigger().forJob(jobDetail)
+                .withIdentity("simpleJobTrigger")
+                .withSchedule(scheduleBuilder).build();
+
+        // Tell quartz to schedule the job using our trigger
+        scheduler.scheduleJob(jobDetail, trigger);
+
+        Thread.sleep(100);
+    }
+
 }
