@@ -19,6 +19,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -53,6 +54,21 @@ public class LogbackTests {
     logger.error(converterName, new IllegalArgumentException("test error"));
     assertThat(outputStreamCaptor.toString()).doesNotContain("PARSER_ERROR");
     cleanUp(encoder, consoleAppender, logger);
+  }
+
+  @Test
+  void slf4jCanBeDetected() {
+    boolean slf4jAvailable = isClassPresent("org.slf4j.Logger") && (isClassPresent("org.slf4j.impl.StaticLoggerBinder") || isClassPresent("org.slf4j.spi.SLF4JServiceProvider"));
+    assertThat(slf4jAvailable).isTrue();
+  }
+
+  private boolean isClassPresent(String className) {
+    try {
+      Class.forName(className);
+      return true;
+    } catch (ClassNotFoundException ex) {
+      return false;
+    }
   }
 
   private static Stream<Arguments> converterSource() {
