@@ -19,9 +19,17 @@ dependencies {
 }
 
 graalvmNative {
-    binaries {
-        test {
-            buildArgs.add('--allow-incomplete-classpath')
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        metadataCopy {
+            mergeWithExisting = true
+            inputTaskNames.add("test")
+            outputDirectories.add("src/test/resources/META-INF/native-image/com.h2database/h2")
         }
     }
 }
