@@ -20,10 +20,8 @@ repositories {
     mavenCentral()
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
+tasks.withType(JavaCompile) {
+    options.release = 11
 }
 
 TestUtils.locateRepoDirs(project) // Find relevant directories for the test harness.
