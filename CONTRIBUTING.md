@@ -59,6 +59,7 @@ It should contain the following entries:
     ]
     ```
     `metadata-version` key specifies the subdirectory where metadata for tested versions "lives".
+    `override` flag allows to express the intent to exclude outdated builtin metadata when set to `true`.
     So, the metadata for `org.example:library:0.0.1` and `org.example:library:0.0.2` is located at `metadata/org.example/library/0.0.1`.
 
    Make sure that each supported version is listed in `tested-version`, as that value is used in build tools to match metadata to a specific library.
