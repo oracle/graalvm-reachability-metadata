@@ -13,8 +13,7 @@ import org.graalvm.internal.tck.harness.MetadataLookupLogic
 import org.graalvm.internal.tck.harness.TestLookupLogic
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
-
-import static org.graalvm.internal.tck.Utils.generateTaskName
+import java.util.stream.Collectors
 
 TestUtils.locateRepoDirs(project) // Find relevant directories for the test harness.
 
@@ -22,9 +21,8 @@ logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
 
 
-String coordinatesArg = project.findProperty("coordinates")
-List<MetadataTest> metadataTests = coordinatesArg != null ?
-        MetadataLookupLogic.getTestsForCoordinates(coordinatesArg) :
+List<MetadataTest> metadataTests = project.hasProperty("coordinates") ?
+        MetadataLookupLogic.getTestsForCoordinates(project.findProperty("coordinates")) :
         MetadataLookupLogic.getAllTests()
 
 // gradle test -Pcoordinates=<maven-coordinates>
@@ -47,7 +45,7 @@ tasks.named("check").configure {
 for (MetadataTest metadataTest in metadataTests) {
     String testTaskName = metadataTest.generateTaskName("test")
     if ((!tasks.getNames().contains(testTaskName))) {
-        tasks.register(testTaskName, TestInvocationTask, coordinates)
+        tasks.register(testTaskName, TestInvocationTask, metadataTest)
     }
     test.configure {
         dependsOn(testTaskName)
@@ -55,7 +53,7 @@ for (MetadataTest metadataTest in metadataTests) {
 
     String checkstyleTaskName = metadataTest.generateTaskName("checkstyle")
     if ((!tasks.getNames().contains(checkstyleTaskName))) {
-        tasks.register(checkstyleTaskName, CheckstyleInvocationTask, coordinates)
+        tasks.register(checkstyleTaskName, CheckstyleInvocationTask, metadataTest)
     }
     checkstyle.configure {
         dependsOn(checkstyleTaskName)
@@ -74,13 +72,13 @@ Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
     }
 }
 
-List<String> diffCoordinates = new ArrayList<>()
+List<MetadataTest> diffTasks = new ArrayList<>()
 if (project.hasProperty("baseCommit")) {
     String baseCommit = project.findProperty("baseCommit")
     String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
-    for (def coordinates in TestLookupLogic.diffCoordinates(baseCommit, newCommit)) {
-        diffCoordinates.add(coordinates)
-        String taskTaskName = generateTaskName("test", coordinates)
+    for (def metadataTest in TestLookupLogic.diffTests(baseCommit, newCommit)) {
+        diffTasks.add(metadataTest)
+        String taskTaskName = metadataTest.generateTaskName("test")
         if ((!tasks.getNames().contains(taskTaskName))) {
             tasks.register(taskTaskName, TestInvocationTask, coordinates)
         }
@@ -102,7 +100,7 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.doFirst {
         def matrix = [
-                "coordinates": matchingCoordinates
+                "coordinates": diffTasks.stream().map(t -> t.getGAVCoordinates()).collect(Collectors.toList()).toList()
         ]
         matrix.putAll(matrixDefault)
         println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
@@ -117,7 +115,7 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
         if (!project.hasProperty("baseCommit")) {
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
-        if (diffCoordinates.isEmpty()) {
+        if (diffTasks.isEmpty()) {
             def matrix = [
                 "coordinates": ["No matches found!"]
             ]
@@ -127,7 +125,7 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
             println "::set-output name=none-found::true"
         } else {
             def matrix = [
-                    "coordinates": diffCoordinates
+                    "coordinates": diffTasks.stream().map(t -> t.getGAVCoordinates()).collect(Collectors.toList()).toList()
             ]
             matrix.putAll(matrixDefault)
             println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"

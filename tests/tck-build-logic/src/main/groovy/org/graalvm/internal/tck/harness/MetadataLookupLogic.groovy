@@ -11,6 +11,7 @@ import org.graalvm.internal.common.MetadataTest
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.stream.Collectors
 import java.util.stream.Stream
 
 import static org.graalvm.internal.tck.TestUtils.metadataRoot
@@ -91,24 +92,30 @@ class MetadataLookupLogic {
     static List<MetadataTest> getTestsForCoordinates(String coordinateFilter = "") {
         def (String groupId, String artifactId, String version) = splitCoordinates(coordinateFilter)
 
-        Set<MetadataTest> matchingCoordinates = new HashSet<>()
+        Set<String> matchingCoordinates = new HashSet<>()
 
         for (String directory in getMatchingMetadataDirs(groupId, artifactId)) {
             Path index = metadataRoot.resolve(directory).resolve(INDEX_FILE)
             def metadataIndex = extractJsonFile(index)
 
             for (def entry in metadataIndex) {
+                List<String> coordinates = splitCoordinates((String) entry["module"])
                 List<String> testedVersions = entry["tested-versions"] as List<String>
                 if (coordinatesMatch((String) entry["module"], groupId, artifactId) && (version == null || testedVersions.contains(version))) {
                     if (version == null) { // We want all library versions, so let's add them.
-                        testedVersions.stream().forEach(t -> matchingCoordinates.add(new MetadataTest("${entry["module"]}:${t}")))
+                        testedVersions.stream()
+                                .filter(t -> metadataRoot.resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(t).toFile().exists())
+                                .forEach(t -> matchingCoordinates.add("${entry["module"]}:${t}"))
                     } else { // We have a specific version pinned.
-                        matchingCoordinates.add(new MetadataTest("${entry["module"]}:${version}"))
+                        if (metadataRoot.resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(version).toFile().exists()) {
+                            matchingCoordinates.add("${entry["module"]}:${version}")
+                        }
                     }
                 }
             }
         }
-        return matchingCoordinates.toList()
+
+        return matchingCoordinates.stream().map(c -> new MetadataTest(c)).collect(Collectors.toList()).toList()
     }
 
     static List<MetadataTest> getAllTests() {

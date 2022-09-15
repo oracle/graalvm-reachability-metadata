@@ -7,6 +7,8 @@
 
 package org.graalvm.internal.tck.harness
 
+import org.graalvm.internal.common.MetadataTest
+
 import java.nio.file.Path
 import java.util.stream.Collectors
 
@@ -24,7 +26,7 @@ class TestLookupLogic {
      * @return List of coordinates
      */
     @SuppressWarnings("unused")
-    static List<String> diffCoordinates(String baseCommit, String newCommit) {
+    static List<MetadataTest> diffTests(String baseCommit, String newCommit) {
         String cmd = "git diff --name-only --diff-filter=ACMRT ${baseCommit} ${newCommit}"
 
         Process p = cmd.execute()
@@ -52,10 +54,6 @@ class TestLookupLogic {
         if (testAll) {
             // If tck was changed we should retest everything, just to be safe.
             return MetadataLookupLogic.getAllTests()
-                    .stream()
-                    .map(t -> t.getGAVCoordinates())
-                    .collect(Collectors.toSet())
-                    .toList()
         }
 
         // First get all available tests, then filter them by if their corresponding metadata / tests directories
@@ -70,6 +68,6 @@ class TestLookupLogic {
                 return true
             }
             return false
-        }).map(t -> t.getGAVCoordinates()).collect(Collectors.toSet()).toList()
+        }).collect(Collectors.toSet()).toList()
     }
 }

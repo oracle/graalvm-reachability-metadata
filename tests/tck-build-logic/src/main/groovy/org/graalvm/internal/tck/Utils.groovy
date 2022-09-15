@@ -49,16 +49,6 @@ class Utils {
     }
 
     /**
-     * Generates coordinate specific task name.
-     * @param taskName
-     * @param coordinates
-     * @return coordinate specific task name
-     */
-    static String generateTaskName(String taskName, String coordinates) {
-        return "${taskName}-${coordinates.replace(":", "-")}"
-    }
-
-    /**
      * Checks if given coordinates string matches given group ID and artifact ID.
      * null values match every possible value (null artifact ID matches all artifacts in given group).
      *

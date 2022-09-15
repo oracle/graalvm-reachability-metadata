@@ -18,7 +18,6 @@ import java.nio.file.Path
 import java.util.stream.Collectors
 
 import static org.graalvm.internal.tck.Utils.readIndexFile
-import static org.graalvm.internal.tck.Utils.splitCoordinates
 
 /**
  * Task that is used to start subproject tests.
@@ -32,10 +31,10 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
     String coordinates
 
     @Inject
-    TestInvocationTask(String coordinates) {
-        super(new MetadataTest(coordinates), getArguments(coordinates))
+    TestInvocationTask(MetadataTest test) {
+        super(test, getArguments(test))
         dependsOn("check")
-        this.coordinates = coordinates
+        this.coordinates = test.getGAVCoordinates()
     }
 
     /**
@@ -43,8 +42,7 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
      * @param coordinates
      * @return list of processed arguments
      */
-    static List<String> getArguments(String coordinates) {
-        MetadataTest test = new MetadataTest(coordinates)
+    static List<String> getArguments(MetadataTest test) {
         try {
             Map<String, List<String>> testIndex = readIndexFile(test.getTestDir()) as Map<String, List<String>>
             if (!testIndex.containsKey("test-command")) {
@@ -53,7 +51,7 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
 
             Path metadataDir = test.getMetadataDir()
             return testIndex.get("test-command").stream()
-                    .map(c -> processCommand(c, metadataDir, coordinates))
+                    .map(c -> processCommand(c, metadataDir, test))
                     .collect(Collectors.toList())
         } catch (FileNotFoundException ignored) {
             return DEFAULT_ARGS
@@ -69,12 +67,11 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
      * @param coordinates
      * @return final command
      */
-    static String processCommand(String cmd, Path metadataDir, String coordinates) {
-        def (String groupId, String artifactId, String version) = splitCoordinates(coordinates)
+    static String processCommand(String cmd, Path metadataDir, MetadataTest test) {
         return cmd.replace("<metadata_dir>", metadataDir.toAbsolutePath().toString())
-                .replace("<group_id>", groupId)
-                .replace("<artifact_id>", artifactId)
-                .replace("<version>", version)
+                .replace("<group_id>", test.getGroup())
+                .replace("<artifact_id>", test.getArtifact())
+                .replace("<version>", test.getVersion())
     }
 
     @TaskAction

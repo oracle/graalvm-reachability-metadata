@@ -18,9 +18,6 @@ import java.util.stream.Collectors
 
 import static groovy.io.FileType.FILES
 import static org.graalvm.internal.tck.TestUtils.tckRoot
-import static org.graalvm.internal.tck.Utils.coordinatesMatch
-import static org.graalvm.internal.tck.Utils.readIndexFile
-import static org.graalvm.internal.tck.Utils.splitCoordinates
 
 /**
  * Abstract task that is used to invoke test subprojects.

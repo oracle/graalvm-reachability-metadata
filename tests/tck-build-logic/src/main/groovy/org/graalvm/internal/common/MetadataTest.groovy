@@ -19,18 +19,14 @@ class MetadataTest {
     private Path testDir
     private boolean override
 
-    MetadataTest(String group, String artifact, String version, boolean override = false) {
+    MetadataTest(String coordinates) {
+        def (String group, String artifact, String version) = Utils.splitCoordinates(coordinates)
         this.group = group
         this.artifact = artifact
         this.version = version
-        this.override = override
+        this.override = false
         this.metadataDir = findMetadataDir()
         this.testDir = findTestDir()
-    }
-
-    MetadataTest(String coordinates, boolean override = false) {
-        def (String group, String artifact, String version) = Utils.splitCoordinates(coordinates)
-        this.MetadataTest(group, artifact, version, override)
     }
 
     /**
@@ -50,14 +46,29 @@ class MetadataTest {
         return testDir
     }
 
-    /**
+    String getVersion() {
+        return version
+    }
+
+    String getGroup() {
+        return group
+    }
+
+    String getArtifact() {
+        return artifact
+    }
+
+    boolean getOverride() {
+        return override
+    }
+/**
      * Generates coordinate specific task name.
      *
      * @param prefix
      * @return coordinate specific task name
      */
-    String generateTaskName(String prefix) {
-        return "${prefix}-${getGAVCoordinates().replace(":", "-")}"
+    String generateTaskName(String taskName) {
+        return "${taskName}-${getGAVCoordinates().replace(":", "-")}"
     }
 
     /**
@@ -111,10 +122,15 @@ class MetadataTest {
             def metadataIndex = Utils.extractJsonFile(index)
             for (def entry in metadataIndex) {
                 if (Utils.coordinatesMatch((String) entry["module"], group, artifact) && ((List<String>) entry["tested-versions"]).contains(version)) {
-                    return fullDir.resolve((String) entry["metadata-version"])
+                    if (entry.containsKey("override")) {
+                        this.override = entry["override"] as boolean
+                    }
+                    Path metadataDir = fullDir.resolve(version)
+                    return metadataDir
                 }
             }
         }
+
         throw new RuntimeException("Missing metadata for ${getGAVCoordinates()}")
     }
 
@@ -143,5 +159,4 @@ class MetadataTest {
         }
         throw new RuntimeException("Missing test-directory for coordinates `${getGAVCoordinates()}`")
     }
-
 }
