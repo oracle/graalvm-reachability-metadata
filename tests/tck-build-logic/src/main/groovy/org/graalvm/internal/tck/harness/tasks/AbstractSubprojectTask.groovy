@@ -8,8 +8,8 @@
 package org.graalvm.internal.tck.harness.tasks
 
 import groovy.transform.Internal
+import org.graalvm.internal.common.MetadataTest
 import org.graalvm.internal.tck.harness.MetadataLookupLogic
-import org.graalvm.internal.tck.harness.TestLookupLogic
 import org.gradle.api.tasks.Exec
 
 import javax.inject.Inject
@@ -29,29 +29,15 @@ import static org.graalvm.internal.tck.Utils.splitCoordinates
 abstract class AbstractSubprojectTask extends Exec {
 
     @Inject
-    AbstractSubprojectTask(String coordinates, List<String> cmd) {
-        def (String groupId, String artifactId, String version) = splitCoordinates(coordinates)
-        Path metadataDir = MetadataLookupLogic.getMetadataDir(coordinates)
-
-        boolean override = false
-
-        def metadataIndex = readIndexFile(metadataDir.parent)
-        for (def entry in metadataIndex) {
-            if (coordinatesMatch((String) entry["module"], groupId, artifactId) && ((List<String>) entry["tested-versions"]).contains(version)) {
-                if (entry.containsKey("override")) {
-                    override |= entry["override"] as boolean
-                }
-                break
-            }
-        }
-
-        Path testDir = TestLookupLogic.getTestDir(coordinates)
+    AbstractSubprojectTask(MetadataTest test, List<String> cmd) {
+        Path metadataDir = test.getMetadataDir()
+        Path testDir = test.getTestDir()
 
         Map<String, String> env = new HashMap<>(System.getenv())
         // Environment variables for setting up TCK
-        env.put("GVM_TCK_LC", coordinates)
-        env.put("GVM_TCK_EXCLUDE", override.toString())
-        env.put("GVM_TCK_LV", version)
+        env.put("GVM_TCK_LC", test.getGAVCoordinates())
+        env.put("GVM_TCK_EXCLUDE", test.getOverride().toString())
+        env.put("GVM_TCK_LV", test.getVersion())
         env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString())
         env.put("GVM_TCK_TCKDIR", tckRoot.toAbsolutePath().toString())
         environment(env)

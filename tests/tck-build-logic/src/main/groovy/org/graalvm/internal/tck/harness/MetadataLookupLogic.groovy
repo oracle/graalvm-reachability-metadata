@@ -7,6 +7,8 @@
 
 package org.graalvm.internal.tck.harness
 
+import org.graalvm.internal.common.MetadataTest
+
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Stream
@@ -21,6 +23,9 @@ import static org.graalvm.internal.tck.Utils.splitCoordinates
  * Class that provides static methods that are used to fetch correct metadata.
  */
 class MetadataLookupLogic {
+
+    static String INDEX_FILE = "index.json"
+
     /**
      * Returns a list of metadata files in a given directory.
      *
@@ -32,10 +37,10 @@ class MetadataLookupLogic {
         try (Stream<Path> paths = Files.walk(directory)) {
             paths.filter(Files::isRegularFile)
                     .map(p -> p.fileName.toString())
-                    .filter(s -> s.endsWith(".json") && !s.endsWith("index.json"))
+                    .filter(s -> s.endsWith(".json") && !s.endsWith(INDEX_FILE))
                     .forEach(s -> foundFiles.add(s))
         }
-        Path indexFile = directory.resolve("index.json")
+        Path indexFile = directory.resolve(INDEX_FILE)
         if (indexFile.toFile().exists()) {
             List<String> indexFiles = (List<String>) extractJsonFile(indexFile)
             assert indexFiles.toSet() == foundFiles.toSet(), "Metadata file list in '${indexFile.toAbsolutePath()}' is not up to date!"
@@ -51,7 +56,7 @@ class MetadataLookupLogic {
      *
      * @return set of all directories that match given criteria
      */
-    static Set<String> getMatchingMetadataDirs(String groupId, String artifactId) {
+    static Set<String> getMatchingMetadataDirs(String groupId = null, String artifactId = null) {
         Set<String> dirs = new HashSet<String>()
         for (Map<String, ?> library in (readIndexFile(metadataRoot) as List<Map<String, ?>>)) {
             if (coordinatesMatch((String) library["module"], groupId, artifactId)) {
@@ -70,38 +75,12 @@ class MetadataLookupLogic {
         if (groupId != null && artifactId != null) {
             // Let's see if library wasn't added to index but is present on the disk.
             Path defaultDir = metadataRoot.resolve(groupId).resolve(artifactId)
-            if (defaultDir.resolve("index.json").toFile().exists()) {
+            if (defaultDir.resolve(INDEX_FILE).toFile().exists()) {
                 dirs.add(defaultDir.toString())
             }
         }
+
         return dirs
-    }
-
-    /**
-     * Returns metadata directory for given full coordinates
-     * @param coordinates
-     * @return path to metadata directory
-     */
-    static Path getMetadataDir(String coordinates) {
-        def (String groupId, String artifactId, String version) = splitCoordinates((String) coordinates)
-        Objects.requireNonNull(groupId, "Group ID must be specified")
-        Objects.requireNonNull(artifactId, "Artifact ID must be specified")
-        Objects.requireNonNull(version, "Version must be specified")
-
-        Set<String> matchingDirs = getMatchingMetadataDirs(groupId, artifactId)
-        for (String directory in matchingDirs) {
-            Path fullDir = metadataRoot.resolve(directory)
-            Path index = fullDir.resolve("index.json")
-            def metadataIndex = extractJsonFile(index)
-
-            for (def entry in metadataIndex) {
-                if (coordinatesMatch((String) entry["module"], groupId, artifactId) && ((List<String>) entry["tested-versions"]).contains(version)) {
-                    Path metadataDir = fullDir.resolve((String) entry["metadata-version"])
-                    return metadataDir
-                }
-            }
-        }
-        throw new RuntimeException("Missing metadata for ${coordinates}")
     }
 
     /**
@@ -109,31 +88,31 @@ class MetadataLookupLogic {
      * @param coordinateFilter
      * @return list of all coordinates that
      */
-    static List<String> getMatchingCoordinates(String coordinateFilter) {
+    static List<MetadataTest> getTestsForCoordinates(String coordinateFilter = "") {
         def (String groupId, String artifactId, String version) = splitCoordinates(coordinateFilter)
 
-        Set<String> matchingCoordinates = new HashSet<>()
+        Set<MetadataTest> matchingCoordinates = new HashSet<>()
 
         for (String directory in getMatchingMetadataDirs(groupId, artifactId)) {
-            Path index = metadataRoot.resolve(directory).resolve("index.json")
+            Path index = metadataRoot.resolve(directory).resolve(INDEX_FILE)
             def metadataIndex = extractJsonFile(index)
 
             for (def entry in metadataIndex) {
-                List<String> coordinates = splitCoordinates((String) entry["module"])
                 List<String> testedVersions = entry["tested-versions"] as List<String>
                 if (coordinatesMatch((String) entry["module"], groupId, artifactId) && (version == null || testedVersions.contains(version))) {
                     if (version == null) { // We want all library versions, so let's add them.
-                        testedVersions.stream()
-                                .filter(t -> metadataRoot.resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(t).toFile().exists())
-                                .forEach(t -> matchingCoordinates.add("${entry["module"]}:${t}"))
+                        testedVersions.stream().forEach(t -> matchingCoordinates.add(new MetadataTest("${entry["module"]}:${t}")))
                     } else { // We have a specific version pinned.
-                        if (metadataRoot.resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(version).toFile().exists()) {
-                            matchingCoordinates.add("${entry["module"]}:${version}")
-                        }
+                        matchingCoordinates.add(new MetadataTest("${entry["module"]}:${version}"))
                     }
                 }
             }
         }
         return matchingCoordinates.toList()
     }
+
+    static List<MetadataTest> getAllTests() {
+        return getTestsForCoordinates()
+    }
+
 }

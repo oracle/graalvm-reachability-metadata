@@ -7,6 +7,7 @@
 
 
 import groovy.json.JsonOutput
+import org.graalvm.internal.common.MetadataTest
 import org.graalvm.internal.tck.TestUtils
 import org.graalvm.internal.tck.harness.MetadataLookupLogic
 import org.graalvm.internal.tck.harness.TestLookupLogic
@@ -20,8 +21,11 @@ TestUtils.locateRepoDirs(project) // Find relevant directories for the test harn
 logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
 
-String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
-List<String> matchingCoordinates = MetadataLookupLogic.getMatchingCoordinates(coordinateFilter)
+
+String coordinatesArg = project.findProperty("coordinates")
+List<MetadataTest> metadataTests = coordinatesArg != null ?
+        MetadataLookupLogic.getTestsForCoordinates(coordinatesArg) :
+        MetadataLookupLogic.getAllTests()
 
 // gradle test -Pcoordinates=<maven-coordinates>
 Provider<Task> test = tasks.register("test", DefaultTask) { task ->
@@ -40,8 +44,8 @@ tasks.named("check").configure {
 }
 
 // Here we want to configure all test and checkstyle tasks for all filtered subprojects
-for (String coordinates in matchingCoordinates) {
-    String testTaskName = generateTaskName("test", coordinates)
+for (MetadataTest metadataTest in metadataTests) {
+    String testTaskName = metadataTest.generateTaskName("test")
     if ((!tasks.getNames().contains(testTaskName))) {
         tasks.register(testTaskName, TestInvocationTask, coordinates)
     }
@@ -49,7 +53,7 @@ for (String coordinates in matchingCoordinates) {
         dependsOn(testTaskName)
     }
 
-    String checkstyleTaskName = generateTaskName("checkstyle", coordinates)
+    String checkstyleTaskName = metadataTest.generateTaskName("checkstyle")
     if ((!tasks.getNames().contains(checkstyleTaskName))) {
         tasks.register(checkstyleTaskName, CheckstyleInvocationTask, coordinates)
     }

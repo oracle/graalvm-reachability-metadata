@@ -7,9 +7,8 @@
 
 package org.graalvm.internal.tck.harness.tasks
 
+import org.graalvm.internal.common.MetadataTest
 import org.graalvm.internal.tck.TestUtils
-import org.graalvm.internal.tck.harness.MetadataLookupLogic
-import org.graalvm.internal.tck.harness.TestLookupLogic
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
@@ -34,7 +33,7 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
 
     @Inject
     TestInvocationTask(String coordinates) {
-        super(coordinates, getArguments(coordinates))
+        super(new MetadataTest(coordinates), getArguments(coordinates))
         dependsOn("check")
         this.coordinates = coordinates
     }
@@ -45,13 +44,14 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
      * @return list of processed arguments
      */
     static List<String> getArguments(String coordinates) {
+        MetadataTest test = new MetadataTest(coordinates)
         try {
-            Map<String, List<String>> testIndex = readIndexFile(TestLookupLogic.getTestDir(coordinates)) as Map<String, List<String>>
+            Map<String, List<String>> testIndex = readIndexFile(test.getTestDir()) as Map<String, List<String>>
             if (!testIndex.containsKey("test-command")) {
                 return DEFAULT_ARGS
             }
 
-            Path metadataDir = MetadataLookupLogic.getMetadataDir(coordinates)
+            Path metadataDir = test.getMetadataDir()
             return testIndex.get("test-command").stream()
                     .map(c -> processCommand(c, metadataDir, coordinates))
                     .collect(Collectors.toList())

@@ -7,6 +7,7 @@
 
 package org.graalvm.internal.tck.harness.tasks
 
+import org.graalvm.internal.common.MetadataTest
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 
@@ -22,7 +23,7 @@ abstract class CheckstyleInvocationTask extends AbstractSubprojectTask {
 
     @Inject
     CheckstyleInvocationTask(String coordinates, List<String> cmd) {
-        super(coordinates, CHECKSTYLE_COMMAND)
+        super(new MetadataTest(coordinates), CHECKSTYLE_COMMAND)
     }
 
     @TaskAction
