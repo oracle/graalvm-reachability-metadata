@@ -14,17 +14,8 @@ plugins {
 String libraryVersion = TestUtils.testedLibraryVersion
 
 dependencies {
-    testImplementation "io.netty:netty-codec-http:$libraryVersion-SNAPSHOT"
+    testImplementation "io.netty:netty-codec-http:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
-graalvmNative {
-    binaries {
-        test {
-            buildArgs.add('--exclude-config')
-            buildArgs.add("${File.separator}netty-.*-4.1")
-            buildArgs.add('META-INF/native-image/.*')
-        }
-    }
-}
