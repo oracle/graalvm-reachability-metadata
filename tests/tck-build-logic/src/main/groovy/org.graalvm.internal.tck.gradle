@@ -48,10 +48,14 @@ if (!metadataPath.startsWith("/")) {
     metadataFile = file(metadataPath)
 }
 
-String libraryVersion = Objects.requireNonNullElse(
-        System.getenv("GVM_TCK_LV"),
-        providers.gradleProperty('library.version').get()
-)
+String libraryVersion = System.getenv("GVM_TCK_LV") ?: providers.gradleProperty('library.version').get()
+
+String libraryGAV = System.getenv("GVM_TCK_LC") ?: providers.gradleProperty('library.coordinates')?.get()
+libraryGAV = libraryGAV ?: ""
+
+String overrideVal = System.getenv("GVM_TCK_EXCLUDE") ?: providers.gradleProperty('library.override')?.get()
+overrideVal = overrideVal ?: "false"
+boolean override = overrideVal.toBoolean()
 
 TestUtils.testedLibraryVersion = libraryVersion
 // This value can be used to request specific library version to test with.
@@ -70,6 +74,9 @@ graalvmNative {
     binaries {
         test {
             configurationFileDirectories.from(metadataFile)
+            if (override) {
+                excludeConfig.put(libraryGAV, [".*"])
+            }
             buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test metadata properly
             verbose = true
         }
