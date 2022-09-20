@@ -50,3 +50,5 @@ Due to compatibility issues the following test classes have been ignored for the
 Execute the tests with `gradle -Pnative test`.
 
 Entries referring to classes with `Test` in name have been removed. Entries prepared while working with samples have been added.
+
+NOTE: Since here we aim to only test the client side and, most notably, proper reflection hints, specifically for serialisation and deserialisation, I've used mocked Tomcat to simulate server-side responses.
