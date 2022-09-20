@@ -1,3 +1,9 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 package com.ecwid.consul;
 
 import java.io.IOException;
@@ -25,7 +31,7 @@ import static com.ecwid.consul.utils.ConsulTestUtils.getFreePort;
 import static com.ecwid.consul.utils.ConsulTestUtils.initTomcat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class HealthConsulClientTest {
+class HealthConsulClientTests {
 
 	private Tomcat tomcat;
 	private HealthConsulClient consulClient;
