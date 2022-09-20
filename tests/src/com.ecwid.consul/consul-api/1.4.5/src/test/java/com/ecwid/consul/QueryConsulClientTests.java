@@ -2,12 +2,13 @@ package com.ecwid.consul;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
+import java.util.UUID;
 
 import com.ecwid.consul.v1.ConsulRawClient;
+import com.ecwid.consul.v1.QueryParams;
 import com.ecwid.consul.v1.Response;
-import com.ecwid.consul.v1.coordinate.CoordinateConsulClient;
-import com.ecwid.consul.v1.coordinate.model.Datacenter;
+import com.ecwid.consul.v1.query.QueryConsulClient;
+import com.ecwid.consul.v1.query.model.QueryExecution;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,9 +23,10 @@ import static com.ecwid.consul.utils.ConsulTestUtils.getFreePort;
 import static com.ecwid.consul.utils.ConsulTestUtils.initTomcat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CoordinateConsulClientTests {
+class QueryConsulClientTests {
+
 	private Tomcat tomcat;
-	private CoordinateConsulClient consulClient;
+	private QueryConsulClient consulClient;
 	private String requestUri;
 
 	@BeforeEach
@@ -37,7 +39,7 @@ class CoordinateConsulClientTests {
 			throw new RuntimeException(e);
 		}
 		ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
-		consulClient = new CoordinateConsulClient(consulRawClient);
+		consulClient = new QueryConsulClient(consulRawClient);
 	}
 
 	@AfterEach
@@ -52,13 +54,13 @@ class CoordinateConsulClientTests {
 	}
 
 	@Test
-	void shouldRetrieveDatacenters() {
-		Response<List<Datacenter>> response = consulClient.getDatacenters();
+	void shouldExecuteQuery() {
+		String uuid = UUID.randomUUID().toString();
+		Response<QueryExecution> response = consulClient.executePreparedQuery(uuid, new QueryParams("test"));
 
 		assertThat(response).isNotNull();
-		List<Datacenter> datacenters = response.getValue();
-		assertThat(datacenters).hasSize(1);
-		assertThat(requestUri).endsWith("/v1/coordinate/datacenters");
+		assertThat(response.getValue()).isNotNull();
+		assertThat(requestUri).endsWith("/v1/query/" + uuid + "/execute");
 	}
 
 	private class TestServlet extends HttpServlet {
@@ -69,8 +71,9 @@ class CoordinateConsulClientTests {
 			resp.setStatus(200);
 			resp.setContentType("JSON/UTF-8");
 			try (Writer writer = resp.getWriter()) {
-				writer.write("[{\"ID\":\"test\"}]");
+				writer.write("{\"service\":\"test\"}");
 			}
 		}
+
 	}
 }

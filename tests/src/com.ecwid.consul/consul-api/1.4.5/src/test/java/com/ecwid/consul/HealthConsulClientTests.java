@@ -2,12 +2,15 @@ package com.ecwid.consul;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ecwid.consul.v1.ConsulRawClient;
+import com.ecwid.consul.v1.QueryParams;
 import com.ecwid.consul.v1.Response;
-import com.ecwid.consul.v1.coordinate.CoordinateConsulClient;
-import com.ecwid.consul.v1.coordinate.model.Datacenter;
+import com.ecwid.consul.v1.health.HealthChecksForServiceRequest;
+import com.ecwid.consul.v1.health.HealthConsulClient;
+import com.ecwid.consul.v1.health.model.Check;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,9 +25,10 @@ import static com.ecwid.consul.utils.ConsulTestUtils.getFreePort;
 import static com.ecwid.consul.utils.ConsulTestUtils.initTomcat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CoordinateConsulClientTests {
+class HealthConsulClientTest {
+
 	private Tomcat tomcat;
-	private CoordinateConsulClient consulClient;
+	private HealthConsulClient consulClient;
 	private String requestUri;
 
 	@BeforeEach
@@ -37,7 +41,7 @@ class CoordinateConsulClientTests {
 			throw new RuntimeException(e);
 		}
 		ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
-		consulClient = new CoordinateConsulClient(consulRawClient);
+		consulClient = new HealthConsulClient(consulRawClient);
 	}
 
 	@AfterEach
@@ -52,13 +56,13 @@ class CoordinateConsulClientTests {
 	}
 
 	@Test
-	void shouldRetrieveDatacenters() {
-		Response<List<Datacenter>> response = consulClient.getDatacenters();
+	void shouldRetrieveServiceHealthCheck() {
+		Response<List<Check>> response = consulClient.getHealthChecksForService("test",
+				new HealthChecksForServiceRequest("test", "test", new HashMap<>(), new QueryParams("test")));
 
 		assertThat(response).isNotNull();
-		List<Datacenter> datacenters = response.getValue();
-		assertThat(datacenters).hasSize(1);
-		assertThat(requestUri).endsWith("/v1/coordinate/datacenters");
+		assertThat(response.getValue()).hasSize(1);
+		assertThat(requestUri).endsWith("/v1/health/checks/test");
 	}
 
 	private class TestServlet extends HttpServlet {

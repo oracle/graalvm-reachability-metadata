@@ -5,9 +5,12 @@ import java.io.Writer;
 import java.util.List;
 
 import com.ecwid.consul.v1.ConsulRawClient;
+import com.ecwid.consul.v1.QueryParams;
 import com.ecwid.consul.v1.Response;
-import com.ecwid.consul.v1.coordinate.CoordinateConsulClient;
-import com.ecwid.consul.v1.coordinate.model.Datacenter;
+import com.ecwid.consul.v1.event.EventConsulClient;
+import com.ecwid.consul.v1.event.EventListRequest;
+import com.ecwid.consul.v1.event.model.Event;
+import com.ecwid.consul.v1.event.model.EventParams;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,9 +25,11 @@ import static com.ecwid.consul.utils.ConsulTestUtils.getFreePort;
 import static com.ecwid.consul.utils.ConsulTestUtils.initTomcat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CoordinateConsulClientTests {
+class EventConsulClientTests {
+
 	private Tomcat tomcat;
-	private CoordinateConsulClient consulClient;
+	private EventConsulClient consulClient;
+	private byte[] requestBody;
 	private String requestUri;
 
 	@BeforeEach
@@ -37,7 +42,7 @@ class CoordinateConsulClientTests {
 			throw new RuntimeException(e);
 		}
 		ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
-		consulClient = new CoordinateConsulClient(consulRawClient);
+		consulClient = new EventConsulClient(consulRawClient);
 	}
 
 	@AfterEach
@@ -52,13 +57,26 @@ class CoordinateConsulClientTests {
 	}
 
 	@Test
-	void shouldRetrieveDatacenters() {
-		Response<List<Datacenter>> response = consulClient.getDatacenters();
+	void shouldFireEvent() {
+		Response<Event> response = consulClient.eventFire("test", "test", new EventParams(), new QueryParams("test"));
 
 		assertThat(response).isNotNull();
-		List<Datacenter> datacenters = response.getValue();
-		assertThat(datacenters).hasSize(1);
-		assertThat(requestUri).endsWith("/v1/coordinate/datacenters");
+		Event event = response.getValue();
+		assertThat(event.getId()).isEqualTo("test");
+		assertThat(new String(requestBody)).isEqualTo("test");
+		assertThat(requestUri).endsWith("/v1/event/fire/test");
+	}
+
+	@Test
+	void shouldRetrieveEvents() {
+		Response<List<Event>> response = consulClient.eventList(new EventListRequest.Builder().setService("test")
+				.build());
+
+		assertThat(response).isNotNull();
+		List<Event> events = response.getValue();
+		assertThat(events).hasSize(1);
+		assertThat(events.get(0).getId()).isEqualTo("test");
+		assertThat(requestUri).endsWith("/v1/event/list");
 	}
 
 	private class TestServlet extends HttpServlet {
@@ -70,6 +88,17 @@ class CoordinateConsulClientTests {
 			resp.setContentType("JSON/UTF-8");
 			try (Writer writer = resp.getWriter()) {
 				writer.write("[{\"ID\":\"test\"}]");
+			}
+		}
+
+		@Override
+		protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			requestUri = req.getRequestURI();
+			requestBody = req.getInputStream().readAllBytes();
+			resp.setStatus(200);
+			resp.setContentType("JSON/UTF-8");
+			try (Writer writer = resp.getWriter()) {
+				writer.write("{\"ID\": \"test\"}");
 			}
 		}
 	}
