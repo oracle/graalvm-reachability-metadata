@@ -31,55 +31,53 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class QueryConsulClientTests {
 
-	private Tomcat tomcat;
-	private QueryConsulClient consulClient;
-	private String requestUri;
+    private Tomcat tomcat;
+    private QueryConsulClient consulClient;
+    private String requestUri;
 
-	@BeforeEach
-	void setUp() {
-		int port = getFreePort();
-		try {
-			tomcat = initTomcat(port, new TestServlet());
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-		ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
-		consulClient = new QueryConsulClient(consulRawClient);
-	}
+    @BeforeEach
+    void setUp() {
+        int port = getFreePort();
+        try {
+            tomcat = initTomcat(port, new TestServlet());
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+        ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
+        consulClient = new QueryConsulClient(consulRawClient);
+    }
 
-	@AfterEach
-	void tearDownAll() {
-		try {
-			tomcat.stop();
-			tomcat.destroy();
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @AfterEach
+    void tearDownAll() {
+        try {
+            tomcat.stop();
+            tomcat.destroy();
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Test
-	void shouldExecuteQuery() {
-		String uuid = UUID.randomUUID().toString();
-		Response<QueryExecution> response = consulClient.executePreparedQuery(uuid, new QueryParams("test"));
+    @Test
+    void shouldExecuteQuery() {
+        String uuid = UUID.randomUUID().toString();
+        Response<QueryExecution> response = consulClient.executePreparedQuery(uuid, new QueryParams("test"));
 
-		assertThat(response).isNotNull();
-		assertThat(response.getValue()).isNotNull();
-		assertThat(requestUri).endsWith("/v1/query/" + uuid + "/execute");
-	}
+        assertThat(response).isNotNull();
+        assertThat(response.getValue()).isNotNull();
+        assertThat(requestUri).endsWith("/v1/query/" + uuid + "/execute");
+    }
 
-	private class TestServlet extends HttpServlet {
+    private class TestServlet extends HttpServlet {
 
-		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			requestUri = req.getRequestURI();
-			resp.setStatus(200);
-			resp.setContentType("JSON/UTF-8");
-			try (Writer writer = resp.getWriter()) {
-				writer.write("{\"service\":\"test\"}");
-			}
-		}
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            requestUri = req.getRequestURI();
+            resp.setStatus(200);
+            resp.setContentType("JSON/UTF-8");
+            try (Writer writer = resp.getWriter()) {
+                writer.write("{\"service\":\"test\"}");
+            }
+        }
 
-	}
+    }
 }

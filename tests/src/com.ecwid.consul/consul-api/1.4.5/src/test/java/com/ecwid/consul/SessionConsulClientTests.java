@@ -30,56 +30,54 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SessionConsulClientTests {
 
-	private Tomcat tomcat;
-	private SessionConsulClient consulClient;
-	private byte[] requestBody;
-	private String requestUri;
+    private Tomcat tomcat;
+    private SessionConsulClient consulClient;
+    private byte[] requestBody;
+    private String requestUri;
 
-	@BeforeEach
-	void setUp() {
-		int port = getFreePort();
-		try {
-			tomcat = initTomcat(port, new TestServlet());
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-		ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
-		consulClient = new SessionConsulClient(consulRawClient);
-	}
+    @BeforeEach
+    void setUp() {
+        int port = getFreePort();
+        try {
+            tomcat = initTomcat(port, new TestServlet());
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+        ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
+        consulClient = new SessionConsulClient(consulRawClient);
+    }
 
-	@AfterEach
-	void tearDownAll() {
-		try {
-			tomcat.stop();
-			tomcat.destroy();
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @AfterEach
+    void tearDownAll() {
+        try {
+            tomcat.stop();
+            tomcat.destroy();
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Test
-	void shouldCreateSession() {
-		Response<String> response = consulClient.sessionCreate(new NewSession(), new QueryParams("test"));
+    @Test
+    void shouldCreateSession() {
+        Response<String> response = consulClient.sessionCreate(new NewSession(), new QueryParams("test"));
 
-		assertThat(response).isNotNull();
-		assertThat(response.getValue()).isEqualTo("test");
-		assertThat(new String(requestBody)).isEqualTo("{\"LockDelay\":0}");
-		assertThat(requestUri).endsWith("/v1/session/create");
-	}
+        assertThat(response).isNotNull();
+        assertThat(response.getValue()).isEqualTo("test");
+        assertThat(new String(requestBody)).isEqualTo("{\"LockDelay\":0}");
+        assertThat(requestUri).endsWith("/v1/session/create");
+    }
 
-	private class TestServlet extends HttpServlet {
+    private class TestServlet extends HttpServlet {
 
-		@Override
-		protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			requestUri = req.getRequestURI();
-			requestBody = req.getInputStream().readAllBytes();
-			resp.setStatus(200);
-			resp.setContentType("JSON/UTF-8");
-			try (Writer writer = resp.getWriter()) {
-				writer.write("{\"ID\": \"test\"}");
-			}
-		}
-	}
+        @Override
+        protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            requestUri = req.getRequestURI();
+            requestBody = req.getInputStream().readAllBytes();
+            resp.setStatus(200);
+            resp.setContentType("JSON/UTF-8");
+            try (Writer writer = resp.getWriter()) {
+                writer.write("{\"ID\": \"test\"}");
+            }
+        }
+    }
 }

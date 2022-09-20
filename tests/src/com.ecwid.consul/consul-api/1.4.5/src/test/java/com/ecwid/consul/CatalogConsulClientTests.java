@@ -33,98 +33,96 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CatalogConsulClientTests {
 
-	private Tomcat tomcat;
-	private CatalogConsulClient consulClient;
-	private byte[] requestBody;
-	private String requestUri;
-	private List<String> requestHeaderNames;
+    private Tomcat tomcat;
+    private CatalogConsulClient consulClient;
+    private byte[] requestBody;
+    private String requestUri;
+    private List<String> requestHeaderNames;
 
-	@BeforeEach
-	void setUp() {
-		int port = getFreePort();
-		try {
-			tomcat = initTomcat(port, new TestServlet());
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-		consulClient = new CatalogConsulClient("localhost", port);
-	}
+    @BeforeEach
+    void setUp() {
+        int port = getFreePort();
+        try {
+            tomcat = initTomcat(port, new TestServlet());
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+        consulClient = new CatalogConsulClient("localhost", port);
+    }
 
-	@AfterEach
-	void tearDownAll() {
-		try {
-			tomcat.stop();
-			tomcat.destroy();
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @AfterEach
+    void tearDownAll() {
+        try {
+            tomcat.stop();
+            tomcat.destroy();
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Test
-	void shouldRetrieveCatalogNodes() {
-		CatalogNodesRequest request = CatalogNodesRequest.newBuilder().build();
+    @Test
+    void shouldRetrieveCatalogNodes() {
+        CatalogNodesRequest request = CatalogNodesRequest.newBuilder().build();
 
-		Response<List<Node>> response = consulClient.getCatalogNodes(request);
+        Response<List<Node>> response = consulClient.getCatalogNodes(request);
 
-		assertThat(response).isNotNull();
-		List<Node> nodes = response.getValue();
-		assertThat(nodes).isNotEmpty();
-		Node node = nodes.get(0);
-		assertThat(node.getId()).isEqualTo("test");
-		assertThat(requestUri).endsWith("/v1/catalog/nodes");
-		assertThat(requestHeaderNames).contains("x-consul-token");
-	}
+        assertThat(response).isNotNull();
+        List<Node> nodes = response.getValue();
+        assertThat(nodes).isNotEmpty();
+        Node node = nodes.get(0);
+        assertThat(node.getId()).isEqualTo("test");
+        assertThat(requestUri).endsWith("/v1/catalog/nodes");
+        assertThat(requestHeaderNames).contains("x-consul-token");
+    }
 
-	@Test
-	void shouldRegisterCatalog() {
-		CatalogRegistration catalogRegistration = new CatalogRegistration();
-		CatalogRegistration.Service service = new CatalogRegistration.Service();
-		service.setId("test");
-		catalogRegistration.setService(service);
+    @Test
+    void shouldRegisterCatalog() {
+        CatalogRegistration catalogRegistration = new CatalogRegistration();
+        CatalogRegistration.Service service = new CatalogRegistration.Service();
+        service.setId("test");
+        catalogRegistration.setService(service);
 
-		Response<Void> response = consulClient.catalogRegister(catalogRegistration);
+        Response<Void> response = consulClient.catalogRegister(catalogRegistration);
 
-		assertThat(response).isNotNull();
-		assertThat(requestUri).endsWith("/v1/catalog/register");
-		assertThat(new String(requestBody)).isEqualTo("{\"Service\":{\"ID\":\"test\"},\"SkipNodeUpdate\":false}");
-	}
+        assertThat(response).isNotNull();
+        assertThat(requestUri).endsWith("/v1/catalog/register");
+        assertThat(new String(requestBody)).isEqualTo("{\"Service\":{\"ID\":\"test\"},\"SkipNodeUpdate\":false}");
+    }
 
-	@Test
-	void shouldDeregisterCatalog() {
-		CatalogDeregistration catalogDeregistration = new CatalogDeregistration();
-		catalogDeregistration.setServiceId("test");
+    @Test
+    void shouldDeregisterCatalog() {
+        CatalogDeregistration catalogDeregistration = new CatalogDeregistration();
+        catalogDeregistration.setServiceId("test");
 
-		Response<Void> response = consulClient.catalogDeregister(catalogDeregistration);
+        Response<Void> response = consulClient.catalogDeregister(catalogDeregistration);
 
-		assertThat(response).isNotNull();
-		assertThat(requestUri).endsWith("/v1/catalog/deregister");
-		assertThat(new String(requestBody)).isEqualTo("{\"ServiceID\":\"test\"}");
-	}
+        assertThat(response).isNotNull();
+        assertThat(requestUri).endsWith("/v1/catalog/deregister");
+        assertThat(new String(requestBody)).isEqualTo("{\"ServiceID\":\"test\"}");
+    }
 
-	private class TestServlet extends HttpServlet {
+    private class TestServlet extends HttpServlet {
 
-		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			requestUri = req.getRequestURI();
-			requestHeaderNames = Collections.list(req.getHeaderNames());
-			resp.setStatus(200);
-			resp.setContentType("JSON/UTF-8");
-			try (Writer writer = resp.getWriter()) {
-				writer.write("[{\"ID\":\"test\"}]");
-			}
-		}
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            requestUri = req.getRequestURI();
+            requestHeaderNames = Collections.list(req.getHeaderNames());
+            resp.setStatus(200);
+            resp.setContentType("JSON/UTF-8");
+            try (Writer writer = resp.getWriter()) {
+                writer.write("[{\"ID\":\"test\"}]");
+            }
+        }
 
-		@Override
-		protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			requestUri = req.getRequestURI();
-			requestBody = req.getInputStream().readAllBytes();
-			resp.setStatus(200);
-			resp.setContentType("JSON/UTF-8");
-			try (Writer writer = resp.getWriter()) {
-				writer.write("{\"ID\": \"test\"}");
-			}
-		}
-	}
+        @Override
+        protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            requestUri = req.getRequestURI();
+            requestBody = req.getInputStream().readAllBytes();
+            resp.setStatus(200);
+            resp.setContentType("JSON/UTF-8");
+            try (Writer writer = resp.getWriter()) {
+                writer.write("{\"ID\": \"test\"}");
+            }
+        }
+    }
 }

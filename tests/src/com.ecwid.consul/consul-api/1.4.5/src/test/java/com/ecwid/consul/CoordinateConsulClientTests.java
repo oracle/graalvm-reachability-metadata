@@ -29,54 +29,52 @@ import static com.ecwid.consul.utils.ConsulTestUtils.initTomcat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CoordinateConsulClientTests {
-	private Tomcat tomcat;
-	private CoordinateConsulClient consulClient;
-	private String requestUri;
+    private Tomcat tomcat;
+    private CoordinateConsulClient consulClient;
+    private String requestUri;
 
-	@BeforeEach
-	void setUp() {
-		int port = getFreePort();
-		try {
-			tomcat = initTomcat(port, new TestServlet());
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-		ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
-		consulClient = new CoordinateConsulClient(consulRawClient);
-	}
+    @BeforeEach
+    void setUp() {
+        int port = getFreePort();
+        try {
+            tomcat = initTomcat(port, new TestServlet());
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+        ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
+        consulClient = new CoordinateConsulClient(consulRawClient);
+    }
 
-	@AfterEach
-	void tearDownAll() {
-		try {
-			tomcat.stop();
-			tomcat.destroy();
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @AfterEach
+    void tearDownAll() {
+        try {
+            tomcat.stop();
+            tomcat.destroy();
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Test
-	void shouldRetrieveDatacenters() {
-		Response<List<Datacenter>> response = consulClient.getDatacenters();
+    @Test
+    void shouldRetrieveDatacenters() {
+        Response<List<Datacenter>> response = consulClient.getDatacenters();
 
-		assertThat(response).isNotNull();
-		List<Datacenter> datacenters = response.getValue();
-		assertThat(datacenters).hasSize(1);
-		assertThat(requestUri).endsWith("/v1/coordinate/datacenters");
-	}
+        assertThat(response).isNotNull();
+        List<Datacenter> datacenters = response.getValue();
+        assertThat(datacenters).hasSize(1);
+        assertThat(requestUri).endsWith("/v1/coordinate/datacenters");
+    }
 
-	private class TestServlet extends HttpServlet {
+    private class TestServlet extends HttpServlet {
 
-		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			requestUri = req.getRequestURI();
-			resp.setStatus(200);
-			resp.setContentType("JSON/UTF-8");
-			try (Writer writer = resp.getWriter()) {
-				writer.write("[{\"ID\":\"test\"}]");
-			}
-		}
-	}
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            requestUri = req.getRequestURI();
+            resp.setStatus(200);
+            resp.setContentType("JSON/UTF-8");
+            try (Writer writer = resp.getWriter()) {
+                writer.write("[{\"ID\":\"test\"}]");
+            }
+        }
+    }
 }

@@ -33,54 +33,52 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class HealthConsulClientTests {
 
-	private Tomcat tomcat;
-	private HealthConsulClient consulClient;
-	private String requestUri;
+    private Tomcat tomcat;
+    private HealthConsulClient consulClient;
+    private String requestUri;
 
-	@BeforeEach
-	void setUp() {
-		int port = getFreePort();
-		try {
-			tomcat = initTomcat(port, new TestServlet());
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-		ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
-		consulClient = new HealthConsulClient(consulRawClient);
-	}
+    @BeforeEach
+    void setUp() {
+        int port = getFreePort();
+        try {
+            tomcat = initTomcat(port, new TestServlet());
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+        ConsulRawClient consulRawClient = new ConsulRawClient("localhost", port);
+        consulClient = new HealthConsulClient(consulRawClient);
+    }
 
-	@AfterEach
-	void tearDownAll() {
-		try {
-			tomcat.stop();
-			tomcat.destroy();
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @AfterEach
+    void tearDownAll() {
+        try {
+            tomcat.stop();
+            tomcat.destroy();
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Test
-	void shouldRetrieveServiceHealthCheck() {
-		Response<List<Check>> response = consulClient.getHealthChecksForService("test",
-				new HealthChecksForServiceRequest("test", "test", new HashMap<>(), new QueryParams("test")));
+    @Test
+    void shouldRetrieveServiceHealthCheck() {
+        Response<List<Check>> response = consulClient.getHealthChecksForService("test",
+                new HealthChecksForServiceRequest("test", "test", new HashMap<>(), new QueryParams("test")));
 
-		assertThat(response).isNotNull();
-		assertThat(response.getValue()).hasSize(1);
-		assertThat(requestUri).endsWith("/v1/health/checks/test");
-	}
+        assertThat(response).isNotNull();
+        assertThat(response.getValue()).hasSize(1);
+        assertThat(requestUri).endsWith("/v1/health/checks/test");
+    }
 
-	private class TestServlet extends HttpServlet {
+    private class TestServlet extends HttpServlet {
 
-		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			requestUri = req.getRequestURI();
-			resp.setStatus(200);
-			resp.setContentType("JSON/UTF-8");
-			try (Writer writer = resp.getWriter()) {
-				writer.write("[{\"ID\":\"test\"}]");
-			}
-		}
-	}
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            requestUri = req.getRequestURI();
+            resp.setStatus(200);
+            resp.setContentType("JSON/UTF-8");
+            try (Writer writer = resp.getWriter()) {
+                writer.write("[{\"ID\":\"test\"}]");
+            }
+        }
+    }
 }

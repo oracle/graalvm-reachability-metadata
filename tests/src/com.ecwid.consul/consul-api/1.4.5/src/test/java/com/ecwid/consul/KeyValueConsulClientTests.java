@@ -30,80 +30,78 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class KeyValueConsulClientTests {
 
-	private Tomcat tomcat;
-	private ConsulClient consulClient;
+    private Tomcat tomcat;
+    private ConsulClient consulClient;
 
-	private byte[] requestBody;
-	private String requestUri;
-	private List<String> requestHeaderNames;
+    private byte[] requestBody;
+    private String requestUri;
+    private List<String> requestHeaderNames;
 
-	@BeforeEach
-	void setUp() {
-		int port = getFreePort();
-		try {
-			tomcat = initTomcat(port, new TestServlet());
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-		consulClient = new ConsulClient("localhost", port);
-	}
+    @BeforeEach
+    void setUp() {
+        int port = getFreePort();
+        try {
+            tomcat = initTomcat(port, new TestServlet());
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+        consulClient = new ConsulClient("localhost", port);
+    }
 
-	@AfterEach
-	void tearDownAll() {
-		try {
-			tomcat.stop();
-			tomcat.destroy();
-		}
-		catch (LifecycleException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @AfterEach
+    void tearDownAll() {
+        try {
+            tomcat.stop();
+            tomcat.destroy();
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Test
-	void shouldSetKVValue() {
-		final String testKey = "test_key";
-		final byte[] testValue = new byte[100];
-		new Random().nextBytes(testValue);
+    @Test
+    void shouldSetKVValue() {
+        final String testKey = "test_key";
+        final byte[] testValue = new byte[100];
+        new Random().nextBytes(testValue);
 
-		Response<Boolean> response = consulClient.setKVBinaryValue(testKey, testValue);
+        Response<Boolean> response = consulClient.setKVBinaryValue(testKey, testValue);
 
-		assertThat(response.getValue()).isTrue();
-		assertThat(testValue).isEqualTo(requestBody);
-		assertThat(requestUri).endsWith(testKey);
-		assertThat(requestHeaderNames).contains("x-consul-token");
-	}
+        assertThat(response.getValue()).isTrue();
+        assertThat(testValue).isEqualTo(requestBody);
+        assertThat(requestUri).endsWith(testKey);
+        assertThat(requestHeaderNames).contains("x-consul-token");
+    }
 
-	@Test
-	void shouldDeleteKVValue() {
-		final String testKey = "test_key";
+    @Test
+    void shouldDeleteKVValue() {
+        final String testKey = "test_key";
 
-		Response<Void> response = consulClient.deleteKVValue(testKey);
+        Response<Void> response = consulClient.deleteKVValue(testKey);
 
-		assertThat(response).isNotNull();
-		assertThat(requestUri).endsWith(testKey);
-		assertThat(requestHeaderNames).contains("x-consul-token");
-	}
+        assertThat(response).isNotNull();
+        assertThat(requestUri).endsWith(testKey);
+        assertThat(requestHeaderNames).contains("x-consul-token");
+    }
 
-	private class TestServlet extends HttpServlet {
+    private class TestServlet extends HttpServlet {
 
-		@Override
-		protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			requestUri = req.getRequestURI();
-			requestBody = req.getInputStream().readAllBytes();
-			requestHeaderNames = Collections.list(req.getHeaderNames());
-			resp.setStatus(200);
-			resp.setContentType("JSON/UTF-8");
-			try (Writer writer = resp.getWriter()) {
-				writer.write("true");
-			}
-		}
+        @Override
+        protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            requestUri = req.getRequestURI();
+            requestBody = req.getInputStream().readAllBytes();
+            requestHeaderNames = Collections.list(req.getHeaderNames());
+            resp.setStatus(200);
+            resp.setContentType("JSON/UTF-8");
+            try (Writer writer = resp.getWriter()) {
+                writer.write("true");
+            }
+        }
 
-		@Override
-		protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			requestUri = req.getRequestURI();
-			requestHeaderNames = Collections.list(req.getHeaderNames());
-			resp.setStatus(200);
-		}
-	}
+        @Override
+        protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            requestUri = req.getRequestURI();
+            requestHeaderNames = Collections.list(req.getHeaderNames());
+            resp.setStatus(200);
+        }
+    }
 }
