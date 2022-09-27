@@ -1,0 +1,49 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+import org.graalvm.internal.tck.TestUtils
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = TestUtils.testedLibraryVersion
+
+tasks.withType(JavaCompile) {
+    options.release = 17
+}
+
+dependencies {
+    testImplementation("org.slf4j:slf4j-api:1.7.36")
+    testImplementation("org.slf4j:slf4j-simple:1.7.36")
+    testImplementation("org.thymeleaf:thymeleaf-spring6:$libraryVersion")
+    testImplementation("org.springframework:spring-web:6.0.0-M6")
+    testImplementation("org.springframework:spring-webflux:6.0.0-M6")
+    testImplementation("org.springframework:spring-context:6.0.0-M6")
+    testImplementation('org.assertj:assertj-core:3.22.0')
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--no-fallback')
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
