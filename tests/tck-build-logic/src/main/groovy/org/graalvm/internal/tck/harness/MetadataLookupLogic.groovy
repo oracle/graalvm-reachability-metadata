@@ -96,7 +96,7 @@ class MetadataLookupLogic {
 
             for (def entry in metadataIndex) {
                 if (coordinatesMatch((String) entry["module"], groupId, artifactId) && ((List<String>) entry["tested-versions"]).contains(version)) {
-                    Path metadataDir = fullDir.resolve(version)
+                    Path metadataDir = fullDir.resolve((String) entry["metadata-version"])
                     return metadataDir
                 }
             }
