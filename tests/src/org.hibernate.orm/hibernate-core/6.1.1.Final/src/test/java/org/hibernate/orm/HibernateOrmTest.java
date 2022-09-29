@@ -6,6 +6,7 @@
  */
 package org.hibernate.orm;
 
+import java.util.Collections;
 import java.util.Date;
 
 import jakarta.persistence.EntityManager;
@@ -50,6 +51,38 @@ public class HibernateOrmTest {
 
         session.persist(new Event("Our very first event!", new Date()));
         session.persist(new Event("A follow up event", new Date()));
+
+        session.close();
+        sessionFactory.close();
+    }
+
+    @Test
+    void relations() {
+
+        Configuration config = new Configuration();
+
+        config.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
+        config.setProperty("hibernate.connection.url", "jdbc:h2:mem:test");
+        config.setProperty("hibernate.connection.username", "");
+        config.setProperty("hibernate.connection.password", "");
+        config.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        config.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+
+        config.addAnnotatedClass(Cart.class);
+        config.addAnnotatedClass(Item.class);
+
+        SessionFactory sessionFactory = config.buildSessionFactory();
+        Session session = sessionFactory.openSession();
+
+        Cart cart = new Cart();
+        Item item = new Item();
+        item.setCart(cart);
+        cart.setItems(Collections.singleton(item));
+
+        session.persist(cart);
+        session.persist(item);
+
+        Cart load = session.byId(Cart.class).load(cart.getId());
 
         session.close();
         sessionFactory.close();
