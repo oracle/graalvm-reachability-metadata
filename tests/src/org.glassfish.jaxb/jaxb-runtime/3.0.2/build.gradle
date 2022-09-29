@@ -12,14 +12,18 @@ plugins {
 }
 
 String libraryVersion = TestUtils.testedLibraryVersion
-println("Testing example library version: ${libraryVersion}")
-// This value should be used to declare a dependency to specific library version here.
+
+dependencies {
+    testImplementation("org.slf4j:slf4j-api:1.7.36")
+    testImplementation("org.slf4j:slf4j-simple:1.7.36")
+    testImplementation("org.glassfish.jaxb:jaxb-runtime:$libraryVersion")
+    testImplementation('org.assertj:assertj-core:3.22.0')
+}
 
 graalvmNative {
     binaries {
         test {
-            // buildArgs.add('--no-fallback')
-            // Other options can be customized here as well.
+            buildArgs.add('--no-fallback')
         }
     }
 }
