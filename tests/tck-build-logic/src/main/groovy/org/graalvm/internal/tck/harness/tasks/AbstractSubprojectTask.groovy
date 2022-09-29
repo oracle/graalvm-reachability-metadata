@@ -8,7 +8,7 @@
 package org.graalvm.internal.tck.harness.tasks
 
 import groovy.transform.Internal
-import org.graalvm.internal.common.MetadataTest
+import org.graalvm.internal.common.MetadataDescriptor
 import org.graalvm.internal.tck.harness.MetadataLookupLogic
 import org.gradle.api.tasks.Exec
 
@@ -17,7 +17,7 @@ import java.nio.file.Path
 import java.util.stream.Collectors
 
 import static groovy.io.FileType.FILES
-import static org.graalvm.internal.tck.TestUtils.tckRoot
+import static org.graalvm.internal.tck.RepoScanner.tckRoot
 
 /**
  * Abstract task that is used to invoke test subprojects.
@@ -26,15 +26,15 @@ import static org.graalvm.internal.tck.TestUtils.tckRoot
 abstract class AbstractSubprojectTask extends Exec {
 
     @Inject
-    AbstractSubprojectTask(MetadataTest test, List<String> cmd) {
-        Path metadataDir = test.getMetadataDir()
-        Path testDir = test.getTestDir()
+    AbstractSubprojectTask(MetadataDescriptor metadataDescriptor, List<String> cmd) {
+        Path metadataDir = metadataDescriptor.getMetadataDir()
+        Path testDir = metadataDescriptor.getTestDir()
 
         Map<String, String> env = new HashMap<>(System.getenv())
         // Environment variables for setting up TCK
-        env.put("GVM_TCK_LC", test.getGAVCoordinates())
-        env.put("GVM_TCK_EXCLUDE", test.getOverride().toString())
-        env.put("GVM_TCK_LV", test.getVersion())
+        env.put("GVM_TCK_LC", metadataDescriptor.getGAVCoordinates())
+        env.put("GVM_TCK_EXCLUDE", metadataDescriptor.getOverride().toString())
+        env.put("GVM_TCK_LV", metadataDescriptor.getVersion())
         env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString())
         env.put("GVM_TCK_TCKDIR", tckRoot.toAbsolutePath().toString())
         environment(env)

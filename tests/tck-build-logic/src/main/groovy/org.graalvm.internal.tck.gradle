@@ -5,10 +5,10 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import org.graalvm.internal.tck.TestUtils
+import org.graalvm.internal.tck.RepoScanner
 
-import static org.graalvm.internal.tck.TestUtils.metadataRoot
-import static org.graalvm.internal.tck.TestUtils.repoRoot
+import static org.graalvm.internal.tck.RepoScanner.metadataRoot
+import static org.graalvm.internal.tck.RepoScanner.repoRoot
 
 plugins {
     id 'checkstyle'
@@ -24,7 +24,7 @@ tasks.withType(JavaCompile) {
     options.release = 11
 }
 
-TestUtils.locateRepoDirs(project) // Find relevant directories for the test harness.
+RepoScanner.locateRepoDirs(project) // Find relevant directories for the test harness.
 
 checkstyle {
     configFile repoRoot.resolve("gradle").resolve("checkstyle.xml").toFile()
@@ -57,7 +57,7 @@ String overrideVal = System.getenv("GVM_TCK_EXCLUDE") ?: providers.gradlePropert
 overrideVal = overrideVal ?: "false"
 boolean override = overrideVal.toBoolean()
 
-TestUtils.testedLibraryVersion = libraryVersion
+RepoScanner.testedLibraryVersion = libraryVersion
 // This value can be used to request specific library version to test with.
 
 dependencies {

@@ -5,10 +5,10 @@ import org.graalvm.internal.tck.harness.MetadataLookupLogic
 
 import java.nio.file.Path
 
-import static org.graalvm.internal.tck.TestUtils.metadataRoot
-import static org.graalvm.internal.tck.TestUtils.testRoot
+import static org.graalvm.internal.tck.RepoScanner.metadataRoot
+import static org.graalvm.internal.tck.RepoScanner.testRoot
 
-class MetadataTest {
+class MetadataDescriptor {
 
     private static String INDEX_FILE = "index.json"
 
@@ -19,7 +19,7 @@ class MetadataTest {
     private Path testDir
     private boolean override
 
-    MetadataTest(String coordinates) {
+    MetadataDescriptor(String coordinates) {
         def (String group, String artifact, String version) = Utils.splitCoordinates(coordinates)
         this.group = group
         this.artifact = artifact

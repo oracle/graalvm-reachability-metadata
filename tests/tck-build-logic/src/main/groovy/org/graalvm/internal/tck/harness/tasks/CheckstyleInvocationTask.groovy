@@ -7,8 +7,8 @@
 
 package org.graalvm.internal.tck.harness.tasks
 
-import org.graalvm.internal.common.MetadataTest
-import org.graalvm.internal.tck.TestUtils
+import org.graalvm.internal.common.MetadataDescriptor
+import org.graalvm.internal.tck.RepoScanner
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 
@@ -20,11 +20,11 @@ import javax.inject.Inject
 @SuppressWarnings("unused")
 abstract class CheckstyleInvocationTask extends AbstractSubprojectTask {
 
-    static final CHECKSTYLE_COMMAND = List.of(TestUtils.repoRoot.resolve("gradlew").toString(), "checkstyle")
+    static final CHECKSTYLE_COMMAND = List.of(RepoScanner.repoRoot.resolve("gradlew").toString(), "checkstyle")
 
     @Inject
-    CheckstyleInvocationTask(MetadataTest test, List<String> cmd) {
-        super(test, CHECKSTYLE_COMMAND)
+    CheckstyleInvocationTask(MetadataDescriptor metadataDescriptor, List<String> cmd) {
+        super(metadataDescriptor, CHECKSTYLE_COMMAND)
     }
 
     @TaskAction

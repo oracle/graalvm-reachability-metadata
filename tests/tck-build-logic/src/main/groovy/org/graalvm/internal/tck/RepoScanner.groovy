@@ -13,7 +13,7 @@ import org.gradle.api.Project
 import java.nio.file.Path
 
 @SuppressWarnings("unused")
-class TestUtils {
+class RepoScanner {
     public static Path repoRoot
     public static Path metadataRoot
     public static Path testRoot

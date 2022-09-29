@@ -7,8 +7,8 @@
 
 package org.graalvm.internal.tck.harness.tasks
 
-import org.graalvm.internal.common.MetadataTest
-import org.graalvm.internal.tck.TestUtils
+import org.graalvm.internal.common.MetadataDescriptor
+import org.graalvm.internal.tck.RepoScanner
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
@@ -25,16 +25,16 @@ import static org.graalvm.internal.tck.Utils.readIndexFile
 @SuppressWarnings("unused")
 abstract class TestInvocationTask extends AbstractSubprojectTask {
 
-    static final DEFAULT_ARGS = List.of(TestUtils.repoRoot.resolve("gradlew").toString(), "nativeTest")
+    static final DEFAULT_ARGS = List.of(RepoScanner.repoRoot.resolve("gradlew").toString(), "nativeTest")
 
     @Input
     String coordinates
 
     @Inject
-    TestInvocationTask(MetadataTest test) {
-        super(test, getArguments(test))
+    TestInvocationTask(MetadataDescriptor metadataDescriptor) {
+        super(metadataDescriptor, getArguments(metadataDescriptor))
         dependsOn("check")
-        this.coordinates = test.getGAVCoordinates()
+        this.coordinates = metadataDescriptor.getGAVCoordinates()
     }
 
     /**
@@ -42,16 +42,16 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
      * @param coordinates
      * @return list of processed arguments
      */
-    static List<String> getArguments(MetadataTest test) {
+    static List<String> getArguments(MetadataDescriptor metadataDescriptor) {
         try {
-            Map<String, List<String>> testIndex = readIndexFile(test.getTestDir()) as Map<String, List<String>>
+            Map<String, List<String>> testIndex = readIndexFile(metadataDescriptor.getTestDir()) as Map<String, List<String>>
             if (!testIndex.containsKey("test-command")) {
                 return DEFAULT_ARGS
             }
 
-            Path metadataDir = test.getMetadataDir()
+            Path metadataDir = metadataDescriptor.getMetadataDir()
             return testIndex.get("test-command").stream()
-                    .map(c -> processCommand(c, metadataDir, test))
+                    .map(c -> processCommand(c, metadataDir, metadataDescriptor))
                     .collect(Collectors.toList())
         } catch (FileNotFoundException ignored) {
             return DEFAULT_ARGS
@@ -67,11 +67,11 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
      * @param coordinates
      * @return final command
      */
-    static String processCommand(String cmd, Path metadataDir, MetadataTest test) {
+    static String processCommand(String cmd, Path metadataDir, MetadataDescriptor metadataDescriptor) {
         return cmd.replace("<metadata_dir>", metadataDir.toAbsolutePath().toString())
-                .replace("<group_id>", test.getGroup())
-                .replace("<artifact_id>", test.getArtifact())
-                .replace("<version>", test.getVersion())
+                .replace("<group_id>", metadataDescriptor.getGroup())
+                .replace("<artifact_id>", metadataDescriptor.getArtifact())
+                .replace("<version>", metadataDescriptor.getVersion())
     }
 
     @TaskAction

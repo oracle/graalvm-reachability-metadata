@@ -7,14 +7,14 @@
 
 package org.graalvm.internal.tck.harness
 
-import org.graalvm.internal.common.MetadataTest
+import org.graalvm.internal.common.MetadataDescriptor
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
-import static org.graalvm.internal.tck.TestUtils.metadataRoot
+import static org.graalvm.internal.tck.RepoScanner.metadataRoot
 import static org.graalvm.internal.tck.Utils.coordinatesMatch
 import static org.graalvm.internal.tck.Utils.extractJsonFile
 import static org.graalvm.internal.tck.Utils.readIndexFile
@@ -89,7 +89,7 @@ class MetadataLookupLogic {
      * @param coordinateFilter
      * @return list of all coordinates that
      */
-    static List<MetadataTest> getTestsForCoordinates(String coordinateFilter = "") {
+    static List<MetadataDescriptor> getDescriptorsForCoordinates(String coordinateFilter = "") {
         def (String groupId, String artifactId, String version) = splitCoordinates(coordinateFilter)
 
         Set<String> matchingCoordinates = new HashSet<>()
@@ -115,11 +115,11 @@ class MetadataLookupLogic {
             }
         }
 
-        return matchingCoordinates.stream().map(c -> new MetadataTest(c)).collect(Collectors.toList()).toList()
+        return matchingCoordinates.stream().map(c -> new MetadataDescriptor(c)).collect(Collectors.toList()).toList()
     }
 
-    static List<MetadataTest> getAllTests() {
-        return getTestsForCoordinates()
+    static List<MetadataDescriptor> getAllDescriptors() {
+        return getDescriptorsForCoordinates()
     }
 
 }

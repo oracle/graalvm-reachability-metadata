@@ -7,12 +7,12 @@
 
 package org.graalvm.internal.tck.harness
 
-import org.graalvm.internal.common.MetadataTest
+import org.graalvm.internal.common.MetadataDescriptor
 
 import java.nio.file.Path
 import java.util.stream.Collectors
 
-import static org.graalvm.internal.tck.TestUtils.*
+import static org.graalvm.internal.tck.RepoScanner.*
 
 /**
  * Class that provides static methods that are used to fetch tests for metadata.
@@ -26,7 +26,7 @@ class TestLookupLogic {
      * @return List of coordinates
      */
     @SuppressWarnings("unused")
-    static List<MetadataTest> diffTests(String baseCommit, String newCommit) {
+    static List<MetadataDescriptor> diffDescriptors(String baseCommit, String newCommit) {
         String cmd = "git diff --name-only --diff-filter=ACMRT ${baseCommit} ${newCommit}"
 
         Process p = cmd.execute()
@@ -53,17 +53,17 @@ class TestLookupLogic {
 
         if (testAll) {
             // If tck was changed we should retest everything, just to be safe.
-            return MetadataLookupLogic.getAllTests()
+            return MetadataLookupLogic.getAllDescriptors()
         }
 
         // First get all available tests, then filter them by if their corresponding metadata / tests directories
         // contain changed files.
-        return MetadataLookupLogic.getAllTests().stream().filter(t -> {
-            Path metadataDir = t.getMetadataDir()
+        return MetadataLookupLogic.getAllDescriptors().stream().filter(d -> {
+            Path metadataDir = d.getMetadataDir()
             if (changed["metadata"].stream().anyMatch(f -> f.startsWith(metadataDir))) {
                 return true
             }
-            Path testDir = t.getTestDir()
+            Path testDir = d.getTestDir()
             if (changed["test"].stream().anyMatch(f -> f.startsWith(testDir))) {
                 return true
             }
