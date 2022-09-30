@@ -15,7 +15,7 @@ class MetadataDescriptor {
     private String group
     private String artifact
     private String version
-    private Path metadataDir
+    private Path metadataDir // TODO this should be List<Path>
     private Path testDir
     private boolean override
 
@@ -122,11 +122,12 @@ class MetadataDescriptor {
             def metadataIndex = Utils.extractJsonFile(index)
             for (def entry in metadataIndex) {
                 if (Utils.coordinatesMatch((String) entry["module"], group, artifact) && ((List<String>) entry["tested-versions"]).contains(version)) {
+                    // TODO extract logic for override to make the function cleaner
                     if (entry.containsKey("override")) {
                         this.override = entry["override"] as boolean
                     }
-                    Path metadataDir = fullDir.resolve(version)
-                    return metadataDir
+                    // TODO as we are in class, we don't need to have return value, just append list (once we have List<Path> instead of Path), there is no need for return value
+                    return fullDir.resolve((String) entry["metadata-version"])
                 }
             }
         }
