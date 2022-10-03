@@ -143,4 +143,7 @@ methodMap.forEach((type, methods) -> {
 });
 ```
 
+## Manually added hints
+
+- Add reflection entries (ctor) for types listed in `org.hibernate.id.factory.internal.StandardIdentifierGeneratorFactory`.
 
