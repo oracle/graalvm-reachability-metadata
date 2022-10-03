@@ -35,16 +35,7 @@ public class HibernateOrmTest {
     @Test
     void hibernateBootstrap() {
 
-        Configuration config = new Configuration();
-
-        config.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-        config.setProperty("hibernate.connection.url", "jdbc:h2:mem:test");
-        config.setProperty("hibernate.connection.username", "");
-        config.setProperty("hibernate.connection.password", "");
-        config.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        config.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-
-        config.addAnnotatedClass(Event.class);
+        Configuration config = h2Config(Event.class);
 
         SessionFactory sessionFactory = config.buildSessionFactory();
         Session session = sessionFactory.openSession();
@@ -59,17 +50,7 @@ public class HibernateOrmTest {
     @Test
     void relations() {
 
-        Configuration config = new Configuration();
-
-        config.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-        config.setProperty("hibernate.connection.url", "jdbc:h2:mem:test");
-        config.setProperty("hibernate.connection.username", "");
-        config.setProperty("hibernate.connection.password", "");
-        config.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        config.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-
-        config.addAnnotatedClass(Cart.class);
-        config.addAnnotatedClass(Item.class);
+        Configuration config = h2Config(Cart.class, Item.class);
 
         SessionFactory sessionFactory = config.buildSessionFactory();
         Session session = sessionFactory.openSession();
@@ -86,5 +67,41 @@ public class HibernateOrmTest {
 
         session.close();
         sessionFactory.close();
+    }
+
+    @Test
+    void idGenerator() {
+
+        Configuration config = h2Config(User.class);
+
+        SessionFactory sessionFactory = config.buildSessionFactory();
+        Session session = sessionFactory.openSession();
+
+        User user = new User();
+        user.setUsername("u1");
+
+        session.persist(user);
+
+        User load = session.byId(User.class).load(user.getId());
+
+        session.close();
+        sessionFactory.close();
+    }
+
+    private static Configuration h2Config(Class<?>... entities) {
+
+        Configuration config = new Configuration();
+        config.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
+        config.setProperty("hibernate.connection.url", "jdbc:h2:mem:test");
+        config.setProperty("hibernate.connection.username", "");
+        config.setProperty("hibernate.connection.password", "");
+        config.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        config.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+
+        for (Class<?> type : entities) {
+            config.addAnnotatedClass(type);
+        }
+
+        return config;
     }
 }
