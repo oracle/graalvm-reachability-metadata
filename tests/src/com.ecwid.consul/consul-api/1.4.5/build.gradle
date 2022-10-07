@@ -1,0 +1,31 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+import org.graalvm.internal.tck.TestUtils
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = TestUtils.testedLibraryVersion
+
+dependencies {
+	testImplementation("com.ecwid.consul:consul-api:$libraryVersion")
+	testImplementation('org.assertj:assertj-core:3.22.0')
+	testImplementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+	testImplementation "org.apache.tomcat.embed:tomcat-embed-core:10.0.20"
+	testImplementation group: 'commons-logging', name: 'commons-logging', version: '1.2'
+	testImplementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+}
+
+graalvmNative {
+	binaries {
+		test {
+			buildArgs.add('--no-fallback')
+		}
+	}
+}
