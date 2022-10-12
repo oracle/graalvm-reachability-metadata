@@ -18,6 +18,7 @@ dependencies {
     testImplementation "org.eclipse.jetty:jetty-servlet:$libraryVersion"
     testImplementation "org.eclipse.jetty:jetty-webapp:$libraryVersion"
     testImplementation "org.eclipse.jetty.websocket:websocket-jetty-server:$libraryVersion"
+    testImplementation "org.eclipse.jetty.websocket:websocket-jakarta-server:$libraryVersion"
     testImplementation "org.eclipse.jetty.websocket:websocket-jetty-client:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.slf4j:slf4j-simple:2.0.3'
@@ -32,7 +33,7 @@ graalvmNative {
             }
         }
         metadataCopy {
-            mergeWithExisting = true
+            mergeWithExisting = false
             inputTaskNames.add("test")
             outputDirectories.add("src/test/resources/META-INF/native-image/org.eclipse.jetty/jetty-server")
         }

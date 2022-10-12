@@ -13,6 +13,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 @WebSocket
 public class WebSocketServerEndpoint {
@@ -27,8 +28,14 @@ public class WebSocketServerEndpoint {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException {
-        System.out.printf("onMessage(%s, %s)%n", session.getRemoteAddress(), message);
+    public void onTextMessage(Session session, String message) throws IOException {
+        System.out.printf("onTextMessage(%s, %s)%n", session.getRemoteAddress(), message);
         session.getRemote().sendString(message);
+    }
+
+    //    @OnWebSocketMessage
+    public void onBinaryMessage(Session session, byte[] message, int offset, int length) throws IOException {
+        System.out.printf("onBinaryMessage(%s, %d bytes)%n", session.getRemoteAddress(), length);
+        session.getRemote().sendBytes(ByteBuffer.wrap(message, offset, length));
     }
 }

@@ -19,6 +19,7 @@ import org.eclipse.jetty.util.TypeUtil;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.eclipse.jetty.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
 import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -115,20 +118,56 @@ public class JettyTests {
                 container.addMapping("/websocket", WebSocketServerEndpoint.class));
         server.start();
         try {
-            WebSocketClient client = new WebSocketClient();
-            client.start();
-            try {
-                WebSocketClientEndpoint endpoint = new WebSocketClientEndpoint();
-                Session session = client.connect(endpoint, URI.create(String.format("ws://localhost:%d/websocket", PORT))).get(1, TimeUnit.SECONDS);
-                session.getRemote().sendString("Hello world");
-                String message = endpoint.awaitMessage();
-                assertThat(message).isEqualTo("Hello world");
-                session.close();
-            } finally {
-                client.stop();
-            }
+            doWebsocketRequest();
+            // doBinaryWebsocketRequest();
         } finally {
             server.stop();
+        }
+    }
+
+    @Test
+    void jakartaWebsocket() throws Exception {
+        Server server = new Server(PORT);
+        ServletContextHandler handler = new ServletContextHandler(server, "/");
+        server.setHandler(handler);
+        JakartaWebSocketServletContainerInitializer.configure(handler, (servletContext, container) ->
+                container.addEndpoint(JakartaWebSocketServerEndpoint.class));
+        server.start();
+        try {
+            doWebsocketRequest();
+            // doBinaryWebsocketRequest();
+        } finally {
+            server.stop();
+        }
+    }
+
+    private static void doWebsocketRequest() throws Exception {
+        WebSocketClient client = new WebSocketClient();
+        client.start();
+        try {
+            WebSocketClientEndpoint endpoint = new WebSocketClientEndpoint();
+            Session session = client.connect(endpoint, URI.create(String.format("ws://localhost:%d/websocket", PORT))).get(1, TimeUnit.SECONDS);
+            session.getRemote().sendString("Hello world");
+            String message = endpoint.awaitStringMessage();
+            assertThat(message).isEqualTo("Hello world");
+            session.close();
+        } finally {
+            client.stop();
+        }
+    }
+
+    private static void doBinaryWebsocketRequest() throws Exception {
+        WebSocketClient client = new WebSocketClient();
+        client.start();
+        try {
+            WebSocketClientEndpoint endpoint = new WebSocketClientEndpoint();
+            Session session = client.connect(endpoint, URI.create(String.format("ws://localhost:%d/websocket", PORT))).get(1, TimeUnit.SECONDS);
+            session.getRemote().sendBytes(ByteBuffer.wrap("Hello world".getBytes(StandardCharsets.UTF_8)));
+            byte[] message = endpoint.awaitBinaryMessage();
+            assertThat(message).isEqualTo("Hello world".getBytes(StandardCharsets.UTF_8));
+            session.close();
+        } finally {
+            client.stop();
         }
     }
 
