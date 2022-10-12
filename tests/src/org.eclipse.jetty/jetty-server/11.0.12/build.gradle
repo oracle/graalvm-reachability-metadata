@@ -1,0 +1,40 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+import org.graalvm.internal.tck.TestUtils
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = TestUtils.testedLibraryVersion
+
+dependencies {
+    testImplementation "org.eclipse.jetty:jetty-server:$libraryVersion"
+    testImplementation "org.eclipse.jetty:jetty-servlet:$libraryVersion"
+    testImplementation "org.eclipse.jetty:jetty-webapp:$libraryVersion"
+    testImplementation "org.eclipse.jetty.websocket:websocket-jetty-server:$libraryVersion"
+    testImplementation "org.eclipse.jetty.websocket:websocket-jetty-client:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.3'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        metadataCopy {
+            mergeWithExisting = true
+            inputTaskNames.add("test")
+            outputDirectories.add("src/test/resources/META-INF/native-image/org.eclipse.jetty/jetty-server")
+        }
+    }
+}
