@@ -15,7 +15,7 @@ Put this in the `pom.xml`:
         <plugin>
           <groupId>org.graalvm.buildtools</groupId>
           <artifactId>native-maven-plugin</artifactId>
-          <version>0.9.13</version>
+          <version>0.9.14</version>
           <extensions>true</extensions>
           <configuration>
             <agent>
