@@ -26,7 +26,7 @@ graalvmNative {
 
 buildscript {
 	dependencies {
-		classpath 'org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin:0.9.14'
+		classpath 'org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin:0.9.15'
 	}
 		repositories {
 			mavenCentral()
