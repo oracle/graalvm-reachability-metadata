@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "This will be populated with actual link once uploaded",
+  "title": "Schema for the supported libraries list JSON",
+  "type": "array",
+  "default": [],
+  "items": {
+    "type": "object",
+    "required": [
+      "artifact",
+      "minimal_version",
+      "metadata_location",
+      "support_level"
+    ],
+    "properties": {
+      "artifact": {
+        "type": "string",
+        "default": "",
+        "title": "The name of the metadata"
+      },
+      "minimal_version": {
+        "type": "string",
+        "default": "",
+        "title": "Minimal supported version"
+      },
+      "maximal_version": {
+        "type": "string",
+        "default": "",
+        "title": "Maximal supported version",
+        "description": "If not defined, it is assumed to be supported for all versions starting from the minimum_version"
+      },
+      "metadata_location": {
+        "type": "string",
+        "default": "",
+        "title": "Web location of provided metadata"
+      },
+      "support_level": {
+        "type": "string",
+        "enum": [
+          "Unsupported",
+          "Community Supported",
+          "Supported"
+        ],
+        "default": "Unsupported",
+        "title": "Metadata support level"
+      }
+    }
+  },
+  "examples": [
+    {
+      "artifact": "mysql",
+      "minimal_version": "8.0.29",
+      "metadata_location": "https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/mysql",
+      "support_level": "Community Supported"
+    },
+    {
+      "artifact": "io.netty:netty-transport",
+      "minimal_version": "4.1.76.Final",
+      "maximal_version": "4.1.80.Final",
+      "metadata_location": "https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/io.netty/netty-transport",
+      "support_level": "Community Supported"
+    }
+  ]
+}
