@@ -18,17 +18,19 @@ allprojects {
     }
 }
 
-import static org.graalvm.internal.tck.TestUtils.metadataRoot
-import static org.graalvm.internal.tck.TestUtils.repoRoot
-import static org.graalvm.internal.tck.TestUtils.testRoot
-
 project.version("0.2.4-SNAPSHOT")
 
 // gradle check
 spotless {
     json {
-        target(metadataRoot + '/**/*.json', testRoot + '/**/*.json')
-        targetExclude(testRoot + '/**/build/**/*.json', repoRoot + '/.github/**/*.json')
+        target(
+                tck.metadataRoot.map { it.toString() +  '/**/*.json' }.get(),
+                tck.testRoot.map { it.toString() + '/**/*.json' }
+        )
+        targetExclude(
+                tck.testRoot.map { it.toString()  + '/**/build/**/*.json' },
+                tck.repoRoot.map { it.toString() + '/.github/**/*.json' }
+        )
         gson()
             .indentWithSpaces(2)
             .sortByKeys()
@@ -43,5 +45,5 @@ tasks.register('package', Zip) { task ->
     task.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP)
     task.archiveFileName = outputFileName
     task.destinationDirectory = layout.buildDirectory
-    from(metadataRoot)
+    from(tck.metadataRoot)
 }
