@@ -3,6 +3,8 @@
 The metadata has been gathered by a combination of running the hibernate-validator tests with the agent attached and
 by tweaking and completing the output files.
 
+To find all validator implementations, a small tool named `FindValidators` has been written, which resides in `src/main/java`.
+
 ## Run tests with agent
 
 Put this in the `pom.xml`:
