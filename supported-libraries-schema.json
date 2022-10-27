@@ -9,30 +9,49 @@
     "required": [
       "artifact",
       "minimal_version",
-      "metadata_location",
-      "support_level"
+      "metadata_locations",
+      "test_level"
     ],
     "properties": {
       "artifact": {
         "type": "string",
         "default": "",
-        "title": "The name of the metadata"
+        "title": "The name of the artifact"
+      },
+      "description": {
+        "type": "string",
+        "default": "",
+        "title": "Short text that says what the library or framework can do"
       },
       "minimal_version": {
         "type": "string",
         "default": "",
-        "title": "Minimal supported version"
+        "title": "Minimal version for which this entry applies"
       },
       "maximal_version": {
         "type": "string",
         "default": "",
-        "title": "Maximal supported version",
+        "title": "Maximal version for which this entry applies",
         "description": "If not defined, it is assumed to be supported for all versions starting from the minimum_version"
       },
       "metadata_location": {
+        "type": "array",
+        "default": [],
+        "items": {
+          "type": "string",
+          "default": ""
+        },
+        "title": "Web URLs of provided metadata"
+      },
+      "test_level": {
         "type": "string",
-        "default": "",
-        "title": "Web location of provided metadata"
+        "enum": [
+          "Untested",
+          "Partially tested",
+          "Fully tested"
+        ],
+        "default": "Untested",
+        "title": "Library level of testing"
       },
       "support_level": {
         "type": "string",
@@ -48,16 +67,9 @@
   },
   "examples": [
     {
-      "artifact": "mysql",
-      "minimal_version": "8.0.29",
-      "metadata_location": "https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/mysql",
-      "support_level": "Community Supported"
-    },
-    {
-      "artifact": "io.netty:netty-transport",
-      "minimal_version": "4.1.76.Final",
-      "maximal_version": "4.1.80.Final",
-      "metadata_location": "https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/io.netty/netty-transport",
+      "artifact": "netty",
+      "minimal_version": "4.1",
+      "metadata_location": "https://github.com/netty/netty/tree/main/common/src/main/resources/META-INF/native-image",
       "support_level": "Community Supported"
     }
   ]
