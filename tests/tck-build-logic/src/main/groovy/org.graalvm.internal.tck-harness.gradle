@@ -7,6 +7,7 @@
 
 
 import groovy.json.JsonOutput
+import org.graalvm.internal.tck.ScaffoldTask
 import org.graalvm.internal.tck.TestUtils
 import org.graalvm.internal.tck.harness.MetadataLookupLogic
 import org.graalvm.internal.tck.harness.TestLookupLogic
@@ -92,10 +93,12 @@ def matrixDefault = [
         "os"          : ["ubuntu-latest"] // TODO: Add support for "windows-latest", "macos-latest"
 ]
 
+final String METADATA_GROUP = "Metadata"
+
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.setGroup(METADATA_GROUP)
     task.doFirst {
         def matrix = [
                 "coordinates": matchingCoordinates
@@ -108,7 +111,7 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
 // gradle generateMatrixDiffCoordinates -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDiffCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with coordinates of changed libraries")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.setGroup(METADATA_GROUP)
     task.doFirst {
         if (!project.hasProperty("baseCommit")) {
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
@@ -130,4 +133,11 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
             println "::set-output name=none-found::false"
         }
     }
+}
+
+tasks.register("scaffold", ScaffoldTask.class) { task ->
+    task.setDescription("Creates a metadata and test scaffold for the given coordindates")
+    task.setGroup(METADATA_GROUP)
+    // Format JSON after task has been run
+    task.finalizedBy("spotlessApply")
 }

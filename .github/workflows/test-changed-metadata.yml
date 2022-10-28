@@ -24,7 +24,14 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          submodules: 'true'
+      - name: "🔧 Prepare environment"
+        uses: ./.github/actions/setup-graalvm
+        with:
+          version: 'latest'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
