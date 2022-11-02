@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/library-and-framework-support-schema.json",
+  "title": "Schema for the 'library-and-framework-list.json'",
+  "type": "array",
+  "default": [],
+  "items": {
+    "type": "object",
+    "required": [
+      "artifact",
+      "details"
+    ],
+    "properties": {
+      "artifact": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9.-]+:[a-zA-Z0-9.-]+$",
+        "default": "",
+        "title": "The name of the artifact",
+        "description": "The artifact name in the groupId:artifactId format"
+      },
+      "description": {
+        "type": "string",
+        "default": "",
+        "title": "Short description of the library or framework"
+      },
+      "details": {
+        "type": "array",
+        "default": [],
+        "items": {
+          "type": "object",
+          "default": {},
+          "required": [
+            "minimal_version",
+            "metadata_locations",
+            "tests_locations",
+            "test_level"
+          ],
+          "properties": {
+            "minimal_version": {
+              "type": "string",
+              "default": "",
+              "title": "Minimal version for which this entry applies"
+            },
+            "maximal_version": {
+              "type": "string",
+              "default": "",
+              "title": "Maximal version for which this entry applies",
+              "description": "Maximum version for which this entry applies. If not defined, it is assumed to be supported for all versions starting from the minimum_version"
+            },
+            "metadata_locations": {
+              "type": "array",
+              "default": [],
+              "items": {
+                "type": "string",
+                "default": ""
+              },
+              "title": "Web URLs of provided metadata"
+            },
+            "tests_locations": {
+              "type": "array",
+              "default": [],
+              "items": {
+                "type": "string",
+                "default": ""
+              },
+              "title": "Web URLs to tests (sources, CI dashboards/configurations, ...)"
+            },
+            "test_level": {
+              "type": "string",
+              "enum": [
+                "untested",
+                "community-tested",
+                "fully-tested"
+              ],
+              "default": "Untested",
+              "title": "Testing level of reachability metadata for the library or framework"
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "artifact": "io.netty:netty5-parent",
+      "details": [
+        {
+          "minimal_version": "4.1",
+          "metadata_locations": [
+            "https://github.com/netty/netty/tree/main/common/src/main/resources/META-INF/native-image"
+          ],
+          "tests_locations": [
+            "https://github.com/netty/netty/actions"
+          ],
+          "test_level": "fully-tested"
+        },
+        {
+          "minimal_version": "2.0",
+          "maximum_version": "4.0",
+          "metadata_locations": [
+            "https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/io.netty"
+          ],
+          "tests_locations": [
+            "https://github.com/oracle/graalvm-reachability-metadata/actions"
+          ],
+          "test_level": "community-tested"
+        }
+      ]
+    }
+  ]
+}
