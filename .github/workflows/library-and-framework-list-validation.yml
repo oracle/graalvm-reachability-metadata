@@ -1,14 +1,6 @@
 name: "Validate library and framework list json"
 
-on:
-  push:
-    paths:
-      - 'library-and-framework-list.json'
-  workflow_dispatch:
-
-concurrency:
-  group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
-  cancel-in-progress: true
+on: [push, pull_request]
 
 jobs:
   validate-library-and-framework-list-json:
