@@ -196,3 +196,22 @@ In this example this can be done by invoking following command from the reposito
 ```bash
 ./gradlew test -Pcoordinates=org.example:library:0.0.1
 ```
+
+## Library and framework list
+
+You can add your library/framework by adding new entry in the [library-and-framework-list.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json)
+with the following information:
+ * Artifact name (in the format `groupId:artifactId`)
+ * Artifact details, which includes:
+   * Minimal version for which this entry applies
+   * Maximal version for which this entry applies (`not required`)
+   * Metadata locations (list of web URLs of provided metadata)
+   * Test location (list of web URLs to tests such as sources, CI dashboards/configurations...)
+   * Test level with one of the following values:
+     * `untested` (there are no provided tests that can confirm library usage with Native Image)
+     * `community-tested` (the library is partially tested through some project e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
+     * `fully-tested` (the library is fully tested for each released version)
+ * Short description of the library or framework (`not required`)
+
+**Note:** In order to pass format and style checks, please run ```./gradlew :spotlessApply``` from the project root, before submitting a commit.  
+**Note:** Be aware that entries you add, will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)

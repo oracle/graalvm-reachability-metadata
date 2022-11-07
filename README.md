@@ -9,3 +9,10 @@ The GraalVM Reachability Metadata Repository enables Native Image users to share
 
 We welcome contributions from the community. Before submitting a pull
 request, please [review our contribution guide](./CONTRIBUTING.md).
+
+
+### Library and framework list 
+
+We record the libraries and frameworks that are tested with GraalVM Native Image. If you would like to see your library/framework
+in the list too, please make a contribution (open a pull request) to the [GraalVM Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata).
+Before submitting a pull request, please read [this guide](./CONTRIBUTING.md#Library-and-framework-list).
