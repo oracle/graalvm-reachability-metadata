@@ -197,21 +197,21 @@ In this example this can be done by invoking following command from the reposito
 ./gradlew test -Pcoordinates=org.example:library:0.0.1
 ```
 
-## Library and framework list
+## Tested Libraries and Frameworks
 
-You can add your library/framework by adding a new entry in the [library-and-framework-list.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json)
-with the following information:
+If your library or framework is tested with GraalVM Native Image, consider adding to [this list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
+Provide the following information for a new entry:
  * Artifact name (in the format `groupId:artifactId`)
  * Artifact details, which include:
    * Minimal version for which this entry applies
-   * Maximal version for which this entry applies (`not required`)
-   * Metadata locations (list of web URLs of the provided metadata)
-   * Test location (list of web URLs to tests such as sources, CI dashboards/configurations...)
+   * Maximal version for which this entry applies (_not required_)
+   * Metadata locations (list of web URLs providing metadata)
+   * Test locations (list of URLs to test sources, CI dashboards, etc.)
    * Test level with one of the following values:
      * `untested` (there are no provided tests that can confirm library usage with Native Image)
      * `community-tested` (the library is partially tested through some project, e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
      * `fully-tested` (the library is fully tested for each released version)
- * Short description of the library or framework (`not required`)
+ * Short description of a library or framework (_not required`_)
 
-**Note:** In order to pass format and style checks, please run ```./gradlew :spotlessApply``` from the project root, before submitting a commit.  
-**Note:** The entries you add, will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
+**Note:** In order to pass format and style checks, please run `./gradlew :spotlessApply` from the project root, before submitting a commit.  
+**Note:** The entries you add will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
