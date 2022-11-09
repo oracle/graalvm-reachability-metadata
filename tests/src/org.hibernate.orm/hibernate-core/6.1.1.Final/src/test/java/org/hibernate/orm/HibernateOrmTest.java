@@ -8,6 +8,7 @@ package org.hibernate.orm;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Date;
 
@@ -16,17 +17,37 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.annotations.AttributeAccessor;
+import org.hibernate.annotations.AttributeBinderType;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.CurrentTimestamp;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GeneratedColumn;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.GeneratorType;
+import org.hibernate.annotations.TenantId;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.ValueGenerationType;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.selector.internal.StrategySelectorImpl;
 import org.hibernate.boot.registry.selector.spi.StrategySelector;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.annotations.PropertyBinder;
 import org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl;
 import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
+import org.hibernate.mapping.Property;
+import org.hibernate.property.access.internal.PropertyAccessStrategyBasicImpl;
+import org.hibernate.property.access.spi.PropertyAccessStrategy;
 import org.hibernate.service.Service;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.spi.ServiceBinding;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
+import org.hibernate.tuple.AnnotationValueGeneration;
+import org.hibernate.tuple.AttributeBinder;
+import org.hibernate.tuple.GenerationTiming;
+import org.hibernate.tuple.TenantIdGeneration;
+import org.hibernate.tuple.ValueGenerator;
 import org.junit.jupiter.api.Test;
 
 public class HibernateOrmTest {
@@ -152,6 +173,198 @@ public class HibernateOrmTest {
         dialectFactory.injectServices(new StubServiceRegistryImplementor());
 
         assertNotNull(dialectFactory.buildDialect(Collections.singletonMap(AvailableSettings.DIALECT, "org.hibernate.dialect.PostgreSQLDialect"), () -> StubDialectResolutionInfo.INSTANCE));
+    }
+
+    @Test
+    void testGeneratedAnnotation() throws InstantiationException, IllegalAccessException {
+
+        Generated annotation = new Generated() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Generated.class;
+            }
+
+            @Override
+            public GenerationTime value() {
+                return GenerationTime.ALWAYS;
+            }
+        };
+
+        instantiateGenerator(annotation);
+    }
+
+    @Test
+    void testGeneratedColumnAnnotation() throws InstantiationException, IllegalAccessException {
+
+        GeneratedColumn annotation = new GeneratedColumn() {
+
+            @Override
+            public String value() {
+                return null;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return GeneratedColumn.class;
+            }
+        };
+
+        instantiateGenerator(annotation);
+    }
+
+    @Test
+    void testUpdateTimestampAnnotation() throws InstantiationException, IllegalAccessException {
+
+        UpdateTimestamp annotation = new UpdateTimestamp() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return UpdateTimestamp.class;
+            }
+        };
+
+        instantiateGenerator(Date.class, annotation);
+    }
+
+    @Test
+    void testCreationTimestampAnnotation() throws InstantiationException, IllegalAccessException {
+
+        CreationTimestamp annotation = new CreationTimestamp() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return CreationTimestamp.class;
+            }
+        };
+
+        instantiateGenerator(Date.class, annotation);
+    }
+
+    @Test
+    void testCurrentTimestampAnnotation() throws InstantiationException, IllegalAccessException {
+
+        CurrentTimestamp annotation = new CurrentTimestamp() {
+
+            @Override
+            public GenerationTiming timing() {
+                return GenerationTiming.ALWAYS;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return CurrentTimestamp.class;
+            }
+        };
+
+        instantiateGenerator(annotation);
+    }
+
+    @Test
+    void testTenantIdAnnotation() throws InstantiationException, IllegalAccessException {
+
+        TenantId annotation = new TenantId() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return TenantId.class;
+            }
+        };
+
+        instantiateGenerator(annotation);
+    }
+
+    @Test
+    void testGeneratorTypeAnnotation() throws InstantiationException, IllegalAccessException {
+
+        GeneratorType annotation = new GeneratorType() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return GeneratorType.class;
+            }
+
+            @Override
+            public Class<? extends ValueGenerator<?>> type() {
+                return TenantIdGeneration.class;
+            }
+
+            @Override
+            public GenerationTime when() {
+                return GenerationTime.ALWAYS;
+            }
+        };
+
+        instantiateGenerator(annotation);
+    }
+
+    @Test
+    void testTenantAttributeBinder() throws InstantiationException, IllegalAccessException {
+
+        TenantId annotation = new TenantId() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return TenantId.class;
+            }
+        };
+
+        instantiateBinder(annotation);
+    }
+
+    @Test
+    void testAttributeAccessorBinder() throws InstantiationException, IllegalAccessException {
+
+        AttributeAccessor annotation = new AttributeAccessor() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return AttributeAccessor.class;
+            }
+
+            @Override
+            public String value() {
+                return null;
+            }
+
+            @Override
+            public Class<? extends PropertyAccessStrategy> strategy() {
+                return PropertyAccessStrategyBasicImpl.class;
+            }
+        };
+
+        instantiateBinder(annotation);
+    }
+
+    /**
+     * @see PropertyBinder#makeProperty()
+     * @see PropertyBinder#instantiateAndInitializeValueGeneration(Annotation, Class, XProperty)
+     */
+    private <A extends Annotation> AnnotationValueGeneration<A> instantiateGenerator(A annotation) throws InstantiationException, IllegalAccessException {
+        return instantiateGenerator(Object.class, annotation);
+    }
+
+    /**
+     * @see PropertyBinder#makeProperty()
+     * @see PropertyBinder#instantiateAndInitializeValueGeneration(Annotation, Class, XProperty) 
+     */
+    private <A extends Annotation> AnnotationValueGeneration<A> instantiateGenerator(Class<?> propertyType, A annotation) throws InstantiationException, IllegalAccessException {
+
+        ValueGenerationType generatorAnnotation = annotation.annotationType().getAnnotation(ValueGenerationType.class);
+
+        Class<? extends AnnotationValueGeneration<?>> valueGenerator = generatorAnnotation.generatedBy();
+        AnnotationValueGeneration<A> valueGeneration = (AnnotationValueGeneration<A>) valueGenerator.newInstance();
+        valueGeneration.initialize(annotation, propertyType, "entityName", "propertyName");
+        return valueGeneration;
+    }
+
+    /**
+     * @see PropertyBinder#callAttributeBinders(Property)
+     */
+    private <A extends Annotation> AttributeBinder<A> instantiateBinder(Annotation annotation) throws InstantiationException, IllegalAccessException {
+
+        AttributeBinderType attributeBinder = annotation.annotationType().getAnnotation(AttributeBinderType.class);
+        return (AttributeBinder<A>) attributeBinder.binder().newInstance();
     }
 
     private static Configuration h2Config(Class<?>... entities) {
