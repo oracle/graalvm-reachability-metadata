@@ -210,7 +210,7 @@ Provide the following information for a new entry:
    * Test level with one of the following values:
      * `untested` (there are no provided tests that can confirm library usage with Native Image)
      * `community-tested` (the library is partially tested through some project, e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
-     * `fully-tested` (the library is fully tested for each released version of library)
+     * `fully-tested` (the library is fully tested for each released version of the library)
  * Short description of a library or framework (_not required`_)
 
 **Note:** In order to pass format and style checks, please run `./gradlew :spotlessApply` from the project root, before submitting a commit.  
