@@ -18,11 +18,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
 class LiquibaseCoreTest {
-    private static final String JDBC_URL = "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1";
 
     @Test
-    void test() throws Exception {
-        withConnection(JDBC_URL, (connection) -> {
+    void testYaml() throws Exception {
+        final String jdbcUrl = "jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1";
+        withConnection(jdbcUrl, (connection) -> {
             Database database = new H2Database();
             database.setConnection(new JdbcConnection(connection));
 
@@ -30,7 +30,7 @@ class LiquibaseCoreTest {
             liquibase.update();
         });
 
-        withConnection(JDBC_URL, (connection) -> {
+        withConnection(jdbcUrl, (connection) -> {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO state (id) VALUES (?)");
             statement.setString(1, "CO");
             statement.execute();
@@ -40,6 +40,25 @@ class LiquibaseCoreTest {
             statement.setString(2, "last-1");
             statement.setString(3, "CO");
             statement.setString(4, "user-1");
+            statement.execute();
+        });
+    }
+
+    @Test
+    void fullChangelogTest() throws Exception {
+        final String jdbcUrl = "jdbc:h2:mem:db2;DB_CLOSE_DELAY=-1";
+        withConnection(jdbcUrl, (connection) -> {
+            Database database = new H2Database();
+            database.setConnection(new JdbcConnection(connection));
+
+            Liquibase liquibase = new Liquibase("changelog.xml", new ClassLoaderResourceAccessor(), database);
+            liquibase.update();
+        });
+
+        withConnection(jdbcUrl, (connection) -> {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO person (fullname, employer_id) VALUES (?, ?)");
+            statement.setString(1, "first-1 last-1");
+            statement.setInt(2, 10);
             statement.execute();
         });
     }
