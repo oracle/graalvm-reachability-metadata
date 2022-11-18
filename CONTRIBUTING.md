@@ -199,7 +199,7 @@ In this example this can be done by invoking following command from the reposito
 
 ## Tested Libraries and Frameworks
 
-If your library or framework is tested with GraalVM Native Image, consider adding to [this list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
+If your library or framework is tested with GraalVM Native Image, consider adding it to [this list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
 Provide the following information for a new entry:
  * Artifact name (in the format `groupId:artifactId`)
  * Artifact details, which include:
@@ -210,8 +210,8 @@ Provide the following information for a new entry:
    * Test level with one of the following values:
      * `untested` (there are no provided tests that can confirm library usage with Native Image)
      * `community-tested` (the library is partially tested through some project, e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
-     * `fully-tested` (the library is fully tested for each released version of the library)
+     * `fully-tested` (the library is fully tested for each released library version)
  * Short description of a library or framework (_not required`_)
 
-**Note:** In order to pass format and style checks, please run `./gradlew :spotlessApply` from the project root, before submitting a commit.  
+**Note:** To pass format and style checks, please run `./gradlew :spotlessApply` from the project root, before submitting a commit.  
 **Note:** The entries you add will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
