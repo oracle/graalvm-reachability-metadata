@@ -17,8 +17,7 @@ In order to ensure that all contributions follow the same standards of quality w
 > not be included as it does not compose and can break code in unpredictable ways.
 >
 > Make sure that you are
->
-using [Conditional Configuration](https://www.graalvm.org/22.2/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json)
+> using [Conditional Configuration](https://www.graalvm.org/22.2/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json)
 > in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of
 > images.
 >

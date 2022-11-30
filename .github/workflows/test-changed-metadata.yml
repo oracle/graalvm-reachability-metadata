@@ -53,6 +53,8 @@ jobs:
           java-version: ${{ matrix.java-version }}
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+          native-image-pr-reports: 'true'
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
           ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
