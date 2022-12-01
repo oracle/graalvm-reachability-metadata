@@ -22,9 +22,13 @@ jobs:
       none-found: ${{ steps.set-matrix.outputs.none-found }}
     steps:
       - name: "☁️ Checkout repository"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: "🔧 Prepare environment"
+        uses: graalvm/setup-graalvm@v1
         with:
-          fetch-depth: 0
+          version: 'latest'
+          java-version: '17'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
@@ -41,16 +45,16 @@ jobs:
       matrix: ${{ fromJson(needs.get-changed-metadata.outputs.matrix) }}
     steps:
       - name: "☁️ Checkout repository"
-        uses: actions/checkout@v2
-        with:
-          submodules: 'true'
+        uses: actions/checkout@v3
       - name: "🔧 Prepare environment"
-        uses: ./.github/actions/setup-graalvm
+        uses: graalvm/setup-graalvm@v1
         with:
           version: ${{ matrix.version }}
           java-version: ${{ matrix.java-version }}
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+          native-image-pr-reports: 'true'
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
           ./gradlew test -Pcoordinates=${{ matrix.coordinates }}

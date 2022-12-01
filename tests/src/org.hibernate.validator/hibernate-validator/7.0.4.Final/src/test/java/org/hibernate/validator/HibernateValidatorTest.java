@@ -47,6 +47,7 @@ public class HibernateValidatorTest {
                 new ValidationError("bFalse", "{jakarta.validation.constraints.AssertFalse.message}"),
                 new ValidationError("bTrue", "{jakarta.validation.constraints.AssertTrue.message}"),
                 new ValidationError("digits", "{jakarta.validation.constraints.Digits.message}"),
+                new ValidationError("digitsString", "{jakarta.validation.constraints.Digits.message}"),
                 new ValidationError("notEmptyString", "{jakarta.validation.constraints.NotEmpty.message}"),
                 new ValidationError("notEmptyArray", "{jakarta.validation.constraints.NotEmpty.message}"),
                 new ValidationError("notEmptyMap", "{jakarta.validation.constraints.NotEmpty.message}"),

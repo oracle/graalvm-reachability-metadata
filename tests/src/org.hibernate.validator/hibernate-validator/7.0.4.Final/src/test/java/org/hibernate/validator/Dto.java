@@ -65,6 +65,9 @@ public class Dto {
     @Digits(integer = 2, fraction = 0)
     private final int digits;
 
+    @Digits(integer = 2, fraction = 0)
+    private final String digitsString;
+
     @NotEmpty
     private final String notEmptyString;
 
@@ -91,7 +94,7 @@ public class Dto {
 
     public Dto(
             String notBlank, List<String> notEmpty, int min, int max, String email, String pattern, Object notNull,
-            Object oNull, Instant future, boolean bTrue, boolean bFalse, int digits, String notEmptyString,
+            Object oNull, Instant future, boolean bTrue, boolean bFalse, int digits, String digitsString, String notEmptyString,
             Map<String, String> notEmptyMap, @NotEmpty String[] notEmptyArray, String size, int positive, int negative,
             String ccNumber, int range
     ) {
@@ -107,6 +110,7 @@ public class Dto {
         this.bTrue = bTrue;
         this.bFalse = bFalse;
         this.digits = digits;
+        this.digitsString = digitsString;
         this.notEmptyString = notEmptyString;
         this.notEmptyMap = notEmptyMap;
         this.notEmptyArray = notEmptyArray;
@@ -121,7 +125,7 @@ public class Dto {
         return new Dto(
                 "not-blank", List.of("not-empty"), 2, -2, "some@example.com", "a",
                 new Object(), null, Instant.now().plusSeconds(60), true, false, 11,
-                "some-content", Map.of("a", "1"), new String[]{"some-string"}, "12", 1,
+                "11", "some-content", Map.of("a", "1"), new String[]{"some-string"}, "12", 1,
                 -2, "4539627380966582", 7
         );
     }
@@ -129,7 +133,7 @@ public class Dto {
     public static Dto createInvalid() {
         return new Dto(
                 "", List.of(), 0, 0, "no-email", "1", null, new Object(),
-                Instant.now().minusSeconds(60), false, true, 111, "",
+                Instant.now().minusSeconds(60), false, true, 111, "111", "",
                 Map.of(), new String[0], "123", -1, 1, "", 11
         );
     }
