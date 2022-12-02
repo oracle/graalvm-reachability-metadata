@@ -7,12 +7,8 @@
 
 package org.graalvm.internal.tck.harness.tasks
 
-import org.graalvm.internal.tck.TestUtils
-import org.graalvm.internal.tck.harness.MetadataLookupLogic
-import org.graalvm.internal.tck.harness.TestLookupLogic
-import org.gradle.api.GradleException
+
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.TaskAction
 
 import javax.inject.Inject
 import java.nio.file.Path
@@ -20,22 +16,22 @@ import java.util.stream.Collectors
 
 import static org.graalvm.internal.tck.Utils.readIndexFile
 import static org.graalvm.internal.tck.Utils.splitCoordinates
-
 /**
  * Task that is used to start subproject tests.
  */
 @SuppressWarnings("unused")
 abstract class TestInvocationTask extends AbstractSubprojectTask {
 
-    static final DEFAULT_ARGS = List.of(TestUtils.repoRoot.resolve("gradlew").toString(), "nativeTest")
-
     @Input
     String coordinates
 
     @Inject
     TestInvocationTask(String coordinates) {
-        super(coordinates, getArguments(coordinates))
-        dependsOn("check")
+        super(coordinates)
+        def me = this
+        project.tasks.named("check") {
+            dependsOn(me)
+        }
         this.coordinates = coordinates
     }
 
@@ -44,19 +40,22 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
      * @param coordinates
      * @return list of processed arguments
      */
-    static List<String> getArguments(String coordinates) {
+    @Override
+    @Input
+    List<String> getCommand() {
+        def defaultArgs = [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "nativeTest"]
         try {
-            Map<String, List<String>> testIndex = readIndexFile(TestLookupLogic.getTestDir(coordinates)) as Map<String, List<String>>
+            Map<String, List<String>> testIndex = readIndexFile(tckExtension.getTestDir(coordinates)) as Map<String, List<String>>
             if (!testIndex.containsKey("test-command")) {
-                return DEFAULT_ARGS
+                return defaultArgs
             }
 
-            Path metadataDir = MetadataLookupLogic.getMetadataDir(coordinates)
+            Path metadataDir = tckExtension.getMetadataDir(coordinates)
             return testIndex.get("test-command").stream()
                     .map(c -> processCommand(c, metadataDir, coordinates))
                     .collect(Collectors.toList())
         } catch (FileNotFoundException ignored) {
-            return DEFAULT_ARGS
+            return defaultArgs
         }
     }
 
@@ -77,25 +76,25 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
                 .replace("<version>", version)
     }
 
-    @TaskAction
     @Override
-    void exec() {
+    protected String getErrorMessage(int exitCode) {
+        "Test for ${coordinates} failed with exit code ${exitCode}."
+    }
+
+    @Override
+    protected void beforeExecute() {
         getLogger().lifecycle("====================")
         getLogger().lifecycle("Testing library: {}", coordinates)
-        getLogger().lifecycle("Command: `{}`", String.join(" ", getCommandLine()))
+        getLogger().lifecycle("Command: `{}`", String.join(" ", command))
         getLogger().lifecycle("Executing test...")
         getLogger().lifecycle("-------")
-
-        super.exec()
-
-        getLogger().lifecycle("-------")
-
-        int exitCode = getExecutionResult().get().getExitValue()
-        if (exitCode != 0) {
-            throw new GradleException("Test for ${coordinates} failed with exit code ${exitCode}.")
-        } else {
-            getLogger().lifecycle("Test for {} passed.", coordinates)
-            getLogger().lifecycle("====================")
-        }
     }
+
+    @Override
+    protected void afterExecute() {
+        getLogger().lifecycle("-------")
+        getLogger().lifecycle("Test for {} passed.", coordinates)
+        getLogger().lifecycle("====================")
+    }
+
 }

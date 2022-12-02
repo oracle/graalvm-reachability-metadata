@@ -5,13 +5,11 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import org.graalvm.internal.tck.TestUtils
-
 plugins {
     id "org.graalvm.internal.tck"
 }
 
-String libraryVersion = TestUtils.testedLibraryVersion
+String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     implementation('org.reflections:reflections:0.10.2')
@@ -24,7 +22,7 @@ graalvmNative {
     binaries {
         test {
             // We have to manually add the metadata for JNA, as testcontainers use JNA
-            configurationFileDirectories.from(TestUtils.metadataRoot.resolve('net.java.dev.jna/jna/5.8.0'))
+            configurationFileDirectories.from(tck.metadataRoot.dir('net.java.dev.jna/jna/5.8.0'))
         }
     }
     agent {
