@@ -31,14 +31,14 @@ tasks.register("checkstyle") {
     dependsOn tasks.withType(Checkstyle)
 }
 
-def metadataPath = Objects.requireNonNullElse(
-        System.getenv("GVM_TCK_MD"),
-        providers.gradleProperty('metadata.dir').get()
+String metadataPath = Objects.requireNonNullElse(
+		System.getenv("GVM_TCK_MD"),
+		providers.gradleProperty('metadata.dir').get()
 )
 
 File metadataFile
 if (!metadataPath.startsWith("/")) {
-    metadataFile = metadataRoot.resolve(metadataPath).toFile()
+	metadataFile = file(tck.metadataRoot).toPath().resolve(metadataPath).toFile()
 } else {
     metadataFile = file(metadataPath)
 }
