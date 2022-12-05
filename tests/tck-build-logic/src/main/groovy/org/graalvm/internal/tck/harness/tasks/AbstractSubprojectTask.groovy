@@ -8,16 +8,24 @@
 package org.graalvm.internal.tck.harness.tasks
 
 import groovy.transform.Internal
-import org.graalvm.internal.tck.harness.MetadataLookupLogic
-import org.graalvm.internal.tck.harness.TestLookupLogic
-import org.gradle.api.tasks.Exec
+import org.graalvm.internal.tck.harness.TckExtension
+import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecOperations
+import org.gradle.process.ExecSpec
 
 import javax.inject.Inject
+import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.util.stream.Collectors
 
 import static groovy.io.FileType.FILES
-import static org.graalvm.internal.tck.TestUtils.tckRoot
 import static org.graalvm.internal.tck.Utils.coordinatesMatch
 import static org.graalvm.internal.tck.Utils.readIndexFile
 import static org.graalvm.internal.tck.Utils.splitCoordinates
@@ -26,13 +34,47 @@ import static org.graalvm.internal.tck.Utils.splitCoordinates
  * Abstract task that is used to invoke test subprojects.
  */
 @SuppressWarnings("unused")
-abstract class AbstractSubprojectTask extends Exec {
+abstract class AbstractSubprojectTask extends DefaultTask {
+
+    protected final TckExtension tckExtension
+    private final String coordinates
 
     @Inject
-    AbstractSubprojectTask(String coordinates, List<String> cmd) {
-        def (String groupId, String artifactId, String version) = splitCoordinates(coordinates)
-        Path metadataDir = MetadataLookupLogic.getMetadataDir(coordinates)
+    abstract ExecOperations getExecOperations()
 
+    @Input
+    abstract List<String> getCommand();
+
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    final Set<File> getInputFiles() {
+        def inputFiles = project.objects.fileCollection()
+        def metadataDir = tckExtension.getMetadataDir(coordinates)
+        Path testDir = tckExtension.getTestDir(coordinates)
+        inputFiles.from(project.files(tckExtension.getMetadataFileList(metadataDir)))
+        def io = inputsFor(testDir)
+        def result = inputFiles.from(io).files
+        result
+    }
+
+    @OutputFile
+    final File getOutputFile() {
+        String hash = command.join(",").md5()
+        def file = project.layout.buildDirectory.file("tests/${coordinates}/${hash}.out").get().asFile
+        file
+    }
+
+    @Inject
+    AbstractSubprojectTask(String coordinates) {
+        this.tckExtension = project.extensions.findByType(TckExtension)
+        this.coordinates = coordinates
+    }
+
+
+    protected final configureSpec(ExecSpec spec) {
+
+        def (String groupId, String artifactId, String version) = splitCoordinates(coordinates)
+        Path metadataDir = tckExtension.getMetadataDir(coordinates)
         boolean override = false
 
         def metadataIndex = readIndexFile(metadataDir.parent)
@@ -45,7 +87,7 @@ abstract class AbstractSubprojectTask extends Exec {
             }
         }
 
-        Path testDir = TestLookupLogic.getTestDir(coordinates)
+        Path testDir = tckExtension.getTestDir(coordinates)
 
         Map<String, String> env = new HashMap<>(System.getenv())
         // Environment variables for setting up TCK
@@ -53,51 +95,79 @@ abstract class AbstractSubprojectTask extends Exec {
         env.put("GVM_TCK_EXCLUDE", override.toString())
         env.put("GVM_TCK_LV", version)
         env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString())
-        env.put("GVM_TCK_TCKDIR", tckRoot.toAbsolutePath().toString())
-        environment(env)
+        env.put("GVM_TCK_TCKDIR", tckExtension.getTckRoot().get().getAsFile().toPath().toAbsolutePath().toString())
+        spec.environment(env)
+        spec.commandLine(getCommand())
+        spec.workingDir(testDir.toAbsolutePath().toFile())
 
-        commandLine(cmd)
-        workingDir(testDir.toAbsolutePath().toFile())
-
-        def (inputs, outputs) = getInputsOutputs(testDir)
-        getInputs().files(MetadataLookupLogic.getMetadataFileList(metadataDir))
-        getInputs().files(inputs)
-        getOutputs().files(outputs)
-
-        setIgnoreExitValue(true)
+        spec.setIgnoreExitValue(true)
+        spec.standardOutput = System.out
+        spec.errorOutput = System.err
     }
 
     /**
-     * Given project dir returns a tuple that contains a list of inputs and a list of outputs.
+     * Given project dir returns a tuple that contains a list of inputs.
      * @param projectDir
-     * @return tuple containing lists of input and output files
+     * @return lists of input files
      */
     @Internal
-    def static getInputsOutputs(Path projectDir) {
+    def inputsFor(Path projectDir) {
         File dir = projectDir.toFile()
         def excludedSubdirNames = [".gradle", ".mvn"]
-        def outputSubdirNames = ["build", "target", "bin"]
 
         List<String> excludedSubdirs = excludedSubdirNames.stream()
                 .map(name -> projectDir.resolve(name).toFile().getCanonicalPath() + File.separator)
                 .collect(Collectors.toList())
 
-        List<String> outputSubdirs = outputSubdirNames.stream()
-                .map(name -> projectDir.resolve(name).toFile().getCanonicalPath() + File.separator)
-                .collect(Collectors.toList())
-
 
         def inputFiles = []
-        def outputFiles = []
 
         dir.traverse(type: FILES) { File file ->
-            if (outputSubdirs.stream().anyMatch(curr -> file.getCanonicalPath().startsWith(curr))) {
-                outputFiles.add(file.toPath())
-            } else if (excludedSubdirs.stream().noneMatch(curr -> file.getCanonicalPath().startsWith(curr))) {
+            if (excludedSubdirs.stream().noneMatch(curr -> file.getCanonicalPath().startsWith(curr))) {
                 inputFiles.add(file.toPath())
             }
         }
 
-        return [inputFiles, outputFiles]
+        return Collections.unmodifiableList(inputFiles)
+    }
+
+    protected void beforeExecute() {
+        // do nothing
+    }
+
+    protected void afterExecute() {
+        // do nothing
+    }
+
+    protected String getErrorMessage(int exitCode) {
+        "Execution of " + getCommand() + " failed."
+    }
+
+    @TaskAction
+    final void execute() {
+        beforeExecute()
+        println "Command: $command"
+        def out = new ByteArrayOutputStream()
+        def err = new ByteArrayOutputStream()
+        def execResult = execOperations.exec { spec ->
+            configureSpec(spec)
+            spec.standardOutput = new TeeOutputStream(out, System.out)
+            spec.errorOutput = new TeeOutputStream(err, System.err)
+        }
+        outputFile.parentFile.mkdirs()
+        outputFile.text = """Standard out
+-----
+${out.toString(StandardCharsets.UTF_8)}
+-----
+Standard err
+----
+${err.toString(StandardCharsets.UTF_8)}
+----
+"""
+        def exitCode = execResult.exitValue
+        if (exitCode != 0) {
+            throw new GradleException(getErrorMessage(exitCode))
+        }
+        afterExecute()
     }
 }

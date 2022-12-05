@@ -5,12 +5,9 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import org.graalvm.internal.tck.TestUtils
-
-import static org.graalvm.internal.tck.TestUtils.metadataRoot
-import static org.graalvm.internal.tck.TestUtils.repoRoot
 
 plugins {
+    id 'org.graalvm.internal.tck-base'
     id 'checkstyle'
     id 'java-library'
     id 'org.graalvm.buildtools.native'
@@ -20,30 +17,28 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.release = 11
 }
 
-TestUtils.locateRepoDirs(project) // Find relevant directories for the test harness.
-
 checkstyle {
-    configFile repoRoot.resolve("gradle").resolve("checkstyle.xml").toFile()
+    configFile tck.repoRoot.file("gradle/checkstyle.xml").get().asFile
 }
 
-task checkstyle() {
-    setDescription("Runs all checkstyle tasks")
-    setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+tasks.register("checkstyle") {
+    description = "Runs all checkstyle tasks"
+    group = JavaBasePlugin.VERIFICATION_GROUP
     dependsOn tasks.withType(Checkstyle)
 }
 
-def metadataPath = Objects.requireNonNullElse(
-        System.getenv("GVM_TCK_MD"),
-        providers.gradleProperty('metadata.dir').get()
+String metadataPath = Objects.requireNonNullElse(
+		System.getenv("GVM_TCK_MD"),
+		providers.gradleProperty('metadata.dir').get()
 )
 
 File metadataFile
 if (!metadataPath.startsWith("/")) {
-    metadataFile = metadataRoot.resolve(metadataPath).toFile()
+	metadataFile = file(tck.metadataRoot).toPath().resolve(metadataPath).toFile()
 } else {
     metadataFile = file(metadataPath)
 }
@@ -57,7 +52,7 @@ String overrideVal = System.getenv("GVM_TCK_EXCLUDE") ?: providers.gradlePropert
 overrideVal = overrideVal ?: "false"
 boolean override = overrideVal.toBoolean()
 
-TestUtils.testedLibraryVersion = libraryVersion
+tck.testedLibraryVersion = libraryVersion
 // This value can be used to request specific library version to test with.
 
 dependencies {

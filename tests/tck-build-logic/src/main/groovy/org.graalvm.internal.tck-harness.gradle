@@ -5,24 +5,22 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+plugins {
+    id 'org.graalvm.internal.tck-base'
+}
 
 import groovy.json.JsonOutput
 import org.graalvm.internal.tck.ScaffoldTask
-import org.graalvm.internal.tck.TestUtils
-import org.graalvm.internal.tck.harness.MetadataLookupLogic
-import org.graalvm.internal.tck.harness.TestLookupLogic
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
-TestUtils.locateRepoDirs(project) // Find relevant directories for the test harness.
-
 logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
 
 String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
-List<String> matchingCoordinates = MetadataLookupLogic.getMatchingCoordinates(coordinateFilter)
+List<String> matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
 
 // gradle test -Pcoordinates=<maven-coordinates>
 Provider<Task> test = tasks.register("test", DefaultTask) { task ->
@@ -75,7 +73,7 @@ List<String> diffCoordinates = new ArrayList<>()
 if (project.hasProperty("baseCommit")) {
     String baseCommit = project.findProperty("baseCommit")
     String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
-    for (def coordinates in TestLookupLogic.diffCoordinates(baseCommit, newCommit)) {
+    for (def coordinates in tck.diffCoordinates(baseCommit, newCommit)) {
         diffCoordinates.add(coordinates)
         String taskTaskName = generateTaskName("test", coordinates)
         if ((!tasks.getNames().contains(taskTaskName))) {
@@ -88,7 +86,7 @@ if (project.hasProperty("baseCommit")) {
 }
 
 def matrixDefault = [
-        "version"     : ["22.2.0", "dev"], // TODO: Add other supported versions
+        "version"     : ["22.3.0", "dev"], // TODO: Add other supported versions
         "java-version": ["17"], // TODO: Add "17", "19"
         "os"          : ["ubuntu-latest"] // TODO: Add support for "windows-latest", "macos-latest"
 ]
