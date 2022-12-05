@@ -200,18 +200,35 @@ In this example this can be done by invoking following command from the reposito
 ## Tested Libraries and Frameworks
 
 If your library or framework is tested with GraalVM Native Image, consider adding it to [this list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
-Provide the following information for a new entry:
- * Artifact name (in the format `groupId:artifactId`)
- * Artifact details, which include:
-   * Minimal version for which this entry applies
-   * Maximal version for which this entry applies (_not required_)
-   * Metadata locations (list of web URLs providing metadata)
-   * Test locations (list of URLs to test sources, CI dashboards, etc.)
-   * Test level with one of the following values:
-     * `untested` (there are no provided tests that can confirm library usage with Native Image)
-     * `community-tested` (the library is partially tested through some project, e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
-     * `fully-tested` (the library is fully tested for each released library version)
- * Short description of a library or framework (_not required`_)
 
-**Note:** To pass format and style checks, please run `./gradlew :spotlessApply` from the project root, before submitting a commit.  
+Write an entry as follows:
+```json
+{
+    "artifact": "<groupId>:<artifactId>",
+    "description": "<artifactDescription>",
+    "details": [
+      {
+        "minimum_version": "<minimumVersion>",
+        "maximum_version": "<maximumVersion>",
+        "metadata_locations": ["<metadataLocations>"],
+        "tests_locations": ["<testLocations>"],
+        "test_level": "<testLevel>"
+      }
+    ]
+}
+```
+Where:
+ * `<groupId>` and `<artifactId>` - standard Maven coordinates ([see this](https://dzone.com/refcardz/getting-started-repository#:~:text=Repositories%20store%20artifacts%20using%20a,%2C%20Artifact%2C%20Version%20coordinate.%E2%80%9D))
+ * `<artifactDescription>` - short description of the library or framework (_not required_) 
+ * `<minimumVersion>` - minimal version for which this entry applies
+ * `<maximumVersion>` - maximal version for which this entry applies (_not required_)
+ * `<metadataLocations>` - list of web URLs providing metadata
+ * `<testLocations>` - list of URLs to test sources, CI dashboards, etc.
+ * `<testLevel>` - one of the following values:
+   * untested (there are no provided tests that can confirm library usage with Native Image)
+   * community-tested (the library is partially tested through some project, e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
+   * fully-tested (the library is fully tested for each released library version)
+
+**Note:** To pass format and style checks, please run `./gradlew :spotlessApply` from the project root, before submitting a PR.  
 **Note:** The entries you add will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
+
