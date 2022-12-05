@@ -218,7 +218,7 @@ Write an entry as follows:
 }
 ```
 Where:
- * `<groupId>` and `<artifactId>` - standard Maven coordinates ([see this](https://dzone.com/refcardz/getting-started-repository#:~:text=Repositories%20store%20artifacts%20using%20a,%2C%20Artifact%2C%20Version%20coordinate.%E2%80%9D))
+ * `<groupId>` and `<artifactId>` - standard Maven coordinates ([see this](https://maven.apache.org/pom.html#maven-coordinates))
  * `<artifactDescription>` - short description of the library or framework (_not required_) 
  * `<minimumVersion>` - minimal version for which this entry applies
  * `<maximumVersion>` - maximal version for which this entry applies (_not required_)
