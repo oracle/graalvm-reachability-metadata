@@ -17,6 +17,7 @@ jobs:
   get-changed-metadata:
     name: "📋 Get a list of all changed libraries"
     runs-on: "ubuntu-20.04"
+    timeout-minutes: 5
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
@@ -40,6 +41,7 @@ jobs:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
     if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true'
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     needs: get-changed-metadata
 
     strategy:
