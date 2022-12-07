@@ -18,6 +18,7 @@ jobs:
   get-all-metadata:
     name: "📋 Get list of all supported libraries"
     runs-on: "ubuntu-20.04"
+    timeout-minutes: 5
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -37,6 +38,7 @@ jobs:
   test-all-metadata:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     needs: get-all-metadata
     strategy:
       fail-fast: false
