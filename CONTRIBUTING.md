@@ -218,7 +218,7 @@ Write an entry as follows:
 }
 ```
 Where:
- * `<groupId>` and `<artifactId>` - standard Maven coordinates ([see this](https://maven.apache.org/pom.html#maven-coordinates))
+ * `<groupId>` and `<artifactId>` - part of the standard Maven coordinates ([see this](https://maven.apache.org/pom.html#maven-coordinates))
  * `<artifactDescription>` - short description of the library or framework (_not required_) 
  * `<minimumVersion>` - minimal version for which this entry applies
  * `<maximumVersion>` - maximal version for which this entry applies (_not required_)
