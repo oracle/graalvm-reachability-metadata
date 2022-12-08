@@ -196,3 +196,39 @@ In this example this can be done by invoking following command from the reposito
 ```bash
 ./gradlew test -Pcoordinates=org.example:library:0.0.1
 ```
+
+## Tested Libraries and Frameworks
+
+If your library or framework is tested with GraalVM Native Image, consider adding it to [this list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
+
+Write an entry as follows:
+```json
+{
+    "artifact": "<groupId>:<artifactId>",
+    "description": "<artifactDescription>",
+    "details": [
+      {
+        "minimum_version": "<minimumVersion>",
+        "maximum_version": "<maximumVersion>",
+        "metadata_locations": ["<metadataLocations>"],
+        "tests_locations": ["<testLocations>"],
+        "test_level": "<testLevel>"
+      }
+    ]
+}
+```
+Where:
+ * `<groupId>` and `<artifactId>` - part of the standard Maven coordinates ([see this](https://maven.apache.org/pom.html#maven-coordinates))
+ * `<artifactDescription>` - short description of the library or framework (_not required_) 
+ * `<minimumVersion>` - minimal version for which this entry applies
+ * `<maximumVersion>` - maximal version for which this entry applies (_not required_)
+ * `<metadataLocations>` - list of web URLs providing metadata
+ * `<testLocations>` - list of URLs to test sources, CI dashboards, etc.
+ * `<testLevel>` - one of the following values:
+   * untested (there are no provided tests that can confirm library usage with Native Image)
+   * community-tested (the library is partially tested through some project, e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
+   * fully-tested (the library is fully tested for each released library version)
+
+**Note:** To pass format and style checks, please run `./gradlew :spotlessApply` from the project root, before submitting a PR.  
+**Note:** The entries you add will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
+
