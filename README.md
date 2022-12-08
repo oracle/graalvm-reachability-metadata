@@ -14,5 +14,5 @@ request, please [review our contribution guide](./CONTRIBUTING.md).
 ### Tested Libraries and Frameworks
 
 We track the libraries and frameworks that are tested with GraalVM Native Image. If you would like to see your library/framework
-in the list too, please contribute (open a pull request) to the [GraalVM Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata).
+in the list too, please open a pull request and extend [this JSON file](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
 Before submitting a pull request, please read [this guide](./CONTRIBUTING.md#tested-libraries-and-frameworks).
