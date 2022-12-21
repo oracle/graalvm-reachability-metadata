@@ -1,0 +1,44 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+plugins {
+    id "org.graalvm.internal.tck"
+    id 'org.springframework.boot' version '3.0.1'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "com.baomidou:dynamic-datasource-spring-boot-starter:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testRuntimeOnly 'com.h2database:h2:2.1.214'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+group 'com_baomidou.dynamic_datasource_spring_boot_starter'
+
+springBoot {
+    mainClass = 'com_baomidou.dynamic_datasource_spring_boot_starter.AddRemoveDatasourceApplication'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        metadataCopy {
+            mergeWithExisting = true
+            inputTaskNames.add("test")
+            outputDirectories.add("src/test/resources/META-INF/native-image/com.baomidou/dynamic-datasource-spring-boot-starter")
+        }
+    }
+}
