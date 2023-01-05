@@ -19,7 +19,9 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
@@ -63,6 +65,24 @@ public class JakartaMailTest {
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("bob@localhost"));
         message.setSubject("This is a test");
         message.setText("Dear Bob, hello world! Alice.");
+        Transport.send(message);
+    }
+
+    @Test
+    void sendMailWithMultipart() throws MessagingException {
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "localhost");
+        properties.put("mail.smtp.port", "3025");
+        Session session = Session.getInstance(properties);
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress("alice@localhost"));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("bob@localhost"));
+        message.setSubject("This is a test");
+        MimeMultipart mainPart = new MimeMultipart();
+        MimeBodyPart bodyPart = new MimeBodyPart();
+        bodyPart.setText("Dear Bob, hello world! Alice.");
+        mainPart.addBodyPart(bodyPart);
+        message.setContent(mainPart, "multipart/mixed");
         Transport.send(message);
     }
 
