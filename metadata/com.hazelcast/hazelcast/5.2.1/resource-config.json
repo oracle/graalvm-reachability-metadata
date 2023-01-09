@@ -1,19 +1,4 @@
 {
-  "bundles": [
-    {
-      "name": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message",
-      "locales": [
-        "und",
-        "zh-CN"
-      ]
-    },
-    {
-      "name": "com.sun.org.apache.xml.internal.serializer.XMLEntities",
-      "locales": [
-        "und"
-      ]
-    }
-  ],
   "resources": {
     "includes": [
       {
@@ -72,7 +57,7 @@
       },
       {
         "condition": {
-          "typeReachable": "com.hazelcast.client.config.XmlClientConfigBuilder"
+          "typeReachable": "com.hazelcast.config.AbstractXmlConfigHelper"
         },
         "pattern": "hazelcast-client-config-[0-9.-]+xsd"
       },
@@ -90,12 +75,6 @@
       },
       {
         "condition": {
-          "typeReachable": "com.hazelcast.config.XmlConfigBuilder"
-        },
-        "pattern": "hazelcast-config-[0-9.-]+xsd"
-      },
-      {
-        "condition": {
           "typeReachable": "com.hazelcast.internal.config.XmlConfigLocator"
         },
         "pattern": "\\Qhazelcast-default.xml\\E"
@@ -105,7 +84,34 @@
           "typeReachable": "com.hazelcast.internal.util.phonehome.BuildInfoCollector"
         },
         "pattern": "\\Qhazelcast-download.properties\\E"
+      },
+      {
+        "condition": {
+          "typeReachable": "com.hazelcast.client.config.XmlClientConfigBuilder"
+        },
+        "pattern": "hazelcast-client-config-[0-9.-]+xsd"
+      },
+      {
+        "condition": {
+          "typeReachable": "com.hazelcast.config.XmlConfigBuilder"
+        },
+        "pattern": "hazelcast-config-[0-9.-]+xsd"
       }
     ]
-  }
+  },
+  "bundles": [
+    {
+      "name": "com.sun.org.apache.xerces.internal.impl.xpath.regex.message",
+      "locales": [
+        "und",
+        "zh-CN"
+      ]
+    },
+    {
+      "name": "com.sun.org.apache.xml.internal.serializer.XMLEntities",
+      "locales": [
+        "und"
+      ]
+    }
+  ]
 }
