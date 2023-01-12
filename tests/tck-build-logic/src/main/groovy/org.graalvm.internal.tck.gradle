@@ -17,6 +17,13 @@ repositories {
     mavenCentral()
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.GRAAL_VM
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.release = 17
 }
