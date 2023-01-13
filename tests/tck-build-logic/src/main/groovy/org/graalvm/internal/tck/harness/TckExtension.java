@@ -155,16 +155,15 @@ public abstract class TckExtension {
             // If tck was changed we should retest everything, just to be safe.
             return getMatchingCoordinates("");
         }
-
         // First get all available coordinates, then filter them by if their corresponding metadata / tests directories
         // contain changed files.
         return getMatchingCoordinates("").stream().filter(c -> {
             Path metadataDir = getMetadataDir(c);
-            if (changed.get("metadata").stream().anyMatch(f -> f.startsWith(metadataDir))) {
+            if (changed.get("metadata") != null && changed.get("metadata").stream().anyMatch(f -> f.startsWith(metadataDir))) {
                 return true;
             }
             Path testDir = getTestDir(c);
-            if (changed.get("test").stream().anyMatch(f -> f.startsWith(testDir))) {
+            if (changed.get("test") != null && changed.get("test").stream().anyMatch(f -> f.startsWith(testDir))) {
                 return true;
             }
             return false;
