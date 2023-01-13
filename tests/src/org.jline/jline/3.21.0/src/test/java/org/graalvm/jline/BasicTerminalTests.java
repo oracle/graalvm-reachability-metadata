@@ -30,6 +30,9 @@ public class BasicTerminalTests {
 
     @Test
     public void testNewlines() throws IOException, InterruptedException {
+        if (BasicTerminalTests.class != null) {
+            throw new RuntimeException("No!");
+        }
         PipedInputStream in = new PipedInputStream();
         PipedOutputStream outIn = new PipedOutputStream(in);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
