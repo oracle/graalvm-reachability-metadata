@@ -28,6 +28,7 @@ import org.hibernate.annotations.GeneratorType;
 import org.hibernate.annotations.TenantId;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.ValueGenerationType;
+import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.boot.registry.selector.internal.StrategySelectorImpl;
 import org.hibernate.boot.registry.selector.spi.StrategySelector;
@@ -48,6 +49,7 @@ import org.hibernate.tuple.AttributeBinder;
 import org.hibernate.tuple.GenerationTiming;
 import org.hibernate.tuple.TenantIdGeneration;
 import org.hibernate.tuple.ValueGenerator;
+import org.hibernate.type.spi.TypeConfiguration;
 import org.junit.jupiter.api.Test;
 
 public class HibernateOrmTest {
@@ -173,6 +175,21 @@ public class HibernateOrmTest {
         dialectFactory.injectServices(new StubServiceRegistryImplementor());
 
         assertNotNull(dialectFactory.buildDialect(Collections.singletonMap(AvailableSettings.DIALECT, "org.hibernate.dialect.PostgreSQLDialect"), () -> StubDialectResolutionInfo.INSTANCE));
+    }
+
+    @Test
+    void initPostgresqlDialect() {
+
+        TypeContributions contributions = new TypeContributions() {
+            TypeConfiguration configuration = new TypeConfiguration();
+            @Override
+            public TypeConfiguration getTypeConfiguration() {
+                return configuration;
+            }
+        };
+
+        ServiceRegistry registry = new StubServiceRegistryImplementor();
+        new org.hibernate.dialect.PostgreSQLDialect().contributeTypes(contributions, registry);
     }
 
     @Test
