@@ -7,12 +7,14 @@ on:
 
 jobs:
   on-success:
+    name: "🧪 All metadata tests have passed"
     runs-on: "ubuntu-20.04"
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - run: exit 0
 
   on-failure:
+    name: "❌ Some metadata tests have failed"
     runs-on: "ubuntu-20.04"
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
