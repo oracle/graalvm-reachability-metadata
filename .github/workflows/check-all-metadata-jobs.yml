@@ -1,0 +1,17 @@
+name: "All changed metadata tests have passed"
+
+on:
+  workflow_run:
+    workflows: ["Test changed metadata"]
+    types: [completed]
+
+jobs:
+  on-success:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - run: exit 0
+
+  on-failure:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: exit 1
