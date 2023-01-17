@@ -1,4 +1,4 @@
-name: "CI check"
+name: "All changed metadata tests have passed"
 
 on:
   workflow_run:
@@ -9,9 +9,9 @@ jobs:
   on-success:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      run: exit 0
+      - run: exit 0
 
   on-failure:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
-      run: exit 1
+      - run: exit 1
