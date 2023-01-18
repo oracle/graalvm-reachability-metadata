@@ -72,7 +72,11 @@ public class NettyTests {
     }
 
     private void test(boolean ssl) throws Exception {
-      micReference<Response> response = new AtomicReference<>();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            startServer(bossGroup, workerGroup, ssl);
+            AtomicReference<Response> response = new AtomicReference<>();
             startClient(workerGroup, ssl, response::set);
             Awaitility.await().atMost(Duration.ofSeconds(5))
                     .untilAtomic(response, CoreMatchers.equalTo(new Response(200, "HTTP/1.1", "Hello World")));
