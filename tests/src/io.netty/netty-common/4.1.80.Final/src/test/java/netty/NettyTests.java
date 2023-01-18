@@ -71,8 +71,6 @@ public class NettyTests {
         test(false);
     }
 
-    //test2
-
     private void test(boolean ssl) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();

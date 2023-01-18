@@ -48,7 +48,15 @@ public class MySQLTests {
 
     @BeforeAll
     static void beforeAll() throws IOException {
-       CommunicationsException
+        System.out.println("Starting MySQL ...");
+        process = new ProcessBuilder(
+                "docker", "run", "--rm", "-p", "3306:3306", "-e", "MYSQL_DATABASE=" + DATABASE, "-e", "MYSQL_USER=" + USERNAME,
+                "-e", "MYSQL_PASSWORD=" + PASSWORD, "mysql/mysql-server:8.0").redirectOutput(new File("mysql-stdout.txt"))
+                .redirectError(new File("mysql-stderr.txt")).start();
+
+        // Wait until connection can be established
+        Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptionsMatching(e ->
+                e instanceof CommunicationsException
         ).until(() -> {
             openConnection().close();
             return true;
