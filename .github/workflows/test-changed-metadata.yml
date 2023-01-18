@@ -69,10 +69,10 @@ jobs:
     if: ${{ always() }}
     needs: test-changed-metadata
     steps:
-      - name: "All passed"
+      - name: "All tests passed"
         if: needs.test-changed-metadata.result == 'success'
         run: exit 0
 
-      - name: "Some failed"
+      - name: "Some tests failed"
         if: needs.test-changed-metadata.result == 'failure'
         run: exit 1
