@@ -61,12 +61,14 @@ jobs:
   all-metadata-passed:
     name: "🧪 All metadata tests have passed"
     runs-on: "ubuntu-20.04"
-    timeout-minutes: 5
+    timeout-minutes: 1
+    if: ${{ always() }}
+    needs: test-all-metadata
     steps:
       - name: "All passed"
-        if: jobs.test-all-metadata.result == 'success'
+        if: needs.test-all-metadata.result == 'success'
         run: exit 0
 
       - name: "Some failed"
-        if: jobs.test-all-metadata.result == 'failure'
+        if: needs.test-all-metadata.result == 'failure'
         run: exit 1
