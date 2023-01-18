@@ -65,13 +65,13 @@ jobs:
   all-metadata-passed:
     name: "🧪 All metadata tests have passed"
     runs-on: "ubuntu-20.04"
-    timeout-minutes: 1
+    timeout-minutes: 5
     needs: test-changed-metadata
     steps:
       - name: "All passed"
-        if: needs.test-changed-metadata.result == 'success'
+        if: jobs.test-changed-metadata.result == 'success'
         run: exit 0
 
       - name: "Some failed"
-        if: needs.test-changed-metadata.result == 'failure'
+        if: jobs.test-changed-metadata.result == 'failure'
         run: exit 1
