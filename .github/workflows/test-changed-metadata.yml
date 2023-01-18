@@ -61,3 +61,12 @@ jobs:
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
           ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
+
+  all-metadata-passed:
+    name: "🧪 All metadata tests have passed"
+    if: needs.test-changed-metadata.result == 'success'
+    runs-on: "ubuntu-20.04"
+    timeout-minutes: 1
+    needs: test-changed-metadata
+    steps:
+      - run: exit 0
