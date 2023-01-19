@@ -32,11 +32,6 @@ public class GraphQlTests {
 
   @Test
   void greetingQuery() throws Exception {
-    GraphQLSchema graphQLSchema = parseSchema("greeting", runtimeWiringBuilder ->
-        runtimeWiringBuilder.type("Query", builder ->
-            builder.dataFetcher("greeting", new StaticDataFetcher("Hello GraphQL"))));
-    GraphQL graphQl = GraphQL.newGraphQL(graphQLSchema).build();
-    ExecutionResult result = graphQl.execute("{ greeting }");
     assertThat(result.getErrors()).isEmpty();
     assertThat(result.getData().toString()).isEqualTo("{greeting=Hello GraphQL}");
   }
@@ -63,6 +58,7 @@ public class GraphQlTests {
 
   private TypeResolver characterTypeResolver() {
     return env -> {
+      // test
       Object javaObject = env.getObject();
       if (javaObject instanceof Droid) {
         return env.getSchema().getObjectType("Droid");
