@@ -141,7 +141,7 @@ public abstract class TckExtension {
                 .collect(Collectors.groupingBy((Path path) -> {
                     if (path.startsWith(tckRoot()) || path.startsWith(workflowsRoot)) {
                         testAll.set(true);
-                        return "other";
+                        return "logic";
                     } else if (path.startsWith(testRoot())) {
                         return "test";
                     } else if (path.startsWith(metadataRoot())) {
@@ -155,6 +155,14 @@ public abstract class TckExtension {
             // If tck was changed we should retest everything, just to be safe.
             return getMatchingCoordinates("");
         }
+
+        // if we didn't change any of metadata, tests or logic we don't need to test anything
+        if (changed.get("metadata") != null && changed.get("metadata").isEmpty()
+                && changed.get("test") != null && changed.get("test").isEmpty()
+                && changed.get("logic") != null && changed.get("logic").isEmpty()) {
+            return new ArrayList<>();
+        }
+
         // First get all available coordinates, then filter them by if their corresponding metadata / tests directories
         // contain changed files.
         return getMatchingCoordinates("").stream().filter(c -> {
