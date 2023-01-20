@@ -38,6 +38,12 @@ tasks.register("checkstyle") {
     dependsOn tasks.withType(Checkstyle)
 }
 
+tasks.withType(Checkstyle).configureEach {
+    exclude {
+        it.file.absolutePath.contains('generated')
+    }
+}
+
 String metadataPath = Objects.requireNonNullElse(
 		System.getenv("GVM_TCK_MD"),
 		providers.gradleProperty('metadata.dir').get()
