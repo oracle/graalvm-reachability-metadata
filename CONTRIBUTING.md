@@ -229,6 +229,6 @@ Where:
    * community-tested (the library is partially tested through some project, e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
    * fully-tested (the library is fully tested for each released library version)
 
-**Note:** To pass format and style checks, please run `./gradlew :spotlessApply` from the project root, before submitting a PR.  
+**Note:** To pass format and style checks, please run `sorted="$(jq -s '.[] | sort_by(.artifact)' library-and-framework-list.json)" && echo -E "${sorted}" > library-and-framework-list.json` before submitting a PR.
 **Note:** The entries you add will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
 
