@@ -6,7 +6,11 @@
  */
 package io_jsonwebtoken.jjwt_gson;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.CompressionCodecs;
+import io.jsonwebtoken.JwtParserBuilder;
+import io.jsonwebtoken.IncorrectClaimException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
