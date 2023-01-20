@@ -1,0 +1,17 @@
+name: "Check code style"
+
+on: [push, pull_request]
+
+jobs:
+  checkstyle:
+    name: "📋 Check style according to checkstyle.xml"
+    runs-on: "ubuntu-20.04"
+    timeout-minutes: 10
+    steps:
+      - name: "🔧 Prepare environment"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: ./gradlew checkstyle
