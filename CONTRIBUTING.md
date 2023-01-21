@@ -122,6 +122,22 @@ output if necessary:
 ./gradlew check
 ```
 
+All submitted GraalVM reachability metadata, if the MBean-related part is unnecessary, should actively remove the
+GraalVM reachability metadata related to the MBean. These metadata can cause calls to
+`ManagementFactory.getPlatformMBeanServer()` to fail with `javax.management.openmbean.OpenDataException`. In most cases,
+it would appear that the metadata is sufficient for the bootstrapping of the MBean server to take a different code path
+to normal and this path fails. There are reference operations in some PRs, such
+as https://github.com/oracle/graalvm-reachability-metadata/pull/113, https://github.com/oracle/graalvm-reachability-metadata/pull/161,
+https://github.com/oracle/graalvm-reachability-metadata/pull/162. This includes the following five packages.
+
+```
+java.lang.management.**
+jdk.management.**
+com.sun.management.**
+sun.management.**
+javax.management.**
+```
+
 ### Tests
 
 Every submitted library must feature tests that serve as a safeguard against regressions.
