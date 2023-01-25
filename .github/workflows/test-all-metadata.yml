@@ -32,7 +32,7 @@ jobs:
           ./gradlew generateMatrixMatchingCoordinates -Pcoordinates=all
 
   test-all-metadata:
-    name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.version }} ${{ matrix.java-version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.versions.graalvm }} ${{ matrix.versions.java }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-all-metadata
@@ -45,8 +45,8 @@ jobs:
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ matrix.version }}
-          java-version: ${{ matrix.java-version }}
+          version: ${{ matrix.versions.graalvm }}
+          java-version: ${{ matrix.versions.java }}
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
