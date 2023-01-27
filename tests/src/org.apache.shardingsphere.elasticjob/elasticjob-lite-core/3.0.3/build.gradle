@@ -1,0 +1,41 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+plugins {
+    id "org.graalvm.internal.tck"
+    id "io.freefair.lombok" version "6.6-rc1"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.shardingsphere.elasticjob:elasticjob-lite-core:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.11.0'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation 'ch.qos.logback:logback-classic:1.2.11'
+    testImplementation 'org.apache.curator:curator-test:5.5.0'
+    testImplementation 'org.apache.zookeeper:zookeeper:3.8.1'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        metadataCopy {
+            mergeWithExisting = true
+            inputTaskNames.add("test")
+            outputDirectories.add("src/test/resources/META-INF/native-image/org.apache.shardingsphere.elasticjob/elasticjob-lite-core")
+        }
+    }
+}
