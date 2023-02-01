@@ -49,13 +49,6 @@ String metadataPath = Objects.requireNonNullElse(
 		providers.gradleProperty('metadata.dir').get()
 )
 
-File metadataFile
-if (!metadataPath.startsWith("/")) {
-	metadataFile = file(tck.metadataRoot).toPath().resolve(metadataPath).toFile()
-} else {
-    metadataFile = file(metadataPath)
-}
-
 String libraryVersion = System.getenv("GVM_TCK_LV") ?: providers.gradleProperty('library.version').get()
 
 String libraryGAV = System.getenv("GVM_TCK_LC") ?: providers.gradleProperty('library.coordinates').getOrElse(null)
@@ -79,9 +72,12 @@ tasks.named('test') {
 }
 
 graalvmNative {
+    metadataRepository {
+        enabled = true
+        uri(tck.metadataRoot.get().asFile)
+    }
     binaries {
         test {
-            configurationFileDirectories.from(metadataFile)
             if (override) {
                 excludeConfig.put(libraryGAV, [".*"])
             }
