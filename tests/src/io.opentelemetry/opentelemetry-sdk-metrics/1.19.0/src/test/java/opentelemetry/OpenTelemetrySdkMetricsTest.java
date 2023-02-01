@@ -41,7 +41,7 @@ public class OpenTelemetrySdkMetricsTest {
             }
         });
 
-        try (SdkMeterProvider ignored = sdkMeterProvider.build()) {
+        try (SdkMeterProvider provider = sdkMeterProvider.build()) {
             ignored.meterBuilder("test");
         }
 
