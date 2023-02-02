@@ -19,7 +19,7 @@ repositories {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(JavaVersion.current().majorVersion)
         vendor = JvmVendorSpec.GRAAL_VM
     }
 }
@@ -36,6 +36,12 @@ tasks.register("checkstyle") {
     description = "Runs all checkstyle tasks"
     group = JavaBasePlugin.VERIFICATION_GROUP
     dependsOn tasks.withType(Checkstyle)
+}
+
+tasks.withType(Checkstyle).configureEach {
+    exclude {
+        it.file.absolutePath.contains('generated')
+    }
 }
 
 String metadataPath = Objects.requireNonNullElse(
