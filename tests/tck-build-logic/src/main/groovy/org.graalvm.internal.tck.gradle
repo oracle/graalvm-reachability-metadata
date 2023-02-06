@@ -82,6 +82,7 @@ graalvmNative {
                 excludeConfig.put(libraryGAV, [".*"])
             }
             buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test metadata properly
+            buildArgs.add('-H:+AddAllCharsets') // Add support for all charsets. Fix issue with (java.nio.charset.UnsupportedCharsetException: UTF-32BE)
             verbose = true
         }
     }

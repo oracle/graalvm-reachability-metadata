@@ -8,7 +8,12 @@
  */
 package opentelemetry;
 
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.SpanId;
 import io.opentelemetry.api.trace.SpanKind;
+import io.opentelemetry.api.trace.TraceFlags;
+import io.opentelemetry.api.trace.TraceId;
+import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.exporter.logging.LoggingSpanExporter;
 import io.opentelemetry.sdk.testing.trace.TestSpanData;
 import io.opentelemetry.sdk.trace.data.StatusData;
@@ -26,6 +31,7 @@ public class OpenTelemetryLoggingExporterTest {
                 .setKind(SpanKind.INTERNAL)
                 .setName("test")
                 .setStatus(StatusData.ok())
+                .setSpanContext(SpanContext.create(TraceId.fromLongs(321, 123), SpanId.fromLong(12345), TraceFlags.getDefault(), TraceState.getDefault()))
                 .setStartEpochNanos(System.nanoTime())
                 .setEndEpochNanos(System.nanoTime())
                 .setHasEnded(true)
