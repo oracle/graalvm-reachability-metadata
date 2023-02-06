@@ -42,7 +42,7 @@ public class OpenTelemetrySdkMetricsTest {
         });
 
         try (SdkMeterProvider provider = sdkMeterProvider.build()) {
-            ignored.meterBuilder("test");
+            provider.meterBuilder("test");
         }
 
     }
