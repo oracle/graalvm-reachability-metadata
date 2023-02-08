@@ -1,0 +1,43 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.commons:commons-dbcp2:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.jboss.narayana.jta:narayana-jta:5.13.1.Final'
+    testImplementation 'tomcat:naming-java:5.0.28'
+    testImplementation 'org.apache.geronimo.components:geronimo-transaction:3.1.5'
+    testImplementation 'com.h2database:h2:1.4.200'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'tomcat:naming-common:5.0.28'
+    testImplementation 'ch.qos.logback:logback-classic:1.2.11'
+    testImplementation 'org.jboss.logging:jboss-logging:3.5.0.Final'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        metadataCopy {
+            mergeWithExisting = true
+            inputTaskNames.add("test")
+            outputDirectories.add("src/test/resources/META-INF/native-image/org.apache.commons/commons-dbcp2")
+        }
+    }
+}
