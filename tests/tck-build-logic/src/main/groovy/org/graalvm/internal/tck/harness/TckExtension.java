@@ -17,9 +17,11 @@ import org.gradle.process.ExecOperations;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -165,7 +167,7 @@ public abstract class TckExtension {
 
         // First get all available coordinates, then filter them by if their corresponding metadata / tests directories
         // contain changed files.
-        return getMatchingCoordinates("").stream().filter(c -> {
+        List<String> changedCoordinates = getMatchingCoordinates("").stream().filter(c -> {
             Path metadataDir = getMetadataDir(c);
             if (changed.get("metadata") != null && changed.get("metadata").stream().anyMatch(f -> f.startsWith(metadataDir))) {
                 return true;
@@ -176,6 +178,40 @@ public abstract class TckExtension {
             }
             return false;
         }).distinct().collect(Collectors.toList());
+
+        // if we detected changes in repo, but not in metadata/index.json file, we should throw an exception
+        Set<String> metadataIndexEntries = getMatchingMetadataDirs(null, null);
+        List<String> changedEntries = new ArrayList<>();
+        if (changed.get("metadata") != null) {
+            changedEntries = changed.get("metadata")
+                    .stream()
+                    .map(m -> m.toString().split("reachability-metadata/metadata/")[1])
+                    .filter(m -> !m.equalsIgnoreCase("index.json"))
+                    .toList();
+        }
+        if (!metadataIndexContainsChangedEntries(metadataIndexEntries, changedEntries)) {
+            URI metadataRootIndex = Paths.get(metadataRoot() + "/index.json").toUri();
+            throw new IllegalStateException("Changes detected but no corresponding entries found in " + metadataRootIndex +
+                    ". Please, check whether you added new entries in index file or not.");
+        }
+
+        return changedCoordinates;
+    }
+
+    private boolean metadataIndexContainsChangedEntries(Set<String> changedCoordinates, List<String> changedEntries) {
+        boolean containsAll = true;
+        for (var n : changedEntries) {
+            boolean containsCurrent =false;
+            for (var c : changedCoordinates) {
+                if (n.startsWith(c.replace(":", "/"))){
+                    containsCurrent = true;
+                }
+            }
+
+            containsAll = containsAll && containsCurrent;
+        }
+
+        return containsAll;
     }
 
     /**
