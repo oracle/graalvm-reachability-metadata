@@ -1,7 +1,6 @@
 package org.graalvm.internal.tck;
 
-public class CoordinateUtils {
-
+public abstract class CoordinateUtils {
     public static String replace(String template, Coordinates coordinates) {
         return template
                 .replace("$group$", coordinates.group())
