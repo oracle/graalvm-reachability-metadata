@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   get-all-metadata:
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
     name: "📋 Get list of all supported libraries"
     runs-on: "ubuntu-20.04"
     timeout-minutes: 5
@@ -32,6 +33,7 @@ jobs:
           ./gradlew generateMatrixMatchingCoordinates -Pcoordinates=all
 
   test-all-metadata:
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
     name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.versions.graalvm }} ${{ matrix.versions.java }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -58,7 +60,7 @@ jobs:
     name: "🧪 All metadata tests have passed"
     runs-on: "ubuntu-20.04"
     timeout-minutes: 1
-    if: ${{ always() }}
+    if: ${{ always() }} && github.repository == 'oracle/graalvm-reachability-metadata'
     needs: test-all-metadata
     steps:
       - name: "All tests passed"
