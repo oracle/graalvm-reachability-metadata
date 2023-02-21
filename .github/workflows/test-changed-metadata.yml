@@ -47,7 +47,7 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v3
       - name: "Disable docker"
-        run: docker run --pull=never
+        run: cat ./github/workflows/dockerd.json > /etc/docker/daemon.json
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
