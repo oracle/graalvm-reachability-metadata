@@ -10,10 +10,10 @@ plugins {
 }
 
 import groovy.json.JsonOutput
+import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.ScaffoldTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
-
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
 logger.lifecycle("GraalVM Reachability Metadata TCK")
@@ -140,4 +140,9 @@ tasks.register("scaffold", ScaffoldTask.class) { task ->
     task.setGroup(METADATA_GROUP)
     // Format JSON after task has been run
     task.finalizedBy("spotlessApply")
+}
+
+tasks.register("pullAllowedDockerImages", DockerTask.class) { task ->
+    task.setDescription("Pull allowed docker images from list.")
+    task.setGroup(METADATA_GROUP)
 }
