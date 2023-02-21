@@ -13,6 +13,7 @@ import org.HdrHistogram.AtomicHistogram;
 import org.HdrHistogram.ConcurrentDoubleHistogram;
 import org.HdrHistogram.ConcurrentHistogram;
 import org.HdrHistogram.DoubleHistogram;
+import org.HdrHistogram.DoubleRecorder;
 import org.HdrHistogram.EncodableHistogram;
 import org.HdrHistogram.Histogram;
 import org.HdrHistogram.IntCountsHistogram;
@@ -44,6 +45,11 @@ class HdrHistogramTest {
         encodeDecode(new ShortCountsHistogram(0), ShortCountsHistogram::decodeFromCompressedByteBuffer);
         encodeDecode(new SynchronizedDoubleHistogram(0), SynchronizedDoubleHistogram::decodeFromCompressedByteBuffer);
         encodeDecode(new SynchronizedHistogram(0), SynchronizedHistogram::decodeFromCompressedByteBuffer);
+    }
+
+    @Test
+    void testReflectionWithConcurrentHistogramConstructorWithAbstractHistogram() throws Exception {
+        new DoubleRecorder(0).getIntervalHistogramInto(new DoubleHistogram(0));
     }
 
     private void encodeDecode(EncodableHistogram histogram, Decoder decoder) throws DataFormatException {
