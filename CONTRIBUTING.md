@@ -9,7 +9,7 @@ In order to ensure that all contributions follow the same standards of quality w
 > ℹ️ **Note** :
 >
 > GraalVM Reachability Metadata in this repo only contains JSON files as described
-> in [Manual Configuration](https://www.graalvm.org/22.0/reference-manual/native-image/Reflection/#manual-configuration)
+> in [Manual Configuration](https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/Reflection/#manual-configuration)
 > section of the Native Image documentation.
 >
 >  All other library tweaks (such as build time initialization through `native-image.properties`) must not be included
@@ -17,7 +17,7 @@ In order to ensure that all contributions follow the same standards of quality w
 > not be included as it does not compose and can break code in unpredictable ways.
 >
 > Make sure that you are
-> using [Conditional Configuration](https://www.graalvm.org/22.2/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json)
+> using [Conditional Configuration](https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json)
 > in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of
 > images.
 >
@@ -100,7 +100,7 @@ The `override` flag allows to express the intent to exclude outdated builtin met
 So, the metadata for `org.example:library:0.0.1` and `org.example:library:0.0.2` is located
 at `metadata/org.example/library/0.0.1`.
 
-Make sure that each supported version is listed in `tested-version`, as that value is used in build tools to match
+Make sure that each supported version is listed in `tested-versions`, as that value is used in build tools to match
 metadata to a specific library.
 Every metadata for a specific library version has a `index.json`. For this
 example `metadata/org.example/library/0.0.1/index.json` would contain:
@@ -183,8 +183,8 @@ The test code lives in `test-project-path`. In this example that would be `tests
 Supported template parameters for `test-command` are:
 
 * `<metadata_dir>` - absolute path to directory where metadata is stored
-* `<group_id>` - Maven groupID of artifact that is being tested
-* `<artifact_id>`- Maven artifactID of artifact that is being tested
+* `<group_id>` - Maven group ID of artifact that is being tested
+* `<artifact_id>`- Maven artifact ID of artifact that is being tested
 * `<version>` - Version of artifact that is being tested
 
 **Note that if `index.json` is omitted `gradle nativeTest` is executed by default.**
@@ -230,5 +230,5 @@ Where:
    * fully-tested (the library is fully tested for each released library version)
 
 **Note:** To pass format and style checks, please run `sorted="$(jq -s '.[] | sort_by(.artifact)' library-and-framework-list.json)" && echo -E "${sorted}" > library-and-framework-list.json` before submitting a PR.
-**Note:** The entries you add will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
 
+**Note:** The entries you add will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
