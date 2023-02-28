@@ -6,7 +6,6 @@
  */
 package com_microsoft_sqlserver.mssql_jdbc;
 
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,8 +19,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,11 +54,31 @@ class Mssql_jdbcTest {
                 .start();
 
         // Wait until connection can be established
-        Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
-            openConnection().close();
-            return true;
-        });
+        waitUntilContainerStarted(60);
+
         System.out.println("MSSQL started");
+    }
+
+    private static void waitUntilContainerStarted(int startupTimeoutSeconds) {
+        System.out.println("Waiting for database container to become available");
+
+        Exception lastConnectionException = null;
+
+        long end  = System.currentTimeMillis() + startupTimeoutSeconds * 1000;
+        while (System.currentTimeMillis() < end) {
+            try {
+                Thread.sleep(100L);
+            } catch (InterruptedException e) {
+                // continue
+            }
+            try (Connection connection = openConnection(); Statement statement = connection.createStatement()) {
+                statement.execute("SELECT 1");
+                return;
+            } catch (Exception e) {
+                lastConnectionException = e;
+            }
+        }
+        throw new IllegalStateException("Database container cannot be accessed by JDBC URL: " + JDBC_URL, lastConnectionException);
     }
 
     @AfterAll
