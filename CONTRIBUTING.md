@@ -196,6 +196,22 @@ In this example this can be done by invoking following command from the reposito
 ```bash
 ./gradlew test -Pcoordinates=org.example:library:0.0.1
 ```
+ 
+### Providing the tests that use docker
+ 
+If your tests use docker (either with explicit docker process invocation or through some library method call), all images 
+have to be declared in `required-docker-images.txt` file. This file must be placed under `/tests/src/<groupId>/<artifactId>/<versionId>`.
+
+Only docker images that are listed [here](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/AllowedDockerImages.txt)
+can be executed. If you want to extend this list, please create separate pull request to do that.
+
+Possible scenarios:
+   * If your test uses docker image, and you didn't specify it in the `required-docker-images.txt` file, the test will fail.
+   * If your test uses docker image that is not listed in [allowed docker images list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/AllowedDockerImages.txt),
+   the test will fail
+   * Only docker images that are in both `required-docker-images.txt` and in the `allowed docker images list`
+   can be executed. 
+
 
 ## Tested Libraries and Frameworks
 
