@@ -1,0 +1,17 @@
+name: "Scan docker images from the allowed docker images list"
+
+on: [push, pull_request]
+
+jobs:
+  scan-images:
+    name: "🔎 Scan docker images"
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: "🔎 Check docker images"
+        # Install grype and jq
+        run: |
+          ./gradlew checkAllowedDockerImages

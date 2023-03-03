@@ -12,8 +12,11 @@ plugins {
 import groovy.json.JsonOutput
 import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.ScaffoldTask
+import org.graalvm.internal.tck.GrypeTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
+
+
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
 logger.lifecycle("GraalVM Reachability Metadata TCK")
@@ -134,6 +137,12 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
         }
     }
 }
+
+Provider<Task> getListOfDockerImages = tasks.register("checkAllowedDockerImages", GrypeTask.class) { task ->
+    task.setDescription("Returns list of allowed docekr images")
+    task.setGroup(METADATA_GROUP)
+}
+
 
 tasks.register("scaffold", ScaffoldTask.class) { task ->
     task.setDescription("Creates a metadata and test scaffold for the given coordindates")

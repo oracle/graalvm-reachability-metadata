@@ -8,6 +8,8 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.graalvm.internal.tck.DockerUtils.getAllowedImages;
+
 public class DockerTask extends DefaultTask {
 
     private String coordinates;
@@ -44,21 +46,6 @@ public class DockerTask extends DefaultTask {
         }
 
         isr.close();
-    }
-
-    private Set<String> getAllowedImages() throws IOException {
-        Set<String> allowedImagesList = new HashSet<>();
-        InputStream allowedImages = DockerTask.class.getResourceAsStream("/AllowedDockerImages.txt");
-        BufferedReader isr = new BufferedReader(new InputStreamReader(allowedImages));
-        String image;
-        while ((image = isr.readLine()) != null) {
-            allowedImagesList.add(image);
-        }
-
-        isr.close();
-        allowedImages.close();
-
-        return allowedImagesList;
     }
 
     private void pullDockerImage(String image) {
