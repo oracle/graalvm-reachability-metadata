@@ -12,6 +12,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: "🔎 Check docker images"
-        # Install grype and jq
         run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+          sudo apt-get install jq
           ./gradlew checkAllowedDockerImages
