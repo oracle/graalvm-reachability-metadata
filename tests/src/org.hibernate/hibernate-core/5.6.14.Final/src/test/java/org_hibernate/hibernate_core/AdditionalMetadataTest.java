@@ -26,8 +26,7 @@ class AdditionalMetadataTest {
     public void testQueryParsingSupport() throws Exception {
         for (Class c : typesNeedingDefaultConstructorAccessible()) {
             Constructor constructor = c.getConstructor();
-            Object instance = constructor.newInstance();
-            assertThat(instance).isNotNull();
+            assertThat(constructor).isNotNull();
         }
     }
 

@@ -14,7 +14,7 @@ import java.util.Objects;
 public final class CourseMaterial {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "course_material_gen")
     private Long id;
 
     private String url;

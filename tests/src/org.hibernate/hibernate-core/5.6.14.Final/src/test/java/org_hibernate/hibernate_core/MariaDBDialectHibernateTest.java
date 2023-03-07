@@ -4,7 +4,9 @@ public class MariaDBDialectHibernateTest extends AbstractHibernateTest {
 
     @Override
     protected String getJdbcUrl() {
-        return "jdbc:h2:mem:test;MODE=MariaDB;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE";
+        // use MYSQL mode instead of MariaDB which fails in h2
+        // when parsing `engine=InnoDB` in create table statement
+        return "jdbc:h2:mem:test;MODE=MYSQL";
     }
 
     @Override

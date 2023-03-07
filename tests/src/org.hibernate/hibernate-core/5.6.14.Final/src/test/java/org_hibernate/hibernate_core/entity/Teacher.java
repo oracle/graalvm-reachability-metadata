@@ -15,7 +15,7 @@ import java.util.Objects;
 public final class Teacher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "teacher_gen")
     private Long id;
 
     private String firstName;

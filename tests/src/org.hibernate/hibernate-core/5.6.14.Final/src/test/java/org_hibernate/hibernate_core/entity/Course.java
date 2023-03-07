@@ -9,7 +9,7 @@ import java.util.Objects;
 public final class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "course_gen")
     private Long id;
 
     private String title;
