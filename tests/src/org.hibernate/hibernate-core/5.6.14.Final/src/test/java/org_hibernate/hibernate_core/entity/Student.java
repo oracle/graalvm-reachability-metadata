@@ -1,0 +1,87 @@
+package org_hibernate.hibernate_core.entity;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Objects;
+
+@Entity
+@Table(name="STUDENT")
+public final class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String firstName;
+
+    private String lastName;
+
+    private Integer age;
+
+    @Temporal(TemporalType.DATE)
+    private Date birthDate;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equals(getFirstName(), student.getFirstName()) && Objects.equals(getLastName(), student.getLastName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getFirstName(), getLastName());
+    }
+}
