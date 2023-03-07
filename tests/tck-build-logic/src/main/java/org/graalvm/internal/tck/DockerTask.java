@@ -5,7 +5,8 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 
 import java.io.*;
-import java.util.HashSet;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Set;
 
 import static org.graalvm.internal.tck.DockerUtils.getAllowedImages;
@@ -19,17 +20,16 @@ public class DockerTask extends DefaultTask {
         this.coordinates = coordinates;
     }
 
-
     @TaskAction
-    void run() throws IOException, IllegalStateException{
+    void run() throws IOException, IllegalStateException, URISyntaxException {
 
         Coordinates coordinates = Coordinates.parse(this.coordinates);
         String coordinatesTestRoot = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getPath();
         File dockerList = new File(coordinatesTestRoot + "/required-docker-images.txt");
 
         if (!dockerList.exists()) {
-            // TODO once we have a docs for this issue, add a link to it in this error message
-            System.out.println("Docker file not exist.");
+            System.out.println("Required docker images file don't exist. If your tests use docker, please read: "
+                    + new URI("https://github.com/oracle/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md#providing-the-tests-that-use-docker"));
             return;
         }
 
