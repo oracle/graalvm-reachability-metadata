@@ -7,5 +7,6 @@
 ./gradlew test --tests "org_hibernate.hibernate_core.MySQLDialectHibernateTest" -Pagent metadataCopy
 ./gradlew test --tests "org_hibernate.hibernate_core.OracleDialectHibernateTest" -Pagent metadataCopy
 ./gradlew test --tests "org_hibernate.hibernate_core.PostgresDialectHibernateTest" -Pagent metadataCopy
+./gradlew test --tests "org_hibernate.hibernate_core.HibernateDialectTest" -Pagent metadataCopy
 ./gradlew test --tests "org_hibernate.hibernate_core.AdditionalMetadataTest" -Pagent metadataCopy
 ./gradlew updateGeneratedMetadata
