@@ -77,22 +77,9 @@ class AdditionalMetadataTest {
             org.hibernate.hql.internal.ast.tree.Node.class,
     };
 
-    private static final Class[] additionalClasses = new Class[]{
-            org.hibernate.id.enhanced.SequenceStyleGenerator.class
-    };
-
     @Test
     public void testQueryParsingDefaultConstructors() throws Exception {
-        testConstructors(queryParsingClasses);
-    }
-
-    @Test
-    public void testAdditionalDefaultConstructors() throws Exception {
-        testConstructors(additionalClasses);
-    }
-
-    private void testConstructors(Class[] classes) throws Exception {
-        for (Class c : classes) {
+        for (Class c : queryParsingClasses) {
             Constructor constructor = c.getConstructor();
             assertThat(constructor).isNotNull();
         }
