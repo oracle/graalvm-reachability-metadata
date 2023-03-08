@@ -6,12 +6,21 @@
  */
 package org_hibernate.hibernate_core.entity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="COURSE")
+@Table(name = "COURSE")
 public final class Course {
 
     @Id
@@ -77,8 +86,12 @@ public final class Course {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Course course = (Course) o;
         return Objects.equals(getTitle(), course.getTitle());
     }

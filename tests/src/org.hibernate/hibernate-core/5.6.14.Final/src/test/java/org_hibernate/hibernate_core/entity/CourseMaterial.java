@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name="COURSE_MATERIAL")
+@Table(name = "COURSE_MATERIAL")
 public final class CourseMaterial {
 
     @Id
@@ -55,8 +55,12 @@ public final class CourseMaterial {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CourseMaterial that = (CourseMaterial) o;
         return Objects.equals(getUrl(), that.getUrl());
     }
