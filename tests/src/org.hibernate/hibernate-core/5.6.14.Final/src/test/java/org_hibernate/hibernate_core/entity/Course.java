@@ -21,7 +21,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "COURSE")
-public final class Course {
+public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "course_gen")

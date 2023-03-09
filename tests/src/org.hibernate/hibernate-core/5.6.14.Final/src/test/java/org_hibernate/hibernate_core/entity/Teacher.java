@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "TEACHER")
-public final class Teacher {
+public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "teacher_gen")
