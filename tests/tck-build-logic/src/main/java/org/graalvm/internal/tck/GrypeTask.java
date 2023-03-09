@@ -25,8 +25,19 @@ public class GrypeTask extends DefaultTask {
             Process proc = Runtime.getRuntime().exec(command);
 
             try (BufferedReader stdOut = proc.inputReader()) {
-                if (stdOut.lines().findAny().isPresent()) {
-                    vulnerableImages.add(image);
+                int numberOfHigh = 0;
+                int numberOfCritical = 0;
+                String line;
+                while ((line = stdOut.readLine()) != null) {
+                    if (line.contains("\"severity\":\"High\"")) {
+                        numberOfHigh++;
+                    }else if (line.contains("\"severity\":\"Critical\"")) {
+                        numberOfCritical++;
+                    }
+                }
+
+                if (numberOfHigh > 0 || numberOfCritical > 0) {
+                    vulnerableImages.add("Image: " + image + " contains " + numberOfCritical + " critical, and " + numberOfHigh + " high vulnerabilities");
                 }
             }
         }

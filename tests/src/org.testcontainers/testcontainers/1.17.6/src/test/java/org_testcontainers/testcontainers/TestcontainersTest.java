@@ -27,7 +27,7 @@ class TestcontainersTest {
 
     @Test
     void test() throws Exception {
-        try (GenericContainer<?> nginx = new GenericContainer<>("nginx:1.23")) {
+        try (GenericContainer<?> nginx = new GenericContainer<>("nginx:1-alpine-slim")) {
             nginx.withExposedPorts(80).start();
             HttpClient httpClient = HttpClient.newBuilder().build();
             String url = String.format("http://%s:%d", nginx.getHost(), nginx.getFirstMappedPort());
