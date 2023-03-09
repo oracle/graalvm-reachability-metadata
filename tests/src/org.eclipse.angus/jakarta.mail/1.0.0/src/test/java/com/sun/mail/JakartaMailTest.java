@@ -35,7 +35,7 @@ public class JakartaMailTest {
     static void beforeAll() throws IOException {
         System.out.println("Starting email server ...");
         new ProcessBuilder("docker", "run", "--cidfile", "greenmail.cid", "-p", "3025:3025", "--rm", "-e",
-                "GREENMAIL_OPTS=-Dgreenmail.setup.test.all -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.auth.disabled -Dgreenmail.verbose", "greenmail/standalone:2.0.0")
+                "GREENMAIL_OPTS=-Dgreenmail.setup.test.all -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.auth.disabled -Dgreenmail.verbose", "greenmail/standalone:1.6.10")
                 .redirectOutput(new File("greenmail-stdout.txt"))
                 .redirectError(new File("greenmail-stderr.txt")).start();
         Awaitility.await().atMost(Duration.ofSeconds(10)).until(() -> {
