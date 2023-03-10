@@ -45,10 +45,17 @@ public class LogbackTests {
   }
 
   @Test
-  void externalConfig() {
+  void debugMessageLoggedViaExternalConfig() {
     Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-    logger.error("ExternalConfig", new IllegalArgumentException("test error"));
-    assertThat(outputStreamCaptor.toString()).doesNotContain("PARSER_ERROR");
+    logger.debug("test message");
+    assertThat(outputStreamCaptor.toString()).isEqualTo("test message\n");
+  }
+
+  @Test
+  void traceMessageSkippedViaExternalConfig() {
+    Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger.trace("test message");
+    assertThat(outputStreamCaptor.toString()).isBlank();
   }
 
   @ParameterizedTest
