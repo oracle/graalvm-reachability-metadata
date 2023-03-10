@@ -44,6 +44,12 @@ public class LogbackTests {
     System.setOut(new PrintStream(this.outputStreamCaptor));
   }
 
+  @Test
+  void externalConfig() {
+    Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger.error("ExternalConfig", new IllegalArgumentException("test error"));
+    assertThat(outputStreamCaptor.toString()).doesNotContain("PARSER_ERROR");
+  }
 
   @ParameterizedTest
   @MethodSource("converterSource")
