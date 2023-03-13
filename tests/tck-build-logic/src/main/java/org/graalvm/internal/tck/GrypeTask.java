@@ -16,7 +16,7 @@ public class GrypeTask extends DefaultTask {
 
     private final String jqMatcher = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
     @TaskAction
-    void run() throws IllegalStateException, IOException, InterruptedException {
+    void run() throws IllegalStateException, IOException {
         List<String> vulnerableImages = new ArrayList<>();
         Set<String> allowedImages = getAllowedImages();
         for (String image : allowedImages) {
