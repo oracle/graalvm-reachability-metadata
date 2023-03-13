@@ -8,6 +8,7 @@ package com_hazelcast.hazelcast;
 
 import com.hazelcast.cache.HazelcastCachingProvider;
 import com.hazelcast.cache.ICache;
+import com.hazelcast.cardinality.CardinalityEstimator;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.config.Config;
@@ -15,12 +16,19 @@ import com.hazelcast.config.GlobalSerializerConfig;
 import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import com.hazelcast.cp.IAtomicLong;
+import com.hazelcast.crdt.pncounter.PNCounter;
+import com.hazelcast.durableexecutor.DurableExecutorService;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import com.hazelcast.map.IMap;
 import com.hazelcast.multimap.MultiMap;
 import com.hazelcast.replicatedmap.ReplicatedMap;
 import com.hazelcast.ringbuffer.Ringbuffer;
+import com.hazelcast.scheduledexecutor.IScheduledExecutorService;
+import com.hazelcast.scheduledexecutor.IScheduledFuture;
 import com.hazelcast.topic.ITopic;
+import com_hazelcast.hazelcast.callable.EchoCallable;
 import com_hazelcast.hazelcast.customSerializer.CustomSerializable;
 import com_hazelcast.hazelcast.customSerializer.CustomSerializer;
 import com_hazelcast.hazelcast.globalSerializer.GlobalSerializer;
@@ -44,15 +52,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.IntStream;
 
-import static com.hazelcast.query.Predicates.and;
-import static com.hazelcast.query.Predicates.between;
-import static com.hazelcast.query.Predicates.equal;
-import static com.hazelcast.query.Predicates.sql;
+import static com.hazelcast.query.Predicates.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.awaitility.Awaitility.await;
 
 class HazelcastTest {
@@ -310,5 +318,89 @@ class HazelcastTest {
         cache.put("world", "Hello World");
         assertThat(cache.get("world")).isEqualTo("Hello World");
         assertThat(cacheManager.getCache("example", String.class, String.class)).isNotNull();
+    }
+
+    @Test
+    void testExecutorService() throws ExecutionException, InterruptedException {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        IExecutorService executorService = client.getExecutorService("my-distributed-executor-service");
+        Future<String> result = executorService.submit(new EchoCallable("Hello World"));
+        assertThat(result.get()).isEqualTo("Hello World");
+        client.shutdown();
+    }
+
+    @Test
+    void testDurableExecutorService() throws ExecutionException, InterruptedException {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        DurableExecutorService durableExecutorService = client.getDurableExecutorService("my-distributed-durable-executor-service");
+        long taskId = durableExecutorService.submit(new EchoCallable("Hello World")).getTaskId();
+        assertThat(durableExecutorService.retrieveResult(taskId).get()).isEqualTo("Hello World");
+        client.shutdown();
+    }
+
+    @Test
+    void testXAResource() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        assertThatNoException().isThrownBy(client::getXAResource);
+        client.shutdown();
+    }
+
+    @Test
+    void testReliableTopic() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        ITopic<Object> reliableTopic = client.getReliableTopic("my-distributed-reliable-topic");
+        reliableTopic.addMessageListener(message -> assertThat(message.getMessageObject()).isEqualTo("Hello World"));
+        reliableTopic.publish("Hello World");
+        client.shutdown();
+    }
+
+    @Test
+    void testFlakeIdGenerator() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        FlakeIdGenerator flakeIdGenerator = client.getFlakeIdGenerator("my-flake-id-generator");
+        assertThat(flakeIdGenerator.newId()).isNotNegative();
+        client.shutdown();
+    }
+
+    @Test
+    void testCardinalityEstimator() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        CardinalityEstimator cardinalityEstimator = client.getCardinalityEstimator("my-distributed-cardinality-estimator");
+        cardinalityEstimator.add("a value");
+        assertThat(cardinalityEstimator.estimate()).isEqualTo(1);
+        client.shutdown();
+    }
+
+    @Test
+    void testScheduledExecutorService() throws ExecutionException, InterruptedException {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        IScheduledExecutorService scheduledExecutorService = client.getScheduledExecutorService("my-distributed-scheduled-executor-service");
+        IScheduledFuture<String> result = scheduledExecutorService.schedule(new EchoCallable("Hello World"), 0L, TimeUnit.MILLISECONDS);
+        assertThat(result.get()).isEqualTo("Hello World");
+        client.shutdown();
+    }
+
+    @Test
+    void testPNCounter() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        PNCounter pnCounter = client.getPNCounter("my-distributed-pn-counter");
+        assertThat(pnCounter.addAndGet(1)).isEqualTo(1);
+        client.shutdown();
     }
 }
