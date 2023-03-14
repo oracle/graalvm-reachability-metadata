@@ -252,7 +252,7 @@ public class ConfigFilesChecker extends DefaultTask {
 
         // check if typeReachable exists inside condition entry
         String typeReachable = (String) condition.get("typeReachable");
-        if (ILLEGAL_TYPE_VALUES.stream().anyMatch(type -> type.startsWith(typeReachable))) {
+        if (ILLEGAL_TYPE_VALUES.stream().anyMatch(typeReachable::startsWith)) {
             // get name of entry that misses typeReachable. If name cannot be determinate, write whole entry
             String entryName = (String) entry.get("name");
             if (entryName == null) {
