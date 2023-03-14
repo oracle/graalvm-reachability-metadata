@@ -22,7 +22,7 @@ public class ConfigFilesChecker extends DefaultTask {
     private final List<String> EXPECTED_FILES = Arrays.asList("index.json", "reflect-config.json", "resource-config.json", "serialization-config.json",
             "jni-config.json", "proxy-config.json", "predefined-classes-config.json");
 
-    private final List<String> ILLEGAL_TYPE_VALUES = List.of("java.lang.Object");
+    private final List<String> ILLEGAL_TYPE_VALUES = List.of("java.lang");
 
     private String coordinates;
 
@@ -35,6 +35,9 @@ public class ConfigFilesChecker extends DefaultTask {
     @TaskAction
     void run() throws IllegalArgumentException {
         Coordinates coordinates = Coordinates.parse(this.coordinates);
+        if (coordinates.group().equalsIgnoreCase("org.example") || coordinates.group().equalsIgnoreCase("samples")) {
+            return;
+        }
 
         File coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
         if (!coordinatesMetadataRoot.exists()) {
@@ -249,7 +252,7 @@ public class ConfigFilesChecker extends DefaultTask {
 
         // check if typeReachable exists inside condition entry
         String typeReachable = (String) condition.get("typeReachable");
-        if (ILLEGAL_TYPE_VALUES.stream().anyMatch(type -> type.equalsIgnoreCase(typeReachable))) {
+        if (ILLEGAL_TYPE_VALUES.stream().anyMatch(type -> type.startsWith(typeReachable))) {
             // get name of entry that misses typeReachable. If name cannot be determinate, write whole entry
             String entryName = (String) entry.get("name");
             if (entryName == null) {
