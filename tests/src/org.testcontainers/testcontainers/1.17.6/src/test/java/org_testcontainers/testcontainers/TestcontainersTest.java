@@ -4,22 +4,22 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org_testcontainers.testcontainers;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
-import org.testcontainers.containers.GenericContainer;
-
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@Disabled("This test is pulling testcontainers/ryuk image version with many known vulnerabilities. It should be ignored until testcontainers change this image.")
-class TestcontainersTest {
+//package org_testcontainers.testcontainers;
+//
+//import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Disabled;
+//import org.testcontainers.containers.GenericContainer;
+//
+//import java.net.URI;
+//import java.net.http.HttpClient;
+//import java.net.http.HttpRequest;
+//import java.net.http.HttpResponse;
+//
+//import static org.assertj.core.api.Assertions.assertThat;
+//
+//@Disabled("This test is pulling testcontainers/ryuk image version with many known vulnerabilities. It should be ignored until testcontainers change this image.")
+//class TestcontainersTest {
 //    private static final boolean DEBUG = false;
 //
 //    @BeforeAll
@@ -38,4 +38,4 @@ class TestcontainersTest {
 //            assertThat(response.body()).contains("<h1>Welcome to nginx!</h1>");
 //        }
 //    }
-}
+//}
