@@ -18,6 +18,7 @@ import java.net.http.HttpResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // This test is pulling testcontainers/ryuk docker image version with many known vulnerabilities. It should be ignored until testcontainers change this image.
+// ISSUE: https://github.com/oracle/graalvm-reachability-metadata/issues/250
 class TestcontainersTest {
     private static final boolean DEBUG = false;
 
