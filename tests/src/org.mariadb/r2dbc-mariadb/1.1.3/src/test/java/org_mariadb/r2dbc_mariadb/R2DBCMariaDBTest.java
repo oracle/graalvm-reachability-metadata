@@ -165,7 +165,7 @@ public class R2DBCMariaDBTest {
         try {
             connection.createStatement("SELECT * FROM foo")
                     .execute()
-                    .flatMap(result -> result.map((row,metadata) -> String.format("%s - %s", row.get("id"), row.get("name"))))
+                    .flatMap(result -> result.map((row, metadata) -> String.format("%s - %s", row.get("id"), row.get("name"))))
                     .subscribe(result -> rows.add(result));
             commitTransaction(connection);
         } finally {
