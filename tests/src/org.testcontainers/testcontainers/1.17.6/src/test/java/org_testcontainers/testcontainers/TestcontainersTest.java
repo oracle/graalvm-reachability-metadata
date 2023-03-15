@@ -8,7 +8,6 @@ package org_testcontainers.testcontainers;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 import org.testcontainers.containers.GenericContainer;
 
 import java.net.URI;
@@ -18,16 +17,17 @@ import java.net.http.HttpResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled("This test is pulling testcontainers/ryuk docker image version with many known vulnerabilities. It should be ignored until testcontainers change this image.")
+// This test is pulling testcontainers/ryuk docker image version with many known vulnerabilities. It should be ignored until testcontainers change this image.
 class TestcontainersTest {
     private static final boolean DEBUG = false;
 
+    // DO NOT REMVOE THIS! READ THE COMMENT ABOVE THE CLASS
     // tests should be disabled until testconatiners/ryuk is fixed
     private static final boolean IS_DISABLED = true;
 
     @BeforeAll
-    @Disabled("Read the comment from the top of the class.")
     static void beforeAll() {
+        // DO NOT REMVOE THIS! READ THE COMMENT ABOVE THE CLASS
         if (IS_DISABLED) {
             return;
         }
@@ -35,8 +35,8 @@ class TestcontainersTest {
     }
 
     @Test
-    @Disabled("Read the comment from the top of the class.")
     void test() throws Exception {
+        // DO NOT REMVOE THIS! READ THE COMMENT ABOVE THE CLASS
         if (IS_DISABLED) {
             return;
         }
