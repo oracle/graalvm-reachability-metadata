@@ -90,7 +90,7 @@ public class R2DBCMariaDBTest {
 
     private MariadbConnectionFactory createConnectionFactory() {
         MariadbConnectionConfiguration conf = MariadbConnectionConfiguration.builder()
-                .host("192.168.205.7")
+                .host("localhost")
                 .port(3306)
                 .username(USERNAME)
                 .password(PASSWORD)
