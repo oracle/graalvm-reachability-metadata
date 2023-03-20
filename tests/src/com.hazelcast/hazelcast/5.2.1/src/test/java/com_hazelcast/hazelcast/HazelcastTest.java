@@ -58,7 +58,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.IntStream;
 
-import static com.hazelcast.query.Predicates.*;
+import static com.hazelcast.query.Predicates.and;
+import static com.hazelcast.query.Predicates.between;
+import static com.hazelcast.query.Predicates.equal;
+import static com.hazelcast.query.Predicates.sql;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.awaitility.Awaitility.await;
