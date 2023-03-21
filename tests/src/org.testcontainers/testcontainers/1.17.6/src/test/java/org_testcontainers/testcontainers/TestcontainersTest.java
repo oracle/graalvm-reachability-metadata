@@ -17,17 +17,32 @@ import java.net.http.HttpResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// This test is pulling testcontainers/ryuk docker image version with many known vulnerabilities. It should be ignored until testcontainers change this image.
+// ISSUE: https://github.com/oracle/graalvm-reachability-metadata/issues/250
 class TestcontainersTest {
     private static final boolean DEBUG = false;
 
+    // DO NOT REMOVE THIS! READ THE COMMENT ABOVE THE CLASS
+    // tests should be disabled until testconatiners/ryuk is fixed
+    private static final boolean IS_DISABLED = true;
+
     @BeforeAll
     static void beforeAll() {
+        // DO NOT REMOVE THIS! READ THE COMMENT ABOVE THE CLASS
+        if (IS_DISABLED) {
+            return;
+        }
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", DEBUG ? "debug" : "warn");
     }
 
     @Test
     void test() throws Exception {
-        try (GenericContainer<?> nginx = new GenericContainer<>("nginx:1.23")) {
+        // DO NOT REMOVE THIS! READ THE COMMENT ABOVE THE CLASS
+        if (IS_DISABLED) {
+            return;
+        }
+
+        try (GenericContainer<?> nginx = new GenericContainer<>("nginx:1-alpine-slim")) {
             nginx.withExposedPorts(80).start();
             HttpClient httpClient = HttpClient.newBuilder().build();
             String url = String.format("http://%s:%d", nginx.getHost(), nginx.getFirstMappedPort());
