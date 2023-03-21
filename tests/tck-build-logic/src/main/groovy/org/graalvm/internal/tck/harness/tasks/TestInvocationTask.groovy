@@ -13,9 +13,9 @@ import org.gradle.api.tasks.Input
 import javax.inject.Inject
 import java.nio.file.Path
 import java.util.stream.Collectors
+import static org.graalvm.internal.tck.Utils.splitCoordinates;
+import static org.graalvm.internal.tck.Utils.readIndexFile;
 
-import static org.graalvm.internal.tck.Utils.readIndexFile
-import static org.graalvm.internal.tck.Utils.splitCoordinates
 /**
  * Task that is used to start subproject tests.
  */
