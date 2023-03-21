@@ -57,6 +57,9 @@ jobs:
           ./gradlew pullAllowedDockerImages --coordinates=${{ matrix.coordinates }}
       - name: "Disable docker"
         run: |
+          sudo apt-get install openbsd-inetd
+          sudo bash -c "cat ./.github/workflows/discard-port.conf >> /etc/inetd.conf"
+          sudo systemctl start inetd
           sudo mkdir /etc/systemd/system/docker.service.d
           sudo bash -c "cat ./.github/workflows/dockerd.service > /etc/systemd/system/docker.service.d/http-proxy.conf"
           sudo systemctl daemon-reload
