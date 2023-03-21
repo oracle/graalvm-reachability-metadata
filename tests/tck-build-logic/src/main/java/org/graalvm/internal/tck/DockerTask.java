@@ -42,7 +42,7 @@ public abstract class DockerTask extends DefaultTask {
         File dockerList = getRequiredImagesFile().get().getAsFile();
 
         if (!dockerList.exists()) {
-            System.out.println("Required docker images file don't exist. If your tests use docker, please read: "
+            System.out.println("Required docker images file doesn't exist. If your tests use docker, please read: "
                     + new URI("https://github.com/oracle/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md#providing-the-tests-that-use-docker"));
             return;
         }

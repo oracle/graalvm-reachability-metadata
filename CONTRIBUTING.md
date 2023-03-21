@@ -203,7 +203,11 @@ If your tests use docker (either with explicit docker process invocation or thro
 have to be declared in `required-docker-images.txt` file. This file must be placed under `/tests/src/<groupId>/<artifactId>/<versionId>`.
 
 Only docker images that are listed [here](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/AllowedDockerImages.txt)
-can be executed. If you want to extend this list, please create separate pull request to do that.
+can be executed. If you want to extend this list, please create separate pull request to do that, and post the result of the following command on your pull request:
+
+```shell
+grype <dockerImageName>
+```
 
 Possible scenarios:
    * If your test uses docker image, and you didn't specify it in the `required-docker-images.txt` file, the test will fail.

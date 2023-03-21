@@ -22,13 +22,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TestcontainersTest {
     private static final boolean DEBUG = false;
 
-    // DO NOT REMVOE THIS! READ THE COMMENT ABOVE THE CLASS
+    // DO NOT REMOVE THIS! READ THE COMMENT ABOVE THE CLASS
     // tests should be disabled until testconatiners/ryuk is fixed
     private static final boolean IS_DISABLED = true;
 
     @BeforeAll
     static void beforeAll() {
-        // DO NOT REMVOE THIS! READ THE COMMENT ABOVE THE CLASS
+        // DO NOT REMOVE THIS! READ THE COMMENT ABOVE THE CLASS
         if (IS_DISABLED) {
             return;
         }
@@ -37,7 +37,7 @@ class TestcontainersTest {
 
     @Test
     void test() throws Exception {
-        // DO NOT REMVOE THIS! READ THE COMMENT ABOVE THE CLASS
+        // DO NOT REMOVE THIS! READ THE COMMENT ABOVE THE CLASS
         if (IS_DISABLED) {
             return;
         }
