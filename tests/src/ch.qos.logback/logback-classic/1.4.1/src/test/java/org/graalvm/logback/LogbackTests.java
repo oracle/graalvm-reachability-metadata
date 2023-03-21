@@ -17,6 +17,8 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.joran.util.PropertySetter;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,6 +46,27 @@ public class LogbackTests {
     System.setOut(new PrintStream(this.outputStreamCaptor));
   }
 
+  @Test
+  void debugMessageLoggedViaExternalConfig() {
+    Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger.debug("test message");
+    assertThat(outputStreamCaptor.toString()).isEqualTo("test message\n");
+  }
+
+  @Test
+  void traceMessageSkippedViaExternalConfig() {
+    Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger.trace("test message");
+    assertThat(outputStreamCaptor.toString()).isBlank();
+  }
+
+  @Test
+  void consoleAppenderPropertySetter() {
+    ConsoleAppender consoleAppender = new ConsoleAppender();
+    PropertySetter propertySetter = new PropertySetter(new BeanDescriptionCache(null), consoleAppender);
+    propertySetter.setProperty("withJansi", "true");
+    assertThat(consoleAppender.isWithJansi()).isTrue();
+  }
 
   @ParameterizedTest
   @MethodSource("converterSource")

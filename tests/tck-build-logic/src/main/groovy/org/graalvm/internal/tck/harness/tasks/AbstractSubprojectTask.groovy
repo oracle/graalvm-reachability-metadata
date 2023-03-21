@@ -24,11 +24,11 @@ import javax.inject.Inject
 import java.nio.charset.StandardCharsets
 import java.nio.file.Path
 import java.util.stream.Collectors
+import static org.graalvm.internal.tck.Utils.splitCoordinates;
+import static org.graalvm.internal.tck.Utils.readIndexFile;
+import static org.graalvm.internal.tck.Utils.coordinatesMatch;
 
 import static groovy.io.FileType.FILES
-import static org.graalvm.internal.tck.Utils.coordinatesMatch
-import static org.graalvm.internal.tck.Utils.readIndexFile
-import static org.graalvm.internal.tck.Utils.splitCoordinates
 
 /**
  * Abstract task that is used to invoke test subprojects.
