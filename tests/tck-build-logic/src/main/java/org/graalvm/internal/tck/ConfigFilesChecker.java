@@ -6,7 +6,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ public class ConfigFilesChecker extends DefaultTask {
 
 
     @TaskAction
-    void run() throws IllegalArgumentException {
+    void run() throws IllegalArgumentException, FileNotFoundException {
         Coordinates coordinates = Coordinates.parse(this.coordinates);
         if (coordinates.group().equalsIgnoreCase("org.example") || coordinates.group().equalsIgnoreCase("samples")) {
             return;
@@ -160,8 +160,25 @@ public class ConfigFilesChecker extends DefaultTask {
         return containsErrors;
     }
 
+    private boolean checkOldSerializationConfig(File file) {
+        List<Map<String, Object>> entries = getConfigEntries(file);
+        
+        if (entries.isEmpty()) {
+            System.out.println("ERROR: empty serialization-config detected: " + file.toURI());
+            return true;
+        }
+
+        boolean containsErrors = containsDuplicatedEntries(entries, file);
+        for (var entry : entries) {
+            containsErrors |= checkTypeReachable(entry, file);
+        }
+
+        return containsErrors;
+    }
+
     @SuppressWarnings("unchecked")
-    private boolean serializationConfigFilesContainsErrors(File file) {
+    private boolean checkNewSerializationConfig(File file) {
+        boolean containsErrors = false;
         Map<String, Object> entries = getConfigEntry(file);
 
         List<Map<String, Object>> types = (List<Map<String, Object>>) entries.get("types");
@@ -172,7 +189,6 @@ public class ConfigFilesChecker extends DefaultTask {
             return true;
         }
 
-        boolean containsErrors = false;
         if (types != null) {
             // check include entries
             containsErrors |= containsDuplicatedEntries(types, file);
@@ -192,6 +208,11 @@ public class ConfigFilesChecker extends DefaultTask {
         }
 
         return containsErrors;
+    }
+
+    private boolean serializationConfigFilesContainsErrors(File file) throws FileNotFoundException {
+        Scanner sc = new Scanner(file);
+        return sc.nextLine().contains("[") ? checkOldSerializationConfig(file) : checkNewSerializationConfig(file); 
     }
 
     private boolean proxyConfigFilesContainsErrors(File file) {
