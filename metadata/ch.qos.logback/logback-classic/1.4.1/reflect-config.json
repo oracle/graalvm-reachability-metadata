@@ -1,5 +1,17 @@
 [
   {
+    "name": "ch.qos.logback.classic.encoder.PatternLayoutEncoder",
+    "condition": {
+      "typeReachable": "ch.qos.logback.core.model.processor.ImplicitModelHandler"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
     "name": "ch.qos.logback.classic.pattern.CallerDataConverter",
     "condition": {
       "typeReachable": "ch.qos.logback.core.util.OptionHelper"
@@ -110,7 +122,7 @@
   {
     "name": "ch.qos.logback.classic.pattern.LineSeparatorConverter",
     "condition": {
-      "typeReachable": "ch.qos.logback.core.util.OptionHelper"
+      "typeReachable": "ch.qos.logback.core.pattern.parser.Compiler"
     },
     "methods": [
       {
@@ -170,7 +182,7 @@
   {
     "name": "ch.qos.logback.classic.pattern.MessageConverter",
     "condition": {
-      "typeReachable": "ch.qos.logback.core.util.OptionHelper"
+      "typeReachable": "ch.qos.logback.core.pattern.parser.Compiler"
     },
     "methods": [
       {
@@ -312,6 +324,61 @@
     ]
   },
   {
+    "name": "ch.qos.logback.core.ConsoleAppender",
+    "condition": {
+      "typeReachable": "ch.qos.logback.core.model.processor.AppenderModelHandler"
+    },
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "ch.qos.logback.core.ConsoleAppender",
+    "condition": {
+      "typeReachable": "ch.qos.logback.core.util.OptionHelper"
+    },
+    "queryAllPublicMethods": true,
+    "methods": [
+      {
+        "name": "setWithJansi",
+        "parameterTypes": [
+          "boolean"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ch.qos.logback.core.OutputStreamAppender",
+    "condition": {
+      "typeReachable": "ch.qos.logback.core.joran.util.PropertySetter"
+    },
+    "methods": [
+      {
+        "name": "setEncoder",
+        "parameterTypes": [
+          "ch.qos.logback.core.encoder.Encoder"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ch.qos.logback.core.encoder.LayoutWrappingEncoder",
+    "condition": {
+      "typeReachable": "ch.qos.logback.core.joran.util.PropertySetter"
+    },
+    "methods": [
+      {
+        "name": "setParent",
+        "parameterTypes": [
+          "ch.qos.logback.core.spi.ContextAware"
+        ]
+      }
+    ]
+  },
+  {
     "name": "ch.qos.logback.core.pattern.IdentityCompositeConverter",
     "condition": {
       "typeReachable": "ch.qos.logback.core.util.OptionHelper"
@@ -320,6 +387,20 @@
       {
         "name": "<init>",
         "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "ch.qos.logback.core.pattern.PatternLayoutEncoderBase",
+    "condition": {
+      "typeReachable": "ch.qos.logback.core.model.processor.ImplicitModelHandler"
+    },
+    "methods": [
+      {
+        "name": "setPattern",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
       }
     ]
   },

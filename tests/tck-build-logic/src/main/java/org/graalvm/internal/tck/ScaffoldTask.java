@@ -58,9 +58,9 @@ class ScaffoldTask extends DefaultTask {
     void run() throws IOException {
         Coordinates coordinates = Coordinates.parse(this.coordinates);
 
-        Path coordinatesMetadataRoot = getProject().file(replace("metadata/$group$/$artifact$", coordinates)).toPath();
+        Path coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).toPath();
         Path coordinatesMetadataVersionRoot = coordinatesMetadataRoot.resolve(coordinates.version());
-        Path coordinatesTestRoot = getProject().file(replace("tests/src/$group$/$artifact$/$version$", coordinates)).toPath();
+        Path coordinatesTestRoot = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).toPath();
 
         checkExistingMetadata(coordinates, coordinatesMetadataRoot, coordinatesMetadataVersionRoot);
 
@@ -144,31 +144,31 @@ class ScaffoldTask extends DefaultTask {
         // build.gradle
         writeToFile(
                 coordinatesTestRoot.resolve("build.gradle"),
-                replace(loadResource("/scaffold/build.gradle.template"), coordinates)
+                CoordinateUtils.replace(loadResource("/scaffold/build.gradle.template"), coordinates)
         );
 
         // settings.gradle
         writeToFile(
                 coordinatesTestRoot.resolve("settings.gradle"),
-                replace(loadResource("/scaffold/settings.gradle.template"), coordinates)
+                CoordinateUtils.replace(loadResource("/scaffold/settings.gradle.template"), coordinates)
         );
 
         // gradle.properties
         writeToFile(
                 coordinatesTestRoot.resolve("gradle.properties"),
-                replace(loadResource("/scaffold/gradle.properties.template"), coordinates)
+                CoordinateUtils.replace(loadResource("/scaffold/gradle.properties.template"), coordinates)
         );
 
         // .gitignore
         writeToFile(
                 coordinatesTestRoot.resolve(".gitignore"),
-                replace(loadResource("/scaffold/.gitignore.template"), coordinates)
+                CoordinateUtils.replace(loadResource("/scaffold/.gitignore.template"), coordinates)
         );
 
         // src/test/java/
         writeToFile(
-                coordinatesTestRoot.resolve(replace("src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java", coordinates)),
-                replace(loadResource("/scaffold/Test.java.template"), coordinates)
+                coordinatesTestRoot.resolve(CoordinateUtils.replace("src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java", coordinates)),
+                CoordinateUtils.replace(loadResource("/scaffold/Test.java.template"), coordinates)
         );
     }
 
@@ -178,7 +178,7 @@ class ScaffoldTask extends DefaultTask {
         // index.json
         writeToFile(
                 metadataVersionRoot.resolve("index.json"),
-                replace(loadResource("/scaffold/metadataVersionIndex.json.template"), coordinates)
+                CoordinateUtils.replace(loadResource("/scaffold/metadataVersionIndex.json.template"), coordinates)
         );
 
         // jni-config.json
@@ -208,7 +208,7 @@ class ScaffoldTask extends DefaultTask {
         // serialization-config.json
         writeToFile(
                 metadataVersionRoot.resolve("serialization-config.json"),
-                replace(loadResource("/scaffold/serialization-config.json.template"), coordinates)
+                CoordinateUtils.replace(loadResource("/scaffold/serialization-config.json.template"), coordinates)
         );
     }
 
@@ -216,7 +216,7 @@ class ScaffoldTask extends DefaultTask {
         // metadata/$group$/$artifact$/index.json
         writeToFile(
                 metadataRoot.resolve("index.json"),
-                replace(loadResource("/scaffold/metadataIndex.json.template"), coordinates)
+                CoordinateUtils.replace(loadResource("/scaffold/metadataIndex.json.template"), coordinates)
         );
     }
 
@@ -226,16 +226,6 @@ class ScaffoldTask extends DefaultTask {
 
     private String getEmptyJsonObject() {
         return "{}\n";
-    }
-
-    private String replace(String template, Coordinates coordinates) {
-        return template
-                .replace("$group$", coordinates.group())
-                .replace("$sanitizedGroup$", coordinates.sanitizedGroup())
-                .replace("$artifact$", coordinates.artifact())
-                .replace("$sanitizedArtifact$", coordinates.sanitizedArtifact())
-                .replace("$capitalizedSanitizedArtifact$", coordinates.capitalizedSanitizedArtifact())
-                .replace("$version$", coordinates.version());
     }
 
     private String loadResource(String name) throws IOException {
