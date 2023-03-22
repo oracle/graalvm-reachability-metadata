@@ -28,6 +28,7 @@ class LiquibaseCoreTest {
 
             Liquibase liquibase = new Liquibase("changelog.yaml", new ClassLoaderResourceAccessor(), database);
             liquibase.update();
+            liquibase.update();
         });
 
         withConnection(jdbcUrl, (connection) -> {
