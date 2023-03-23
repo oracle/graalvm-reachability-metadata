@@ -67,12 +67,12 @@ jobs:
           sudo bash -c "cat ./.github/workflows/dockerd.service > /etc/systemd/system/docker.service.d/http-proxy.conf"
           sudo systemctl daemon-reload
           sudo systemctl restart docker
-      - name: "🧪 Run '${{ matrix.coordinates }}' tests"
-        run: |
-          ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
       - name: "🔎 Check metadata config files content"
         run: |
           ./gradlew checkConfigFiles --coordinates=${{ matrix.coordinates }}
+      - name: "🧪 Run '${{ matrix.coordinates }}' tests"
+        run: |
+          ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
 
   all-metadata-passed:
     name: "🧪 All metadata tests have passed"
