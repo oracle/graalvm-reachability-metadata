@@ -264,18 +264,25 @@ public class ConfigFilesChecker extends DefaultTask {
 
     @SuppressWarnings("unchecked")
     private boolean checkTypeReachable(Map<String, Object> entry, File file) {
-        // check if condition entry exists
         Map<String, Object> condition = (Map<String, Object>) entry.get("condition");
+        String entryName = (String) entry.get("name");
+
+        // check if condition entry exists
         if (condition == null) {
             System.out.println("ERROR: In file " + file.toURI() + " there is an entry " + entry + " with missing condition field.");
             return true;
         }
 
-        // check if typeReachable exists inside condition entry
         String typeReachable = (String) condition.get("typeReachable");
+
+        // check if both entry name and typeReachable are from java.lang since there are some cases where this is allowed
+        if (entryName != null && entryName.startsWith("java.lang") && typeReachable.startsWith("java.lang")) {
+            return false;
+        }
+
+        // check if typeReachable exists inside condition entry
         if (ILLEGAL_TYPE_VALUES.stream().anyMatch(typeReachable::startsWith)) {
             // get name of entry that misses typeReachable. If name cannot be determinate, write whole entry
-            String entryName = (String) entry.get("name");
             if (entryName == null) {
                 entryName = entry.toString();
             }
