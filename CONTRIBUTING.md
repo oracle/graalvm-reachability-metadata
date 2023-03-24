@@ -59,12 +59,18 @@ Every metadata has an entry in the `metadata/index.json`. For example:
     "module": "org.example:dependant-library",
     "requires": [
       "org.example:library"
-    ]
+    ], 
+    "allowed-packages": [
+       "org.package.name"
+     ]
   }
 ]
 ```
 
-Note that `dependant-library` can feature its own metadata as well if `directory` key is specified.
+**Note:** `dependant-library` can feature its own metadata as well if `directory` key is specified.
+
+**Note:** `allowed-packages` describes which packages are expected to contain metadata entries. This way you can prevent metadata from other libraries to be
+pulled into your config files
 
 Every library metadata has another `index.json` file.
 In aforementioned case that would be `metadata/org.example/library/index.json`.

@@ -2,12 +2,21 @@ package org.graalvm.internal.tck;
 
 import groovy.json.JsonSlurper;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 /**
@@ -17,29 +26,45 @@ import java.util.stream.Collectors;
  *
  * @author David Nestorovic
  */
-public class ConfigFilesChecker extends DefaultTask {
+public abstract class ConfigFilesChecker extends DefaultTask {
 
-    private final List<String> EXPECTED_FILES = Arrays.asList("index.json", "reflect-config.json", "resource-config.json", "serialization-config.json",
-            "jni-config.json", "proxy-config.json", "predefined-classes-config.json");
+    @InputFiles
+    protected abstract RegularFileProperty getMetadataRoot();
 
-    private final List<String> ILLEGAL_TYPE_VALUES = List.of("java.lang");
+    @InputFiles
+    protected abstract RegularFileProperty getIndexFile();
 
-    private String coordinates;
+    private final Set<String> EXPECTED_FILES = new HashSet<>(Arrays.asList("index.json", "reflect-config.json", "resource-config.json", "serialization-config.json",
+            "jni-config.json", "proxy-config.json", "predefined-classes-config.json"));
+
+    private final Set<String> ILLEGAL_TYPE_VALUES = new HashSet<>(List.of("java.lang"));
+
+    private final Set<String> PREDEFINED_ALLOWED_PACKAGES = new HashSet<>(Arrays.asList("java.lang", "java.util"));
+
+    Coordinates coordinates;
+    List<String> allowedPackages;
 
     @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
-    void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
+    void setCoordinates(String coords) {
+        this.coordinates = Coordinates.parse(coords);
+
+        File coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
+        getMetadataRoot().set(coordinatesMetadataRoot);
+
+        File index = getProject().file("metadata/index.json");
+        getIndexFile().set(index);
+
+        this.allowedPackages = getAllowedPackages();
     }
 
 
     @TaskAction
     void run() throws IllegalArgumentException, FileNotFoundException {
-        Coordinates coordinates = Coordinates.parse(this.coordinates);
         if (coordinates.group().equalsIgnoreCase("org.example") || coordinates.group().equalsIgnoreCase("samples")) {
             return;
         }
 
-        File coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
+        File coordinatesMetadataRoot = getMetadataRoot().get().getAsFile();
         if (!coordinatesMetadataRoot.exists()) {
             throw new IllegalArgumentException("ERROR: Cannot find metadata directory for given coordinates: " + this.coordinates);
         }
@@ -48,23 +73,23 @@ public class ConfigFilesChecker extends DefaultTask {
         List<File> filesInMetadata = getConfigFilesForMetadataDir(coordinatesMetadataRoot);
         for (File file : filesInMetadata) {
             if (file.getName().equalsIgnoreCase("reflect-config.json")) {
-                containsErrors |= reflectConfigFilesContainsErrors(file);
+                containsErrors |= reflectConfigFileContainsErrors(file);
             }
 
             if (file.getName().equalsIgnoreCase("resource-config.json")) {
-                containsErrors |= resourceConfigFilesContainsErrors(file);
+                containsErrors |= resourceConfigFileContainsErrors(file);
             }
 
             if (file.getName().equalsIgnoreCase("serialization-config.json")) {
-                containsErrors |= serializationConfigFilesContainsErrors(file);
+                containsErrors |= serializationConfigFileContainsErrors(file);
             }
 
             if (file.getName().equalsIgnoreCase("proxy-config.json")) {
-                containsErrors |= proxyConfigFilesContainsErrors(file);
+                containsErrors |= proxyConfigFileContainsErrors(file);
             }
 
             if (file.getName().equalsIgnoreCase("jni-config.json")) {
-                containsErrors |= jniConfigFilesContainsErrors(file);
+                containsErrors |= jniConfigFileContainsErrors(file);
             }
         }
 
@@ -82,9 +107,7 @@ public class ConfigFilesChecker extends DefaultTask {
         }
 
         Arrays.stream(content).forEach(file -> {
-            String fileName = file.getName();
-
-            if (EXPECTED_FILES.stream().noneMatch(f -> f.equalsIgnoreCase(fileName))) {
+            if (EXPECTED_FILES.stream().noneMatch(file.getName()::equalsIgnoreCase)) {
                 throw new IllegalStateException("ERROR: Unexpected file " + file.toURI() + " found in " + root.toURI());
             }
 
@@ -95,18 +118,22 @@ public class ConfigFilesChecker extends DefaultTask {
     }
 
     @SuppressWarnings("unchecked")
+    // in case when config file is an array of entries
     private List<Map<String, Object>> getConfigEntries(File file) {
-        JsonSlurper js = new JsonSlurper();
-        return ((List<Object>) js.parse(file)).stream().map(e -> (Map<String, Object>)e).collect(Collectors.toList());
+        return ((List<Object>) new JsonSlurper()
+                .parse(file))
+                .stream()
+                .map(e -> (Map<String, Object>)e)
+                .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
+    // in case when config file is an object
     private Map<String, Object> getConfigEntry(File file) {
-        JsonSlurper js = new JsonSlurper();
-        return (Map<String, Object>) js.parse(file);
+        return (Map<String, Object>) new JsonSlurper().parse(file);
     }
 
-    private boolean reflectConfigFilesContainsErrors(File file) {
+    private boolean reflectConfigFileContainsErrors(File file) {
         List<Map<String, Object>> entries = getConfigEntries(file);
 
         if (entries.size() == 0) {
@@ -117,13 +144,14 @@ public class ConfigFilesChecker extends DefaultTask {
         boolean containsErrors = containsDuplicatedEntries(entries, file);
         for (var entry : entries) {
             containsErrors |= checkTypeReachable(entry, file);
+            containsErrors |= containsEntriesNotFromLibrary(entry, file);
         }
 
         return containsErrors;
     }
 
     @SuppressWarnings("unchecked")
-    private boolean resourceConfigFilesContainsErrors(File file) {
+    private boolean resourceConfigFileContainsErrors(File file) {
         Map<String, Object> entries = getConfigEntry(file);
         List<Map<String, Object>> bundles = (List<Map<String, Object>>) entries.get("bundles");
         Map<String, Object> resources = (Map<String, Object>) entries.get("resources");
@@ -153,6 +181,7 @@ public class ConfigFilesChecker extends DefaultTask {
 
                 for (var entry : excludes) {
                     containsErrors |= checkTypeReachable(entry, file);
+                    containsErrors |= containsEntriesNotFromLibrary(entry, file);
                 }
             }
         }
@@ -171,6 +200,7 @@ public class ConfigFilesChecker extends DefaultTask {
         boolean containsErrors = containsDuplicatedEntries(entries, file);
         for (var entry : entries) {
             containsErrors |= checkTypeReachable(entry, file);
+            containsErrors |= containsEntriesNotFromLibrary(entry, file);
         }
 
         return containsErrors;
@@ -195,6 +225,7 @@ public class ConfigFilesChecker extends DefaultTask {
 
             for (var entry : types) {
                 containsErrors |= checkTypeReachable(entry, file);
+                containsErrors |= containsEntriesNotFromLibrary(entry, file);
             }
         }
 
@@ -204,18 +235,19 @@ public class ConfigFilesChecker extends DefaultTask {
 
             for (var entry : lambdaCapturingTypes) {
                 containsErrors |= checkTypeReachable(entry, file);
+                containsErrors |= containsEntriesNotFromLibrary(entry, file);
             }
         }
 
         return containsErrors;
     }
 
-    private boolean serializationConfigFilesContainsErrors(File file) throws FileNotFoundException {
+    private boolean serializationConfigFileContainsErrors(File file) throws FileNotFoundException {
         Scanner sc = new Scanner(file);
-        return sc.nextLine().contains("[") ? checkOldSerializationConfig(file) : checkNewSerializationConfig(file); 
+        return sc.nextLine().contains("[") ? checkOldSerializationConfig(file) : checkNewSerializationConfig(file);
     }
 
-    private boolean proxyConfigFilesContainsErrors(File file) {
+    private boolean proxyConfigFileContainsErrors(File file) {
         List<Map<String, Object>> entries = getConfigEntries(file);
 
         if (entries.size() == 0) {
@@ -226,12 +258,13 @@ public class ConfigFilesChecker extends DefaultTask {
         boolean containsErrors = containsDuplicatedEntries(entries, file);
         for (var entry : entries) {
             containsErrors |= checkTypeReachable(entry, file);
+            containsErrors |= containsEntriesNotFromLibrary(entry, file);
         }
 
         return containsErrors;
     }
 
-    private boolean jniConfigFilesContainsErrors(File file) {
+    private boolean jniConfigFileContainsErrors(File file) {
         List<Map<String, Object>> entries = getConfigEntries(file);
 
         if (entries.size() == 0) {
@@ -239,7 +272,13 @@ public class ConfigFilesChecker extends DefaultTask {
             return true;
         }
 
-        return containsDuplicatedEntries(entries, file);
+        boolean containsErrors = containsDuplicatedEntries(entries, file);
+        for (var entry : entries) {
+            containsErrors |= checkTypeReachable(entry, file);
+            containsErrors |= containsEntriesNotFromLibrary(entry, file);
+        }
+
+        return containsErrors;
     }
 
     private boolean containsDuplicatedEntries(List<Map<String, Object>> entries, File file) {
@@ -250,10 +289,11 @@ public class ConfigFilesChecker extends DefaultTask {
         boolean containsDuplicates = false;
         for (var entry : duplicates.entrySet()) {
             if (entry.getValue() > 1) {
-                String entryName = (String) entry.getKey().get("name");
+                String entryName = getEntryName(entry.getKey());
                 if (entryName == null) {
                     entryName = entry.getKey().toString();
                 }
+
                 containsDuplicates = true;
                 System.out.println("ERROR: In file " + file.toURI() + " there is a duplicated entry " + entryName);
             }
@@ -264,19 +304,17 @@ public class ConfigFilesChecker extends DefaultTask {
 
     @SuppressWarnings("unchecked")
     private boolean checkTypeReachable(Map<String, Object> entry, File file) {
-        Map<String, Object> condition = (Map<String, Object>) entry.get("condition");
-        String entryName = (String) entry.get("name");
+        String typeReachable = getEntryTypeReachable(entry);
+        String entryName = getEntryName(entry);
 
         // check if condition entry exists
-        if (condition == null) {
+        if (typeReachable == null) {
             System.out.println("ERROR: In file " + file.toURI() + " there is an entry " + entry + " with missing condition field.");
             return true;
         }
 
-        String typeReachable = (String) condition.get("typeReachable");
-
-        // check if both entry name and typeReachable are from java.lang since there are some cases where this is allowed
-        if (entryName != null && entryName.startsWith("java.lang") && typeReachable.startsWith("java.lang")) {
+        // check if both entryName and typeReachable are from PREDEFINED_ALLOWED_PACKAGES since there are some cases where this is allowed
+        if (entryName != null && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(typeReachable::contains) && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(entryName::contains)) {
             return false;
         }
 
@@ -295,8 +333,69 @@ public class ConfigFilesChecker extends DefaultTask {
         return false;
     }
 
+    private boolean containsEntriesNotFromLibrary(Map<String, Object> entry, File file) {
+        String typeReachable = getEntryTypeReachable(entry);
+        String entryName = getEntryName(entry);
+
+        // this is not a valid situation since every entry must have typeReachable
+        if (typeReachable == null) {
+            return true;
+        }
+
+        // valid case is when both typeReachable and entryName are from ALLOWED_PACKAGES
+        if (entryName != null && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(typeReachable::contains) && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(entryName::contains)) {
+            return false;
+        }
+
+        // if typeReachable is not from allowedPackages we have to report an error
+        if (this.allowedPackages.stream().noneMatch(typeReachable::contains)) {
+            System.out.println("ERROR: In file " + file.toURI() + "\n" +
+                    "Entry: " + entryName + "\n" +
+                    "TypeReachable: " + typeReachable + "\n" +
+                    "doesn't belong to any of the specified packages: " + this.allowedPackages + "\n");
+            return true;
+        }
+
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private String getEntryTypeReachable(Map<String, Object> entry) {
+        Map<String, Object> condition = (Map<String, Object>) entry.get("condition");
+
+        // check if condition entry exists
+        if (condition == null) {
+            return null;
+        }
+
+        return  (String) condition.get("typeReachable");
+    }
+
+    private String getEntryName(Map<String, Object> entry) {
+        return  (String) entry.get("name");
+    }
+
     private boolean listNullOrEmpty(List list) {
         return list == null || list.size() == 0;
     }
 
+    @SuppressWarnings("unchecked")
+    private List<String> getAllowedPackages() {
+        File indexFile = getIndexFile().get().getAsFile();
+        String groupId = coordinates.group();
+
+        List<Map<String, Object>> entries = getConfigEntries(indexFile);
+
+        for (var entry : entries) {
+            if (entry.get("module").toString().startsWith(groupId)) {
+                if (entry.get("allowed-packages") == null) {
+                    throw new IllegalStateException("Missing allowed-packages property for " + groupId);
+                }
+
+                return (List<String>) entry.get("allowed-packages");
+            }
+        }
+
+        throw new IllegalStateException("Missing library name in: " + indexFile.toURI() + " for coordinates " + coordinates);
+    }
 }
