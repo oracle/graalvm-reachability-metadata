@@ -1,7 +1,13 @@
 package kotlinreflect
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.random.Random
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.memberProperties
@@ -39,6 +45,22 @@ class KotlinReflectTests {
         assertThat(annotatedProperty.annotations).hasSize(1)
         assertThat(annotatedProperty.annotations[0]).isInstanceOf(TestAnnotation::class.java)
         assertThat((annotatedProperty.annotations[0] as TestAnnotation).value).isEqualTo("annotation-on-field")
+    }
+    @Test
+    fun testCoroutine() {
+        val updated = AtomicBoolean(false)
+        assertThat(updated.get()).isFalse
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(500)
+            updated.set(true)
+        }
+        Thread.sleep(1000)
+        assertThat(updated.get()).isTrue
+    }
+    @Test
+    fun testKotlinRandom() {
+        val randomValue = Random.nextInt(0, 10)
+        assertThat(randomValue).isBetween(0, 10)
     }
 }
 

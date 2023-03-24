@@ -1,0 +1,22 @@
+name: "Scan docker images from the allowed docker images list"
+
+on: [push, pull_request]
+
+jobs:
+  scan-images:
+    name: "🔎 Scan docker images"
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.1'
+          java-version: '17'
+      - name: "🔎 Check docker images"
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+          sudo apt-get install jq
+          ./gradlew checkAllowedDockerImages
