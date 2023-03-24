@@ -48,7 +48,7 @@ class Mssql_jdbcTest {
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", "1433:1433", "-e", "ACCEPT_EULA=Y",
                 "-e", "MSSQL_SA_PASSWORD=" + PASSWORD,
-                "mcr.microsoft.com/mssql/server:2019-CU16-GDR1-ubuntu-20.04")
+                "mcr.microsoft.com/mssql/server:2022-RTM-CU2-ubuntu-20.04")
                 .redirectOutput(new File("mssql-stdout.txt"))
                 .redirectError(new File("mssql-stderr.txt"))
                 .start();

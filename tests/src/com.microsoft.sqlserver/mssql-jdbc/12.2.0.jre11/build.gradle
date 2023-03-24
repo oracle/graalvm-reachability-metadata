@@ -23,4 +23,13 @@ graalvmNative {
             buildArgs.add("-H:+AddAllCharsets")
         }
     }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "metadata-user-code-filter.json"
+                extraFilterPath = "metadata-extra-filter.json"
+            }
+        }
+    }
 }
