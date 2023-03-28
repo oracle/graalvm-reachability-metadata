@@ -20,6 +20,7 @@ import org_jooq.jooq.model.tables.records.CourseRecord;
 import org_jooq.jooq.model.tables.records.StudentCourseRecord;
 import org_jooq.jooq.model.tables.records.StudentRecord;
 import org_jooq.jooq.model.tables.records.TeacherRecord;
+import org_jooq.jooq.proxy.CourseProxy;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -182,6 +183,19 @@ class JooqTest {
         for (Class type : types) {
             assertThat(Class.forName(type.arrayType().getName())).isNotNull();
         }
+    }
+
+    @Test
+    public void testProxy() {
+        CourseProxy courseProxy = context.select()
+                .from(COURSE)
+                .where(COURSE.ID.eq(courseIds.get("Design")))
+                .fetchSingle()
+                .into(CourseProxy.class);
+
+        assertThat(courseProxy).isNotNull();
+        assertThat(courseProxy.getTitle()).isEqualTo("Design");
+        assertThat(courseProxy.getTeacherId()).isEqualTo(teacherIds.get("Richard Davis"));
     }
 
     private void createSchema() {
