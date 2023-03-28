@@ -78,7 +78,44 @@ class JooqTest {
     }
 
     @Test
-    public void testLoadStudent() {
+    public void testLoadStudents() {
+        List<StudentRecord> students = context.select()
+                .from(STUDENT)
+                .orderBy(STUDENT.AGE.asc())
+                .fetch()
+                .into(StudentRecord.class);
+
+        assertThat(students)
+                .hasSize(5)
+                .extracting(StudentRecord::getId)
+                .containsExactly(studentIds.get("John Miller"), studentIds.get("Patricia Miller"), studentIds.get("Robert Smith"),
+                        studentIds.get("John Smith"), studentIds.get("Mary Smith"));
+
+        students = context.select()
+                .from(STUDENT)
+                .where(STUDENT.LAST_NAME.eq("Smith"))
+                .and(STUDENT.AGE.ge(25))
+                .fetch()
+                .into(StudentRecord.class);
+
+        assertThat(students)
+                .hasSize(2)
+                .extracting(StudentRecord::getId)
+                .containsExactly(studentIds.get("John Smith"), studentIds.get("Mary Smith"));
+
+        students = context.select()
+                .from(STUDENT)
+                .join(STUDENT_COURSE).on(STUDENT_COURSE.STUDENT_ID.eq(STUDENT.ID))
+                .join(COURSE).on(COURSE.ID.eq(STUDENT_COURSE.COURSE_ID))
+                .where(COURSE.TITLE.eq("Statistics"))
+                .fetch()
+                .into(StudentRecord.class);
+
+        assertThat(students)
+                .hasSize(3)
+                .extracting(StudentRecord::getId)
+                .containsExactly(studentIds.get("John Smith"), studentIds.get("Robert Smith"), studentIds.get("Mary Smith"));
+
         StudentRecord student = context.select()
                 .from(STUDENT)
                 .where(STUDENT.ID.eq(studentIds.get("John Smith")))
@@ -130,17 +167,20 @@ class JooqTest {
 
     @Test
     public void testArrayDataTypes() throws Exception {
-        Set<Class> classes = new HashSet<>();
+        Set<Class> types = new HashSet<>();
 
         for (Field field : SQLDataType.class.getFields()) {
             Object value = field.get(null);
             if (value instanceof BuiltInDataType) {
-                classes.add(((BuiltInDataType) value).getType());
+                Class type = ((BuiltInDataType) value).getType();
+                if (!type.isArray()) {
+                    types.add(type);
+                }
             }
         }
 
-        for (Class clazz : classes) {
-            assertThat(Class.forName(clazz.arrayType().getName())).isNotNull();
+        for (Class type : types) {
+            assertThat(Class.forName(type.arrayType().getName())).isNotNull();
         }
     }
 
@@ -191,7 +231,7 @@ class JooqTest {
         StudentRecord student2 = createStudentRecord("Robert", "Smith", "male", 24);
         StudentRecord student3 = createStudentRecord("John", "Miller", "male", 21);
         StudentRecord student4 = createStudentRecord("Mary", "Smith", "female", 26);
-        StudentRecord student5 = createStudentRecord("Patricia", "Miller", "female", 21);
+        StudentRecord student5 = createStudentRecord("Patricia", "Miller", "female", 22);
 
         TeacherRecord teacher1 = createTeacherRecord("Jennifer", "Brown");
         TeacherRecord teacher2 = createTeacherRecord("Richard", "Davis");
