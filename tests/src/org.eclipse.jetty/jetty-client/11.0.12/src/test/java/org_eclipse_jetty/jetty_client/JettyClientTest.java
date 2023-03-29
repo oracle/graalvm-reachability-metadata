@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class JettyClientTest {
 
+    // This test communicates with external service so it should be disabled until it is refactored
     private static final boolean DISABLE_TEST = true;
     @Test
     void test() throws Exception {
