@@ -13,8 +13,14 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JettyClientTest {
+
+    // This test communicates with external service so it should be disabled until it is refactored. See related issue: https://github.com/oracle/graalvm-reachability-metadata/issues/259
+    private static final boolean DISABLE_TEST = true;
     @Test
     void test() throws Exception {
+        if (DISABLE_TEST) {
+            return;
+        }
         HttpClient client = new HttpClient();
         client.start();
         try {
