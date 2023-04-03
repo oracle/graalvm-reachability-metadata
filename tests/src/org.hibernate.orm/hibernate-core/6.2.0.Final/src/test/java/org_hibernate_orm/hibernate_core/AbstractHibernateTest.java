@@ -6,6 +6,9 @@
  */
 package org_hibernate_orm.hibernate_core;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,9 +20,6 @@ import org_hibernate_orm.hibernate_core.entity.Gender;
 import org_hibernate_orm.hibernate_core.entity.Student;
 import org_hibernate_orm.hibernate_core.entity.Teacher;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;

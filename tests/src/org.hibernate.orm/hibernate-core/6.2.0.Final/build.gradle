@@ -19,6 +19,10 @@ dependencies {
     testImplementation 'ch.qos.logback:logback-classic:1.4.5'
 }
 
+task deleteGeneratedMetadata(type: Delete) {
+    delete files(project.projectDir.toString() + "/generated-metadata")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
