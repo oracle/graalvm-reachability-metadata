@@ -6,7 +6,7 @@
  */
 package org_hibernate_orm.hibernate_core;
 
-public class HibernateH2Test extends AbstractHibernateTest {
+public class H2DialectHibernateTest extends AbstractHibernateTest {
 
     @Override
     protected String getJdbcUrl() {

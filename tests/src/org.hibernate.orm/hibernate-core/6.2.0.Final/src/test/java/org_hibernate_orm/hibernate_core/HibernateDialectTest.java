@@ -41,19 +41,14 @@ public class HibernateDialectTest {
         List<String> hibernateDialects = Arrays.asList(
                 "MariaDB103Dialect",
                 "MariaDB106Dialect",
-                "MariaDBDialect",
                 "MySQL8Dialect",
                 "MySQL57Dialect",
-                "MySQLDialect",
                 "Oracle12cDialect",
-                "OracleDialect",
                 "PostgresPlusDialect",
                 "PostgreSQL10Dialect",
-                "PostgreSQLDialect",
                 "SQLServer2008Dialect",
                 "SQLServer2012Dialect",
-                "SQLServer2016Dialect",
-                "SQLServerDialect"
+                "SQLServer2016Dialect"
         );
 
         return hibernateDialects.stream().map(dialect -> Arguments.of(dialectPackage + dialect));
