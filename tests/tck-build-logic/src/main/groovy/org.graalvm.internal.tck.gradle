@@ -19,8 +19,12 @@ repositories {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(JavaVersion.current().majorVersion)
-        vendor = JvmVendorSpec.GRAAL_VM
+        languageVersion = providers.environmentVariable("TCK_JAVA_VERSION")
+                .orElse(JavaVersion.current().majorVersion)
+                .map(JavaLanguageVersion::of)
+        vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
+                .map(JvmVendorSpec::matching)
+                .orElse(JvmVendorSpec.GRAAL_VM)
     }
 }
 
@@ -88,5 +92,16 @@ graalvmNative {
             buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test metadata properly
             verbose = true
         }
+    }
+    binaries.all {
+        def toolchainService = project.extensions.findByType(JavaToolchainService)
+        javaLauncher.set(toolchainService.launcherFor {
+            languageVersion = providers.environmentVariable("TCK_JAVA_VERSION")
+                    .orElse(JavaVersion.current().majorVersion)
+                    .map(JavaLanguageVersion::of)
+            vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
+                    .map(JvmVendorSpec::matching)
+                    .orElse(JvmVendorSpec.GRAAL_VM)
+        })
     }
 }
