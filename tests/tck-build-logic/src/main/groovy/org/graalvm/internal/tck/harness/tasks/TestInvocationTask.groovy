@@ -7,7 +7,7 @@
 
 package org.graalvm.internal.tck.harness.tasks
 
-
+import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.Input
 
 import javax.inject.Inject
@@ -35,6 +35,9 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
         this.coordinates = coordinates
     }
 
+    @Inject
+    abstract ProviderFactory getProviders();
+
     /**
      * Fetches arguments for test invocation from index.json file (if present).
      * @param coordinates
@@ -44,6 +47,15 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
     @Input
     List<String> getCommand() {
         def defaultArgs = [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "nativeTest"]
+        def installPathsProperty = providers.environmentVariable("TCK_JDK_INSTALLATION_PATHS")
+        if (installPathsProperty.isPresent()) {
+            defaultArgs.addAll(
+                    [
+                            "-Porg.gradle.java.installations.auto-detect=false",
+                            "-Porg.gradle.java.installations.paths=${installPathsProperty.get()}"
+                    ]
+            )
+        }
         try {
             Map<String, List<String>> testIndex = readIndexFile(tckExtension.getTestDir(coordinates)) as Map<String, List<String>>
             if (!testIndex.containsKey("test-command")) {
