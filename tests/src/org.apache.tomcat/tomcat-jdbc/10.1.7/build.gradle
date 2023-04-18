@@ -5,6 +5,11 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+
+import groovy.json.JsonGenerator
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 plugins {
     id "org.graalvm.internal.tck"
 }
@@ -24,6 +29,19 @@ dependencies {
 
 task deleteGeneratedMetadata(type: Delete) {
     delete files(project.projectDir.toString() + "/generated-metadata")
+}
+
+task prettyPrintMetadata() {
+    ConfigurableFileTree tree = fileTree(dir: 'generated-metadata', includes: ['**/*.json'])
+    tree.each {File file ->
+        def jsonSlurper = new JsonSlurper()
+        def json = jsonSlurper.parse(file)
+        def generator = new JsonGenerator.Options().build()
+        def formatted = JsonOutput.prettyPrint(generator.toJson(json))
+        file.withOutputStream { outputStream ->
+            outputStream.write(formatted.bytes)
+        }
+    }
 }
 
 graalvmNative {
