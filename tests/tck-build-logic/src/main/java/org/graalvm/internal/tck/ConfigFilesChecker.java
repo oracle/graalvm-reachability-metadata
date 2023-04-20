@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
  * Checks content of config files for a new library.
  * <p>
  * Run with {@code gradle checkConfigFiles --coordinates com.example:library:1.0.0}.
- *
- * @author David Nestorovic
  */
 public abstract class ConfigFilesChecker extends DefaultTask {
 
