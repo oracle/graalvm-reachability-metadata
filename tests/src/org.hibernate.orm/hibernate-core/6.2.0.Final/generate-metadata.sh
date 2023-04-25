@@ -11,4 +11,5 @@
 ./gradlew test --tests "org_hibernate_orm.hibernate_core.UrlMessageBundleTest" -Pagent metadataCopy
 ./gradlew test --tests "org_hibernate_orm.hibernate_core.IdentifierGeneratorTest" -Pagent metadataCopy
 ./gradlew test --tests "org_hibernate_orm.hibernate_core.OptimizerTest" -Pagent metadataCopy
+./gradlew test --tests "org_hibernate_orm.hibernate_core.EntityManagerTest" -Pagent metadataCopy
 ./gradlew updateGeneratedMetadata
