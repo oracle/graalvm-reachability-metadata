@@ -79,7 +79,6 @@ It should contain the following entries:
 ```json
 [
   {
-    "latest": false,
     "metadata-version": "0.0.1",
     "module": "org.example:library",
     "tested-versions": [
@@ -106,8 +105,23 @@ The `override` flag allows to express the intent to exclude outdated builtin met
 So, the metadata for `org.example:library:0.0.1` and `org.example:library:0.0.2` is located
 at `metadata/org.example/library/0.0.1`.
 
-Make sure that each supported version is listed in `tested-versions`, as that value is used in build tools to match
-metadata to a specific library.
+For entries without `"latest": true`, it is recommended to define the optional `default-for` key with a value containing
+a regexp (Java format) matching the version pattern. For example, for the example above, the first entry could be:
+
+```json
+{
+   "metadata-version": "0.0.1",
+   "module": "org.example:library",
+   "tested-versions": [
+      "0.0.1",
+      "0.0.2"
+   ],
+   "default-for": "0\\.0\\..*"
+}
+```
+
+You can also list each supported version is listed in `tested-versions`, as that value is used in build tools to match
+metadata to a specific library, but this is more likely to break when new versions are released.
 Every metadata for a specific library version has a `index.json`. For this
 example `metadata/org.example/library/0.0.1/index.json` would contain:
 
