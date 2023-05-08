@@ -121,6 +121,19 @@
   },
   {
     "condition":{"typeReachable":"org.hibernate.boot.beanvalidation.BeanValidationIntegrator"},
+    "name":"jakarta.validation.ConstraintViolation"
+  },
+  {
+    "condition":{"typeReachable":"org.hibernate.dialect.OracleJdbcHelper"},
+    "name":"oracle.jdbc.OracleConnection"
+  },
+  {
+    "condition":{"typeReachable":"org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl"},
+    "name":"org.h2.Driver",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "condition":{"typeReachable":"org.hibernate.boot.beanvalidation.BeanValidationIntegrator"},
     "name":"org.hibernate.boot.beanvalidation.TypeSafeActivator",
     "methods":[{"name":"activate","parameterTypes":["org.hibernate.boot.beanvalidation.ActivationContext"] }]
   },
@@ -135,8 +148,18 @@
     "queryAllPublicMethods":true
   },
   {
+    "condition":{"typeReachable":"org.hibernate.boot.internal.MetadataBuilderImpl$MetadataBuildingOptionsImpl"},
+    "name":"org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
     "condition":{"typeReachable":"org.hibernate.boot.internal.MetadataBuilderImpl$MetadataBuildingOptionsImpl$1"},
     "name":"org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "condition":{"typeReachable":"org.hibernate.boot.internal.MetadataBuilderImpl$MetadataBuildingOptionsImpl"},
+    "name":"org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
@@ -477,6 +500,11 @@
     "methods":[{"name":"<init>","parameterTypes":["java.lang.Class","int"] }]
   },
   {
+    "condition":{"typeReachable":"org.hibernate.id.enhanced.TableGenerator"},
+    "name":"org.hibernate.id.enhanced.LegacyNamingStrategy",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
     "condition":{"typeReachable":"org.hibernate.id.enhanced.OptimizerFactory"},
     "name":"org.hibernate.id.enhanced.NoopOptimizer",
     "methods":[{"name":"<init>","parameterTypes":["java.lang.Class","int"] }]
@@ -499,6 +527,11 @@
   {
     "condition":{"typeReachable":"org.hibernate.id.factory.internal.StandardIdentifierGeneratorFactory"},
     "name":"org.hibernate.id.enhanced.SequenceStyleGenerator",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "condition":{"typeReachable":"org.hibernate.id.enhanced.TableGenerator"},
+    "name":"org.hibernate.id.enhanced.SingleNamingStrategy",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
@@ -722,6 +755,11 @@
     "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
   },
   {
+    "condition":{"typeReachable":"org.hibernate.internal.log.IncubationLogger"},
+    "name":"org.hibernate.internal.log.IncubationLogger_$logger",
+    "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
+  },
+  {
     "condition":{"typeReachable":"org.hibernate.internal.log.UrlMessageBundle"},
     "name":"org.hibernate.internal.log.UrlMessageBundle_$logger",
     "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
@@ -832,7 +870,7 @@
     "queryAllPublicMethods":true
   },
   {
-    "condition":{"typeReachable":"org.hibernate.tool.schema.internal.SchemaCreatorImpl"},
+    "condition":{"typeReachable":"org.hibernate.tool.schema.internal.SchemaDropperImpl"},
     "name":"org.hibernate.tool.schema.internal.script.SingleLineSqlScriptExtractor",
     "queryAllPublicMethods":true
   },
@@ -840,5 +878,9 @@
     "condition":{"typeReachable":"org.hibernate.type.descriptor.JdbcTypeNameMapper"},
     "name":"org.hibernate.type.SqlTypes",
     "allPublicFields":true
+  },
+  {
+    "condition":{"typeReachable":"org.hibernate.dialect.PgJdbcHelper"},
+    "name":"org.postgresql.util.PGobject"
   }
 ]
