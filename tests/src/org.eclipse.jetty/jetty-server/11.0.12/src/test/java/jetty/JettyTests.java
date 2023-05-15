@@ -11,6 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.plus.webapp.PlusConfiguration;
+import org.eclipse.jetty.server.ConnectionFactory;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.ForwardedRequestCustomizer;
+import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -69,7 +73,40 @@ public class JettyTests {
         });
         server.start();
         try {
-            doHttpRequest();
+            HttpResponse<String> response = doHttpRequest();
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).isEqualTo("Hello world");
+        } finally {
+            server.stop();
+        }
+    }
+
+    @Test
+    void forwardHeaders() throws Exception {
+        Server server = new Server(PORT);
+        for (Connector connector : server.getConnectors()) {
+            for (ConnectionFactory connectionFactory : connector.getConnectionFactories()) {
+                if (connectionFactory instanceof HttpConfiguration.ConnectionFactory) {
+                    ((HttpConfiguration.ConnectionFactory) connectionFactory).getHttpConfiguration()
+                            .addCustomizer(new ForwardedRequestCustomizer());
+                }
+            }
+        }
+        server.setHandler(new AbstractHandler() {
+            @Override
+            public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+                response.setStatus(200);
+                response.setHeader("Content-Type", "text/plain");
+                response.getWriter().print("I am " + request.getServerName() + ":" + request.getServerPort());
+                response.getWriter().flush();
+                baseRequest.setHandled(true);
+            }
+        });
+        server.start();
+        try {
+            HttpResponse<String> response = doHttpRequest("X-Forwarded-Host", "some-host", "X-Forwarded-Port", "12345");
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).isEqualTo("I am some-host:12345");
         } finally {
             server.stop();
         }
@@ -84,7 +121,9 @@ public class JettyTests {
         server.setHandler(handler);
         server.start();
         try {
-            doHttpRequest();
+            HttpResponse<String> response = doHttpRequest();
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).isEqualTo("Hello world");
         } finally {
             server.stop();
         }
@@ -103,7 +142,9 @@ public class JettyTests {
         server.setHandler(context);
         server.start();
         try {
-            doHttpRequest();
+            HttpResponse<String> response = doHttpRequest();
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).isEqualTo("Hello world");
         } finally {
             server.stop();
         }
@@ -171,12 +212,13 @@ public class JettyTests {
         }
     }
 
-    private static void doHttpRequest() throws IOException, InterruptedException {
+    private static HttpResponse<String> doHttpRequest(String... headers) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build();
-        HttpRequest request = HttpRequest.newBuilder(URI.create(String.format("http://localhost:%d/", PORT)))
-                .GET().header("Accept", "text/plain").timeout(Duration.ofSeconds(1)).build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertThat(response.statusCode()).isEqualTo(200);
-        assertThat(response.body()).isEqualTo("Hello world");
+        HttpRequest.Builder request = HttpRequest.newBuilder(URI.create(String.format("http://localhost:%d/", PORT)))
+                .GET().header("Accept", "text/plain").timeout(Duration.ofSeconds(1));
+        if (headers.length > 0) {
+            request.headers(headers);
+        }
+        return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
     }
 }
