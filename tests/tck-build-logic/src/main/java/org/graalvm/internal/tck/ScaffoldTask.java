@@ -135,7 +135,7 @@ class ScaffoldTask extends DefaultTask {
 
         // Entry is not in index.json, add it
         getLogger().debug("Did not find {} in {}, adding it", module, metadataIndex);
-        entries.add(new MetadataIndexEntry(directory, module, null));
+        entries.add(new MetadataIndexEntry(directory, module, null, List.of(coordinates.group())));
 
         objectMapper.writeValue(metadataIndex, entries);
     }
