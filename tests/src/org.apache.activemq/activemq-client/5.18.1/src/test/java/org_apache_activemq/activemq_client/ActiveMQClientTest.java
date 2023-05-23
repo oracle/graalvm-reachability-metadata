@@ -26,6 +26,8 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
@@ -38,7 +40,9 @@ class ActiveMQClientTest {
 
     private static final String QUEUE_NAME = "queue-test-" + new Random().nextLong();
 
-    private static final String BROKER_URL = "tcp://localhost:61616" +
+    private static final String BROKER_HOST = "tcp://localhost:61616";
+
+    private static final String BROKER_URL = BROKER_HOST +
             "?wireFormat.version=12" +
             "&wireFormat.cacheEnabled=true" +
             "&wireFormat.cacheSize=1024" +
@@ -115,13 +119,22 @@ class ActiveMQClientTest {
         throw lastException == null ? new IllegalStateException(errorMessage) : new IllegalStateException(errorMessage, lastException);
     }
 
-
-
     @Test
-    void test() throws Exception {
+    void testSendingAndReceivingMessage() throws Exception {
         String text = "hello";
         sendMessage(text);
         assertThat(receiveMessage()).isEqualTo(text);
+    }
+
+    @Test
+    void testWireFormats() throws Exception {
+        List<Integer> wireFormatVersions = Arrays.asList(1, 9, 10, 11, 12);
+        for (Integer wireFormatVersion : wireFormatVersions) {
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_HOST + "?wireFormat.version=" + wireFormatVersion);
+            try (Connection connection = connectionFactory.createConnection()) {
+                assertThat(connection).isNotNull();
+            }
+        }
     }
 
     private Connection createConnection() throws JMSException {
@@ -146,9 +159,7 @@ class ActiveMQClientTest {
     private String receiveMessage() throws Exception {
         try (Connection connection = createConnection()) {
             connection.start();
-            connection.setExceptionListener(e -> {
-                logger.error("JMS Exception", e);
-            });
+            connection.setExceptionListener(e -> logger.error("JMS Exception", e));
             try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
                 Destination destination = session.createQueue(QUEUE_NAME);
                 try (MessageConsumer consumer = session.createConsumer(destination)) {
