@@ -7,6 +7,7 @@
 package org_apache_activemq.activemq_client;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.openwire.OpenWireFormat;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,19 @@ class ActiveMQClientTest {
     private static final String CONTAINER_NAME = "activemq-metadata-test-" + new Random().nextLong();
 
     private static final String QUEUE_NAME = "queue-test-" + new Random().nextLong();
+
+    private static final String BROKER_URL = "tcp://localhost:61616" +
+            "?wireFormat.version=12" +
+            "&wireFormat.cacheEnabled=true" +
+            "&wireFormat.cacheSize=1024" +
+            "&wireFormat.maxInactivityDuration=30000" +
+            "&wireFormat.maxInactivityDurationInitalDelay=10000" +
+            "&wireFormat.maxFrameSize=" + OpenWireFormat.DEFAULT_MAX_FRAME_SIZE +
+            "&wireFormat.maxFrameSizeEnabled=true" +
+            "&wireFormat.sizePrefixDisabled=false" +
+            "&wireFormat.stackTraceEnabled=true" +
+            "&wireFormat.tcpNoDelayEnabled=true" +
+            "&wireFormat.tightEncodingEnabled=true";
 
     private static final Logger logger = LoggerFactory.getLogger("ActiveMQClientTest");
 
@@ -111,7 +125,7 @@ class ActiveMQClientTest {
     }
 
     private Connection createConnection() throws JMSException {
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_URL);
         return connectionFactory.createConnection();
     }
 
