@@ -7,6 +7,7 @@
 package org_apache_activemq.activemq_client;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.openwire.OpenWireFormat;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,27 +25,21 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ActiveMQClientTest {
 
-    private static final String CONTAINER_NAME = "activemq-metadata-test-" + new Random().nextLong();
-
     private static final String QUEUE_NAME = "queue-test-" + new Random().nextLong();
 
     private static final String BROKER_HOST = "tcp://localhost:61616";
 
     private static final String BROKER_URL = BROKER_HOST +
-            "?wireFormat.version=12" +
-            "&wireFormat.cacheEnabled=true" +
+            "?wireFormat.cacheEnabled=true" +
             "&wireFormat.cacheSize=1024" +
             "&wireFormat.maxInactivityDuration=30000" +
             "&wireFormat.maxInactivityDurationInitalDelay=10000" +
@@ -57,66 +52,37 @@ class ActiveMQClientTest {
 
     private static final Logger logger = LoggerFactory.getLogger("ActiveMQClientTest");
 
-    private Process process;
+    private BrokerService brokerService;
 
     @BeforeAll
-    void beforeAll() throws IOException {
-        logger.info("Starting ActiveMQ ...");
-        process = new ProcessBuilder(
-                "docker", "run", "--rm", "-p", "61616:61616",
-                "--name", CONTAINER_NAME,
-                "symptoma/activemq:5.18.0")
-                .redirectOutput(new File("activemq-start-stdout.txt"))
-                .redirectError(new File("activemq-start-stderr.txt"))
-                .start();
-
-        logger.info("Waiting for ActiveMQ to become available");
-        waitUntil(() -> {
-            createConnection().close();
-            return true;
-        }, 60, 3);
-
-        logger.info("ActiveMQ started");
+    void beforeAll() throws Exception {
+        logger.info("Starting embedded ActiveMQ broker ...");
+        brokerService = new BrokerService();
+        brokerService.addConnector(BROKER_HOST);
+        brokerService.setUseJmx(false);
+        brokerService.getManagementContext().setCreateConnector(false);
+        brokerService.setUseShutdownHook(false);
+        brokerService.setPersistent(false);
+        brokerService.setBrokerName("embedded-broker");
+        brokerService.start();
+        brokerService.waitUntilStarted();
+        logger.info("Started embedded ActiveMQ broker");
     }
 
     @AfterAll
-    void tearDown() throws IOException {
-        if (process != null && process.isAlive()) {
-            logger.info("Shutting down ActiveMQ ...");
-            Process shutdownProcess = new ProcessBuilder("docker", "stop", CONTAINER_NAME)
-                    .redirectOutput(new File("activemq-stop-stdout.txt"))
-                    .redirectError(new File("activemq-stop-stderr.txt"))
-                    .start();
-
-            logger.info("Waiting for ActiveMQ to shut down");
-            waitUntil(() -> !shutdownProcess.isAlive(), 30, 1);
-
-            logger.info("ActiveMQ shut down");
-        }
-    }
-
-    // not using Awaitility library because of `com.oracle.svm.core.jdk.UnsupportedFeatureError: ThreadMXBean methods` issue
-    // which happens if a condition is not fulfilled when a test is running in a native image
-    private void waitUntil(Callable<Boolean> conditionEvaluator, int timeoutSeconds, int sleepTimeSeconds) {
-        Exception lastException = null;
-
-        long end  = System.currentTimeMillis() + timeoutSeconds * 1000L;
-        while (System.currentTimeMillis() < end) {
-            try {
-                Thread.sleep(sleepTimeSeconds * 1000L);
-            } catch (InterruptedException e) {
-                // continue
-            }
-            try {
-                if (conditionEvaluator.call()) {
-                    return;
+    void tearDown() {
+        if (brokerService != null) {
+            logger.info("Stopping embedded ActiveMQ broker ...");
+            if (!brokerService.isStopped()) {
+                try {
+                    brokerService.stop();
+                } catch (Exception ex) {
+                    logger.warn("Failed to stop embedded ActiveMQ broker", ex);
                 }
-            } catch (Exception e) {
-                lastException = e;
             }
+            brokerService.waitUntilStopped();
+            logger.info("Stopped embedded ActiveMQ broker");
         }
-        String errorMessage = "Condition was not fulfilled within " + timeoutSeconds + " seconds";
-        throw lastException == null ? new IllegalStateException(errorMessage) : new IllegalStateException(errorMessage, lastException);
     }
 
     @Test
@@ -127,7 +93,7 @@ class ActiveMQClientTest {
     }
 
     @Test
-    void testWireFormats() throws Exception {
+    void testConnections() throws Exception {
         List<Integer> wireFormatVersions = Arrays.asList(1, 9, 10, 11, 12);
         for (Integer wireFormatVersion : wireFormatVersions) {
             ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_HOST + "?wireFormat.version=" + wireFormatVersion);
