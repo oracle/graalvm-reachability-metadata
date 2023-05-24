@@ -65,7 +65,7 @@ class ActiveMQClientTest {
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", "61616:61616",
                 "--name", CONTAINER_NAME,
-                "symptoma/activemq:latest")
+                "symptoma/activemq:5.18.0")
                 .redirectOutput(new File("activemq-start-stdout.txt"))
                 .redirectError(new File("activemq-start-stderr.txt"))
                 .start();
@@ -74,7 +74,7 @@ class ActiveMQClientTest {
         waitUntil(() -> {
             createConnection().close();
             return true;
-        }, 60);
+        }, 60, 3);
 
         logger.info("ActiveMQ started");
     }
@@ -89,7 +89,7 @@ class ActiveMQClientTest {
                     .start();
 
             logger.info("Waiting for ActiveMQ to shut down");
-            waitUntil(() -> !shutdownProcess.isAlive(), 30);
+            waitUntil(() -> !shutdownProcess.isAlive(), 30, 1);
 
             logger.info("ActiveMQ shut down");
         }
@@ -97,13 +97,13 @@ class ActiveMQClientTest {
 
     // not using Awaitility library because of `com.oracle.svm.core.jdk.UnsupportedFeatureError: ThreadMXBean methods` issue
     // which happens if a condition is not fulfilled when a test is running in a native image
-    private void waitUntil(Callable<Boolean> conditionEvaluator, int timeoutSeconds) {
+    private void waitUntil(Callable<Boolean> conditionEvaluator, int timeoutSeconds, int sleepTimeSeconds) {
         Exception lastException = null;
 
-        long end  = System.currentTimeMillis() + timeoutSeconds * 1000;
+        long end  = System.currentTimeMillis() + timeoutSeconds * 1000L;
         while (System.currentTimeMillis() < end) {
             try {
-                Thread.sleep(2000L);
+                Thread.sleep(sleepTimeSeconds * 1000L);
             } catch (InterruptedException e) {
                 // continue
             }
