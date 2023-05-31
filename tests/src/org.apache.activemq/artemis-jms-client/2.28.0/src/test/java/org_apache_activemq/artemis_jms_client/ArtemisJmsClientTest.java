@@ -51,7 +51,7 @@ class ArtemisJmsClientTest {
 
         server = new ActiveMQServerImpl(config);
         server.start();
-        server.waitForActivation(1, TimeUnit.MINUTES );
+        server.waitForActivation(1, TimeUnit.MINUTES);
         logger.info("Started embedded Artemis broker");
 
         connectionFactory = new ActiveMQConnectionFactory();
