@@ -1,8 +1,23 @@
 # Contributing
 
-Before contributing to this repository, please try to include the reachability metadata directly into the library. If that does not work, open a ticket on the target library issue tracker so the community can upvote and discuss metadata addition. Only after these steps, follow the checklist for adding the metadata to this repository.
+Before contributing to this repository, please try to include the reachability metadata directly into the library. 
+If that does not work, open a ticket on the target library issue tracker so the community can upvote and discuss metadata addition.
 
-## Checklist
+## How to Test or Use This Repository Locally
+
+You can test the reachability metadata from this repository locally against your project or with additional changes.
+
+First, you clone the repository:
+```shell
+git clone git@github.com:oracle/graalvm-reachability-metadata.git
+```
+Then, you adjust the configuration of local repository in either
+[Gradle](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#metadata-support) or
+[Maven](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#metadata-support)
+
+## Contribute Metadata
+
+### Checklist
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
 `org.example:library` project is also included as a template for new libraries.
 
@@ -23,7 +38,7 @@ In order to ensure that all contributions follow the same standards of quality w
 >
 > To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
 
-### Contribute Metadata
+### Generate Metadata and Test
 
 Use the `scaffold` task to generate metadata and test stubs:
 
@@ -41,7 +56,7 @@ to execute the tests.
 
 It's expected that they fail, because the scaffold task only generated a stub which you need to implement.
 
-#### Metadata structure
+### Metadata structure
 
 Metadata lives in a folder structure in the `metadata` directory in root of this repository.
 Per convention, it should be like this: `org.example:library` metadata should be located
@@ -142,7 +157,7 @@ output if necessary:
 ./gradlew check
 ```
 
-### Tests
+## Tests
 
 Every submitted library must feature tests that serve as a safeguard against regressions.
 For easier test development we've provided a TCK plugin that automatically configures
