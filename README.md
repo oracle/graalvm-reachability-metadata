@@ -22,6 +22,18 @@ It is also used to retrofit metadata for older versions of libraries and framewo
 If you are a library or framework maintainer, the best way to make your code ready for GraalVM Native Image is to provide reachability metadata as part of your JARs.
 Please visit [this web page](https://www.graalvm.org/latest/reference-manual/native-image/metadata/) for more information.
 
+## How to test/use this repo locally
+
+In order to test Reachability Metadata Repository locally on your project or with your additional changes, you should do the following:
+* Clone metadata repository
+```shell
+git clone git@github.com:oracle/graalvm-reachability-metadata.git
+```
+* Use Native Build Tools with the plugin you prefer:
+  * [Gradle](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#metadata-support)
+  * [Maven](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#metadata-support)
+
+
 ## Contributing
 
 We welcome contributions from the community.
