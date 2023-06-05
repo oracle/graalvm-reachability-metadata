@@ -1,6 +1,7 @@
 # Contributing
 
-Before contributing to this repository, please try to include the reachability metadata directly into the library. 
+Before contributing to this repository, please consider including reachability metadata directly in the library or the framework.
+This is the best way to provide support for GraalVM Native Image as it makes for an out-of-the-box experience for users (no additional work required) and allows you to continuously test and maintain the metadata as part of your project.
 If that does not work, open a ticket on the target library issue tracker so the community can upvote and discuss metadata addition.
 
 ## How to Test or Use This Repository Locally
