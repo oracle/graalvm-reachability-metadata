@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org_hibernate_reactive.hibernate_reactive_core.entity.Author;
 import org_hibernate_reactive.hibernate_reactive_core.entity.Book;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
