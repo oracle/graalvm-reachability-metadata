@@ -1,8 +1,11 @@
 # Contributing
 
-Before contributing to this repository, please consider including reachability metadata directly in the library or the framework.
-This is the best way to provide support for GraalVM Native Image as it makes for an out-of-the-box experience for users (no additional work required) and allows you to continuously test and maintain the metadata as part of your project.
-If that is not an option (for example, you are not a maintainer), we encourage you to open a ticket on the issue tracker of the corresponding library or framework, so that the community can up-vote and discuss the inclusion of reachability metadata.
+Before contributing to this repository, please consider including reachability metadata
+directly in the library or the framework (see an [example](https://github.com/netty/netty/pull/12738/files)).
+This is the best way to provide support for GraalVM Native Image as it makes an out-of-the-box experience for users (no additional work required) and allows you to continuously test and maintain the metadata as part of your project.
+If that is not an option (for example, you are not a maintainer), we encourage you to open a ticket on the issue tracker
+of the corresponding library or framework, so that the community can up-vote and discuss the inclusion of reachability metadata
+(see an [example](https://github.com/h2database/h2database/issues/3606))
 
 ## How to Test or Use This Repository Locally
 
@@ -22,22 +25,18 @@ Then, you use the local repository in the configuration of either
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
 `org.example:library` project is also included as a template for new libraries.
 
-> ℹ️ **Note** :
->
-> GraalVM Reachability Metadata in this repo only contains JSON files as described
-> in [Manual Configuration](https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/Reflection/#manual-configuration)
-> section of the Native Image documentation.
->
->  All other library tweaks (such as build time initialization through `native-image.properties`) must not be included
-> here. By default, it should be assumed that all user libraries are runtime initialized. Build-time initialization can
-> not be included as it does not compose and can break code in unpredictable ways.
->
-> Make sure that you are
-> using [Conditional Configuration](https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json)
-> in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of
-> images.
->
-> To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
+* GraalVM Reachability Metadata in this repo only contains JSON files as described 
+in [Manual Configuration](https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/Reflection/#manual-configuration)
+section of the Native Image documentation.
+* All other library tweaks (such as build time initialization through `native-image.properties`) must not be included
+here. By default, it should be assumed that all user libraries are runtime initialized. Build-time initialization can
+not be included as it does not compose and can break code in unpredictable ways.
+* Make sure that you are using [Conditional Configuration](https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json)
+in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of
+images.
+* Once you want to create a pull request, you will be asked to fill out the [following list](./pull_request_template.md).
+
+ℹ️ To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
 
 ### Generate Metadata and Test
 
@@ -149,6 +148,8 @@ example `metadata/org.example/library/0.0.1/index.json` would contain:
   "resource-config.json"
 ]
 ```
+
+### Format Metadata Files
 
 Metadata must be correctly formatted.
 This can be done by running following command from root of the repository, and then following instructions from command
