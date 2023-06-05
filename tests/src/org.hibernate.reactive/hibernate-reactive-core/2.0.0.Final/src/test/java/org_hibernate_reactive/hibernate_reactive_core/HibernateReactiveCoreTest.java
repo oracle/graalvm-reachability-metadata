@@ -63,7 +63,7 @@ class HibernateReactiveCoreTest {
         waitUntil(() -> {
             openConnection().close();
             return true;
-        }, 120, 1);
+        }, 300, 1);
 
         logger.info("MySQL started");
 
