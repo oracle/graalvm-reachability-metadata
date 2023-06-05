@@ -6,9 +6,6 @@
  */
 package org_hibernate_reactive.hibernate_reactive_core.entity;
 
-import java.time.LocalDate;
-
-import jakarta.persistence.Basic;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -17,7 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
-import static jakarta.persistence.FetchType.LAZY;
+import java.time.LocalDate;
 
 @Entity
 public class Book {
@@ -25,11 +22,11 @@ public class Book {
     @GeneratedValue
     private Integer id;
 
-    @Size(min=13, max=13)
+    @Size(min = 13, max = 13)
     private String isbn;
 
     @NotNull
-    @Size(max=100)
+    @Size(max = 100)
     private String title;
 
     @NotNull
@@ -42,7 +39,8 @@ public class Book {
     @ManyToOne
     private Author author;
 
-    public Book() {}
+    public Book() {
+    }
 
     public Book(String isbn, String title, Author author, LocalDate published) {
         this.title = title;

@@ -25,13 +25,14 @@ public class Author {
     private Integer id;
 
     @NotNull
-    @Size(max=100)
+    @Size(max = 100)
     private String name;
 
     @OneToMany(mappedBy = "author", cascade = PERSIST)
     private List<Book> books = new ArrayList<>();
 
-    public Author() {}
+    public Author() {
+    }
 
     public Author(String name) {
         this.name = name;
