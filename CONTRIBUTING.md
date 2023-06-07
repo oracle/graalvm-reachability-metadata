@@ -11,11 +11,11 @@ of the corresponding library or framework, so that the community can up-vote and
 
 You can test the reachability metadata from this repository locally against your project or with additional changes.
 
-First, you clone the repository:
+First, clone the repository:
 ```shell
 git clone git@github.com:oracle/graalvm-reachability-metadata.git
 ```
-Then, you use the local repository in the configuration of either
+Then, point to the local repository in the configuration of either
 [Gradle](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#metadata-support) or
 [Maven](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#metadata-support)
 
