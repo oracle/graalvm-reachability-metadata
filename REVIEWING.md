@@ -4,21 +4,21 @@ In the metadata repository, we accept contributions from 3rd parties. Per Oracle
 including licensing and security checks. This document should serve as a guideline for reviewers to simplify and harmonize those reviews.
 
 ## Checklist
-First step of every review must be analysing the checklist that each pull request **must** have. Once the contributor wants to open 
+First step of every review is to verify the checklist from the pull request description. Once the contributor wants to open 
 a pull request [this](pull_request_template.md) checklist will be automatically added to the pull request description.
 * If the PR does not contain such a list, it **should not be reviewed**
-* If any of the items is not checked, reviewer should get an explanation from the contributor why is this the case
+* If any of the items is not checked, the reviewer should ask for an explanation from the contributor
 
 ## Copyright and licences
 As mentioned in the checklist, each pull request must **only** contain tests that are created by the author of the pull request.
 **Every contribution that contains code from other sources must be rejected.** In order to check that the contribution
-is no copyright violation, following hints can be useful:
+has no copyright violation, following hints can be useful:
 * Unreasonably large contributions
 * URLs posted, comments
 * Package names that indicate a 4th party
 
 ## Security
-There are many security aspects that must be checked for each test provided in the pull request. Critical actions to check for:
+There are many security aspects that must be checked for each test provided in the pull request. Check for the following critical actions:
 * **File Access**
   * Verify the file access is reasonable and necessary
   * Verify which file is read or written. Preferred case is a static filename in the local or temp directory.
@@ -47,7 +47,7 @@ There are many security aspects that must be checked for each test provided in t
   * The GitHub action should automatically fail when the test is using docker image if it is not properly specified
   * Only docker images that are specified in `required-docker-images.txt` can be pulled and executed if they are listed in `AllowedDockerImages`.
   * Whole process of writing tests that are using docker images is described [here](CONTRIBUTING.md#providing-the-tests-that-use-docker)
-  * **If the pull request wants to extend the list of allowed docker images, please add @matneu as the reviewer**
+  * **If the pull request wants to extend the list of allowed docker images, please add [@matneu](https://github.com/matneu) as the reviewer**
   * Every pull request that extends the list of allowed docker images must have results of the *grype* test in its description ([see this](CONTRIBUTING.md#providing-the-tests-that-use-docker))
 
 
