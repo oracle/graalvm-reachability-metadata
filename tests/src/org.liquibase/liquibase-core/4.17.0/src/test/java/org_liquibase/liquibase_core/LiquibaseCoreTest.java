@@ -62,6 +62,14 @@ class LiquibaseCoreTest {
             statement.setInt(2, 10);
             statement.execute();
         });
+
+        withConnection(jdbcUrl, (connection) -> {
+            Database database = new H2Database();
+            database.setConnection(new JdbcConnection(connection));
+
+            Liquibase liquibase = new Liquibase("changelog.xml", new ClassLoaderResourceAccessor(), database);
+            liquibase.dropAll();
+        });
     }
 
     private static void withConnection(String url, ConnectionCallback callback) throws Exception {
