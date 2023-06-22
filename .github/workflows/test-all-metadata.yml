@@ -24,8 +24,8 @@ jobs:
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
-          version: 'latest'
           java-version: '17'
+          distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "🕸️ Populate matrix"
         id: set-matrix
@@ -34,7 +34,7 @@ jobs:
 
   test-all-metadata:
     if: github.repository == 'oracle/graalvm-reachability-metadata'
-    name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.versions.graalvm }} ${{ matrix.versions.java }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.versions.java }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-all-metadata
@@ -47,9 +47,8 @@ jobs:
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ matrix.versions.graalvm }}
           java-version: ${{ matrix.versions.java }}
-          components: 'native-image'
+          distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: "Pull allowed docker images"
