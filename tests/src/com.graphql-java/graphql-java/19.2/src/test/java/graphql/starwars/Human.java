@@ -15,12 +15,12 @@ public class Human implements Character {
 
   @Override
   public Long getId() {
-    return null;
+    return 42L;
   }
 
   @Override
   public String getName() {
-    return null;
+    return "GraalVM";
   }
 
   @Override

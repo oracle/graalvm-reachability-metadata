@@ -26,8 +26,8 @@ jobs:
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
-          version: 'latest'
           java-version: '17'
+          distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "🕸️ Populate matrix"
         id: set-matrix
@@ -35,7 +35,7 @@ jobs:
           ./gradlew generateMatrixDiffCoordinates -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
   test-changed-metadata:
-    name: "🧪 ${{ matrix.coordinates }} (GraalVM ${{ matrix.versions.graalvm }} ${{ matrix.versions.java }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -50,9 +50,8 @@ jobs:
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ matrix.versions.graalvm }}
-          java-version: ${{ matrix.versions.java }}
-          components: 'native-image'
+          java-version: ${{ matrix.version }}
+          distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
       - name: "Pull allowed docker images"
