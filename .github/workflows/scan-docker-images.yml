@@ -13,8 +13,9 @@ jobs:
           fetch-depth: 0
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.1'
           java-version: '17'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "🔎 Check docker images"
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
