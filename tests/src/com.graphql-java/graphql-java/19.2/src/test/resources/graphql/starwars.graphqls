@@ -11,6 +11,7 @@ type QueryType {
     hero(episode: Episode): Character!
     human(id : String) : Human
     droid(id: ID!): Droid
+    humans: HumanConnection
 }
 
 enum Episode {
@@ -23,7 +24,7 @@ type Human implements Character {
     id: ID!
     name: String!
     friends: [Character]
-    appearsIn: [Episode]!
+    appearsIn: [Episode]
     homePlanet: String
 }
 
@@ -42,4 +43,21 @@ interface Character {
 
 input NewCharacter {
     name: String
+}
+
+type HumanConnection {
+    edges: [HumanEdge]
+    pageInfo: PageInfo!
+}
+
+type HumanEdge {
+    cursor: String!
+    node: Human
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
 }

@@ -8,9 +8,17 @@ package graphql;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.function.Consumer;
 
 import graphql.introspection.IntrospectionQuery;
+import graphql.relay.Connection;
+import graphql.relay.DefaultConnection;
+import graphql.relay.DefaultConnectionCursor;
+import graphql.relay.DefaultEdge;
+import graphql.relay.DefaultPageInfo;
+import graphql.relay.Edge;
+import graphql.relay.PageInfo;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.StaticDataFetcher;
 import graphql.schema.TypeResolver;
@@ -50,6 +58,22 @@ public class GraphQlTests {
     ExecutionResult result = graphQl.execute(IntrospectionQuery.INTROSPECTION_QUERY);
     assertThat(result.getErrors()).isEmpty();
     assertThat(result.getData().toString()).contains("{__schema={queryType={name=QueryType}");
+  }
+
+  @Test
+  void paginatedQuery() throws Exception {
+    PageInfo pageInfo = new DefaultPageInfo(new DefaultConnectionCursor("start"),
+            new DefaultConnectionCursor("end"), true, true);
+    Edge<Human> edge = new DefaultEdge<>(new Human(), new DefaultConnectionCursor("current"));
+    Connection<Human> connection = new DefaultConnection<>(List.of(edge), pageInfo);
+    GraphQLSchema graphQLSchema = parseSchema("starwars", runtimeWiringBuilder ->
+            runtimeWiringBuilder.type("QueryType", builder ->
+                    builder.dataFetcher("humans", new StaticDataFetcher(connection)))
+                    .type("Character", typeBuilder -> typeBuilder.typeResolver(characterTypeResolver())));
+    GraphQL graphQl = GraphQL.newGraphQL(graphQLSchema).build();
+    ExecutionResult result = graphQl.execute("{ humans { edges { node { id name } } pageInfo { startCursor } } }");
+    assertThat(result.getErrors()).isEmpty();
+    assertThat(result.getData().toString()).isEqualTo("{humans={edges=[{node={id=42, name=GraalVM}}], pageInfo={startCursor=start}}}");
   }
 
   private GraphQLSchema parseSchema(String schemaFileName, Consumer<RuntimeWiring.Builder> consumer) throws IOException {

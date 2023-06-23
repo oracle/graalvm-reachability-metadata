@@ -1,0 +1,18 @@
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="mysql-example">
+        <provider>org.hibernate.reactive.provider.ReactivePersistenceProvider</provider>
+
+        <class>org_hibernate_reactive.hibernate_reactive_core.entity.Author</class>
+        <class>org_hibernate_reactive.hibernate_reactive_core.entity.Book</class>
+
+        <properties>
+            <property name="hibernate.connection.pool_size" value="10"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-only" />
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

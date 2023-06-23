@@ -24,7 +24,7 @@ java {
                 .map(JavaLanguageVersion::of)
         vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
                 .map(JvmVendorSpec::matching)
-                .orElse(JvmVendorSpec.GRAAL_VM)
+                .orElse(JvmVendorSpec.matching(""))
     }
 }
 
@@ -101,7 +101,7 @@ graalvmNative {
                     .map(JavaLanguageVersion::of)
             vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
                     .map(JvmVendorSpec::matching)
-                    .orElse(JvmVendorSpec.GRAAL_VM)
+                    .orElse(JvmVendorSpec.matching(""))
         })
     }
 }
