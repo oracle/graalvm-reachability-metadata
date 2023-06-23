@@ -34,7 +34,7 @@ jobs:
 
   test-all-metadata:
     if: github.repository == 'oracle/graalvm-reachability-metadata'
-    name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.versions.java }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-all-metadata
@@ -47,7 +47,7 @@ jobs:
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: ${{ matrix.versions.java }}
+          java-version: ${{ matrix.version }}
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
