@@ -1,24 +1,26 @@
 # Reviewing
 
-In the metadata repository, we accept contributions from 3rd parties. Per Oracle policies, we need to do a proper review of such code,
-including licensing and security checks. This document should serve as a guideline for reviewers to simplify and harmonize those reviews.
+In the metadata repository, we accept contributions from 3rd parties.
+Per Oracle policies, we need to do a proper review of such code, including licensing and security checks.
+This document should serve as a guideline for reviewers to simplify and harmonize those reviews.
 
 ## Checklist
-First step of every review is to verify the checklist from the pull request description. Once the contributor wants to open 
-a pull request [this](pull_request_template.md) checklist will be automatically added to the pull request description.
+First step of every review is to verify the checklist from the pull request description.
+Once the contributor wants to open a pull request [this checklist](pull_request_template.md) will be automatically added to the pull request description.
 * If the PR does not contain such a list, it **should not be reviewed**
 * If any of the items is not checked, the reviewer should ask for an explanation from the contributor
 
 ## Copyright and licences
 As mentioned in the checklist, each pull request must **only** contain tests that are created by the author of the pull request.
-**Every contribution that contains code from other sources must be rejected.** In order to check that the contribution
-has no copyright violation, following hints can be useful:
+**Every contribution that contains code from other sources must be rejected.**
+In order to check that the contribution has no copyright violation, following hints can be useful:
 * Unreasonably large contributions
 * URLs posted, comments
 * Package names that indicate a 4th party
 
 ## Security
-There are many security aspects that must be checked for each test provided in the pull request. Check for the following critical actions:
+There are many security aspects that must be checked for each test provided in the pull request.
+Check for the following critical actions:
 * **File Access**
   * Verify the file access is reasonable and necessary
   * Verify which file is read or written. Preferred case is a static filename in the local or temp directory.
@@ -57,6 +59,6 @@ All metadata files **must** be covered by the tests. Every metadata file should:
 * contain only metadata entries needed for the library that is the subject of the PR
 * not have entries that describes classes that serve only for tests 
 
-There are various tools that could help checking the content of all json files we are collecting. To run these checks automatically,
-top-level metadata index file must contain `allowed-packages` properly set ([see this](./CONTRIBUTING.md#metadata-structure)). If this field
-is properly configured, our GitHub workflows will automatically check `typeReachable` and origin of all entries in all config files.
+There are various tools that could help checking the content of all json files we are collecting.
+To run these checks automatically, top-level metadata index file must contain `allowed-packages` properly set ([see this](./CONTRIBUTING.md#metadata-structure)).
+If this field is properly configured, our GitHub workflows will automatically check `typeReachable` and origin of all entries in all config files.
