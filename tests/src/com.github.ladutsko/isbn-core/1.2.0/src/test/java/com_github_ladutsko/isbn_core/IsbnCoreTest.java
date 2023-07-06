@@ -10,8 +10,6 @@ import com.github.ladutsko.isbn.ISBN;
 import com.github.ladutsko.isbn.ISBNFormat;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.fail;
-
 class IsbnCoreTest {
     @Test
     void test() throws Exception {
