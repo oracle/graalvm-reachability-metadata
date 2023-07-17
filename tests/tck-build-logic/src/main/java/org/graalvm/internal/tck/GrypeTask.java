@@ -54,7 +54,7 @@ public abstract class GrypeTask extends DefaultTask {
                     vulnerableImages.add("Image: " + image + " contains " + numberOfCritical + " critical, and " + numberOfHigh + " high vulnerabilities");
                 }
 
-                if (numberOfHigh > 5 || numberOfCritical > 0) {
+                if (numberOfHigh > 4 || numberOfCritical > 0) {
                     shouldFail = true;
                 }
             }
