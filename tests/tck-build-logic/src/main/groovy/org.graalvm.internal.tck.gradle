@@ -94,14 +94,16 @@ graalvmNative {
         }
     }
     binaries.all {
-        def toolchainService = project.extensions.findByType(JavaToolchainService)
-        javaLauncher.set(toolchainService.launcherFor {
-            languageVersion = providers.environmentVariable("TCK_JAVA_VERSION")
-                    .orElse(JavaVersion.current().majorVersion)
-                    .map(JavaLanguageVersion::of)
-            vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
-                    .map(JvmVendorSpec::matching)
-                    .orElse(JvmVendorSpec.matching(""))
-        })
+        if (!System.getenv("GRAALVM_HOME")) { // Prefer $GRAALVM_HOME when set
+            def toolchainService = project.extensions.findByType(JavaToolchainService)
+            javaLauncher.set(toolchainService.launcherFor {
+                languageVersion = providers.environmentVariable("TCK_JAVA_VERSION")
+                        .orElse(JavaVersion.current().majorVersion)
+                        .map(JavaLanguageVersion::of)
+                vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
+                        .map(JvmVendorSpec::matching)
+                        .orElse(JvmVendorSpec.matching(""))
+            })
+        }
     }
 }
