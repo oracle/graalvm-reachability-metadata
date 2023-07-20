@@ -17,17 +17,6 @@ repositories {
     mavenCentral()
 }
 
-java {
-    toolchain {
-        languageVersion = providers.environmentVariable("TCK_JAVA_VERSION")
-                .orElse(JavaVersion.current().majorVersion)
-                .map(JavaLanguageVersion::of)
-        vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
-                .map(JvmVendorSpec::matching)
-                .orElse(JvmVendorSpec.matching(""))
-    }
-}
-
 tasks.withType(JavaCompile).configureEach {
     options.release = 17
 }
@@ -91,19 +80,6 @@ graalvmNative {
             }
             buildArgs.add('-H:+StrictConfiguration') // Necessary in order to test metadata properly
             verbose = true
-        }
-    }
-    binaries.all {
-        if (!System.getenv("GRAALVM_HOME")) { // Prefer $GRAALVM_HOME when set
-            def toolchainService = project.extensions.findByType(JavaToolchainService)
-            javaLauncher.set(toolchainService.launcherFor {
-                languageVersion = providers.environmentVariable("TCK_JAVA_VERSION")
-                        .orElse(JavaVersion.current().majorVersion)
-                        .map(JavaLanguageVersion::of)
-                vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
-                        .map(JvmVendorSpec::matching)
-                        .orElse(JvmVendorSpec.matching(""))
-            })
         }
     }
 }
