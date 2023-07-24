@@ -388,7 +388,7 @@ public abstract class ConfigFilesChecker extends DefaultTask {
         for (var entry : entries) {
             if (entry.get("module").toString().startsWith(groupId + ":" + artifactId)) {
                 if (entry.get("allowed-packages") == null) {
-                    throw new IllegalStateException("Missing allowed-packages property for " + groupId);
+                    throw new IllegalStateException("Missing allowed-packages property for " + groupId + ":" + artifactId);
                 }
 
                 return (List<String>) entry.get("allowed-packages");
