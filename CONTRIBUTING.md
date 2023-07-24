@@ -161,6 +161,9 @@ output if necessary:
 
 ## Tests
 
+> **Note:** Contributors must be original authors of all the tests provided in the pull request, or 
+must add a comment that proves they may publish them under the license specified in those tests. 
+
 Every submitted library must feature tests that serve as a safeguard against regressions.
 For easier test development we've provided a TCK plugin that automatically configures
 our [native-gradle-plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)
@@ -226,7 +229,7 @@ Supported template parameters for `test-command` are:
 
 **Note that if `index.json` is omitted `gradle nativeTest` is executed by default.**
 
-#### Executing the tests
+### Executing the tests
 
 In this example this can be done by invoking following command from the repository root:
 
