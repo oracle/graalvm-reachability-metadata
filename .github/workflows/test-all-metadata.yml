@@ -67,6 +67,8 @@ jobs:
           sudo systemctl daemon-reload
           sudo systemctl restart docker
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
+        env:
+          GRAALVM_QUICK_BUILD: true
         run: |
           ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
 
