@@ -43,8 +43,7 @@ class HttpClientTest {
         System.out.println("Starting nginx ...");
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", port + ":80", "nginx:1-alpine-slim")
-                .redirectOutput(new File("nginx-stdout.txt"))
-                .redirectError(new File("nginx-stderr.txt"))
+                .inheritIO()
                 .start();
 
         // Wait until connection can be established
