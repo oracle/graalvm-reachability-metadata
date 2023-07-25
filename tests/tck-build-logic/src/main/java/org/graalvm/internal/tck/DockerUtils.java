@@ -31,7 +31,6 @@ public class DockerUtils {
             allowedImages.addAll(images);
         }
 
-        System.out.println(allowedImages);
         return allowedImages;
     }
 
