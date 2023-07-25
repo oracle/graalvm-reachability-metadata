@@ -17,17 +17,6 @@ repositories {
     mavenCentral()
 }
 
-java {
-    toolchain {
-        languageVersion = providers.environmentVariable("TCK_JAVA_VERSION")
-                .orElse(JavaVersion.current().majorVersion)
-                .map(JavaLanguageVersion::of)
-        vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
-                .map(JvmVendorSpec::matching)
-                .orElse(JvmVendorSpec.matching(""))
-    }
-}
-
 tasks.withType(JavaCompile).configureEach {
     options.release = 17
 }
@@ -93,16 +82,5 @@ graalvmNative {
             verbose = true
             quickBuild = true
         }
-    }
-    binaries.all {
-        def toolchainService = project.extensions.findByType(JavaToolchainService)
-        javaLauncher.set(toolchainService.launcherFor {
-            languageVersion = providers.environmentVariable("TCK_JAVA_VERSION")
-                    .orElse(JavaVersion.current().majorVersion)
-                    .map(JavaLanguageVersion::of)
-            vendor = providers.environmentVariable("TCK_JAVA_VENDOR")
-                    .map(JvmVendorSpec::matching)
-                    .orElse(JvmVendorSpec.matching(""))
-        })
     }
 }
