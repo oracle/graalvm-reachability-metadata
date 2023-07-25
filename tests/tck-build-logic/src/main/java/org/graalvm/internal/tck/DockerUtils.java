@@ -34,7 +34,7 @@ public class DockerUtils {
                 + new URI("https://github.com/oracle/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md#providing-the-tests-that-use-docker"));
             }
 
-            allowedImages.addAll(images);
+            allowedImages.add(images.get(0));
         }
 
         return allowedImages;
