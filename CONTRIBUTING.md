@@ -246,7 +246,7 @@ Only Docker images that are listed in the [`allowed-docker-images` directory](ht
 If you want to extend this list, please create separate pull request to do that.
 That pull request should add a new file in the [`allowed-docker-images` directory](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/allowed-docker-images)
 with the name in the format `Dockerfile-<dockerImageName>` (replace all occurrence of `/` with `_`) .
-The only line that this file should contain is `FROM <dockerImageName>`.
+The only line that this file needs to contain is `FROM <dockerImageName>`.
 Once open a pull request, please post the result of the following command in your pull request description:
 
 ```shell
