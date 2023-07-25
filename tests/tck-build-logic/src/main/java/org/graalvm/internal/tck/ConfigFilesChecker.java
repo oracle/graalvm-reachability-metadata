@@ -381,13 +381,14 @@ public abstract class ConfigFilesChecker extends DefaultTask {
     private List<String> getAllowedPackages() {
         File indexFile = getIndexFile().get().getAsFile();
         String groupId = coordinates.group();
+        String artifactId = coordinates.artifact();
 
         List<Map<String, Object>> entries = getConfigEntries(indexFile);
 
         for (var entry : entries) {
-            if (entry.get("module").toString().startsWith(groupId)) {
+            if (entry.get("module").toString().startsWith(groupId + ":" + artifactId)) {
                 if (entry.get("allowed-packages") == null) {
-                    throw new IllegalStateException("Missing allowed-packages property for " + groupId);
+                    throw new IllegalStateException("Missing allowed-packages property for " + groupId + ":" + artifactId);
                 }
 
                 return (List<String>) entry.get("allowed-packages");
