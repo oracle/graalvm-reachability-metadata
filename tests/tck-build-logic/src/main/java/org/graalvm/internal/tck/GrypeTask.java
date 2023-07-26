@@ -8,6 +8,7 @@ import org.gradle.process.ExecResult;
 
 import javax.inject.Inject;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -21,7 +22,7 @@ public abstract class GrypeTask extends DefaultTask {
     private final String jqMatcher = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
 
     @TaskAction
-    void run() throws IllegalStateException, IOException {
+    void run() throws IllegalStateException, IOException, URISyntaxException {
         List<String> vulnerableImages = new ArrayList<>();
         Set<String> allowedImages = getAllowedImages();
         boolean shouldFail = false;
