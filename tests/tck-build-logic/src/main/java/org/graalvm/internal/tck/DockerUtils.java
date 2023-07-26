@@ -30,7 +30,7 @@ public class DockerUtils {
                     .map(line -> line.substring(FROM.length()).trim())
                     .toList();
             if (images.size() != 1) {
-                throw new RuntimeException("Dockerfile: " + dockerFile.getName() + " must contain only one FROM line, got '" + images.size() + "' (" + images+ "). Please read our documentation: "
+                throw new RuntimeException("Dockerfile: " + dockerFile.getName() + " must contain only one FROM line, got '" + images.size() + "' (" + images + "). Please read our documentation: "
                 + new URI("https://github.com/oracle/graalvm-reachability-metadata/blob/master/CONTRIBUTING.md#providing-the-tests-that-use-docker"));
             }
 
