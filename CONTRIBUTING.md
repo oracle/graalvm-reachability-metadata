@@ -239,23 +239,29 @@ In this example this can be done by invoking following command from the reposito
  
 ### Providing the tests that use docker
  
-If your tests use docker (either with explicit docker process invocation or through some library method call), all images 
-have to be declared in `required-docker-images.txt` file. This file must be placed under `/tests/src/<groupId>/<artifactId>/<versionId>`.
+If your tests use Docker (either with explicit Docker process invocation or through some library method call), all images have to be declared in `required-docker-images` file.
+This file must be placed under `/tests/src/<groupId>/<artifactId>/<versionId>`.
 
-Only docker images that are listed [here](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/AllowedDockerImages.txt)
-can be executed. If you want to extend this list, please create separate pull request to do that, and post the result of the following command on your pull request:
+Only Docker images that are listed in the [`allowed-docker-images` directory](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/allowed-docker-images) can be used for testing.
+If you want to extend this list, please create separate pull request to do that.
+That pull request should add a new file in the [`allowed-docker-images` directory](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/allowed-docker-images)
+with the name in the format `Dockerfile-<dockerImageName>` (replace all occurrence of `/` with `_`) .
+The only line that this file needs to contain is `FROM <dockerImageName>`.
+Once you have opened such a pull request, please post the result of the following command in your pull request description:
 
 ```shell
 grype <dockerImageName>
 ```
 
 Possible scenarios:
-   * If your test uses docker image, and you didn't specify it in the `required-docker-images.txt` file, the test will fail.
-   * If your test uses docker image that is not listed in [allowed docker images list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/AllowedDockerImages.txt),
+   * If your test uses Docker image, and you didn't specify it in the `required-docker-images.txt` file, the test will fail.
+   * If your test uses Docker image that is not listed in [allowed docker images list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/AllowedDockerImages.txt),
    the test will fail
    * Only docker images that are in both `required-docker-images.txt` and in the `allowed docker images list`
    can be executed. 
 
+**Note:** For images that comes from Oracle, please consider using them from the official [Oracle Container Registry](https://container-registry.oracle.com).
+See an [example](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-mysql_mysql-server).
 
 ## Tested Libraries and Frameworks
 
