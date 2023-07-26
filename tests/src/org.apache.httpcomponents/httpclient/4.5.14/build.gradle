@@ -15,3 +15,11 @@ dependencies {
     testImplementation "org.apache.httpcomponents:httpclient:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--enable-url-protocols=http')
+        }
+    }
+}

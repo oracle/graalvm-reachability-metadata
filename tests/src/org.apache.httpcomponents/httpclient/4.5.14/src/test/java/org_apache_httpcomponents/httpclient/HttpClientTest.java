@@ -20,16 +20,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.net.HttpURLConnection;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpClientTest {
 
     private static int port;
+
+    private static String uri;
 
     private static Process process;
 
@@ -39,6 +41,8 @@ class HttpClientTest {
         port = findAvailablePort();
         System.out.println("Found port: " + port);
 
+        uri = "http://localhost:%d/".formatted(port);
+
         System.out.println("Starting nginx ...");
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", port + ":80", "nginx:1-alpine-slim")
@@ -46,7 +50,7 @@ class HttpClientTest {
                 .start();
 
         // Wait until connection can be established
-        waitUntilContainerStarted(60);
+        waitUntil(() -> openConnection(uri), 60, 1);
 
         System.out.println("nginx started");
     }
@@ -60,42 +64,34 @@ class HttpClientTest {
         }
     }
 
-    private static void waitUntilContainerStarted(int startupTimeoutSeconds) {
-        System.out.println("Waiting for nginx container to become available");
+    private static boolean openConnection(String uri) throws Exception {
+        HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
+        connection.setReadTimeout(1000);
+        connection.setRequestMethod("GET");
+        connection.connect();
+        return HttpURLConnection.HTTP_OK == connection.getResponseCode();
+    }
 
-        Exception lastConnectionException = null;
+    private static void waitUntil(Callable<Boolean> conditionEvaluator, int timeoutSeconds, int sleepTimeSeconds) {
+        Exception lastException = null;
 
-        long end = System.currentTimeMillis() + startupTimeoutSeconds * 1000L;
+        long end = System.currentTimeMillis() + timeoutSeconds * 1000L;
         while (System.currentTimeMillis() < end) {
             try {
-                Thread.sleep(100L);
+                Thread.sleep(sleepTimeSeconds * 1000L);
             } catch (InterruptedException e) {
                 // continue
             }
-            try (Socket socket = new Socket()) {
-                socket.setSoTimeout(100);
-                socket.connect(new InetSocketAddress("localhost", port), 100);
-                if (!check(socket)) {
-                    continue;
+            try {
+                if (conditionEvaluator.call()) {
+                    return;
                 }
-                return;
             } catch (Exception e) {
-                lastConnectionException = e;
+                lastException = e;
             }
         }
-        throw new IllegalStateException("nginx container cannot be accessed on localhost:" + port, lastConnectionException);
-    }
-
-    private static boolean check(Socket socket) throws IOException {
-        try {
-            // -1 indicates the socket has been closed immediately
-            // Other responses or a timeout are considered as success
-            if (socket.getInputStream().read() == -1) {
-                return false;
-            }
-        } catch (SocketTimeoutException ex) {
-        }
-        return true;
+        String errorMessage = "Condition was not fulfilled within " + timeoutSeconds + " seconds";
+        throw lastException == null ? new IllegalStateException(errorMessage) : new IllegalStateException(errorMessage, lastException);
     }
 
     @AfterAll
@@ -114,7 +110,7 @@ class HttpClientTest {
         HttpClientContext context = HttpClientContext.create();
         context.setAuthCache(authCache);
 
-        HttpGet httpGet = new HttpGet("http://localhost:%d/".formatted(port));
+        HttpGet httpGet = new HttpGet(uri);
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpclient.execute(httpGet, context)) {
                 assertThat(response.getStatusLine().getStatusCode()).isEqualTo(200);
