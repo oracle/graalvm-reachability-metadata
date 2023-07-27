@@ -28,6 +28,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RoundRobinPartitioner;
 import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.BooleanDeserializer;
 import org.apache.kafka.common.serialization.BooleanSerializer;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
@@ -274,4 +275,19 @@ class KafkaClientsTest {
             assertThat(consumer).isNotNull();
         }
     }
+
+    @Test
+    void testSaslPlain() {
+        Map<String, Object> consumerProperties = new HashMap<>();
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        consumerProperties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
+        consumerProperties.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
+        consumerProperties.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=admin password=admin-pass;");
+        try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
+            assertThat(consumer).isNotNull();
+        }
+    }
+
 }
