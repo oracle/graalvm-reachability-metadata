@@ -27,7 +27,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RoundRobinPartitioner;
-import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.BooleanDeserializer;
 import org.apache.kafka.common.serialization.BooleanSerializer;
@@ -119,11 +118,8 @@ class KafkaClientsTest {
         properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://" + KAFKA_SERVER);
         try (Admin admin = Admin.create(properties)) {
             NewTopic newTopic = new NewTopic("test_topic", 1, (short) 1);
-
             CreateTopicsResult result = admin.createTopics(Collections.singleton(newTopic));
-
-            KafkaFuture<Void> future = result.values().get("test_topic");
-            future.get();
+            result.values().get("test_topic").get();
         }
 
         Map<String, Object> producerProperties = new HashMap<>();
