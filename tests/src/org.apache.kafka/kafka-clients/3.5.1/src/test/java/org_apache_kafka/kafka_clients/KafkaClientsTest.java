@@ -10,6 +10,7 @@ import kafka.server.KafkaConfig;
 import kafka.server.KafkaServer;
 import kafka.utils.TestUtils;
 import kafka.zk.EmbeddedZookeeper;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.CreateTopicsResult;
@@ -36,8 +37,11 @@ import org.apache.kafka.common.serialization.FloatDeserializer;
 import org.apache.kafka.common.serialization.FloatSerializer;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
+import org.apache.kafka.common.serialization.ListDeserializer;
+import org.apache.kafka.common.serialization.ListSerializer;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.ShortDeserializer;
 import org.apache.kafka.common.serialization.ShortSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -56,8 +60,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -122,8 +126,8 @@ class KafkaClientsTest {
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
-        consumer.subscribe(Arrays.asList("test_topic"));
+        KafkaConsumer<Integer, String> consumer = new KafkaConsumer<>(consumerProperties);
+        consumer.subscribe(List.of("test_topic"));
 
         Map<String, Object> producerProperties = new HashMap<>();
         producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
@@ -137,8 +141,8 @@ class KafkaClientsTest {
         List<String> receivedMessages = new ArrayList<>();
 
         while (receivedMessages.size() < 2) {
-            ConsumerRecords<String, String> records = consumer.poll(100);
-            for (ConsumerRecord<String, String> record : records) {
+            ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofMillis(100));
+            for (ConsumerRecord<Integer, String> record : records) {
                 receivedMessages.add(record.value());
             }
         }
@@ -167,8 +171,9 @@ class KafkaClientsTest {
         producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
         producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
-        KafkaProducer<Integer, String> producer = new KafkaProducer<>(producerProperties);
-        assertThat(producer).isNotNull();
+        try (KafkaProducer producer = new KafkaProducer<>(producerProperties)) {
+            assertThat(producer).isNotNull();
+        }
     }
 
     @ParameterizedTest
@@ -190,7 +195,46 @@ class KafkaClientsTest {
         consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializer);
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
-        assertThat(consumer).isNotNull();
+        try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
+            assertThat(consumer).isNotNull();
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = {
+            Serdes.BooleanSerde.class,
+            Serdes.BytesSerde.class,
+            Serdes.ByteArraySerde.class,
+            Serdes.ByteBufferSerde.class,
+            Serdes.DoubleSerde.class,
+            Serdes.FloatSerde.class,
+            Serdes.IntegerSerde.class,
+            Serdes.LongSerde.class,
+            Serdes.ShortSerde.class,
+            Serdes.StringSerde.class,
+            Serdes.UUIDSerde.class,
+            Serdes.VoidSerde.class})
+    void testListSerializers(Class serdeInnerClass) {
+        Map<String, Object> producerProperties = new HashMap<>();
+        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
+        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ListSerializer.class);
+        producerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_INNER_CLASS, serdeInnerClass);
+        try (KafkaProducer producer = new KafkaProducer<>(producerProperties)) {
+            assertThat(producer).isNotNull();
+        }
+    }
+
+    @Test
+    void testListDeserializers() {
+        Map<String, Object> consumerProperties = new HashMap<>();
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ListDeserializer.class);
+        consumerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_TYPE_CLASS, ArrayList.class);
+        consumerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_INNER_CLASS, Serdes.BooleanSerde.class);
+        try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
+            assertThat(consumer).isNotNull();
+        }
     }
 }
