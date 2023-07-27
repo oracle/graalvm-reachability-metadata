@@ -107,7 +107,7 @@ class KafkaClientsTest {
     }
 
     @Test
-    void test() throws Exception {
+    void testProduceAndConsume() throws Exception {
         Properties properties = new Properties();
         properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://" + KAFKA_SERVER);
         try (Admin admin = Admin.create(properties)) {
@@ -119,6 +119,18 @@ class KafkaClientsTest {
             future.get();
         }
 
+        Map<String, Object> producerProperties = new HashMap<>();
+        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        producerProperties.put(ProducerConfig.LINGER_MS_CONFIG, 50);
+        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
+        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        try (KafkaProducer<Integer, String> producer = new KafkaProducer<>(producerProperties)) {
+            producer.send(new ProducerRecord<>("test_topic", 0, 0, "message0")).get();
+            producer.send(new ProducerRecord<>("test_topic", 0, 1, "message1")).get();
+        }
+
+        List<String> receivedMessages = new ArrayList<>();
+
         Map<String, Object> consumerProperties = new HashMap<>();
         consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
         consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "consumer");
@@ -126,24 +138,14 @@ class KafkaClientsTest {
         consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        KafkaConsumer<Integer, String> consumer = new KafkaConsumer<>(consumerProperties);
-        consumer.subscribe(List.of("test_topic"));
-
-        Map<String, Object> producerProperties = new HashMap<>();
-        producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
-        producerProperties.put(ProducerConfig.LINGER_MS_CONFIG, 50);
-        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
-        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        KafkaProducer<Integer, String> producer = new KafkaProducer<>(producerProperties);
-        producer.send(new ProducerRecord<>("test_topic", 0, 0, "message0")).get();
-        producer.send(new ProducerRecord<>("test_topic", 0, 1, "message1")).get();
-
-        List<String> receivedMessages = new ArrayList<>();
-
-        while (receivedMessages.size() < 2) {
-            ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofMillis(100));
-            for (ConsumerRecord<Integer, String> record : records) {
-                receivedMessages.add(record.value());
+        try (KafkaConsumer<Integer, String> consumer = new KafkaConsumer<>(consumerProperties)) {
+            consumer.subscribe(List.of("test_topic"));
+            long end  = System.currentTimeMillis() + 30000L;
+            while (receivedMessages.size() < 2 && System.currentTimeMillis() < end) {
+                ConsumerRecords<Integer, String> records = consumer.poll(Duration.ofMillis(100));
+                for (ConsumerRecord<Integer, String> record : records) {
+                    receivedMessages.add(record.value());
+                }
             }
         }
 
