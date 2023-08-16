@@ -58,6 +58,14 @@ class OrgEclipseJGitTest {
         logger.info("Committed '{}' file to remote repository: {}", TEST_FILE_NAME, revCommit.getName());
     }
 
+    private void writeFile(Repository repository, String name, String data) throws IOException {
+        File parentFile = repository.getWorkTree();
+        File file = new File(parentFile, name);
+        try (Writer w = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+            w.write(data);
+        }
+    }
+
     @AfterAll
     void afterAll() {
         if (remoteRepository != null) {
@@ -90,14 +98,6 @@ class OrgEclipseJGitTest {
             localGit.getRepository().close();
         } finally {
             deleteDir(localRepositoryDir);
-        }
-    }
-
-    public void writeFile(Repository repository, String name, String data) throws IOException {
-        File parentFile = repository.getWorkTree();
-        File file = new File(parentFile, name);
-        try (Writer w = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
-            w.write(data);
         }
     }
 
