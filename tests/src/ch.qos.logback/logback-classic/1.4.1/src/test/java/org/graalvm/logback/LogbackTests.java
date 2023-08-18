@@ -6,25 +6,31 @@
  */
 package org.graalvm.logback;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import org.graalvm.logback.util.LayoutTags;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
@@ -33,6 +39,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LogbackTests {
 
   private static final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+  private static final Map<String, String> layoutTagMap = new HashMap<>();
+  static {
+    layoutTagMap.put("echoLayout", LayoutTags.ECHO_TAG);
+    layoutTagMap.put("htmlLayout", LayoutTags.HTML_TAG);
+    layoutTagMap.put("ttllLayout", LayoutTags.TTLL_TAG);
+    layoutTagMap.put("xmlLayout", LayoutTags.XML_TAG);
+  }
+
+  private static final Map<String, String> layoutResultMap = new HashMap<>();
+  static {
+    layoutResultMap.put("echoLayout", "[INFO] test info message");
+    layoutResultMap.put("htmlLayout", "<td class=\"Message\">test info message</td>");
+    layoutResultMap.put("ttllLayout", "INFO ROOT - test info message");
+    layoutResultMap.put("xmlLayout", "<log4j:message>test info message</log4j:message>");
+  }
 
   private final PrintStream systemOut = System.out;
 
@@ -44,6 +66,24 @@ public class LogbackTests {
     context.putProperty("test", "GraalVM property");
     this.outputStreamCaptor = new ByteArrayOutputStream();
     System.setOut(new PrintStream(this.outputStreamCaptor));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"echoLayout", "htmlLayout", "ttllLayout", "xmlLayout"})
+  void testLayouts(String layoutName) throws Exception {
+    LoggerContext testLoggerContext = new LoggerContext();
+
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(testLoggerContext);
+
+    String configXml = LayoutTags.CONFIG_TAG.formatted(layoutTagMap.get(layoutName));
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = testLoggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.info("test info message");
+
+    String loggedMessage = outputStreamCaptor.toString();
+    assertThat(loggedMessage).contains(layoutResultMap.get(layoutName));
   }
 
   @Test
