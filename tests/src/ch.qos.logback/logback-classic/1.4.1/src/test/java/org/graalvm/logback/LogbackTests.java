@@ -8,8 +8,14 @@ package org.graalvm.logback;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -23,10 +29,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import org.graalvm.logback.util.AppenderTags;
 import org.graalvm.logback.util.LayoutTags;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -36,6 +46,7 @@ import org.slf4j.MDC;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LogbackTests {
 
   private static final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -44,6 +55,7 @@ public class LogbackTests {
   static {
     layoutTagMap.put("echoLayout", LayoutTags.ECHO_TAG);
     layoutTagMap.put("htmlLayout", LayoutTags.HTML_TAG);
+    layoutTagMap.put("patternLayout", LayoutTags.PATTERN_TAG);
     layoutTagMap.put("ttllLayout", LayoutTags.TTLL_TAG);
     layoutTagMap.put("xmlLayout", LayoutTags.XML_TAG);
   }
@@ -52,6 +64,7 @@ public class LogbackTests {
   static {
     layoutResultMap.put("echoLayout", "[INFO] test info message");
     layoutResultMap.put("htmlLayout", "<td class=\"Message\">test info message</td>");
+    layoutResultMap.put("patternLayout", "#logback.classic pattern: %msg\ntest info message");
     layoutResultMap.put("ttllLayout", "INFO ROOT - test info message");
     layoutResultMap.put("xmlLayout", "<log4j:message>test info message</log4j:message>");
   }
@@ -59,6 +72,27 @@ public class LogbackTests {
   private final PrintStream systemOut = System.out;
 
   private ByteArrayOutputStream outputStreamCaptor;
+
+  private Path tempDirPath;
+
+  @BeforeAll
+  void beforeAll() throws IOException {
+    tempDirPath = Files.createTempDirectory("logback-metadata-test");
+  }
+
+  @AfterAll
+  void afterAll() {
+    if (tempDirPath != null) {
+      try {
+        Files.walk(tempDirPath)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
 
   @BeforeEach
   public void setUp() {
@@ -69,7 +103,7 @@ public class LogbackTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"echoLayout", "htmlLayout", "ttllLayout", "xmlLayout"})
+  @ValueSource(strings = {"echoLayout", "htmlLayout", "patternLayout", "ttllLayout", "xmlLayout"})
   void testLayouts(String layoutName) throws Exception {
     LoggerContext testLoggerContext = new LoggerContext();
 
@@ -84,6 +118,44 @@ public class LogbackTests {
 
     String loggedMessage = outputStreamCaptor.toString();
     assertThat(loggedMessage).contains(layoutResultMap.get(layoutName));
+  }
+
+  @Test
+  void testFileAppender() throws Exception {
+    LoggerContext testLoggerContext = new LoggerContext();
+
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(testLoggerContext);
+
+    String filePath = tempDirPath + "/log.txt";
+    String filesTag = AppenderTags.FILE_TAG.formatted(filePath);
+    String configXml = AppenderTags.CONFIG_TAG.formatted(filesTag);
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = testLoggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.info("test info message");
+
+    String loggedMessage = Files.readAllLines(Paths.get(filePath)).get(0);
+    assertThat(loggedMessage).isEqualTo("test info message");
+  }
+
+  @Test
+  void testRollingFileAppender() throws Exception {
+    LoggerContext testLoggerContext = new LoggerContext();
+
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(testLoggerContext);
+
+    String filePath = tempDirPath + "/rolling-log.txt";
+    String filesTag = AppenderTags.ROLLING_FILE_TAG.formatted(filePath);
+    String configXml = AppenderTags.CONFIG_TAG.formatted(filesTag);
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = testLoggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.info("test info message");
+
+    String loggedMessage = Files.readAllLines(Paths.get(filePath)).get(0);
+    assertThat(loggedMessage).isEqualTo("test info message");
   }
 
   @Test

@@ -29,6 +29,12 @@ public class LayoutTags {
                 <cssBuilder class="ch.qos.logback.classic.html.UrlCssBuilder"><url>test-url</url></cssBuilder>
             </layout>""";
 
+    public static final String PATTERN_TAG = """
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%msg</pattern>
+                <outputPatternAsHeader>true</outputPatternAsHeader>
+            </layout>""";
+
     public static final String TTLL_TAG = "<layout class=\"ch.qos.logback.classic.layout.TTLLLayout\" />";
 
     public static final String XML_TAG = """
