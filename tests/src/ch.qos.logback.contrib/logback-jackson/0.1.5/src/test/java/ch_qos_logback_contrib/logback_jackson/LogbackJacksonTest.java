@@ -4,7 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package ch_qos_logback_contrib.logback_json_classic;
+package ch_qos_logback_contrib.logback_jackson;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -19,14 +19,14 @@ import java.io.PrintStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LogbackJsonClassicTest {
+class LogbackJacksonTest {
 
     private static final String CONFIG_TAG = """
             <configuration>
                 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                     <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
                         <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                            <jsonFormatter class="ch_qos_logback_contrib.logback_json_classic.CustomJsonFormatter"/>
+                            <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter"/>
                         </layout>
                     </encoder>
                 </appender>
@@ -64,6 +64,6 @@ class LogbackJsonClassicTest {
         testLogger.info("test info message");
 
         String loggedMessage = outputStreamCaptor.toString();
-        assertThat(loggedMessage).contains("message=test info message");
+        assertThat(loggedMessage).contains("\"message\":\"test info message\"");
     }
 }
