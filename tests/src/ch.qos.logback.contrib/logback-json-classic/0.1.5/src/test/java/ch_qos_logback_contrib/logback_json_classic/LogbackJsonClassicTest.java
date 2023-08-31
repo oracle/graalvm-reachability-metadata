@@ -26,7 +26,19 @@ class LogbackJsonClassicTest {
                 <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                     <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
                         <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                            <includeTimestamp>true</includeTimestamp>
+                            <timestampFormat>yyyy-MM-dd HH:mm:ss.SSS</timestampFormat>
+                            <timestampFormatTimezoneId>UTC</timestampFormatTimezoneId>
+                            <appendLineSeparator>false</appendLineSeparator>
                             <jsonFormatter class="ch_qos_logback_contrib.logback_json_classic.CustomJsonFormatter"/>
+                            <includeLevel>true</includeLevel>
+                            <includeThreadName>true</includeThreadName>
+                            <includeMDC>true</includeMDC>
+                            <includeLoggerName>true</includeLoggerName>
+                            <includeFormattedMessage>true</includeFormattedMessage>
+                            <includeMessage>true</includeMessage>
+                            <includeException>true</includeException>
+                            <includeContextName>true</includeContextName>
                         </layout>
                     </encoder>
                 </appender>
