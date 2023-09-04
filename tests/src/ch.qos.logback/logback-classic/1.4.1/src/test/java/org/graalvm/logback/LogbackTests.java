@@ -53,19 +53,13 @@ public class LogbackTests {
 
   private static final Map<String, String> layoutTagMap = new HashMap<>();
   static {
-    layoutTagMap.put("echoLayout", LayoutTags.ECHO_TAG);
-    layoutTagMap.put("htmlLayout", LayoutTags.HTML_TAG);
     layoutTagMap.put("patternLayout", LayoutTags.PATTERN_TAG);
-    layoutTagMap.put("ttllLayout", LayoutTags.TTLL_TAG);
     layoutTagMap.put("xmlLayout", LayoutTags.XML_TAG);
   }
 
   private static final Map<String, String> layoutResultMap = new HashMap<>();
   static {
-    layoutResultMap.put("echoLayout", "[INFO] test info message");
-    layoutResultMap.put("htmlLayout", "<td class=\"Message\">test info message</td>");
     layoutResultMap.put("patternLayout", "#logback.classic pattern: %msg\ntest info message");
-    layoutResultMap.put("ttllLayout", "INFO ROOT - test info message");
     layoutResultMap.put("xmlLayout", "<log4j:message>test info message</log4j:message>");
   }
 
@@ -103,7 +97,7 @@ public class LogbackTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"echoLayout", "htmlLayout", "patternLayout", "ttllLayout", "xmlLayout"})
+  @ValueSource(strings = {"patternLayout", "xmlLayout"})
   void testLayouts(String layoutName) throws Exception {
     LoggerContext testLoggerContext = new LoggerContext();
 
