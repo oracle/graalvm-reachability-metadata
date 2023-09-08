@@ -82,7 +82,7 @@ class JacksonOptionalSerializersTest {
     @Test
     void xmlGregorianCalendarSerializer() throws Exception {
         XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(2023,
-                11,30, 20, 50, 40, 200, 0);
+                11, 30, 20, 50, 40, 200, 0);
         String result = mapper.writeValueAsString(calendar);
         assertThat(result).isEqualTo("1701377440200");
     }
