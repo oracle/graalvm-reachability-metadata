@@ -10,6 +10,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class Log4jTest {
 
     private ByteArrayOutputStream stdOut;
+    private final PrintStream systemOut = System.out;
 
     @BeforeEach
     public void setUp() {
@@ -42,5 +44,10 @@ class Log4jTest {
         final Logger logger = LogManager.getLogger(this.getClass());
         logger.info("info message");
         assertThat(stdOut.toString()).contains("info message");
+    }
+
+    @AfterEach
+    public void tearDown() {
+        System.setOut(systemOut);
     }
 }
