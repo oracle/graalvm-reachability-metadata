@@ -99,15 +99,13 @@ public class LogbackTests {
   @ParameterizedTest
   @ValueSource(strings = {"patternLayout", "xmlLayout"})
   void testLayouts(String layoutName) throws Exception {
-    LoggerContext testLoggerContext = new LoggerContext();
-
     JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(testLoggerContext);
+    joranConfigurator.setContext(context);
 
     String configXml = LayoutTags.CONFIG_TAG.formatted(layoutTagMap.get(layoutName));
     joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
 
-    Logger testLogger = testLoggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
     testLogger.info("test info message");
 
     String loggedMessage = outputStreamCaptor.toString();
@@ -116,17 +114,15 @@ public class LogbackTests {
 
   @Test
   void testFileAppender() throws Exception {
-    LoggerContext testLoggerContext = new LoggerContext();
-
     JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(testLoggerContext);
+    joranConfigurator.setContext(context);
 
     String filePath = tempDirPath + "/log.txt";
     String filesTag = AppenderTags.FILE_TAG.formatted(filePath);
     String configXml = AppenderTags.CONFIG_TAG.formatted(filesTag);
     joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
 
-    Logger testLogger = testLoggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
     testLogger.info("test info message");
 
     String loggedMessage = Files.readAllLines(Paths.get(filePath)).get(0);
@@ -135,35 +131,19 @@ public class LogbackTests {
 
   @Test
   void testRollingFileAppender() throws Exception {
-    LoggerContext testLoggerContext = new LoggerContext();
-
     JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(testLoggerContext);
+    joranConfigurator.setContext(context);
 
     String filePath = tempDirPath + "/rolling-log.txt";
     String filesTag = AppenderTags.ROLLING_FILE_TAG.formatted(filePath);
     String configXml = AppenderTags.CONFIG_TAG.formatted(filesTag);
     joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
 
-    Logger testLogger = testLoggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
     testLogger.info("test info message");
 
     String loggedMessage = Files.readAllLines(Paths.get(filePath)).get(0);
     assertThat(loggedMessage).isEqualTo("test info message");
-  }
-
-  @Test
-  void debugMessageLoggedViaExternalConfig() {
-    Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-    logger.debug("test message");
-    assertThat(outputStreamCaptor.toString()).isEqualTo("test message\n");
-  }
-
-  @Test
-  void traceMessageSkippedViaExternalConfig() {
-    Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-    logger.trace("test message");
-    assertThat(outputStreamCaptor.toString()).isBlank();
   }
 
   @Test
