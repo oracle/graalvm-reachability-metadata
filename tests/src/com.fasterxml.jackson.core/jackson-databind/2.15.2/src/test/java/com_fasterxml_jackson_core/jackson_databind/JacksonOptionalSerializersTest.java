@@ -12,6 +12,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 
 import javax.sql.rowset.serial.SerialBlob;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -77,4 +79,23 @@ class JacksonOptionalSerializersTest {
         assertThat(result).isEqualTo("\"\"");
     }
 
+    @Test
+    void xmlGregorianCalendarSerializer() throws Exception {
+        XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(2023,
+                11, 30, 20, 50, 40, 200, 0);
+        String result = mapper.writeValueAsString(calendar);
+        assertThat(result).isEqualTo("1701377440200");
+    }
+
+    @Test
+    void xmlGregorianCalendarDeserializer() throws Exception {
+        XMLGregorianCalendar calendar = mapper.readValue("1701377440200", XMLGregorianCalendar.class);
+        assertThat(calendar.getYear()).isEqualTo(2023);
+        assertThat(calendar.getMonth()).isEqualTo(11);
+        assertThat(calendar.getDay()).isEqualTo(30);
+        assertThat(calendar.getMinute()).isEqualTo(50);
+        assertThat(calendar.getSecond()).isEqualTo(40);
+        assertThat(calendar.getMillisecond()).isEqualTo(200);
+        assertThat(calendar.getTimezone()).isEqualTo(0);
+    }
 }
