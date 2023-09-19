@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -114,7 +115,11 @@ class ScaffoldTask extends DefaultTask {
                 new TestIndexEntry.LibraryEntry(coordinates.group() + ":" + coordinates.artifact(), List.of(coordinates.version()))
         )));
 
-        objectMapper.writeValue(testIndex, entries);
+        List<TestIndexEntry> sortedEntries = entries.stream()
+                .sorted(Comparator.comparing(TestIndexEntry::testProjectPath))
+                .toList();
+
+        objectMapper.writeValue(testIndex, sortedEntries);
     }
 
     private void addToMetadataIndexJson(Coordinates coordinates) throws IOException {
@@ -137,7 +142,11 @@ class ScaffoldTask extends DefaultTask {
         getLogger().debug("Did not find {} in {}, adding it", module, metadataIndex);
         entries.add(new MetadataIndexEntry(directory, module, null, List.of(coordinates.group())));
 
-        objectMapper.writeValue(metadataIndex, entries);
+        List<MetadataIndexEntry> sortedEntries = entries.stream()
+                .sorted(Comparator.comparing(MetadataIndexEntry::module))
+                .toList();
+
+        objectMapper.writeValue(metadataIndex, sortedEntries);
     }
 
     private void writeTestScaffold(Path coordinatesTestRoot, Coordinates coordinates) throws IOException {
