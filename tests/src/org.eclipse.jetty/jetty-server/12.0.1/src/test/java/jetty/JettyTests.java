@@ -14,9 +14,10 @@ import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.Callback;
 import org.eclipse.jetty.util.TypeUtil;
+import org.eclipse.jetty.util.resource.ResourceFactory;
+import org.eclipse.jetty.util.resource.URLResourceFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -87,10 +88,12 @@ public class JettyTests {
     }
 
     @Test
-    // This test doesn't work in a native image and fails with:
-    // java.lang.IllegalArgumentException: not an allowed scheme: resource:/org/eclipse/jetty/ee10/webapp/webdefault-ee10.xml
-    @DisabledInNativeImage
     void webapp(@TempDir Path tempDir) throws Exception {
+        // This is needed to work in a native image, otherwise it fails with:
+        // java.lang.IllegalArgumentException: not an allowed scheme: resource:/org/eclipse/jetty/ee10/webapp/webdefault-ee10.xml
+        // See https://github.com/eclipse/jetty.project/issues/9116
+        ResourceFactory.registerResourceFactory("resource", new URLResourceFactory());
+
         Server server = new Server(PORT);
         WebAppContext context = new WebAppContext();
         // EnvConfiguration and PlusConfiguration uses JNDI, which is not what we want to include
