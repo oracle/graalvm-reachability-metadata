@@ -1,10 +1,13 @@
 name: "Scan docker images from the allowed docker images list"
 
 on:
+  # we should run this job if somebody wants to add/update allowed docker images
   pull_request:
-    paths-ignore:
-      - '**.md'
-      - 'library-and-framework-list*.json'
+    paths:
+      - 'tests/tck-build-logic/src/main/resources/allowed-docker-images'
+  # we should run this job once a week to check if new vulnerabilities are found in existing images
+  schedule:
+    - cron: "0 0 * * 6"
 
 jobs:
   scan-images:
