@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
-import static org.graalvm.internal.tck.DockerUtils.getAllowedImages;
+import static org.graalvm.internal.tck.DockerUtils.getAllAllowedImages;
 
 public abstract class DockerTask extends DefaultTask {
 
@@ -47,7 +47,7 @@ public abstract class DockerTask extends DefaultTask {
             return;
         }
 
-        Set<String> allowedImages = getAllowedImages();
+        Set<String> allowedImages = getAllAllowedImages();
         List<String> requiredImages = Files.readAllLines(dockerList.toPath());
         for (String image : requiredImages) {
             if (allowedImages.contains(image)) {

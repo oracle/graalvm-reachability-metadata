@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Moritz Halbritter
  */
-class ScaffoldTask extends DefaultTask {
+public class ScaffoldTask extends DefaultTask {
     private final ObjectMapper objectMapper = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT)
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
