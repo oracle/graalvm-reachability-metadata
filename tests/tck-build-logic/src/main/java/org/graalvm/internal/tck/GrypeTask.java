@@ -36,9 +36,6 @@ public abstract class GrypeTask extends DefaultTask {
     private final String jqMatcher = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
 
     private List<String> getChangedImages(String base, String head){
-        if (base == null || head == null) {
-            return List.of();
-        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         getExecOperations().exec(spec -> {
             spec.setStandardOutput(baos);
