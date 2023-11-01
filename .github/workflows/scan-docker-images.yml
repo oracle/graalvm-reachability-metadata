@@ -23,15 +23,13 @@ jobs:
           java-version: '17'
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Install required tools"
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+          sudo apt-get install jq
       - name: "🔎 Check changed docker images"
         if: github.event_name == 'pull_request'
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
-          sudo apt-get install jq
-          ./gradlew checkAllowedDockerImages --baseCommit=${{ github.event.pull_request.base.sha }} --newCommit=${{ github.event.pull_request.head.sha }}
+        run: ./gradlew checkAllowedDockerImages --baseCommit=${{ github.event.pull_request.base.sha }} --newCommit=${{ github.event.pull_request.head.sha }}
       - name: "🔎 Check all docker images"
         if: github.event_name != 'pull_request'
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
-          sudo apt-get install jq
-          ./gradlew checkAllowedDockerImages
+        run: ./gradlew checkAllowedDockerImages
