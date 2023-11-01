@@ -8,6 +8,7 @@ import org.gradle.process.ExecOperations;
 import javax.inject.Inject;
 import java.io.*;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
@@ -35,7 +36,7 @@ public abstract class GrypeTask extends DefaultTask {
 
     private final String jqMatcher = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
 
-    private List<String> getChangedImages(String base, String head){
+    private List<URL> getChangedImages(String base, String head){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         getExecOperations().exec(spec -> {
             spec.setStandardOutput(baos);
@@ -44,9 +45,10 @@ public abstract class GrypeTask extends DefaultTask {
 
         String output = baos.toString(StandardCharsets.UTF_8);
         String dockerfileDirectory = "allowed-docker-images";
-        List<String> diffFiles = Arrays.stream(output.split("\\r?\\n"))
+        List<URL> diffFiles = Arrays.stream(output.split("\\r?\\n"))
                 .filter(path -> path.contains(dockerfileDirectory))
                 .map(path -> path.substring(path.lastIndexOf("/") + 1))
+                .map(DockerUtils::getDockerFile)
                 .toList();
 
         if (diffFiles.isEmpty()) {
@@ -67,6 +69,7 @@ public abstract class GrypeTask extends DefaultTask {
             allowedImages = extractImagesNames(getChangedImages(baseCommit, newCommit));
         }
 
+        System.out.println(allowedImages);
         boolean shouldFail = false;
         for (String image : allowedImages) {
             System.out.println("Checking image: " + image);
