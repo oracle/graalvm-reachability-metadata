@@ -69,7 +69,6 @@ public abstract class GrypeTask extends DefaultTask {
             allowedImages = extractImagesNames(getChangedImages(baseCommit, newCommit));
         }
 
-        System.out.println(allowedImages);
         boolean shouldFail = false;
         for (String image : allowedImages) {
             System.out.println("Checking image: " + image);
