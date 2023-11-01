@@ -43,9 +43,9 @@ public abstract class GrypeTask extends DefaultTask {
         });
 
         String output = baos.toString(StandardCharsets.UTF_8);
-        String dockerfileDirectory = Paths.get("tests/tck-build-logic/src/main/resources/allowed-docker-images").toString();
+        String dockerfileDirectory = "allowed-docker-images";
         List<String> diffFiles = Arrays.stream(output.split("\\r?\\n"))
-                .filter(path -> path.startsWith(dockerfileDirectory))
+                .filter(path -> path.contains(dockerfileDirectory))
                 .map(path -> path.substring(path.lastIndexOf("/") + 1))
                 .toList();
 
