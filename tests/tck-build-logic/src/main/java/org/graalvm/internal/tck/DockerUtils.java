@@ -46,7 +46,7 @@ public class DockerUtils {
     public static Set<String> getAllAllowedImages() throws IOException, URISyntaxException {
         String[] dockerFiles = new File(getDockerfileDirectory()).list();
         if (dockerFiles == null) {
-            throw new RuntimeException("Cannot find allowed-docker-images directory content");
+            throw new RuntimeException("Cannot find files in allowed-docker-images directory");
         }
 
         return extractImagesNames(Arrays.stream(dockerFiles).toList());
