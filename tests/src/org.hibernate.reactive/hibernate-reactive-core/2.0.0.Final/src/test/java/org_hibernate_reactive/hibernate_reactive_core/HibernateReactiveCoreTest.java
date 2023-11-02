@@ -56,7 +56,7 @@ class HibernateReactiveCoreTest {
         logger.info("Starting MySQL ...");
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", "3306:3306", "-e", "MYSQL_DATABASE=" + DATABASE, "-e", "MYSQL_USER=" + USERNAME,
-                "-e", "MYSQL_PASSWORD=" + PASSWORD, "container-registry.oracle.com/mysql/community-server:8.1").inheritIO().start();
+                "-e", "MYSQL_PASSWORD=" + PASSWORD, "container-registry.oracle.com/mysql/community-server:8.2").inheritIO().start();
 
         waitUntil(() -> {
             openConnection().close();
