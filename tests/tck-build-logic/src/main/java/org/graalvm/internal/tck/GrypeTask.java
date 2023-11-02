@@ -2,31 +2,74 @@ package org.graalvm.internal.tck;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.internal.impldep.com.esotericsoftware.kryo.io.ByteBufferOutputStream;
+import org.gradle.api.tasks.options.Option;
 import org.gradle.process.ExecOperations;
-import org.gradle.process.ExecResult;
 
 import javax.inject.Inject;
 import java.io.*;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Predicate;
 
-import static org.graalvm.internal.tck.DockerUtils.getAllowedImages;
+import static org.graalvm.internal.tck.DockerUtils.extractImagesNames;
+import static org.graalvm.internal.tck.DockerUtils.getAllAllowedImages;
 
 public abstract class GrypeTask extends DefaultTask {
 
     @Inject
     protected abstract ExecOperations getExecOperations();
 
+    @Option(option = "baseCommit", description = "Last commit from master")
+    void setBaseCommit(String baseCommit) {
+        this.baseCommit = baseCommit;
+    }
+
+    @Option(option = "newCommit", description = "HEAD commit of the pull request")
+    void setNewCommit(String newCommit) {
+        this.newCommit = newCommit;
+    }
+
+    private String newCommit;
+    private String baseCommit;
+
     private final String jqMatcher = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
+
+    private List<URL> getChangedImages(String base, String head){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        getExecOperations().exec(spec -> {
+            spec.setStandardOutput(baos);
+            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT", base, head);
+        });
+
+        String output = baos.toString(StandardCharsets.UTF_8);
+        String dockerfileDirectory = "allowed-docker-images";
+        List<URL> diffFiles = Arrays.stream(output.split("\\r?\\n"))
+                .filter(path -> path.contains(dockerfileDirectory))
+                .map(path -> path.substring(path.lastIndexOf("/") + 1))
+                .map(DockerUtils::getDockerFile)
+                .toList();
+
+        if (diffFiles.isEmpty()) {
+            throw new RuntimeException("There are no changed or new docker image founded. " +
+                    "This task should be executed only if there are changes in allowed-docker-images directory.");
+        }
+
+        return diffFiles;
+    }
 
     @TaskAction
     void run() throws IllegalStateException, IOException, URISyntaxException {
         List<String> vulnerableImages = new ArrayList<>();
-        Set<String> allowedImages = getAllowedImages();
-        boolean shouldFail = false;
+        Set<String> allowedImages;
+        if (baseCommit == null && newCommit == null) {
+            allowedImages = getAllAllowedImages();
+        } else {
+            allowedImages = extractImagesNames(getChangedImages(baseCommit, newCommit));
+        }
 
+        boolean shouldFail = false;
         for (String image : allowedImages) {
             System.out.println("Checking image: " + image);
             String[] command = { "-c",  "grype -o json " + image + jqMatcher };
