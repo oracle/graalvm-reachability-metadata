@@ -60,7 +60,7 @@ public class PostgresqlTests {
         System.out.println("Starting PostgreSQL ...");
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", "5432:5432", "-e", "POSTGRES_DB=" + DATABASE, "-e", "POSTGRES_USER=" + USERNAME,
-                "-e", "POSTGRES_PASSWORD=" + PASSWORD, "postgres:15-alpine").redirectOutput(new File("postgres-stdout.txt"))
+                "-e", "POSTGRES_PASSWORD=" + PASSWORD, "postgres:16-alpine").redirectOutput(new File("postgres-stdout.txt"))
                 .redirectError(new File("postgres-stderr.txt")).start();
 
         // Wait until connection can be established
