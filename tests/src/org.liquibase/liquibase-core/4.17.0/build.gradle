@@ -31,8 +31,9 @@ graalvmNative {
             outputDirectories.add("src/test/resources/META-INF/native-image/org.liquibase/liquibase-core")
         }
     }
-}
-
-nativeTest {
-    buildArgs.add('--enable-url-protocols=http')
+    binaries {
+        test {
+            buildArgs.add('--enable-url-protocols=http')
+        }
+    }
 }
