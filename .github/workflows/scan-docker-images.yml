@@ -31,5 +31,5 @@ jobs:
         if: github.event_name == 'pull_request'
         run: ./gradlew checkAllowedDockerImages --baseCommit=${{ github.event.pull_request.base.sha }} --newCommit=${{ github.event.pull_request.head.sha }}
       - name: "🔎 Check all docker images"
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.repository == 'oracle/graalvm-reachability-metadata'
         run: ./gradlew checkAllowedDockerImages
