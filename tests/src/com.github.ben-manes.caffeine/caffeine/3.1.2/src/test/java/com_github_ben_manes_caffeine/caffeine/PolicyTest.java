@@ -34,4 +34,13 @@ public class PolicyTest {
         cache.put("Hello", "World");
         assertThat(cache.getIfPresent("Hello")).isEqualTo("World");
     }
+
+    @Test
+    void testRecordStats() {
+        Cache<String, String> cache = Caffeine.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(10_000).recordStats().build();
+        cache.policy().eviction().ifPresent(eviction -> eviction.setMaximum(2 * eviction.getMaximum()));
+        cache.put("Hello", "World");
+        assertThat(cache.getIfPresent("Hello")).isEqualTo("World");
+    }
+
 }
