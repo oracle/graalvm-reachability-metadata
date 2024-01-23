@@ -7,6 +7,9 @@
 package netty;
 
 import java.io.InputStream;
+import java.net.Inet6Address;
+import java.nio.channels.UnsupportedAddressTypeException;
+import java.nio.channels.spi.SelectorProvider;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -56,7 +59,12 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.CharsetUtil;
 import org.awaitility.Awaitility;
 import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+
+import static io.netty.channel.socket.InternetProtocolFamily.IPv4;
+import static io.netty.util.NetUtil.LOCALHOST;
 
 public class NettyTests {
     private static final int PORT = 8080;
@@ -69,6 +77,36 @@ public class NettyTests {
     @Test
     public void noSsl() throws Exception {
         test(false);
+    }
+
+    @Test
+    void testNioSocketChannel() {
+        Assumptions.assumeTrue(LOCALHOST instanceof Inet6Address);
+
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            Bootstrap b = new Bootstrap().group(group)
+                    .channelFactory(() -> new NioSocketChannel(SelectorProvider.provider(), IPv4))
+                    .handler(new LoggingHandler());
+            Assertions.assertThrows(UnsupportedAddressTypeException.class, () -> b.bind(LOCALHOST, 7777).sync().channel());
+        } finally {
+            group.shutdownGracefully();
+        }
+    }
+
+    @Test
+    void testNioServerSocketChannel() {
+        Assumptions.assumeTrue(LOCALHOST instanceof Inet6Address);
+
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            Bootstrap b = new Bootstrap().group(group)
+                    .channelFactory(() -> new NioServerSocketChannel(SelectorProvider.provider(), IPv4))
+                    .handler(new LoggingHandler());
+            Assertions.assertThrows(UnsupportedAddressTypeException.class, () -> b.bind(LOCALHOST, 7777).sync().channel());
+        } finally {
+            group.shutdownGracefully();
+        }
     }
 
     private void test(boolean ssl) throws Exception {
