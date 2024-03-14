@@ -11,8 +11,6 @@ import com.google.common.truth.Truth;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.text.ParseException;
 import java.util.Arrays;
@@ -23,7 +21,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static com.google.protobuf.util.Durations.toSecondsAsDouble;
 import static org.junit.Assert.fail;
 
-@RunWith(JUnit4.class)
 public class DurationsTest {
     private static final Duration INVALID_MAX = Duration.newBuilder().setSeconds(Long.MAX_VALUE).setNanos(Integer.MAX_VALUE).build();
     private static final Duration INVALID_MIN = Duration.newBuilder().setSeconds(Long.MIN_VALUE).setNanos(Integer.MIN_VALUE).build();

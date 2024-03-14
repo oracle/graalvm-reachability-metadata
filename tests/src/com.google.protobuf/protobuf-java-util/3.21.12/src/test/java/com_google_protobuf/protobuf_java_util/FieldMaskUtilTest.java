@@ -11,8 +11,6 @@ import com.google.common.truth.Truth;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.util.FieldMaskUtil;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import protobuf_unittest.UnittestProto.NestedTestAllTypes;
 import protobuf_unittest.UnittestProto.TestAllTypes;
 
@@ -20,7 +18,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 @SuppressWarnings("UnusedAssignment")
-@RunWith(JUnit4.class)
 public class FieldMaskUtilTest {
     @Test
     public void testIsValid() {
