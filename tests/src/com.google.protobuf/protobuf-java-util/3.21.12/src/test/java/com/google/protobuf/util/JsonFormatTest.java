@@ -44,8 +44,6 @@ import com_google_protobuf.protobuf_java_util.JsonTestProto.TestWrappers;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,7 +61,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 @SuppressWarnings({"UnnecessaryUnicodeEscape", "SameParameterValue", "UnpredictableBigDecimalConstructorCall"})
-@RunWith(JUnit4.class)
 public class JsonFormatTest {
     private static Locale originalLocale;
 

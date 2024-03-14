@@ -12,8 +12,6 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static com.google.protobuf.util.DurationsTest.duration;
 
 @SuppressWarnings("NumericOverflow")
-@RunWith(JUnit4.class)
 public class TimestampsTest {
     private static final int MILLIS_PER_SECOND = 1000;
     private static final long MILLIS = 1409130915111L;

@@ -13,15 +13,12 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import com.google.protobuf.util.Values;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(JUnit4.class)
 public final class ValuesTest {
     @Test
     public void testOfNull_IsNullValue() {
