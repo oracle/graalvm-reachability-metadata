@@ -99,7 +99,7 @@ def matrixDefault = [
 
 final String METADATA_GROUP = "Metadata"
 
-// gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
+// gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates> [-PignoreDefaults]
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
     task.setGroup(METADATA_GROUP)
@@ -107,7 +107,9 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
         def matrix = [
                 "coordinates": matchingCoordinates
         ]
-        matrix.putAll(matrixDefault)
+        if (!project.hasProperty("ignoreDefaults")) {
+            matrix.putAll(matrixDefault)
+        }
         println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
     }
 }
