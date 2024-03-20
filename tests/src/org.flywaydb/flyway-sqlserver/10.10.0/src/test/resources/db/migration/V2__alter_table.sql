@@ -1,0 +1,2 @@
+ALTER TABLE test
+    ADD name INT NOT NULL DEFAULT 1;
