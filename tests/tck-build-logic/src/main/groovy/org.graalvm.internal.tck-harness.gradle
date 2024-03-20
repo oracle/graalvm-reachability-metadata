@@ -90,7 +90,10 @@ if (project.hasProperty("baseCommit")) {
 }
 
 def matrixDefault = [
-        "version": [ "latest-ea" ],
+        "version": [
+            "17",
+            "latest-ea"
+        ],
         "os"     : ["ubuntu-latest"] // TODO: Add support for "windows-latest", "macos-latest"
 ]
 
@@ -121,7 +124,11 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
             def matrix = [
                 "coordinates": ["No matches found!"]
             ]
+
             matrix.putAll(matrixDefault)
+            matrix.version.add("21");
+            matrix.version.add("dev");
+
             println "No changed coordinates were found!"
             println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
             println "::set-output name=none-found::true"
