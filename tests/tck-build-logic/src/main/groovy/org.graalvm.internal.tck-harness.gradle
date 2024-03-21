@@ -120,20 +120,13 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
         if (!project.hasProperty("baseCommit")) {
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
+
         if (diffCoordinates.isEmpty()) {
             def matrix = [
                 "coordinates": ["No matches found!"]
             ]
 
             matrix.putAll(matrixDefault)
-            /**
-             * when we are introducing a new metadata, we should test it against all versions,
-             * not just the oldest and the newest one (which we are testing by default)
-             */
-            matrix.version.add("21");
-            matrix.version.add("22");
-            matrix.version.add("dev");
-
             println "No changed coordinates were found!"
             println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
             println "::set-output name=none-found::true"
@@ -141,7 +134,15 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
             def matrix = [
                     "coordinates": diffCoordinates
             ]
+
             matrix.putAll(matrixDefault)
+            /**
+             * when we are introducing a new metadata, we should test it against all versions,
+             * not just the oldest and the newest one (which we are testing by default)
+             */
+            matrix.version.add("21")
+            matrix.version.add("22")
+            matrix.version.add("dev")
             println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
             println "::set-output name=none-found::false"
         }
