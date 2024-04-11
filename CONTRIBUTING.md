@@ -237,6 +237,24 @@ In this example this can be done by invoking following command from the reposito
 ./gradlew test -Pcoordinates=org.example:library:0.0.1
 ```
  
+### Disabling tests
+
+In some cases we have to exclude certain tests from execution in our GitHub actions (e.g. transient failures, docker image used in test becomes vulnerable...).
+In order to disable certain test, proper entry should be added to [`disabled-tests.json`](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/disabled-tests.json).
+A valid entry should have the following structure:
+
+```json
+{
+   "coordinates": "<groupId>:<artefactId>:<version>",
+   "reason": "<reason>",
+   "link": "<link>"
+}
+```
+Where:
+* `<groupId>`, `<artifactId>` and `<version>` are standard Maven coordinates ([see this](https://maven.apache.org/pom.html#maven-coordinates))
+* `<reason>` is a short description why we are disabling this test
+* `<link>` is a GitHub issue or example of the failure
+
 ### Providing the tests that use docker
  
 If your tests use Docker (either with explicit Docker process invocation or through some library method call), all images have to be declared in `required-docker-images` file.
