@@ -338,8 +338,13 @@ public abstract class TckExtension {
         for (DisabledTest test : disabledTests) {
             System.out.println("Removing test: " + test.coordinates() + System.lineSeparator() +
                     "Reason: " + test.reason() + System.lineSeparator() +
-                    (test.link() != null ? "For more information visit: " + test.link() : ""));
-            testsCoordinates.remove(test.coordinates());
+                    (test.link() != null ? "For more information visit: " + test.link() : "") + System.lineSeparator());
+
+            boolean removed = testsCoordinates.remove(test.coordinates());
+            if (!removed) {
+                throw new RuntimeException("Cannot remove " + test.coordinates() +
+                        " from coordinates list. Please check if you added coordinates into disabled-tests.json properly");
+            }
         }
     }
 
