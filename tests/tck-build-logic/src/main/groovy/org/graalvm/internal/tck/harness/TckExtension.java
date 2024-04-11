@@ -6,6 +6,7 @@
  */
 package org.graalvm.internal.tck.harness;
 
+import org.graalvm.internal.tck.Utils;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -15,21 +16,12 @@ import org.gradle.api.provider.Provider;
 import org.gradle.process.ExecOperations;
 
 import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,6 +33,8 @@ import static org.graalvm.internal.tck.Utils.splitCoordinates;
 
 public abstract class TckExtension {
     private static final List<String> REPO_ROOT_FILES = List.of("CONTRIBUTING.md", "metadata");
+
+    private static final String DISABLED_TESTS = "src/main/resources/disabled-tests.json";
 
     public abstract DirectoryProperty getRepoRoot();
 
@@ -54,6 +48,10 @@ public abstract class TckExtension {
 
     @Inject
     public abstract ExecOperations getExecOperations();
+
+
+    private record DisabledTest(String coordinates, String reason, URI link) {}
+    private List<DisabledTest> disabledTests;
 
     public TckExtension(Project project) {
         getRepoRoot().value(project.getObjects().directoryProperty().value(project.getLayout().getProjectDirectory()).map(dir -> {
@@ -202,23 +200,31 @@ public abstract class TckExtension {
                     ". Please, check whether you added new entries in index file or not.");
         }
 
+        removeDisabledTests(changedCoordinates);
         return changedCoordinates;
     }
 
+    /*
+     * Function checks if index file placed in metadata directory contains entries for all changed metadata
+     */
     private boolean metadataIndexContainsChangedEntries(Set<String> changedCoordinates, List<String> changedEntries) {
-        boolean containsAll = true;
-        for (var n : changedEntries) {
-            boolean containsCurrent =false;
-            for (var c : changedCoordinates) {
-                if (n.startsWith(c.replace(":", "/"))){
-                    containsCurrent = true;
+        for (String entry : changedEntries) {
+            boolean containsCurrentEntry = false;
+            for (String coordinate : changedCoordinates) {
+                if (entry.startsWith(coordinate.replace(":", "/"))) {
+                    containsCurrentEntry = true;
+                    break;
                 }
             }
 
-            containsAll = containsAll && containsCurrent;
+            /* some entry is missing in (metadata) index file */
+            if (!containsCurrentEntry) {
+                return false;
+            }
         }
 
-        return containsAll;
+        /* all coordinates have corresponding entries in (metadata) index file */
+        return true;
     }
 
     /**
@@ -322,7 +328,42 @@ public abstract class TckExtension {
                 }
             }
         }
-        return matchingCoordinates.stream().collect(Collectors.toList());
+
+        removeDisabledTests(matchingCoordinates);
+        return new ArrayList<>(matchingCoordinates);
+    }
+
+    private void removeDisabledTests(Collection<String> testsCoordinates) {
+        List<DisabledTest> disabledTests = getDisabledTests();
+        for (DisabledTest test : disabledTests) {
+            System.out.println("Removing test: " + test.coordinates() + System.lineSeparator() +
+                    "Reason: " + test.reason() + System.lineSeparator() +
+                    (test.link() != null ? "For more information visit: " + test.link() : ""));
+            testsCoordinates.remove(test.coordinates());
+        }
+    }
+
+    /*
+     * Load list only once to prevent multiple readings from file
+     */
+    @SuppressWarnings("unchecked")
+    private List<DisabledTest> getDisabledTests() {
+        if (disabledTests == null) {
+            disabledTests = new ArrayList<>();
+            Path disabledTestsPath = tckRoot().resolve(DISABLED_TESTS);
+            List<Object> entries = (List<Object>) Utils.extractJsonFile(disabledTestsPath);
+            for (Object entryObject : entries) {
+                Map<String, String> entry = (Map<String, String>) entryObject;
+                String coordinates = entry.get("coordinates");
+                String reason = entry.get("reason");
+                String link = entry.get("link");
+                URI uri = link != null ? URI.create(link) : null;
+
+                disabledTests.add(new DisabledTest(coordinates, reason, uri));
+            }
+        }
+
+        return disabledTests;
     }
 
     /**
