@@ -51,7 +51,7 @@ class Opengauss_jdbcTest {
         System.out.println("Starting OpenGauss ...");
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", "15432:5432", "-e", "GS_USERNAME=" + USERNAME,
-                "-e", "GS_PASSWORD=" + PASSWORD, "opengauss/opengauss:3.1.0")
+                "-e", "GS_PASSWORD=" + PASSWORD, "opengauss/opengauss:5.0.0")
                 .redirectOutput(new File("opengauss-stdout.txt")).redirectError(new File("opengauss-stderr.txt")).start();
         Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
             openConnection().close();
