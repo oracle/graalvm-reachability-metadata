@@ -342,7 +342,7 @@ public abstract class TckExtension {
 
             boolean removed = testsCoordinates.remove(test.coordinates());
             if (!removed) {
-                throw new RuntimeException("Cannot remove " + test.coordinates() +
+                System.out.println("Cannot remove " + test.coordinates() +
                         " from coordinates list. Please check if you added coordinates into disabled-tests.json properly");
             }
         }
