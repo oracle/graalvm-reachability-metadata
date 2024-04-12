@@ -45,18 +45,12 @@ public abstract class GrypeTask extends DefaultTask {
 
         String output = baos.toString(StandardCharsets.UTF_8);
         String dockerfileDirectory = "allowed-docker-images";
-        List<URL> diffFiles = Arrays.stream(output.split("\\r?\\n"))
+
+        return Arrays.stream(output.split("\\r?\\n"))
                 .filter(path -> path.contains(dockerfileDirectory))
                 .map(path -> path.substring(path.lastIndexOf("/") + 1))
                 .map(DockerUtils::getDockerFile)
                 .toList();
-
-        if (diffFiles.isEmpty()) {
-            throw new RuntimeException("There are no changed or new docker image founded. " +
-                    "This task should be executed only if there are changes in allowed-docker-images directory.");
-        }
-
-        return diffFiles;
     }
 
     @TaskAction
