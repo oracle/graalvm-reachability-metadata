@@ -9,6 +9,8 @@ package mariadb;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -37,6 +39,8 @@ public class MariaDbTests {
     private static final String DATABASE = "test";
 
     private static final String DOCKER_IMAGE = "mariadb:11";
+    public static final File STD_OUT = new File("mariadb-stdout.txt");
+    public static final File STD_ERR = new File("mariadb-stderr.txt");
 
     private static String jdbcUrl;
 
@@ -57,8 +61,8 @@ public class MariaDbTests {
         System.out.printf("Starting MariaDB on port %d ...%n", hostPort);
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", hostPort + ":3306", "-e", "MARIADB_DATABASE=" + DATABASE, "-e", "MARIADB_USER=" + USERNAME,
-                "-e", "MARIADB_PASSWORD=" + PASSWORD, "-e", "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true", DOCKER_IMAGE).redirectOutput(new File("mariadb-stdout.txt"))
-                .redirectError(new File("mariadb-stderr.txt")).start();
+                "-e", "MARIADB_PASSWORD=" + PASSWORD, "-e", "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true", DOCKER_IMAGE).redirectOutput(STD_OUT)
+                .redirectError(STD_ERR).start();
 
         waitUntilContainerIsReady();
 
@@ -70,11 +74,29 @@ public class MariaDbTests {
                 e instanceof SQLNonTransientConnectionException
         ).until(() -> {
             if (!process.isAlive()) {
+                printFileContent("stdout", STD_OUT);
+                printFileContent("stderr", STD_ERR);
                 throw new IllegalStateException("Process has already exited with code %d".formatted(process.exitValue()));
             }
             openConnection().close();
             return true;
         });
+    }
+
+    private static void printFileContent(String name, File file) {
+        if (!file.exists()) {
+            System.out.println("<< " + file + " not found >>");
+            return;
+        }
+        try {
+            String content = Files.readString(file.toPath(), StandardCharsets.UTF_8);
+            System.out.println("Content of " + name + ":");
+            System.out.println(content);
+            System.out.println();
+        } catch (IOException e) {
+            System.out.println("<< Exception while reading " + file + " >>");
+            e.printStackTrace();
+        }
     }
 
     private static int findAvailablePort() throws IOException {
