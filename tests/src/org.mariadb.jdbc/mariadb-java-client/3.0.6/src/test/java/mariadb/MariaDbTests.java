@@ -39,8 +39,10 @@ public class MariaDbTests {
     private static final String DATABASE = "test";
 
     private static final String DOCKER_IMAGE = "mariadb:11";
-    public static final File STD_OUT = new File("mariadb-stdout.txt");
-    public static final File STD_ERR = new File("mariadb-stderr.txt");
+
+    private static final File STD_OUT = new File("mariadb-stdout.txt");
+
+    private static final File STD_ERR = new File("mariadb-stderr.txt");
 
     private static String jdbcUrl;
 
