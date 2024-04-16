@@ -6,13 +6,9 @@
  */
 package mariadb;
 
-import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,6 +17,11 @@ import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.time.Duration;
 import java.util.Properties;
+
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +36,9 @@ public class MariaDbTests {
 
     private static final String DATABASE = "test";
 
-    private static final String JDBC_URL = "jdbc:mariadb://localhost:3306/" + DATABASE;
+    private static final String DOCKER_IMAGE = "mariadb:11";
+
+    private static String jdbcUrl;
 
     private static Process process;
 
@@ -43,26 +46,44 @@ public class MariaDbTests {
         Properties props = new Properties();
         props.setProperty("user", USERNAME);
         props.setProperty("password", PASSWORD);
-        return DriverManager.getConnection(JDBC_URL, props);
+        return DriverManager.getConnection(jdbcUrl, props);
     }
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        System.out.println("Starting MariaDB ...");
+        int hostPort = findAvailablePort();
+        jdbcUrl = "jdbc:mariadb://127.0.0.1:%d/%s".formatted(hostPort, DATABASE);
+
+        System.out.printf("Starting MariaDB on port %d ...%n", hostPort);
         process = new ProcessBuilder(
-                "docker", "run", "--rm", "-p", "3306:3306", "-e", "MARIADB_DATABASE=" + DATABASE, "-e", "MARIADB_USER=" + USERNAME,
-                "-e", "MARIADB_PASSWORD=" + PASSWORD, "-e", "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true", "mariadb:10.8").redirectOutput(new File("mariadb-stdout.txt"))
+                "docker", "run", "--rm", "-p", hostPort + ":3306", "-e", "MARIADB_DATABASE=" + DATABASE, "-e", "MARIADB_USER=" + USERNAME,
+                "-e", "MARIADB_PASSWORD=" + PASSWORD, "-e", "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true", DOCKER_IMAGE).redirectOutput(new File("mariadb-stdout.txt"))
                 .redirectError(new File("mariadb-stderr.txt")).start();
 
-        // Wait until connection can be established
+        waitUntilContainerIsReady();
+
+        System.out.printf("MariaDB started on port %d, JDBC URL: '%s'%n", hostPort, jdbcUrl);
+    }
+
+    private static void waitUntilContainerIsReady() {
         Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptionsMatching(e ->
                 e instanceof SQLNonTransientConnectionException
         ).until(() -> {
+            if (!process.isAlive()) {
+                throw new IllegalStateException("Process has already exited with code %d".formatted(process.exitValue()));
+            }
             openConnection().close();
             return true;
         });
-        System.out.println("MariaDB started");
     }
+
+    private static int findAvailablePort() throws IOException {
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(null);
+            return serverSocket.getLocalPort();
+        }
+    }
+
 
     @AfterAll
     static void tearDown() {
