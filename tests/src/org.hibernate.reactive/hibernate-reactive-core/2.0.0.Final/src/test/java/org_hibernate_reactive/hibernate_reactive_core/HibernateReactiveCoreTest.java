@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org_hibernate_reactive.hibernate_reactive_core.entity.Author;
 import org_hibernate_reactive.hibernate_reactive_core.entity.Book;
+import org_hibernate_reactive.hibernate_reactive_core.entity.Course;
+import org_hibernate_reactive.hibernate_reactive_core.entity.Student;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import static java.time.Month.JANUARY;
@@ -157,5 +160,63 @@ class HibernateReactiveCoreTest {
                         Tuple.tuple(book3.getTitle(), author2.getName()),
                         Tuple.tuple(book1.getTitle(), author1.getName()),
                         Tuple.tuple(book2.getTitle(), author2.getName()));
+    }
+
+    /**
+     * Tests @{@link jakarta.persistence.ManyToMany} and @{@link jakarta.persistence.ElementCollection} relations with Hibernate Reactive.
+     */
+    @Test
+    void testCollections() {
+        final Course languageCourse = new Course("English");
+        languageCourse.setNotes(List.of("Starting in December"));
+        final Course mathCourse = new Course("Mathematics");
+
+        // Save courses
+        factory.withTransaction((session, tx) -> session.persist(languageCourse, mathCourse))
+                .toCompletableFuture()
+                .join();
+
+        // retrieve a Course
+        Course loadedLanguageCourse = factory.withSession(session -> session.find(Course.class, languageCourse.getId()))
+                .toCompletableFuture()
+                .join();
+        assertThat(loadedLanguageCourse).isNotNull();
+        assertThat(loadedLanguageCourse.getStudents().size()).isEqualTo(0);
+        assertThat(loadedLanguageCourse.getNotes().size()).isEqualTo(1);
+
+        Course loadedMathCourse = factory.withSession(session -> session.find(Course.class, mathCourse.getId()))
+                .toCompletableFuture()
+                .join();
+        assertThat(loadedMathCourse).isNotNull();
+        assertThat(loadedMathCourse.getStudents().size()).isEqualTo(0);
+        assertThat(loadedMathCourse.getNotes().size()).isEqualTo(0);
+
+        final Student student = new Student("Peter", Set.of(mathCourse));
+        // Save Student
+        factory.withTransaction((session, tx) -> session.persist(student))
+                .toCompletableFuture()
+                .join();
+        Long id = student.getId();
+        assertThat(id).isNotNull();
+
+        // retrieve a Student and verify that student has course assigned
+        Student loadedStudent = factory.withSession(session -> session.find(Student.class, student.getId()))
+                .toCompletableFuture()
+                .join();
+        assertThat(loadedStudent).isNotNull();
+        assertThat(loadedStudent.getName()).isEqualTo("Peter");
+        assertThat(loadedStudent.getCourses().size()).isEqualTo(1);
+
+        loadedLanguageCourse = factory.withSession(session -> session.find(Course.class, languageCourse.getId()))
+                .toCompletableFuture()
+                .join();
+        assertThat(loadedLanguageCourse).isNotNull();
+        assertThat(loadedLanguageCourse.getStudents().size()).isEqualTo(0);
+
+        loadedMathCourse = factory.withSession(session -> session.find(Course.class, mathCourse.getId()))
+                .toCompletableFuture()
+                .join();
+        assertThat(loadedMathCourse).isNotNull();
+        assertThat(loadedMathCourse.getStudents().size()).isEqualTo(1);
     }
 }
