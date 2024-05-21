@@ -26,11 +26,32 @@ public class IdentifierGeneratorTest {
             org.hibernate.id.ForeignGenerator.class
     };
 
+    private static final Class[] VALUE_GENERATION_TYPE_GENERATORS_FROM_ANNOTATIONS = new Class[]{
+        org.hibernate.generator.internal.CurrentTimestampGeneration.class,
+        org.hibernate.generator.internal.GeneratedAlwaysGeneration.class,
+        org.hibernate.generator.internal.GeneratedGeneration.class,
+        org.hibernate.generator.internal.SourceGeneration.class,
+        org.hibernate.generator.internal.TenantIdGeneration.class
+    };
+
     @Test
     public void testIdentifierGenerators() throws Exception {
         for (Class clazz : identifierGenerators) {
             Constructor constructor = clazz.getConstructor();
             assertThat(constructor).isNotNull();
+        }
+    }
+
+    /**
+     * {@link org.hibernate.annotations.ValueGenerationType#generatedBy()}  may hold types reflectively instantiated.
+     * This uses a list of those to make sure hints are present.
+     */
+    @Test
+    public void testValueGenerationTypes() throws Exception {
+        for (Class clazz : VALUE_GENERATION_TYPE_GENERATORS_FROM_ANNOTATIONS) {
+           for (Constructor<?> ctor : clazz.getDeclaredConstructors()) {
+               assertThat(clazz.getConstructor(ctor.getParameterTypes())).isEqualTo(ctor);
+           }
         }
     }
 }
