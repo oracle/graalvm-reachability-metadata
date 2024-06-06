@@ -38,7 +38,7 @@ public class ThymeleafTest {
         Context context = new Context();
         Date date = new Date(81, 5, 15);
         context.setVariable("date", date);
-        String template = "<p th:text=\"${#dates.format(date)}\"></p>";
+        String template = "<p th:text=\"${#dates.format(date, 'MMMM dd, YYYY')}\"></p>";
         String output = templateEngine.process(template, context);
         assertThat(output).startsWith("<p>June 15, 1981");
     }
