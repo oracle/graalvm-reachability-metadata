@@ -6,31 +6,35 @@
  */
 package org_eclipse_jetty.jetty_client;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JettyClientTest {
 
-    private static final int HOST_PORT = 12345;
+    private static final String DOCKER_HOST = "127.0.0.1";
+
+    private static int hostPort;
 
     private static Process process;
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        System.out.println("Starting nginx ...");
+        hostPort = findAvailablePort();
+        System.out.printf("Starting nginx on port %d ...%n", hostPort);
         process = new ProcessBuilder(
-                "docker", "run", "--rm", "-p", HOST_PORT + ":80",
+                "docker", "run", "--rm", "-p", DOCKER_HOST + ":" + hostPort + ":80",
                 "nginx:1-alpine-slim")
                 .redirectOutput(new File("nginx-stdout.txt"))
                 .redirectError(new File("nginx-stderr.txt"))
@@ -39,7 +43,14 @@ class JettyClientTest {
         // Wait until connection can be established
         waitUntilContainerStarted(60);
 
-        System.out.println("nginx started");
+        System.out.printf("nginx started on port %d%n", hostPort);
+    }
+
+    private static int findAvailablePort() throws IOException {
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(null);
+            return serverSocket.getLocalPort();
+        }
     }
 
     private static void waitUntilContainerStarted(int startupTimeoutSeconds) {
@@ -49,6 +60,9 @@ class JettyClientTest {
 
         long end = System.currentTimeMillis() + startupTimeoutSeconds * 1000L;
         while (System.currentTimeMillis() < end) {
+            if (!process.isAlive()) {
+                throw new IllegalStateException("Process has already exited with code %d".formatted(process.exitValue()));
+            }
             try {
                 Thread.sleep(100L);
             } catch (InterruptedException e) {
@@ -56,7 +70,7 @@ class JettyClientTest {
             }
             try (Socket socket = new Socket()) {
                 socket.setSoTimeout(100);
-                socket.connect(new InetSocketAddress("localhost", HOST_PORT), 100);
+                socket.connect(new InetSocketAddress(DOCKER_HOST, hostPort), 100);
                 if (!check(socket)) {
                     continue;
                 }
@@ -65,7 +79,7 @@ class JettyClientTest {
                 lastConnectionException = e;
             }
         }
-        throw new IllegalStateException("nginx container cannot be accessed on localhost:" + HOST_PORT, lastConnectionException);
+        throw new IllegalStateException("nginx container cannot be accessed on %s:%d".formatted(DOCKER_HOST, hostPort), lastConnectionException);
     }
 
     private static boolean check(Socket socket) throws IOException {
@@ -76,6 +90,7 @@ class JettyClientTest {
                 return false;
             }
         } catch (SocketTimeoutException ex) {
+            // Ignore
         }
         return true;
     }
@@ -93,7 +108,7 @@ class JettyClientTest {
         HttpClient client = new HttpClient();
         client.start();
         try {
-            ContentResponse response = client.GET("http://localhost:%d/".formatted(HOST_PORT));
+            ContentResponse response = client.GET("http://%s:%d/".formatted(DOCKER_HOST, hostPort));
             assertThat(response.getStatus()).isEqualTo(200);
         } finally {
             client.stop();
