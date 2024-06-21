@@ -1,0 +1,13 @@
+pluginManagement {
+    def tckPath = Objects.requireNonNullElse(
+            System.getenv("GVM_TCK_TCKDIR"),
+            "../../../../tck-build-logic"
+    )
+    includeBuild(tckPath)
+}
+
+plugins {
+    id "org.graalvm.internal.tck-settings" version "1.0.0-SNAPSHOT"
+}
+
+rootProject.name = 'org.hibernate.orm.hibernate-core_tests'
