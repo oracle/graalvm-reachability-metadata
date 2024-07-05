@@ -286,4 +286,18 @@ class KafkaClientsTest {
         }
     }
 
+    @Test
+    void testSaslScramSHA512() {
+        Map<String, Object> consumerProperties = new HashMap<>();
+        consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
+        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        consumerProperties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
+        consumerProperties.put(SaslConfigs.SASL_MECHANISM, "SCRAM-SHA-512");
+        consumerProperties.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.scram.ScramLoginModule required username=admin password=admin-pass;");
+        try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
+            assertThat(consumer).isNotNull();
+        }
+    }
+
 }
