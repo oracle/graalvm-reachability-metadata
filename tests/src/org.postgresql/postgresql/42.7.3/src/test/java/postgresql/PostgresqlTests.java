@@ -26,9 +26,6 @@ import java.time.ZoneOffset;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.postgresql.ds.common.BaseDataSource;
-import org.postgresql.xa.PGXADataSource;
-
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
