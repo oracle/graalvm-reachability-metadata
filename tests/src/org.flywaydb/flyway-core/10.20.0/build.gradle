@@ -1,0 +1,35 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
+    testImplementation 'com.h2database:h2:2.1.210'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--no-fallback')
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        accessFilterFiles.from("access-filter.json")
+    }
+}
