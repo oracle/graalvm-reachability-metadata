@@ -30,7 +30,7 @@ jobs:
       - name: "🕸️ Get changed metadata matrix"
         id: set-matrix
         run: |
-          LATEST_TAG=$(ls -1 .git/refs/tags/ | sort -V | tail -1)
+          LATEST_TAG=$(git tag --list | sort -V | tail -1)
           ./gradlew generateMatrixDiffCoordinates -PbaseCommit=$(git show-ref -s $LATEST_TAG) -PnewCommit=$(git rev-parse HEAD)
 
   release:
@@ -52,7 +52,7 @@ jobs:
           java-version: '21'
       - name: "Get tags"
         run: |
-          PREVIOUS_RELEASE_TAG=$(ls -1 .git/refs/tags/ | sort -V | tail -1)
+          PREVIOUS_RELEASE_TAG=$(git tag --list | sort -V | tail -1)
           echo "PREVIOUS_RELEASE_TAG=$PREVIOUS_RELEASE_TAG" >> ${GITHUB_ENV}
 
           CURRENT_RELEASE_TAG=$(sed -E 's/^([0-9]+\.)([0-9]+\.)([0-9]+)/echo \1\2$((\3+1))/e' <<< $PREVIOUS_RELEASE_TAG)
