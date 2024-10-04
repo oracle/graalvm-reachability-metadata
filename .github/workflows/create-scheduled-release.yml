@@ -59,7 +59,7 @@ jobs:
           echo "CURRENT_RELEASE_TAG=$CURRENT_RELEASE_TAG" >> ${GITHUB_ENV}
       - name: "⬆️ Update version"
         run: |
-          sed -i "s/project.version(\"0.3.10-SNAPSHOT\")/project.version(\"${{ env.CURRENT_RELEASE_TAG }}\")/g" build.gradle
+          sed -i "s/project.version(\"1.0.0-SNAPSHOT\")/project.version(\"${{ env.CURRENT_RELEASE_TAG }}\")/g" build.gradle
       - name: "🔍 Run spotless check"
         run: |
           ./gradlew spotlessCheck
