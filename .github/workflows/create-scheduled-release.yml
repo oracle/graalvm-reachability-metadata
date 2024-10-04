@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
-          java-version: '17'
+          java-version: '21'
       - name: "🕸️ Get changed metadata matrix"
         id: set-matrix
         run: |
@@ -49,16 +49,23 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
-          java-version: '17'
-      - name: "⬆️ Update version"
+          java-version: '21'
+      - name: "Get tags"
         run: |
           PREVIOUS_RELEASE_TAG=$(ls -1 .git/refs/tags/ | sort -V | tail -1)
           echo "PREVIOUS_RELEASE_TAG=$PREVIOUS_RELEASE_TAG" >> ${GITHUB_ENV}
-          
+
           CURRENT_RELEASE_TAG=$(sed -E 's/^([0-9]+\.)([0-9]+\.)([0-9]+)/echo \1\2$((\3+1))/e' <<< $PREVIOUS_RELEASE_TAG)
           echo "CURRENT_RELEASE_TAG=$CURRENT_RELEASE_TAG" >> ${GITHUB_ENV}
-          
-          sed -i "s/project.version(\"0.3.10-SNAPSHOT\")/project.version(\"$CURRENT_RELEASE_TAG\")/g" build.gradle
+      - name: "⬆️ Update version"
+        run: |
+          sed -i "s/project.version(\"0.3.10-SNAPSHOT\")/project.version(\"${{ env.CURRENT_RELEASE_TAG }}\")/g" build.gradle
+      - name: "🔍 Run spotless check"
+        run: |
+          ./gradlew spotlessCheck
+      - name: "🏭 Generate release artifacts"
+        run: |
+          ./gradlew package
       - name: "📄 Commit changes"
         run: |
           git config --local user.email "actions@github.com"
@@ -67,12 +74,6 @@ jobs:
           git commit -m "Release version ${{ env.CURRENT_RELEASE_TAG }}"
           git tag ${{ env.CURRENT_RELEASE_TAG }}
           git push origin ${{ env.CURRENT_RELEASE_TAG }}
-      - name: "🔍 Run spotless check"
-        run: |
-          ./gradlew spotlessCheck
-      - name: "🏭 Generate release artifacts"
-        run: |
-          ./gradlew package
       - name: "📝 Publish a release"
         run: |
           gh release create ${{ env.CURRENT_RELEASE_TAG }} build/graalvm-reachability-metadata-*.zip --generate-notes --notes-start-tag ${{ env.PREVIOUS_RELEASE_TAG }}
