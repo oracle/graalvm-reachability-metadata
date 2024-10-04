@@ -185,5 +185,13 @@ public class ThymeleafTest {
         assertThat(output).startsWith("<p>15/06/1981</p>");
     }
 
-
+    @Test
+    void renderIteratorStatus() {
+        TemplateEngine templateEngine = new TemplateEngine();
+        Context context = new Context();
+        context.setVariable("array", new String[] {"one", "two"});
+        String template = "<ul><li th:each=\"v, iterStat:${array}\" th:class=\"${iterStat.odd}? 'odd'\" th:text=\"${v}\">value</li></ul>";
+        String output = templateEngine.process(template, context);
+        assertThat(output).startsWith("<ul><li class=\"odd\">one</li><li>two</li></ul>");
+    }
 }
