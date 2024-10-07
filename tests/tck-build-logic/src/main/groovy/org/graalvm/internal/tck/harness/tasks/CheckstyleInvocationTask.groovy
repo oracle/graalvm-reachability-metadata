@@ -16,8 +16,6 @@ import javax.inject.Inject
 @SuppressWarnings("unused")
 abstract class CheckstyleInvocationTask extends AbstractSubprojectTask {
 
-    static final CHECKSTYLE_COMMAND = List.of("gradle", "checkstyle")
-
     @Inject
     CheckstyleInvocationTask(String coordinates) {
         super(coordinates)
@@ -26,7 +24,7 @@ abstract class CheckstyleInvocationTask extends AbstractSubprojectTask {
     @Override
     @Input
     List<String> getCommand() {
-        CHECKSTYLE_COMMAND
+        return [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "checkstyle"]
     }
 
     @Override
