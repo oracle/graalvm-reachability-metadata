@@ -13,6 +13,7 @@ import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.process.ExecOperations;
+import org.gradle.util.internal.VersionNumber;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
@@ -22,15 +23,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -351,4 +347,50 @@ public abstract class TckExtension {
             return foundFiles;
         }
     }
+
+    @SuppressWarnings("unchecked")
+    String getLatestLibraryVersion(String module) {
+        String libraryIndex = module.replace(":", "/");
+        List<String> allTested = new ArrayList<>();
+        List<Map<String, ?>> index = (List<Map<String, ?>>) readIndexFile(metadataRoot().resolve(libraryIndex));
+        for (Map<String, ?> entry : index) {
+            List<String> testedVersions = (List<String>) entry.get("tested-versions");
+            allTested.addAll(testedVersions);
+        }
+
+        if (allTested.isEmpty()) {
+            throw new RuntimeException("Cannot find any tested version for: " + module);
+        }
+
+        allTested.sort(Comparator.comparing(VersionNumber::parse));
+        return allTested.get(allTested.size() - 1);
+    }
+
+    List<String> getNewerVersionsFromLibraryIndex(String index, String startingVersion, String libraryName) {
+        Pattern pattern = Pattern.compile("<version>(.*)</version>");
+        Matcher matcher = pattern.matcher(index);
+        List<String> allVersions = new ArrayList<>();
+
+        if (matcher.groupCount() < 1) {
+            throw new RuntimeException("Cannot find versions in the given index file: " + libraryName);
+        }
+
+        while (matcher.find()) {
+            allVersions.add(matcher.group(1));
+        }
+
+        int indexOfStartingVersion = allVersions.indexOf(startingVersion);
+        if (indexOfStartingVersion < 0) {
+            System.out.println("Cannot find starting version in index file: " + libraryName + " for version " + startingVersion);
+            return new ArrayList<>();
+        }
+
+        allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
+        if (allVersions.size() <= 1) {
+            System.out.println("Cannot find newer versions for " + libraryName + " after the version " + startingVersion);
+        }
+
+        return allVersions.subList(1, allVersions.size());
+    }
+
 }
