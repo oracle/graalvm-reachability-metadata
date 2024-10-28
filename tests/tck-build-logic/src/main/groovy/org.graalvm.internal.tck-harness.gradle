@@ -133,10 +133,9 @@ Provider<Task> getExistingLibrariesWithNewVersions = tasks.register("getExisting
             }
         }
 
-        // workflows limitation to only accept up to 255 parallel jobs
-        if (newerVersions.size() > 254) {
-            // for testing we will keep 5, and return to 255 once everything work
-            newerVersions = newerVersions.subList(0, 254)
+        // save github resources as workflows has limitation to only accept up to 255 parallel jobs
+        if (newerVersions.size() > 200) {
+            newerVersions = newerVersions.subList(0, 200)
         }
 
         def matrix = [
