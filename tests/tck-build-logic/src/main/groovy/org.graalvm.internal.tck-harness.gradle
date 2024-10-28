@@ -139,9 +139,10 @@ Provider<Task> getExistingLibrariesWithNewVersions = tasks.register("getExisting
         }
 
         def matrix = [
-                "coordinates": newerVersions
+                "coordinates" : newerVersions,
+                "version"     : ["17"],
+                "os"          : ["ubuntu-latest"]
         ]
-        matrix.putAll(matrixDefault)
 
         println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
     }
