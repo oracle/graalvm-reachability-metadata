@@ -10,7 +10,7 @@ git checkout "$BRANCH"
 
 while [ true ]
 do
-  ./gradlew addTestedVersion --coordinates="$1"
+  ./gradlew addTestedVersion --coordinates="$1" --lastSupportedVersion="$2"
   git add -u
   git commit -m "$1"
   if [ "$(git rev-list --count origin/$BRANCH --not $BRANCH)" -eq 0 ]

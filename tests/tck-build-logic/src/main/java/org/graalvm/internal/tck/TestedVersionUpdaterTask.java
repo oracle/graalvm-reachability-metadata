@@ -29,7 +29,14 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         this.coordinates = coordinates;
     }
 
+    @Option(option = "lastSupportedVersion", description = "Last version of the library that passed tests")
+    void setLastSupportedVersion(String version) {
+        this.lastSupportedVersion = version;
+    }
+
     private String coordinates;
+    private String lastSupportedVersion;
+
 
     @SuppressWarnings("unchecked")
     @TaskAction
@@ -52,7 +59,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         });
 
         for (MetadataVersionsIndexEntry entry : entries) {
-            if (entry.latest() != null && entry.latest()) {
+            if (entry.testedVersions().contains(lastSupportedVersion)) {
                 entry.testedVersions().add(c.version());
                 entry.testedVersions().sort(Comparator.comparing(VersionNumber::parse));
             }
