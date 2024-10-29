@@ -42,7 +42,7 @@ String metadataPath = Objects.requireNonNullElse(
 		providers.gradleProperty('metadata.dir').get()
 )
 
-String libraryVersion = providers.gradleProperty('library.version').get() ?: System.getenv("GVM_TCK_LV")
+String libraryVersion = System.getenv("GVM_TCK_LV") ?: providers.gradleProperty('library.version').get()
 
 String libraryGAV = System.getenv("GVM_TCK_LC") ?: providers.gradleProperty('library.coordinates').getOrElse(null)
 libraryGAV = libraryGAV ?: ""

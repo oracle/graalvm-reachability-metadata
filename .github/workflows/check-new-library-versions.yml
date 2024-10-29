@@ -103,14 +103,12 @@ jobs:
           sudo bash -c "cat ./.github/workflows/dockerd.service > /etc/systemd/system/docker.service.d/http-proxy.conf"
           sudo systemctl daemon-reload
           sudo systemctl restart docker
-      - name: "Replace version"
-        run: |
-          CURRENT_VERSION=$(echo ${{ matrix.coordinates }} | cut -d ":" -f3)
-          sed -i "s/library.version\s*=\s*${{ env.LATEST_VERSION }}/library.version = $CURRENT_VERSION/g" tests/src/${{ env.TEST_PATH }}/gradle.properties
       - name: "🧪 Run '${{ env.TEST_COORDINATES }}' tests"
         run: |
+          TESTING_VERSION=$(echo ${{ matrix.coordinates }} | cut -d ":" -f3)
+          export GVM_TCK_LV=TESTING_VERSION
+
           ./gradlew test -Pcoordinates=${{ env.TEST_COORDINATES }}
-          git stash
       - name: "New library is supported"
         if: success()
         run: |
