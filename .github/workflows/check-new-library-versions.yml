@@ -17,7 +17,7 @@ concurrency:
 jobs:
   get-all-libraries:
     if: github.repository == 'oracle/graalvm-reachability-metadata'
-    name: "📋 Get list of all supported libraries"
+    name: "📋 Get list of all supported libraries with newer versions"
     permissions: write-all
     runs-on: "ubuntu-20.04"
     timeout-minutes: 5
@@ -39,13 +39,13 @@ jobs:
         id: set-matrix
         run: |
           ./gradlew getExistingLibrariesWithNewVersions
-      - name: "Create branch"
+      - name: "🔨 Create branch"
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
           git switch -C libraryVersionsDependabot/$(date '+%Y-%m-%d')
           git push origin libraryVersionsDependabot/$(date '+%Y-%m-%d')
-      - name: "Create issue"
+      - name: "🔨 Create issue"
         id: set-issue
         run: |
           git config --local user.email "actions@github.com"
@@ -109,11 +109,11 @@ jobs:
           export GVM_TCK_LV=$TESTING_VERSION
 
           ./gradlew test -Pcoordinates=${{ env.TEST_COORDINATES }}
-      - name: "New library is supported"
+      - name: "✔️ New library is supported"
         if: success()
         run: |
           sh ./.github/workflows/tryPushVersionsUpdate.sh ${{ matrix.coordinates }} ${{ env.LATEST_VERSION }}
-      - name: "New library is not supported"
+      - name: "❗ New library is not supported"
         if: failure()
         run: |
           git config --local user.email "actions@github.com"
@@ -133,7 +133,7 @@ jobs:
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
-      - name: "PR for supported versions"
+      - name: "✏️ PR for supported versions"
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
