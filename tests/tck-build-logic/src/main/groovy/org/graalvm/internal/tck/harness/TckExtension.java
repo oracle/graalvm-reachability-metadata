@@ -6,6 +6,11 @@
  */
 package org.graalvm.internal.tck.harness;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -13,24 +18,21 @@ import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.process.ExecOperations;
+import org.gradle.util.internal.VersionNumber;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -351,4 +353,62 @@ public abstract class TckExtension {
             return foundFiles;
         }
     }
+
+    String getLatestLibraryVersion(String libraryModule) {
+        try {
+            List<String> coordinates = List.of(libraryModule.split(":"));
+            String group = coordinates.get(0);
+            String artifact = coordinates.get(1);
+
+            File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact +"/index.json");
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(coordinatesMetadataIndex, new TypeReference<>() {
+            });
+
+            List<String> allTested = new ArrayList<>();
+            for (MetadataVersionsIndexEntry entry : entries) {
+                allTested.addAll(entry.testedVersions());
+            }
+
+            if (allTested.isEmpty()) {
+                throw new IllegalStateException("Cannot find any tested version for: " + libraryModule);
+            }
+
+            allTested.sort(Comparator.comparing(VersionNumber::parse));
+            return allTested.get(allTested.size() - 1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    List<String> getNewerVersionsFromLibraryIndex(String index, String startingVersion, String libraryName) {
+        Pattern pattern = Pattern.compile("<version>(.*)</version>");
+        Matcher matcher = pattern.matcher(index);
+        List<String> allVersions = new ArrayList<>();
+
+        if (matcher.groupCount() < 1) {
+            throw new RuntimeException("Cannot find versions in the given index file: " + libraryName);
+        }
+
+        while (matcher.find()) {
+            allVersions.add(matcher.group(1));
+        }
+
+        int indexOfStartingVersion = allVersions.indexOf(startingVersion);
+        if (indexOfStartingVersion < 0) {
+            System.out.println("Cannot find starting version in index file: " + libraryName + " for version " + startingVersion);
+            return new ArrayList<>();
+        }
+
+        allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
+        if (allVersions.size() <= 1) {
+            System.out.println("Cannot find newer versions for " + libraryName + " after the version " + startingVersion);
+        }
+
+        return allVersions.subList(1, allVersions.size());
+    }
+
 }

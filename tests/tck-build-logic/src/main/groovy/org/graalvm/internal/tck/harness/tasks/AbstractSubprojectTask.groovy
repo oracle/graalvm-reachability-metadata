@@ -93,7 +93,10 @@ abstract class AbstractSubprojectTask extends DefaultTask {
         // Environment variables for setting up TCK
         env.put("GVM_TCK_LC", coordinates)
         env.put("GVM_TCK_EXCLUDE", override.toString())
-        env.put("GVM_TCK_LV", version)
+        if (System.getenv("GVM_TCK_LV") == null) {
+            // we only set this env variable if user didn't specify it manually
+            env.put("GVM_TCK_LV", version)
+        }
         env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString())
         env.put("GVM_TCK_TCKDIR", tckExtension.getTckRoot().get().getAsFile().toPath().toAbsolutePath().toString())
         spec.environment(env)
