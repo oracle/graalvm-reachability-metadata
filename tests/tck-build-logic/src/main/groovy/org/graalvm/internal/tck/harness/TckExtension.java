@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.graalvm.internal.tck.CoordinateUtils;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
