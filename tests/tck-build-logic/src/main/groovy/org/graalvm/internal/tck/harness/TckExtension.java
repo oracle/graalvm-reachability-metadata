@@ -354,7 +354,6 @@ public abstract class TckExtension {
         }
     }
 
-    @SuppressWarnings("unchecked")
     String getLatestLibraryVersion(String libraryModule) {
         try {
             List<String> coordinates = List.of(libraryModule.split(":"));
