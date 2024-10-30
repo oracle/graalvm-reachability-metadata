@@ -6,6 +6,12 @@
  */
 package org.graalvm.internal.tck.harness;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.CoordinateUtils;
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -17,6 +23,7 @@ import org.gradle.util.internal.VersionNumber;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -349,21 +356,34 @@ public abstract class TckExtension {
     }
 
     @SuppressWarnings("unchecked")
-    String getLatestLibraryVersion(String module) {
-        String libraryIndex = module.replace(":", "/");
-        List<String> allTested = new ArrayList<>();
-        List<Map<String, ?>> index = (List<Map<String, ?>>) readIndexFile(metadataRoot().resolve(libraryIndex));
-        for (Map<String, ?> entry : index) {
-            List<String> testedVersions = (List<String>) entry.get("tested-versions");
-            allTested.addAll(testedVersions);
-        }
+    String getLatestLibraryVersion(String libraryModule) {
+        try {
+            List<String> coordinates = List.of(libraryModule.split(":"));
+            String group = coordinates.get(0);
+            String artifact = coordinates.get(1);
 
-        if (allTested.isEmpty()) {
-            throw new RuntimeException("Cannot find any tested version for: " + module);
-        }
+            File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact +"/index.json");
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        allTested.sort(Comparator.comparing(VersionNumber::parse));
-        return allTested.get(allTested.size() - 1);
+            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(coordinatesMetadataIndex, new TypeReference<>() {
+            });
+
+            List<String> allTested = new ArrayList<>();
+            for (MetadataVersionsIndexEntry entry : entries) {
+                allTested.addAll(entry.testedVersions());
+            }
+
+            if (allTested.isEmpty()) {
+                throw new IllegalStateException("Cannot find any tested version for: " + libraryModule);
+            }
+
+            allTested.sort(Comparator.comparing(VersionNumber::parse));
+            return allTested.get(allTested.size() - 1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     List<String> getNewerVersionsFromLibraryIndex(String index, String startingVersion, String libraryName) {
