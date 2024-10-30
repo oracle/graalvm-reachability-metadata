@@ -43,7 +43,7 @@ class Mqttv3Test {
     @BeforeAll
     void beforeAll() throws IOException, MqttException {
         System.out.println("Starting MQTT broker ...");
-        process = new ProcessBuilder("docker", "run", "--rm", "-p", "1883:1883", "eclipse-mosquitto:2.0.18", "mosquitto", "-c", "/mosquitto-no-auth.conf")
+        process = new ProcessBuilder("docker", "run", "--rm", "-p", "1883:1883", "eclipse-mosquitto:2.0.20", "mosquitto", "-c", "/mosquitto-no-auth.conf")
                 .inheritIO()
                 .start();
 
