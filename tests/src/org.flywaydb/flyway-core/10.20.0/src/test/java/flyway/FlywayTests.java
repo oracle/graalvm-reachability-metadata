@@ -28,7 +28,8 @@ public class FlywayTests {
         Configuration configuration = new FluentConfiguration()
                 .dataSource(dataSource)
                 .encoding(StandardCharsets.UTF_8)
-                .resourceProvider(new FixedResourceProvider());
+                .resourceProvider(new FixedResourceProvider())
+                .loggers("slf4j", "log4j2", "apache-commons");
 
         Flyway flyway = new Flyway(configuration);
         MigrateResult migration = flyway.migrate();
