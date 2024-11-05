@@ -117,15 +117,22 @@ Provider<Task> getExistingLibrariesWithNewVersions = tasks.register("getExisting
     task.setDescription("Returns list of all libraries coordinates")
     task.setGroup(METADATA_GROUP)
     task.doFirst {
+        if (!project.hasProperty("libraryMatrixLimit")) {
+            throw new IllegalArgumentException("Please provide the maximum number of libraries versions!")
+        }
+
+        // get all existing libraries
         Set<String> libraries = []
         matchingCoordinates.forEach {
             libraries.add(it.substring(0, it.lastIndexOf(":")))
         }
 
+        // foreach existing library find newer versions than the latest one tested except for infrastructure tests
+        List<String> infrastructureTests = List.of("samples", "org.example")
         List<String> newerVersions = new ArrayList<>()
         libraries.forEach {
             String libraryName = it
-            if (!libraryName.contains("samples") && !libraryName.contains("example")) {
+            if (infrastructureTests.stream().noneMatch(testName -> libraryName.startsWith(testName))) {
                 List<String> versions = getNewerVersionsFor(libraryName, tck.getLatestLibraryVersion(libraryName))
                 versions.forEach {
                     newerVersions.add(libraryName.concat(":").concat(it))
@@ -133,9 +140,10 @@ Provider<Task> getExistingLibrariesWithNewVersions = tasks.register("getExisting
             }
         }
 
-        // save github resources as workflows has limitation to only accept up to 255 parallel jobs
-        if (newerVersions.size() > 200) {
-            newerVersions = newerVersions.subList(0, 200)
+        // number of discovered versions is potentially huge and we want to limit it
+        int limit = Integer.parseInt((String) project.findProperty("libraryMatrixLimit"))
+        if (newerVersions.size() > limit) {
+            newerVersions = newerVersions.subList(0, limit)
         }
 
         def matrix = [
