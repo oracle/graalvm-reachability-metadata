@@ -38,7 +38,6 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
     private String lastSupportedVersion;
 
 
-    @SuppressWarnings("unchecked")
     @TaskAction
     void run() throws IllegalStateException, IOException {
         List<String> GAVCoordinates = Arrays.stream(coordinates.split(":")).toList();
