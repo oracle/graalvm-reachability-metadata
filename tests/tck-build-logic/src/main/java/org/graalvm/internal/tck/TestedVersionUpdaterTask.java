@@ -40,14 +40,13 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
 
     @TaskAction
     void run() throws IllegalStateException, IOException {
-        List<String> GAVCoordinates = Arrays.stream(coordinates.split(":")).toList();
-        if (GAVCoordinates.size() != 3) {
+        String[] coordinatesParts = coordinates.split(":");
+        if (coordinatesParts.length != 3) {
             throw new IllegalArgumentException("Maven coordinates should have 3 parts");
         }
-
-        String group = GAVCoordinates.get(0);
-        String artifact = GAVCoordinates.get(1);
-        String version = GAVCoordinates.get(2);
+        String group = coordinatesParts[0];
+        String artifact = coordinatesParts[1];
+        String version = coordinatesParts[2];
         Coordinates c = new Coordinates(group, artifact, version);
         addToMetadataIndexJson(c);
     }

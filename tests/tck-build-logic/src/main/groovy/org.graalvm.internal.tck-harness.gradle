@@ -105,8 +105,9 @@ final String METADATA_GROUP = "Metadata"
 
 List<String> getNewerVersionsFor(String library, String startingVersion) {
     def baseUrl = "https://repo1.maven.org/maven2"
-    String group = library.split(":")[0].replace(".", "/")
-    String artifact = library.split(":")[1]
+    String[] libraryParts = library.split(":")
+    String group = libraryParts[0].replace(".", "/")
+    String artifact = libraryParts[1]
     def data = new URL(baseUrl + "/" + group + "/" + artifact + "/" + "maven-metadata.xml").getText()
 
     return tck.getNewerVersionsFromLibraryIndex(data, startingVersion, library)

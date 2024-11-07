@@ -356,9 +356,9 @@ public abstract class TckExtension {
 
     String getLatestLibraryVersion(String libraryModule) {
         try {
-            List<String> coordinates = List.of(libraryModule.split(":"));
-            String group = coordinates.get(0);
-            String artifact = coordinates.get(1);
+            String[] coordinates = libraryModule.split(":");
+            String group = coordinates[0];
+            String artifact = coordinates[1];
 
             File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact +"/index.json");
             ObjectMapper objectMapper = new ObjectMapper()
