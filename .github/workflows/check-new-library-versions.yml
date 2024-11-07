@@ -43,8 +43,8 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
-          git switch -C libraryVersionsDependabot/$(date '+%Y-%m-%d')
-          git push origin libraryVersionsDependabot/$(date '+%Y-%m-%d')
+          git switch -C check-new-library-versions/$(date '+%Y-%m-%d')
+          git push origin check-new-library-versions/$(date '+%Y-%m-%d')
       - name: "🔨 Create issue"
         id: set-issue
         run: |
@@ -137,6 +137,6 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
-          git fetch origin libraryVersionsDependabot/$(date '+%Y-%m-%d')
-          git checkout libraryVersionsDependabot/$(date '+%Y-%m-%d')
+          git fetch origin check-new-library-versions/$(date '+%Y-%m-%d')
+          git checkout check-new-library-versions/$(date '+%Y-%m-%d')
           gh pr create --title "Update supported library versions" --body "This pull request updates supported versions of the existing libraries in the repo"

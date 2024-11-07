@@ -4,7 +4,7 @@ set -x
 git config --local user.email "actions@github.com"
 git config --local user.name "Github Actions"
 
-BRANCH="libraryVersionsDependabot/$(date '+%Y-%m-%d')"
+BRANCH="check-new-library-versions/$(date '+%Y-%m-%d')"
 git fetch origin "$BRANCH"
 git checkout "$BRANCH"
 
