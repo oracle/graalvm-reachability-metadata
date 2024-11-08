@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import groovy.json.JsonOutput
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry
 import org.gradle.api.DefaultTask
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
@@ -20,11 +22,11 @@ import java.util.regex.Pattern
 abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
     @Input
-    List<String> allLibraryCoordinates
+    abstract ListProperty<String> getAllLibraryCoordinates()
 
     @Input
     @Option(option = "matrixLimit", description = "Sets the maximum number of coordinates in the final matrix")
-    Integer matrixLimit
+    abstract Property<Integer> getMatrixLimit()
 
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example")
 
@@ -32,7 +34,7 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
     void action() {
         // get all existing libraries
         Set<String> libraries = []
-        allLibraryCoordinates.forEach {
+        getAllLibraryCoordinates().get().forEach {
             libraries.add(it.substring(0, it.lastIndexOf(":")))
         }
 
@@ -48,8 +50,8 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
             }
         }
 
-        if (newerVersions.size() > getMatrixLimit()) {
-            newerVersions = newerVersions.subList(0, getMatrixLimit())
+        if (newerVersions.size() > getMatrixLimit().get()) {
+            newerVersions = newerVersions.subList(0, getMatrixLimit().get())
         }
 
         def matrix = [
