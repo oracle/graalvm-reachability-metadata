@@ -25,7 +25,7 @@ import java.util.List;
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
 
     @Option(option = "coordinates", description = "GAV coordinates of the library")
-    void setCoordinates(String c) {
+    void extractInformationFromCoordinates(String c) {
         String[] coordinatesParts = c.split(":");
         if (coordinatesParts.length != 3) {
             throw new IllegalArgumentException("Maven coordinates should have 3 parts");
