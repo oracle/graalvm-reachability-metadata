@@ -10,6 +10,7 @@ plugins {
 }
 
 import groovy.json.JsonOutput
+import org.graalvm.internal.tasks.FetchExistingLibrariesWithNewerVersions
 import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.ConfigFilesChecker
 import org.graalvm.internal.tck.ScaffoldTask
@@ -103,60 +104,6 @@ def matrixDefault = [
 
 final String METADATA_GROUP = "Metadata"
 
-List<String> getNewerVersionsFor(String library, String startingVersion) {
-    def baseUrl = "https://repo1.maven.org/maven2"
-    String[] libraryParts = library.split(":")
-    String group = libraryParts[0].replace(".", "/")
-    String artifact = libraryParts[1]
-    def data = new URL(baseUrl + "/" + group + "/" + artifact + "/" + "maven-metadata.xml").getText()
-
-    return tck.getNewerVersionsFromLibraryIndex(data, startingVersion, library)
-}
-
-// gradle getExistingLibrariesWithNewVersions
-Provider<Task> getExistingLibrariesWithNewVersions = tasks.register("getExistingLibrariesWithNewVersions", DefaultTask) { task ->
-    task.setDescription("Returns list of all libraries coordinates")
-    task.setGroup(METADATA_GROUP)
-    task.doFirst {
-        if (!project.hasProperty("libraryMatrixLimit")) {
-            throw new IllegalArgumentException("Please provide the maximum number of libraries versions!")
-        }
-
-        // get all existing libraries
-        Set<String> libraries = []
-        matchingCoordinates.forEach {
-            libraries.add(it.substring(0, it.lastIndexOf(":")))
-        }
-
-        // foreach existing library find newer versions than the latest one tested except for infrastructure tests
-        List<String> infrastructureTests = List.of("samples", "org.example")
-        List<String> newerVersions = new ArrayList<>()
-        libraries.forEach {
-            String libraryName = it
-            if (infrastructureTests.stream().noneMatch(testName -> libraryName.startsWith(testName))) {
-                List<String> versions = getNewerVersionsFor(libraryName, tck.getLatestLibraryVersion(libraryName))
-                versions.forEach {
-                    newerVersions.add(libraryName.concat(":").concat(it))
-                }
-            }
-        }
-
-        // number of discovered versions is potentially huge and we want to limit it
-        int limit = Integer.parseInt((String) project.findProperty("libraryMatrixLimit"))
-        if (newerVersions.size() > limit) {
-            newerVersions = newerVersions.subList(0, limit)
-        }
-
-        def matrix = [
-                "coordinates" : newerVersions,
-                "version"     : ["17"],
-                "os"          : ["ubuntu-latest"]
-        ]
-
-        println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
-    }
-}
-
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
@@ -216,6 +163,14 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
     }
 }
 
+// groovy tasks
+tasks.register("fetchExistingLibrariesWithNewerVersions", FetchExistingLibrariesWithNewerVersions.class) { task ->
+    task.setGroup(METADATA_GROUP)
+    task.setDescription("Returns list of all libraries coordinates")
+    task.setAllLibraryCoordinates(matchingCoordinates)
+}
+
+// java tasks
 tasks.register("checkAllowedDockerImages", GrypeTask.class) { task ->
     task.setDescription("Returns list of allowed docker images")
     task.setGroup(METADATA_GROUP)

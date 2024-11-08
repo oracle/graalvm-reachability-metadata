@@ -301,9 +301,7 @@ public abstract class TckExtension {
         String artifactId = strings.get(1);
         String version = strings.get(2);
 
-
         Set<String> matchingCoordinates = new HashSet<>();
-
         for (String directory : getMatchingMetadataDirs(groupId, artifactId)) {
             Path index = metadataRoot().resolve(directory).resolve("index.json");
             List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(index);
@@ -324,7 +322,8 @@ public abstract class TckExtension {
                 }
             }
         }
-        return matchingCoordinates.stream().collect(Collectors.toList());
+
+        return new ArrayList<>(matchingCoordinates);
     }
 
     /**
@@ -353,62 +352,4 @@ public abstract class TckExtension {
             return foundFiles;
         }
     }
-
-    String getLatestLibraryVersion(String libraryModule) {
-        try {
-            String[] coordinates = libraryModule.split(":");
-            String group = coordinates[0];
-            String artifact = coordinates[1];
-
-            File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact +"/index.json");
-            ObjectMapper objectMapper = new ObjectMapper()
-                    .enable(SerializationFeature.INDENT_OUTPUT)
-                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(coordinatesMetadataIndex, new TypeReference<>() {
-            });
-
-            List<String> allTested = new ArrayList<>();
-            for (MetadataVersionsIndexEntry entry : entries) {
-                allTested.addAll(entry.testedVersions());
-            }
-
-            if (allTested.isEmpty()) {
-                throw new IllegalStateException("Cannot find any tested version for: " + libraryModule);
-            }
-
-            allTested.sort(Comparator.comparing(VersionNumber::parse));
-            return allTested.get(allTested.size() - 1);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    List<String> getNewerVersionsFromLibraryIndex(String index, String startingVersion, String libraryName) {
-        Pattern pattern = Pattern.compile("<version>(.*)</version>");
-        Matcher matcher = pattern.matcher(index);
-        List<String> allVersions = new ArrayList<>();
-
-        if (matcher.groupCount() < 1) {
-            throw new RuntimeException("Cannot find versions in the given index file: " + libraryName);
-        }
-
-        while (matcher.find()) {
-            allVersions.add(matcher.group(1));
-        }
-
-        int indexOfStartingVersion = allVersions.indexOf(startingVersion);
-        if (indexOfStartingVersion < 0) {
-            System.out.println("Cannot find starting version in index file: " + libraryName + " for version " + startingVersion);
-            return new ArrayList<>();
-        }
-
-        allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
-        if (allVersions.size() <= 1) {
-            System.out.println("Cannot find newer versions for " + libraryName + " after the version " + startingVersion);
-        }
-
-        return allVersions.subList(1, allVersions.size());
-    }
-
 }
