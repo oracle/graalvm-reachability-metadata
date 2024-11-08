@@ -7,58 +7,57 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
+
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.OutputFiles;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
     @Option(option = "coordinates", description = "GAV coordinates of the library")
-    void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    @Option(option = "lastSupportedVersion", description = "Last version of the library that passed tests")
-    void setLastSupportedVersion(String version) {
-        this.lastSupportedVersion = version;
-    }
-
-    private String coordinates;
-    private String lastSupportedVersion;
-
-
-    @TaskAction
-    void run() throws IllegalStateException, IOException {
-        String[] coordinatesParts = coordinates.split(":");
+    void setCoordinates(String c) {
+        String[] coordinatesParts = c.split(":");
         if (coordinatesParts.length != 3) {
             throw new IllegalArgumentException("Maven coordinates should have 3 parts");
         }
         String group = coordinatesParts[0];
         String artifact = coordinatesParts[1];
         String version = coordinatesParts[2];
-        Coordinates c = new Coordinates(group, artifact, version);
-        addToMetadataIndexJson(c);
+        Coordinates coordinates = new Coordinates(group, artifact, version);
+
+        getIndexFile().set(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates)));
+        getNewVersion().set(version);
     }
 
-    private void addToMetadataIndexJson(Coordinates c) throws IOException {
-        File coordinatesMetadataIndex = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", c));
-        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(coordinatesMetadataIndex, new TypeReference<>() {
-        });
+    @Input
+    @Option(option = "lastSupportedVersion", description = "Last version of the library that passed tests")
+    protected abstract Property<String> getLastSupportedVersion();
 
+    @Input
+    protected abstract Property<String> getNewVersion();
+
+    @OutputFiles
+    protected abstract RegularFileProperty getIndexFile();
+
+    @TaskAction
+    void run() throws IllegalStateException, IOException {
+        File coordinatesMetadataIndex = getIndexFile().get().getAsFile();
+        ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(coordinatesMetadataIndex, new TypeReference<>() {});
         for (MetadataVersionsIndexEntry entry : entries) {
-            if (entry.testedVersions().contains(lastSupportedVersion)) {
-                entry.testedVersions().add(c.version());
+            if (entry.testedVersions().contains(getLastSupportedVersion().get())) {
+                entry.testedVersions().add(getNewVersion().get());
                 entry.testedVersions().sort(Comparator.comparing(VersionNumber::parse));
             }
         }

@@ -1,4 +1,5 @@
-package org.graalvm.internal.tasks
+package org.graalvm.internal.tck.harness.tasks
+
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.type.TypeReference
@@ -16,7 +17,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
-abstract class FetchExistingLibrariesWithNewerVersions extends DefaultTask {
+abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
     @Input
     List<String> allLibraryCoordinates
