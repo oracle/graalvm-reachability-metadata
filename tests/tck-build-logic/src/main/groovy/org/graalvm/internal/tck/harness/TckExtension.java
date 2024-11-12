@@ -6,6 +6,11 @@
  */
 package org.graalvm.internal.tck.harness;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -13,24 +18,21 @@ import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.process.ExecOperations;
+import org.gradle.util.internal.VersionNumber;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -299,9 +301,7 @@ public abstract class TckExtension {
         String artifactId = strings.get(1);
         String version = strings.get(2);
 
-
         Set<String> matchingCoordinates = new HashSet<>();
-
         for (String directory : getMatchingMetadataDirs(groupId, artifactId)) {
             Path index = metadataRoot().resolve(directory).resolve("index.json");
             List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(index);
@@ -322,7 +322,8 @@ public abstract class TckExtension {
                 }
             }
         }
-        return matchingCoordinates.stream().collect(Collectors.toList());
+
+        return new ArrayList<>(matchingCoordinates);
     }
 
     /**
