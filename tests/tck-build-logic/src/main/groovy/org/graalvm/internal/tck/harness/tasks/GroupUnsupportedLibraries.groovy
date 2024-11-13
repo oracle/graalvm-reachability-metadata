@@ -13,20 +13,20 @@ import java.util.regex.Pattern
 abstract class GroupUnsupportedLibraries extends DefaultTask {
 
     @Input
-    @Option(option = "comments", description = "Provides a string that contains github comments for library grouping.")
+    @Option(option = "comments", description = "Provides github comments for library grouping as string.")
     abstract Property<String> getGithubComments()
 
     @TaskAction
     void action() {
-        Pattern pattern = Pattern.compile("--[\n ](.*?)[\n ]--")
-        Matcher matcher = pattern.matcher(getGithubComments().get())
+        def pattern = Pattern.compile("--[\n ](.*?)[\n ]--")
+        def matcher = pattern.matcher(getGithubComments().get())
 
-        Map<String, List<String>> libraryGroups = new HashMap<String, List<String>>()
+        def libraryGroups = new HashMap<String, List<String>>()
         while (matcher.find()) {
-            String coordinates = matcher.group(1)
-            String[] coordinatesPart = coordinates.split(":")
-            String artifactKey = coordinatesPart[0] + ":" + coordinatesPart[1]
-            String version = coordinatesPart[2]
+            def coordinates = matcher.group(1)
+            def coordinatesPart = coordinates.split(":")
+            def artifactKey = coordinatesPart[0] + ":" + coordinatesPart[1]
+            def version = coordinatesPart[2]
 
             if (libraryGroups.get(artifactKey) == null) {
                 libraryGroups.put(artifactKey, new ArrayList<String>())
@@ -40,7 +40,7 @@ abstract class GroupUnsupportedLibraries extends DefaultTask {
     }
 
     private static String generateGroupedComment(Map<String, List<String>> groups) {
-        StringBuilder sb = new StringBuilder("List of all unsupported libraries:\n")
+        def sb = new StringBuilder("List of all unsupported libraries:\n")
 
         for (String library : groups.keySet()) {
             sb.append("- ").append(library).append(":\n")
