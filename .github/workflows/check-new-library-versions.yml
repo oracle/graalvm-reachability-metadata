@@ -135,6 +135,11 @@ jobs:
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: '21'
       - name: "✏️ PR for supported versions"
         run: |
           git config --local user.email "actions@github.com"
@@ -142,3 +147,13 @@ jobs:
           git fetch origin check-new-library-versions/$(date '+%Y-%m-%d')
           git checkout check-new-library-versions/$(date '+%Y-%m-%d')
           gh pr create --title "Update supported library versions" --body "This pull request updates supported versions of the existing libraries in the repo"
+      - name: "✏️ Edit issue for unsupported versions"
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          ALL_COMMENTS=$(gh issue view "${{ needs.get-all-libraries.outputs.issue }}" --comments)
+          
+          FORMATTED_BODY=$(./gradlew -q extractLibrariesGroupsFromGithubComments --comments="$ALL_COMMENTS")
+          gh issue create --title "List unsupported libraries versions" --body "$FORMATTED_BODY"
+          
+          gh issue close "${{ needs.get-all-libraries.outputs.issue }}"

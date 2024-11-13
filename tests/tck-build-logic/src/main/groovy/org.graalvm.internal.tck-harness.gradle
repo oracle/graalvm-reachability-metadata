@@ -17,6 +17,7 @@ import org.graalvm.internal.tck.GrypeTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVersionsTask
+import org.graalvm.internal.tck.harness.tasks.GroupUnsupportedLibraries
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 
 
@@ -168,6 +169,11 @@ tasks.register("fetchExistingLibrariesWithNewerVersions", FetchExistingLibraries
     task.setGroup(METADATA_GROUP)
     task.setDescription("Returns list of all libraries coordinates")
     task.setAllLibraryCoordinates(matchingCoordinates)
+}
+
+tasks.register("extractLibrariesGroupsFromGithubComments", GroupUnsupportedLibraries.class) { task ->
+    task.setGroup(METADATA_GROUP)
+    task.setDescription("Extracts groups of libraries from github comments provided in a form of string.")
 }
 
 // java tasks
