@@ -161,7 +161,7 @@ jobs:
           FORMATTED_BODY=$(./gradlew -q groupLibrariesByName --libraries="$ALL_LIBRARIES")          
           
           EXISTING_ISSUE=$(gh issue list --label "$LABEL" --state open --limit 1 --json url | jq -r '.[0].url')
-          if [ $EXISTING_ISSUE != "" ]; then
+          if [ $EXISTING_ISSUE != "null" ]; then
             gh issue edit $EXISTING_ISSUE --body "$FORMATTED_BODY"           
           else
             gh issue create --title "List unsupported libraries versions" --body "$FORMATTED_BODY" --label $LABEL 
