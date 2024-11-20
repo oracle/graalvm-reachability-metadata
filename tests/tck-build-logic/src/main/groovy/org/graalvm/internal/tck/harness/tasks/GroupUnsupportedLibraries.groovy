@@ -7,24 +7,19 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.gradle.util.internal.VersionNumber
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
 abstract class GroupUnsupportedLibraries extends DefaultTask {
 
     @Input
-    @Option(option = "comments", description = "Provides github comments for library grouping as string.")
-    abstract Property<String> getGithubComments()
+    @Option(option = "libraries", description = "Provides list of libraries that should be grouped.")
+    abstract Property<String> getLibraries()
 
     @TaskAction
     void action() {
-        def pattern = Pattern.compile("--[\n ](.*?)[\n ]--")
-        def matcher = pattern.matcher(getGithubComments().get())
+        def libraries = getLibraries().get().split("\n")
 
-        def libraryGroups = new HashMap<String, List<String>>()
-        while (matcher.find()) {
-            def coordinates = matcher.group(1)
-            def coordinatesPart = coordinates.split(":")
+        Map<String, List<String>> libraryGroups = new HashMap<String, List<String>>()
+        for (def library : libraries) {
+            def coordinatesPart = library.split("_")
             def artifactKey = coordinatesPart[0] + ":" + coordinatesPart[1]
             def version = coordinatesPart[2]
 

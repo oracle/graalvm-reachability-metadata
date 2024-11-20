@@ -27,7 +27,6 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-      issue: ${{ steps.set-issue.outputs.issue }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
@@ -47,14 +46,6 @@ jobs:
           git config --local user.name "Github Actions"
           git switch -C check-new-library-versions/$(date '+%Y-%m-%d')
           git push origin check-new-library-versions/$(date '+%Y-%m-%d')
-      - name: "🔨 Create issue"
-        id: set-issue
-        run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Github Actions"
-          
-          issue_url=$(gh issue create --title "List unsupported library versions" --body "This issue lists unsupported versions of the existing libraries in the repo")
-          echo "::set-output name=issue::$issue_url"
 
   test-all-metadata:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
@@ -118,9 +109,18 @@ jobs:
       - name: "❗ New library is not supported"
         if: failure()
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Github Actions"
-          gh issue comment "${{ needs.get-all-libraries.outputs.issue }}" --body "${{ matrix.coordinates }}"
+          LIB=$(echo "${{ matrix.coordinates }}" | sed 's/:/_/g')
+          touch $LIB
+          echo "UNSUPPORTED_LIB=$LIB" >> $GITHUB_ENV
+      - name: "Upload artifacts"
+        if: failure()
+        id: upload
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.UNSUPPORTED_LIB }}
+          path: ${{ env.UNSUPPORTED_LIB }}
+          retention-days: 1
 
   process-results:
     name: "🧪 Process results"
@@ -147,13 +147,22 @@ jobs:
           git fetch origin check-new-library-versions/$(date '+%Y-%m-%d')
           git checkout check-new-library-versions/$(date '+%Y-%m-%d')
           gh pr create --title "Update supported library versions" --body "This pull request updates supported versions of the existing libraries in the repo"
-      - name: "✏️ Edit issue for unsupported versions"
+      - name: "Download artifacts for unsupported versions"
+        uses: actions/download-artifact@v4
+        with:
+          path: ./unsupported
+      - name: "✏️ Issue for unsupported versions"
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
-          ALL_COMMENTS=$(gh issue view "${{ needs.get-all-libraries.outputs.issue }}" --comments)
           
-          FORMATTED_BODY=$(./gradlew -q extractLibrariesGroupsFromGithubComments --comments="$ALL_COMMENTS")
-          gh issue create --title "List unsupported libraries versions" --body "$FORMATTED_BODY"
+          LABEL="library-update"
+          ALL_LIBRARIES=$(ls unsupported)
+          FORMATTED_BODY=$(./gradlew -q groupLibrariesByName --libraries="$ALL_LIBRARIES")          
           
-          gh issue close "${{ needs.get-all-libraries.outputs.issue }}"
+          EXISTING_ISSUE=$(gh issue list --label "$LABEL" --state open --limit 1 --json url | jq -r '.[0].url')
+          if [ $EXISTING_ISSUE != "null" ]; then
+            gh issue edit $EXISTING_ISSUE --body "$FORMATTED_BODY"           
+          else
+            gh issue create --title "List unsupported libraries versions" --body "$FORMATTED_BODY" --label $LABEL 
+          fi
