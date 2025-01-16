@@ -20,9 +20,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 /**
  * This test uses docker to start a MySQL database to test against.
@@ -40,9 +43,14 @@ public class MySQLTests {
     private static Process process;
 
     private static Connection openConnection() throws SQLException {
+        return openConnection(Collections.emptyMap());
+    }
+
+    private static Connection openConnection(Map<String, String> additionalProperties) throws SQLException {
         Properties props = new Properties();
         props.setProperty("user", USERNAME);
         props.setProperty("password", PASSWORD);
+        props.putAll(additionalProperties);
         return DriverManager.getConnection(JDBC_URL, props);
     }
 
@@ -139,4 +147,10 @@ public class MySQLTests {
             }
         }
     }
+
+    @Test
+    void preparedStatementCaching() {
+        assertThatNoException().isThrownBy(() -> openConnection(Map.of("cachePrepStmts", "true")).close());
+    }
+
 }
