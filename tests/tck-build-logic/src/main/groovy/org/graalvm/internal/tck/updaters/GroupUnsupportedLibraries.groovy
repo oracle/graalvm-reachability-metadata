@@ -1,4 +1,4 @@
-package org.graalvm.internal.tck.harness.tasks
+package org.graalvm.internal.tck.updaters
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
