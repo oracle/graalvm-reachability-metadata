@@ -6,6 +6,8 @@ import org.gradle.process.ExecOperations;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -22,7 +24,6 @@ public abstract class ContributionTask extends DefaultTask {
     private Path metadataDirectory;
 
     private final Scanner scanner = new Scanner(System.in);
-    private final StringBuilder sb = new StringBuilder();
 
     private void initializeWorkingDirectories(Coordinates coordinates){
         testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
@@ -30,7 +31,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     @TaskAction
-    void run() {
+    void run() throws IOException {
         System.out.println("*********************************CONTRIBUTING*********************************");
         System.out.println("Hello! This task will help you to contribute to metadata repository." +
                 " Please answer the following questions. In case you don't know the answer on the question, type \"help\" for more information.");
@@ -46,8 +47,8 @@ public abstract class ContributionTask extends DefaultTask {
         // TODO handle if tests needs resources directory
 
         // ask for packages (creates user-code-filter and adds to allowed packages list) NOTE: ideally autocomplete
-//        List<String> packages = getAllowedPackages();
-//        closeSection();
+        List<String> packages = getAllowedPackages();
+        closeSection();
 
         // ask for additional testImplementation dependencies
 //        List<Coordinates> additionalTestImplementationDependencies = getAdditionalDependencies();
@@ -57,6 +58,7 @@ public abstract class ContributionTask extends DefaultTask {
         initializeWorkingDirectories(coordinates);
         createStubs(coordinates);
         addTests(testsLocation, coordinates);
+        addUserCodeFilterFile(packages);
         // TODO copy resources directory
 
         // run agent in conditional mode
@@ -206,6 +208,28 @@ public abstract class ContributionTask extends DefaultTask {
         }
     }
 
+    private void addUserCodeFilterFile(List<String> packages) throws IOException {
+        System.out.println("Generating user-code-filter.json...");
+
+        StringBuilder userCodeFilterBuilder = new StringBuilder();
+        userCodeFilterBuilder.append("{").append("\n");
+        userCodeFilterBuilder.append("\t \"rules\": [").append("\n");
+        userCodeFilterBuilder.append("\t\t{\"includeClasses\": \"**\"},").append("\n");
+        for (int i = 0; i < packages.size(); i++) {
+            String nextPackage = packages.get(i);
+            userCodeFilterBuilder.append("\t\t{\"excludeClasses\": \"").append(nextPackage).append(".**\"}");
+            if (i < packages.size() - 1) {
+                userCodeFilterBuilder.append(",");
+            }
+
+            userCodeFilterBuilder.append("\n");
+        }
+        userCodeFilterBuilder.append("\t]").append("\n");
+        userCodeFilterBuilder.append("}");
+
+        writeToFile(testsDirectory.resolve("user-code-filter.json"), userCodeFilterBuilder.toString());
+    }
+
     private <R> R askQuestion(String question, String helpMessage, Function<String, R> handleAnswer) {
         while (true) {
             System.out.println("[QUESTION] " + question);
@@ -222,6 +246,12 @@ public abstract class ContributionTask extends DefaultTask {
                 System.out.println("[ERROR] " + ex.getMessage());
             }
         }
+    }
+
+
+    private void writeToFile(Path path, String content) throws IOException {
+        Files.createDirectories(path.getParent());
+        Files.writeString(path, content, StandardCharsets.UTF_8);
     }
 
     private void closeSection() {
