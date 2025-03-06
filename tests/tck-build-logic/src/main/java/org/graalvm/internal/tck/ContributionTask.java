@@ -62,10 +62,11 @@ public abstract class ContributionTask extends DefaultTask {
         addTests(testsLocation, coordinates);
         addResources(resourcesLocation);
         addUserCodeFilterFile(packages);
+        // Update allowed-packages
 
         // update build.gradle file
         addAdditionalDependencies(additionalTestImplementationDependencies);
-
+        addAgentConfigBlock();
 
         // run agent in conditional mode
 
@@ -270,12 +271,12 @@ public abstract class ContributionTask extends DefaultTask {
         ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
         sb.openObject().newLine();
         sb.indent();
-        sb.quote("rules").separateKeyAndValue().openArray().newLine();
+        sb.quote("rules").separateWithSemicolon().openArray().newLine();
         sb.indent();
-        sb.openObject().addStringProperty("excludeClasses", "**").closeObject().concat().newLine();
+        sb.openObject().appendStringProperty("excludeClasses", "**").closeObject().concat().newLine();
         for (int i = 0; i < packages.size(); i++) {
             String nextPackage = packages.get(i) + ".**";
-            sb.openObject().addStringProperty("includeClasses", nextPackage).closeObject();
+            sb.openObject().appendStringProperty("includeClasses", nextPackage).closeObject();
             if (i < packages.size() - 1) {
                 sb.concat();
             }
@@ -297,7 +298,7 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
-        System.out.println("Adding following dependencies to " + BUILD_FILE + " file: " + dependencies);
+        System.out.println("Adding following dependencies to " + BUILD_FILE + " file: " + dependencies + "...");
 
         if (!Files.exists(buildFilePath) || !Files.isRegularFile(buildFilePath)) {
             throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
@@ -320,6 +321,43 @@ public abstract class ContributionTask extends DefaultTask {
             writeToFile(buildFilePath, sb.toString(), StandardOpenOption.WRITE);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void addAgentConfigBlock() {
+        Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
+        System.out.println("Configuring agent block in: " + BUILD_FILE + "...");
+
+        if (!Files.exists(buildFilePath) || !Files.isRegularFile(buildFilePath)) {
+            throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
+        }
+
+        ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
+        sb.newLine();
+        sb.append("graalvmNative").space().openObject().newLine();
+        sb.indent().append("agent").space().openObject().newLine();
+
+        sb.indent().appendAssignedVariable("defaultMode", "conditional").newLine();
+
+        sb.append("modes").space().openObject().newLine();
+        sb.indent().append("conditional").space().openObject().newLine();
+        sb.indent().appendAssignedVariable("userCodeFilterPath", USER_CODE_FILTER_FILE).newLine();
+        sb.unindent().closeObject().newLine();
+        sb.unindent().closeObject().newLine();
+
+        sb.append("metadataCopy").space().openObject().newLine();
+        sb.indent().appendAssignedVariable("mergeWithExisting", "true").newLine();
+        sb.append("inputTaskNames.add").quoteInBrackets("test").newLine();
+        sb.append("outputDirectories.add").quoteInBrackets("src/test/resources/META-INF/native-image/").newLine();
+        sb.unindent().closeObject().newLine();
+
+        sb.unindent().closeObject().newLine();
+        sb.unindent().closeObject();
+
+        try {
+            writeToFile(buildFilePath, sb.toString(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot add agent block into: " + buildFilePath);
         }
     }
 
