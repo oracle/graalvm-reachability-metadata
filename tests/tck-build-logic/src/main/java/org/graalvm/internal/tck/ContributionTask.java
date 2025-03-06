@@ -62,13 +62,14 @@ public abstract class ContributionTask extends DefaultTask {
         addTests(testsLocation, coordinates);
         addResources(resourcesLocation);
         addUserCodeFilterFile(packages);
-        // Update allowed-packages
+        // TODO Update allowed-packages
 
         // update build.gradle file
         addAdditionalDependencies(additionalTestImplementationDependencies);
         addAgentConfigBlock();
 
         // run agent in conditional mode
+        collectMetadata();
 
         // create a PR
 
@@ -214,7 +215,11 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void addTests(Path originalTestsLocation, Coordinates coordinates){
-        Path destination = testsDirectory.resolve("src").resolve("test").resolve("java").resolve(coordinates.group()).resolve(coordinates.artifact());
+        Path destination = testsDirectory.resolve("src")
+                .resolve("test")
+                .resolve("java")
+                .resolve(coordinates.group().replace(".", "_").replace("-", "_"))
+                .resolve(coordinates.artifact().replace(".", "_").replace("-", "_"));
         Path allTests = originalTestsLocation.resolve(".");
 
         System.out.println("Removing dummy test stubs...");
@@ -346,7 +351,7 @@ public abstract class ContributionTask extends DefaultTask {
         sb.unindent().closeObject().newLine();
 
         sb.append("metadataCopy").space().openObject().newLine();
-        sb.indent().appendAssignedVariable("mergeWithExisting", "true").newLine();
+        sb.indent().append("mergeWithExisting").space().append("=").space().append("true").newLine();
         sb.append("inputTaskNames.add").quoteInBrackets("test").newLine();
         sb.append("outputDirectories.add").quoteInBrackets("src/test/resources/META-INF/native-image/").newLine();
         sb.unindent().closeObject().newLine();
@@ -358,6 +363,37 @@ public abstract class ContributionTask extends DefaultTask {
             writeToFile(buildFilePath, sb.toString(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             throw new RuntimeException("Cannot add agent block into: " + buildFilePath);
+        }
+    }
+
+    private void collectMetadata() {
+        System.out.println("Generating metadata...");
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        String[] generateMetadataCommand = { "-Pagent", "test" };
+        var generateMetadataResult = getExecOperations().exec(execSpec -> {
+            execSpec.setWorkingDir(testsDirectory);
+            execSpec.setExecutable("gradle");
+            execSpec.setArgs(List.of(generateMetadataCommand));
+            execSpec.setStandardOutput(outputStream);
+        });
+
+        if (generateMetadataResult.getExitValue() != 0) {
+            throw new RuntimeException("Cannot generate metadata. See: " + outputStream);
+        }
+
+
+        System.out.println("Performing metadata copy...");
+        ByteArrayOutputStream metadataCopyOutput = new ByteArrayOutputStream();
+        String[] metadataCopyCommand = { "metadataCopy" };
+        var metadataCopyResult = getExecOperations().exec(execSpec -> {
+            execSpec.setWorkingDir(testsDirectory);
+            execSpec.setExecutable("gradle");
+            execSpec.setArgs(List.of(metadataCopyCommand));
+            execSpec.setStandardOutput(metadataCopyOutput);
+        });
+
+        if (metadataCopyResult.getExitValue() != 0) {
+            throw new RuntimeException("Cannot perform metadata copy. See: " + outputStream);
         }
     }
 
