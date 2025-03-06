@@ -68,16 +68,32 @@ public class ConfigurationStringBuilder {
         return this.append(",");
     }
 
-    public ConfigurationStringBuilder separateKeyAndValue() {
+    public ConfigurationStringBuilder separateWithSemicolon() {
         return this.append(": ");
+    }
+
+    public ConfigurationStringBuilder separateWithEquals() {
+        return this.append(" = ");
     }
 
     public ConfigurationStringBuilder quote(String text) {
         return this.append("\"").append(text).append("\"");
     }
 
-    public ConfigurationStringBuilder addStringProperty(String key, String value) {
-        return this.quote(key).separateKeyAndValue().quote(value);
+    public ConfigurationStringBuilder putInBrackets(String text) {
+        return this.append("(").append(text).append(")");
+    }
+
+    public ConfigurationStringBuilder quoteInBrackets(String text) {
+        return this.append("(").quote(text).append(")");
+    }
+
+    public ConfigurationStringBuilder appendStringProperty(String key, String value) {
+        return this.quote(key).separateWithSemicolon().quote(value);
+    }
+
+    public ConfigurationStringBuilder appendAssignedVariable(String variable, String value) {
+        return this.append(variable).separateWithEquals().quote(value);
     }
 
     @Override
