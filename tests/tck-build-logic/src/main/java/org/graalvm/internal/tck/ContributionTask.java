@@ -1,5 +1,7 @@
 package org.graalvm.internal.tck;
 
+import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
+import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecOperations;
@@ -10,10 +12,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.function.Function;
 
 public abstract class ContributionTask extends DefaultTask {
 
@@ -23,7 +24,8 @@ public abstract class ContributionTask extends DefaultTask {
     private Path testsDirectory;
     private Path metadataDirectory;
 
-    private final Scanner scanner = new Scanner(System.in);
+    private static final String BUILD_FILE = "build.gradle";
+    private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
 
     private void initializeWorkingDirectories(Coordinates coordinates){
         testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
@@ -37,29 +39,37 @@ public abstract class ContributionTask extends DefaultTask {
                 " Please answer the following questions. In case you don't know the answer on the question, type \"help\" for more information.");
 
         Coordinates coordinates = getCoordinates();
-        closeSection();
+        InteractiveTaskUtils.closeSection();
 
         Path testsLocation = getTestsLocation();
-        closeSection();
+        InteractiveTaskUtils.closeSection();
 
         Path resourcesLocation = getResourcesLocation();
-        closeSection();
+        InteractiveTaskUtils.closeSection();
 
         List<String> packages = getAllowedPackages();
-        closeSection();
+        InteractiveTaskUtils.closeSection();
 
-        // ask for additional testImplementation dependencies
-//        List<Coordinates> additionalTestImplementationDependencies = getAdditionalDependencies();
-//        closeSection();
+        List<Coordinates> additionalTestImplementationDependencies = getAdditionalDependencies();
+        InteractiveTaskUtils.closeSection();
 
 
+        // initialize project
         initializeWorkingDirectories(coordinates);
         createStubs(coordinates);
+
+        // generate necessary infrastructure
         addTests(testsLocation, coordinates);
-        addResources(resourcesLocation, coordinates);
+        addResources(resourcesLocation);
         addUserCodeFilterFile(packages);
 
+        // update build.gradle file
+        addAdditionalDependencies(additionalTestImplementationDependencies);
+
+
         // run agent in conditional mode
+
+        // create a PR
 
         // TODO ask user to check metadata. If everything is okay, ask user if the task should create a PR for him
 
@@ -67,10 +77,10 @@ public abstract class ContributionTask extends DefaultTask {
 
     private Coordinates getCoordinates() {
         String question = "What library you want to support? Maven coordinates: ";
-        String helpMessage = "Maven coordinates consists of three parts in the following format \"groupId:artifactId:version\". " +
+        String helpMessage = "Maven coordinates consist of three parts in the following format \"groupId:artifactId:version\". " +
                 "For more information visit: https://maven.apache.org/repositories/artifacts.html";
 
-        return askQuestion(question, helpMessage, (answer) -> {
+        return InteractiveTaskUtils.askQuestion(question, helpMessage, (answer) -> {
             String[] coordinatesParts = answer.split(":");
             if (coordinatesParts.length != 3) {
                 throw new IllegalStateException("Maven coordinates not provided in the correct format. Type help for explanation.");
@@ -89,7 +99,7 @@ public abstract class ContributionTask extends DefaultTask {
                 "This path must be on your system and not some online location. " +
                 "Be aware that for all tests where you are not the sole author, you have to add a comment that proves that you may publish them under the specified license manually";
 
-        return askQuestion(question, helpMessage, (answer) -> {
+        return InteractiveTaskUtils.askQuestion(question, helpMessage, (answer) -> {
             Path testsLocation = Path.of(answer).toAbsolutePath();
             if (!Files.exists(testsLocation)) {
                 throw new IllegalStateException("Cannot find tests directory on the given location: " + testsLocation + ". Type help for explanation.");
@@ -109,7 +119,7 @@ public abstract class ContributionTask extends DefaultTask {
         String helpMessage = "An absolute path to the directory that contains resources required for your tests. " +
                 "This path must be on your system and not some online location. ";
 
-        return askQuestion(question, helpMessage, (answer) -> {
+        return InteractiveTaskUtils.askQuestion(question, helpMessage, (answer) -> {
             if (answer.equalsIgnoreCase("-")) {
                 return null;
             }
@@ -134,7 +144,7 @@ public abstract class ContributionTask extends DefaultTask {
 
         List<String> packages = new ArrayList<>();
         while (true) {
-            String nextPackage = askQuestion(question, helpMessage, answer -> answer);
+            String nextPackage = InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> answer);
             if (nextPackage.equalsIgnoreCase("-")) {
                 if (packages.isEmpty()) {
                     System.out.println("[ERROR] At least one package must be provided. Type help for explanation.");
@@ -153,11 +163,14 @@ public abstract class ContributionTask extends DefaultTask {
     private List<Coordinates> getAdditionalDependencies() {
         String question = "What additional testImplementation dependencies you want to include? Enter the next dependency (to stop type \"-\")";
         String helpMessage = "Enter the testImplementation dependencies (pres enter after each dependency) you want to include use in tests. " +
+                "Provide dependencies in form of Maven coordinates" +
+                "Maven coordinates consist of three parts in the following format \"groupId:artifactId:version\". " +
+                "For more information visit: https://maven.apache.org/repositories/artifacts.html" +
                 "When you finish adding dependencies, type \"-\" to terminate the inclusion process";
 
         List<Coordinates> dependencies = new ArrayList<>();
         while (true) {
-            Coordinates dependency = askQuestion(question, helpMessage, answer -> {
+            Coordinates dependency = InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> {
                 if (answer.equalsIgnoreCase("-")) {
                     return null;
                 }
@@ -230,7 +243,7 @@ public abstract class ContributionTask extends DefaultTask {
         }
     }
 
-    private void addResources(Path originalResourcesDirectory, Coordinates coordinates){
+    private void addResources(Path originalResourcesDirectory){
         if (originalResourcesDirectory == null) {
             return;
         }
@@ -252,53 +265,67 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void addUserCodeFilterFile(List<String> packages) throws IOException {
-        System.out.println("Generating user-code-filter.json...");
+        System.out.println("Generating " + USER_CODE_FILTER_FILE + "...");
 
-        StringBuilder userCodeFilterBuilder = new StringBuilder();
-        userCodeFilterBuilder.append("{").append("\n");
-        userCodeFilterBuilder.append("\t \"rules\": [").append("\n");
-        userCodeFilterBuilder.append("\t\t{\"excludeClasses\": \"**\"},").append("\n");
+        ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
+        sb.openObject().newLine();
+        sb.indent();
+        sb.quote("rules").separateKeyAndValue().openArray().newLine();
+        sb.indent();
+        sb.openObject().addStringProperty("excludeClasses", "**").closeObject().concat().newLine();
         for (int i = 0; i < packages.size(); i++) {
-            String nextPackage = packages.get(i);
-            userCodeFilterBuilder.append("\t\t{\"includeClasses\": \"").append(nextPackage).append(".**\"}");
+            String nextPackage = packages.get(i) + ".**";
+            sb.openObject().addStringProperty("includeClasses", nextPackage).closeObject();
             if (i < packages.size() - 1) {
-                userCodeFilterBuilder.append(",");
+                sb.concat();
             }
 
-            userCodeFilterBuilder.append("\n");
+            sb.newLine();
         }
-        userCodeFilterBuilder.append("\t]").append("\n");
-        userCodeFilterBuilder.append("}");
 
-        writeToFile(testsDirectory.resolve("user-code-filter.json"), userCodeFilterBuilder.toString());
+        sb.unindent();
+        sb.closeArray().newLine();
+        sb.unindent();
+        sb.closeObject();
+
+        writeToFile(testsDirectory.resolve(USER_CODE_FILTER_FILE), sb.toString(), StandardOpenOption.CREATE);
     }
 
-    private <R> R askQuestion(String question, String helpMessage, Function<String, R> handleAnswer) {
-        while (true) {
-            System.out.println("[QUESTION] " + question);
+    private void addAdditionalDependencies(List<Coordinates> dependencies) {
+        if (dependencies == null) {
+            return;
+        }
 
-            String answer = scanner.next();
-            if (answer.equalsIgnoreCase("help")) {
-                System.out.println("[HELP] " + helpMessage);
-                continue;
+        Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
+        System.out.println("Adding following dependencies to " + BUILD_FILE + " file: " + dependencies);
+
+        if (!Files.exists(buildFilePath) || !Files.isRegularFile(buildFilePath)) {
+            throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
+        }
+
+        try {
+            ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
+            List<String> content = Files.readAllLines(buildFilePath);
+            for (var line : content) {
+                sb.append(line).newLine();
+                if (line.trim().equalsIgnoreCase("dependencies {")) {
+                    sb.indent();
+                    for (var dependency : dependencies) {
+                        sb.append("testImplementation").space().quote(dependency.toString()).newLine();
+                    }
+                    sb.unindent();
+                }
             }
 
-            try {
-                return handleAnswer.apply(answer);
-            } catch (IllegalStateException ex) {
-                System.out.println("[ERROR] " + ex.getMessage());
-            }
+            writeToFile(buildFilePath, sb.toString(), StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-
-    private void writeToFile(Path path, String content) throws IOException {
+    private void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
         Files.createDirectories(path.getParent());
-        Files.writeString(path, content, StandardCharsets.UTF_8);
-    }
-
-    private void closeSection() {
-        System.out.println("------------------------------------------------------------------------------------------");
+        Files.writeString(path, content, StandardCharsets.UTF_8, writeOption);
     }
 
 }
