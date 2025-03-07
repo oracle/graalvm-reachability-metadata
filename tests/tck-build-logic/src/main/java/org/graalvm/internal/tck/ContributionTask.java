@@ -368,7 +368,7 @@ public abstract class ContributionTask extends DefaultTask {
         invokeCommand("git add .", "Cannot add changes");
 
         InteractiveTaskUtils.printUserInfo("Committing changes");
-        String output = invokeCommand("git commit -m \"Add metadata\"", "Cannot commit changes");
+        String output = invokeCommand("git", List.of("commit", "-m", "Add metadata for " + coordinates), "Cannot commit changes", null);
         System.out.println(output);
 
 //        InteractiveTaskUtils.printUserInfo("Pushing changes");
@@ -388,8 +388,12 @@ public abstract class ContributionTask extends DefaultTask {
         String[] commandParts = command.split(" ");
         String executable = commandParts[0];
 
-        ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
         List<String> args = List.of(Arrays.copyOfRange(commandParts, 1, commandParts.length));
+        return invokeCommand(executable, args, errorMessage, workingDirectory);
+    }
+
+    private String  invokeCommand(String executable, List<String> args, String errorMessage, Path workingDirectory) {
+        ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
         var result = getExecOperations().exec(execSpec -> {
             if (workingDirectory != null) {
                 execSpec.setWorkingDir(workingDirectory);
