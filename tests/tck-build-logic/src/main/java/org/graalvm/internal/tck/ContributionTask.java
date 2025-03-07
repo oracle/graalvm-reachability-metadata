@@ -360,7 +360,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void createPullRequest(Map<PullRequestInfo, Object> info) {
-        var branch = info.get(PullRequestInfo.BRANCH_NAME);
+        String branch = String.valueOf(info.get(PullRequestInfo.BRANCH_NAME));
         InteractiveTaskUtils.printUserInfo("Creating new branch: " + branch);
         invokeCommand("git switch -C " + branch, "Cannot create a new branch");
 
@@ -370,13 +370,18 @@ public abstract class ContributionTask extends DefaultTask {
         InteractiveTaskUtils.printUserInfo("Committing changes");
         invokeCommand("git", List.of("commit", "-m", "Add metadata for " + coordinates), "Cannot commit changes", null);
 
-//        InteractiveTaskUtils.printUserInfo("Pushing changes");
-//        String output = invokeCommand("git push origin " + branch, "Cannot push to origin");
-//
-//        List<String> outputLines = List.of(output.split("\n"));
-//        for (var line : outputLines) {
-//
-//        }
+        InteractiveTaskUtils.printUserInfo("Pushing changes");
+        String output = invokeCommand("git push origin " + branch, "Cannot push to origin");
+
+        List<String> outputLines = List.of(output.split("\n"));
+        System.out.println(output);
+        for (var line : outputLines) {
+            if (line.contains(branch) && line.contains("https:")) {
+                int linkStart = line.indexOf("http");
+                String link = line.substring(linkStart);
+                InteractiveTaskUtils.printUserInfo("Finish generating pull request on:" + link);
+            }
+        }
     }
 
     private void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
