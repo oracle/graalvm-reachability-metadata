@@ -370,13 +370,15 @@ public abstract class ContributionTask extends DefaultTask {
         InteractiveTaskUtils.printUserInfo("Committing changes");
         invokeCommand("git", List.of("commit", "-m", "Add metadata for " + coordinates), "Cannot commit changes", null);
 
-//        InteractiveTaskUtils.printUserInfo("Pushing changes");
-//        String output = invokeCommand("git push origin " + branch, "Cannot push to origin");
-//
-//        List<String> outputLines = List.of(output.split("\n"));
-//        for (var line : outputLines) {
-//
-//        }
+        InteractiveTaskUtils.printUserInfo("Pushing changes");
+        String output = invokeCommand("git push origin " + branch, "Cannot push to origin");
+
+        String pullRequestCreateLink = "https://github.com/oracle/graalvm-reachability-metadata/pull/new/" + branch;
+        if (!output.contains(pullRequestCreateLink)) {
+            throw new RuntimeException("Cannot find link for pull request creation");
+        }
+
+        InteractiveTaskUtils.printUserInfo("Complete generating your pull request on GitHub: " + pullRequestCreateLink);
     }
 
     private void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
