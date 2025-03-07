@@ -76,8 +76,7 @@ public abstract class ContributionTask extends DefaultTask {
             createPullRequest(pullRequestInfo);
         }
 
-        // TODO ask user to check metadata. If everything is okay, ask user if the task should create a PR for him
-
+        InteractiveTaskUtils.printSuccessfulStatement("Contribution successfully completed! Thank you!");
     }
 
     private Coordinates getCoordinates() {
@@ -371,14 +370,9 @@ public abstract class ContributionTask extends DefaultTask {
         invokeCommand("git", List.of("commit", "-m", "Add metadata for " + coordinates), "Cannot commit changes", null);
 
         InteractiveTaskUtils.printUserInfo("Pushing changes");
-        String output = invokeCommand("git push origin " + branch, "Cannot push to origin");
+        invokeCommand("git push origin " + branch, "Cannot push to origin");
 
-        String pullRequestCreateLink = "https://github.com/oracle/graalvm-reachability-metadata/pull/new/" + branch;
-        if (!output.contains(pullRequestCreateLink)) {
-            throw new RuntimeException("Cannot find link for pull request creation");
-        }
-
-        InteractiveTaskUtils.printUserInfo("Complete generating your pull request on GitHub: " + pullRequestCreateLink);
+        InteractiveTaskUtils.printUserInfo("Complete pull request creation on the above link");
     }
 
     private void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
