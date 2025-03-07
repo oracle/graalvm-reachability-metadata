@@ -64,7 +64,7 @@ public class InteractiveTaskUtils {
 
     private static void waitForUserToReadMessage() {
         try {
-            Thread.sleep(4000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             throw new RuntimeException("Waiting for user to read the message was interrupted. Reason: " + e.getMessage());
         }

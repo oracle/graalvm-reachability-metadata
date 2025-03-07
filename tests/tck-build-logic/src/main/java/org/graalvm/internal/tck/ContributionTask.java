@@ -13,10 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class ContributionTask extends DefaultTask {
 
@@ -25,11 +22,12 @@ public abstract class ContributionTask extends DefaultTask {
 
     private Path testsDirectory;
     private Path metadataDirectory;
+    private Coordinates coordinates;
 
     private static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
 
-    private void initializeWorkingDirectories(Coordinates coordinates){
+    private void initializeWorkingDirectories(){
         testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
         metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
     }
@@ -40,7 +38,7 @@ public abstract class ContributionTask extends DefaultTask {
         InteractiveTaskUtils.printUserInfo("Hello! This task will help you contributing to metadata repository." +
                 " Please answer the following questions. In case you don't know the answer on the question, type \"help\" for more information");
 
-        Coordinates coordinates = getCoordinates();
+        this.coordinates = getCoordinates();
         InteractiveTaskUtils.closeSection();
 
         Path testsLocation = getTestsLocation();
@@ -56,11 +54,11 @@ public abstract class ContributionTask extends DefaultTask {
         InteractiveTaskUtils.closeSection();
 
         // initialize project
-        initializeWorkingDirectories(coordinates);
-        createStubs(coordinates);
+        initializeWorkingDirectories();
+        createStubs();
 
         // generate necessary infrastructure
-        addTests(testsLocation, coordinates);
+        addTests(testsLocation);
         // TODO packages not accurate after move
         addResources(resourcesLocation);
         addUserCodeFilterFile(packages);
@@ -74,7 +72,8 @@ public abstract class ContributionTask extends DefaultTask {
         // create a PR
         boolean shouldCreatePR = shouldCreatePullRequest();
         if (shouldCreatePR) {
-            Map<PullRequestInfo, Object> pullRequestInfo = new HashMap<>();
+            Map<PullRequestInfo, Object> pullRequestInfo = collectPullRequestInfo();
+            createPullRequest(pullRequestInfo);
         }
 
         // TODO ask user to check metadata. If everything is okay, ask user if the task should create a PR for him
@@ -202,23 +201,12 @@ public abstract class ContributionTask extends DefaultTask {
         return dependencies;
     }
 
-    private void createStubs(Coordinates coordinates){
+    private void createStubs(){
         InteractiveTaskUtils.printUserInfo("Generating stubs for: " + coordinates );
-
-        ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
-        String[] command = { "scaffold", "--coordinates", coordinates.toString() };
-        var scaffoldResult = getExecOperations().exec(execSpec -> {
-            execSpec.setExecutable("gradle");
-            execSpec.setArgs(List.of(command));
-            execSpec.setStandardOutput(execOutput);
-        });
-
-        if (scaffoldResult.getExitValue() != 0) {
-            throw new RuntimeException("Cannot generate stubs for: " + coordinates);
-        }
+        invokeCommand("gradle scaffold --coordinates " + coordinates, "Cannot generate stubs for: " + coordinates);
     }
 
-    private void addTests(Path originalTestsLocation, Coordinates coordinates){
+    private void addTests(Path originalTestsLocation){
         Path destination = testsDirectory.resolve("src")
                 .resolve("test")
                 .resolve("java")
@@ -227,30 +215,10 @@ public abstract class ContributionTask extends DefaultTask {
         Path allTests = originalTestsLocation.resolve(".");
 
         InteractiveTaskUtils.printUserInfo("Removing dummy test stubs");
-        ByteArrayOutputStream deleteExecOutput = new ByteArrayOutputStream();
-        String[] deleteCommand = { "-r", destination.toString() };
-        var deleteResult = getExecOperations().exec(execSpec -> {
-            execSpec.setExecutable("rm");
-            execSpec.setArgs(List.of(deleteCommand));
-            execSpec.setStandardOutput(deleteExecOutput);
-        });
-
-        if (deleteResult.getExitValue() != 0) {
-            throw new RuntimeException("Cannot delete files from: " + destination);
-        }
+        invokeCommand("rm -r " + destination, "Cannot delete files from: " + destination);
 
         InteractiveTaskUtils.printUserInfo("Copying tests from: " + originalTestsLocation + " to " + destination);
-        ByteArrayOutputStream copyExecOutput = new ByteArrayOutputStream();
-        String[] copyCommand = { "-a", allTests.toString(), destination.toString()};
-        var copyResult = getExecOperations().exec(execSpec -> {
-            execSpec.setExecutable("cp");
-            execSpec.setArgs(List.of(copyCommand));
-            execSpec.setStandardOutput(copyExecOutput);
-        });
-
-        if (copyResult.getExitValue() != 0) {
-            throw new RuntimeException("Cannot copy files to: " + destination);
-        }
+        invokeCommand("cp -a " + allTests + " " + destination, "Cannot copy files to: " + destination);
     }
 
     private void addResources(Path originalResourcesDirectory){
@@ -260,18 +228,7 @@ public abstract class ContributionTask extends DefaultTask {
 
         Path destination = testsDirectory.resolve("src").resolve("test");
         InteractiveTaskUtils.printUserInfo("Copying resources from: " + originalResourcesDirectory + " to " + destination);
-
-        ByteArrayOutputStream copyExecCommand = new ByteArrayOutputStream();
-        String[] copyCommand = { "-r", originalResourcesDirectory.toString(), destination.toString()};
-        var moveResult = getExecOperations().exec(execSpec -> {
-            execSpec.setExecutable("cp");
-            execSpec.setArgs(List.of(copyCommand));
-            execSpec.setStandardOutput(copyExecCommand);
-        });
-
-        if (moveResult.getExitValue() != 0) {
-            throw new RuntimeException("Cannot copy files to: " + destination);
-        }
+        invokeCommand("cp -r " + originalResourcesDirectory + " " + destination, "Cannot copy files to: " + destination);
     }
 
     private void addUserCodeFilterFile(List<String> packages) throws IOException {
@@ -372,42 +329,14 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void collectMetadata() {
         InteractiveTaskUtils.printUserInfo("Generating metadata");
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        String[] generateMetadataCommand = { "-Pagent", "test" };
-        var generateMetadataResult = getExecOperations().exec(execSpec -> {
-            execSpec.setWorkingDir(testsDirectory);
-            execSpec.setExecutable("gradle");
-            execSpec.setArgs(List.of(generateMetadataCommand));
-            execSpec.setStandardOutput(outputStream);
-        });
-
-        if (generateMetadataResult.getExitValue() != 0) {
-            throw new RuntimeException("Cannot generate metadata. See: " + outputStream);
-        }
+        invokeCommand("gradle -Pagent test", "Cannot generate metadata", testsDirectory);
 
         InteractiveTaskUtils.printUserInfo("Performing metadata copy");
-        ByteArrayOutputStream metadataCopyOutput = new ByteArrayOutputStream();
-        String[] metadataCopyCommand = { "metadataCopy" };
-        var metadataCopyResult = getExecOperations().exec(execSpec -> {
-            execSpec.setWorkingDir(testsDirectory);
-            execSpec.setExecutable("gradle");
-            execSpec.setArgs(List.of(metadataCopyCommand));
-            execSpec.setStandardOutput(metadataCopyOutput);
-        });
-
-        if (metadataCopyResult.getExitValue() != 0) {
-            throw new RuntimeException("Cannot perform metadata copy. See: " + outputStream);
-        }
+        invokeCommand("gradle metadataCopy", "Cannot perform metadata copy", testsDirectory);
     }
 
     enum PullRequestInfo {
-        USER_NAME,
-        CONSIDER_CONTRIBUTING_TO_LIBRARY,
-        USER_IS_ORIGINAL_AUTHOR,
-        USER_HAVE_LICENSES,
-        METADATA_IS_FORMATTED,
-        TESTS_ARE_ADDED,
-        PULL_REQUEST_ACCESS_PLACES
+        BRANCH_NAME
     }
 
 
@@ -421,26 +350,8 @@ public abstract class ContributionTask extends DefaultTask {
 
     private Map<PullRequestInfo, Object> collectPullRequestInfo() {
         Map<PullRequestInfo, Object> answers = new HashMap<>();
-        String username = InteractiveTaskUtils.askQuestion("Your GitHub username:", "Your GitHub username", answer -> answer);
-        Boolean libraryContributionConsidered = InteractiveTaskUtils.askYesNoQuestion(
-                "I have considered including reachability metadata directly in the library or the framework [Y/n]",
-                "See <contributing guide>", true);
-        Boolean userIsOriginalAuthor = InteractiveTaskUtils.askYesNoQuestion(
-                "I am the original author of all content provided in the pull request, and I did not copy the content from any other source [Y/n]",
-                "See <test section>",
-                true);
-        Boolean userHaveLicenses = InteractiveTaskUtils.askYesNoQuestion(
-                "For all tests where I am not the sole author, I have added a comment that proves I may publish them under the specified license [Y/n]",
-                "See <test section>",
-                true);
-
-        answers.put(PullRequestInfo.USER_NAME, username);
-        answers.put(PullRequestInfo.CONSIDER_CONTRIBUTING_TO_LIBRARY, libraryContributionConsidered);
-        answers.put(PullRequestInfo.USER_IS_ORIGINAL_AUTHOR, userIsOriginalAuthor);
-        answers.put(PullRequestInfo.USER_HAVE_LICENSES, userHaveLicenses);
-        answers.put(PullRequestInfo.METADATA_IS_FORMATTED, true);
-        answers.put(PullRequestInfo.TESTS_ARE_ADDED, true);
-        answers.put(PullRequestInfo.PULL_REQUEST_ACCESS_PLACES, false);
+        String branch = InteractiveTaskUtils.askQuestion("Branch that will be created for your pull request:", "Branch name in format \"username/library-name\"", answer -> answer);
+        answers.put(PullRequestInfo.BRANCH_NAME, branch);
 
         InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull requests description to mention all places where your pull request" +
                 "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly filled");
@@ -448,9 +359,50 @@ public abstract class ContributionTask extends DefaultTask {
         return answers;
     }
 
+    private void createPullRequest(Map<PullRequestInfo, Object> info) {
+        var branch = info.get(PullRequestInfo.BRANCH_NAME);
+        InteractiveTaskUtils.printUserInfo("Creating new branch: " + branch);
+        invokeCommand("git switch -C " + branch, "Cannot create a new branch");
+
+        InteractiveTaskUtils.printUserInfo("Staging changes");
+        invokeCommand("git add .", "Cannot add changes");
+
+        InteractiveTaskUtils.printUserInfo("Committing changes");
+        String output = invokeCommand("git commit -m \"Add metadata\"", "Cannot commit changes");
+        System.out.println(output);
+
+//        InteractiveTaskUtils.printUserInfo("Pushing changes");
+//        invokeCommand("git push origin " + branch, "Cannot push to origin");
+    }
+
     private void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
         Files.createDirectories(path.getParent());
         Files.writeString(path, content, StandardCharsets.UTF_8, writeOption);
     }
 
+    private String invokeCommand(String command, String errorMessage) {
+        return invokeCommand(command, errorMessage, null);
+    }
+
+    private String  invokeCommand(String command, String errorMessage, Path workingDirectory) {
+        String[] commandParts = command.split(" ");
+        String executable = commandParts[0];
+
+        ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
+        List<String> args = List.of(Arrays.copyOfRange(commandParts, 1, commandParts.length));
+        var result = getExecOperations().exec(execSpec -> {
+            if (workingDirectory != null) {
+                execSpec.setWorkingDir(workingDirectory);
+            }
+            execSpec.setExecutable(executable);
+            execSpec.setArgs(args);
+            execSpec.setStandardOutput(execOutput);
+        });
+
+        if (result.getExitValue() != 0) {
+            throw new RuntimeException(errorMessage + ". See: " + execOutput);
+        }
+
+        return execOutput.toString();
+    }
 }
