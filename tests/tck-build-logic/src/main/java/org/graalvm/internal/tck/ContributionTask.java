@@ -60,6 +60,7 @@ public abstract class ContributionTask extends DefaultTask {
 
         // generate necessary infrastructure
         addTests(testsLocation, coordinates);
+        // TODO packages not accurate after move
         addResources(resourcesLocation);
         addUserCodeFilterFile(packages);
         // TODO Update allowed-packages
@@ -236,12 +237,12 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         System.out.println("Copying tests from: " + originalTestsLocation + " to " + destination + "...");
-        ByteArrayOutputStream copyExecCommand = new ByteArrayOutputStream();
+        ByteArrayOutputStream copyExecOutput = new ByteArrayOutputStream();
         String[] copyCommand = { "-a", allTests.toString(), destination.toString()};
         var copyResult = getExecOperations().exec(execSpec -> {
             execSpec.setExecutable("cp");
             execSpec.setArgs(List.of(copyCommand));
-            execSpec.setStandardOutput(copyExecCommand);
+            execSpec.setStandardOutput(copyExecOutput);
         });
 
         if (copyResult.getExitValue() != 0) {
@@ -380,7 +381,6 @@ public abstract class ContributionTask extends DefaultTask {
         if (generateMetadataResult.getExitValue() != 0) {
             throw new RuntimeException("Cannot generate metadata. See: " + outputStream);
         }
-
 
         System.out.println("Performing metadata copy...");
         ByteArrayOutputStream metadataCopyOutput = new ByteArrayOutputStream();
