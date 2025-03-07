@@ -14,7 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class ContributionTask extends DefaultTask {
 
@@ -32,11 +34,11 @@ public abstract class ContributionTask extends DefaultTask {
         metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
     }
 
+
     @TaskAction
     void run() throws IOException {
-        System.out.println("*********************************CONTRIBUTING*********************************");
-        System.out.println("Hello! This task will help you to contribute to metadata repository." +
-                " Please answer the following questions. In case you don't know the answer on the question, type \"help\" for more information.");
+        InteractiveTaskUtils.printUserInfo("Hello! This task will help you contributing to metadata repository." +
+                " Please answer the following questions. In case you don't know the answer on the question, type \"help\" for more information");
 
         Coordinates coordinates = getCoordinates();
         InteractiveTaskUtils.closeSection();
@@ -53,7 +55,6 @@ public abstract class ContributionTask extends DefaultTask {
         List<Coordinates> additionalTestImplementationDependencies = getAdditionalDependencies();
         InteractiveTaskUtils.closeSection();
 
-
         // initialize project
         initializeWorkingDirectories(coordinates);
         createStubs(coordinates);
@@ -64,8 +65,6 @@ public abstract class ContributionTask extends DefaultTask {
         addResources(resourcesLocation);
         addUserCodeFilterFile(packages);
         // TODO Update allowed-packages
-
-        // update build.gradle file
         addAdditionalDependencies(additionalTestImplementationDependencies);
         addAgentConfigBlock();
 
@@ -73,6 +72,10 @@ public abstract class ContributionTask extends DefaultTask {
         collectMetadata();
 
         // create a PR
+        boolean shouldCreatePR = shouldCreatePullRequest();
+        if (shouldCreatePR) {
+            Map<PullRequestInfo, Object> pullRequestInfo = new HashMap<>();
+        }
 
         // TODO ask user to check metadata. If everything is okay, ask user if the task should create a PR for him
 
@@ -200,7 +203,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void createStubs(Coordinates coordinates){
-        System.out.println("Generating stubs for: " + coordinates + "...");
+        InteractiveTaskUtils.printUserInfo("Generating stubs for: " + coordinates );
 
         ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
         String[] command = { "scaffold", "--coordinates", coordinates.toString() };
@@ -223,7 +226,7 @@ public abstract class ContributionTask extends DefaultTask {
                 .resolve(coordinates.artifact().replace(".", "_").replace("-", "_"));
         Path allTests = originalTestsLocation.resolve(".");
 
-        System.out.println("Removing dummy test stubs...");
+        InteractiveTaskUtils.printUserInfo("Removing dummy test stubs");
         ByteArrayOutputStream deleteExecOutput = new ByteArrayOutputStream();
         String[] deleteCommand = { "-r", destination.toString() };
         var deleteResult = getExecOperations().exec(execSpec -> {
@@ -236,7 +239,7 @@ public abstract class ContributionTask extends DefaultTask {
             throw new RuntimeException("Cannot delete files from: " + destination);
         }
 
-        System.out.println("Copying tests from: " + originalTestsLocation + " to " + destination + "...");
+        InteractiveTaskUtils.printUserInfo("Copying tests from: " + originalTestsLocation + " to " + destination);
         ByteArrayOutputStream copyExecOutput = new ByteArrayOutputStream();
         String[] copyCommand = { "-a", allTests.toString(), destination.toString()};
         var copyResult = getExecOperations().exec(execSpec -> {
@@ -256,7 +259,7 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         Path destination = testsDirectory.resolve("src").resolve("test");
-        System.out.println("Copying resources from: " + originalResourcesDirectory + " to " + destination + "...");
+        InteractiveTaskUtils.printUserInfo("Copying resources from: " + originalResourcesDirectory + " to " + destination);
 
         ByteArrayOutputStream copyExecCommand = new ByteArrayOutputStream();
         String[] copyCommand = { "-r", originalResourcesDirectory.toString(), destination.toString()};
@@ -272,7 +275,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void addUserCodeFilterFile(List<String> packages) throws IOException {
-        System.out.println("Generating " + USER_CODE_FILTER_FILE + "...");
+        InteractiveTaskUtils.printUserInfo("Generating " + USER_CODE_FILTER_FILE);
 
         ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
         sb.openObject().newLine();
@@ -304,7 +307,7 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
-        System.out.println("Adding following dependencies to " + BUILD_FILE + " file: " + dependencies + "...");
+        InteractiveTaskUtils.printUserInfo("Adding following dependencies to " + BUILD_FILE + " file: " + dependencies);
 
         if (!Files.exists(buildFilePath) || !Files.isRegularFile(buildFilePath)) {
             throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
@@ -332,7 +335,7 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void addAgentConfigBlock() {
         Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
-        System.out.println("Configuring agent block in: " + BUILD_FILE + "...");
+        InteractiveTaskUtils.printUserInfo("Configuring agent block in: " + BUILD_FILE);
 
         if (!Files.exists(buildFilePath) || !Files.isRegularFile(buildFilePath)) {
             throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
@@ -368,7 +371,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void collectMetadata() {
-        System.out.println("Generating metadata...");
+        InteractiveTaskUtils.printUserInfo("Generating metadata");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         String[] generateMetadataCommand = { "-Pagent", "test" };
         var generateMetadataResult = getExecOperations().exec(execSpec -> {
@@ -382,7 +385,7 @@ public abstract class ContributionTask extends DefaultTask {
             throw new RuntimeException("Cannot generate metadata. See: " + outputStream);
         }
 
-        System.out.println("Performing metadata copy...");
+        InteractiveTaskUtils.printUserInfo("Performing metadata copy");
         ByteArrayOutputStream metadataCopyOutput = new ByteArrayOutputStream();
         String[] metadataCopyCommand = { "metadataCopy" };
         var metadataCopyResult = getExecOperations().exec(execSpec -> {
@@ -395,6 +398,54 @@ public abstract class ContributionTask extends DefaultTask {
         if (metadataCopyResult.getExitValue() != 0) {
             throw new RuntimeException("Cannot perform metadata copy. See: " + outputStream);
         }
+    }
+
+    enum PullRequestInfo {
+        USER_NAME,
+        CONSIDER_CONTRIBUTING_TO_LIBRARY,
+        USER_IS_ORIGINAL_AUTHOR,
+        USER_HAVE_LICENSES,
+        METADATA_IS_FORMATTED,
+        TESTS_ARE_ADDED,
+        PULL_REQUEST_ACCESS_PLACES
+    }
+
+
+    private boolean shouldCreatePullRequest() {
+        String question = "Do you want to create a pull request to the reachability metadata repository [Y/n]: ";
+        String helpMessage = "If you want, we can create a pull request for you! " +
+                "All you have to do is to provide necessary information for the GitHub CLI, and answer few questions regarding the pull request description.";
+
+        return InteractiveTaskUtils.askYesNoQuestion(question, helpMessage, true);
+    }
+
+    private Map<PullRequestInfo, Object> collectPullRequestInfo() {
+        Map<PullRequestInfo, Object> answers = new HashMap<>();
+        String username = InteractiveTaskUtils.askQuestion("Your GitHub username:", "Your GitHub username", answer -> answer);
+        Boolean libraryContributionConsidered = InteractiveTaskUtils.askYesNoQuestion(
+                "I have considered including reachability metadata directly in the library or the framework [Y/n]",
+                "See <contributing guide>", true);
+        Boolean userIsOriginalAuthor = InteractiveTaskUtils.askYesNoQuestion(
+                "I am the original author of all content provided in the pull request, and I did not copy the content from any other source [Y/n]",
+                "See <test section>",
+                true);
+        Boolean userHaveLicenses = InteractiveTaskUtils.askYesNoQuestion(
+                "For all tests where I am not the sole author, I have added a comment that proves I may publish them under the specified license [Y/n]",
+                "See <test section>",
+                true);
+
+        answers.put(PullRequestInfo.USER_NAME, username);
+        answers.put(PullRequestInfo.CONSIDER_CONTRIBUTING_TO_LIBRARY, libraryContributionConsidered);
+        answers.put(PullRequestInfo.USER_IS_ORIGINAL_AUTHOR, userIsOriginalAuthor);
+        answers.put(PullRequestInfo.USER_HAVE_LICENSES, userHaveLicenses);
+        answers.put(PullRequestInfo.METADATA_IS_FORMATTED, true);
+        answers.put(PullRequestInfo.TESTS_ARE_ADDED, true);
+        answers.put(PullRequestInfo.PULL_REQUEST_ACCESS_PLACES, false);
+
+        InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull requests description to mention all places where your pull request" +
+                "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly filled");
+
+        return answers;
     }
 
     private void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
