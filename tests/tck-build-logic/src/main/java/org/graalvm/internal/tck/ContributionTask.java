@@ -352,9 +352,9 @@ public abstract class ContributionTask extends DefaultTask {
         sb.unindent().closeObject().newLine();
 
         sb.append("metadataCopy").space().openObject().newLine();
-        sb.indent().append("mergeWithExisting").space().append("=").space().append("true").newLine();
+        sb.indent().append("mergeWithExisting").space().append("=").space().append("false").newLine();
         sb.append("inputTaskNames.add").quoteInBrackets("test").newLine();
-        sb.append("outputDirectories.add").quoteInBrackets("src/test/resources/META-INF/native-image/").newLine();
+        sb.append("outputDirectories.add").quoteInBrackets(metadataDirectory.toString()).newLine();
         sb.unindent().closeObject().newLine();
 
         sb.unindent().closeObject().newLine();
