@@ -62,6 +62,11 @@ public class InteractiveTaskUtils {
         waitForUserToReadMessage();
     }
 
+    public static void printSuccessfulStatement(String message) {
+        ColoredOutput.println("[SUCCESS] " + message, ColoredOutput.OUTPUT_COLOR.GREEN);
+        waitForUserToReadMessage();
+    }
+
     private static void waitForUserToReadMessage() {
         try {
             Thread.sleep(3000);
