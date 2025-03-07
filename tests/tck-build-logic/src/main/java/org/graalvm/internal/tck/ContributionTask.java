@@ -368,11 +368,15 @@ public abstract class ContributionTask extends DefaultTask {
         invokeCommand("git add .", "Cannot add changes");
 
         InteractiveTaskUtils.printUserInfo("Committing changes");
-        String output = invokeCommand("git", List.of("commit", "-m", "Add metadata for " + coordinates), "Cannot commit changes", null);
-        System.out.println(output);
+        invokeCommand("git", List.of("commit", "-m", "Add metadata for " + coordinates), "Cannot commit changes", null);
 
 //        InteractiveTaskUtils.printUserInfo("Pushing changes");
-//        invokeCommand("git push origin " + branch, "Cannot push to origin");
+//        String output = invokeCommand("git push origin " + branch, "Cannot push to origin");
+//
+//        List<String> outputLines = List.of(output.split("\n"));
+//        for (var line : outputLines) {
+//
+//        }
     }
 
     private void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
