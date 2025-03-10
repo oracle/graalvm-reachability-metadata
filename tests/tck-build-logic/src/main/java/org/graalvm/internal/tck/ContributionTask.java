@@ -29,8 +29,8 @@ public abstract class ContributionTask extends DefaultTask {
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
 
     private void initializeWorkingDirectories(){
-        testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
-        metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
+        testsDirectory = Path.of(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates));
+        metadataDirectory = Path.of(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
     }
 
 
