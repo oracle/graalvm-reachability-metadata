@@ -72,8 +72,11 @@ public abstract class ContributionTask extends DefaultTask {
         // create a PR
         boolean shouldCreatePR = shouldCreatePullRequest();
         if (shouldCreatePR) {
-            Map<PullRequestInfo, Object> pullRequestInfo = collectPullRequestInfo();
-            createPullRequest(pullRequestInfo);
+            String branch = getBranchName();
+            InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull request description to mention all places where your pull request" +
+                    "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly marked");
+
+            createPullRequest(branch);
         }
 
         InteractiveTaskUtils.printSuccessfulStatement("Contribution successfully completed! Thank you!");
@@ -311,7 +314,7 @@ public abstract class ContributionTask extends DefaultTask {
         sb.unindent().closeObject().newLine();
 
         sb.append("metadataCopy").space().openObject().newLine();
-        sb.indent().append("mergeWithExisting").space().append("=").space().append("false").newLine();
+        sb.indent().append("mergeWithExisting").separateWithEquals().append("false").newLine();
         sb.append("inputTaskNames.add").quoteInBrackets("test").newLine();
         sb.append("outputDirectories.add").quoteInBrackets(metadataDirectory.toString()).newLine();
         sb.unindent().closeObject().newLine();
@@ -334,11 +337,6 @@ public abstract class ContributionTask extends DefaultTask {
         invokeCommand("gradle metadataCopy", "Cannot perform metadata copy", testsDirectory);
     }
 
-    enum PullRequestInfo {
-        BRANCH_NAME
-    }
-
-
     private boolean shouldCreatePullRequest() {
         String question = "Do you want to create a pull request to the reachability metadata repository [Y/n]: ";
         String helpMessage = "If you want, we can create a pull request for you! " +
@@ -347,19 +345,14 @@ public abstract class ContributionTask extends DefaultTask {
         return InteractiveTaskUtils.askYesNoQuestion(question, helpMessage, true);
     }
 
-    private Map<PullRequestInfo, Object> collectPullRequestInfo() {
-        Map<PullRequestInfo, Object> answers = new HashMap<>();
-        String branch = InteractiveTaskUtils.askQuestion("Branch that will be created for your pull request:", "Branch name in format \"username/library-name\"", answer -> answer);
-        answers.put(PullRequestInfo.BRANCH_NAME, branch);
+    private String getBranchName() {
+        String question = "Branch that will be created for your pull request:";
+        String helpMessage = "Branch name in format \"username/library-name\"";
 
-        InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull requests description to mention all places where your pull request" +
-                "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly filled");
-
-        return answers;
+        return InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> answer);
     }
 
-    private void createPullRequest(Map<PullRequestInfo, Object> info) {
-        var branch = info.get(PullRequestInfo.BRANCH_NAME);
+    private void createPullRequest(String branch) {
         InteractiveTaskUtils.printUserInfo("Creating new branch: " + branch);
         invokeCommand("git switch -C " + branch, "Cannot create a new branch");
 
@@ -380,19 +373,19 @@ public abstract class ContributionTask extends DefaultTask {
         Files.writeString(path, content, StandardCharsets.UTF_8, writeOption);
     }
 
-    private String invokeCommand(String command, String errorMessage) {
-        return invokeCommand(command, errorMessage, null);
+    private void invokeCommand(String command, String errorMessage) {
+        invokeCommand(command, errorMessage, null);
     }
 
-    private String  invokeCommand(String command, String errorMessage, Path workingDirectory) {
+    private void invokeCommand(String command, String errorMessage, Path workingDirectory) {
         String[] commandParts = command.split(" ");
         String executable = commandParts[0];
 
         List<String> args = List.of(Arrays.copyOfRange(commandParts, 1, commandParts.length));
-        return invokeCommand(executable, args, errorMessage, workingDirectory);
+        invokeCommand(executable, args, errorMessage, workingDirectory);
     }
 
-    private String  invokeCommand(String executable, List<String> args, String errorMessage, Path workingDirectory) {
+    private void invokeCommand(String executable, List<String> args, String errorMessage, Path workingDirectory) {
         ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
         var result = getExecOperations().exec(execSpec -> {
             if (workingDirectory != null) {
@@ -406,7 +399,5 @@ public abstract class ContributionTask extends DefaultTask {
         if (result.getExitValue() != 0) {
             throw new RuntimeException(errorMessage + ". See: " + execOutput);
         }
-
-        return execOutput.toString();
     }
 }
