@@ -26,6 +26,7 @@ public abstract class ContributionTask extends DefaultTask {
 
     private static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
+    private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
 
     private void initializeWorkingDirectories(){
         testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
@@ -47,6 +48,9 @@ public abstract class ContributionTask extends DefaultTask {
         Path resourcesLocation = getResourcesLocation();
         InteractiveTaskUtils.closeSection();
 
+        List<String> dockerImages = getDockerImages();
+        InteractiveTaskUtils.closeSection();
+
         List<String> packages = getAllowedPackages();
         InteractiveTaskUtils.closeSection();
 
@@ -61,6 +65,7 @@ public abstract class ContributionTask extends DefaultTask {
         addTests(testsLocation);
         // TODO packages not accurate after move
         addResources(resourcesLocation);
+        addDockerImages(dockerImages);
         addUserCodeFilterFile(packages);
         // TODO Update allowed-packages
         addAdditionalDependencies(additionalTestImplementationDependencies);
@@ -76,7 +81,8 @@ public abstract class ContributionTask extends DefaultTask {
             InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull request description to mention all places where your pull request" +
                     "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly marked");
 
-            createPullRequest(branch);
+              // TODO disabled for local testing
+//            createPullRequest(branch);
         }
 
         InteractiveTaskUtils.printSuccessfulStatement("Contribution successfully completed! Thank you!");
@@ -144,17 +150,43 @@ public abstract class ContributionTask extends DefaultTask {
         });
     }
 
+    private List<String> getDockerImages() {
+        String question = "Do your tests use docker? Enter the next docker image name (to stop type \"-\"): ";
+        String helpMessage = "Enter the docker images (press enter after each image name you enter) that you want to use in your tests. " +
+                "Docker image declaration consists of two parts separated with \":\" in the following format: \"imageName:version\"." +
+                "When you finish adding docker images, type \"-\" to terminate the inclusion process";
+
+        List<String> images = new ArrayList<>();
+        while (true) {
+            String nextImage = InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> {
+                if (!answer.equalsIgnoreCase("-") && answer.split(":").length != 2) {
+                    throw new IllegalStateException("Docker image name not provided in the correct format. Type help for explanation.");
+                }
+
+                return answer;
+            });
+
+            if (nextImage.trim().equalsIgnoreCase("-")) {
+                break;
+            }
+
+            images.add(nextImage);
+        }
+
+        return images;
+    }
+
     private List<String> getAllowedPackages() {
         String question = "What package you want to include? Enter the next package (to stop type \"-\")";
-        String helpMessage = "Enter the packages (pres enter after each package you entered) that you want to include in your metadata. " +
+        String helpMessage = "Enter the packages (press enter after each package you entered) that you want to include in your metadata. " +
                 "When you finish adding packages, type \"-\" to terminate the inclusion process";
 
         List<String> packages = new ArrayList<>();
         while (true) {
             String nextPackage = InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> answer);
-            if (nextPackage.equalsIgnoreCase("-")) {
+            if (nextPackage.trim().equalsIgnoreCase("-")) {
                 if (packages.isEmpty()) {
-                    System.out.println("[ERROR] At least one package must be provided. Type help for explanation.");
+                    InteractiveTaskUtils.printErrorMessage("At least one package must be provided. Type help for explanation.");
                     continue;
                 }
 
@@ -230,7 +262,24 @@ public abstract class ContributionTask extends DefaultTask {
 
         Path destination = testsDirectory.resolve("src").resolve("test");
         InteractiveTaskUtils.printUserInfo("Copying resources from: " + originalResourcesDirectory + " to " + destination);
+
         invokeCommand("cp -r " + originalResourcesDirectory + " " + destination, "Cannot copy files to: " + destination);
+    }
+
+    private void addDockerImages(List<String> images) throws IOException {
+        if (images.isEmpty()) {
+            return;
+        }
+
+        InteractiveTaskUtils.printUserInfo("Adding following docker images to " + REQUIRED_DOCKER_IMAGES_FILE + ": " + images);
+        Path destination = testsDirectory.resolve(REQUIRED_DOCKER_IMAGES_FILE);
+        if (!Files.exists(destination)) {
+            Files.createFile(destination);
+        }
+
+        for (var image : images) {
+            writeToFile(destination, image.concat("\n"), StandardOpenOption.APPEND);
+        }
     }
 
     private void addUserCodeFilterFile(List<String> packages) throws IOException {
