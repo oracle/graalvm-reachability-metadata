@@ -9,35 +9,33 @@ public class InteractiveTaskUtils {
 
     public static <R> R askQuestion(String question, String helpMessage, Function<String, R> handleAnswer) {
         while (true) {
-            ColoredOutput.print("[QUESTION] ", ColoredOutput.OUTPUT_COLOR.GREEN);
-            System.out.println(question);
+            printQuestion(question);
 
             String answer = scanner.next();
             if (answer.equalsIgnoreCase("help")) {
-                ColoredOutput.println("[HELP] " + helpMessage, ColoredOutput.OUTPUT_COLOR.YELLOW);
+                printHelpMessage(helpMessage);
                 continue;
             }
 
             try {
                 return handleAnswer.apply(answer);
             } catch (IllegalStateException ex) {
-                ColoredOutput.println("[ERROR] " + ex.getMessage(), ColoredOutput.OUTPUT_COLOR.RED);
+                printErrorMessage(ex.getMessage());
             }
         }
     }
 
     public static boolean askYesNoQuestion(String question, String helpMessage, boolean defaultAnswer) {
         while (true) {
-            ColoredOutput.print("[QUESTION] ", ColoredOutput.OUTPUT_COLOR.GREEN);
-            System.out.println(question);
+            printQuestion(question);
 
             String answer = scanner.next();
             if (answer.equalsIgnoreCase("help")) {
-                ColoredOutput.println("[HELP] " + helpMessage, ColoredOutput.OUTPUT_COLOR.YELLOW);
+                printHelpMessage(helpMessage);
                 continue;
             }
 
-            if (answer.isBlank()) {
+            if (answer.isEmpty()) {
                 return defaultAnswer;
             }
 
@@ -49,7 +47,7 @@ public class InteractiveTaskUtils {
                 return false;
             }
 
-            ColoredOutput.println("[ERROR] Your answer must be either y (for yes) or n (for no)", ColoredOutput.OUTPUT_COLOR.RED);
+            printErrorMessage("Your answer must be either y (for yes) or n (for no)");
         }
     }
 
@@ -65,6 +63,20 @@ public class InteractiveTaskUtils {
     public static void printSuccessfulStatement(String message) {
         ColoredOutput.println("[SUCCESS] " + message, ColoredOutput.OUTPUT_COLOR.GREEN);
         waitForUserToReadMessage();
+    }
+
+    public static void printErrorMessage(String message) {
+        ColoredOutput.println("[ERROR] " + message, ColoredOutput.OUTPUT_COLOR.RED);
+        waitForUserToReadMessage();
+    }
+
+    public static void printHelpMessage(String helpMessage) {
+        ColoredOutput.println("[HELP] " + helpMessage, ColoredOutput.OUTPUT_COLOR.YELLOW);
+        waitForUserToReadMessage();
+    }
+
+    private static void printQuestion(String question) {
+        ColoredOutput.println("[QUESTION] " + question, ColoredOutput.OUTPUT_COLOR.GREEN);
     }
 
     private static void waitForUserToReadMessage() {
