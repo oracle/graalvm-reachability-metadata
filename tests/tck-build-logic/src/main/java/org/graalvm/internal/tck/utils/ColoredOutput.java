@@ -27,9 +27,4 @@ public class ColoredOutput {
         System.out.println(color + message + ANSI_RESET);
     }
 
-    public static void print(String message, OUTPUT_COLOR color) {
-        System.out.print(color + message + ANSI_RESET);
-        System.out.flush();
-    }
-
 }
