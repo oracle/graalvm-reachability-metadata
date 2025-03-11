@@ -8,6 +8,7 @@ import org.gradle.process.ExecOperations;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,7 +31,7 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void initializeWorkingDirectories(){
         testsDirectory = Path.of(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates));
-        metadataDirectory = Path.of(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
+        metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
     }
 
 
@@ -63,7 +64,6 @@ public abstract class ContributionTask extends DefaultTask {
 
         // generate necessary infrastructure
         addTests(testsLocation);
-        // TODO packages not accurate after move
         addResources(resourcesLocation);
         addDockerImages(dockerImages);
         addUserCodeFilterFile(packages);
@@ -77,12 +77,12 @@ public abstract class ContributionTask extends DefaultTask {
         // create a PR
         boolean shouldCreatePR = shouldCreatePullRequest();
         if (shouldCreatePR) {
-            String branch = getBranchName();
+            String branch = "add-support-for-" + coordinates.toString().replace(':', '-');
+            // TODO disabled for local testing
+//            createPullRequest(branch);
+
             InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull request description to mention all places where your pull request" +
                     "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly marked");
-
-              // TODO disabled for local testing
-//            createPullRequest(branch);
         }
 
         InteractiveTaskUtils.printSuccessfulStatement("Contribution successfully completed! Thank you!");
@@ -107,7 +107,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private Path getTestsLocation() {
-        String question = "Where are your tests implemented? Absolute path to the directory where you implemented tests (on your system): ";
+        String question = "Where are your tests implemented? Absolute path to the directory containing java packages where you implemented tests: ";
         String helpMessage = "An absolute path to the directory that contains your tests. " +
                 "This path must be on your system and not some online location. " +
                 "Be aware that for all tests where you are not the sole author, you have to add a comment that proves that you may publish them under the specified license manually";
@@ -122,8 +122,51 @@ public abstract class ContributionTask extends DefaultTask {
                 throw new IllegalStateException("Provided path does not represent a directory: " + testsLocation + ". Type help for explanation.");
             }
 
+            checkPackages(testsLocation);
+
             return testsLocation;
         });
+    }
+
+    private void checkPackages(Path testsPath) {
+        List<Path> javaFiles = new ArrayList<>();
+        findJavaFiles(testsPath, javaFiles);
+        javaFiles.forEach(file -> {
+            try {
+                Optional<String> packageLine = Files.readAllLines(file).stream().filter(line -> line.contains("package ")).findFirst();
+                if (packageLine.isEmpty()) {
+                    throw new RuntimeException("Java file: " + file + " does not contain declared package");
+                }
+
+                String declaredPackage = packageLine.get().split(" ")[1].replace(";", "");
+                String packagePath = declaredPackage.replace(".", File.separator);
+                if (!Files.exists(testsPath.resolve(packagePath))) {
+                    throw new IllegalStateException("File: " + file + " has package: " + declaredPackage +
+                            " that cannot be found on tests location: " + testsPath +
+                            ". Please make sure that the location you provided is a directory that contains packages with tests implementations");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void findJavaFiles(Path root, List<Path> result) {
+        if (Files.exists(root) && Files.isRegularFile(root) && root.toString().endsWith(".java")) {
+            result.add(root);
+            return;
+        }
+
+        if (Files.isDirectory(root)) {
+            File[] content = root.toFile().listFiles();
+            if (content == null) {
+                return;
+            }
+
+            for (var file : content) {
+                findJavaFiles(file.toPath(), result);
+            }
+        }
     }
 
     private Path getResourcesLocation(){
@@ -243,9 +286,7 @@ public abstract class ContributionTask extends DefaultTask {
     private void addTests(Path originalTestsLocation){
         Path destination = testsDirectory.resolve("src")
                 .resolve("test")
-                .resolve("java")
-                .resolve(coordinates.group().replace(".", "_").replace("-", "_"))
-                .resolve(coordinates.artifact().replace(".", "_").replace("-", "_"));
+                .resolve("java");
         Path allTests = originalTestsLocation.resolve(".");
 
         InteractiveTaskUtils.printUserInfo("Removing dummy test stubs");
@@ -392,13 +433,6 @@ public abstract class ContributionTask extends DefaultTask {
                 "All you have to do is to provide necessary information for the GitHub CLI, and answer few questions regarding the pull request description.";
 
         return InteractiveTaskUtils.askYesNoQuestion(question, helpMessage, true);
-    }
-
-    private String getBranchName() {
-        String question = "Branch that will be created for your pull request:";
-        String helpMessage = "Branch name in format \"username/library-name\"";
-
-        return InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> answer);
     }
 
     private void createPullRequest(String branch) {
