@@ -30,7 +30,7 @@ public abstract class ContributionTask extends DefaultTask {
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
 
     private void initializeWorkingDirectories(){
-        testsDirectory = Path.of(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates));
+        testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
         metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
     }
 
@@ -403,12 +403,6 @@ public abstract class ContributionTask extends DefaultTask {
         sb.unindent().closeObject().newLine();
         sb.unindent().closeObject().newLine();
 
-        sb.append("metadataCopy").space().openObject().newLine();
-        sb.indent().append("mergeWithExisting").separateWithEquals().append("false").newLine();
-        sb.append("inputTaskNames.add").quoteInBrackets("test").newLine();
-        sb.append("outputDirectories.add").quoteInBrackets(metadataDirectory.toString()).newLine();
-        sb.unindent().closeObject().newLine();
-
         sb.unindent().closeObject().newLine();
         sb.unindent().closeObject();
 
@@ -424,7 +418,7 @@ public abstract class ContributionTask extends DefaultTask {
         invokeCommand("gradle -Pagent test", "Cannot generate metadata", testsDirectory);
 
         InteractiveTaskUtils.printUserInfo("Performing metadata copy");
-        invokeCommand("gradle metadataCopy", "Cannot perform metadata copy", testsDirectory);
+        invokeCommand("gradle metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
     }
 
     private boolean shouldCreatePullRequest() {
