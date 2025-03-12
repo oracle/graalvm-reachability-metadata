@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
+import org.graalvm.internal.tck.model.contributing.Question;
 import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
 import org.graalvm.internal.tck.utils.FilesUtils;
 import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,12 +29,15 @@ public abstract class ContributionTask extends DefaultTask {
     @Inject
     protected abstract ExecOperations getExecOperations();
 
+    private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
     private Path testsDirectory;
     private Path metadataDirectory;
     private Coordinates coordinates;
 
+    private record ContributingQuestion(String question, String help) {}
+    private final Map<String, ContributingQuestion> questions = new HashMap<>();
     private static final String METADATA_INDEX = "metadata/index.json";
-
     private static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
@@ -42,11 +47,20 @@ public abstract class ContributionTask extends DefaultTask {
         metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
     }
 
+    private void loadQuestions() throws IOException {
+        File questionsJson = getProject().file("tests/tck-build-logic/src/main/resources/contributing/questions.json");
+        List<Question> contributingQuestions = objectMapper.readValue(questionsJson, new TypeReference<>() {});
+        for (var question : contributingQuestions) {
+            this.questions.put(question.questionKey(), new ContributingQuestion(question.question(), question.help()));
+        }
+    }
 
     @TaskAction
-    void run() throws IOException {
+    void run() throws IOException, URISyntaxException {
         InteractiveTaskUtils.printUserInfo("Hello! This task will help you contributing to metadata repository." +
-                " Please answer the following questions. In case you don't know the answer on the question, type \"help\" for more information");
+                " Please answer the following contributingQuestions. In case you don't know the answer on the question, type \"help\" for more information");
+
+        loadQuestions();
 
         this.coordinates = getCoordinates();
         InteractiveTaskUtils.closeSection();
@@ -100,11 +114,8 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private Coordinates getCoordinates() {
-        String question = "What library you want to support? Maven coordinates: ";
-        String helpMessage = "Maven coordinates consist of three parts in the following format \"groupId:artifactId:version\". " +
-                "For more information visit: https://maven.apache.org/repositories/artifacts.html";
-
-        return InteractiveTaskUtils.askQuestion(question, helpMessage, (answer) -> {
+        ContributingQuestion question = questions.get("coordinates");
+        return InteractiveTaskUtils.askQuestion(question.question(), question.help(), (answer) -> {
             String[] coordinatesParts = answer.split(":");
             if (coordinatesParts.length != 3) {
                 throw new IllegalStateException("Maven coordinates not provided in the correct format. Type help for explanation.");
@@ -118,12 +129,8 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private Path getTestsLocation() {
-        String question = "Where are your tests implemented? Absolute path to the directory containing java packages where you implemented tests: ";
-        String helpMessage = "An absolute path to the directory that contains your tests. " +
-                "This path must be on your system and not some online location. " +
-                "Be aware that for all tests where you are not the sole author, you have to add a comment that proves that you may publish them under the specified license manually";
-
-        return InteractiveTaskUtils.askQuestion(question, helpMessage, (answer) -> {
+        ContributingQuestion question = questions.get("testsLocation");
+        return InteractiveTaskUtils.askQuestion(question.question(), question.help(), (answer) -> {
             Path testsLocation = Path.of(answer).toAbsolutePath();
             if (!Files.exists(testsLocation)) {
                 throw new IllegalStateException("Cannot find tests directory on the given location: " + testsLocation + ". Type help for explanation.");
@@ -163,12 +170,8 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private Path getResourcesLocation(){
-        String question = "Do your tests need any kind of resources? " +
-                "Absolute path to the resources directory required for your tests (type \"-\" if resources are not required): ";
-        String helpMessage = "An absolute path to the directory that contains resources required for your tests. " +
-                "This path must be on your system and not some online location. ";
-
-        return InteractiveTaskUtils.askQuestion(question, helpMessage, (answer) -> {
+        ContributingQuestion question = questions.get("resourcesLocation");
+        return InteractiveTaskUtils.askQuestion(question.question(), question.help(), (answer) -> {
             if (answer.equalsIgnoreCase("-")) {
                 return null;
             }
@@ -187,14 +190,11 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private List<String> getDockerImages() {
-        String question = "Do your tests use docker? Enter the next docker image name (to stop type \"-\"): ";
-        String helpMessage = "Enter the docker images (press enter after each image name you enter) that you want to use in your tests. " +
-                "Docker image declaration consists of two parts separated with \":\" in the following format: \"imageName:version\"." +
-                "When you finish adding docker images, type \"-\" to terminate the inclusion process";
+        ContributingQuestion question = questions.get("docker");
 
         List<String> images = new ArrayList<>();
         while (true) {
-            String nextImage = InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> {
+            String nextImage = InteractiveTaskUtils.askQuestion(question.question(), question.help(), answer -> {
                 if (!answer.equalsIgnoreCase("-") && answer.split(":").length != 2) {
                     throw new IllegalStateException("Docker image name not provided in the correct format. Type help for explanation.");
                 }
@@ -213,13 +213,10 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private List<String> getAllowedPackages() {
-        String question = "What package you want to include? Enter the next package (to stop type \"-\")";
-        String helpMessage = "Enter the packages (press enter after each package you entered) that you want to include in your metadata. " +
-                "When you finish adding packages, type \"-\" to terminate the inclusion process";
-
+        ContributingQuestion question = questions.get("allowedPackages");
         List<String> packages = new ArrayList<>();
         while (true) {
-            String nextPackage = InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> answer);
+            String nextPackage = InteractiveTaskUtils.askQuestion(question.question(), question.help(), answer -> answer);
             if (nextPackage.trim().equalsIgnoreCase("-")) {
                 if (packages.isEmpty()) {
                     InteractiveTaskUtils.printErrorMessage("At least one package must be provided. Type help for explanation.");
@@ -236,16 +233,10 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private List<Coordinates> getAdditionalDependencies() {
-        String question = "What additional testImplementation dependencies you want to include? Enter the next dependency (to stop type \"-\")";
-        String helpMessage = "Enter the testImplementation dependencies (pres enter after each dependency) you want to include use in tests. " +
-                "Provide dependencies in form of Maven coordinates" +
-                "Maven coordinates consist of three parts in the following format \"groupId:artifactId:version\". " +
-                "For more information visit: https://maven.apache.org/repositories/artifacts.html" +
-                "When you finish adding dependencies, type \"-\" to terminate the inclusion process";
-
+        ContributingQuestion question = questions.get("additionalDependencies");
         List<Coordinates> dependencies = new ArrayList<>();
         while (true) {
-            Coordinates dependency = InteractiveTaskUtils.askQuestion(question, helpMessage, answer -> {
+            Coordinates dependency = InteractiveTaskUtils.askQuestion(question.question(), question.help(), answer -> {
                 if (answer.equalsIgnoreCase("-")) {
                     return null;
                 }
@@ -283,7 +274,6 @@ public abstract class ContributionTask extends DefaultTask {
     private void updateAllowedPackages(List<String> allowedPackages) throws IOException {
         InteractiveTaskUtils.printUserInfo("Updating allowed packages in: " + METADATA_INDEX);
         File metadataIndex = getProject().file(METADATA_INDEX);
-        var objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         List<MetadataIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
         int replaceEntryIndex = -1;
@@ -449,7 +439,7 @@ public abstract class ContributionTask extends DefaultTask {
     private boolean shouldCreatePullRequest() {
         String question = "Do you want to create a pull request to the reachability metadata repository [Y/n]: ";
         String helpMessage = "If you want, we can create a pull request for you! " +
-                "All you have to do is to provide necessary information for the GitHub CLI, and answer few questions regarding the pull request description.";
+                "All you have to do is to provide necessary information for the GitHub CLI, and answer few contributingQuestions regarding the pull request description.";
 
         return InteractiveTaskUtils.askYesNoQuestion(question, helpMessage, true);
     }
