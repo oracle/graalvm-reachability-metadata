@@ -1,6 +1,12 @@
 package org.graalvm.internal.tck;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.MetadataIndexEntry;
 import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
+import org.graalvm.internal.tck.utils.FilesUtils;
 import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -25,6 +31,8 @@ public abstract class ContributionTask extends DefaultTask {
     private Path metadataDirectory;
     private Coordinates coordinates;
 
+    private static final String METADATA_INDEX = "metadata/index.json";
+
     private static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
@@ -43,6 +51,9 @@ public abstract class ContributionTask extends DefaultTask {
         this.coordinates = getCoordinates();
         InteractiveTaskUtils.closeSection();
 
+        Path coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).toPath();
+        boolean isExistingLibrary = Files.exists(coordinatesMetadataRoot);
+
         Path testsLocation = getTestsLocation();
         InteractiveTaskUtils.closeSection();
 
@@ -60,14 +71,14 @@ public abstract class ContributionTask extends DefaultTask {
 
         // initialize project
         initializeWorkingDirectories();
-        createStubs();
+        createStubs(isExistingLibrary);
+        updateAllowedPackages(packages);
 
         // generate necessary infrastructure
         addTests(testsLocation);
         addResources(resourcesLocation);
         addDockerImages(dockerImages);
         addUserCodeFilterFile(packages);
-        // TODO Update allowed-packages
         addAdditionalDependencies(additionalTestImplementationDependencies);
         addAgentConfigBlock();
 
@@ -130,7 +141,7 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void checkPackages(Path testsPath) {
         List<Path> javaFiles = new ArrayList<>();
-        findJavaFiles(testsPath, javaFiles);
+        FilesUtils.findJavaFiles(testsPath, javaFiles);
         javaFiles.forEach(file -> {
             try {
                 Optional<String> packageLine = Files.readAllLines(file).stream().filter(line -> line.contains("package ")).findFirst();
@@ -149,24 +160,6 @@ public abstract class ContributionTask extends DefaultTask {
                 throw new RuntimeException(e);
             }
         });
-    }
-
-    private void findJavaFiles(Path root, List<Path> result) {
-        if (Files.exists(root) && Files.isRegularFile(root) && root.toString().endsWith(".java")) {
-            result.add(root);
-            return;
-        }
-
-        if (Files.isDirectory(root)) {
-            File[] content = root.toFile().listFiles();
-            if (content == null) {
-                return;
-            }
-
-            for (var file : content) {
-                findJavaFiles(file.toPath(), result);
-            }
-        }
     }
 
     private Path getResourcesLocation(){
@@ -278,9 +271,41 @@ public abstract class ContributionTask extends DefaultTask {
         return dependencies;
     }
 
-    private void createStubs(){
+    private void createStubs(boolean shouldUpdate){
         InteractiveTaskUtils.printUserInfo("Generating stubs for: " + coordinates );
-        invokeCommand("gradle scaffold --coordinates " + coordinates, "Cannot generate stubs for: " + coordinates);
+        if (shouldUpdate) {
+            invokeCommand("gradle scaffold --coordinates " + coordinates + " --update", "Cannot generate stubs for: " + coordinates);
+        } else {
+            invokeCommand("gradle scaffold --coordinates " + coordinates, "Cannot generate stubs for: " + coordinates);
+        }
+    }
+
+    private void updateAllowedPackages(List<String> allowedPackages) throws IOException {
+        InteractiveTaskUtils.printUserInfo("Updating allowed packages in: " + METADATA_INDEX);
+        File metadataIndex = getProject().file(METADATA_INDEX);
+        var objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        List<MetadataIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
+        int replaceEntryIndex = -1;
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).module().equals(coordinates.group() + ":" + coordinates.artifact())) {
+                replaceEntryIndex = i;
+            }
+        }
+
+        if (replaceEntryIndex != -1) {
+            MetadataIndexEntry replacedEntry = entries.remove(replaceEntryIndex);
+            Set<String> extendedAllowedPackages = new HashSet<>(replacedEntry.allowedPackages());
+            extendedAllowedPackages.addAll(allowedPackages);
+
+            entries.add(new MetadataIndexEntry(replacedEntry.directory(), replacedEntry.module(), replacedEntry.requires(), new ArrayList<>(extendedAllowedPackages)));
+        }
+
+        List<MetadataIndexEntry> sortedEntries = entries.stream()
+                .sorted(Comparator.comparing(MetadataIndexEntry::module))
+                .toList();
+
+        objectMapper.writeValue(metadataIndex, sortedEntries);
     }
 
     private void addTests(Path originalTestsLocation){
