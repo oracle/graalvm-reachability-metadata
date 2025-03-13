@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -25,6 +26,10 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public abstract class ContributionTask extends DefaultTask {
+    private static final String METADATA_INDEX = "metadata/index.json";
+    private static final String BUILD_FILE = "build.gradle";
+    private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
+    private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
 
     @Inject
     protected abstract ExecOperations getExecOperations();
@@ -33,14 +38,11 @@ public abstract class ContributionTask extends DefaultTask {
 
     private Path testsDirectory;
     private Path metadataDirectory;
+
     private Coordinates coordinates;
 
     private record ContributingQuestion(String question, String help) {}
     private final Map<String, ContributingQuestion> questions = new HashMap<>();
-    private static final String METADATA_INDEX = "metadata/index.json";
-    private static final String BUILD_FILE = "build.gradle";
-    private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
-    private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
 
     private void initializeWorkingDirectories(){
         testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
@@ -56,7 +58,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     @TaskAction
-    void run() throws IOException, URISyntaxException {
+    void run() throws IOException {
         InteractiveTaskUtils.printUserInfo("Hello! This task will help you contributing to metadata repository." +
                 " Please answer the following contributingQuestions. In case you don't know the answer on the question, type \"help\" for more information");
 
@@ -405,24 +407,14 @@ public abstract class ContributionTask extends DefaultTask {
             throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
         }
 
-        ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
-        sb.newLine();
-        sb.append("graalvmNative").space().openObject().newLine();
-        sb.indent().append("agent").space().openObject().newLine();
 
-        sb.indent().appendAssignedVariable("defaultMode", "conditional").newLine();
+        try(InputStream stream = ContributionTask.class.getResourceAsStream("/contributing/agent.template")) {
+            if (stream == null) {
+                throw new RuntimeException("Cannot find template for the graalvm configuration block");
+            }
 
-        sb.append("modes").space().openObject().newLine();
-        sb.indent().append("conditional").space().openObject().newLine();
-        sb.indent().appendAssignedVariable("userCodeFilterPath", USER_CODE_FILTER_FILE).newLine();
-        sb.unindent().closeObject().newLine();
-        sb.unindent().closeObject().newLine();
-
-        sb.unindent().closeObject().newLine();
-        sb.unindent().closeObject();
-
-        try {
-            writeToFile(buildFilePath, sb.toString(), StandardOpenOption.APPEND);
+            String content = "\n" + (new String(stream.readAllBytes(), StandardCharsets.UTF_8));
+            writeToFile(buildFilePath, content, StandardOpenOption.APPEND);
         } catch (IOException e) {
             throw new RuntimeException("Cannot add agent block into: " + buildFilePath);
         }
