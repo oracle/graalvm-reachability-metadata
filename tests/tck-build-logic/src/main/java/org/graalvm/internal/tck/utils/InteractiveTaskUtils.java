@@ -29,7 +29,7 @@ public class InteractiveTaskUtils {
         while (true) {
             printQuestion(question);
 
-            String answer = scanner.next();
+            String answer = scanner.nextLine();
             if (answer.equalsIgnoreCase("help")) {
                 printHelpMessage(helpMessage);
                 continue;
