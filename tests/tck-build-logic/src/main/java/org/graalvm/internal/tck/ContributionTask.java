@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -105,8 +104,7 @@ public abstract class ContributionTask extends DefaultTask {
         boolean shouldCreatePR = shouldCreatePullRequest();
         if (shouldCreatePR) {
             String branch = "add-support-for-" + coordinates.toString().replace(':', '-');
-            // TODO disabled for local testing
-//            createPullRequest(branch);
+            createPullRequest(branch);
 
             InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull request description to mention all places where your pull request" +
                     "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly marked");
