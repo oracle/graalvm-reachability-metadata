@@ -5,7 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
+import org.graalvm.internal.tck.model.contributing.PredefinedClassesConfigModel;
+import org.graalvm.internal.tck.model.contributing.ResourceConfigModel;
 import org.graalvm.internal.tck.model.contributing.Question;
+import org.graalvm.internal.tck.model.contributing.SerializationConfigModel;
 import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
 import org.graalvm.internal.tck.utils.FilesUtils;
 import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
@@ -29,7 +32,6 @@ public abstract class ContributionTask extends DefaultTask {
     private static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
-
     @Inject
     protected abstract ExecOperations getExecOperations();
 
@@ -100,11 +102,15 @@ public abstract class ContributionTask extends DefaultTask {
         // run agent in conditional mode
         collectMetadata();
 
+        // remove empty files
+        removeEmptyConfigFiles();
+
         // create a PR
         boolean shouldCreatePR = shouldCreatePullRequest();
         if (shouldCreatePR) {
             String branch = "add-support-for-" + coordinates.toString().replace(':', '-');
-            createPullRequest(branch);
+            System.out.println("shouldCreatePR = " + shouldCreatePR);
+//            createPullRequest(branch);
 
             InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull request description to mention all places where your pull request" +
                     "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly marked");
@@ -426,8 +432,107 @@ public abstract class ContributionTask extends DefaultTask {
         invokeCommand("gradle metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
     }
 
+    private enum CONFIG_FILES {
+        RESOURCE("resource-config.json"),
+        REFLECTION("reflect-config.json"),
+        SERIALIZATION("serialization-config.json"),
+        JNI("jni-config.json"),
+        PROXY("proxy-config.json"),
+        PREDEFINED_CLASSES("predefined-classes-config.json");
+
+        private final String value;
+        public String get() {
+            return value;
+        }
+
+        CONFIG_FILES(String val) {
+            this.value = val;
+        }
+    }
+
+    private void removeEmptyConfigFiles() throws IOException {
+        Path indexFile = metadataDirectory.resolve("index.json");
+        List<CONFIG_FILES> remainingFiles = new LinkedList<>(Arrays.asList(CONFIG_FILES.values()));
+
+        Path resourceConfigPath = metadataDirectory.resolve(CONFIG_FILES.RESOURCE.get());
+        ResourceConfigModel resourceConfig = objectMapper.readValue(new File(resourceConfigPath.toUri()), new TypeReference<>() {});
+        if (resourceConfig.bundles().isEmpty() && resourceConfig.resources().toString().equalsIgnoreCase("{}")) {
+            removeConfigFile(resourceConfigPath, CONFIG_FILES.RESOURCE, remainingFiles);
+        }
+
+        Path serializationConfigPath = metadataDirectory.resolve(CONFIG_FILES.SERIALIZATION.get());
+        SerializationConfigModel serializationConfig = objectMapper.readValue(new File(serializationConfigPath.toUri()), new TypeReference<>() {});
+        if (serializationConfig.lambdaCapturingTypes().isEmpty() && serializationConfig.types().isEmpty() && serializationConfig.proxies().isEmpty()) {
+            removeConfigFile(serializationConfigPath, CONFIG_FILES.SERIALIZATION, remainingFiles);
+        }
+
+        Path jniConfigPath = metadataDirectory.resolve(CONFIG_FILES.JNI.get());
+        List<Object> jniConfig = objectMapper.readValue(new File(jniConfigPath.toUri()), new TypeReference<>() {});
+        if (jniConfig.isEmpty()) {
+            removeConfigFile(jniConfigPath, CONFIG_FILES.JNI, remainingFiles);
+        }
+
+        Path proxyConfigPath = metadataDirectory.resolve(CONFIG_FILES.PROXY.get());
+        List<Object> proxyConfig = objectMapper.readValue(new File(proxyConfigPath.toUri()), new TypeReference<>() {});
+        if (proxyConfig.isEmpty()) {
+            removeConfigFile(proxyConfigPath, CONFIG_FILES.PROXY, remainingFiles);
+        }
+
+        Path reflectConfigPath = metadataDirectory.resolve(CONFIG_FILES.REFLECTION.get());
+        List<Object> reflectConfig = objectMapper.readValue(new File(reflectConfigPath.toUri()), new TypeReference<>() {});
+        if (reflectConfig.isEmpty()) {
+            removeConfigFile(reflectConfigPath, CONFIG_FILES.REFLECTION, remainingFiles);
+        }
+
+        Path predefinedClassesConfigPath = metadataDirectory.resolve(CONFIG_FILES.PREDEFINED_CLASSES.get());
+        List<PredefinedClassesConfigModel> predefinedClassesConfig = objectMapper.readValue(new File(predefinedClassesConfigPath.toUri()), new TypeReference<>() {});
+        if (predefinedClassesConfig.size() == 1) {
+            if (predefinedClassesConfig.get(0).type().equalsIgnoreCase("agent-extracted") && predefinedClassesConfig.get(0).classes().isEmpty()) {
+                removeConfigFile(predefinedClassesConfigPath, CONFIG_FILES.PREDEFINED_CLASSES, remainingFiles);
+            }
+        }
+
+        Path agentExtractedPredefinedClasses = metadataDirectory.resolve("agent-extracted-predefined-classes");
+        if (Files.exists(agentExtractedPredefinedClasses)) {
+            File[] extractedPredefinedClasses = new File(agentExtractedPredefinedClasses.toUri()).listFiles();
+            if (extractedPredefinedClasses == null || extractedPredefinedClasses.length == 0) {
+                InteractiveTaskUtils.printUserInfo("Removing empty: agent-extracted-predefined-classes");
+                invokeCommand("rm -r " + agentExtractedPredefinedClasses, "Cannot delete empty config file: " + agentExtractedPredefinedClasses);
+            }
+        }
+
+        trimIndexFile(indexFile, remainingFiles);
+    }
+
+    private void removeConfigFile(Path path, CONFIG_FILES file, List<CONFIG_FILES> remainingFiles) {
+        InteractiveTaskUtils.printUserInfo("Removing empty: " + file.get());
+        invokeCommand("rm " + path, "Cannot delete empty config file: " + path);
+        remainingFiles.remove(file);
+    }
+
+    private void trimIndexFile(Path index, List<CONFIG_FILES> remainingFiles) throws IOException {
+        InteractiveTaskUtils.printUserInfo("Removing sufficient entries from: " + index);
+        ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
+        sb.openArray().newLine();
+        sb.indent();
+        for (int i = 0; i < remainingFiles.size(); i++) {
+            sb.quote(remainingFiles.get(i).get());
+
+            if (i != remainingFiles.size() - 1) {
+                sb.concat();
+            }
+
+            sb.newLine();
+        }
+
+        sb.unindent();
+        sb.closeArray();
+
+        writeToFile(index, sb.toString(), StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
     private boolean shouldCreatePullRequest() {
-        String question = "Do you want to create a pull request to the reachability metadata repository [Y/n]: ";
+        String question = "Do you want to create a pull request to the reachability metadata repository [Y/n]:";
         String helpMessage = "If you want, we can create a pull request for you! " +
                 "All you have to do is to provide necessary information for the GitHub CLI, and answer few contributingQuestions regarding the pull request description.";
 
