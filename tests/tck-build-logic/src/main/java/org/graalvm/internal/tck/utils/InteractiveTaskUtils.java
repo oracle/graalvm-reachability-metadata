@@ -4,10 +4,9 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public class InteractiveTaskUtils {
-
-    private static final Scanner scanner = new Scanner(System.in);
-
     public static <R> R askQuestion(String question, String helpMessage, Function<String, R> handleAnswer) {
+        Scanner scanner = new Scanner(System.in);
+
         while (true) {
             printQuestion(question);
 
@@ -26,6 +25,8 @@ public class InteractiveTaskUtils {
     }
 
     public static boolean askYesNoQuestion(String question, String helpMessage, boolean defaultAnswer) {
+        Scanner scanner = new Scanner(System.in);
+
         while (true) {
             printQuestion(question);
 
