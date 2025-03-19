@@ -16,7 +16,7 @@ public class ConfigurationStringBuilder {
 
     public ConfigurationStringBuilder append(String content) {
         if (startedNewLine) {
-            sb.append("\t".repeat(Math.max(0, indentationLevel)));
+            sb.append("    ".repeat(Math.max(0, indentationLevel)));
         }
         sb.append(content);
         startedNewLine = false;
