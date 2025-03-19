@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.model.TestIndexEntry;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.LogLevel;
@@ -36,6 +37,7 @@ class ScaffoldTask extends DefaultTask {
     private String coordinates;
 
     private boolean force;
+    private boolean update;
 
     public ScaffoldTask() {
     }
@@ -55,6 +57,12 @@ class ScaffoldTask extends DefaultTask {
         this.force = force;
     }
 
+
+    @Option(option = "update", description = "Add metadata for new version of library that already exists in the repository")
+    void setUpdate(boolean update) {
+        this.update = update;
+    }
+
     @TaskAction
     void run() throws IOException {
         Coordinates coordinates = Coordinates.parse(this.coordinates);
@@ -63,12 +71,18 @@ class ScaffoldTask extends DefaultTask {
         Path coordinatesMetadataVersionRoot = coordinatesMetadataRoot.resolve(coordinates.version());
         Path coordinatesTestRoot = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).toPath();
 
-        checkExistingMetadata(coordinates, coordinatesMetadataRoot, coordinatesMetadataVersionRoot);
-
         // Metadata
-        writeCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+        if (!update) {
+            checkExistingMetadata(coordinates, coordinatesMetadataRoot, coordinatesMetadataVersionRoot);
+            writeCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+        } else {
+            updateCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+        }
+
         writeCoordinatesMetadataVersionJsons(coordinatesMetadataVersionRoot, coordinates);
         addToMetadataIndexJson(coordinates);
+
+
 
         // Tests
         writeTestScaffold(coordinatesTestRoot, coordinates);
@@ -227,6 +241,45 @@ class ScaffoldTask extends DefaultTask {
                 metadataRoot.resolve("index.json"),
                 CoordinateUtils.replace(loadResource("/scaffold/metadataIndex.json.template"), coordinates)
         );
+    }
+
+    private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates) throws IOException {
+        File metadataIndex = metadataRoot.resolve("index.json").toFile();
+        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
+        int deleteIndex = -1;
+        for (int i = 0; i < entries.size(); i++) {
+            MetadataVersionsIndexEntry nextEntry = entries.get(i);
+            if (nextEntry.latest() == null || nextEntry.latest()) {
+                deleteIndex = i;
+            }
+        }
+
+        // replace entry that was previously marked with latest: true
+        if (deleteIndex != -1) {
+            MetadataVersionsIndexEntry deletedEntry = entries.remove(deleteIndex);
+            MetadataVersionsIndexEntry replaceEntry = new MetadataVersionsIndexEntry(null,
+                    deletedEntry.override(),
+                    deletedEntry.module(),
+                    deletedEntry.defaultFor(),
+                    deletedEntry.metadataVersion(),
+                    deletedEntry.testedVersions());
+            entries.add(replaceEntry);
+        }
+
+        // create new latest entry
+        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(true,
+                null,
+                coordinates.group() + ":" + coordinates.artifact(),
+                null,
+                coordinates.version(),
+                List.of(coordinates.version()));
+
+        entries.add(newEntry);
+        List<MetadataVersionsIndexEntry> sortedEntries = entries.stream()
+                .sorted(Comparator.comparing(MetadataVersionsIndexEntry::module))
+                .toList();
+
+        objectMapper.writeValue(metadataIndex, sortedEntries);
     }
 
     private String getEmptyJsonArray() {
