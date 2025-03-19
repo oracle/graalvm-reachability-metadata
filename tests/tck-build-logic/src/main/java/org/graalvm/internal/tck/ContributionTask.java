@@ -17,10 +17,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecOperations;
 
 import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,10 +106,9 @@ public abstract class ContributionTask extends DefaultTask {
         boolean shouldCreatePR = shouldCreatePullRequest();
         if (shouldCreatePR) {
             String branch = "add-support-for-" + coordinates.toString().replace(':', '-');
-            System.out.println("shouldCreatePR = " + shouldCreatePR);
-//            createPullRequest(branch);
+            createPullRequest(branch);
 
-            InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull request description to mention all places where your pull request" +
+            InteractiveTaskUtils.printUserInfo("Please update the pull request description to mention all places where your pull request" +
                     "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly marked");
         }
 
@@ -532,11 +528,8 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private boolean shouldCreatePullRequest() {
-        String question = "Do you want to create a pull request to the reachability metadata repository [Y/n]:";
-        String helpMessage = "If you want, we can create a pull request for you! " +
-                "All you have to do is to provide necessary information for the GitHub CLI, and answer few contributingQuestions regarding the pull request description.";
-
-        return InteractiveTaskUtils.askYesNoQuestion(question, helpMessage, true);
+        ContributingQuestion question = questions.get("shouldCreatePullRequest");
+        return InteractiveTaskUtils.askYesNoQuestion(question.question(), question.help(), true);
     }
 
     private void createPullRequest(String branch) {
