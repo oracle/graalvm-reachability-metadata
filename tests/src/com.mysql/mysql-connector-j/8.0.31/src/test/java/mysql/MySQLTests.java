@@ -20,9 +20,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 /**
  * This test uses docker to start a MySQL database to test against.
@@ -40,9 +43,14 @@ public class MySQLTests {
     private static Process process;
 
     private static Connection openConnection() throws SQLException {
+        return openConnection(Collections.emptyMap());
+    }
+
+    private static Connection openConnection(Map<String, String> additionalProperties) throws SQLException {
         Properties props = new Properties();
         props.setProperty("user", USERNAME);
         props.setProperty("password", PASSWORD);
+        props.putAll(additionalProperties);
         return DriverManager.getConnection(JDBC_URL, props);
     }
 
@@ -51,7 +59,7 @@ public class MySQLTests {
         System.out.println("Starting MySQL ...");
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", "3306:3306", "-e", "MYSQL_DATABASE=" + DATABASE, "-e", "MYSQL_USER=" + USERNAME,
-                "-e", "MYSQL_PASSWORD=" + PASSWORD, "container-registry.oracle.com/mysql/community-server:9.1.0").redirectOutput(new File("mysql-stdout.txt"))
+                "-e", "MYSQL_PASSWORD=" + PASSWORD, "container-registry.oracle.com/mysql/community-server:9.2.0").redirectOutput(new File("mysql-stdout.txt"))
                 .redirectError(new File("mysql-stderr.txt")).start();
 
         // Wait until connection can be established
@@ -139,4 +147,10 @@ public class MySQLTests {
             }
         }
     }
+
+    @Test
+    void preparedStatementCaching() {
+        assertThatNoException().isThrownBy(() -> openConnection(Map.of("cachePrepStmts", "true")).close());
+    }
+
 }
