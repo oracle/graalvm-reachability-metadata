@@ -61,7 +61,7 @@ public abstract class ContributionTask extends DefaultTask {
     @TaskAction
     void run() throws IOException {
         InteractiveTaskUtils.printUserInfo("Hello! This task will help you contributing to metadata repository." +
-                " Please answer the following contributingQuestions. In case you don't know the answer on the question, type \"help\" for more information");
+                " Please answer the following questions. In case you don't know the answer on the question, type \"help\" for more information");
 
         loadQuestions();
 

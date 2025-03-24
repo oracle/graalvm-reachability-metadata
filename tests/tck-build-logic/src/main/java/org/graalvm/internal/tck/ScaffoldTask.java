@@ -12,6 +12,7 @@ import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
+import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,8 +82,6 @@ class ScaffoldTask extends DefaultTask {
 
         writeCoordinatesMetadataVersionJsons(coordinatesMetadataVersionRoot, coordinates);
         addToMetadataIndexJson(coordinates);
-
-
 
         // Tests
         writeTestScaffold(coordinatesTestRoot, coordinates);
@@ -246,28 +245,9 @@ class ScaffoldTask extends DefaultTask {
     private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates) throws IOException {
         File metadataIndex = metadataRoot.resolve("index.json").toFile();
         List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
-        int deleteIndex = -1;
-        for (int i = 0; i < entries.size(); i++) {
-            MetadataVersionsIndexEntry nextEntry = entries.get(i);
-            if (nextEntry.latest() == null || nextEntry.latest()) {
-                deleteIndex = i;
-            }
-        }
 
-        // replace entry that was previously marked with latest: true
-        if (deleteIndex != -1) {
-            MetadataVersionsIndexEntry deletedEntry = entries.remove(deleteIndex);
-            MetadataVersionsIndexEntry replaceEntry = new MetadataVersionsIndexEntry(null,
-                    deletedEntry.override(),
-                    deletedEntry.module(),
-                    deletedEntry.defaultFor(),
-                    deletedEntry.metadataVersion(),
-                    deletedEntry.testedVersions());
-            entries.add(replaceEntry);
-        }
-
-        // create new latest entry
-        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(true,
+        // add new entry
+        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(null,
                 null,
                 coordinates.group() + ":" + coordinates.artifact(),
                 null,
@@ -275,11 +255,37 @@ class ScaffoldTask extends DefaultTask {
                 List.of(coordinates.version()));
 
         entries.add(newEntry);
-        List<MetadataVersionsIndexEntry> sortedEntries = entries.stream()
-                .sorted(Comparator.comparing(MetadataVersionsIndexEntry::module))
-                .toList();
 
-        objectMapper.writeValue(metadataIndex, sortedEntries);
+        // determine updates
+        int previousLatest = -1;
+        int newLatest = -1;
+        VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).latest() != null && entries.get(i).latest()) {
+                previousLatest = i;
+            }
+
+            VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
+            if (latestVersion.compareTo(nextVersion) < 0){
+                newLatest = i;
+            }
+        }
+
+        if (previousLatest != -1) {
+            setLatest(entries, previousLatest, null);
+        }
+
+        if (newLatest != -1) {
+            setLatest(entries, newLatest, true);
+        }
+
+        entries.sort(Comparator.comparing(MetadataVersionsIndexEntry::module));
+        objectMapper.writeValue(metadataIndex, entries);
+    }
+
+    private void setLatest( List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {
+        MetadataVersionsIndexEntry oldEntry = list.remove(index);
+        list.add(new MetadataVersionsIndexEntry(newValue, oldEntry.override(), oldEntry.module(), oldEntry.defaultFor(), oldEntry.metadataVersion(), oldEntry.testedVersions()));
     }
 
     private String getEmptyJsonArray() {
