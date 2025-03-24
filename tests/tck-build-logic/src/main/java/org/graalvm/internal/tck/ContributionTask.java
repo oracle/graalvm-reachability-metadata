@@ -464,13 +464,13 @@ public abstract class ContributionTask extends DefaultTask {
 
         Path resourceConfigPath = metadataDirectory.resolve(CONFIG_FILES.RESOURCE.get());
         ResourceConfigModel resourceConfig = objectMapper.readValue(new File(resourceConfigPath.toUri()), new TypeReference<>() {});
-        if (resourceConfig.bundles().isEmpty() && resourceConfig.resources().toString().equalsIgnoreCase("{}")) {
+        if (resourceConfig.isEmpty()) {
             removeConfigFile(resourceConfigPath, CONFIG_FILES.RESOURCE, remainingFiles);
         }
 
         Path serializationConfigPath = metadataDirectory.resolve(CONFIG_FILES.SERIALIZATION.get());
         SerializationConfigModel serializationConfig = objectMapper.readValue(new File(serializationConfigPath.toUri()), new TypeReference<>() {});
-        if (serializationConfig.lambdaCapturingTypes().isEmpty() && serializationConfig.types().isEmpty() && serializationConfig.proxies().isEmpty()) {
+        if (serializationConfig.isEmpty()) {
             removeConfigFile(serializationConfigPath, CONFIG_FILES.SERIALIZATION, remainingFiles);
         }
 
@@ -495,7 +495,7 @@ public abstract class ContributionTask extends DefaultTask {
         Path predefinedClassesConfigPath = metadataDirectory.resolve(CONFIG_FILES.PREDEFINED_CLASSES.get());
         List<PredefinedClassesConfigModel> predefinedClassesConfig = objectMapper.readValue(new File(predefinedClassesConfigPath.toUri()), new TypeReference<>() {});
         if (predefinedClassesConfig.size() == 1) {
-            if (predefinedClassesConfig.get(0).type().equalsIgnoreCase("agent-extracted") && predefinedClassesConfig.get(0).classes().isEmpty()) {
+            if (predefinedClassesConfig.get(0).isEmpty()) {
                 removeConfigFile(predefinedClassesConfigPath, CONFIG_FILES.PREDEFINED_CLASSES, remainingFiles);
             }
         }
