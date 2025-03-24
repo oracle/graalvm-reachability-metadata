@@ -6,4 +6,7 @@ public record PredefinedClassesConfigModel(
         String type,
         List<Object> classes
 ) {
+    public boolean isEmpty() {
+        return this.type().equalsIgnoreCase("agent-extracted") && this.classes().isEmpty();
+    }
 }
