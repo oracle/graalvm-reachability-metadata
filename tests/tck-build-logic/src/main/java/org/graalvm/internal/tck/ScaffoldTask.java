@@ -252,7 +252,7 @@ class ScaffoldTask extends DefaultTask {
 
     private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates) throws IOException {
         if (!shouldAddNewMetadataEntry(metadataRoot, coordinates)) {
-            return;
+            throw new RuntimeException("Metadata for " + coordinates + " already exists!");
         }
 
         File metadataIndex = metadataRoot.resolve("index.json").toFile();
