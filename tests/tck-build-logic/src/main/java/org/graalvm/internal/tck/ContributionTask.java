@@ -89,7 +89,7 @@ public abstract class ContributionTask extends DefaultTask {
         // initialize project
         initializeWorkingDirectories();
         createStubs(isExistingLibrary);
-        updateAllowedPackages(packages);
+        updateAllowedPackages(packages, isExistingLibrary);
 
         // generate necessary infrastructure
         addTests(testsLocation);
@@ -276,7 +276,7 @@ public abstract class ContributionTask extends DefaultTask {
         }
     }
 
-    private void updateAllowedPackages(List<String> allowedPackages) throws IOException {
+    private void updateAllowedPackages(List<String> allowedPackages, boolean isAlreadyExistingLibrary) throws IOException {
         InteractiveTaskUtils.printUserInfo("Updating allowed packages in: " + METADATA_INDEX);
         File metadataIndex = getProject().file(METADATA_INDEX);
 
@@ -289,8 +289,14 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         if (replaceEntryIndex != -1) {
+            Set<String> extendedAllowedPackages = new HashSet<>();
             MetadataIndexEntry replacedEntry = entries.remove(replaceEntryIndex);
-            Set<String> extendedAllowedPackages = new HashSet<>(replacedEntry.allowedPackages());
+
+            if (isAlreadyExistingLibrary) {
+                // we don't want to break existing tests, so we must add existing allowed packages
+                extendedAllowedPackages.addAll(replacedEntry.allowedPackages());
+            }
+
             extendedAllowedPackages.addAll(allowedPackages);
 
             entries.add(new MetadataIndexEntry(replacedEntry.directory(), replacedEntry.module(), replacedEntry.requires(), new ArrayList<>(extendedAllowedPackages)));
