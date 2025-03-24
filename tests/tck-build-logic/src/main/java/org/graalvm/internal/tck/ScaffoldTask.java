@@ -107,6 +107,14 @@ class ScaffoldTask extends DefaultTask {
         }
     }
 
+    private boolean shouldAddNewMetadataEntry(Path coordinatesMetadataRoot, Coordinates coordinates) throws IOException {
+        String newModule = coordinates.group() + ":" + coordinates.artifact();
+        File metadataIndex = coordinatesMetadataRoot.resolve("index.json").toFile();
+        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
+        return entries.stream().noneMatch(e -> e.module().equalsIgnoreCase(newModule) && e.metadataVersion().equalsIgnoreCase(coordinates.version()));
+    }
+
+
     private void addToTestIndexJson(Coordinates coordinates) throws IOException {
         File testIndex = getProject().file("tests/src/index.json");
         List<TestIndexEntry> entries = objectMapper.readValue(testIndex, new TypeReference<>() {
@@ -243,6 +251,10 @@ class ScaffoldTask extends DefaultTask {
     }
 
     private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates) throws IOException {
+        if (!shouldAddNewMetadataEntry(metadataRoot, coordinates)) {
+            return;
+        }
+
         File metadataIndex = metadataRoot.resolve("index.json").toFile();
         List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
 
