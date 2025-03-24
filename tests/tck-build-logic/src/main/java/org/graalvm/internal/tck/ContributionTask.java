@@ -522,6 +522,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void removeConfigFile(Path path, CONFIG_FILES file, List<CONFIG_FILES> remainingFiles) {
+        ensureFileBelongsToProject(path);
         boolean canDelete = InteractiveTaskUtils.askForDeletePermission(path);
         if (canDelete) {
             InteractiveTaskUtils.printUserInfo("Removing empty: " + file.get());
