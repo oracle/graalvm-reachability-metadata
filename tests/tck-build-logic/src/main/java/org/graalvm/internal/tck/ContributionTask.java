@@ -35,6 +35,8 @@ public abstract class ContributionTask extends DefaultTask {
     @Inject
     protected abstract ExecOperations getExecOperations();
 
+    private Path gradlew;
+
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     private Path testsDirectory;
@@ -48,6 +50,7 @@ public abstract class ContributionTask extends DefaultTask {
     private void initializeWorkingDirectories(){
         testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
         metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
+        this.gradlew = Path.of(getProject().file("gradlew").getAbsolutePath());
     }
 
     private void loadQuestions() throws IOException {
@@ -270,9 +273,9 @@ public abstract class ContributionTask extends DefaultTask {
     private void createStubs(boolean shouldUpdate){
         InteractiveTaskUtils.printUserInfo("Generating stubs for: " + coordinates );
         if (shouldUpdate) {
-            invokeCommand("gradle scaffold --coordinates " + coordinates + " --update", "Cannot generate stubs for: " + coordinates);
+            invokeCommand(gradlew + " scaffold --coordinates " + coordinates + " --update", "Cannot generate stubs for: " + coordinates);
         } else {
-            invokeCommand("gradle scaffold --coordinates " + coordinates, "Cannot generate stubs for: " + coordinates);
+            invokeCommand(gradlew + " scaffold --coordinates " + coordinates, "Cannot generate stubs for: " + coordinates);
         }
     }
 
@@ -431,10 +434,10 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void collectMetadata() {
         InteractiveTaskUtils.printUserInfo("Generating metadata");
-        invokeCommand("gradle -Pagent test", "Cannot generate metadata", testsDirectory);
+        invokeCommand(gradlew + " -Pagent test", "Cannot generate metadata", testsDirectory);
 
         InteractiveTaskUtils.printUserInfo("Performing metadata copy");
-        invokeCommand("gradle metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
+        invokeCommand(gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
     }
 
     private enum CONFIG_FILES {
