@@ -8,4 +8,7 @@ public record SerializationConfigModel(
         List<Object> proxies,
         List<Object> lambdaCapturingTypes
 ) {
+    public boolean isEmpty() {
+        return this.lambdaCapturingTypes().isEmpty() && this.types().isEmpty() && this.proxies().isEmpty();
+    }
 }
