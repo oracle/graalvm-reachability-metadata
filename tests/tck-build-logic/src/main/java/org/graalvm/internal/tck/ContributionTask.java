@@ -318,6 +318,12 @@ public abstract class ContributionTask extends DefaultTask {
                 .resolve("java");
         Path allTests = originalTestsLocation.resolve(".");
 
+        ensureFileBelongsToProject(destination);
+        boolean shouldDelete = InteractiveTaskUtils.askForDeletePermission(destination);
+        if (!shouldDelete) {
+            throw new RuntimeException("The task didn't get permission to delete dummy stubs. Cannot proceed with the task execution");
+        }
+
         InteractiveTaskUtils.printUserInfo("Removing dummy test stubs");
         invokeCommand("rm -r " + destination, "Cannot delete files from: " + destination);
 
@@ -504,8 +510,11 @@ public abstract class ContributionTask extends DefaultTask {
         if (Files.exists(agentExtractedPredefinedClasses)) {
             File[] extractedPredefinedClasses = new File(agentExtractedPredefinedClasses.toUri()).listFiles();
             if (extractedPredefinedClasses == null || extractedPredefinedClasses.length == 0) {
-                InteractiveTaskUtils.printUserInfo("Removing empty: agent-extracted-predefined-classes");
-                invokeCommand("rm -r " + agentExtractedPredefinedClasses, "Cannot delete empty config file: " + agentExtractedPredefinedClasses);
+                boolean canDelete = InteractiveTaskUtils.askForDeletePermission(agentExtractedPredefinedClasses);
+                if (canDelete) {
+                    InteractiveTaskUtils.printUserInfo("Removing empty: agent-extracted-predefined-classes");
+                    invokeCommand("rm -r " + agentExtractedPredefinedClasses, "Cannot delete empty config file: " + agentExtractedPredefinedClasses);
+                }
             }
         }
 
@@ -513,9 +522,12 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void removeConfigFile(Path path, CONFIG_FILES file, List<CONFIG_FILES> remainingFiles) {
-        InteractiveTaskUtils.printUserInfo("Removing empty: " + file.get());
-        invokeCommand("rm " + path, "Cannot delete empty config file: " + path);
-        remainingFiles.remove(file);
+        boolean canDelete = InteractiveTaskUtils.askForDeletePermission(path);
+        if (canDelete) {
+            InteractiveTaskUtils.printUserInfo("Removing empty: " + file.get());
+            invokeCommand("rm " + path, "Cannot delete empty config file: " + path);
+            remainingFiles.remove(file);
+        }
     }
 
     private void trimIndexFile(Path index, List<CONFIG_FILES> remainingFiles) throws IOException {
@@ -590,6 +602,12 @@ public abstract class ContributionTask extends DefaultTask {
 
         if (result.getExitValue() != 0) {
             throw new RuntimeException(errorMessage + ". See: " + execOutput);
+        }
+    }
+
+    private void ensureFileBelongsToProject(Path file) {
+        if (!file.startsWith(getProject().getProjectDir().getAbsolutePath())) {
+            throw new RuntimeException("The following file doesn't belong to the metadata repository: " + file);
         }
     }
 }
