@@ -25,7 +25,7 @@ public class ConfigurationStringBuilder {
     }
 
     public ConfigurationStringBuilder newLine() {
-        this.append("\n");
+        this.append(System.lineSeparator());
         startedNewLine = true;
 
         return this;
