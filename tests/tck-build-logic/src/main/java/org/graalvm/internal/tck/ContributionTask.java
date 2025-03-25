@@ -13,6 +13,7 @@ import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
 import org.graalvm.internal.tck.utils.FilesUtils;
 import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.FileSystemOperations;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecOperations;
 
@@ -34,6 +35,9 @@ public abstract class ContributionTask extends DefaultTask {
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
     @Inject
     protected abstract ExecOperations getExecOperations();
+
+    @Inject
+    protected abstract FileSystemOperations getFileSystemOperations();
 
     private Path gradlew;
 
@@ -156,7 +160,12 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void checkPackages(Path testsPath) {
         List<Path> javaFiles = new ArrayList<>();
-        FilesUtils.findJavaFiles(testsPath, javaFiles);
+        try {
+            FilesUtils.findJavaFiles(testsPath, javaFiles);
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot find java files. Reason: " + e);
+        }
+
         javaFiles.forEach(file -> {
             try {
                 Optional<String> packageLine = Files.readAllLines(file).stream().filter(line -> line.contains("package ")).findFirst();
@@ -325,10 +334,13 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         InteractiveTaskUtils.printUserInfo("Removing dummy test stubs");
-        invokeCommand("rm -r " + destination, "Cannot delete files from: " + destination);
+        getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(destination));
 
         InteractiveTaskUtils.printUserInfo("Copying tests from: " + originalTestsLocation + " to " + destination);
-        invokeCommand("cp -a " + allTests + " " + destination, "Cannot copy files to: " + destination);
+        getFileSystemOperations().copy(copySpec -> {
+            copySpec.from(allTests);
+            copySpec.into(destination);
+        });
     }
 
     private void addResources(Path originalResourcesDirectory){
@@ -336,10 +348,12 @@ public abstract class ContributionTask extends DefaultTask {
             return;
         }
 
-        Path destination = testsDirectory.resolve("src").resolve("test");
+        Path destination = testsDirectory.resolve("src").resolve("test").resolve("resources");
         InteractiveTaskUtils.printUserInfo("Copying resources from: " + originalResourcesDirectory + " to " + destination);
-
-        invokeCommand("cp -r " + originalResourcesDirectory + " " + destination, "Cannot copy files to: " + destination);
+        getFileSystemOperations().copy(copySpec -> {
+           copySpec.from(originalResourcesDirectory);
+           copySpec.into(destination);
+        });
     }
 
     private void addDockerImages(List<String> images) throws IOException {
@@ -354,7 +368,7 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         for (var image : images) {
-            writeToFile(destination, image.concat("\n"), StandardOpenOption.APPEND);
+            writeToFile(destination, image.concat(System.lineSeparator()), StandardOpenOption.APPEND);
         }
     }
 
@@ -431,7 +445,7 @@ public abstract class ContributionTask extends DefaultTask {
                 throw new RuntimeException("Cannot find template for the graalvm configuration block");
             }
 
-            String content = "\n" + (new String(stream.readAllBytes(), StandardCharsets.UTF_8));
+            String content = System.lineSeparator() + (new String(stream.readAllBytes(), StandardCharsets.UTF_8));
             writeToFile(buildFilePath, content, StandardOpenOption.APPEND);
         } catch (IOException e) {
             throw new RuntimeException("Cannot add agent block into: " + buildFilePath);
@@ -510,10 +524,12 @@ public abstract class ContributionTask extends DefaultTask {
         if (Files.exists(agentExtractedPredefinedClasses)) {
             File[] extractedPredefinedClasses = new File(agentExtractedPredefinedClasses.toUri()).listFiles();
             if (extractedPredefinedClasses == null || extractedPredefinedClasses.length == 0) {
+                ensureFileBelongsToProject(agentExtractedPredefinedClasses);
+
                 boolean canDelete = InteractiveTaskUtils.askForDeletePermission(agentExtractedPredefinedClasses);
                 if (canDelete) {
                     InteractiveTaskUtils.printUserInfo("Removing empty: agent-extracted-predefined-classes");
-                    invokeCommand("rm -r " + agentExtractedPredefinedClasses, "Cannot delete empty config file: " + agentExtractedPredefinedClasses);
+                    getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(agentExtractedPredefinedClasses));
                 }
             }
         }
@@ -526,7 +542,7 @@ public abstract class ContributionTask extends DefaultTask {
         boolean canDelete = InteractiveTaskUtils.askForDeletePermission(path);
         if (canDelete) {
             InteractiveTaskUtils.printUserInfo("Removing empty: " + file.get());
-            invokeCommand("rm " + path, "Cannot delete empty config file: " + path);
+            getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(path));
             remainingFiles.remove(file);
         }
     }
