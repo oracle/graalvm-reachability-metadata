@@ -2,6 +2,8 @@ package org.graalvm.internal.tck;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
@@ -328,12 +330,12 @@ public abstract class ContributionTask extends DefaultTask {
         Path allTests = originalTestsLocation.resolve(".");
 
         ensureFileBelongsToProject(destination);
+        InteractiveTaskUtils.printUserInfo("Removing dummy test stubs");
         boolean shouldDelete = InteractiveTaskUtils.askForDeletePermission(destination);
         if (!shouldDelete) {
             throw new RuntimeException("The task didn't get permission to delete dummy stubs. Cannot proceed with the task execution");
         }
 
-        InteractiveTaskUtils.printUserInfo("Removing dummy test stubs");
         getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(destination));
 
         InteractiveTaskUtils.printUserInfo("Copying tests from: " + originalTestsLocation + " to " + destination);
@@ -374,29 +376,18 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void addUserCodeFilterFile(List<String> packages) throws IOException {
         InteractiveTaskUtils.printUserInfo("Generating " + USER_CODE_FILTER_FILE);
+        List<Map<String, String>> filterFileRules = new ArrayList<>();
 
-        ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
-        sb.openObject().newLine();
-        sb.indent();
-        sb.quote("rules").separateWithSemicolon().openArray().newLine();
-        sb.indent();
-        sb.openObject().appendStringProperty("excludeClasses", "**").closeObject().concat().newLine();
-        for (int i = 0; i < packages.size(); i++) {
-            String nextPackage = packages.get(i) + ".**";
-            sb.openObject().appendStringProperty("includeClasses", nextPackage).closeObject();
-            if (i < packages.size() - 1) {
-                sb.concat();
-            }
+        // add exclude classes
+        filterFileRules.add(Map.of("excludeClasses", "**"));
 
-            sb.newLine();
-        }
+        // add include classes
+        packages.forEach(p -> filterFileRules.add(Map.of("includeClasses", p + ".**")));
 
-        sb.unindent();
-        sb.closeArray().newLine();
-        sb.unindent();
-        sb.closeObject();
+        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
 
-        writeToFile(testsDirectory.resolve(USER_CODE_FILTER_FILE), sb.toString(), StandardOpenOption.CREATE);
+        objectMapper.writer(prettyPrinter).writeValue(testsDirectory.resolve(USER_CODE_FILTER_FILE).toFile(), Map.of("rules", filterFileRules));
     }
 
     private void addAdditionalDependencies(List<Coordinates> dependencies) {
@@ -526,9 +517,9 @@ public abstract class ContributionTask extends DefaultTask {
             if (extractedPredefinedClasses == null || extractedPredefinedClasses.length == 0) {
                 ensureFileBelongsToProject(agentExtractedPredefinedClasses);
 
+                InteractiveTaskUtils.printUserInfo("Removing empty: agent-extracted-predefined-classes");
                 boolean canDelete = InteractiveTaskUtils.askForDeletePermission(agentExtractedPredefinedClasses);
                 if (canDelete) {
-                    InteractiveTaskUtils.printUserInfo("Removing empty: agent-extracted-predefined-classes");
                     getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(agentExtractedPredefinedClasses));
                 }
             }
@@ -539,9 +530,10 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void removeConfigFile(Path path, CONFIG_FILES file, List<CONFIG_FILES> remainingFiles) {
         ensureFileBelongsToProject(path);
+
+        InteractiveTaskUtils.printUserInfo("Removing empty: " + file.get());
         boolean canDelete = InteractiveTaskUtils.askForDeletePermission(path);
         if (canDelete) {
-            InteractiveTaskUtils.printUserInfo("Removing empty: " + file.get());
             getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(path));
             remainingFiles.remove(file);
         }
@@ -549,23 +541,10 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void trimIndexFile(Path index, List<CONFIG_FILES> remainingFiles) throws IOException {
         InteractiveTaskUtils.printUserInfo("Removing sufficient entries from: " + index);
-        ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
-        sb.openArray().newLine();
-        sb.indent();
-        for (int i = 0; i < remainingFiles.size(); i++) {
-            sb.quote(remainingFiles.get(i).get());
+        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
 
-            if (i != remainingFiles.size() - 1) {
-                sb.concat();
-            }
-
-            sb.newLine();
-        }
-
-        sb.unindent();
-        sb.closeArray();
-
-        writeToFile(index, sb.toString(), StandardOpenOption.TRUNCATE_EXISTING);
+        objectMapper.writer(prettyPrinter).writeValue(index.toFile(), remainingFiles.stream().map(CONFIG_FILES::get).toList());
     }
 
     private boolean shouldCreatePullRequest() {
