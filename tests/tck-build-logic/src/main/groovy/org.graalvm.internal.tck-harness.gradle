@@ -10,14 +10,15 @@ plugins {
 }
 
 import groovy.json.JsonOutput
+import org.graalvm.internal.tck.ContributionTask
 import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.ConfigFilesChecker
 import org.graalvm.internal.tck.ScaffoldTask
 import org.graalvm.internal.tck.GrypeTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
-import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVersionsTask
-import org.graalvm.internal.tck.harness.tasks.GroupUnsupportedLibraries
+import org.graalvm.internal.tck.updaters.FetchExistingLibrariesWithNewerVersionsTask
+import org.graalvm.internal.tck.updaters.GroupUnsupportedLibraries
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 
 
@@ -164,7 +165,7 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
     }
 }
 
-// groovy tasks
+// new library version updaters tasks
 tasks.register("fetchExistingLibrariesWithNewerVersions", FetchExistingLibrariesWithNewerVersionsTask.class) { task ->
     task.setGroup(METADATA_GROUP)
     task.setDescription("Returns list of all libraries coordinates")
@@ -176,7 +177,13 @@ tasks.register("groupLibrariesByName", GroupUnsupportedLibraries.class) { task -
     task.setDescription("Extracts groups of libraries from github comments provided in a form of string.")
 }
 
-// java tasks
+
+tasks.register("addTestedVersion", TestedVersionUpdaterTask.class) { task ->
+    task.setDescription("Updates list of tested versions.")
+    task.setGroup(METADATA_GROUP)
+}
+
+// docker tasks
 tasks.register("checkAllowedDockerImages", GrypeTask.class) { task ->
     task.setDescription("Returns list of allowed docker images")
     task.setGroup(METADATA_GROUP)
@@ -187,6 +194,8 @@ tasks.register("pullAllowedDockerImages", DockerTask.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
+
+// contributing tasks
 tasks.register("scaffold", ScaffoldTask.class) { task ->
     task.setDescription("Creates a metadata and test scaffold for the given coordindates")
     task.setGroup(METADATA_GROUP)
@@ -194,12 +203,12 @@ tasks.register("scaffold", ScaffoldTask.class) { task ->
     task.finalizedBy("spotlessApply")
 }
 
-tasks.register("checkConfigFiles", ConfigFilesChecker.class) { task ->
-    task.setDescription("Checks content of config files for a new library.")
+tasks.register("contribute", ContributionTask.class) { task ->
+    task.setDescription("Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.")
     task.setGroup(METADATA_GROUP)
 }
 
-tasks.register("addTestedVersion", TestedVersionUpdaterTask.class) { task ->
-    task.setDescription("Updates list of tested versions.")
+tasks.register("checkConfigFiles", ConfigFilesChecker.class) { task ->
+    task.setDescription("Checks content of config files for a new library.")
     task.setGroup(METADATA_GROUP)
 }
