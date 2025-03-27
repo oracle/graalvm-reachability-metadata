@@ -35,6 +35,7 @@ public abstract class ContributionTask extends DefaultTask {
     private static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
+
     @Inject
     protected abstract ExecOperations getExecOperations();
 
@@ -324,9 +325,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void addTests(Path originalTestsLocation){
-        Path destination = testsDirectory.resolve("src")
-                .resolve("test")
-                .resolve("java");
+        Path destination = testsDirectory.resolve("src").resolve("test").resolve("java");
         Path allTests = originalTestsLocation.resolve(".");
 
         ensureFileBelongsToProject(destination);
@@ -369,7 +368,7 @@ public abstract class ContributionTask extends DefaultTask {
             Files.createFile(destination);
         }
 
-        for (var image : images) {
+        for (String image : images) {
             writeToFile(destination, image.concat(System.lineSeparator()), StandardOpenOption.APPEND);
         }
     }
@@ -386,7 +385,6 @@ public abstract class ContributionTask extends DefaultTask {
 
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-
         objectMapper.writer(prettyPrinter).writeValue(testsDirectory.resolve(USER_CODE_FILTER_FILE).toFile(), Map.of("rules", filterFileRules));
     }
 
@@ -427,7 +425,7 @@ public abstract class ContributionTask extends DefaultTask {
         InteractiveTaskUtils.printUserInfo("Configuring agent block in: " + BUILD_FILE);
 
         if (!Files.exists(buildFilePath) || !Files.isRegularFile(buildFilePath)) {
-            throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
+            throw new RuntimeException("Cannot add agent block to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
         }
 
 
@@ -474,37 +472,37 @@ public abstract class ContributionTask extends DefaultTask {
         List<CONFIG_FILES> remainingFiles = new LinkedList<>(Arrays.asList(CONFIG_FILES.values()));
 
         Path resourceConfigPath = metadataDirectory.resolve(CONFIG_FILES.RESOURCE.get());
-        ResourceConfigModel resourceConfig = objectMapper.readValue(new File(resourceConfigPath.toUri()), new TypeReference<>() {});
+        ResourceConfigModel resourceConfig = objectMapper.readValue(resourceConfigPath.toFile(), new TypeReference<>() {});
         if (resourceConfig.isEmpty()) {
             removeConfigFile(resourceConfigPath, CONFIG_FILES.RESOURCE, remainingFiles);
         }
 
         Path serializationConfigPath = metadataDirectory.resolve(CONFIG_FILES.SERIALIZATION.get());
-        SerializationConfigModel serializationConfig = objectMapper.readValue(new File(serializationConfigPath.toUri()), new TypeReference<>() {});
+        SerializationConfigModel serializationConfig = objectMapper.readValue(serializationConfigPath.toFile(), new TypeReference<>() {});
         if (serializationConfig.isEmpty()) {
             removeConfigFile(serializationConfigPath, CONFIG_FILES.SERIALIZATION, remainingFiles);
         }
 
         Path jniConfigPath = metadataDirectory.resolve(CONFIG_FILES.JNI.get());
-        List<Object> jniConfig = objectMapper.readValue(new File(jniConfigPath.toUri()), new TypeReference<>() {});
+        List<Object> jniConfig = objectMapper.readValue(jniConfigPath.toFile(), new TypeReference<>() {});
         if (jniConfig.isEmpty()) {
             removeConfigFile(jniConfigPath, CONFIG_FILES.JNI, remainingFiles);
         }
 
         Path proxyConfigPath = metadataDirectory.resolve(CONFIG_FILES.PROXY.get());
-        List<Object> proxyConfig = objectMapper.readValue(new File(proxyConfigPath.toUri()), new TypeReference<>() {});
+        List<Object> proxyConfig = objectMapper.readValue(proxyConfigPath.toFile(), new TypeReference<>() {});
         if (proxyConfig.isEmpty()) {
             removeConfigFile(proxyConfigPath, CONFIG_FILES.PROXY, remainingFiles);
         }
 
         Path reflectConfigPath = metadataDirectory.resolve(CONFIG_FILES.REFLECTION.get());
-        List<Object> reflectConfig = objectMapper.readValue(new File(reflectConfigPath.toUri()), new TypeReference<>() {});
+        List<Object> reflectConfig = objectMapper.readValue(reflectConfigPath.toFile(), new TypeReference<>() {});
         if (reflectConfig.isEmpty()) {
             removeConfigFile(reflectConfigPath, CONFIG_FILES.REFLECTION, remainingFiles);
         }
 
         Path predefinedClassesConfigPath = metadataDirectory.resolve(CONFIG_FILES.PREDEFINED_CLASSES.get());
-        List<PredefinedClassesConfigModel> predefinedClassesConfig = objectMapper.readValue(new File(predefinedClassesConfigPath.toUri()), new TypeReference<>() {});
+        List<PredefinedClassesConfigModel> predefinedClassesConfig = objectMapper.readValue(predefinedClassesConfigPath.toFile(), new TypeReference<>() {});
         if (predefinedClassesConfig.size() == 1) {
             if (predefinedClassesConfig.get(0).isEmpty()) {
                 removeConfigFile(predefinedClassesConfigPath, CONFIG_FILES.PREDEFINED_CLASSES, remainingFiles);
@@ -513,7 +511,7 @@ public abstract class ContributionTask extends DefaultTask {
 
         Path agentExtractedPredefinedClasses = metadataDirectory.resolve("agent-extracted-predefined-classes");
         if (Files.exists(agentExtractedPredefinedClasses)) {
-            File[] extractedPredefinedClasses = new File(agentExtractedPredefinedClasses.toUri()).listFiles();
+            File[] extractedPredefinedClasses = agentExtractedPredefinedClasses.toFile().listFiles();
             if (extractedPredefinedClasses == null || extractedPredefinedClasses.length == 0) {
                 ensureFileBelongsToProject(agentExtractedPredefinedClasses);
 
@@ -543,7 +541,6 @@ public abstract class ContributionTask extends DefaultTask {
         InteractiveTaskUtils.printUserInfo("Removing sufficient entries from: " + index);
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-
         objectMapper.writer(prettyPrinter).writeValue(index.toFile(), remainingFiles.stream().map(CONFIG_FILES::get).toList());
     }
 
