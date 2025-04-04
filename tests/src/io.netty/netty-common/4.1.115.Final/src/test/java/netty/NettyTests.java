@@ -19,11 +19,13 @@ import javax.net.ssl.SSLException;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.AdaptiveByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -71,12 +73,17 @@ public class NettyTests {
 
     @Test
     void withSsl() throws Exception {
-        test(true);
+        test(true, false);
     }
 
     @Test
     public void noSsl() throws Exception {
-        test(false);
+        test(false, false);
+    }
+
+    @Test
+    public void withAdaptive() throws Exception {
+        test(true, true);
     }
 
     @Test
@@ -109,13 +116,13 @@ public class NettyTests {
         }
     }
 
-    private void test(boolean ssl) throws Exception {
+    private void test(boolean ssl, boolean withAdaptive) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
-            startServer(bossGroup, workerGroup, ssl);
+            startServer(bossGroup, workerGroup, ssl, withAdaptive);
             AtomicReference<Response> response = new AtomicReference<>();
-            startClient(workerGroup, ssl, response::set);
+            startClient(workerGroup, ssl, withAdaptive, response::set);
             Awaitility.await().atMost(Duration.ofSeconds(5))
                     .untilAtomic(response, CoreMatchers.equalTo(new Response(200, "HTTP/1.1", "Hello World")));
         } finally {
@@ -132,13 +139,16 @@ public class NettyTests {
         return Objects.requireNonNull(NettyTests.class.getResourceAsStream("/cert.pem"), "/cert.pem not found");
     }
 
-    private void startClient(EventLoopGroup group, boolean ssl, Consumer<Response> callback) throws InterruptedException, SSLException {
+    private void startClient(EventLoopGroup group, boolean ssl, boolean withAdaptive, Consumer<Response> callback) throws InterruptedException, SSLException {
         SslContext sslContext = null;
         if (ssl) {
             sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
         }
         Bootstrap b = new Bootstrap();
         b.group(group).channel(NioSocketChannel.class).handler(new HttpClientInitializer(sslContext, callback));
+        if (withAdaptive) {
+            b.option(ChannelOption.ALLOCATOR, new AdaptiveByteBufAllocator());
+        }
         Channel ch = b.connect("localhost", PORT).sync().channel();
         HttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/", Unpooled.EMPTY_BUFFER);
         request.headers().set(HttpHeaderNames.HOST, "localhost");
@@ -147,7 +157,7 @@ public class NettyTests {
         ch.closeFuture().sync();
     }
 
-    private void startServer(EventLoopGroup bossGroup, EventLoopGroup workerGroup, boolean ssl) throws InterruptedException, SSLException {
+    private void startServer(EventLoopGroup bossGroup, EventLoopGroup workerGroup, boolean ssl, boolean withAdaptive) throws InterruptedException, SSLException {
         SslContext sslContext = null;
         if (ssl) {
             sslContext = SslContextBuilder.forServer(loadCert(), loadKey(), null).build();
@@ -157,6 +167,10 @@ public class NettyTests {
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(new HttpServerInitializer(sslContext));
+        if (withAdaptive) {
+            b.option(ChannelOption.ALLOCATOR, new AdaptiveByteBufAllocator())
+                    .childOption(ChannelOption.ALLOCATOR, new AdaptiveByteBufAllocator());
+        }
         b.bind(PORT).sync();
     }
 
