@@ -59,6 +59,7 @@ import org.apache.kafka.common.utils.Time;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -112,7 +113,7 @@ class KafkaClientsTest {
         }
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @Test
     void testProduceAndConsume() throws Exception {
         Properties properties = new Properties();
@@ -158,7 +159,7 @@ class KafkaClientsTest {
                 .containsExactly("message0", "message1");
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @ParameterizedTest
     @ValueSource(classes = {
             BooleanSerializer.class,
@@ -183,7 +184,7 @@ class KafkaClientsTest {
         }
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @ParameterizedTest
     @ValueSource(classes = {
             BooleanDeserializer.class,
@@ -208,7 +209,7 @@ class KafkaClientsTest {
         }
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @ParameterizedTest
     @ValueSource(classes = {
             Serdes.BooleanSerde.class,
@@ -234,7 +235,7 @@ class KafkaClientsTest {
         }
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @Test
     void testListDeserializers() {
         Map<String, Object> consumerProperties = new HashMap<>();
@@ -248,7 +249,7 @@ class KafkaClientsTest {
         }
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @Test
     void testRoundRobinPartitioner() {
         Map<String, Object> producerProperties = new HashMap<>();
@@ -261,7 +262,7 @@ class KafkaClientsTest {
         }
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @ParameterizedTest
     @ValueSource(classes = {
             RangeAssignor.class,
@@ -279,7 +280,7 @@ class KafkaClientsTest {
         }
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @Test
     void testSaslPlain() {
         Map<String, Object> consumerProperties = new HashMap<>();
@@ -294,7 +295,7 @@ class KafkaClientsTest {
         }
     }
 
-    @Ignore("Causes transitive failures on other pull requests")
+    @Disabled("Causes transitive failures on other pull requests")
     @Test
     void testSaslScramSHA512() {
         Map<String, Object> consumerProperties = new HashMap<>();
