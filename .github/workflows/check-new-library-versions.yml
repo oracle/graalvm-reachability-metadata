@@ -21,7 +21,7 @@ jobs:
     if: github.repository == 'oracle/graalvm-reachability-metadata'
     name: "📋 Get list of all supported libraries with newer versions"
     permissions: write-all
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     timeout-minutes: 5
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -124,7 +124,7 @@ jobs:
 
   process-results:
     name: "🧪 Process results"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     if: ${{ always() }}
     needs:
       - get-all-libraries
