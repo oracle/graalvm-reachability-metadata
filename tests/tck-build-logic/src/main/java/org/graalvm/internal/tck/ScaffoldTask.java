@@ -39,6 +39,7 @@ class ScaffoldTask extends DefaultTask {
 
     private boolean force;
     private boolean update;
+    private boolean skipTests;
 
     public ScaffoldTask() {
     }
@@ -62,6 +63,11 @@ class ScaffoldTask extends DefaultTask {
     @Option(option = "update", description = "Add metadata for new version of library that already exists in the repository")
     void setUpdate(boolean update) {
         this.update = update;
+    }
+
+    @Option(option = "skipTests", description = "Skip adding test stubs")
+    void setSkipTests(boolean skip) {
+        this.skipTests = skip;
     }
 
     @TaskAction
@@ -196,10 +202,12 @@ class ScaffoldTask extends DefaultTask {
         );
 
         // src/test/java/
-        writeToFile(
-                coordinatesTestRoot.resolve(CoordinateUtils.replace("src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java", coordinates)),
-                CoordinateUtils.replace(loadResource("/scaffold/Test.java.template"), coordinates)
-        );
+        if (!skipTests) {
+            writeToFile(
+                    coordinatesTestRoot.resolve(CoordinateUtils.replace("src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java", coordinates)),
+                    CoordinateUtils.replace(loadResource("/scaffold/Test.java.template"), coordinates)
+            );
+        }
     }
 
     private void writeCoordinatesMetadataVersionJsons(Path metadataVersionRoot, Coordinates coordinates) throws IOException {
