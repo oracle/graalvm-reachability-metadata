@@ -21,7 +21,7 @@ Then, point to the local repository in the configuration of either
 
 ## Contribute Metadata
 
-The suggested way to contribute to Reachability metadata repository is by using the `contributing` task.
+The suggested way to contribute to Reachability metadata repository is by using the `contribute` task.
 Before you start the task, you should have your tests implemented somewhere locally on your machine (please verify that tests are working on Java).
 
 In order to start this task, run (we suggest using `--console=plain` to reduce amount of gradle logging):
@@ -34,7 +34,7 @@ When started, the task will ask you few simple questions (like: where are your t
 In case you don't understand the question, just type "help".
 
 After it collects your answers, the task will:
-- generate necessary infrastructure
+- generate necessary boilerplate code
 - copy your tests to the proper location
 - generate metadata and store it in the proper location
 - ask you if you want to create a pull request, or you want to keep working on it locally

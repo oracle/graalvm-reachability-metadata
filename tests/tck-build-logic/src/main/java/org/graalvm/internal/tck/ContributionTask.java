@@ -7,10 +7,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
-import org.graalvm.internal.tck.model.contributing.PredefinedClassesConfigModel;
-import org.graalvm.internal.tck.model.contributing.ResourceConfigModel;
 import org.graalvm.internal.tck.model.contributing.Question;
-import org.graalvm.internal.tck.model.contributing.SerializationConfigModel;
 import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
 import org.graalvm.internal.tck.utils.FilesUtils;
 import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
@@ -111,9 +108,6 @@ public abstract class ContributionTask extends DefaultTask {
 
         // run agent in conditional mode
         collectMetadata();
-
-        // remove empty files
-        removeEmptyConfigFiles();
 
         // create a PR
         boolean shouldCreatePR = shouldCreatePullRequest();
@@ -285,13 +279,13 @@ public abstract class ContributionTask extends DefaultTask {
     private void createStubs(boolean shouldUpdate){
         InteractiveTaskUtils.printUserInfo("Generating stubs for: " + coordinates );
         if (shouldUpdate) {
-            invokeCommand(gradlew + " scaffold --coordinates " + coordinates + " --update", "Cannot generate stubs for: " + coordinates);
+            invokeCommand(gradlew + " scaffold --coordinates " + coordinates + " --skipTests --update ", "Cannot generate stubs for: " + coordinates);
         } else {
-            invokeCommand(gradlew + " scaffold --coordinates " + coordinates, "Cannot generate stubs for: " + coordinates);
+            invokeCommand(gradlew + " scaffold --coordinates " + coordinates + " --skipTests", "Cannot generate stubs for: " + coordinates);
         }
     }
 
-    private void updateAllowedPackages(List<String> allowedPackages, boolean isAlreadyExistingLibrary) throws IOException {
+    private void updateAllowedPackages(List<String> allowedPackages, boolean libraryAlreadyExists) throws IOException {
         InteractiveTaskUtils.printUserInfo("Updating allowed packages in: " + METADATA_INDEX);
         File metadataIndex = getProject().file(METADATA_INDEX);
 
@@ -307,7 +301,7 @@ public abstract class ContributionTask extends DefaultTask {
             Set<String> extendedAllowedPackages = new HashSet<>();
             MetadataIndexEntry replacedEntry = entries.remove(replaceEntryIndex);
 
-            if (isAlreadyExistingLibrary) {
+            if (libraryAlreadyExists) {
                 // we don't want to break existing tests, so we must add existing allowed packages
                 extendedAllowedPackages.addAll(replacedEntry.allowedPackages());
             }
@@ -329,14 +323,6 @@ public abstract class ContributionTask extends DefaultTask {
         Path allTests = originalTestsLocation.resolve(".");
 
         ensureFileBelongsToProject(destination);
-        InteractiveTaskUtils.printUserInfo("Removing dummy test stubs");
-        boolean shouldDelete = InteractiveTaskUtils.askForDeletePermission(destination);
-        if (!shouldDelete) {
-            throw new RuntimeException("The task didn't get permission to delete dummy stubs. Cannot proceed with the task execution");
-        }
-
-        getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(destination));
-
         InteractiveTaskUtils.printUserInfo("Copying tests from: " + originalTestsLocation + " to " + destination);
         getFileSystemOperations().copy(copySpec -> {
             copySpec.from(allTests);
@@ -350,6 +336,8 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         Path destination = testsDirectory.resolve("src").resolve("test").resolve("resources");
+        ensureFileBelongsToProject(destination);
+
         InteractiveTaskUtils.printUserInfo("Copying resources from: " + originalResourcesDirectory + " to " + destination);
         getFileSystemOperations().copy(copySpec -> {
            copySpec.from(originalResourcesDirectory);
@@ -364,6 +352,8 @@ public abstract class ContributionTask extends DefaultTask {
 
         InteractiveTaskUtils.printUserInfo("Adding following docker images to " + REQUIRED_DOCKER_IMAGES_FILE + ": " + images);
         Path destination = testsDirectory.resolve(REQUIRED_DOCKER_IMAGES_FILE);
+        ensureFileBelongsToProject(destination);
+
         if (!Files.exists(destination)) {
             Files.createFile(destination);
         }
@@ -428,7 +418,6 @@ public abstract class ContributionTask extends DefaultTask {
             throw new RuntimeException("Cannot add agent block to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
         }
 
-
         try(InputStream stream = ContributionTask.class.getResourceAsStream("/contributing/agent.template")) {
             if (stream == null) {
                 throw new RuntimeException("Cannot find template for the graalvm configuration block");
@@ -447,101 +436,6 @@ public abstract class ContributionTask extends DefaultTask {
 
         InteractiveTaskUtils.printUserInfo("Performing metadata copy");
         invokeCommand(gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
-    }
-
-    private enum CONFIG_FILES {
-        RESOURCE("resource-config.json"),
-        REFLECTION("reflect-config.json"),
-        SERIALIZATION("serialization-config.json"),
-        JNI("jni-config.json"),
-        PROXY("proxy-config.json"),
-        PREDEFINED_CLASSES("predefined-classes-config.json");
-
-        private final String value;
-        public String get() {
-            return value;
-        }
-
-        CONFIG_FILES(String val) {
-            this.value = val;
-        }
-    }
-
-    private void removeEmptyConfigFiles() throws IOException {
-        Path indexFile = metadataDirectory.resolve("index.json");
-        List<CONFIG_FILES> remainingFiles = new LinkedList<>(Arrays.asList(CONFIG_FILES.values()));
-
-        Path resourceConfigPath = metadataDirectory.resolve(CONFIG_FILES.RESOURCE.get());
-        ResourceConfigModel resourceConfig = objectMapper.readValue(resourceConfigPath.toFile(), new TypeReference<>() {});
-        if (resourceConfig.isEmpty()) {
-            removeConfigFile(resourceConfigPath, CONFIG_FILES.RESOURCE, remainingFiles);
-        }
-
-        Path serializationConfigPath = metadataDirectory.resolve(CONFIG_FILES.SERIALIZATION.get());
-        SerializationConfigModel serializationConfig = objectMapper.readValue(serializationConfigPath.toFile(), new TypeReference<>() {});
-        if (serializationConfig.isEmpty()) {
-            removeConfigFile(serializationConfigPath, CONFIG_FILES.SERIALIZATION, remainingFiles);
-        }
-
-        Path jniConfigPath = metadataDirectory.resolve(CONFIG_FILES.JNI.get());
-        List<Object> jniConfig = objectMapper.readValue(jniConfigPath.toFile(), new TypeReference<>() {});
-        if (jniConfig.isEmpty()) {
-            removeConfigFile(jniConfigPath, CONFIG_FILES.JNI, remainingFiles);
-        }
-
-        Path proxyConfigPath = metadataDirectory.resolve(CONFIG_FILES.PROXY.get());
-        List<Object> proxyConfig = objectMapper.readValue(proxyConfigPath.toFile(), new TypeReference<>() {});
-        if (proxyConfig.isEmpty()) {
-            removeConfigFile(proxyConfigPath, CONFIG_FILES.PROXY, remainingFiles);
-        }
-
-        Path reflectConfigPath = metadataDirectory.resolve(CONFIG_FILES.REFLECTION.get());
-        List<Object> reflectConfig = objectMapper.readValue(reflectConfigPath.toFile(), new TypeReference<>() {});
-        if (reflectConfig.isEmpty()) {
-            removeConfigFile(reflectConfigPath, CONFIG_FILES.REFLECTION, remainingFiles);
-        }
-
-        Path predefinedClassesConfigPath = metadataDirectory.resolve(CONFIG_FILES.PREDEFINED_CLASSES.get());
-        List<PredefinedClassesConfigModel> predefinedClassesConfig = objectMapper.readValue(predefinedClassesConfigPath.toFile(), new TypeReference<>() {});
-        if (predefinedClassesConfig.size() == 1) {
-            if (predefinedClassesConfig.get(0).isEmpty()) {
-                removeConfigFile(predefinedClassesConfigPath, CONFIG_FILES.PREDEFINED_CLASSES, remainingFiles);
-            }
-        }
-
-        Path agentExtractedPredefinedClasses = metadataDirectory.resolve("agent-extracted-predefined-classes");
-        if (Files.exists(agentExtractedPredefinedClasses)) {
-            File[] extractedPredefinedClasses = agentExtractedPredefinedClasses.toFile().listFiles();
-            if (extractedPredefinedClasses == null || extractedPredefinedClasses.length == 0) {
-                ensureFileBelongsToProject(agentExtractedPredefinedClasses);
-
-                InteractiveTaskUtils.printUserInfo("Removing empty: agent-extracted-predefined-classes");
-                boolean canDelete = InteractiveTaskUtils.askForDeletePermission(agentExtractedPredefinedClasses);
-                if (canDelete) {
-                    getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(agentExtractedPredefinedClasses));
-                }
-            }
-        }
-
-        trimIndexFile(indexFile, remainingFiles);
-    }
-
-    private void removeConfigFile(Path path, CONFIG_FILES file, List<CONFIG_FILES> remainingFiles) {
-        ensureFileBelongsToProject(path);
-
-        InteractiveTaskUtils.printUserInfo("Removing empty: " + file.get());
-        boolean canDelete = InteractiveTaskUtils.askForDeletePermission(path);
-        if (canDelete) {
-            getFileSystemOperations().delete(deleteSpec -> deleteSpec.delete(path));
-            remainingFiles.remove(file);
-        }
-    }
-
-    private void trimIndexFile(Path index, List<CONFIG_FILES> remainingFiles) throws IOException {
-        InteractiveTaskUtils.printUserInfo("Removing sufficient entries from: " + index);
-        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-        objectMapper.writer(prettyPrinter).writeValue(index.toFile(), remainingFiles.stream().map(CONFIG_FILES::get).toList());
     }
 
     private boolean shouldCreatePullRequest() {
