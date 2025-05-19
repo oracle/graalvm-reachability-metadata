@@ -51,7 +51,7 @@ public class MySQLTests {
         System.out.println("Starting MySQL ...");
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", "3306:3306", "-e", "MYSQL_DATABASE=" + DATABASE, "-e", "MYSQL_USER=" + USERNAME,
-                "-e", "MYSQL_PASSWORD=" + PASSWORD, "container-registry.oracle.com/mysql/community-server:9.2.0").redirectOutput(new File("mysql-stdout.txt"))
+                "-e", "MYSQL_PASSWORD=" + PASSWORD, "container-registry.oracle.com/mysql/community-server:9.3.0").redirectOutput(new File("mysql-stdout.txt"))
                 .redirectError(new File("mysql-stderr.txt")).start();
 
         // Wait until connection can be established
