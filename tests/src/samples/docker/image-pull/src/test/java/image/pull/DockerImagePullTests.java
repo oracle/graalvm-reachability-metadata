@@ -32,7 +32,7 @@ class DockerImagePullTests {
 
     @Test
     void pullAllowedImage() throws Exception {
-        runImage("container-registry.oracle.com/mysql/community-server:9.2.0", true);
+        runImage("container-registry.oracle.com/mysql/community-server:9.3.0", true);
     }
 
     @Test
