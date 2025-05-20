@@ -49,10 +49,9 @@ public abstract class ContributionTask extends DefaultTask {
     @Inject
     protected abstract FileSystemOperations getFileSystemOperations();
 
-    private Path gradlew;
-
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
+    private Path gradlew;
     private Path testsDirectory;
     private Path metadataDirectory;
 
@@ -166,7 +165,7 @@ public abstract class ContributionTask extends DefaultTask {
         try {
             FilesUtils.findJavaFiles(testsPath, javaFiles);
         } catch (IOException e) {
-            throw new ContributingException("Cannot find java files. Reason: " + e);
+            throw new ContributingException("Cannot find Java files. Reason: " + e);
         }
 
         for (Path file : javaFiles) {
@@ -211,71 +210,29 @@ public abstract class ContributionTask extends DefaultTask {
 
     private List<String> getDockerImages() {
         ContributingQuestion question = questions.get("docker");
-
-        List<String> images = new ArrayList<>();
-        while (true) {
-            String nextImage = InteractiveTaskUtils.askQuestion(question.question(), question.help(), answer -> {
-                if (!answer.equalsIgnoreCase("-") && answer.split(":").length != 2) {
-                    throw new ContributingException("Docker image name not provided in the correct format. Type help for explanation.");
-                }
-
-                return answer;
-            });
-
-            if (nextImage.trim().equalsIgnoreCase("-")) {
-                break;
+        return InteractiveTaskUtils.askRecurringQuestions(question.question(), question.help(), 0, answer -> {
+            if (answer.split(":").length != 2) {
+                throw new ContributingException("Docker image name not provided in the correct format. Type help for explanation.");
             }
 
-            images.add(nextImage);
-        }
-
-        return images;
+            return answer;
+        });
     }
 
     private List<String> getAllowedPackages() {
         ContributingQuestion question = questions.get("allowedPackages");
-        List<String> packages = new ArrayList<>();
-        while (true) {
-            String nextPackage = InteractiveTaskUtils.askQuestion(question.question(), question.help(), answer -> answer);
-            if (nextPackage.trim().equalsIgnoreCase("-")) {
-                if (packages.isEmpty()) {
-                    InteractiveTaskUtils.printErrorMessage("At least one package must be provided. Type help for explanation.");
-                    continue;
-                }
-
-                break;
-            }
-
-            packages.add(nextPackage);
-        }
-
-        return packages;
+        return InteractiveTaskUtils.askRecurringQuestions(question.question(), question.help(), 1, answer -> answer);
     }
 
     private List<Coordinates> getAdditionalDependencies() {
         ContributingQuestion question = questions.get("additionalDependencies");
-        List<Coordinates> dependencies = new ArrayList<>();
-        while (true) {
-            Coordinates dependency = InteractiveTaskUtils.askQuestion(question.question(), question.help(), answer -> {
-                if (answer.equalsIgnoreCase("-")) {
-                    return null;
-                }
-
-                try {
-                    return CoordinateUtils.fromString(answer);
-                } catch (IllegalArgumentException ex) {
-                    throw new ContributingException(ex.getMessage());
-                }
-            });
-
-            if (dependency == null) {
-                break;
+        return InteractiveTaskUtils.askRecurringQuestions(question.question(), question.help(), 0, answer -> {
+            try {
+                return CoordinateUtils.fromString(answer);
+            } catch (IllegalArgumentException ex) {
+                throw new ContributingException(ex.getMessage());
             }
-
-            dependencies.add(dependency);
-        }
-
-        return dependencies;
+        });
     }
 
     private void createStubs(boolean shouldUpdate){

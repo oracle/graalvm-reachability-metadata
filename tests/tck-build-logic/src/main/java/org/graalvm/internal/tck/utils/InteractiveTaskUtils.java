@@ -2,6 +2,8 @@ package org.graalvm.internal.tck.utils;
 
 import org.graalvm.internal.tck.exceptions.ContributingException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class InteractiveTaskUtils {
@@ -29,6 +31,30 @@ public class InteractiveTaskUtils {
                 printErrorMessage(ex.getMessage());
             }
         }
+    }
+
+    public static <R> List<R> askRecurringQuestions(String question, String help, int minimalNumberOfAnswers, ContributingHandler<String, R> handleAnswer) {
+        List<R> answers = new ArrayList<>();
+        while (true) {
+            String answer = InteractiveTaskUtils.askQuestion(question, help, a -> a);
+            if (answer.equalsIgnoreCase("-")) {
+                if (answers.size() < minimalNumberOfAnswers) {
+                    printErrorMessage("At least " + minimalNumberOfAnswers + " should be provided. Currently provided: " + answers.size());
+                    continue;
+                }
+
+                break;
+            }
+
+            try {
+                R item = handleAnswer.apply(answer);
+                answers.add(item);
+            } catch (ContributingException e) {
+                printErrorMessage(e.getMessage());
+            }
+        }
+
+        return answers;
     }
 
     public static boolean askYesNoQuestion(String question, String helpMessage, boolean defaultAnswer) {
