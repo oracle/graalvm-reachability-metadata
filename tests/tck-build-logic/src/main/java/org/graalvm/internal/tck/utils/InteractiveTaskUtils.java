@@ -1,10 +1,17 @@
 package org.graalvm.internal.tck.utils;
 
+import org.graalvm.internal.tck.exceptions.ContributingException;
+
 import java.util.Scanner;
-import java.util.function.Function;
 
 public class InteractiveTaskUtils {
-    public static <R> R askQuestion(String question, String helpMessage, Function<String, R> handleAnswer) {
+
+    @FunctionalInterface
+    public interface ContributingHandler<V, R> {
+        R apply(V v) throws ContributingException;
+    }
+
+    public static <R> R askQuestion(String question, String helpMessage, ContributingHandler<String, R> handleAnswer) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -18,7 +25,7 @@ public class InteractiveTaskUtils {
 
             try {
                 return handleAnswer.apply(answer);
-            } catch (IllegalStateException ex) {
+            } catch (ContributingException ex) {
                 printErrorMessage(ex.getMessage());
             }
         }

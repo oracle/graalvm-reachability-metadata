@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.exceptions.ContributingException;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
 import org.graalvm.internal.tck.model.contributing.Question;
 import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
@@ -25,9 +26,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class ContributionTask extends DefaultTask {
+    private static final String BRANCH_NAME_PREFIX = "add-support-for-";
     private static final String METADATA_INDEX = "metadata/index.json";
     private static final String BUILD_FILE = "build.gradle";
     private static final String USER_CODE_FILTER_FILE = "user-code-filter.json";
@@ -52,16 +62,16 @@ public abstract class ContributionTask extends DefaultTask {
     private final Map<String, ContributingQuestion> questions = new HashMap<>();
 
     private void initializeWorkingDirectories(){
-        testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
-        metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
-        this.gradlew = Path.of(getProject().file("gradlew").getAbsolutePath());
+        testsDirectory = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).toPath();
+        metadataDirectory = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).toPath();
+        gradlew = Path.of(getProject().file("gradlew").getAbsolutePath());
     }
 
     private void loadQuestions() throws IOException {
         File questionsJson = getProject().file("tests/tck-build-logic/src/main/resources/contributing/questions.json");
         List<Question> contributingQuestions = objectMapper.readValue(questionsJson, new TypeReference<>() {});
         for (var question : contributingQuestions) {
-            this.questions.put(question.questionKey(), new ContributingQuestion(question.question(), question.help()));
+            questions.put(question.questionKey(), new ContributingQuestion(question.question(), question.help()));
         }
     }
 
@@ -72,7 +82,7 @@ public abstract class ContributionTask extends DefaultTask {
 
         loadQuestions();
 
-        this.coordinates = getCoordinates();
+        coordinates = getCoordinates();
         InteractiveTaskUtils.closeSection();
 
         Path coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).toPath();
@@ -98,7 +108,7 @@ public abstract class ContributionTask extends DefaultTask {
         createStubs(isExistingLibrary);
         updateAllowedPackages(packages, isExistingLibrary);
 
-        // generate necessary infrastructure
+        // generate necessary boilerplate code
         addTests(testsLocation);
         addResources(resourcesLocation);
         addDockerImages(dockerImages);
@@ -112,11 +122,11 @@ public abstract class ContributionTask extends DefaultTask {
         // create a PR
         boolean shouldCreatePR = shouldCreatePullRequest();
         if (shouldCreatePR) {
-            String branch = "add-support-for-" + coordinates.toString().replace(':', '-');
+            String branch = BRANCH_NAME_PREFIX + coordinates.toString().replace(':', '-');
             createPullRequest(branch);
 
             InteractiveTaskUtils.printUserInfo("After your pull requests gets generated, please update the pull request description to mention all places where your pull request" +
-                    "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly marked");
+                    "accesses files, network, docker, or any other external service, and check if all checks in the description are correctly marked.");
         }
 
         InteractiveTaskUtils.printSuccessfulStatement("Contribution successfully completed! Thank you!");
@@ -125,15 +135,11 @@ public abstract class ContributionTask extends DefaultTask {
     private Coordinates getCoordinates() {
         ContributingQuestion question = questions.get("coordinates");
         return InteractiveTaskUtils.askQuestion(question.question(), question.help(), (answer) -> {
-            String[] coordinatesParts = answer.split(":");
-            if (coordinatesParts.length != 3) {
-                throw new IllegalStateException("Maven coordinates not provided in the correct format. Type help for explanation.");
+            try {
+                return CoordinateUtils.fromString(answer);
+            } catch (IllegalArgumentException ex) {
+                throw new ContributingException(ex.getMessage());
             }
-
-            String group = coordinatesParts[0];
-            String artifact = coordinatesParts[1];
-            String version = coordinatesParts[2];
-            return new Coordinates(group, artifact, version);
         });
     }
 
@@ -142,11 +148,11 @@ public abstract class ContributionTask extends DefaultTask {
         return InteractiveTaskUtils.askQuestion(question.question(), question.help(), (answer) -> {
             Path testsLocation = Path.of(answer).toAbsolutePath();
             if (!Files.exists(testsLocation)) {
-                throw new IllegalStateException("Cannot find tests directory on the given location: " + testsLocation + ". Type help for explanation.");
+                throw new ContributingException("Cannot find tests directory on the given location: " + testsLocation + ". Type help for explanation.");
             }
 
             if (!Files.isDirectory(testsLocation)) {
-                throw new IllegalStateException("Provided path does not represent a directory: " + testsLocation + ". Type help for explanation.");
+                throw new ContributingException("Provided path does not represent a directory: " + testsLocation + ". Type help for explanation.");
             }
 
             checkPackages(testsLocation);
@@ -155,32 +161,32 @@ public abstract class ContributionTask extends DefaultTask {
         });
     }
 
-    private void checkPackages(Path testsPath) {
+    private void checkPackages(Path testsPath) throws ContributingException {
         List<Path> javaFiles = new ArrayList<>();
         try {
             FilesUtils.findJavaFiles(testsPath, javaFiles);
         } catch (IOException e) {
-            throw new RuntimeException("Cannot find java files. Reason: " + e);
+            throw new ContributingException("Cannot find java files. Reason: " + e);
         }
 
-        javaFiles.forEach(file -> {
+        for (Path file : javaFiles) {
             try {
                 Optional<String> packageLine = Files.readAllLines(file).stream().filter(line -> line.contains("package ")).findFirst();
                 if (packageLine.isEmpty()) {
-                    throw new RuntimeException("Java file: " + file + " does not contain declared package");
+                    throw new ContributingException("Java file: " + file + " does not contain declared package");
                 }
 
                 String declaredPackage = packageLine.get().split(" ")[1].replace(";", "");
                 String packagePath = declaredPackage.replace(".", File.separator);
                 if (!Files.exists(testsPath.resolve(packagePath))) {
-                    throw new IllegalStateException("File: " + file + " has package: " + declaredPackage +
+                    throw new ContributingException("File: " + file + " has package: " + declaredPackage +
                             " that cannot be found on tests location: " + testsPath +
                             ". Please make sure that the location you provided is a directory that contains packages with tests implementations");
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new ContributingException(e.getMessage());
             }
-        });
+        }
     }
 
     private Path getResourcesLocation(){
@@ -192,11 +198,11 @@ public abstract class ContributionTask extends DefaultTask {
 
             Path resourcesLocation = Path.of(answer).toAbsolutePath();
             if (!Files.exists(resourcesLocation)) {
-                throw new IllegalStateException("Cannot find resources directory on the given location: " + resourcesLocation + ". Type help for explanation.");
+                throw new ContributingException("Cannot find resources directory on the given location: " + resourcesLocation + ". Type help for explanation.");
             }
 
             if (!Files.isDirectory(resourcesLocation)) {
-                throw new IllegalStateException("Provided path does not represent a directory: " + resourcesLocation + ". Type help for explanation.");
+                throw new ContributingException("Provided path does not represent a directory: " + resourcesLocation + ". Type help for explanation.");
             }
 
             return resourcesLocation;
@@ -210,7 +216,7 @@ public abstract class ContributionTask extends DefaultTask {
         while (true) {
             String nextImage = InteractiveTaskUtils.askQuestion(question.question(), question.help(), answer -> {
                 if (!answer.equalsIgnoreCase("-") && answer.split(":").length != 2) {
-                    throw new IllegalStateException("Docker image name not provided in the correct format. Type help for explanation.");
+                    throw new ContributingException("Docker image name not provided in the correct format. Type help for explanation.");
                 }
 
                 return answer;
@@ -255,15 +261,11 @@ public abstract class ContributionTask extends DefaultTask {
                     return null;
                 }
 
-                String[] coordinatesParts = answer.split(":");
-                if (coordinatesParts.length != 3) {
-                    throw new IllegalStateException("Maven coordinates not provided in the correct format. Type help for explanation.");
+                try {
+                    return CoordinateUtils.fromString(answer);
+                } catch (IllegalArgumentException ex) {
+                    throw new ContributingException(ex.getMessage());
                 }
-
-                String group = coordinatesParts[0];
-                String artifact = coordinatesParts[1];
-                String version = coordinatesParts[2];
-                return new Coordinates(group, artifact, version);
             });
 
             if (dependency == null) {
@@ -378,7 +380,7 @@ public abstract class ContributionTask extends DefaultTask {
         objectMapper.writer(prettyPrinter).writeValue(testsDirectory.resolve(USER_CODE_FILTER_FILE).toFile(), Map.of("rules", filterFileRules));
     }
 
-    private void addAdditionalDependencies(List<Coordinates> dependencies) {
+    private void addAdditionalDependencies(List<Coordinates> dependencies) throws IOException {
         if (dependencies == null) {
             return;
         }
@@ -390,27 +392,23 @@ public abstract class ContributionTask extends DefaultTask {
             throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
         }
 
-        try {
-            ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
-            List<String> content = Files.readAllLines(buildFilePath);
-            for (var line : content) {
-                sb.append(line).newLine();
-                if (line.trim().equalsIgnoreCase("dependencies {")) {
-                    sb.indent();
-                    for (var dependency : dependencies) {
-                        sb.append("testImplementation").space().quote(dependency.toString()).newLine();
-                    }
-                    sb.unindent();
+        ConfigurationStringBuilder sb = new ConfigurationStringBuilder();
+        List<String> content = Files.readAllLines(buildFilePath);
+        for (var line : content) {
+            sb.append(line).newLine();
+            if (line.trim().equalsIgnoreCase("dependencies {")) {
+                sb.indent();
+                for (var dependency : dependencies) {
+                    sb.append("testImplementation").space().quote(dependency.toString()).newLine();
                 }
+                sb.unindent();
             }
-
-            writeToFile(buildFilePath, sb.toString(), StandardOpenOption.WRITE);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+
+        writeToFile(buildFilePath, sb.toString(), StandardOpenOption.WRITE);
     }
 
-    private void addAgentConfigBlock() {
+    private void addAgentConfigBlock() throws IOException {
         Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
         InteractiveTaskUtils.printUserInfo("Configuring agent block in: " + BUILD_FILE);
 
@@ -425,8 +423,6 @@ public abstract class ContributionTask extends DefaultTask {
 
             String content = System.lineSeparator() + (new String(stream.readAllBytes(), StandardCharsets.UTF_8));
             writeToFile(buildFilePath, content, StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot add agent block into: " + buildFilePath);
         }
     }
 
