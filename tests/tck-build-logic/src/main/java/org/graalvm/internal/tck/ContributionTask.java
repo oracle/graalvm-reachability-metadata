@@ -61,8 +61,8 @@ public abstract class ContributionTask extends DefaultTask {
     private final Map<String, ContributingQuestion> questions = new HashMap<>();
 
     private void initializeWorkingDirectories(){
-        testsDirectory = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).toPath();
-        metadataDirectory = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).toPath();
+        testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
+        metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
         gradlew = Path.of(getProject().file("gradlew").getAbsolutePath());
     }
 
@@ -84,7 +84,7 @@ public abstract class ContributionTask extends DefaultTask {
         coordinates = getCoordinates();
         InteractiveTaskUtils.closeSection();
 
-        Path coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).toPath();
+        Path coordinatesMetadataRoot = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).getAbsolutePath());
         boolean isExistingLibrary = Files.exists(coordinatesMetadataRoot);
 
         Path testsLocation = getTestsLocation();
@@ -170,9 +170,9 @@ public abstract class ContributionTask extends DefaultTask {
 
         for (Path file : javaFiles) {
             try {
-                Optional<String> packageLine = Files.readAllLines(file).stream().filter(line -> line.contains("package ")).findFirst();
+                Optional<String> packageLine = Files.readAllLines(file).stream().filter(line -> line.trim().startsWith("package ")).findFirst();
                 if (packageLine.isEmpty()) {
-                    throw new ContributingException("Java file: " + file + " does not contain declared package");
+                    throw new ContributingException("Java file: " + file + " does not contain declared package.");
                 }
 
                 String declaredPackage = packageLine.get().split(" ")[1].replace(";", "");
@@ -211,8 +211,13 @@ public abstract class ContributionTask extends DefaultTask {
     private List<String> getDockerImages() {
         ContributingQuestion question = questions.get("docker");
         return InteractiveTaskUtils.askRecurringQuestions(question.question(), question.help(), 0, answer -> {
-            if (answer.split(":").length != 2) {
+            String[] imageNameParts = answer.split(":");
+            if (imageNameParts.length != 2) {
                 throw new ContributingException("Docker image name not provided in the correct format. Type help for explanation.");
+            }
+
+            if (imageNameParts[1].equalsIgnoreCase("latest")) {
+                throw new ContributingException("Docker image tag cannot be latest.");
             }
 
             return answer;
@@ -235,13 +240,10 @@ public abstract class ContributionTask extends DefaultTask {
         });
     }
 
-    private void createStubs(boolean shouldUpdate){
+    private void createStubs(boolean shouldUpdate) {
         InteractiveTaskUtils.printUserInfo("Generating stubs for: " + coordinates );
-        if (shouldUpdate) {
-            invokeCommand(gradlew + " scaffold --coordinates " + coordinates + " --skipTests --update ", "Cannot generate stubs for: " + coordinates);
-        } else {
-            invokeCommand(gradlew + " scaffold --coordinates " + coordinates + " --skipTests", "Cannot generate stubs for: " + coordinates);
-        }
+        String opt = shouldUpdate ? "--update" : "";
+        invokeCommand(gradlew + " scaffold --coordinates " + coordinates + " --skipTests " + opt, "Cannot generate stubs for: " + coordinates);
     }
 
     private void updateAllowedPackages(List<String> allowedPackages, boolean libraryAlreadyExists) throws IOException {
@@ -253,6 +255,7 @@ public abstract class ContributionTask extends DefaultTask {
         for (int i = 0; i < entries.size(); i++) {
             if (entries.get(i).module().equals(coordinates.group() + ":" + coordinates.artifact())) {
                 replaceEntryIndex = i;
+                break;
             }
         }
 
@@ -270,11 +273,8 @@ public abstract class ContributionTask extends DefaultTask {
             entries.add(new MetadataIndexEntry(replacedEntry.directory(), replacedEntry.module(), replacedEntry.requires(), new ArrayList<>(extendedAllowedPackages)));
         }
 
-        List<MetadataIndexEntry> sortedEntries = entries.stream()
-                .sorted(Comparator.comparing(MetadataIndexEntry::module))
-                .toList();
-
-        objectMapper.writeValue(metadataIndex, sortedEntries);
+        entries.sort(Comparator.comparing(MetadataIndexEntry::module));
+        objectMapper.writeValue(metadataIndex, entries);
     }
 
     private void addTests(Path originalTestsLocation){
@@ -338,14 +338,14 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void addAdditionalDependencies(List<Coordinates> dependencies) throws IOException {
-        if (dependencies == null) {
+        if (dependencies.isEmpty()) {
             return;
         }
 
         Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
         InteractiveTaskUtils.printUserInfo("Adding following dependencies to " + BUILD_FILE + " file: " + dependencies);
 
-        if (!Files.exists(buildFilePath) || !Files.isRegularFile(buildFilePath)) {
+        if (!Files.isRegularFile(buildFilePath)) {
             throw new RuntimeException("Cannot add additional dependencies to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
         }
 
@@ -369,7 +369,7 @@ public abstract class ContributionTask extends DefaultTask {
         Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
         InteractiveTaskUtils.printUserInfo("Configuring agent block in: " + BUILD_FILE);
 
-        if (!Files.exists(buildFilePath) || !Files.isRegularFile(buildFilePath)) {
+        if (!Files.isRegularFile(buildFilePath)) {
             throw new RuntimeException("Cannot add agent block to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
         }
 
@@ -446,7 +446,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void ensureFileBelongsToProject(Path file) {
-        if (!file.startsWith(getProject().getProjectDir().getAbsolutePath())) {
+        if (!file.isAbsolute() || !file.startsWith(getProject().getProjectDir().getAbsolutePath())) {
             throw new RuntimeException("The following file doesn't belong to the metadata repository: " + file);
         }
     }
