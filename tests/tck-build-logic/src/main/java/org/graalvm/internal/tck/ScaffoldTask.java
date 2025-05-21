@@ -5,12 +5,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.model.TestIndexEntry;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
+import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,8 @@ class ScaffoldTask extends DefaultTask {
     private String coordinates;
 
     private boolean force;
+    private boolean update;
+    private boolean skipTests;
 
     public ScaffoldTask() {
     }
@@ -55,6 +59,17 @@ class ScaffoldTask extends DefaultTask {
         this.force = force;
     }
 
+
+    @Option(option = "update", description = "Add metadata for new version of library that already exists in the repository")
+    void setUpdate(boolean update) {
+        this.update = update;
+    }
+
+    @Option(option = "skipTests", description = "Skip adding test stubs")
+    void setSkipTests(boolean skip) {
+        this.skipTests = skip;
+    }
+
     @TaskAction
     void run() throws IOException {
         Coordinates coordinates = Coordinates.parse(this.coordinates);
@@ -63,10 +78,14 @@ class ScaffoldTask extends DefaultTask {
         Path coordinatesMetadataVersionRoot = coordinatesMetadataRoot.resolve(coordinates.version());
         Path coordinatesTestRoot = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).toPath();
 
-        checkExistingMetadata(coordinates, coordinatesMetadataRoot, coordinatesMetadataVersionRoot);
-
         // Metadata
-        writeCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+        if (!update) {
+            checkExistingMetadata(coordinates, coordinatesMetadataRoot, coordinatesMetadataVersionRoot);
+            writeCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+        } else {
+            updateCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+        }
+
         writeCoordinatesMetadataVersionJsons(coordinatesMetadataVersionRoot, coordinates);
         addToMetadataIndexJson(coordinates);
 
@@ -93,6 +112,14 @@ class ScaffoldTask extends DefaultTask {
             throw new IllegalStateException("Metadata for '%s' already exists! Use --force to overwrite existing metadata".formatted(coordinates));
         }
     }
+
+    private boolean shouldAddNewMetadataEntry(Path coordinatesMetadataRoot, Coordinates coordinates) throws IOException {
+        String newModule = coordinates.group() + ":" + coordinates.artifact();
+        File metadataIndex = coordinatesMetadataRoot.resolve("index.json").toFile();
+        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
+        return entries.stream().noneMatch(e -> e.module().equalsIgnoreCase(newModule) && e.metadataVersion().equalsIgnoreCase(coordinates.version()));
+    }
+
 
     private void addToTestIndexJson(Coordinates coordinates) throws IOException {
         File testIndex = getProject().file("tests/src/index.json");
@@ -175,10 +202,12 @@ class ScaffoldTask extends DefaultTask {
         );
 
         // src/test/java/
-        writeToFile(
-                coordinatesTestRoot.resolve(CoordinateUtils.replace("src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java", coordinates)),
-                CoordinateUtils.replace(loadResource("/scaffold/Test.java.template"), coordinates)
-        );
+        if (!skipTests) {
+            writeToFile(
+                    coordinatesTestRoot.resolve(CoordinateUtils.replace("src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java", coordinates)),
+                    CoordinateUtils.replace(loadResource("/scaffold/Test.java.template"), coordinates)
+            );
+        }
     }
 
     private void writeCoordinatesMetadataVersionJsons(Path metadataVersionRoot, Coordinates coordinates) throws IOException {
@@ -227,6 +256,56 @@ class ScaffoldTask extends DefaultTask {
                 metadataRoot.resolve("index.json"),
                 CoordinateUtils.replace(loadResource("/scaffold/metadataIndex.json.template"), coordinates)
         );
+    }
+
+    private void updateCoordinatesMetadataRootJson(Path metadataRoot, Coordinates coordinates) throws IOException {
+        if (!shouldAddNewMetadataEntry(metadataRoot, coordinates)) {
+            throw new RuntimeException("Metadata for " + coordinates + " already exists!");
+        }
+
+        File metadataIndex = metadataRoot.resolve("index.json").toFile();
+        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
+
+        // add new entry
+        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(null,
+                null,
+                coordinates.group() + ":" + coordinates.artifact(),
+                null,
+                coordinates.version(),
+                List.of(coordinates.version()));
+
+        entries.add(newEntry);
+
+        // determine updates
+        int previousLatest = -1;
+        int newLatest = -1;
+        VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).latest() != null && entries.get(i).latest()) {
+                previousLatest = i;
+            }
+
+            VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
+            if (latestVersion.compareTo(nextVersion) < 0){
+                newLatest = i;
+            }
+        }
+
+        if (previousLatest != -1) {
+            setLatest(entries, previousLatest, null);
+        }
+
+        if (newLatest != -1) {
+            setLatest(entries, newLatest, true);
+        }
+
+        entries.sort(Comparator.comparing(MetadataVersionsIndexEntry::module));
+        objectMapper.writeValue(metadataIndex, entries);
+    }
+
+    private void setLatest( List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {
+        MetadataVersionsIndexEntry oldEntry = list.remove(index);
+        list.add(new MetadataVersionsIndexEntry(newValue, oldEntry.override(), oldEntry.module(), oldEntry.defaultFor(), oldEntry.metadataVersion(), oldEntry.testedVersions()));
     }
 
     private String getEmptyJsonArray() {
