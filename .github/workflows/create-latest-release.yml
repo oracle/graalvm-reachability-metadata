@@ -1,10 +1,9 @@
-name: "Create scheduled release"
+name: "Create latest release"
 
 on:
-  schedule:
-    - cron: "0 0 1 * *"
-    - cron: "0 0 15 * *"
-  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 permissions:
   contents: write
@@ -12,7 +11,7 @@ permissions:
 jobs:
   get-changed-metadata:
     name: "📋 Get a list of changed metadata"
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-20.04"
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -25,19 +24,18 @@ jobs:
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
         with:
-          distribution: 'graalvm'
+          distribution: 'oracle'
           java-version: '21'
       - name: "🕸️ Get changed metadata matrix"
         id: set-matrix
         run: |
-          LATEST_TAG=$(git tag --list | grep -v latest | sort -V | tail -1)
-          ./gradlew generateMatrixDiffCoordinates -PbaseCommit=$(git show-ref -s $LATEST_TAG) -PnewCommit=$(git rev-parse HEAD)
+          ./gradlew generateMatrixDiffCoordinates -PbaseCommit=$(git show-ref -s "latest") -PnewCommit=$(git rev-parse HEAD)
 
   release:
     needs: get-changed-metadata
     if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true'
     name: "🚀 Create a release"
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-20.04"
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -50,30 +48,26 @@ jobs:
         with:
           distribution: 'graalvm'
           java-version: '21'
-      - name: "Get tags"
-        run: |
-          PREVIOUS_RELEASE_TAG=$(git tag --list | grep -v latest | sort -V | tail -1)
-          echo "PREVIOUS_RELEASE_TAG=$PREVIOUS_RELEASE_TAG" >> ${GITHUB_ENV}
-
-          CURRENT_RELEASE_TAG=$(sed -E 's/^([0-9]+\.)([0-9]+\.)([0-9]+)/echo \1\2$((\3+1))/e' <<< $PREVIOUS_RELEASE_TAG)
-          echo "CURRENT_RELEASE_TAG=$CURRENT_RELEASE_TAG" >> ${GITHUB_ENV}
       - name: "⬆️ Update version"
         run: |
-          sed -i "s/project.version(\"1.0.0-SNAPSHOT\")/project.version(\"${{ env.CURRENT_RELEASE_TAG }}\")/g" build.gradle
+          sed -i "s/project.version(\"1.0.0-SNAPSHOT\")/project.version(\"latest\")/g" build.gradle
       - name: "🔍 Run spotless check"
         run: |
           ./gradlew spotlessCheck
       - name: "🏭 Generate release artifacts"
         run: |
           ./gradlew package
+      - name: "Delete previous latest release and tag"
+        run: |
+          gh release delete "latest" --cleanup-tag -y
       - name: "📄 Commit changes"
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
           git add .
-          git commit -m "Release version ${{ env.CURRENT_RELEASE_TAG }}"
-          git tag ${{ env.CURRENT_RELEASE_TAG }}
-          git push origin ${{ env.CURRENT_RELEASE_TAG }}
+          git commit -m "Update latest release"
+          git tag "latest"
+          git push origin "latest"
       - name: "📝 Publish a release"
         run: |
-          gh release create ${{ env.CURRENT_RELEASE_TAG }} build/graalvm-reachability-metadata-*.zip --generate-notes --notes-start-tag ${{ env.PREVIOUS_RELEASE_TAG }}
+          gh release create "latest" build/graalvm-reachability-metadata-*.zip --title "Latest"
