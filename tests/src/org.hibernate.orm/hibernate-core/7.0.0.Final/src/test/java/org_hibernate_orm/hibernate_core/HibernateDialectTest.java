@@ -6,15 +6,7 @@
  */
 package org_hibernate_orm.hibernate_core;
 
-import org.hibernate.boot.registry.internal.BootstrapServiceRegistryImpl;
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl;
-import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
-import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfoSource;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,7 +14,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.hibernate.boot.model.internal.DialectOverridesAnnotationHelper;
+import org.hibernate.boot.registry.internal.BootstrapServiceRegistryImpl;
+import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.jdbc.dialect.internal.DialectFactoryImpl;
+import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
+import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfoSource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class HibernateDialectTest {
 
@@ -34,28 +36,33 @@ public class HibernateDialectTest {
         DialectFactoryImpl dialectFactoryImpl = new DialectFactoryImpl();
         dialectFactoryImpl.injectServices(new BootstrapServiceRegistryImpl());
         Dialect dialect = dialectFactoryImpl.buildDialect(configValues, new DialectResolutionInfoSource() {
-                    @Override
-                    public DialectResolutionInfo getDialectResolutionInfo() {
-                        return new DialectResolutionInfoTest();
-                    }
-                });
+            @Override
+            public DialectResolutionInfo getDialectResolutionInfo() {
+                return new DialectResolutionInfoTest();
+            }
+        });
         assertThat(dialect).isNotNull();
+    }
+
+    @Test
+    void listHibernateDialectOverrides() {
+        DialectOverridesAnnotationHelper.findOverrideAnnotation(org.hibernate.annotations.Check.class);
     }
 
     private static Stream<Arguments> provideHibernateDialects() {
         String dialectPackage = "org.hibernate.dialect.";
 
         List<String> hibernateDialects = Arrays.asList(
-                "CockroachDialect",
-                "H2Dialect",
-                "HANADialect",
-                "HSQLDialect",
-                "MariaDBDialect",
-                "MySQLDialect",
-                "OracleDialect",
-                "PostgresPlusDialect",
-                "PostgreSQLDialect",
-                "SQLServerDialect"
+            "CockroachDialect",
+            "H2Dialect",
+            "HANADialect",
+            "HSQLDialect",
+            "MariaDBDialect",
+            "MySQLDialect",
+            "OracleDialect",
+            "PostgresPlusDialect",
+            "PostgreSQLDialect",
+            "SQLServerDialect"
         );
 
         return hibernateDialects.stream().map(dialect -> Arguments.of(dialectPackage + dialect));
