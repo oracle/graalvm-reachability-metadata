@@ -27,9 +27,13 @@ public class IdentifierGeneratorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(classes = {org.hibernate.id.ForeignGenerator.class, org.hibernate.id.Assigned.class,  org.hibernate.id.UUIDGenerator.class,
+    @ValueSource(classes = {
+        org.hibernate.id.ForeignGenerator.class,
+        org.hibernate.id.Assigned.class,
+        org.hibernate.id.UUIDGenerator.class,
         org.hibernate.id.GUIDGenerator.class,
-        org.hibernate.id.UUIDHexGenerator.class,})
+        org.hibernate.id.UUIDHexGenerator.class
+    })
     @SuppressWarnings("deprecation")
     public void testDeprecatedIdentifierGenerators(Class<?> identifierGenerator) throws Exception {
         assertThat(identifierGenerator.getConstructor()).isNotNull();

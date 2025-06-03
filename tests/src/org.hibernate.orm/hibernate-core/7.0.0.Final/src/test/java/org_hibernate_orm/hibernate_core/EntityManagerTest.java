@@ -11,7 +11,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -39,7 +38,6 @@ public class EntityManagerTest {
         }
     }
 
-//    @Disabled("com.oracle.svm.core.jdk.UnsupportedFeatureError: Class.getNestMembers is not supported yet - via DialectOverridesAnnotationHelper:L32")
     @ParameterizedTest
     @ValueSource(strings = {
             "single",
@@ -52,7 +50,6 @@ public class EntityManagerTest {
         assertThat(entityManager).isNotNull();
     }
 
-//    @Disabled("com.oracle.svm.core.jdk.UnsupportedFeatureError: Class.getNestMembers is not supported yet - via DialectOverridesAnnotationHelper:L32")
     @ParameterizedTest
     @ValueSource(strings = {
             "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl",
