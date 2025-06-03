@@ -12,5 +12,5 @@
 ../../../../../gradlew test --tests "org_hibernate_orm.hibernate_core.IdentifierGeneratorTest" -Pagent metadataCopy
 ../../../../../gradlew test --tests "org_hibernate_orm.hibernate_core.OptimizerTest" -Pagent metadataCopy
 ../../../../../gradlew test --tests "org_hibernate_orm.hibernate_core.EntityManagerTest" -Pagent metadataCopy
-../../../../../gradlew test --tests "org_hibernate_orm.hibernate_core.JpaAnnotationsTest" -Pagent metadataCopy
+../../../../../gradlew test --tests "org_hibernate_orm.hibernate_core.OrmAnnotationHelperTest" -Pagent metadataCopy
 ../../../../../gradlew updateGeneratedMetadata
