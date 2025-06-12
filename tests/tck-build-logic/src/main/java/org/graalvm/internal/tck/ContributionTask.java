@@ -14,6 +14,7 @@ import org.graalvm.internal.tck.utils.FilesUtils;
 import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.FileSystemOperations;
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecOperations;
 
@@ -44,6 +45,9 @@ public abstract class ContributionTask extends DefaultTask {
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
 
     @Inject
+    protected abstract ProjectLayout getLayout();
+
+    @Inject
     protected abstract ExecOperations getExecOperations();
 
     @Inject
@@ -61,13 +65,21 @@ public abstract class ContributionTask extends DefaultTask {
     private final Map<String, ContributingQuestion> questions = new HashMap<>();
 
     private void initializeWorkingDirectories(){
-        testsDirectory = Path.of(getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
-        metadataDirectory = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates)).getAbsolutePath());
-        gradlew = Path.of(getProject().file("gradlew").getAbsolutePath());
+        testsDirectory = getPathFromProject(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates));
+        metadataDirectory = getPathFromProject(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
+        gradlew = getPathFromProject("gradlew");
+    }
+
+    private Path getPathFromProject(String fileName) {
+        return Path.of(getProjectFile(fileName).getAbsolutePath());
+    }
+
+    private File getProjectFile(String fileName) {
+        return getLayout().getProjectDirectory().file(fileName).getAsFile();
     }
 
     private void loadQuestions() throws IOException {
-        File questionsJson = getProject().file("tests/tck-build-logic/src/main/resources/contributing/questions.json");
+        File questionsJson = getProjectFile("tests/tck-build-logic/src/main/resources/contributing/questions.json");
         List<Question> contributingQuestions = objectMapper.readValue(questionsJson, new TypeReference<>() {});
         for (var question : contributingQuestions) {
             questions.put(question.questionKey(), new ContributingQuestion(question.question(), question.help()));
@@ -84,7 +96,7 @@ public abstract class ContributionTask extends DefaultTask {
         coordinates = getCoordinates();
         InteractiveTaskUtils.closeSection();
 
-        Path coordinatesMetadataRoot = Path.of(getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).getAbsolutePath());
+        Path coordinatesMetadataRoot = getPathFromProject(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates));
         boolean isExistingLibrary = Files.exists(coordinatesMetadataRoot);
 
         Path testsLocation = getTestsLocation();
@@ -248,7 +260,7 @@ public abstract class ContributionTask extends DefaultTask {
 
     private void updateAllowedPackages(List<String> allowedPackages, boolean libraryAlreadyExists) throws IOException {
         InteractiveTaskUtils.printUserInfo("Updating allowed packages in: " + METADATA_INDEX);
-        File metadataIndex = getProject().file(METADATA_INDEX);
+        File metadataIndex = getProjectFile(METADATA_INDEX);
 
         List<MetadataIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
         int replaceEntryIndex = -1;
@@ -446,7 +458,7 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void ensureFileBelongsToProject(Path file) {
-        if (!file.isAbsolute() || !file.startsWith(getProject().getProjectDir().getAbsolutePath())) {
+        if (!file.isAbsolute() || !file.startsWith(getLayout().getProjectDirectory().getAsFile().getAbsolutePath())) {
             throw new RuntimeException("The following file doesn't belong to the metadata repository: " + file);
         }
     }

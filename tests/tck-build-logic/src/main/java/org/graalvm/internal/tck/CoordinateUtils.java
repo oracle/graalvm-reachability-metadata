@@ -12,7 +12,7 @@ public abstract class CoordinateUtils {
                 .replace("$version$", coordinates.version());
     }
 
-    public static Coordinates fromString(String coordinates) {
+    public static Coordinates fromString(String coordinates) throws IllegalArgumentException {
         String[] coordinatesParts = coordinates.split(":");
         if (coordinatesParts.length != 3) {
             throw new IllegalArgumentException("Maven coordinates not provided in the correct format.");
