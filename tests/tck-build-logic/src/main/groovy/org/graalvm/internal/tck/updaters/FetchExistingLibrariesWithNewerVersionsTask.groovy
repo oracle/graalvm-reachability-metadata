@@ -1,4 +1,4 @@
-package org.graalvm.internal.tck.harness.tasks
+package org.graalvm.internal.tck.updaters
 
 
 import com.fasterxml.jackson.annotation.JsonInclude
