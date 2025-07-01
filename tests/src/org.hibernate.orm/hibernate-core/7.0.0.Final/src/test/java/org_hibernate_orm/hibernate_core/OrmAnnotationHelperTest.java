@@ -25,13 +25,18 @@ import org.hibernate.models.spi.RegistryPrimer;
 import org.hibernate.models.spi.ValueTypeDescriptor;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test emulating Annotation inspection and potential instance creation done during Hibernate bootstrap.
+ * Since the initialization routine is highly dependent on the context the tests use mocked and null values
+ * to call methods, ignoring potential failures caused by argument validation.
+ */
 public class OrmAnnotationHelperTest {
 
     @Test
     public void captureWrappedAnnotations() {
 
         RegistryPrimer reg = (contributions, modelsContext) -> {
-            // forget this one.
+            // nothing to do here - just a test stub to satisfy the API contract
         };
         BasicModelsContextImpl ctx = new BasicModelsContextImpl(SimpleClassLoading.SIMPLE_CLASS_LOADING, true, reg);
 
@@ -97,13 +102,13 @@ public class OrmAnnotationHelperTest {
                 Constructor<?> constructor = mad.getMutableAnnotationType().getConstructor(annotationDescriptor.getAnnotationType(), ModelsContext.class);
                 constructor.newInstance(null, null);
             } catch (Exception e) {
-                // ignore it
+                // Ignore it - Hibernate does not expect null values, however we need to capture the constructor call.
             }
             try {
                 Constructor<?> constructor = mad.getMutableAnnotationType().getConstructor(ModelsContext.class);
                 constructor.newInstance(null);
             } catch (Exception e) {
-                // ignore it
+                // Ignore it - Hibernate does not expect null values, however we need to capture the constructor call.
             }
         }
     }
@@ -113,10 +118,18 @@ public class OrmAnnotationHelperTest {
         try {
             usages.add(annotationDescriptor.createUsage(ctx));
         } catch (Exception e) {
+            /*
+             * Ignore it - Hibernate may not be happy with the context or attributes used in the test.
+             * However we need to capture the reflective method invocations done by the OrmAnnotationDescriptor.
+             */
         }
         try {
             usages.add(annotationDescriptor.createUsage(attributes, ctx));
         } catch (Exception e) {
+            /*
+             * Ignore it - Hibernate may not be happy with the context or attributes used in the test.
+             * However we need to capture the reflective method invocations done by the OrmAnnotationDescriptor.
+             */
         }
         return usages;
     }
@@ -127,7 +140,10 @@ public class OrmAnnotationHelperTest {
         } catch (Exception e) {
             Throwable rootCause = getRootCause(e);
             if (rootCause instanceof UnsupportedOperationException || rootCause instanceof NullPointerException) {
-                // this is fine - trust me I'm an engineer!
+                /*
+                 * Ignore it - Hibernate may not be happy with the context or attributes used in the test.
+                 * However we need to capture the reflective method invocations done by the OrmAnnotationHelper.
+                 */
             } else {
                 throw e;
             }
