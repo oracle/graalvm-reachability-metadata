@@ -8,7 +8,7 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.73.0)",
+    value = "by gRPC proto compiler (version 1.69.0)",
     comments = "Source: helloworld.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class SimpleGrpc {
@@ -61,21 +61,6 @@ public final class SimpleGrpc {
         }
       };
     return SimpleStub.newStub(factory, channel);
-  }
-
-  /**
-   * Creates a new blocking-style stub that supports all types of calls on the service
-   */
-  public static SimpleBlockingV2Stub newBlockingV2Stub(
-      io.grpc.Channel channel) {
-    io.grpc.stub.AbstractStub.StubFactory<SimpleBlockingV2Stub> factory =
-      new io.grpc.stub.AbstractStub.StubFactory<SimpleBlockingV2Stub>() {
-        @java.lang.Override
-        public SimpleBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-          return new SimpleBlockingV2Stub(channel, callOptions);
-        }
-      };
-    return SimpleBlockingV2Stub.newStub(factory, channel);
   }
 
   /**
@@ -173,36 +158,6 @@ public final class SimpleGrpc {
 
   /**
    * A stub to allow clients to do synchronous rpc calls to service Simple.
-   * <pre>
-   * The greeting service definition.
-   * </pre>
-   */
-  public static final class SimpleBlockingV2Stub
-      extends io.grpc.stub.AbstractBlockingStub<SimpleBlockingV2Stub> {
-    private SimpleBlockingV2Stub(
-        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-      super(channel, callOptions);
-    }
-
-    @java.lang.Override
-    protected SimpleBlockingV2Stub build(
-        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-      return new SimpleBlockingV2Stub(channel, callOptions);
-    }
-
-    /**
-     * <pre>
-     * Sends a greeting
-     * </pre>
-     */
-    public grpc.HelloReply sayHello(grpc.HelloRequest request) {
-      return io.grpc.stub.ClientCalls.blockingUnaryCall(
-          getChannel(), getSayHelloMethod(), getCallOptions(), request);
-    }
-  }
-
-  /**
-   * A stub to allow clients to do limited synchronous rpc calls to service Simple.
    * <pre>
    * The greeting service definition.
    * </pre>
