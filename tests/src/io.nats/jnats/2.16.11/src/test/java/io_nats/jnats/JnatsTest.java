@@ -30,7 +30,7 @@ class JnatsTest {
     @BeforeAll
     public void init() throws IOException {
         System.out.println("Starting NATS ...");
-        process = new ProcessBuilder("docker", "run", "--rm", "-p", "4222:4222", "nats:2.11.3").inheritIO().start();
+        process = new ProcessBuilder("docker", "run", "--rm", "-p", "4222:4222", "nats:2.11.5").inheritIO().start();
 
         waitUntil(() -> {
             openConnection().close();
