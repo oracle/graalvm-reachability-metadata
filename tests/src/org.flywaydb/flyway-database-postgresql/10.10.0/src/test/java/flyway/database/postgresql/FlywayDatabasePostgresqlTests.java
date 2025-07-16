@@ -17,6 +17,7 @@ import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.Configuration;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.flywaydb.core.api.output.MigrateResult;
+import org.flywaydb.database.postgresql.PostgreSQLConfigurationExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -68,6 +69,9 @@ public class FlywayDatabasePostgresqlTests {
                 .dataSource(dataSource)
                 .encoding(StandardCharsets.UTF_8)
                 .resourceProvider(new FixedResourceProvider());
+        configuration.getPluginRegister()
+                .getPlugin(PostgreSQLConfigurationExtension.class)
+                .setTransactionalLock(false);
 
         Flyway flyway = new Flyway(configuration);
         MigrateResult migration = flyway.migrate();
