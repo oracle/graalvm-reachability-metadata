@@ -30,7 +30,7 @@ In order to start this task, run (we suggest using `--console=plain` to reduce a
 ./gradlew contribute --console=plain
 ```
 
-When started, the task will ask you few simple questions (like: where are your tests implemented, do your tests need resources, do your tests need docker images...). 
+When started, the task will ask you few simple questions (like: where are your tests implemented, do your tests need resources, do your tests need docker images...).
 In case you don't understand the question, just type "help".
 
 After it collects your answers, the task will:
@@ -43,7 +43,7 @@ After it collects your answers, the task will:
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
 `org.example:library` project is also included as a template for new libraries.
 
-* GraalVM Reachability Metadata in this repo only contains JSON files as described 
+* GraalVM Reachability Metadata in this repo only contains JSON files as described
 in [Manual Configuration](https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/Reflection/#manual-configuration)
 section of the Native Image documentation.
 * All other library tweaks (such as build time initialization through `native-image.properties`) must not be included
@@ -92,7 +92,7 @@ Every metadata has an entry in the `metadata/index.json`. For example:
     "module": "org.example:dependant-library",
     "requires": [
       "org.example:library"
-    ], 
+    ],
     "allowed-packages": [
        "org.package.name"
      ]
@@ -179,8 +179,8 @@ output if necessary:
 
 ## Tests
 
-> **Note:** Contributors must be original authors of all the tests provided in the pull request, or 
-must add a comment that proves they may publish them under the license specified in those tests. 
+> **Note:** Contributors must be original authors of all the tests provided in the pull request, or
+must add a comment that proves they may publish them under the license specified in those tests.
 
 Every submitted library must feature tests that serve as a safeguard against regressions.
 For easier test development we've provided a TCK plugin that automatically configures
@@ -236,7 +236,7 @@ The test code lives in `test-project-path`. In this example that would be `tests
     "-Plibrary.version=<version>"
   ]
 }
-``` 
+```
 
 Supported template parameters for `test-command` are:
 
@@ -254,9 +254,9 @@ In this example this can be done by invoking following command from the reposito
 ```bash
 ./gradlew test -Pcoordinates=org.example:library:0.0.1
 ```
- 
+
 ### Providing the tests that use docker
- 
+
 If your tests use Docker (either with explicit Docker process invocation or through some library method call), all images have to be declared in `required-docker-images` file.
 This file must be placed under `/tests/src/<groupId>/<artifactId>/<versionId>`.
 
@@ -276,7 +276,7 @@ Possible scenarios:
    * If your test uses Docker image that is not listed in [allowed docker images list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/AllowedDockerImages.txt),
    the test will fail
    * Only docker images that are in both `required-docker-images.txt` and in the `allowed docker images list`
-   can be executed. 
+   can be executed.
 
 **Note:** For images that comes from Oracle, please consider using them from the official [Oracle Container Registry](https://container-registry.oracle.com).
 See an [example](https://github.com/oracle/graalvm-reachability-metadata/blob/master/tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-mysql_mysql-server).
@@ -302,8 +302,8 @@ Write an entry as follows:
 }
 ```
 Where:
- * `<groupId>` and `<artifactId>` - part of the standard Maven coordinates ([see this](https://maven.apache.org/pom.html#maven-coordinates))
- * `<artifactDescription>` - short description of the library or framework (_not required_) 
+ * `<groupId>` and `<artifactId>` - part of the standard Maven coordinates ([see this](https://maven.apache.org/pom.html#Maven_Coordinates))
+ * `<artifactDescription>` - short description of the library or framework (_not required_)
  * `<minimumVersion>` - minimal version for which this entry applies
  * `<maximumVersion>` - maximal version for which this entry applies (_not required_)
  * `<metadataLocations>` - list of web URLs providing metadata
