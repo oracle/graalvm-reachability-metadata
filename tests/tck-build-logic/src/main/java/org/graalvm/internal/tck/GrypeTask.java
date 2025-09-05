@@ -10,10 +10,13 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static org.graalvm.internal.tck.DockerUtils.extractImagesNames;
-import static org.graalvm.internal.tck.DockerUtils.getAllAllowedImages;
 
 public abstract class GrypeTask extends DefaultTask {
 
@@ -33,19 +36,148 @@ public abstract class GrypeTask extends DefaultTask {
     private String newCommit;
     private String baseCommit;
 
-    private final String jqMatcher = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
+    private static final String JQ_MATCHER = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
+    private static final String DOCKERFILE_DIRECTORY = "allowed-docker-images";
 
-    private List<URL> getChangedImages(String base, String head){
+    private record Vulnerabilities(int critical, int high){}
+
+    private record DockerImage(String image, Vulnerabilities vulnerabilities) {
+        public String getImageName() {
+            return DockerUtils.getImageName(image);
+        }
+
+        public boolean isVulnerableImage() {
+            return vulnerabilities.critical() > 0 || vulnerabilities.high() > 0;
+        }
+
+        public boolean isLessVulnerable(DockerImage other) {
+            // first check number of critical vulnerabilities
+            if (this.vulnerabilities.critical() < other.vulnerabilities().critical()) {
+                return true;
+            }
+
+            // if number of critical vulnerabilities is the same => check number of high vulnerabilities
+            return this.vulnerabilities.critical() == other.vulnerabilities().critical() && this.vulnerabilities.high() < other.vulnerabilities().high();
+        }
+
+        public void printVulnerabilityStatus() {
+            System.out.println("Image: " + image + " contains " + vulnerabilities.critical() + " critical and " + vulnerabilities.high() + " high vulnerabilities");
+        }
+    }
+
+    @TaskAction
+    void run() throws IllegalStateException, IOException, URISyntaxException {
+        boolean scanAllAllowedImages = baseCommit == null && newCommit == null;
+        if (scanAllAllowedImages) {
+            scanAllImages();
+        } else {
+            scanChangedImages();
+        }
+    }
+
+    /**
+     * Re-scans all images from allowed images list
+     */
+    private void scanAllImages() {
+        Set<DockerImage> imagesToCheck = DockerUtils.getAllAllowedImages().stream().map(this::makeDockerImage).collect(Collectors.toSet());
+        List<DockerImage> vulnerableImages = imagesToCheck.stream().filter(DockerImage::isVulnerableImage).toList();
+
+        if (!vulnerableImages.isEmpty()) {
+            vulnerableImages.forEach(DockerImage::printVulnerabilityStatus);
+            throw new IllegalStateException("Highly vulnerable images found. Please check the list of vulnerable images provided above.");
+        }
+    }
+
+    /**
+     * Scans images that have been changed between org.graalvm.internal.tck.GrypeTask#baseCommit and org.graalvm.internal.tck.GrypeTask#newCommit.
+     * If changed images are less vulnerable than previously allowed images, they won't be reported as vulnerable
+     */
+    private void scanChangedImages() throws IOException, URISyntaxException {
+        Set<DockerImage> imagesToCheck = getChangedImages().stream().map(this::makeDockerImage).collect(Collectors.toSet());
+        List<DockerImage> vulnerableImages = imagesToCheck.stream().filter(DockerImage::isVulnerableImage).toList();
+
+        if (!vulnerableImages.isEmpty()) {
+            int acceptedImages = 0;
+            Set<String> currentlyAllowedImages = getAllowedImagesFromMaster();
+
+            for (DockerImage image : vulnerableImages) {
+                image.printVulnerabilityStatus();
+
+                // get allowed image with the same name, if it exists
+                Optional<String> existingAllowedImage = currentlyAllowedImages.stream()
+                        .filter(allowedImage -> DockerUtils.getImageName(allowedImage).equalsIgnoreCase(image.getImageName()))
+                        .findFirst();
+
+                // check if a new image is less vulnerable than the existing one
+                if (existingAllowedImage.isPresent()) {
+                    DockerImage imageToCompare = makeDockerImage(existingAllowedImage.get());
+                    imageToCompare.printVulnerabilityStatus();
+
+                    if (image.isLessVulnerable(imageToCompare)) {
+                        System.out.println("Accepting: " + image.image() + " because it has less vulnerabilities than existing: " + imageToCompare.image());
+                        acceptedImages++;
+                    }
+                }
+            }
+
+            if (acceptedImages < vulnerableImages.size()) {
+                throw new IllegalStateException("Highly vulnerable images found. Please check the list of vulnerable images provided above.");
+            }
+        }
+    }
+
+    private DockerImage makeDockerImage(String image) {
+        System.out.println("Generating info for docker image: " + image);
+        return new DockerImage(image, getVulnerabilities(image));
+    }
+
+    private Vulnerabilities getVulnerabilities(String image) {
+        int numberOfHigh = 0;
+        int numberOfCritical = 0;
+        String[] command = {"-c", "grype -o json " + image + JQ_MATCHER};
+
+        // call Grype to get vulnerabilities
+        ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
+        getExecOperations().exec(execSpec -> {
+            execSpec.setExecutable("/bin/sh");
+            execSpec.setArgs(List.of(command));
+            execSpec.setStandardOutput(execOutput);
+        });
+
+        // parse Grype output
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(execOutput.toByteArray());
+        try (BufferedReader stdOut = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = stdOut.readLine()) != null) {
+                if (line.contains("\"severity\":\"High\"")) {
+                    numberOfHigh++;
+                } else if (line.contains("\"severity\":\"Critical\"")) {
+                    numberOfCritical++;
+                }
+            }
+
+            inputStream.close();
+            execOutput.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new Vulnerabilities(numberOfCritical, numberOfHigh);
+    }
+
+    /**
+     * Get all docker images introduced between two commits
+     */
+    private Set<String> getChangedImages() throws IOException, URISyntaxException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         getExecOperations().exec(spec -> {
             spec.setStandardOutput(baos);
-            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT", base, head);
+            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT", baseCommit, newCommit);
         });
 
         String output = baos.toString(StandardCharsets.UTF_8);
-        String dockerfileDirectory = "allowed-docker-images";
         List<URL> diffFiles = Arrays.stream(output.split("\\r?\\n"))
-                .filter(path -> path.contains(dockerfileDirectory))
+                .filter(path -> path.contains(DOCKERFILE_DIRECTORY))
                 .map(path -> path.substring(path.lastIndexOf("/") + 1))
                 .map(DockerUtils::getDockerFile)
                 .toList();
@@ -55,66 +187,39 @@ public abstract class GrypeTask extends DefaultTask {
                     "This task should be executed only if there are changes in allowed-docker-images directory.");
         }
 
-        return diffFiles;
+        return DockerUtils.extractImagesNames(diffFiles);
     }
 
-    @TaskAction
-    void run() throws IllegalStateException, IOException, URISyntaxException {
-        List<String> vulnerableImages = new ArrayList<>();
-        Set<String> allowedImages;
-        if (baseCommit == null && newCommit == null) {
-            allowedImages = getAllAllowedImages();
-        } else {
-            allowedImages = extractImagesNames(getChangedImages(baseCommit, newCommit));
+    /**
+     * Return all allowed docker images from master branch
+     */
+    private Set<String> getAllowedImagesFromMaster() throws URISyntaxException, IOException {
+        URL url = GrypeTask.class.getResource(DockerUtils.ALLOWED_DOCKER_IMAGES);
+        if (url == null) {
+            throw new RuntimeException("Cannot find allowed-docker-images directory");
         }
 
-        boolean shouldFail = false;
-        for (String image : allowedImages) {
-            System.out.println("Checking image: " + image);
-            String[] command = { "-c",  "grype -o json " + image + jqMatcher };
+        Set<String> allowedImages = new HashSet<>();
+        try (FileSystem fs = FileSystems.newFileSystem(url.toURI(), Collections.emptyMap())) {
+            List<String> files = Files.walk(fs.getPath(DockerUtils.ALLOWED_DOCKER_IMAGES))
+                    .filter(Files::isRegularFile)
+                    .map(Path::toString)
+                    .map(path -> path.substring(path.lastIndexOf("/") + 1))
+                    .map(DockerUtils::getDockerFile)
+                    .map(DockerUtils::fileNameFromJar)
+                    .toList();
 
-            ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
-            getExecOperations().exec(execSpec -> {
-                execSpec.setExecutable("/bin/sh");
-                execSpec.setArgs(List.of(command));
-                execSpec.setStandardOutput(execOutput);
-            });
+            for (String file : files) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                getExecOperations().exec(spec -> {
+                    spec.setStandardOutput(baos);
+                    spec.commandLine("git", "show", "master:tests/tck-build-logic/src/main/resources" + file);
+                });
 
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(execOutput.toByteArray());
-            try (BufferedReader stdOut = new BufferedReader(new InputStreamReader(inputStream))) {
-                int numberOfHigh = 0;
-                int numberOfCritical = 0;
-                String line;
-                while ((line = stdOut.readLine()) != null) {
-                    if (line.contains("\"severity\":\"High\"")) {
-                        numberOfHigh++;
-                    }else if (line.contains("\"severity\":\"Critical\"")) {
-                        numberOfCritical++;
-                    }
-                }
-
-                if (numberOfHigh > 0 || numberOfCritical > 0) {
-                    vulnerableImages.add("Image: " + image + " contains " + numberOfCritical + " critical, and " + numberOfHigh + " high vulnerabilities");
-                }
-
-                if (numberOfHigh > 4 || numberOfCritical > 0) {
-                    shouldFail = true;
-                }
+                allowedImages.add(baos.toString());
             }
-
-            inputStream.close();
-            execOutput.close();
         }
 
-        if (!vulnerableImages.isEmpty()) {
-            System.err.println("Vulnerable images found:");
-            System.err.println("===========================================================");
-            vulnerableImages.forEach(System.err::println);
-        }
-
-        if (shouldFail) {
-            throw new IllegalStateException("Highly vulnerable images found. Please check the list of vulnerable images provided above.");
-        }
+        return allowedImages.stream().map(line -> line.substring("FROM".length()).trim()).collect(Collectors.toSet());
     }
-
 }
