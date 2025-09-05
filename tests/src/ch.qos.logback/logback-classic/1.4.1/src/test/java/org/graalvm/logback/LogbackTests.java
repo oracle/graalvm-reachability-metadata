@@ -55,12 +55,14 @@ public class LogbackTests {
   static {
     layoutTagMap.put("patternLayout", LayoutTags.PATTERN_TAG);
     layoutTagMap.put("xmlLayout", LayoutTags.XML_TAG);
+    layoutTagMap.put("htmlLayout", LayoutTags.HTML_TAG);
   }
 
   private static final Map<String, String> layoutResultMap = new HashMap<>();
   static {
     layoutResultMap.put("patternLayout", "#logback.classic pattern: %msg\ntest info message");
     layoutResultMap.put("xmlLayout", "<log4j:message>test info message</log4j:message>");
+    layoutResultMap.put("htmlLayout", "<td class=\"Message\">test info message</td>");
   }
 
   private final PrintStream systemOut = System.out;
@@ -110,6 +112,38 @@ public class LogbackTests {
 
     String loggedMessage = outputStreamCaptor.toString();
     assertThat(loggedMessage).contains(layoutResultMap.get(layoutName));
+  }
+
+  @Test
+  void testLoggingLevels() throws Exception {
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(context);
+
+    String configXml = """
+            <configuration>
+                <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+                    <encoder>
+                        <pattern>%p %msg%n</pattern>
+                    </encoder>
+                </appender>
+                <root level="DEBUG">
+                    <appender-ref ref="STDOUT"/>
+                </root>
+            </configuration>
+            """;
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.debug("debug message");
+    testLogger.info("info message");
+    testLogger.warn("warn message");
+    testLogger.error("error message");
+
+    String loggedMessage = outputStreamCaptor.toString();
+    assertThat(loggedMessage).contains("DEBUG debug message");
+    assertThat(loggedMessage).contains("INFO info message");
+    assertThat(loggedMessage).contains("WARN warn message");
+    assertThat(loggedMessage).contains("ERROR error message");
   }
 
   @Test
@@ -221,4 +255,3 @@ public class LogbackTests {
   }
 
 }
-

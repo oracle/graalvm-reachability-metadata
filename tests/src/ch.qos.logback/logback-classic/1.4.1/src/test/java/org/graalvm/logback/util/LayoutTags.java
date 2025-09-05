@@ -7,6 +7,10 @@
 package org.graalvm.logback.util;
 
 public class LayoutTags {
+    public static final String HTML_TAG = """
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>%msg</pattern>
+            </layout>""";
 
     public static final String CONFIG_TAG = """
             <configuration>
