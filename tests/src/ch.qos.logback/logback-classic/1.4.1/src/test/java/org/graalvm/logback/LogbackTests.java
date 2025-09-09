@@ -25,6 +25,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.util.PropertySetter;
@@ -55,12 +56,14 @@ public class LogbackTests {
   static {
     layoutTagMap.put("patternLayout", LayoutTags.PATTERN_TAG);
     layoutTagMap.put("xmlLayout", LayoutTags.XML_TAG);
+    layoutTagMap.put("htmlLayout", LayoutTags.HTML_TAG);
   }
 
   private static final Map<String, String> layoutResultMap = new HashMap<>();
   static {
     layoutResultMap.put("patternLayout", "#logback.classic pattern: %msg\ntest info message");
     layoutResultMap.put("xmlLayout", "<log4j:message>test info message</log4j:message>");
+    layoutResultMap.put("htmlLayout", "<td class=\"Message\">test info message</td>");
   }
 
   private final PrintStream systemOut = System.out;
@@ -97,7 +100,7 @@ public class LogbackTests {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"patternLayout", "xmlLayout"})
+  @ValueSource(strings = {"patternLayout", "xmlLayout", "htmlLayout"})
   void testLayouts(String layoutName) throws Exception {
     JoranConfigurator joranConfigurator = new JoranConfigurator();
     joranConfigurator.setContext(context);
@@ -110,6 +113,38 @@ public class LogbackTests {
 
     String loggedMessage = outputStreamCaptor.toString();
     assertThat(loggedMessage).contains(layoutResultMap.get(layoutName));
+  }
+
+  @Test
+  void testLoggingLevels() throws Exception {
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(context);
+
+    String configXml = """
+            <configuration>
+                <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+                    <encoder>
+                        <pattern>%p %msg%n</pattern>
+                    </encoder>
+                </appender>
+                <root level="DEBUG">
+                    <appender-ref ref="STDOUT"/>
+                </root>
+            </configuration>
+            """;
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.debug("debug message");
+    testLogger.info("info message");
+    testLogger.warn("warn message");
+    testLogger.error("error message");
+
+    String loggedMessage = outputStreamCaptor.toString();
+    assertThat(loggedMessage).contains("DEBUG debug message");
+    assertThat(loggedMessage).contains("INFO info message");
+    assertThat(loggedMessage).contains("WARN warn message");
+    assertThat(loggedMessage).contains("ERROR error message");
   }
 
   @Test
@@ -147,11 +182,133 @@ public class LogbackTests {
   }
 
   @Test
-  void consoleAppenderPropertySetter() {
+  void testAutoConfigLoadsConfigFromClasspath() throws Exception {
+    context.reset();
+    new ContextInitializer(context).autoConfig();
+
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.info("auto-configured message");
+
+    String loggedMessage = outputStreamCaptor.toString();
+    assertThat(loggedMessage).contains("auto-configured message");
+  }
+
+  @Test
+  void testIncludeResourceConfiguration() throws Exception {
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(context);
+
+    String configXml = """
+            <configuration>
+                <include resource="include-fragment.xml"/>
+                <root>
+                    <appender-ref ref="INC_STDOUT"/>
+                </root>
+            </configuration>
+            """;
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.info("included resource message");
+
+    String loggedMessage = outputStreamCaptor.toString();
+    assertThat(loggedMessage).contains("included resource message");
+  }
+
+  @Test
+  void testThresholdFilterXml() throws Exception {
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(context);
+
+    String configXml = """
+            <configuration>
+                <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+                    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                        <level>WARN</level>
+                    </filter>
+                    <encoder>
+                        <pattern>%level %msg%n</pattern>
+                    </encoder>
+                </appender>
+                <root level="DEBUG">
+                    <appender-ref ref="STDOUT"/>
+                </root>
+            </configuration>
+            """;
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.info("info should be filtered");
+    testLogger.warn("warn should pass");
+
+    String loggedMessage = outputStreamCaptor.toString();
+    assertThat(loggedMessage).doesNotContain("INFO info should be filtered");
+    assertThat(loggedMessage).contains("WARN warn should pass");
+  }
+
+  @Test
+  void testCustomConverterViaConversionRule() throws Exception {
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(context);
+
+    String configXml = """
+            <configuration>
+                <conversionRule conversionWord="SIMPLE" converterClass="org.graalvm.logback.util.SimpleConverter"/>
+                <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+                    <encoder>
+                        <pattern>%SIMPLE %msg%n</pattern>
+                    </encoder>
+                </appender>
+                <root>
+                    <appender-ref ref="STDOUT"/>
+                </root>
+            </configuration>
+            """;
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.info("converted");
+
+    String loggedMessage = outputStreamCaptor.toString();
+    assertThat(loggedMessage).contains("SIMPLE converted");
+  }
+
+  @Test
+  void testMdcAndPropertySubstitutionInPattern() throws Exception {
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(context);
+
+    String configXml = """
+            <configuration>
+                <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+                    <encoder>
+                        <pattern>%X{test} - ${test} - %msg%n</pattern>
+                    </encoder>
+                </appender>
+                <root>
+                    <appender-ref ref="STDOUT"/>
+                </root>
+            </configuration>
+            """;
+    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+
+    Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    testLogger.info("prop message");
+
+    String loggedMessage = outputStreamCaptor.toString();
+    assertThat(loggedMessage).contains("GraalVM - GraalVM property - prop message");
+  }
+
+  @Test
+  void testPropertySetter() {
     ConsoleAppender consoleAppender = new ConsoleAppender();
     PropertySetter propertySetter = new PropertySetter(new BeanDescriptionCache(null), consoleAppender);
     propertySetter.setProperty("withJansi", "true");
     assertThat(consoleAppender.isWithJansi()).isTrue();
+
+    // Additional test for another property
+    propertySetter.setProperty("name", "Test Appender");
+    assertThat(consoleAppender.getName()).isEqualTo("Test Appender");
   }
 
   @ParameterizedTest
@@ -221,4 +378,3 @@ public class LogbackTests {
   }
 
 }
-
