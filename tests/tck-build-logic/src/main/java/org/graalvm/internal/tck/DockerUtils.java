@@ -1,7 +1,6 @@
 package org.graalvm.internal.tck;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -10,10 +9,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DockerUtils {
-    private static final String ALLOWED_DOCKER_IMAGES = "/allowed-docker-images";
+    public static final String ALLOWED_DOCKER_IMAGES = "/allowed-docker-images";
 
     private static URL getDockerfileDirectory() {
         URL url = DockerUtils.class.getResource(ALLOWED_DOCKER_IMAGES);
@@ -47,7 +45,7 @@ public class DockerUtils {
         return images.get(0);
     }
 
-    private static String fileNameFromJar(URL jarFile) {
+    public static String fileNameFromJar(URL jarFile) {
         return jarFile.toString().split("!")[1];
     }
 
@@ -76,6 +74,10 @@ public class DockerUtils {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getImageName(String imageWithVersion) {
+        return imageWithVersion.split(":")[0];
     }
 
 }
