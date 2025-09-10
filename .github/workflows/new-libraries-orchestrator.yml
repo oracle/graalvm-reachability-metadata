@@ -1,0 +1,66 @@
+name: Spawn and orchestrate versions checker workflows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  calculate-matrix:
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    name: "📋 Get list of all supported libraries with newer versions"
+    runs-on: ubuntu-22.04
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    timeout-minutes: 90
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: Install jq and GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq gh
+
+      - name: "🔧 Prepare environment"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Calculate and Dispatch Batches
+        run: |
+          list=$(./gradlew fetchExistingLibrariesWithNewerVersions --matrixLimit=5000 --quiet | sed -n '/\[/,$p')
+          echo $list
+          
+          total=$(echo "$list" | jq 'length')
+          echo "Total items: $total"
+          
+          batch_size=250
+          start=0
+          batch_id=0
+          
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          
+          while [ $start -lt $total ]; do
+            end=$((start + batch_size))
+            echo "Dispatching batch: $start to $((end-1)) (batch_id: $batch_id)"
+          
+            current_batch=$(echo "$list" | jq ".[$start:$end]")
+            echo "Items for this batch: $current_batch"
+          
+            branch_name="check-new-library-versions/batch-id-$batch_id/$(date '+%Y-%m-%d')"
+          
+            git checkout master
+            git switch -C "$branch_name"
+            git push origin "$branch_name"
+
+            gh workflow run check-new-library-versions-in-batch.yml --ref main -f items="$current_batch" -f batch_id="$batch_id"
+            sleep 120
+
+            start=$end
+            batch_id=$((batch_id + 1))
+          done
