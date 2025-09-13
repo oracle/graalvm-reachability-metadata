@@ -12,7 +12,7 @@ permissions:
 jobs:
   get-changed-metadata:
     name: "📋 Get a list of changed metadata"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -37,7 +37,7 @@ jobs:
     needs: get-changed-metadata
     if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true'
     name: "🚀 Create a release"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     env:
       GH_TOKEN: ${{ github.token }}
     steps:

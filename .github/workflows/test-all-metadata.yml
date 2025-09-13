@@ -17,7 +17,7 @@ jobs:
   get-all-metadata:
     if: github.repository == 'oracle/graalvm-reachability-metadata'
     name: "📋 Get list of all supported libraries"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -78,7 +78,7 @@ jobs:
 
   all-metadata-passed:
     name: "🧪 All metadata tests have passed"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     timeout-minutes: 1
     if: ${{ always() }} && github.repository == 'oracle/graalvm-reachability-metadata'
     needs: test-all-metadata

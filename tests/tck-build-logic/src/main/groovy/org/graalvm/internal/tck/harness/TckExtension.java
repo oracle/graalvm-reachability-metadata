@@ -18,11 +18,9 @@ import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.process.ExecOperations;
-import org.gradle.util.internal.VersionNumber;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
