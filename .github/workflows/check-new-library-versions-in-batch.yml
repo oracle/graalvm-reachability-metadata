@@ -1,52 +1,69 @@
-name: Check new library versions for batch
+name: "Check new libraries versions"
 
 on:
-  workflow_call:
-    inputs:
-      items:
-        required: true
-        type: string
-      batch_id:
-        required: true
-        type: string
   workflow_dispatch:
-    inputs:
-      items:
-        required: true
-        description: "JSON array of batch items"
-        type: string
-      batch_id:
-        required: true
-        description: "Represents the unique id of this batch"
-        type: string
 
-permissions: write-all
+permissions:
+  contents: write
+  actions: write
 
 concurrency:
-  group: "workflow = ${{ github.workflow }}, batch = ${{ inputs.batch_id }}"
-  cancel-in-progress: false
+  group: "workflow=${{ github.workflow }},ref=${{ github.event.ref }},pr=${{ github.event.pull_request.id }}"
+  cancel-in-progress: true
 
 jobs:
-  process-batch:
+  get-all-libraries:
+    name: "📋 Get list of all supported libraries with newer versions"
     if: github.repository == 'oracle/graalvm-reachability-metadata'
-    name: "🧪 Processing ${{ matrix.item }}"
-    permissions: write-all
     runs-on: ubuntu-22.04
-    timeout-minutes: 20
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    strategy:
-      fail-fast: false
-      matrix:
-        item: ${{ fromJson(inputs.items) }}
+    timeout-minutes: 5
+    permissions: write-all
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      branch: ${{ steps.set-branch-name.outputs.branch }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "Install tools"
+      - name: "🔧 Prepare environment"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "📅 Set branch name"
+        id: set-branch-name
         run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
+          BRANCH_NAME="check-new-library-versions/$(date '+%Y-%m-%d')"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: "🕸️ Populate matrix"
+        id: set-matrix
+        run: |
+          echo "matrix=$(./gradlew fetchExistingLibrariesWithNewerVersions --matrixLimit=5000 --quiet | sed -n '/\[/,$p')" >> $GITHUB_OUTPUT
+
+      - name: "🔨 Create branch"
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          git checkout -b "${{ steps.set-branch-name.outputs.branch }}"
+          git push origin "${{ steps.set-branch-name.outputs.branch }}"
+
+  test-all-metadata:
+    name: "🧪 ${{ matrix.item.name }}"
+    runs-on: ubuntu-22.04
+    needs: get-all-libraries
+    permissions: write-all
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        item: ${{ fromJson(needs.get-all-libraries.outputs.matrix) }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
 
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
@@ -64,8 +81,9 @@ jobs:
           native-image-job-reports: 'true'
 
       - name: "Extract test path and library version"
+        id: extract-params
         run: |
-          LIBRARY_PATH=$(echo ${{ matrix.item }} | cut -d ':' -f1-2 | sed 's/:/\//g')
+          LIBRARY_PATH=$(echo "${{ matrix.item.name }}" | sed 's/:/\//g')
           LATEST_VERSION=$(find tests/src/$LIBRARY_PATH/* -maxdepth 1 -type d | sort -V | tail -1 | cut -d '/' -f5)
           TEST_PATH="$LIBRARY_PATH/$LATEST_VERSION"
           TEST_COORDINATES=$(echo "$TEST_PATH" | tr / :)
@@ -75,8 +93,7 @@ jobs:
           echo "TEST_COORDINATES=$TEST_COORDINATES" >> ${GITHUB_ENV}
 
       - name: "Pull allowed docker images"
-        run: |
-          ./gradlew pullAllowedDockerImages --coordinates=${{ env.TEST_COORDINATES }}
+        run: ./gradlew pullAllowedDockerImages --coordinates="${{ env.TEST_COORDINATES }}"
 
       - name: "Disable docker"
         run: |
@@ -89,101 +106,76 @@ jobs:
           sudo systemctl restart docker
 
       - name: "🧪 Run '${{ env.TEST_COORDINATES }}' tests"
+        id: runtests
         run: |
-          TESTING_VERSION=$(echo ${{ matrix.item }} | cut -d ":" -f3)
-          export GVM_TCK_LV=$TESTING_VERSION
+          bash ./.github/workflows/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.item.versions) }}' 2>&1 | tee test_results.txt || true
 
-          ./gradlew test -Pcoordinates=${{ env.TEST_COORDINATES }}
+          # Extract successful versions
+          grep "^PASSED:" test_results.txt | sed 's/PASSED://g' > successful_versions.txt
+          echo "successful_versions<<EOF" >> $GITHUB_OUTPUT
+          cat successful_versions.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Extract failed version
+          FAILED_VERSION=$(grep "^FAILED:" test_results.txt | sed 's/FAILED://g')
+          echo "failed_version=$FAILED_VERSION" >> $GITHUB_OUTPUT
 
       - name: "✔️ New library is supported"
-        if: success()
+        if: steps.runtests.outputs.successful_versions != ''
         run: |
-          bash ./.github/workflows/tryPushVersionsUpdate.sh ${{ matrix.item }} ${{ env.LATEST_VERSION }} ${{ inputs.batch_id }}
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
+          git checkout ${{ needs.get-all-libraries.outputs.branch }}
+
+          while read version; do
+            if [ -n "$version" ]; then
+              ./gradlew addTestedVersion --coordinates="${{ matrix.item.name }}:$version" --lastSupportedVersion="${{ env.LATEST_VERSION }}"
+            fi
+          done < successful_versions.txt
+
+          git add -u
+          git commit -m "Update tested versions for ${{ matrix.item.name }}"
+          git push origin ${{ needs.get-all-libraries.outputs.branch }}
 
       - name: "❗ New library is not supported"
-        if: failure()
+        if: steps.runtests.outputs.failed_version != ''
         run: |
-          LIB=$(echo "${{ matrix.item }}" | sed 's/:/_/g')
-          touch $LIB
-          echo "UNSUPPORTED_LIB=$LIB" >> $GITHUB_ENV
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          
+          FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
+          REPO="${{ github.repository }}"
+          TITLE="Failure detected for ${{ matrix.item.name }}"
+          BODY="First failing version ${{ matrix.item.name }}:$FAILED_VERSION"
 
-      - name: "Upload artifacts"
-        if: failure()
-        id: upload
-        continue-on-error: true
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.UNSUPPORTED_LIB }}
-          path: ${{ env.UNSUPPORTED_LIB }}
-          retention-days: 1
+          ISSUE_NUMBER=$(gh issue list --repo "$REPO" --state open --search "$TITLE" --json number,title --jq '.[] | select(.title == "'"$TITLE"'") | .number')
+          if [ -n "$ISSUE_NUMBER" ]; then
+            echo "Updating existing issue #$ISSUE_NUMBER"
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --body "$BODY"
+          else
+            echo "Creating new issue"
+            gh issue create --repo "$REPO" --title "$TITLE" --body "$BODY"
+          fi
 
   process-results:
     name: "🧪 Process results"
-    runs-on: "ubuntu-22.04"
-    if: ${{ always() }}
-    needs:
-      - process-batch
+    runs-on: ubuntu-22.04
     permissions: write-all
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: ${{ always() }}
+    needs:
+      - get-all-libraries
+      - test-all-metadata
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
-      - name: "🔧 Setup java"
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'oracle'
-          java-version: '21'
+
       - name: "✏️ PR for supported versions"
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
-          git fetch origin check-new-library-versions/batch-id-${{ inputs.batch_id }}/$(date '+%Y-%m-%d')
-          git checkout check-new-library-versions/batch-id-${{ inputs.batch_id }}/$(date '+%Y-%m-%d')
+          git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
+          git checkout ${{ needs.get-all-libraries.outputs.branch }}
           gh pr create --title "Update supported library versions" --body "This pull request updates supported versions of the existing libraries in the repo"
-      - name: "Download artifacts for unsupported versions"
-        uses: actions/download-artifact@v4
-        with:
-          path: ./unsupported
-      - name: "✏️ Issue for unsupported versions"
-        run: |
-          if [ -d "unsupported" ]; then
-          
-            cd unsupported
-            git config --local user.email "actions@github.com"
-            git config --local user.name "Github Actions" 
-          
-            # Map from <group_artifact> to list of versions
-            declare -A failures
-          
-            for FILENAME in *; do
-              GROUPID=$(echo "$FILENAME" | cut -d'_' -f1)
-              ARTIFACTID=$(echo "$FILENAME" | cut -d'_' -f2)
-              VERSION=$(echo "$FILENAME" | cut -d'_' -f3)
-              GA="${GROUPID}:${ARTIFACTID}"
-              failures["$GA"]+="${VERSION}"$'\n'
-            done
-          
-            for GA in "${!failures[@]}"; do
-              TITLE="Failure for $GA"
-              EXISTING_ISSUE_URL=$(gh issue list --state "open" --search "$TITLE" --json title,url | jq -r ".[] | select(.title==\"$TITLE\") | .url")
-          
-              BODY="${failures[$GA]}"
-          
-              if [ -n "$EXISTING_ISSUE_URL" ]; then
-                # issue exists, just append new failures
-                EXISTING_BODY=$(gh issue view "$EXISTING_ISSUE_URL" --json body -q .body)
-          
-                for VERSION in ${failures[$GA]}; do
-                  if ! grep -q "$VERSION" <<< "$EXISTING_BODY"; then
-                    EXISTING_BODY="${EXISTING_BODY}"$'\n'"$VERSION"
-                  fi
-                done
-          
-                gh issue edit "$EXISTING_ISSUE_URL" --body "$EXISTING_BODY"
-              else
-                # Create new issue with all versions
-                gh issue create --title "$TITLE" --body "$BODY" --label library-update
-              fi
-            done
-          fi
