@@ -54,13 +54,15 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
             newerVersions = newerVersions.subList(0, getMatrixLimit().get())
         }
 
-        def matrix = [
-                "coordinates": newerVersions,
-                "version"    : ["17"],
-                "os"         : ["ubuntu-latest"]
-        ]
+        def map = [:]
+        newerVersions.each { coord ->
+            def (group, artifact, version) = coord.tokenize(':')
+            def key = "${group}:${artifact}"
+            map[key] = (map[key] ?: []) + version
+        }
+        def pairs = map.collect { k, v -> [name: k, versions: v] }
 
-        new File(System.getenv("GITHUB_OUTPUT")).append("matrix::${JsonOutput.toJson(matrix)}")
+        new File(System.getenv("GITHUB_OUTPUT")).append(JsonOutput.toJson(pairs))
     }
 
     static List<String> getNewerVersionsFor(String library, String startingVersion) {
@@ -88,14 +90,10 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
         int indexOfStartingVersion = allVersions.indexOf(startingVersion);
         if (indexOfStartingVersion < 0) {
-            System.out.println("Cannot find starting version in index file: " + libraryName + " for version " + startingVersion);
             return new ArrayList<>();
         }
 
         allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
-        if (allVersions.size() <= 1) {
-            System.out.println("Cannot find newer versions for " + libraryName + " after the version " + startingVersion);
-        }
 
         return allVersions.subList(1, allVersions.size());
     }
