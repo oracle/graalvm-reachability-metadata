@@ -1,0 +1,181 @@
+name: "Check new libraries versions"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: "workflow=${{ github.workflow }},ref=${{ github.event.ref }},pr=${{ github.event.pull_request.id }}"
+  cancel-in-progress: true
+
+jobs:
+  get-all-libraries:
+    name: "📋 Get list of all supported libraries with newer versions"
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions: write-all
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      branch: ${{ steps.set-branch-name.outputs.branch }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🔧 Prepare environment"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "📅 Set branch name"
+        id: set-branch-name
+        run: |
+          BRANCH_NAME="check-new-library-versions/$(date '+%Y-%m-%d')"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: "🕸️ Populate matrix"
+        id: set-matrix
+        run: |
+          echo "matrix=$(./gradlew fetchExistingLibrariesWithNewerVersions --matrixLimit=5000 --quiet | sed -n '/\[/,$p')" >> $GITHUB_OUTPUT
+
+      - name: "🔨 Create branch"
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          git checkout -b "${{ steps.set-branch-name.outputs.branch }}"
+          git push origin "${{ steps.set-branch-name.outputs.branch }}"
+
+  test-all-metadata:
+    name: "🧪 ${{ matrix.item.name }}"
+    runs-on: ubuntu-22.04
+    needs: get-all-libraries
+    permissions: write-all
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        item: ${{ fromJson(needs.get-all-libraries.outputs.matrix) }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: '21'
+
+      - name: "🔧 Prepare environment"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          set-java-home: 'false'
+          java-version: 21
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: "Extract test path and library version"
+        id: extract-params
+        run: |
+          LIBRARY_PATH=$(echo "${{ matrix.item.name }}" | sed 's/:/\//g')
+          LATEST_VERSION=$(find tests/src/$LIBRARY_PATH/* -maxdepth 1 -type d | sort -V | tail -1 | cut -d '/' -f5)
+          TEST_PATH="$LIBRARY_PATH/$LATEST_VERSION"
+          TEST_COORDINATES=$(echo "$TEST_PATH" | tr / :)
+          
+          echo "LATEST_VERSION=$LATEST_VERSION" >> ${GITHUB_ENV}
+          echo "TEST_PATH=$TEST_PATH" >> ${GITHUB_ENV}
+          echo "TEST_COORDINATES=$TEST_COORDINATES" >> ${GITHUB_ENV}
+
+      - name: "Pull allowed docker images"
+        run: ./gradlew pullAllowedDockerImages --coordinates="${{ env.TEST_COORDINATES }}"
+
+      - name: "Disable docker"
+        run: |
+          sudo apt-get install openbsd-inetd
+          sudo bash -c "cat ./.github/workflows/discard-port.conf >> /etc/inetd.conf"
+          sudo systemctl start inetd
+          sudo mkdir /etc/systemd/system/docker.service.d
+          sudo bash -c "cat ./.github/workflows/dockerd.service > /etc/systemd/system/docker.service.d/http-proxy.conf"
+          sudo systemctl daemon-reload
+          sudo systemctl restart docker
+
+      - name: "🧪 Run '${{ env.TEST_COORDINATES }}' tests"
+        id: runtests
+        run: |
+          bash ./.github/workflows/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.item.versions) }}' 2>&1 | tee test_results.txt || true
+
+          # Extract successful versions
+          grep "^PASSED:" test_results.txt | sed 's/PASSED://g' > successful_versions.txt
+          echo "successful_versions<<EOF" >> $GITHUB_OUTPUT
+          cat successful_versions.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Extract failed version
+          FAILED_VERSION=$(grep "^FAILED:" test_results.txt | sed 's/FAILED://g')
+          echo "failed_version=$FAILED_VERSION" >> $GITHUB_OUTPUT
+
+      - name: "✔️ New library is supported"
+        if: steps.runtests.outputs.successful_versions != ''
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
+          git checkout ${{ needs.get-all-libraries.outputs.branch }}
+
+          while read version; do
+            if [ -n "$version" ]; then
+              ./gradlew addTestedVersion --coordinates="${{ matrix.item.name }}:$version" --lastSupportedVersion="${{ env.LATEST_VERSION }}"
+            fi
+          done < successful_versions.txt
+
+          git add -u
+          git commit -m "Update tested versions for ${{ matrix.item.name }}"
+          git push origin ${{ needs.get-all-libraries.outputs.branch }}
+
+      - name: "❗ New library is not supported"
+        if: steps.runtests.outputs.failed_version != ''
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          
+          FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
+          REPO="${{ github.repository }}"
+          TITLE="Failure detected for ${{ matrix.item.name }}"
+          BODY="First failing version ${{ matrix.item.name }}:$FAILED_VERSION"
+
+          ISSUE_NUMBER=$(gh issue list --repo "$REPO" --state open --search "$TITLE" --json number,title --jq '.[] | select(.title == "'"$TITLE"'") | .number')
+          if [ -n "$ISSUE_NUMBER" ]; then
+            echo "Updating existing issue #$ISSUE_NUMBER"
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --body "$BODY"
+          else
+            echo "Creating new issue"
+            gh issue create --repo "$REPO" --title "$TITLE" --body "$BODY"
+          fi
+
+  process-results:
+    name: "🧪 Process results"
+    runs-on: ubuntu-22.04
+    permissions: write-all
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: ${{ always() }}
+    needs:
+      - get-all-libraries
+      - test-all-metadata
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "✏️ PR for supported versions"
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
+          git checkout ${{ needs.get-all-libraries.outputs.branch }}
+          gh pr create --title "Update supported library versions" --body "This pull request updates supported versions of the existing libraries in the repo"
