@@ -124,7 +124,7 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
                 "coordinates": matchingCoordinates
         ]
         matrix.putAll(matrixDefault)
-        println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
+        new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
     }
 }
 
@@ -144,8 +144,8 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
 
             matrix.putAll(matrixDefault)
             println "No changed coordinates were found!"
-            println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
-            println "::set-output name=none-found::true"
+            new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
+            new File(System.getenv("GITHUB_OUTPUT")).append("none-found=true\n")
         } else {
             def matrix = [
                     "coordinates": diffCoordinates
@@ -168,8 +168,8 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
                 matrix.version.add("22")
                 matrix.version.add("dev")
             }
-            println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
-            println "::set-output name=none-found::false"
+            new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
+            new File(System.getenv("GITHUB_OUTPUT")).append("none-found=false\n")
         }
     }
 }
