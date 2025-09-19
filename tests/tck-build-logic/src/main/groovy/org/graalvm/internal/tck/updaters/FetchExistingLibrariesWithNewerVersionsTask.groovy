@@ -60,7 +60,7 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
                 "os"         : ["ubuntu-latest"]
         ]
 
-        println "::set-output name=matrix::${JsonOutput.toJson(matrix)}"
+        new File(System.getenv("GITHUB_OUTPUT")).append("matrix::${JsonOutput.toJson(matrix)}")
     }
 
     static List<String> getNewerVersionsFor(String library, String startingVersion) {
