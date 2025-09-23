@@ -1,5 +1,13 @@
 package org.graalvm.internal.tck;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.MetadataIndexEntry;
+import org.graalvm.internal.tck.model.grype.GrypeEntry;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
@@ -38,6 +46,9 @@ public abstract class GrypeTask extends DefaultTask {
 
     private static final String JQ_MATCHER = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
     private static final String DOCKERFILE_DIRECTORY = "allowed-docker-images";
+
+    private static final String HIGH_VULNERABILITY = "HIGH";
+    private static final String CRITICAL_VULNERABILITY = "CRITICAL";
 
     private record Vulnerabilities(int critical, int high){}
 
@@ -122,10 +133,14 @@ public abstract class GrypeTask extends DefaultTask {
 
     private DockerImage makeDockerImage(String image) {
         System.out.println("Generating info for docker image: " + image);
-        return new DockerImage(image, getVulnerabilities(image));
+        try {
+            return new DockerImage(image, getVulnerabilities(image));
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot parse grype output for image: " + image + " .Reason: " + e.getMessage());
+        }
     }
 
-    private Vulnerabilities getVulnerabilities(String image) {
+    private Vulnerabilities getVulnerabilities(String image) throws IOException {
         int numberOfHigh = 0;
         int numberOfCritical = 0;
         String[] command = {"-c", "grype -o json " + image + JQ_MATCHER};
@@ -140,20 +155,27 @@ public abstract class GrypeTask extends DefaultTask {
 
         // parse Grype output
         ByteArrayInputStream inputStream = new ByteArrayInputStream(execOutput.toByteArray());
-        try (BufferedReader stdOut = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = stdOut.readLine()) != null) {
-                if (line.contains("\"severity\":\"High\"")) {
-                    numberOfHigh++;
-                } else if (line.contains("\"severity\":\"Critical\"")) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonFactory factory = mapper.getFactory();
+        try (JsonParser parser = factory.createParser(inputStream)) {
+            while (!parser.isClosed()) {
+                if (parser.nextToken() == null) {
+                    break;
+                }
+
+                if (parser.currentToken() != com.fasterxml.jackson.core.JsonToken.START_OBJECT) {
+                    continue;
+                }
+
+                GrypeEntry vuln = mapper.readValue(parser, GrypeEntry.class);
+                if (vuln.severity.equalsIgnoreCase(CRITICAL_VULNERABILITY)) {
                     numberOfCritical++;
                 }
-            }
 
-            inputStream.close();
-            execOutput.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                if (vuln.severity.equalsIgnoreCase(HIGH_VULNERABILITY)) {
+                    numberOfHigh++;
+                }
+            }
         }
 
         return new Vulnerabilities(numberOfCritical, numberOfHigh);
