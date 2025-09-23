@@ -51,13 +51,7 @@ public abstract class GrypeTask extends DefaultTask {
         }
 
         public boolean isLessVulnerable(DockerImage other) {
-            // first check number of critical vulnerabilities
-            if (this.vulnerabilities.critical() < other.vulnerabilities().critical()) {
-                return true;
-            }
-
-            // if number of critical vulnerabilities is the same => check number of high vulnerabilities
-            return this.vulnerabilities.critical() == other.vulnerabilities().critical() && this.vulnerabilities.high() < other.vulnerabilities().high();
+            return this.vulnerabilities.critical() < other.vulnerabilities().critical() && this.vulnerabilities.high() < other.vulnerabilities().high();
         }
 
         public void printVulnerabilityStatus() {
