@@ -80,6 +80,26 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
 
+      - name: "Check for existing failure issue and skip if found"
+        id: check_existing_issue
+        run: |
+          GROUP_ID="$(echo "${{ matrix.item.name }}" | cut -d: -f1)"
+          ARTIFACT_ID="$(echo "${{ matrix.item.name }}" | cut -d: -f2)"
+          
+          readarray -t VERSIONS < <(echo '${{ toJson(matrix.item.versions) }}' | jq -r '.[]')
+          FIRST_TESTING_VERSION="${VERSIONS[0]}"
+          
+          TITLE="Failure detected for $GROUP_ID:$ARTIFACT_ID"
+          BODY="First failing version $GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
+          
+          ISSUE_NUMBER=$(gh issue list --repo "${{ github.repository }}" --state open --search "$TITLE" --json number,title,body --jq \
+            '.[] | select(.title == "'"$TITLE"'") | select(.body == "'"$BODY"'") | .number')
+          
+          if [[ -n "$ISSUE_NUMBER" ]]; then
+            echo "There is no progress since last time this version was tested. Skipping further steps."
+            exit 0
+          fi
+
       - name: "Extract test path and library version"
         id: extract-params
         run: |
