@@ -24,10 +24,6 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
     @Input
     abstract ListProperty<String> getAllLibraryCoordinates()
 
-    @Input
-    @Option(option = "matrixLimit", description = "Sets the maximum number of coordinates in the final matrix")
-    abstract Property<Integer> getMatrixLimit()
-
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example")
 
     @TaskAction
@@ -48,10 +44,6 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
                     newerVersions.add(libraryName.concat(":").concat(it))
                 }
             }
-        }
-
-        if (newerVersions.size() > getMatrixLimit().get()) {
-            newerVersions = newerVersions.subList(0, getMatrixLimit().get())
         }
 
         def map = [:]
