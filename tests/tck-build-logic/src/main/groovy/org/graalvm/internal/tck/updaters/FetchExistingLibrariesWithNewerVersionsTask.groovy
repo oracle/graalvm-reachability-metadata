@@ -54,7 +54,7 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
         }
         def pairs = map.collect { k, v -> [name: k, versions: v] }
 
-        new File(System.getenv("GITHUB_OUTPUT")).append(JsonOutput.toJson(pairs))
+        println JsonOutput.toJson(pairs)
     }
 
     static List<String> getNewerVersionsFor(String library, String startingVersion) {
