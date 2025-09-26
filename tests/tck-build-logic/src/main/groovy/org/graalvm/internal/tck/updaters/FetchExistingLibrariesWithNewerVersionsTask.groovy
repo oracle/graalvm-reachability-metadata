@@ -24,10 +24,6 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
     @Input
     abstract ListProperty<String> getAllLibraryCoordinates()
 
-    @Input
-    @Option(option = "matrixLimit", description = "Sets the maximum number of coordinates in the final matrix")
-    abstract Property<Integer> getMatrixLimit()
-
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example")
 
     @TaskAction
@@ -50,17 +46,15 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
             }
         }
 
-        if (newerVersions.size() > getMatrixLimit().get()) {
-            newerVersions = newerVersions.subList(0, getMatrixLimit().get())
+        def map = [:]
+        newerVersions.each { coord ->
+            def (group, artifact, version) = coord.tokenize(':')
+            def key = "${group}:${artifact}"
+            map[key] = (map[key] ?: []) + version
         }
+        def pairs = map.collect { k, v -> [name: k, versions: v] }
 
-        def matrix = [
-                "coordinates": newerVersions,
-                "version"    : ["17"],
-                "os"         : ["ubuntu-latest"]
-        ]
-
-        new File(System.getenv("GITHUB_OUTPUT")).append("matrix::${JsonOutput.toJson(matrix)}")
+        println JsonOutput.toJson(pairs)
     }
 
     static List<String> getNewerVersionsFor(String library, String startingVersion) {
@@ -88,14 +82,10 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
         int indexOfStartingVersion = allVersions.indexOf(startingVersion);
         if (indexOfStartingVersion < 0) {
-            System.out.println("Cannot find starting version in index file: " + libraryName + " for version " + startingVersion);
             return new ArrayList<>();
         }
 
         allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
-        if (allVersions.size() <= 1) {
-            System.out.println("Cannot find newer versions for " + libraryName + " after the version " + startingVersion);
-        }
 
         return allVersions.subList(1, allVersions.size());
     }
