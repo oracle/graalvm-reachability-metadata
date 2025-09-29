@@ -1,9 +1,19 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 package org.graalvm.internal.tck.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.Coordinates;
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.process.ExecOperations;
 
@@ -32,13 +42,12 @@ public final class MetadataGenerationUtils {
     private MetadataGenerationUtils() {
     }
 
-
     /**
      * Creates a user-code-filter.json file including the given packages (and excluding all others),
      * used to restrict metadata generation to user code.
      */
     public static void addUserCodeFilterFile(Path testsDirectory, List<String> packages) throws IOException {
-        InteractiveTaskUtils.printUserInfo("Generating " + USER_CODE_FILTER_FILE);
+        GeneralUtils.printInfo("Generating " + USER_CODE_FILTER_FILE);
         List<Map<String, String>> filterFileRules = new ArrayList<>();
 
         // add exclude classes
@@ -59,7 +68,7 @@ public final class MetadataGenerationUtils {
      */
     public static void addAgentConfigBlock(Path testsDirectory) throws IOException {
         Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
-        InteractiveTaskUtils.printUserInfo("Configuring agent block in: " + BUILD_FILE);
+        GeneralUtils.printInfo("Configuring agent block in: " + BUILD_FILE);
 
         if (!Files.isRegularFile(buildFilePath)) {
             throw new RuntimeException("Cannot add agent block to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
@@ -69,7 +78,7 @@ public final class MetadataGenerationUtils {
         String buildGradle = Files.readString(buildFilePath, StandardCharsets.UTF_8);
         boolean hasAgentBlock = Pattern.compile("(?s)\\bagent\\s*\\{").matcher(buildGradle).find();
         if (hasAgentBlock) {
-            InteractiveTaskUtils.printUserInfo("Agent block already present in: " + BUILD_FILE + " - skipping");
+            GeneralUtils.printInfo("Agent block already present in: " + BUILD_FILE + " - skipping");
             return;
         }
 
@@ -90,10 +99,118 @@ public final class MetadataGenerationUtils {
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout,  String coordinates, Path gradlew) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
 
-        InteractiveTaskUtils.printUserInfo("Generating metadata");
+        GeneralUtils.printInfo("Generating metadata");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
 
-        InteractiveTaskUtils.printUserInfo("Performing metadata copy");
+        GeneralUtils.printInfo("Performing metadata copy");
         GeneralUtils.invokeCommand(execOps, gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
+    }
+
+    /**
+     * Runs Gradle tasks to generate metadata using the agent with a specific GVM_TCK_LV
+     * and then copies the results into the computed metadata directory for the given coordinates.
+     */
+    public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv) {
+        Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
+
+        Map<String, String> env = Map.of("GVM_TCK_LV", gvmTckLv);
+
+        GeneralUtils.printInfo("Generating metadata");
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
+
+        GeneralUtils.printInfo("Performing metadata copy");
+        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+    }
+
+    /**
+     * Creates index.json inside the given version directory, listing all files present in that directory.
+     */
+    public static void createIndexJsonSpecificVersion(Path metadataDirectory) throws IOException {
+        try (java.util.stream.Stream<Path> paths = Files.list(metadataDirectory)) {
+            List<String> files = paths
+                    .filter(Files::isRegularFile)
+                    .map(p -> p.getFileName().toString())
+                    .filter(name -> !"index.json".equals(name))
+                    .sorted()
+                    .toList();
+
+            DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
+            printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+            String jsonVersionIndex = objectMapper.writer(printer).writeValueAsString(files);
+            if (!jsonVersionIndex.endsWith(System.lineSeparator())) {
+                jsonVersionIndex = jsonVersionIndex + System.lineSeparator();
+            }
+            Files.writeString(metadataDirectory.resolve("index.json"), jsonVersionIndex, StandardCharsets.UTF_8);
+        }
+    }
+
+    /**
+     * Marks the library version identified by {@code newCoords} as the {@code latest} entry
+     * within its corresponding {@code index.json}.
+     */
+    public static void makeVersionLatestInIndexJson(ProjectLayout layout, Coordinates newCoords) throws IOException {
+        String indexPathTemplate = "metadata/$group$/$artifact$/index.json";
+        File indexFile = GeneralUtils.getPathFromProject(layout, CoordinateUtils.replace(indexPathTemplate, newCoords)).toFile();
+
+        ObjectMapper objectMapper = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        // Read existing entries if file exists, otherwise start fresh
+        List<MetadataVersionsIndexEntry> entries = new ArrayList<>();
+        if (indexFile.exists()) {
+            entries = objectMapper.readValue(indexFile, new TypeReference<>() {});
+        }
+
+        // If the version already exists, no update needed
+        String newVersion = newCoords.version();
+        for (MetadataVersionsIndexEntry entry : entries) {
+            if (newVersion.equals(entry.metadataVersion())) {
+                return;
+            }
+            List<String> tv = entry.testedVersions();
+            if (tv != null && tv.contains(newVersion)) {
+                return;
+            }
+        }
+
+        // Remove 'latest' flag from any existing latest entry
+        for (int i = 0; i < entries.size(); i++) {
+            MetadataVersionsIndexEntry entry = entries.get(i);
+            if (Boolean.TRUE.equals(entry.latest())) {
+                entries.set(i, new MetadataVersionsIndexEntry(
+                        null, // latest removed
+                        entry.override(),
+                        entry.module(),
+                        entry.defaultFor(),
+                        entry.metadataVersion(),
+                        entry.testedVersions(),
+                        entry.skippedVersions()
+                ));
+            }
+        }
+
+        // Add the new entry and mark it as latest
+        String moduleName = newCoords.group() + ":" + newCoords.artifact();
+        List<String> testedVersions = new ArrayList<>();
+        testedVersions.add(newCoords.version());
+        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(
+                Boolean.TRUE,
+                null,
+                moduleName,
+                null,
+                newCoords.version(),
+                testedVersions,
+                new ArrayList<>()
+        );
+        entries.add(newEntry);
+
+        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+        String json = objectMapper.writer(prettyPrinter).writeValueAsString(entries);
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(indexFile.toPath(), json, java.nio.charset.StandardCharsets.UTF_8);
     }
 }

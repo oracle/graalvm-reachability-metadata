@@ -4,6 +4,8 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import groovy.json.JsonSlurper
+
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -150,6 +152,157 @@ static List<Map> testAllCommands(String gradleCmd, String target) {
     }
 }
 
+/*
+ * Helper utilities for environment setup, and backup/restore
+ * used by testMetadataGeneration.
+ */
+def withUnsetTckDir(List<String> baseArgs) {
+    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        ["cmd.exe", "/d", "/c", "set GVM_TCK_TCKDIR= && " + baseArgs.join(' ')]
+    } else {
+        ["/usr/bin/env", "-u", "GVM_TCK_TCKDIR"] + baseArgs
+    }
+}
+
+def backupDirIfExists(File srcDir, File backupDir) {
+    boolean had = srcDir?.isDirectory()
+    if (had) {
+        backupDir.parentFile?.mkdirs()
+        project.copy {
+            from(srcDir)
+            into(backupDir)
+        }
+    }
+    had
+}
+
+def restoreDir(boolean had, File srcDir, File backupDir) {
+    if (had) {
+        project.delete(srcDir)
+        srcDir.mkdirs()
+        project.copy {
+            from(backupDir)
+            into(srcDir)
+        }
+    } else {
+        project.delete(srcDir)
+    }
+}
+def backupFileIfExists(File srcFile, File backupFile) {
+    boolean had = srcFile?.isFile()
+    if (had) {
+        backupFile.parentFile?.mkdirs()
+        backupFile.text = srcFile.getText('UTF-8')
+    }
+    had
+}
+def restoreFileIfBackedUp(boolean had, File srcFile, File backupFile) {
+    if (had && backupFile?.isFile()) {
+        srcFile.text = backupFile.getText('UTF-8')
+    }
+}
+
+// Test metadata generation tasks
+def testMetadataGeneration(String coordinate, String gradleCmd, File logsDir, String newVersion) {
+
+    def fileSuffix = coordinate.replaceAll(File.separator, "-")
+
+    // Compute paths and snapshot current state to allow revert after the test
+    def parts = coordinate.split(":")
+    if (parts.length != 3) {
+        throw new GradleException("Invalid coordinates '${coordinate}'. Expected 'group:artifact:version'.")
+    }
+    def group = parts[0]
+    def artifact = parts[1]
+    def version = parts[2]
+    def gaPath = "${group}/${artifact}"
+    def versionPath = "${gaPath}/${version}"
+
+    def versionDir = new File(tck.metadataRoot.get().asFile, versionPath)
+    def testsDir = new File(tck.testRoot.get().asFile, versionPath)
+
+    def backupRoot = layout.buildDirectory.dir("gm-backups/${fileSuffix}").get().asFile
+    def backupMetadataDir = new File(backupRoot, "metadata-backup")
+    def backupTestsDir = new File(backupRoot, "tests-backup")
+    backupRoot.mkdirs()
+    boolean hadVersionDir = backupDirIfExists(versionDir, backupMetadataDir)
+    boolean hadTestsDir = backupDirIfExists(testsDir, backupTestsDir)
+
+    try {
+        // Build base args once, then prepend an OS-specific unset of GVM_TCK_TCKDIR
+        def baseGenArgs = [gradleCmd, "generateMetadata", "-Pcoordinates=${coordinate}", "--agentAllowedPackages=org.postgresql"]
+        List<String> genArgs = withUnsetTckDir(baseGenArgs)
+        def genLogFile = new File(logsDir, "generateMetadata-${fileSuffix}.log")
+        int genExit = project.ext.runLoggedCommand(genArgs, "generateMetadata (${coordinate})", genLogFile, project.rootDir)
+        if (genExit != 0) {
+            throw new GradleException("generateMetadata failed with exit code ${genExit} (see ${genLogFile})")
+        }
+
+        // Verify output directory and index.json for the specific version
+        if (!versionDir.isDirectory()) {
+            throw new GradleException("Version directory not found: ${versionDir}")
+        }
+        def indexFile = new File(versionDir, "index.json")
+        if (!indexFile.isFile()) {
+            throw new GradleException("Missing index.json in ${versionDir}")
+        }
+
+        def actualFiles = versionDir.listFiles()?.findAll { it.isFile() && it.name != 'index.json' }?.collect { it.name }?.sort() ?: []
+        if (actualFiles.isEmpty()) {
+            throw new GradleException("No metadata files found in ${versionDir} (besides index.json)")
+        }
+
+        def indexList = (List) new JsonSlurper().parse(indexFile)
+        def sortedIndex = indexList.collect { it.toString() }.sort()
+        if (!sortedIndex.equals(actualFiles)) {
+            println("==== BEGIN index.json mismatch (${coordinate})")
+            println("index.json: ${sortedIndex}")
+            println("actual:     ${actualFiles}")
+            println("==== END index.json mismatch (${coordinate})")
+            throw new GradleException("index.json does not match files in ${versionDir}")
+        }
+        println("Verified generated metadata for ${coordinate}: ${versionDir}")
+    } finally {
+        // Revert metadata directory changes
+        restoreDir(hadVersionDir, versionDir, backupMetadataDir)
+        // Revert tests directory changes (including build.gradle and user-code-filter.json)
+        restoreDir(hadTestsDir, testsDir, backupTestsDir)
+        // Cleanup backups
+        project.delete(backupRoot)
+    }
+
+
+    def newVersionDir = new File(tck.metadataRoot.get().asFile, "${gaPath}/${newVersion}")
+
+    def moduleIndexFile = new File(tck.metadataRoot.get().asFile, "${gaPath}/index.json")
+
+    def fixBackupRoot = layout.buildDirectory.dir("fixnir-backups/${fileSuffix}").get().asFile
+    def backupNewMetadataDir = new File(fixBackupRoot, "new-metadata-backup")
+    def fixBackupTestsDir = new File(fixBackupRoot, "new-metadata-backup")
+    def backupModuleIndexFile = new File(fixBackupRoot, "module-index.json.bak")
+    fixBackupRoot.mkdirs()
+    hadTestsDir = backupDirIfExists(testsDir, fixBackupTestsDir)
+    def hadNewVersionDir = backupDirIfExists(newVersionDir, backupNewMetadataDir)
+    def hadModuleIndexFile = backupFileIfExists(moduleIndexFile, backupModuleIndexFile)
+
+    try {
+        def baseFixArgs = [gradleCmd, "fixTestNativeImageRun", "-PtestLibraryCoordinates=${coordinate}", "-PnewLibraryVersion=${newVersion}"]
+        List<String> fixArgs = withUnsetTckDir(baseFixArgs)
+        def fixLogFile = new File(logsDir, "fixTestNativeImageRun-${fileSuffix}.log")
+        int fixExit = project.ext.runLoggedCommand(fixArgs, "fixTestNativeImageRun (${coordinate} -> ${newVersion})", fixLogFile, project.rootDir)
+        if (fixExit != 0) {
+            throw new GradleException("fixTestNativeImageRun failed with exit code ${fixExit} (see ${fixLogFile})")
+        }
+    } finally {
+        // Revert changes
+        restoreDir(hadNewVersionDir, newVersionDir, backupNewMetadataDir)
+        restoreDir(hadTestsDir, testsDir, fixBackupTestsDir)
+        restoreFileIfBackedUp(hadModuleIndexFile, moduleIndexFile, backupModuleIndexFile)
+        // Cleanup backups
+        project.delete(fixBackupRoot)
+    }
+}
+
 tasks.register('testAllParallel') { t ->
     t.group = "verification"
     t.setDescription("For each target, run clean and pullAllowedDockerImages first (sequentially), then run style checks and individual testing stages (${testAllCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs. Options: -Pcoordinates to specify a single coordinate or 1/64 for the pull step; -Pparallelism to control the number of concurrent tasks.")
@@ -244,9 +397,11 @@ tasks.register('testAllParallel') { t ->
                 println("All commands succeeded for coordinates=${coordinate}. Logs in: ${logsDir}")
             }
         }
+        def newVersionForFix = "42.7.4"
 
         // Run parallel phases sequentially: first the selectedArtifact, then the selectedBatch
         runPhaseForCoordinate(selectedArtifact)
+        testMetadataGeneration(selectedArtifact, gradleCmd, logsDir, newVersionForFix)
         runPhaseForCoordinate(selectedBatch)
     }
 }

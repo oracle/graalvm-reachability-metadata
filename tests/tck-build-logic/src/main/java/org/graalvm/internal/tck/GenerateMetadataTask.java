@@ -1,3 +1,9 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 package org.graalvm.internal.tck;
 
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
@@ -77,5 +83,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
         MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
+        Path metadataDirectory = GeneralUtils.computeMetadataDirectory(getLayout(), coordinates);
+        MetadataGenerationUtils.createIndexJsonSpecificVersion(metadataDirectory);
     }
 }

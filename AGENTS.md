@@ -19,7 +19,7 @@
 - Be assertive in code.
 - Write type annotations in all functions and most variables.
 - Document code without being too verbose.
-- In java, always import classes and use them without qualified names.
+- In Java and Groovy, always import classes and use them without qualified names.
 
 ## Testing individual components
 
@@ -46,6 +46,17 @@
   - ./gradlew pullAllowedDockerImages -Pcoordinates=1/64
   - ./gradlew checkMetadataFiles -Pcoordinates=1/64
   - ./gradlew test -Pcoordinates=1/64
+
+### Generating Metadata
+- Generate metadata for a certain library version:
+   - ./gradlew generateMetadata -Pcoordinates=com.hazelcast:hazelcast:5.2.1
+- Generate metadata for a certain library version and create or update the user-code-filter.json:
+   - ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=org.example.app,com.acme.service
+
+### Fix failing tasks
+
+- Generates new metadata for library's new version which is failing native-image run:
+  - ./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=org.postgresql:postgresql:42.7.3 -PnewLibraryVersion=42.7.4
 
 ## Docker Image Vulnerability Scanning
 - Changed images between commits:
