@@ -39,6 +39,18 @@ After it collects your answers, the task will:
 - generate metadata and store it in the proper location
 - ask you if you want to create a pull request, or you want to keep working on it locally
 
+If you already have the test project structure in this repository and need to generate or regenerate metadata, use the `generateMetadata` task:
+
+```shell
+./gradlew generateMetadata --coordinates=com.example:my-library:1.0.0
+```
+
+To change the user-code-filter used during collection, pass `--allowedPackages` with a comma-separated list of packages:
+
+```shell
+./gradlew generateMetadata --coordinates=com.example:my-library:1.0.0 --allowedPackages=com.example.pkg,org.acme.lib
+```
+
 ### Checklist
 In order to ensure that all contributions follow the same standards of quality we have devised a following list of requirements for each new added library.
 `org.example:library` project is also included as a template for new libraries.
