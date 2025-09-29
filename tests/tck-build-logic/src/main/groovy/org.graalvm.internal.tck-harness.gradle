@@ -17,6 +17,7 @@ import org.graalvm.internal.tck.MetadataFilesCheckerTask
 import org.graalvm.internal.tck.DockerUtils
 import org.graalvm.internal.tck.ScaffoldTask
 import org.graalvm.internal.tck.GrypeTask
+import org.graalvm.internal.tck.GenerateMetadataTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
@@ -319,5 +320,11 @@ tasks.register("scaffold", ScaffoldTask.class) { task ->
 
 tasks.register("contribute", ContributionTask.class) { task ->
     task.setDescription("Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.")
+    task.setGroup(METADATA_GROUP)
+}
+
+// gradle generateMetadata --coordinates=<maven-coordinates> [or -Pcoordinates=<maven-coordinates>] --agentAllowedPackages=<comma-separated list of packages>
+tasks.register("generateMetadata", GenerateMetadataTask.class) { task ->
+    task.setDescription("Generates metadata based on provided tests.")
     task.setGroup(METADATA_GROUP)
 }
