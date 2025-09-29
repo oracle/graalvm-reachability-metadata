@@ -1,6 +1,4 @@
 databaseChangeLog:
-  - preConditions:
-
   - changeSet:
       id: 1
       author: nvoxland
@@ -42,9 +40,24 @@ databaseChangeLog:
       id: 3
       author: nvoxland
       changes:
-        - addLookupTable:
-            existingTableName: person
-            existingColumnName: state
-            newTableName: state
-            newColumnName: id
-            newColumnDataType: char(2)
+        - createTable:
+            tableName: state
+            columns:
+              - column:
+                  name: id
+                  type: char(2)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - sql: |
+            INSERT INTO state (id)
+            SELECT DISTINCT state
+            FROM person
+            WHERE state IS NOT NULL
+              AND state != ''
+        - addForeignKeyConstraint:
+            baseTableName: person
+            baseColumnNames: state
+            constraintName: fk_person_state
+            referencedTableName: state
+            referencedColumnNames: id
