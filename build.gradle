@@ -46,5 +46,11 @@ tasks.register('package', Zip) { task ->
     task.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP)
     task.archiveFileName = outputFileName
     task.destinationDirectory = layout.buildDirectory
+
     from(tck.metadataRoot)
+    // library-and-framework-list.json is used by Native Build Tools to provide additional
+    // information on library and framework support to the native image Build Report
+    from(project.rootDir) {
+        include("library-and-framework-list.json")
+    }
 }
