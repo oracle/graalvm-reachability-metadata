@@ -46,5 +46,11 @@ tasks.register('package', Zip) { task ->
     task.setGroup(PublishingPlugin.PUBLISH_TASK_GROUP)
     task.archiveFileName = outputFileName
     task.destinationDirectory = layout.buildDirectory
+
     from(tck.metadataRoot)
+    from(project.rootDir) {
+        if (file("library-and-framework-list.json").exists()) {
+            include("library-and-framework-list.json")
+        }
+    }
 }
