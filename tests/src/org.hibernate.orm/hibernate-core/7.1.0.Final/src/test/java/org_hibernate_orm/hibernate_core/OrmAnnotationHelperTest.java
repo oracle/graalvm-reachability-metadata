@@ -42,10 +42,14 @@ public class OrmAnnotationHelperTest {
 
         OrmAnnotationHelper.forEachOrmAnnotation(annotationDescriptor -> {
 
-            Map<String, Object> attributes = createAttributeMap(annotationDescriptor);
+            if (!annotationDescriptor.getAttributes().isEmpty()) {
+                Map<String, Object> attributes = createAttributeMap(annotationDescriptor);
 
-            for (AttributeDescriptor<?> attributeDescriptor : annotationDescriptor.getAttributes()) {
-                createInstances(annotationDescriptor, attributeDescriptor, attributes, ctx);
+                for (AttributeDescriptor<?> attributeDescriptor : annotationDescriptor.getAttributes()) {
+                    createInstances(annotationDescriptor, attributeDescriptor, attributes, ctx);
+                }
+            } else {
+                instanceViaCtors(annotationDescriptor);
             }
         });
     }
