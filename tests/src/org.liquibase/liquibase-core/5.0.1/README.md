@@ -13,3 +13,28 @@ Afterwards, the generated metadata has been cleaned:
 
 Additionally, you have to add the entries from `additional-entries.json` to `reflect-config.json`.
 No idea why the agent doesn't detect them.
+
+And
+
+```json
+{
+  "name": "setOnSqlOutput",
+  "parameterTypes": [
+    "java.lang.String"
+  ]
+},
+{
+  "name": "setOnFail",
+  "parameterTypes": [
+    "java.lang.String"
+  ]
+},
+{
+  "name": "setOnError",
+  "parameterTypes": [
+    "liquibase.precondition.core.PreconditionContainer$ErrorOption"
+  ]
+},
+```
+
+has to be added to the methods of `liquibase.precondition.core.PreconditionContainer`.
