@@ -144,23 +144,53 @@ jobs:
           FAILED_VERSION=$(grep "^FAILED:" test_results.txt | sed 's/FAILED://g')
           echo "failed_version=$FAILED_VERSION" >> $GITHUB_OUTPUT
 
-      - name: "✔️ New library versions are supported"
+      - name: "✔️ New library versions are supported (with locks, waiting and retries)"
         if: steps.runtests.outputs.successful_versions != ''
+        env:
+          BRANCH: ${{ needs.get-all-libraries.outputs.branch }}
         run: |
+          set -euo pipefail
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
-          git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
-          git checkout ${{ needs.get-all-libraries.outputs.branch }}
 
-          while read version; do
-            if [ -n "$version" ]; then
-              ./gradlew addTestedVersion --coordinates="${{ matrix.item.name }}:$version" --lastSupportedVersion="${{ env.LATEST_VERSION }}"
+          update_new_versions() {
+            while read version; do
+              if [ -n "$version" ]; then
+                ./gradlew addTestedVersion --coordinates="${{ matrix.item.name }}:$version" --lastSupportedVersion="${{ env.LATEST_VERSION }}"
+              fi
+            done < successful_versions.txt
+          }
+
+          # Small jitter to reduce contention start
+          sleep $((RANDOM % 5 + 1))
+
+          for i in {1..10}; do
+            # Always start from the latest remote state
+            git fetch origin "$BRANCH"
+            git checkout -B "$BRANCH" "origin/$BRANCH"
+
+            update_new_versions
+
+            # If nothing changed, exit early
+            if git status --porcelain | grep -q .; then
+              git add -u
+              git commit -m "Update tested versions for ${{ matrix.item.name }}"
+            else
+              echo "No changes to commit for ${{ matrix.item.name }}."
+              exit 0
             fi
-          done < successful_versions.txt
 
-          git add -u
-          git commit -m "Update tested versions for ${{ matrix.item.name }}"
-          git push origin ${{ needs.get-all-libraries.outputs.branch }}
+            if git push origin "$BRANCH"; then
+              echo "Pushed successfully."
+              exit 0
+            fi
+
+            echo "Push failed (likely concurrent update). Waiting and retrying..."
+            sleep 5
+          done
+
+          echo "Timed out waiting to push updates after concurrent jobs."
+          exit 1
 
       - name: "❗ New library version is not supported"
         if: steps.runtests.outputs.failed_version != ''
