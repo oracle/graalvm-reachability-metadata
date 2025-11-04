@@ -19,6 +19,7 @@ import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Comparator;
 import java.util.List;
 
@@ -65,6 +66,11 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
 
-        objectMapper.writer(prettyPrinter).writeValue(coordinatesMetadataIndex, entries);
+        // Ensure the JSON file ends with a trailing EOL
+        String json = objectMapper.writer(prettyPrinter).writeValueAsString(entries);
+        if (!json.endsWith("\n")) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(coordinatesMetadataIndex.toPath(), json, java.nio.charset.StandardCharsets.UTF_8);
     }
 }
