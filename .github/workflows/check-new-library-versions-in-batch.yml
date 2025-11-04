@@ -2,7 +2,7 @@ name: "Check new libraries versions"
 
 on:
   schedule:
-    - cron: '0 0 * * 7'
+    - cron: '0 0 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -59,6 +59,8 @@ jobs:
     permissions: write-all
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ISSUE_TITLE_PREFIX: "[Automation] Testing failed for library: "
+      ISSUE_BODY_PREFIX: "First failing version:  "
     strategy:
       fail-fast: false
       matrix:
@@ -91,8 +93,8 @@ jobs:
           readarray -t VERSIONS < <(echo '${{ toJson(matrix.item.versions) }}' | jq -r '.[]')
           FIRST_TESTING_VERSION="${VERSIONS[0]}"
           
-          TITLE="Failure detected for $GROUP_ID:$ARTIFACT_ID"
-          BODY="First failing version $GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
+          TITLE="${{ env.ISSUE_TITLE_PREFIX }}$GROUP_ID:$ARTIFACT_ID"
+          BODY="${{ env.ISSUE_BODY_PREFIX }}$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
           
           ISSUE_NUMBER=$(gh issue list --repo "${{ github.repository }}" --state open --search "$TITLE" --json number,title,body --jq \
             '.[] | select(.title == "'"$TITLE"'") | select(.body == "'"$BODY"'") | .number')
@@ -142,7 +144,7 @@ jobs:
           FAILED_VERSION=$(grep "^FAILED:" test_results.txt | sed 's/FAILED://g')
           echo "failed_version=$FAILED_VERSION" >> $GITHUB_OUTPUT
 
-      - name: "✔️ New library is supported"
+      - name: "✔️ New library versions are supported"
         if: steps.runtests.outputs.successful_versions != ''
         run: |
           git config --local user.email "actions@github.com"
@@ -160,7 +162,7 @@ jobs:
           git commit -m "Update tested versions for ${{ matrix.item.name }}"
           git push origin ${{ needs.get-all-libraries.outputs.branch }}
 
-      - name: "❗ New library is not supported"
+      - name: "❗ New library version is not supported"
         if: steps.runtests.outputs.failed_version != ''
         run: |
           git config --local user.email "actions@github.com"
@@ -168,8 +170,8 @@ jobs:
           
           FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
           REPO="${{ github.repository }}"
-          TITLE="Failure detected for ${{ matrix.item.name }}"
-          BODY="First failing version ${{ matrix.item.name }}:$FAILED_VERSION"
+          TITLE="${{ env.ISSUE_TITLE_PREFIX }}${{ matrix.item.name }}"
+          BODY="${{ env.ISSUE_BODY_PREFIX }}${{ matrix.item.name }}:$FAILED_VERSION"
 
           ISSUE_NUMBER=$(gh issue list --repo "$REPO" --state open --search "$TITLE" --json number,title --jq '.[] | select(.title == "'"$TITLE"'") | .number')
           if [ -n "$ISSUE_NUMBER" ]; then
