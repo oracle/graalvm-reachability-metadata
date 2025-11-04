@@ -18,6 +18,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.jdbcjobstore.JobStoreTX;
 import org.quartz.simpl.SimpleThreadPool;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,6 +75,20 @@ public class QuartzTest {
         scheduler.scheduleJob(jobDetail, trigger);
 
         Thread.sleep(100);
+
+        scheduler.shutdown();
+    }
+
+    @Test
+    void jobStoreTX() throws SchedulerException {
+        Properties properties = new Properties();
+        properties.put(StdSchedulerFactory.PROP_JOB_STORE_CLASS, JobStoreTX.class.getName());
+        properties.put("org.quartz.jobStore.dataSource", "ds");
+        properties.put(StdSchedulerFactory.PROP_THREAD_POOL_PREFIX + ".threadCount", Integer.toString(2));
+        StdSchedulerFactory factory = new StdSchedulerFactory(properties);
+        Scheduler scheduler = factory.getScheduler();
+
+        scheduler.shutdown();
     }
 
 }
