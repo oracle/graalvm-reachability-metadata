@@ -20,11 +20,19 @@ VERSIONS_JSON="${VERSIONS_JSON%"${VERSIONS_JSON##*[!\']}"}"
 readarray -t VERSIONS < <(echo "$VERSIONS_JSON" | jq -r '.[]')
 
 for VERSION in "${VERSIONS[@]}"; do
+  # check if javac works for the new version
+  GVM_TCK_LV="$VERSION" ./gradlew clean javac -Pcoordinates="$TEST_COORDINATES"
+  RESULT=$?
+  if [ "$RESULT" -ne 0 ]; then
+    echo "FAILED [javac]:$VERSION"
+    break
+  fi
+
   echo "Running test with GVM_TCK_LV=$VERSION and coordinates=$TEST_COORDINATES"
   GVM_TCK_LV="$VERSION" ./gradlew test -Pcoordinates="$TEST_COORDINATES"
   RESULT=$?
-
   ATTEMPTS=1
+
   # maybe we failed because the test was flaky => try two more times to be sure
   while [ "$RESULT" -ne 0 ] && [ $ATTEMPTS -le 2 ]; do
     echo "Re-running the test with GVM_TCK_LV=$VERSION and coordinates=$TEST_COORDINATES"
@@ -36,7 +44,7 @@ for VERSION in "${VERSIONS[@]}"; do
   if [ "$RESULT" -eq 0 ]; then
     echo "PASSED:$VERSION"
   else
-    echo "FAILED:$VERSION"
+    echo "FAILED [native-test]:$VERSION"
     break
   fi
 done

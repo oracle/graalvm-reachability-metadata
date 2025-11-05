@@ -19,6 +19,8 @@ import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CleanInvocationTask
+import org.graalvm.internal.tck.harness.tasks.JavacInvocationTask
+import org.graalvm.internal.tck.harness.tasks.JavaTestInvocationTask
 import org.graalvm.internal.tck.updaters.FetchExistingLibrariesWithNewerVersionsTask
 import org.graalvm.internal.tck.updaters.GroupUnsupportedLibraries
 
@@ -40,6 +42,18 @@ Provider<Task> test = tasks.register("test", DefaultTask) { task ->
 // gradle checkstyle -Pcoordinates=<maven-coordinates>
 Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
     task.setDescription("Runs checkstyle on all subprojects")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+ // gradle javac -Pcoordinates=<maven-coordinates>
+Provider<Task> javac = tasks.register("javac") { task ->
+    task.setDescription("Compiles sources (javac) for all subprojects")
+    task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+}
+
+ // gradle javaTest -Pcoordinates=<maven-coordinates>
+Provider<Task> javaTest = tasks.register("javaTest") { task ->
+    task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
@@ -71,6 +85,22 @@ for (String coordinates in matchingCoordinates) {
     }
     clean.configure {
         dependsOn(cleanTaskName)
+    }
+
+    String javacTaskName = generateTaskName("javac", coordinates)
+    if ((!tasks.getNames().contains(javacTaskName))) {
+        tasks.register(javacTaskName, JavacInvocationTask, coordinates)
+    }
+    javac.configure {
+        dependsOn(javacTaskName)
+    }
+
+    String javaTestTaskName = generateTaskName("javaTest", coordinates)
+    if ((!tasks.getNames().contains(javaTestTaskName))) {
+        tasks.register(javaTestTaskName, JavaTestInvocationTask, coordinates)
+    }
+    javaTest.configure {
+        dependsOn(javaTestTaskName)
     }
 }
 
