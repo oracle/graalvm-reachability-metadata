@@ -63,15 +63,8 @@ jobs:
       - name: "Pull allowed docker images"
         run: |
           ./gradlew pullAllowedDockerImages --coordinates=${{ matrix.coordinates }}
-      - name: "Disable docker"
-        run: |
-          sudo apt-get install openbsd-inetd
-          sudo bash -c "cat ./.github/workflows/discard-port.conf >> /etc/inetd.conf"
-          sudo systemctl start inetd
-          sudo mkdir /etc/systemd/system/docker.service.d
-          sudo bash -c "cat ./.github/workflows/dockerd.service > /etc/systemd/system/docker.service.d/http-proxy.conf"
-          sudo systemctl daemon-reload
-          sudo systemctl restart docker
+      - name: "Disable docker networking"
+        run: bash ./.github/workflows/disable-docker.sh
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
           ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
