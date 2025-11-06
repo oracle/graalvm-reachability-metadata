@@ -61,6 +61,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ISSUE_TITLE_PREFIX: "[Automation] Testing failed for library: "
       ISSUE_BODY_PREFIX: "Failure kind: "
+      LOG_LINES: "300"
     strategy:
       fail-fast: false
       matrix:
@@ -135,6 +136,15 @@ jobs:
           # Extract failure type and failed version
           awk -F'[][]|:' '/^FAILED/ {print "failure_type="$2; print "failed_version="$4}' test_results.txt >> $GITHUB_OUTPUT
 
+          # Extract runner log URL
+          echo "runner_log_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+
+          # Extract log tail
+          echo "log_tail<<EOF" >> $GITHUB_OUTPUT
+          tail "-n${{ env.LOG_LINES }}" test_results.txt | head -c 900000 >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: "✔️ New library versions are supported (with locks, waiting and retries)"
         if: steps.runtests.outputs.successful_versions != ''
         env:
@@ -188,20 +198,32 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
-          
+
           FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
           REPO="${{ github.repository }}"
           TITLE="${{ env.ISSUE_TITLE_PREFIX }}${{ matrix.item.name }}:$FAILED_VERSION"
-          BODY="${{ env.ISSUE_BODY_PREFIX }}${{ steps.runtests.outputs.failure_type }}"
+
+          BODY_FILE=$(mktemp)
+          # Use single-quoted here-doc to disable any shell expansion of log content
+          cat > "$BODY_FILE" <<'EOF'
+          ${{ env.ISSUE_BODY_PREFIX }}${{ steps.runtests.outputs.failure_type }}
+          Runner log: ${{ steps.runtests.outputs.runner_log_url }}
+          Last ${{ env.LOG_LINES }} lines of the log:
+          ```console
+          ${{ steps.runtests.outputs.log_tail }}
+          ```
+          EOF
 
           ISSUE_NUMBER=$(gh issue list --repo "$REPO" --state open --search "$TITLE" --json number,title --jq '.[] | select(.title == "'"$TITLE"'") | .number')
           if [ -n "$ISSUE_NUMBER" ]; then
             echo "Updating existing issue #$ISSUE_NUMBER"
-            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --body "$BODY"
+            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --body-file "$BODY_FILE"
           else
             echo "Creating new issue"
-            gh issue create --repo "$REPO" --title "$TITLE" --body "$BODY"
+            gh issue create --repo "$REPO" --title "$TITLE" --body-file "$BODY_FILE"
           fi
+
+          rm "$BODY_FILE"
 
   process-results:
     name: "🧪 Process results"
