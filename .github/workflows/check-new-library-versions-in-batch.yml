@@ -58,6 +58,7 @@ jobs:
     needs: get-all-libraries
     permissions: write-all
     env:
+      CURRENT_JOB_NAME: "🧪 ${{ matrix.item.name }}"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ISSUE_TITLE_PREFIX: "[Automation] Testing failed for library: "
       ISSUE_BODY_PREFIX: "Failure kind: "
@@ -126,7 +127,7 @@ jobs:
         id: runtests
         run: |
           bash ./.github/workflows/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.item.versions) }}' 2>&1 | tee test_results.txt || true
-
+          
           # Extract successful versions
           grep "^PASSED:" test_results.txt | sed 's/PASSED://g' > successful_versions.txt
           echo "successful_versions<<EOF" >> $GITHUB_OUTPUT
@@ -135,9 +136,19 @@ jobs:
 
           # Extract failure type and failed version
           awk -F'[][]|:' '/^FAILED/ {print "failure_type="$2; print "failed_version="$4}' test_results.txt >> $GITHUB_OUTPUT
-
-          # Extract runner log URL
-          echo "runner_log_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+          
+          # Fetch the job URL
+          JOB_ID=$(
+            gh run view "${{ github.run_id }}" --repo "${{ github.repository }}" --json jobs \
+             | jq -r --arg name "$CURRENT_JOB_NAME" '.jobs[] | select(.name | startswith($name)) | .databaseId' \
+             | head -n1
+          )
+          if [ -z "$JOB_ID" ] || [ "$JOB_ID" = "null" ]; then
+            # Fallback to run-level URL if job lookup fails
+            echo "runner_log_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
+          else
+            echo "runner_log_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/$JOB_ID" >> $GITHUB_OUTPUT
+          fi
 
           # Extract log tail
           echo "log_tail<<EOF" >> $GITHUB_OUTPUT
