@@ -29,9 +29,17 @@ for VERSION in "${VERSIONS[@]}"; do
   GVM_TCK_LV="$VERSION" ./gradlew clean javac -Pcoordinates="$TEST_COORDINATES"
   RESULT=$?
   if [ "$RESULT" -ne 0 ]; then
-    echo "FAILED ['javac' Compile]:$VERSION"
+    echo "FAILED [javac compile]:$VERSION"
     break
   fi
+
+  # check if native-image can be built
+  GVM_TCK_LV="$VERSION" ./gradlew clean nativeTestCompile -Pcoordinates="$TEST_COORDINATES"
+  RESULT=$?
+    if [ "$RESULT" -ne 0 ]; then
+      echo "FAILED [native-image build]:$VERSION"
+      break
+    fi
 
   echo "Running test with GVM_TCK_LV=$VERSION and coordinates=$TEST_COORDINATES"
   GVM_TCK_LV="$VERSION" ./gradlew test -Pcoordinates="$TEST_COORDINATES"
@@ -49,7 +57,7 @@ for VERSION in "${VERSIONS[@]}"; do
   if [ "$RESULT" -eq 0 ]; then
     echo "PASSED:$VERSION"
   else
-    echo "FAILED ['native-image' Test Run]:$VERSION"
+    echo "FAILED [native-image run]:$VERSION"
     break
   fi
 done

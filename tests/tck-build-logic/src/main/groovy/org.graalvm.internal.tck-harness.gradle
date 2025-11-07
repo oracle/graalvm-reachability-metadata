@@ -21,6 +21,7 @@ import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CleanInvocationTask
 import org.graalvm.internal.tck.harness.tasks.JavacInvocationTask
 import org.graalvm.internal.tck.harness.tasks.JavaTestInvocationTask
+import org.graalvm.internal.tck.harness.tasks.NativeTestCompileInvocationTask
 import org.graalvm.internal.tck.updaters.FetchExistingLibrariesWithNewerVersionsTask
 import org.graalvm.internal.tck.updaters.GroupUnsupportedLibraries
 
@@ -48,6 +49,12 @@ Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
  // gradle javac -Pcoordinates=<maven-coordinates>
 Provider<Task> javac = tasks.register("javac") { task ->
     task.setDescription("Compiles sources (javac) for all subprojects")
+    task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+}
+
+ // gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
+Provider<Task> nativeTestCompile = tasks.register("nativeTestCompile") { task ->
+    task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
@@ -93,6 +100,14 @@ for (String coordinates in matchingCoordinates) {
     }
     javac.configure {
         dependsOn(javacTaskName)
+    }
+
+    String nativeTestCompileTaskName = generateTaskName("nativeTestCompile", coordinates)
+    if ((!tasks.getNames().contains(nativeTestCompileTaskName))) {
+        tasks.register(nativeTestCompileTaskName, NativeTestCompileInvocationTask, coordinates)
+    }
+    nativeTestCompile.configure {
+        dependsOn(nativeTestCompileTaskName)
     }
 
     String javaTestTaskName = generateTaskName("javaTest", coordinates)
