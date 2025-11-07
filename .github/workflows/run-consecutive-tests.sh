@@ -29,7 +29,7 @@ for VERSION in "${VERSIONS[@]}"; do
   GVM_TCK_LV="$VERSION" ./gradlew clean javac -Pcoordinates="$TEST_COORDINATES"
   RESULT=$?
   if [ "$RESULT" -ne 0 ]; then
-    echo "FAILED [javac]:$VERSION"
+    echo "FAILED ['javac' Compile]:$VERSION"
     break
   fi
 
@@ -49,7 +49,7 @@ for VERSION in "${VERSIONS[@]}"; do
   if [ "$RESULT" -eq 0 ]; then
     echo "PASSED:$VERSION"
   else
-    echo "FAILED [native-test]:$VERSION"
+    echo "FAILED ['native-image' Test Run]:$VERSION"
     break
   fi
 done
