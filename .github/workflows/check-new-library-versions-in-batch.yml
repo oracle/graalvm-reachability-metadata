@@ -95,7 +95,7 @@ jobs:
           readarray -t VERSIONS < <(echo '${{ toJson(matrix.item.versions) }}' | jq -r '.[]')
           FIRST_TESTING_VERSION="${VERSIONS[0]}"
           
-          TITLE_SEARCH="${{ env.ISSUE_TITLE_MIDDLE }}$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION failed in"
+          TITLE_SEARCH="${{ env.ISSUE_TITLE_MIDDLE }}$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
           
           ISSUE_NUMBER=$(gh issue list --repo "${{ github.repository }}" --state open --search "in:title $TITLE_SEARCH" --json number,title --jq \
             '.[] | select(.title | endswith("'"$TITLE_SEARCH"'")) | .number')
@@ -141,7 +141,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
           # Extract failure type and failed version
-          awk -F'[][]|:' '/^FAILED/ {print "failure_type="$2; print "failed_version="$4}' test_results.txt >> $GITHUB_OUTPUT
+          awk -F'[][]' '/^FAILED/ {print "failure_type="$2; print "failed_version="$4; print "failed_command="$6}' test_results.txt >> $GITHUB_OUTPUT
           
           # Fetch the job URL
           JOB_ID=$(
@@ -224,6 +224,7 @@ jobs:
           # Use single-quoted here-doc to disable any shell expansion of log content
           cat > "$BODY_FILE" <<'EOF'
           Failure kind: ${{ steps.runtests.outputs.failure_type }}
+          Reproducer: `${{ steps.runtests.outputs.failed_command }}`
           Runner log: ${{ steps.runtests.outputs.runner_log_url }}
           Last ${{ env.LOG_LINES }} lines of the log:
           ```console
