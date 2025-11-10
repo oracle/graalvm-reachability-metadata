@@ -7,15 +7,12 @@ import static io.grpc.MethodDescriptor.generateFullMethodName;
  * The greeting service definition.
  * </pre>
  */
-@javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.51.0)",
-    comments = "Source: helloworld.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class SimpleGrpc {
 
   private SimpleGrpc() {}
 
-  public static final String SERVICE_NAME = "Simple";
+  public static final java.lang.String SERVICE_NAME = "Simple";
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<grpc.HelloRequest,
@@ -64,6 +61,21 @@ public final class SimpleGrpc {
   }
 
   /**
+   * Creates a new blocking-style stub that supports all types of calls on the service
+   */
+  public static SimpleBlockingV2Stub newBlockingV2Stub(
+      io.grpc.Channel channel) {
+    io.grpc.stub.AbstractStub.StubFactory<SimpleBlockingV2Stub> factory =
+      new io.grpc.stub.AbstractStub.StubFactory<SimpleBlockingV2Stub>() {
+        @java.lang.Override
+        public SimpleBlockingV2Stub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+          return new SimpleBlockingV2Stub(channel, callOptions);
+        }
+      };
+    return SimpleBlockingV2Stub.newStub(factory, channel);
+  }
+
+  /**
    * Creates a new blocking-style stub that supports unary and streaming output calls on the service
    */
   public static SimpleBlockingStub newBlockingStub(
@@ -98,37 +110,41 @@ public final class SimpleGrpc {
    * The greeting service definition.
    * </pre>
    */
-  public static abstract class SimpleImplBase implements io.grpc.BindableService {
+  public interface AsyncService {
 
     /**
      * <pre>
      * Sends a greeting
      * </pre>
      */
-    public void sayHello(grpc.HelloRequest request,
+    default void sayHello(grpc.HelloRequest request,
         io.grpc.stub.StreamObserver<grpc.HelloReply> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSayHelloMethod(), responseObserver);
-    }
-
-    @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
-      return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
-          .addMethod(
-            getSayHelloMethod(),
-            io.grpc.stub.ServerCalls.asyncUnaryCall(
-              new MethodHandlers<
-                grpc.HelloRequest,
-                grpc.HelloReply>(
-                  this, METHODID_SAY_HELLO)))
-          .build();
     }
   }
 
   /**
+   * Base class for the server implementation of the service Simple.
    * <pre>
    * The greeting service definition.
    * </pre>
    */
-  public static final class SimpleStub extends io.grpc.stub.AbstractAsyncStub<SimpleStub> {
+  public static abstract class SimpleImplBase
+      implements io.grpc.BindableService, AsyncService {
+
+    @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
+      return SimpleGrpc.bindService(this);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do asynchronous rpc calls to service Simple.
+   * <pre>
+   * The greeting service definition.
+   * </pre>
+   */
+  public static final class SimpleStub
+      extends io.grpc.stub.AbstractAsyncStub<SimpleStub> {
     private SimpleStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -153,11 +169,43 @@ public final class SimpleGrpc {
   }
 
   /**
+   * A stub to allow clients to do synchronous rpc calls to service Simple.
    * <pre>
    * The greeting service definition.
    * </pre>
    */
-  public static final class SimpleBlockingStub extends io.grpc.stub.AbstractBlockingStub<SimpleBlockingStub> {
+  public static final class SimpleBlockingV2Stub
+      extends io.grpc.stub.AbstractBlockingStub<SimpleBlockingV2Stub> {
+    private SimpleBlockingV2Stub(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      super(channel, callOptions);
+    }
+
+    @java.lang.Override
+    protected SimpleBlockingV2Stub build(
+        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+      return new SimpleBlockingV2Stub(channel, callOptions);
+    }
+
+    /**
+     * <pre>
+     * Sends a greeting
+     * </pre>
+     */
+    public grpc.HelloReply sayHello(grpc.HelloRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getSayHelloMethod(), getCallOptions(), request);
+    }
+  }
+
+  /**
+   * A stub to allow clients to do limited synchronous rpc calls to service Simple.
+   * <pre>
+   * The greeting service definition.
+   * </pre>
+   */
+  public static final class SimpleBlockingStub
+      extends io.grpc.stub.AbstractBlockingStub<SimpleBlockingStub> {
     private SimpleBlockingStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -181,11 +229,13 @@ public final class SimpleGrpc {
   }
 
   /**
+   * A stub to allow clients to do ListenableFuture-style rpc calls to service Simple.
    * <pre>
    * The greeting service definition.
    * </pre>
    */
-  public static final class SimpleFutureStub extends io.grpc.stub.AbstractFutureStub<SimpleFutureStub> {
+  public static final class SimpleFutureStub
+      extends io.grpc.stub.AbstractFutureStub<SimpleFutureStub> {
     private SimpleFutureStub(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
@@ -216,10 +266,10 @@ public final class SimpleGrpc {
       io.grpc.stub.ServerCalls.ServerStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.ClientStreamingMethod<Req, Resp>,
       io.grpc.stub.ServerCalls.BidiStreamingMethod<Req, Resp> {
-    private final SimpleImplBase serviceImpl;
+    private final AsyncService serviceImpl;
     private final int methodId;
 
-    MethodHandlers(SimpleImplBase serviceImpl, int methodId) {
+    MethodHandlers(AsyncService serviceImpl, int methodId) {
       this.serviceImpl = serviceImpl;
       this.methodId = methodId;
     }
@@ -248,6 +298,18 @@ public final class SimpleGrpc {
     }
   }
 
+  public static final io.grpc.ServerServiceDefinition bindService(AsyncService service) {
+    return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+        .addMethod(
+          getSayHelloMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              grpc.HelloRequest,
+              grpc.HelloReply>(
+                service, METHODID_SAY_HELLO)))
+        .build();
+  }
+
   private static abstract class SimpleBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoFileDescriptorSupplier, io.grpc.protobuf.ProtoServiceDescriptorSupplier {
     SimpleBaseDescriptorSupplier() {}
@@ -271,9 +333,9 @@ public final class SimpleGrpc {
   private static final class SimpleMethodDescriptorSupplier
       extends SimpleBaseDescriptorSupplier
       implements io.grpc.protobuf.ProtoMethodDescriptorSupplier {
-    private final String methodName;
+    private final java.lang.String methodName;
 
-    SimpleMethodDescriptorSupplier(String methodName) {
+    SimpleMethodDescriptorSupplier(java.lang.String methodName) {
       this.methodName = methodName;
     }
 
