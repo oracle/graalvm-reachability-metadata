@@ -10,6 +10,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.HttpConfig;
+import org.eclipse.jgit.transport.URIish;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -75,7 +77,7 @@ class OrgEclipseJGitTest {
     }
 
     @Test
-    void test() throws Exception {
+    void fileTest() throws Exception {
         File localRepositoryDir = new File(TMP_DIR, "test_jgit_local_repo_" + System.currentTimeMillis());
         try {
             Git localGit = Git.cloneRepository()
@@ -114,6 +116,11 @@ class OrgEclipseJGitTest {
                 logger.warn("File '{}' not deleted", file);
             }
         }
+    }
+
+    @Test
+    void httpTest() {
+        new HttpConfig(new URIish());
     }
 
 }
