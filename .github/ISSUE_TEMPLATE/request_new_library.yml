@@ -1,0 +1,48 @@
+name: "🚀 Request Support for a New Library"
+description: Submit a request to add support for a third-party library
+title: "Request support for {maven_coordinates}"
+labels:
+  - library-new-request
+assignees:
+  - kimeta
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out the following details to help us evaluate and prioritize your request.
+
+  - type: input
+    id: maven_coordinates
+    attributes:
+      label: Full Maven coordinates
+      description: Include a version that you need. The system might support older versions so more people can benefit.
+      placeholder: groupId:artifactId:version
+    validations:
+      required: true
+
+  - type: input
+    id: source_code_link
+    attributes:
+      label: Library source code URL
+      description: Link to the upstream source repository (e.g., GitHub).
+      placeholder: https://github.com/org/repo
+    validations:
+      required: true
+
+  - type: input
+    id: test_suite_link
+    attributes:
+      label: Link to the existing test suite
+      description: Provide a link to the library's test suite (enter N/A if it does not exist).
+      placeholder: URL or N/A
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Reason for requesting the library
+      description: Explain your use case and why support for this library is important.
+      placeholder: Briefly describe your motivation and expected benefits.
+    validations:
+      required: true
