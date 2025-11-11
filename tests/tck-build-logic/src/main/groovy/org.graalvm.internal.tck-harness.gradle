@@ -68,9 +68,6 @@ Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
 
  // gradle compileTestJava -Pcoordinates=<maven-coordinates>
 Provider<Task> compileTestJava = tasks.register("compileTestJava") { task ->
-    task.setDescription("Compiles sources (javac) for all subprojects")
-    task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
-} as Provider<Task>
 
 // gradle javaTest -Pcoordinates=<maven-coordinates>
 Provider<Task> javaTest = tasks.register("javaTest") { task ->
@@ -89,7 +86,6 @@ Provider<Task> checkMetadataFiles = tasks.register("checkMetadataFiles") { task 
     task.setDescription("Checks content of metadata files for matching coordinates")
     task.setGroup(METADATA_GROUP)
 } as Provider<Task>
-
 
 tasks.named("check").configure {
     dependsOn(checkstyle)

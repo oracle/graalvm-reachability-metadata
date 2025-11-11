@@ -102,7 +102,7 @@ static List<Map> testAllCommands(String gradleCmd, String target) {
 
 tasks.register('testAllParallel') { t ->
     t.group = "verification"
-    t.setDescription("For each target, run clean and pullAllowedDockerImages first (sequentially), then run style checks and individual testing stages (checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test) concurrently with isolated logs. Options: -Pcoordinates to specify a single coordinate or 1/64 for the pull step; -Pparallelism to control the number of concurrent tasks.")
+    t.setDescription("For each target, run clean and pullAllowedDockerImages first (sequentially), then run style checks and individual testing stages (${testAllCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs. Options: -Pcoordinates to specify a single coordinate or 1/64 for the pull step; -Pparallelism to control the number of concurrent tasks.")
 
     doLast {
         def selectedArtifact = "org.postgresql:postgresql:42.7.3"
