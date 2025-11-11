@@ -219,6 +219,7 @@ jobs:
           FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
           REPO="${{ github.repository }}"
           TITLE="${{ env.ISSUE_TITLE_PREFIX }}${{ steps.runtests.outputs.failure_type }}${{ env.ISSUE_TITLE_MIDDLE }}${{ matrix.item.name }}:$FAILED_VERSION"
+          FAILURE_LABEL="fails-$(echo "${{ steps.runtests.outputs.failure_type }}" | sed 's/ /-/g')"
 
           BODY_FILE=$(mktemp)
           # Use single-quoted here-doc to disable any shell expansion of log content
@@ -237,8 +238,13 @@ jobs:
             echo "Updating existing issue #$ISSUE_NUMBER"
             gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --body-file "$BODY_FILE"
           else
-            echo "Creating new issue"
-            gh issue create --repo "$REPO" --title "$TITLE" --body-file "$BODY_FILE"
+            echo "Creating a new issue"
+            gh issue create \
+              --repo "$REPO" \
+              --title "$TITLE" \
+              --body-file "$BODY_FILE" \
+              --label "library-unsupported-version" \
+              --label "$FAILURE_LABEL"
           fi
 
           rm "$BODY_FILE"
