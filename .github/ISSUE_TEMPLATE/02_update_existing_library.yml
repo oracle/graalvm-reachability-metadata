@@ -1,0 +1,70 @@
+name: "🛠️ Update an existing library"
+description: Report a problem or request improvements for a library that is already supported
+title: "Update existing library: {maven_coordinates}"
+labels:
+  - library-update-request
+assignees:
+  - vjovanov
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to report issues or request fixes for libraries that already have support in this repository.
+
+  - type: input
+    id: maven_coordinates
+    attributes:
+      label: Full Maven coordinates
+      description: Include a version that is failing for you.
+      placeholder: groupId:artifactId:version
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Additional context and logs
+      description: Provide any relevant error messages, stack traces, or additional details about the issue. Links to logs are also welcome. Please follow the [troubleshooting guide](https://www.graalvm.org/latest/reference-manual/native-image/guides/troubleshoot-run-time-errors/) and include any missing metadata stack traces.
+      placeholder: Paste key logs, stack traces, or links here (optional, but highly appreciated).
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        
+        ### System information
+
+  - type: input
+    id: graalvm_version
+    attributes:
+      label: GraalVM version
+      description: State the exact GraalVM distribution and version you used (e.g., "GraalVM 25.0.1", "Oracle GraalVM 25.0.1").
+      placeholder: e.g., GraalVM 25.0.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating_system
+    attributes:
+      label: Operating system
+      description: Select the operating system used to reproduce the issue.
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: CPU architecture
+      description: Select the CPU architecture used to reproduce the issue.
+      options:
+        - AMD64 (x86-64)
+        - AARCH64 (ARM64)
+        - RISC-V
+    validations:
+      required: true

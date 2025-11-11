@@ -1,0 +1,125 @@
+name: "⚠️ Bug report"
+description: Create a report to help us improve the reachability metadata repo.
+title: "Bug: "
+labels:
+  - bug
+assignees:
+  - vjovanov
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report.
+
+        Important:
+        - This form is for general bugs in this repository.
+        - If your issue is specific to a single third-party library's metadata, please use one of these forms instead:
+          - "📚 Support a new library"
+          - "🛠️ Update an existing library"
+
+  - type: textarea
+    id: bug_description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of the bug.
+      placeholder: What happened? What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce_steps
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Provide clear steps to reproduce the behavior. Use code blocks for configuration and commands.
+        You can attach a minimal reproducer (zip file or link to a public repository/branch).
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and error messages
+      description: |
+        Include relevant error messages, stack traces, or log excerpts that show the problem. Use code blocks for large logs or provide links to files. 
+        Please follow the [troubleshooting guide](https://www.graalvm.org/latest/reference-manual/native-image/guides/troubleshoot-run-time-errors/) and include any missing metadata stack traces.
+      placeholder: |
+        ```console
+        <log content>
+        ```
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: reproducer_link
+    attributes:
+      label: Reproducer (optional)
+      description: Link to a public repository/branch or a shared artifact containing a minimal reproducer.
+      placeholder: https://github.com/org/repo/tree/branch
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Add any other context that might help investigate the problem.
+      placeholder: Any other relevant details, environment specifics, or hypotheses.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        
+        ### System information
+
+  - type: input
+    id: graalvm_version
+    attributes:
+      label: GraalVM version
+      description: State the exact GraalVM distribution and version you used (e.g., "GraalVM 25.0.1", "Oracle GraalVM 25.0.1").
+      placeholder: e.g., GraalVM 25.0.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating_system
+    attributes:
+      label: Operating system
+      description: Select the operating system used to reproduce the issue.
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: CPU architecture
+      description: Select the CPU architecture used to reproduce the issue.
+      options:
+        - AMD64 (x86-64)
+        - AARCH64 (ARM64)
+        - RISC-V
+    validations:
+      required: true
