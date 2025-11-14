@@ -225,7 +225,7 @@ public abstract class GrypeTask extends DefaultTask {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 getExecOperations().exec(spec -> {
                     spec.setStandardOutput(baos);
-                    spec.commandLine("git", "show", "master:tests/tck-build-logic/src/main/resources" + file);
+                    spec.commandLine("git", "show", "origin/master:tests/tck-build-logic/src/main/resources" + file);
                 });
 
                 allowedImages.add(baos.toString());
