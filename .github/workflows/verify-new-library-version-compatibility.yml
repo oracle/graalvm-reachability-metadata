@@ -217,6 +217,14 @@ jobs:
           git config --local user.name "Github Actions"
 
           FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
+          
+          # Skip issue creation if failed version is a pre-release
+          shopt -s nocasematch
+          if [[ "$FAILED_VERSION" =~ (-|\.)(rc|cr|m|ea|beta|alpha)(-?[0-9]*) ]]; then
+            echo "Pre-release version detected ($FAILED_VERSION). Skipping issue creation."
+            exit 0
+          fi
+    
           REPO="${{ github.repository }}"
           TITLE="${{ env.ISSUE_TITLE_PREFIX }}${{ steps.runtests.outputs.failure_type }}${{ env.ISSUE_TITLE_MIDDLE }}${{ matrix.item.name }}:$FAILED_VERSION"
 
