@@ -1,0 +1,21 @@
+plugins {
+    id 'org.graalvm.internal.tck'
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    implementation "org.slf4j:slf4j-api:$libraryVersion"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
