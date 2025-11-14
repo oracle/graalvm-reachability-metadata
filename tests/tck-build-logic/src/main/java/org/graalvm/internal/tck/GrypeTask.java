@@ -57,7 +57,7 @@ public abstract class GrypeTask extends DefaultTask {
             return vulnerabilities.critical() > 0 || vulnerabilities.high() > 0;
         }
 
-        public boolean isNoMoreVulnerable(DockerImage other) {
+        public boolean isNotMoreVulnerable(DockerImage other) {
             return this.vulnerabilities.critical() <= other.vulnerabilities().critical() && this.vulnerabilities.high() <= other.vulnerabilities().high();
         }
 
@@ -91,7 +91,7 @@ public abstract class GrypeTask extends DefaultTask {
 
     /**
      * Scans images that have been changed between org.graalvm.internal.tck.GrypeTask#baseCommit and org.graalvm.internal.tck.GrypeTask#newCommit.
-     * If changed images are no more vulnerable than previously allowed images, they won't be reported as vulnerable
+     * If changed images are not more vulnerable than previously allowed images, they won't be reported as vulnerable
      */
     private void scanChangedImages() throws IOException, URISyntaxException {
         Set<DockerImage> imagesToCheck = getChangedImages().stream().map(this::makeDockerImage).collect(Collectors.toSet());
@@ -109,13 +109,13 @@ public abstract class GrypeTask extends DefaultTask {
                         .filter(allowedImage -> DockerUtils.getImageName(allowedImage).equalsIgnoreCase(image.getImageName()))
                         .findFirst();
 
-                // check if a new image is no more vulnerable than the existing one
+                // check if a new image is not more vulnerable than the existing one
                 if (existingAllowedImage.isPresent()) {
                     DockerImage imageToCompare = makeDockerImage(existingAllowedImage.get());
                     imageToCompare.printVulnerabilityStatus();
 
-                    if (image.isNoMoreVulnerable(imageToCompare)) {
-                        System.out.println("Accepting: " + image.image() + " because it has no more vulnerabilities than existing: " + imageToCompare.image());
+                    if (image.isNotMoreVulnerable(imageToCompare)) {
+                        System.out.println("Accepting: " + image.image() + " because it does not have more vulnerabilities than existing: " + imageToCompare.image());
                         acceptedImages++;
                     }
                 }
