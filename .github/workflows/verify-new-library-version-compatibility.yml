@@ -2,7 +2,7 @@ name: "Verify compatibility with latest library versions"
 
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -15,8 +15,8 @@ concurrency:
 
 jobs:
   get-all-libraries:
+    if: ${{ github.event_name != 'schedule' || github.repository == 'oracle/graalvm-reachability-metadata' }}
     name: "📋 Get list of all supported libraries with newer versions"
-    if: github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions: write-all
@@ -53,6 +53,7 @@ jobs:
           git push origin "${{ steps.set-branch-name.outputs.branch }}"
 
   test-all-metadata:
+    if: ${{ github.event_name != 'schedule' || github.repository == 'oracle/graalvm-reachability-metadata' }}
     name: "🧪 ${{ matrix.item.name }}"
     runs-on: ubuntu-22.04
     needs: get-all-libraries
@@ -219,6 +220,7 @@ jobs:
           FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
           REPO="${{ github.repository }}"
           TITLE="${{ env.ISSUE_TITLE_PREFIX }}${{ steps.runtests.outputs.failure_type }}${{ env.ISSUE_TITLE_MIDDLE }}${{ matrix.item.name }}:$FAILED_VERSION"
+          FAILURE_LABEL="fails-$(echo "${{ steps.runtests.outputs.failure_type }}" | sed 's/ /-/g')"
 
           BODY_FILE=$(mktemp)
           # Use single-quoted here-doc to disable any shell expansion of log content
@@ -237,8 +239,13 @@ jobs:
             echo "Updating existing issue #$ISSUE_NUMBER"
             gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --body-file "$BODY_FILE"
           else
-            echo "Creating new issue"
-            gh issue create --repo "$REPO" --title "$TITLE" --body-file "$BODY_FILE"
+            echo "Creating a new issue"
+            gh issue create \
+              --repo "$REPO" \
+              --title "$TITLE" \
+              --body-file "$BODY_FILE" \
+              --label "library-unsupported-version" \
+              --label "$FAILURE_LABEL"
           fi
 
           rm "$BODY_FILE"
@@ -249,7 +256,7 @@ jobs:
     permissions: write-all
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: ${{ always() }}
+    if: ${{ always() && (github.event_name != 'schedule' || github.repository == 'oracle/graalvm-reachability-metadata') }}
     needs:
       - get-all-libraries
       - test-all-metadata
@@ -263,4 +270,9 @@ jobs:
           git config --local user.name "Github Actions"
           git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
           git checkout ${{ needs.get-all-libraries.outputs.branch }}
-          gh pr create --title "[Automation] Update supported library versions $(date '+%Y-%m-%dT%H:%M')" --body "This pull request updates supported versions of the existing libraries in the repo"
+          gh pr create \
+            --title "[Automation] Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
+            --body "This pull request updates supported versions of the existing libraries in the repo" \
+            --reviewer "kimeta" \
+            --assignee "vjovanov" \
+            --label "library-add-new"

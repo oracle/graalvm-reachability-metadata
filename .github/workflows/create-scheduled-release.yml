@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   get-changed-metadata:
+    if: ${{ github.repository == 'oracle/graalvm-reachability-metadata' }}
     name: "📋 Get a list of changed metadata"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
@@ -35,7 +36,7 @@ jobs:
 
   release:
     needs: get-changed-metadata
-    if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true'
+    if: ${{ (needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true') && (github.event_name != 'schedule' || github.repository == 'oracle/graalvm-reachability-metadata') }}
     name: "🚀 Create a release"
     runs-on: "ubuntu-22.04"
     env:

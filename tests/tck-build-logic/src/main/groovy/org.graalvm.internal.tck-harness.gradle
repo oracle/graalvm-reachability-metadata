@@ -31,6 +31,19 @@ import static org.graalvm.internal.tck.Utils.generateTaskName
 logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
 
+/**
+  * Write to GitHub Actions step output file if available, else print to stdout (local runs)
+  */
+def appendToGithubOutput(String line) {
+    def path = System.getenv("GITHUB_OUTPUT")
+    if (path == null || path.trim().isEmpty()) {
+        // Not running inside a GitHub Actions step, or file not provided
+        println line
+        return
+    }
+    new File(path).append(line + "\n")
+}
+
 String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
 List<String> matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
 
@@ -46,22 +59,22 @@ Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
- // gradle javac -Pcoordinates=<maven-coordinates>
+// gradle javac -Pcoordinates=<maven-coordinates>
 Provider<Task> javac = tasks.register("javac") { task ->
     task.setDescription("Compiles sources (javac) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
- // gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
-Provider<Task> nativeTestCompile = tasks.register("nativeTestCompile") { task ->
-    task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
-    task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
-}
-
- // gradle javaTest -Pcoordinates=<maven-coordinates>
+// gradle javaTest -Pcoordinates=<maven-coordinates>
 Provider<Task> javaTest = tasks.register("javaTest") { task ->
     task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+// gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
+Provider<Task> nativeTestCompile = tasks.register("nativeTestCompile") { task ->
+    task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
+    task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
 tasks.named("check").configure {
@@ -169,7 +182,7 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
                 "coordinates": matchingCoordinates
         ]
         matrix.putAll(matrixDefault)
-        new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
+        appendToGithubOutput("matrix=${JsonOutput.toJson(matrix)}")
     }
 }
 
@@ -189,8 +202,8 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
 
             matrix.putAll(matrixDefault)
             println "No changed coordinates were found!"
-            new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
-            new File(System.getenv("GITHUB_OUTPUT")).append("none-found=true\n")
+            appendToGithubOutput("matrix=${JsonOutput.toJson(matrix)}")
+            appendToGithubOutput("none-found=true")
         } else {
             def matrix = [
                     "coordinates": diffCoordinates
@@ -213,8 +226,8 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
                 matrix.version.add("25")
                 matrix.version.add("latest-ea")
             }
-            new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
-            new File(System.getenv("GITHUB_OUTPUT")).append("none-found=false\n")
+            appendToGithubOutput("matrix=${JsonOutput.toJson(matrix)}")
+            appendToGithubOutput("none-found=false")
         }
     }
 }

@@ -61,17 +61,23 @@ for VERSION in "${VERSIONS[@]}"; do
   echo " Testing $TEST_COORDINATES:$VERSION"
   echo "$DELIMITER"
 
+  if ! run_multiple_attempts "native-image run" 1 test; then
+      # failing execution: bisect
+      if ! run_multiple_attempts "javac compile" 1 javac; then
+        break
+      fi
 
-  if ! run_multiple_attempts "javac compile" 1 javac; then
-    break
-  fi
+      if ! run_multiple_attempts "java run" 1 javaTest; then
+        break
+      fi
 
-  if ! run_multiple_attempts "native-image build" 1 nativeTestCompile; then
-    break
-  fi
+      if ! run_multiple_attempts "native-image build" 1 nativeTestCompile; then
+        break
+      fi
 
-  if ! run_multiple_attempts "native-image run" 3 test; then
-    break
+      if ! run_multiple_attempts "native-image run" 3 test; then
+        break
+      fi
   fi
 
   echo "PASSED:$VERSION"
