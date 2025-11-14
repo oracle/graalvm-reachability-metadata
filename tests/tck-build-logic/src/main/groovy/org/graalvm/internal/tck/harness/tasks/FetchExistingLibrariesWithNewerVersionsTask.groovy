@@ -24,6 +24,26 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example")
 
+    /**
+     * Identifies pre-release library versions by pattern matching against common pre-release suffixes.
+     * <p>
+     * A version is considered pre-release if its suffix (following the last '.' or '-') matches
+     * one of these case-insensitive patterns:
+     * <ul>
+     *   <li>{@code alpha} followed by optional numbers (e.g., "alpha", "Alpha1", "alpha123")</li>
+     *   <li>{@code beta} followed by optional numbers (e.g., "beta", "Beta2", "BETA45")</li>
+     *   <li>{@code rc} followed by optional numbers (e.g., "rc", "RC1", "rc99")</li>
+     *   <li>{@code cr} followed by optional numbers (e.g., "cr", "CR3", "cr10")</li>
+     *   <li>{@code m} followed by REQUIRED numbers (e.g., "M1", "m23")</li>
+     *   <li>{@code ea} followed by optional numbers (e.g., "ea", "ea2", "ea15")</li>
+     *   <li>{@code b} followed by REQUIRED numbers (e.g., "b0244", "b5")</li>
+     *   <li>{@code preview} followed by optional numbers (e.g., "preview", "preview1", "preview42")</li>
+     *   <li>Numeric suffixes separated by '-' (e.g., "-1", "-123")</li>
+     * </ul>
+     */
+    private static final Pattern PRE_RELEASE_PATTERN = ~/(?i)^(\d+(?:\.\d+)*)(?:[-.](alpha\d*|beta\d*|rc\d*|cr\d*|m\d+|ea\d*|b\d+|\d+|preview)(?:[-.].*)?)?$/
+    private static final String FINAL_PATTERN = /(?i)\.Final$/
+
     @TaskAction
     void action() {
         // get all existing libraries
@@ -62,7 +82,10 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
         String artifact = libraryParts[1]
         def data = new URL(baseUrl + "/" + group + "/" + artifact + "/" + "maven-metadata.xml").getText()
 
-        return getNewerVersionsFromLibraryIndex(data, startingVersion, library)
+        List<String> newerVersions = getNewerVersionsFromLibraryIndex(data, startingVersion, library)
+
+        // filter pre-release versions if release exists
+        return filterPreReleases(newerVersions)
     }
 
     static List<String> getNewerVersionsFromLibraryIndex(String index, String startingVersion, String libraryName) {
@@ -86,6 +109,31 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
         allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
 
         return allVersions.subList(1, allVersions.size());
+    }
+
+    static List<String> filterPreReleases(List<String> versions) {
+        // identify base releases, treating .Final as base
+        Set<String> releases = versions.collect { v ->
+            // strip .Final
+            def cleaned = v.replaceAll(FINAL_PATTERN, '')
+            def matcher = PRE_RELEASE_PATTERN.matcher(cleaned)
+            if (matcher.matches() && matcher.group(2) == null) {
+                return matcher.group(1)
+            }
+            return null
+        }.findAll { it != null } as Set
+
+        // filter pre-releases if base exists
+        return versions.findAll { v ->
+            def cleaned = v.replaceAll(FINAL_PATTERN, '')
+            def matcher = PRE_RELEASE_PATTERN.matcher(cleaned)
+            if (matcher.matches()) {
+                String base = matcher.group(1)
+                String preSuffix = matcher.groupCount() > 1 ? matcher.group(2) : null
+                return preSuffix == null || !releases.contains(base)
+            }
+            true
+        }
     }
 
     static String getLatestLibraryVersion(String libraryModule) {
