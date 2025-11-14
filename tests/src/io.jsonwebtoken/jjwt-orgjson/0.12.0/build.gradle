@@ -1,0 +1,50 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "io.jsonwebtoken:jjwt-orgjson:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "io.jsonwebtoken:jjwt-api:$libraryVersion"
+    testImplementation "io.jsonwebtoken:jjwt-impl:$libraryVersion"
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--add-exports=java.base/sun.security.util=ALL-UNNAMED",
+        "--add-opens=java.base/java.io=ALL-UNNAMED"
+    ]
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        metadataCopy {
+            mergeWithExisting = true
+            inputTaskNames.add("test")
+            outputDirectories.add("src/test/resources/META-INF/native-image/io.jsonwebtoken/jjwt-orgjson")
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll([
+                    '--add-exports=java.base/sun.security.util=ALL-UNNAMED',
+                    '--add-opens=java.base/java.io=ALL-UNNAMED'
+            ])
+        }
+    }
+}
