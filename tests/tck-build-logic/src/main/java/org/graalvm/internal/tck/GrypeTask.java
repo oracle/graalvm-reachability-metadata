@@ -1,12 +1,8 @@
 package org.graalvm.internal.tck;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import org.graalvm.internal.tck.model.MetadataIndexEntry;
 import org.graalvm.internal.tck.model.grype.GrypeEntry;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -61,8 +57,8 @@ public abstract class GrypeTask extends DefaultTask {
             return vulnerabilities.critical() > 0 || vulnerabilities.high() > 0;
         }
 
-        public boolean isLessVulnerable(DockerImage other) {
-            return this.vulnerabilities.critical() < other.vulnerabilities().critical() && this.vulnerabilities.high() < other.vulnerabilities().high();
+        public boolean isNotMoreVulnerable(DockerImage other) {
+            return this.vulnerabilities.critical() <= other.vulnerabilities().critical() && this.vulnerabilities.high() <= other.vulnerabilities().high();
         }
 
         public void printVulnerabilityStatus() {
@@ -95,7 +91,7 @@ public abstract class GrypeTask extends DefaultTask {
 
     /**
      * Scans images that have been changed between org.graalvm.internal.tck.GrypeTask#baseCommit and org.graalvm.internal.tck.GrypeTask#newCommit.
-     * If changed images are less vulnerable than previously allowed images, they won't be reported as vulnerable
+     * If changed images are not more vulnerable than previously allowed images, they won't be reported as vulnerable
      */
     private void scanChangedImages() throws IOException, URISyntaxException {
         Set<DockerImage> imagesToCheck = getChangedImages().stream().map(this::makeDockerImage).collect(Collectors.toSet());
@@ -113,13 +109,13 @@ public abstract class GrypeTask extends DefaultTask {
                         .filter(allowedImage -> DockerUtils.getImageName(allowedImage).equalsIgnoreCase(image.getImageName()))
                         .findFirst();
 
-                // check if a new image is less vulnerable than the existing one
+                // check if a new image is not more vulnerable than the existing one
                 if (existingAllowedImage.isPresent()) {
                     DockerImage imageToCompare = makeDockerImage(existingAllowedImage.get());
                     imageToCompare.printVulnerabilityStatus();
 
-                    if (image.isLessVulnerable(imageToCompare)) {
-                        System.out.println("Accepting: " + image.image() + " because it has less vulnerabilities than existing: " + imageToCompare.image());
+                    if (image.isNotMoreVulnerable(imageToCompare)) {
+                        System.out.println("Accepting: " + image.image() + " because it does not have more vulnerabilities than existing: " + imageToCompare.image());
                         acceptedImages++;
                     }
                 }
@@ -229,7 +225,7 @@ public abstract class GrypeTask extends DefaultTask {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 getExecOperations().exec(spec -> {
                     spec.setStandardOutput(baos);
-                    spec.commandLine("git", "show", "master:tests/tck-build-logic/src/main/resources" + file);
+                    spec.commandLine("git", "show", "origin/master:tests/tck-build-logic/src/main/resources" + file);
                 });
 
                 allowedImages.add(baos.toString());
