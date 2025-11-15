@@ -119,12 +119,6 @@ public abstract class TckExtension {
         throw new RuntimeException("Missing test-directory for coordinates `" + coordinates + "`");
     }
 
-    private boolean shouldTestAll = false;
-
-    public boolean shouldTestAll() {
-        return shouldTestAll;
-    }
-
     /**
      * Returns a list of coordinates that match changed files between baseCommit and newCommit.
      *
@@ -142,13 +136,11 @@ public abstract class TckExtension {
         List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"));
 
         Path workflowsRoot = repoRoot().resolve(".github").resolve("workflows");
-        AtomicBoolean testAll = new AtomicBoolean(false);
         // Group files by if they belong to 'metadata' or 'test' directory structures.
         Map<String, List<Path>> changed = diffFiles.stream()
                 .map(line -> repoRoot().resolve(line))
                 .collect(Collectors.groupingBy((Path path) -> {
                     if (path.startsWith(tckRoot()) || path.startsWith(workflowsRoot)) {
-                        testAll.set(true);
                         return "logic";
                     } else if (path.startsWith(testRoot())) {
                         return "test";
@@ -158,12 +150,6 @@ public abstract class TckExtension {
                         return "other";
                     }
                 }));
-
-        if (testAll.get()) {
-            shouldTestAll = true;
-            // If tck was changed we should retest everything, just to be safe.
-            return getMatchingCoordinates("");
-        }
 
         // if we didn't change any of metadata, tests or logic we don't need to test anything
         if (changed.get("metadata") != null && changed.get("metadata").isEmpty()
