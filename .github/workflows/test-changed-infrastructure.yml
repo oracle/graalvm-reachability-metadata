@@ -1,21 +1,24 @@
-name: "Test changed metadata"
+name: "Test changed build logic"
 
 on:
   pull_request:
     branches:
       - master
     paths:
-      - 'metadata/*'
-      - 'tests/src/*'
+      - "tests/tck-build-logic/**"
+      - "gradle/**"
+      - "build.gradle"
+      - "settings.gradle"
+      - "gradle.properties"
 
 concurrency:
   group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
   cancel-in-progress: true
 
 jobs:
-  get-changed-metadata:
+  get-changed-infrastructure:
     if: github.repository == 'oracle/graalvm-reachability-metadata'
-    name: "📋 Get a list of all changed libraries"
+    name: "📋 Get a list of libraries to test for build-logic changes"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
     outputs:
@@ -29,63 +32,70 @@ jobs:
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '17'
-          distribution: 'graalvm'
+          java-version: "17"
+          distribution: "graalvm"
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
-          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          ./gradlew generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
-  test-changed-metadata:
+  test-changed-infrastructure:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-    if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
-    needs: get-changed-metadata
+    needs: get-changed-infrastructure
 
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.get-changed-metadata.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.get-changed-infrastructure.outputs.matrix) }}
+
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
+
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
         with:
-          distribution: 'oracle'
-          java-version: '17'
+          distribution: "oracle"
+          java-version: "17"
+
       - name: "🔧 Prepare environment"
         uses: graalvm/setup-graalvm@v1
         with:
-          set-java-home: 'false'
+          set-java-home: "false"
           java-version: ${{ matrix.version }}
-          distribution: 'graalvm'
+          distribution: "graalvm"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
+          native-image-job-reports: "true"
+
       - name: "Pull allowed docker images"
         run: |
           ./gradlew pullAllowedDockerImages --coordinates=${{ matrix.coordinates }}
+
       - name: "Disable docker networking"
         run: bash ./.github/workflows/disable-docker.sh
+
       - name: "🔎 Check metadata config files content"
         run: |
           ./gradlew checkConfigFiles --coordinates=${{ matrix.coordinates }}
+
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
           ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
 
-  all-metadata-passed:
-    name: "🧪 All metadata tests have passed"
+  all-infrastructure-passed:
+    name: "🧪 All build-logic triggered tests have passed"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
     if: ${{ always() }} && github.repository == 'oracle/graalvm-reachability-metadata'
-    needs: test-changed-metadata
+    needs: test-changed-infrastructure
     steps:
       - name: "All tests passed"
-        if: needs.test-changed-metadata.result == 'success'
+        if: needs.test-changed-infrastructure.result == 'success'
         run: exit 0
 
       - name: "Some tests failed"
-        if: needs.test-changed-metadata.result == 'failure'
+        if: needs.test-changed-infrastructure.result == 'failure'
         run: exit 1
