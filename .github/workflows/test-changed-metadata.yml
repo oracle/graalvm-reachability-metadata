@@ -4,9 +4,9 @@ on:
   pull_request:
     branches:
       - master
-    paths-ignore:
-      - '**.md'
-      - 'library-and-framework-list*.json'
+    paths:
+      - 'metadata/*'
+      - 'tests/*'
 
 concurrency:
   group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
@@ -35,7 +35,7 @@ jobs:
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
-          ./gradlew generateMatrixDiffCoordinates -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
   test-changed-metadata:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"

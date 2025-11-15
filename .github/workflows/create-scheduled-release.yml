@@ -31,7 +31,7 @@ jobs:
         id: set-matrix
         run: |
           LATEST_TAG=$(git tag --list | sort -V | tail -1)
-          ./gradlew generateMatrixDiffCoordinates -PbaseCommit=$(git show-ref -s $LATEST_TAG) -PnewCommit=$(git rev-parse HEAD)
+          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=$(git show-ref -s $LATEST_TAG) -PnewCommit=$(git rev-parse HEAD)
 
   release:
     needs: get-changed-metadata
