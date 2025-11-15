@@ -10,7 +10,7 @@ plugins {
 }
 
 import groovy.json.JsonOutput
-import org.graalvm.internal.tck.ContributionTask
+import org.graalvm.internal.tck.    ContributionTask
 import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.ConfigFilesChecker
 import org.graalvm.internal.tck.ScaffoldTask
@@ -24,12 +24,22 @@ import org.graalvm.internal.tck.harness.tasks.JavaTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.NativeTestCompileInvocationTask
 import org.graalvm.internal.tck.updaters.FetchExistingLibrariesWithNewerVersionsTask
 import org.graalvm.internal.tck.updaters.GroupUnsupportedLibraries
+import org.gradle.util.internal.VersionNumber
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
 logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
+
+def writeGithubOutput(String key, String value) {
+    def path = System.getenv("GITHUB_OUTPUT")
+    if (path == null || path.trim().isEmpty()) {
+        println "${key}=${value}"
+    } else {
+        new File(path).append("${key}=${value}\n")
+    }
+}
 
 String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
 List<String> matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
@@ -132,7 +142,6 @@ Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
 }
 
 List<String> diffCoordinates = new ArrayList<>()
-boolean testAll = false
 if (project.hasProperty("baseCommit")) {
     String baseCommit = project.findProperty("baseCommit")
     String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
@@ -146,8 +155,6 @@ if (project.hasProperty("baseCommit")) {
             dependsOn(taskTaskName)
         }
     }
-
-    testAll = tck.shouldTestAll()
 }
 
 def matrixDefault = [
@@ -155,7 +162,7 @@ def matrixDefault = [
             "17",
             "latest-ea"
         ],
-        "os"     : ["ubuntu-latest"] // TODO: Add support for "windows-latest", "macos-latest"
+        "os"     : ["ubuntu-latest"]
 ]
 
 final String METADATA_GROUP = "Metadata"
@@ -169,12 +176,12 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
                 "coordinates": matchingCoordinates
         ]
         matrix.putAll(matrixDefault)
-        new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
     }
 }
 
-// gradle generateMatrixDiffCoordinates -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDiffCoordinates", DefaultTask) { task ->
+// gradle generateChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with coordinates of changed libraries")
     task.setGroup(METADATA_GROUP)
     task.doFirst {
@@ -182,40 +189,84 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
-        if (diffCoordinates.isEmpty()) {
-            def matrix = [
-                "coordinates": ["No matches found!"]
-            ]
-
-            matrix.putAll(matrixDefault)
+        boolean noneFound = diffCoordinates.isEmpty()
+        def matrix = [
+                "coordinates": noneFound ? [] : diffCoordinates
+        ]
+        matrix.putAll(matrixDefault)
+        if (noneFound) {
             println "No changed coordinates were found!"
-            new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
-            new File(System.getenv("GITHUB_OUTPUT")).append("none-found=true\n")
-        } else {
-            def matrix = [
-                    "coordinates": diffCoordinates
+        }
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
+// gradle generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("generateInfrastructureChangedCoordinatesMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+        String baseCommit = project.findProperty("baseCommit")
+        String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
+
+        // Detect changes in test infrastructure (build logic and workflows)
+        def baos = new ByteArrayOutputStream()
+        project.exec {
+            standardOutput = baos
+            commandLine 'git', 'diff', '--name-only', '--diff-filter=ACMRT', baseCommit, newCommit
+        }
+        List<String> changedFiles = baos.toString("UTF-8").split("\\r?\\n") as List<String>
+        boolean infraChanged = changedFiles.any { it.startsWith('tests/tck-build-logic') || it.startsWith('.github/workflows') }
+
+        List<String> selected = []
+        if (infraChanged) {
+            // Pre-selected modules; keep stable for infra verification
+            List<String> preselectedModules = [
+                'org.bouncycastle:bcpkix-jdk15on',
+                'org.bouncycastle:bcpkix-jdk18on',
+                'io.netty:netty-common',
+                'io.grpc:grpc-core',
+                'org.postgresql:postgresql',
+                'org.apache.kafka:kafka-clients',
+                'com.zaxxer:HikariCP',
+                'org.hibernate.validator:hibernate-validator',
+                'io.undertow:undertow-core',
+                'com.hazelcast:hazelcast'
             ]
 
-            matrix.putAll(matrixDefault)
-
-            /**
-             * if we changed some files from tck-build-logic or github workflows, we must run all tests
-             * to check if we accidentally broke something. In this case, we will have a lots of tests, so we can't
-             * run them with all possible JDK versions, because we will hit the following error:
-             * Strategy expansion exceeded 256 results for job 'test-changed-metadata'
-             */
-            if (!testAll) {
-                /**
-                 * when we are introducing a new metadata, we should test it against all versions,
-                 * not just the oldest and the newest one (which we are testing by default)
-                 */
-                matrix.version.add("21")
-                matrix.version.add("25")
-                matrix.version.add("latest-ea")
+            preselectedModules.each { module ->
+                List<String> matches = tck.getMatchingCoordinates(module)
+                if (!matches.isEmpty()) {
+                    def withVersions = matches.collect { c ->
+                        def v = c.substring(c.lastIndexOf(':') + 1)
+                        [coord: c, ver: v]
+                    }
+                    def latest = withVersions.max { a, b -> VersionNumber.parse(a.ver) <=> VersionNumber.parse(b.ver) }
+                    selected.add(latest.coord)
+                } else {
+                    logger.lifecycle("No tested versions found for ${module}, skipping")
+                }
             }
-            new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
-            new File(System.getenv("GITHUB_OUTPUT")).append("none-found=false\n")
         }
+
+        boolean noneFound = !infraChanged || selected.isEmpty()
+        def matrix = [
+            "coordinates": noneFound ? [] : selected
+        ]
+        matrix.putAll(matrixDefault)
+        if (noneFound) {
+            if (!infraChanged) {
+                println "No test infrastructure changes detected."
+            } else {
+                println "Test infrastructure changed, but no pre-selected coordinates could be resolved."
+            }
+        }
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
     }
 }
 
