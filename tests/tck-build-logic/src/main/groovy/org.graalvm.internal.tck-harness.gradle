@@ -10,7 +10,7 @@ plugins {
 }
 
 import groovy.json.JsonOutput
-import org.graalvm.internal.tck.    ContributionTask
+import org.graalvm.internal.tck.ContributionTask
 import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.ConfigFilesChecker
 import org.graalvm.internal.tck.ScaffoldTask
@@ -197,6 +197,10 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
         if (noneFound) {
             println "No changed coordinates were found!"
         }
+
+        matrix.version.add("21")
+        matrix.version.add("25")
+
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
         writeGithubOutput("none-found", noneFound.toString())
     }
@@ -207,25 +211,10 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
     task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")
     task.setGroup(METADATA_GROUP)
     task.doFirst {
-        if (!project.hasProperty("baseCommit")) {
-            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
-        }
-        String baseCommit = project.findProperty("baseCommit")
-        String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
-
-        // Detect changes in test infrastructure (build logic and workflows)
-        def baos = new ByteArrayOutputStream()
-        project.exec {
-            standardOutput = baos
-            commandLine 'git', 'diff', '--name-only', '--diff-filter=ACMRT', baseCommit, newCommit
-        }
-        List<String> changedFiles = baos.toString("UTF-8").split("\\r?\\n") as List<String>
-        boolean infraChanged = changedFiles.any { it.startsWith('tests/tck-build-logic') || it.startsWith('.github/workflows') }
-
         List<String> selected = []
-        if (infraChanged) {
-            // Pre-selected modules; keep stable for infra verification
-            List<String> preselectedModules = [
+        boolean infraChanged = true
+        // Pre-selected modules; keep stable for infra verification
+        List<String> preselectedModules = [
                 'org.bouncycastle:bcpkix-jdk15on',
                 'org.bouncycastle:bcpkix-jdk18on',
                 'io.netty:netty-common',
@@ -236,37 +225,31 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
                 'org.hibernate.validator:hibernate-validator',
                 'io.undertow:undertow-core',
                 'com.hazelcast:hazelcast'
-            ]
-
-            preselectedModules.each { module ->
-                List<String> matches = tck.getMatchingCoordinates(module)
-                if (!matches.isEmpty()) {
-                    def withVersions = matches.collect { c ->
-                        def v = c.substring(c.lastIndexOf(':') + 1)
-                        [coord: c, ver: v]
-                    }
-                    def latest = withVersions.max { a, b -> VersionNumber.parse(a.ver) <=> VersionNumber.parse(b.ver) }
-                    selected.add(latest.coord)
-                } else {
-                    logger.lifecycle("No tested versions found for ${module}, skipping")
+        ]
+        preselectedModules.each { module ->
+            List<String> matches = tck.getMatchingCoordinates(module)
+            if (!matches.isEmpty()) {
+                def withVersions = matches.collect { c ->
+                    def v = c.substring(c.lastIndexOf(':') + 1)
+                    [coord: c, ver: v]
                 }
+                def latest = withVersions.max { a, b -> VersionNumber.parse(a.ver) <=> VersionNumber.parse(b.ver) }
+                selected.add(latest.coord)
+            } else {
+                throw new GradleException("No tested versions found for ${module}, skipping")
             }
         }
 
-        boolean noneFound = !infraChanged || selected.isEmpty()
         def matrix = [
-            "coordinates": noneFound ? [] : selected
+            "coordinates": selected
         ]
         matrix.putAll(matrixDefault)
-        if (noneFound) {
-            if (!infraChanged) {
-                println "No test infrastructure changes detected."
-            } else {
-                println "Test infrastructure changed, but no pre-selected coordinates could be resolved."
-            }
-        }
+
+        matrix.version.add("21")
+        matrix.version.add("25")
+
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
-        writeGithubOutput("none-found", noneFound.toString())
+        writeGithubOutput("none-found", "false")
     }
 }
 
