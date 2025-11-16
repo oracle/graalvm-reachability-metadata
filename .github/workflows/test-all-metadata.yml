@@ -27,13 +27,13 @@ jobs:
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
-          ./gradlew generateMatrixMatchingCoordinates -Pcoordinates=all
+          ./gradlew generateMatrixBatchedCoordinates -Pbatches=16
 
   test-all-metadata:
     if: github.repository == 'oracle/graalvm-reachability-metadata'
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 120
     needs: get-all-metadata
     strategy:
       fail-fast: false
@@ -56,7 +56,7 @@ jobs:
           native-image-job-reports: 'true'
       - name: "Pull allowed docker images"
         run: |
-          ./gradlew pullAllowedDockerImages --coordinates=${{ matrix.coordinates }}
+          ./gradlew pullAllowedDockerImagesMatching -Pcoordinates=${{ matrix.coordinates }}
       - name: "Disable docker networking"
         run: bash ./.github/workflows/disable-docker.sh
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
