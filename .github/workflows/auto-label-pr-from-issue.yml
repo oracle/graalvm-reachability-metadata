@@ -1,0 +1,92 @@
+name: Auto label PR based on linked issue
+
+on:
+  pull_request_target:
+    types:
+      - opened
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+jobs:
+  apply-label:
+    name: Map linked issue label(s) to PR label(s)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply mapped label to PR (bash)
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          PR_NUMBER="$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")"
+          OWNER="${GITHUB_REPOSITORY%%/*}"
+          REPO="${GITHUB_REPOSITORY#*/}"
+
+          # GraphQL query to get the single closing issue and its labels
+          read -r -d '' QUERY <<'GRAPHQL'
+          query($owner:String!, $repo:String!, $pr:Int!) {
+            repository(owner:$owner, name:$repo) {
+              pullRequest(number:$pr) {
+                closingIssuesReferences(first: 1) {
+                  nodes {
+                    number
+                    labels(first: 100) {
+                      nodes { name }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          GRAPHQL
+
+          BODY="$(jq -n \
+            --arg q "$QUERY" \
+            --arg owner "$OWNER" \
+            --arg repo "$REPO" \
+            --argjson pr "$PR_NUMBER" \
+            '{query:$q, variables:{owner:$owner, repo:$repo, pr:$pr}}')"
+
+          RESP="$(curl -sS \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$BODY" \
+            https://api.github.com/graphql)"
+
+          ISSUE_NUMBER="$(jq -r '.data.repository.pullRequest.closingIssuesReferences.nodes[0].number // empty' <<<"$RESP")"
+          if [[ -z "${ISSUE_NUMBER}" ]]; then
+            # No linked issue
+            exit 0
+          fi
+
+          # Extract label names from the linked issue
+          LABELS="$(jq -r '.data.repository.pullRequest.closingIssuesReferences.nodes[0].labels.nodes[].name' <<<"$RESP" || true)"
+
+          # Pick the first matching 'fails-*' label and map to a single PR label
+          selected=""
+          for l in $LABELS; do
+            case "$l" in
+              fails-java-compile) selected="fixes-javac-fail"; break;;
+              fails-java-run) selected="fixes-java-run-fail"; break;;
+              fails-native-image-run) selected="fixes-native-image-run-fail"; break;;
+              fails-native-image-build) selected="fixes-native-image-build-fail"; break;;
+            esac
+          done
+
+          if [[ -z "$selected" ]]; then
+            echo "::error::No 'fails-*' labels found on linked issue #${ISSUE_NUMBER}."
+            exit 0
+          fi
+
+          labels_json="$(jq -nc --arg l "$selected" '[$l]')"
+
+          # Apply the single mapped label (assumes labels already exist)
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${OWNER}/${REPO}/issues/${PR_NUMBER}/labels" \
+            -d "{\"labels\":${labels_json}}" >/dev/null
