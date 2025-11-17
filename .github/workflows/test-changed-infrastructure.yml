@@ -17,7 +17,6 @@ concurrency:
 
 jobs:
   get-changed-infrastructure:
-    if: github.repository == 'oracle/graalvm-reachability-metadata'
     name: "📋 Get a list of libraries to test for build-logic changes"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
@@ -29,12 +28,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: "🔧 Prepare environment"
-        uses: graalvm/setup-graalvm@v1
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
         with:
-          java-version: "17"
-          distribution: "graalvm"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          distribution: 'graalvm'
+          java-version: '21'
+
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
@@ -58,28 +58,28 @@ jobs:
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
         with:
-          distribution: "oracle"
-          java-version: "17"
+          distribution: 'graalvm'
+          java-version: '21'
 
-      - name: "🔧 Prepare environment"
+      - name: "🔧 Download GraalVM for metadata testing"
         uses: graalvm/setup-graalvm@v1
         with:
-          set-java-home: "false"
-          java-version: ${{ matrix.version }}
           distribution: "graalvm"
+          java-version: ${{ matrix.version }}
+          set-java-home: "false"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: "true"
 
       - name: "Pull allowed docker images"
         run: |
-          ./gradlew pullAllowedDockerImages --coordinates=${{ matrix.coordinates }}
+          ./gradlew pullAllowedDockerImages -Pcoordinates=${{ matrix.coordinates }}
 
       - name: "Disable docker networking"
-        run: bash ./.github/workflows/disable-docker.sh
+        run: bash ./.github/workflows/scripts/disable-docker.sh
 
-      - name: "🔎 Check metadata config files content"
+      - name: "🔎 Check metadata files content"
         run: |
-          ./gradlew checkConfigFiles --coordinates=${{ matrix.coordinates }}
+          ./gradlew checkMetadataFiles -Pcoordinates=${{ matrix.coordinates }}
 
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
@@ -89,7 +89,6 @@ jobs:
     name: "🧪 All build-logic triggered tests have passed"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
-    if: ${{ always() }} && github.repository == 'oracle/graalvm-reachability-metadata'
     needs: test-changed-infrastructure
     steps:
       - name: "All tests passed"

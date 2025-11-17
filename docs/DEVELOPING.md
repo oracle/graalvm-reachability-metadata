@@ -1,0 +1,138 @@
+# Developing the Repository Infrastructure
+
+This document summarizes those commands that you need to perform development tasks.
+
+This repo is developed with IntelliJ. To initialize use:
+```console
+intellij-idea-community ./
+```
+
+Always use the Gradle wrapper from the repository root:
+- Unix: `./gradlew <task> [options]`
+- Windows: `gradlew.bat <task> [options]`
+
+Prerequisites for most commands:
+- `JAVA_HOME` should be set to JDK 21 or later. GraalVM is recommended to match CI.
+- Docker (required for pulling/using allowed images during tests). Needs to work without `sudo`: `sudo usermod -aG docker $USER` and reboot.
+- [`grype`](https://github.com/anchore/grype) version `0.104.0` for scanning docker images:
+    ```console
+    curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin
+    ```
+
+Tip: When debugging locally, add `--stacktrace` for better error output.
+
+### End-to-end testing before the commit
+```console
+./gradlew testAllParallel --stacktrace
+```
+
+### Style and formatting
+
+1. To check style use
+    ```console 
+    ./gradlew checkstyle
+   ```
+   This will run Checkstyle using `gradle/checkstyle.xml`.
+
+2. Spotless Verifies formatting (used in release workflow prior to packaging): 
+    ```console
+   ./gradlew spotlessCheck
+    ```
+
+### Testing one library locally
+
+For a single coordinate, CI runs three steps in this order: 
+1. Pull Docker images:
+    ```console
+   ./gradlew pullAllowedDockerImages -Pcoordinates=org.postgresql:postgresql:42.7.3
+    ```
+2. Validate metadata:
+    ```console
+   ./gradlew checkMetadataFiles -Pcoordinates=org.postgresql:postgresql:42.7.3
+    ```
+3. Then run tests:
+    ```console
+   ./gradlew test -Pcoordinates=org.postgresql:postgresql:42.7.3
+   ```
+
+### Testing libraries in bulk
+
+To exercise many tests at once, you can target all coordinates or a slice of the test space via the N/M shard syntax.
+
+All coordinates:
+1. Test the whole repo:
+    ```console
+    ./gradlew pullAllowedDockerImages -Pcoordinates=all
+    ./gradlew checkMetadataFiles -Pcoordinates=all
+    ./gradlew test -Pcoordinates=all
+    ```
+
+2. Splitting the tests in batches (e.g., batch 1 of 16):
+    ```console
+    ./gradlew pullAllowedDockerImages -Pcoordinates=1/16
+    ./gradlew checkMetadataFiles -Pcoordinates=1/16
+    ./gradlew test -Pcoordinates=1/16
+    ```
+
+### Testing individual stages
+
+Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version|k/n|all]`. Here are the examples:
+```console
+./gradlew clean -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew checkstyle -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew compileTestJava -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew javaTest -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew nativeTestCompile -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
+```
+
+### Docker image vulnerability scanning
+
+1. Scan only images affected in a commit range:
+   ```console
+   ./gradlew checkAllowedDockerImages --baseCommit=$(git rev-parse origin/master) --newCommit=$(git rev-parse HEAD)
+   ```
+
+2. Scan all allowed images
+   ```console
+   ./gradlew checkAllowedDockerImages
+   ```
+
+### Compatibility automation with latest library versions
+
+These tasks support the scheduled workflow that checks newer upstream library versions and updates our metadata accordingly.
+
+1. List supported libraries that have newer upstream versions
+    ```console
+    ./gradlew fetchExistingLibrariesWithNewerVersions --quiet
+    ```
+
+2. Mark a new tested version for a library
+    ```console
+    ./gradlew addTestedVersion -Pcoordinates="group:artifact:newVersion" --lastSupportedVersion="oldVersion"
+    ```
+    For example:
+    ```console
+    ./gradlew addTestedVersion -Pcoordinates="org.postgresql:postgresql:42.7.4" --lastSupportedVersion="42.7.3"
+    ```
+
+### Releases and Packaging
+
+```console
+./gradlew package
+```
+
+### Quick reference (copy/paste)
+
+- Style: `./gradlew checkstyle`
+- Format check: `./gradlew spotlessCheck`
+- Pull images (single lib): `./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]`
+- Check metadata (single lib): `./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]`
+- Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
+- Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`
+- Scan all Docker images: `./gradlew checkAllowedDockerImages`
+- List libs with newer versions: `./gradlew fetchExistingLibrariesWithNewerVersions --quiet`
+- Record a newly tested version: `./gradlew addTestedVersion -Pcoordinates="group:artifact:newVersion" --lastSupportedVersion="oldVersion"`
+- Package release artifacts: `./gradlew package`

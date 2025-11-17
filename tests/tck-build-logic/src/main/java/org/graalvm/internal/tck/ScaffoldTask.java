@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.model.TestIndexEntry;
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.Input;
@@ -30,6 +31,7 @@ import java.util.List;
  *
  * @author Moritz Halbritter
  */
+@SuppressWarnings("unused")
 class ScaffoldTask extends DefaultTask {
     private final ObjectMapper objectMapper = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT)
@@ -333,5 +335,3 @@ class ScaffoldTask extends DefaultTask {
         Files.writeString(path, content, StandardCharsets.UTF_8);
     }
 }
-
-

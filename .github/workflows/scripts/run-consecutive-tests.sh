@@ -62,7 +62,7 @@ for VERSION in "${VERSIONS[@]}"; do
   echo "$DELIMITER"
 
 
-  if ! run_multiple_attempts "javac compile" 1 javac; then
+  if ! run_multiple_attempts "javac compile" 1 compileTestJava; then
     break
   fi
 

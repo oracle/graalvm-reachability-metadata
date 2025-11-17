@@ -1,4 +1,4 @@
-package org.graalvm.internal.tck.updaters
+package org.graalvm.internal.tck.harness.tasks
 
 
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -9,16 +9,14 @@ import groovy.json.JsonOutput
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.options.Option
 import org.gradle.util.internal.VersionNumber
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-
+@SuppressWarnings("unused")
 abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
     @Input

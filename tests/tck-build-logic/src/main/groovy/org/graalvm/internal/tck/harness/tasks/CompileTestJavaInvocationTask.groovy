@@ -14,10 +14,10 @@ import javax.inject.Inject
  * Task that is used to compile subprojects with javac.
  */
 @SuppressWarnings("unused")
-abstract class JavacInvocationTask extends AbstractSubprojectTask {
+abstract class CompileTestJavaInvocationTask extends AbstractSubprojectTask {
 
     @Inject
-    JavacInvocationTask(String coordinates) {
+    CompileTestJavaInvocationTask(String coordinates) {
         super(coordinates)
     }
 

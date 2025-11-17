@@ -13,7 +13,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.graalvm.internal.tck.ContributionTask
 import org.graalvm.internal.tck.DockerTask
-import org.graalvm.internal.tck.ConfigFilesChecker
+import org.graalvm.internal.tck.MetadataFilesCheckerTask
 import org.graalvm.internal.tck.DockerUtils
 import org.graalvm.internal.tck.ScaffoldTask
 import org.graalvm.internal.tck.GrypeTask
@@ -21,19 +21,21 @@ import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CleanInvocationTask
-import org.graalvm.internal.tck.harness.tasks.JavacInvocationTask
+import org.graalvm.internal.tck.harness.tasks.CompileTestJavaInvocationTask
 import org.graalvm.internal.tck.harness.tasks.JavaTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.NativeTestCompileInvocationTask
-import org.graalvm.internal.tck.updaters.FetchExistingLibrariesWithNewerVersionsTask
-import org.graalvm.internal.tck.updaters.GroupUnsupportedLibraries
+import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVersionsTask
 import org.gradle.util.internal.VersionNumber
-import org.graalvm.internal.tck.PullImagesFromFileTask
+import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
+import org.graalvm.internal.tck.utils.CoordinateUtils
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
 logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
+
+final String METADATA_GROUP = "Metadata"
 
 def writeGithubOutput(String key, String value) {
     def path = System.getenv("GITHUB_OUTPUT")
@@ -46,140 +48,96 @@ def writeGithubOutput(String key, String value) {
 
 String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
 
-// Support fractional batching coordinates in the form "k/n" (e.g., "1/16")
-static boolean isFractionalBatch(String s) {
-    return s != null && (s ==~ /\d+\/\d+/)
-}
-
-static List<Integer> parseFraction(String s) {
-    def m = s =~ /(\d+)\/(\d+)/
-    if (!m.matches()) return null
-    int k = (m[0][1] as int)
-    int n = (m[0][2] as int)
-    return [k, n]
-}
-
-static List<String> computeBatchedCoordinates(List<String> coordinates, int index, int batches) {
-    if (batches <= 0) throw new GradleException("Invalid batches denominator: ${batches}")
-    if (index < 1 || index > batches) throw new GradleException("Invalid batch index: ${index}/${batches}")
-    def sorted = new ArrayList<String>(coordinates)
-    Collections.sort(sorted)
-    int target = (index - 1)
-    def result = []
-    int i = 0
-    for (String c : sorted) {
-        if ((i % batches) == target) {
-            result.add(c)
-        }
-        i++
-    }
-    return result
-}
 
 List<String> matchingCoordinates
-if (isFractionalBatch(coordinateFilter)) {
-    def frac = parseFraction(coordinateFilter)
+if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
+    def frac = CoordinateUtils.parseFraction(coordinateFilter)
     List<String> all = tck.getMatchingCoordinates("all")
-    matchingCoordinates = computeBatchedCoordinates(all, frac[0], frac[1])
+    matchingCoordinates = CoordinateUtils.computeBatchedCoordinates(all, frac[0], frac[1])
 } else {
     matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
 }
+matchingCoordinates = matchingCoordinates.findAll { !it.startsWith("samples:") }
 
-// gradle test -Pcoordinates=<maven-coordinates>
-Provider<Task> test = tasks.register("test", DefaultTask) { task ->
-    task.setDescription("Tests GraalVM Reflection Metadata that matches given coordinates")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-}
 
 // gradle checkstyle -Pcoordinates=<maven-coordinates>
 Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
     task.setDescription("Runs checkstyle on all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-}
+} as Provider<Task>
 
- // gradle javac -Pcoordinates=<maven-coordinates>
-Provider<Task> javac = tasks.register("javac") { task ->
+ // gradle compileTestJava -Pcoordinates=<maven-coordinates>
+Provider<Task> compileTestJava = tasks.register("compileTestJava") { task ->
     task.setDescription("Compiles sources (javac) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
-}
+} as Provider<Task>
+
+// gradle javaTest -Pcoordinates=<maven-coordinates>
+Provider<Task> javaTest = tasks.register("javaTest") { task ->
+    task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+} as Provider<Task>
 
  // gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
 Provider<Task> nativeTestCompile = tasks.register("nativeTestCompile") { task ->
     task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
-}
+} as Provider<Task>
 
- // gradle javaTest -Pcoordinates=<maven-coordinates>
-Provider<Task> javaTest = tasks.register("javaTest") { task ->
-    task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-}
+// gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
+Provider<Task> checkMetadataFiles = tasks.register("checkMetadataFiles") { task ->
+    task.setDescription("Checks content of metadata files for matching coordinates")
+    task.setGroup(METADATA_GROUP)
+} as Provider<Task>
+
 
 tasks.named("check").configure {
     dependsOn(checkstyle)
 }
 
-final String METADATA_GROUP = "Metadata"
 
-
-
-
-// Here we want to configure all test and checkstyle tasks for all filtered subprojects
-for (String coordinates in matchingCoordinates) {
-    String testTaskName = generateTaskName("test", coordinates)
-    if ((!tasks.getNames().contains(testTaskName))) {
-        tasks.register(testTaskName, TestInvocationTask, coordinates)
-    }
-    test.configure {
-        dependsOn(testTaskName)
-    }
-
-    String checkstyleTaskName = generateTaskName("checkstyle", coordinates)
-    if ((!tasks.getNames().contains(checkstyleTaskName))) {
-        tasks.register(checkstyleTaskName, CheckstyleInvocationTask, coordinates)
-    }
-    checkstyle.configure {
-        dependsOn(checkstyleTaskName)
-    }
-
-    String cleanTaskName = generateTaskName("clean", coordinates)
-    if ((!tasks.getNames().contains(cleanTaskName))) {
-        tasks.register(cleanTaskName, CleanInvocationTask, coordinates)
-    }
-    clean.configure {
-        dependsOn(cleanTaskName)
-    }
-
-    String javacTaskName = generateTaskName("javac", coordinates)
-    if ((!tasks.getNames().contains(javacTaskName))) {
-        tasks.register(javacTaskName, JavacInvocationTask, coordinates)
-    }
-    javac.configure {
-        dependsOn(javacTaskName)
-    }
-
-    String nativeTestCompileTaskName = generateTaskName("nativeTestCompile", coordinates)
-    if ((!tasks.getNames().contains(nativeTestCompileTaskName))) {
-        tasks.register(nativeTestCompileTaskName, NativeTestCompileInvocationTask, coordinates)
-    }
-    nativeTestCompile.configure {
-        dependsOn(nativeTestCompileTaskName)
-    }
-
-    String javaTestTaskName = generateTaskName("javaTest", coordinates)
-    if ((!tasks.getNames().contains(javaTestTaskName))) {
-        tasks.register(javaTestTaskName, JavaTestInvocationTask, coordinates)
-    }
-    javaTest.configure {
-        dependsOn(javaTestTaskName)
-    }
-
-    String pullDockerTaskName = generateTaskName("pullAllowedDockerImages", coordinates)
-    if ((!tasks.getNames().contains(pullDockerTaskName))) {
-        tasks.register(pullDockerTaskName, DockerTask.class) { t ->
-            t.setCoordinates(coordinates)
+ // Here we want to configure all test and checkstyle tasks for all filtered subprojects
+// Extracted helper to register per-coordinate tasks and wire them to aggregate tasks.
+def registerPerCoordinateTask = { String coordinates, Object aggregate, String baseName, Class taskClass, boolean passCtorArg = true, Closure customConfigure = null ->
+    String taskName = generateTaskName(baseName, coordinates)
+    if ((!tasks.getNames().contains(taskName))) {
+        if (passCtorArg) {
+            tasks.register(taskName, taskClass, coordinates)
+        } else {
+            tasks.register(taskName, taskClass) { t ->
+                if (customConfigure != null) {
+                    customConfigure.call(t)
+                }
+            }
         }
     }
+    if (aggregate != null) {
+        if (aggregate instanceof org.gradle.api.provider.Provider) {
+            aggregate.configure {
+                dependsOn(taskName)
+            }
+        } else {
+            tasks.named(aggregate.toString()).configure {
+                dependsOn(taskName)
+            }
+        }
+    }
+}
+
+for (String coordinates in matchingCoordinates) {
+    registerPerCoordinateTask(coordinates, checkstyle, "checkstyle", CheckstyleInvocationTask, true)
+    registerPerCoordinateTask(coordinates, "clean", "clean", CleanInvocationTask, true)
+    registerPerCoordinateTask(coordinates, compileTestJava, "compileTestJava", CompileTestJavaInvocationTask, true)
+    registerPerCoordinateTask(coordinates, javaTest, "javaTest", JavaTestInvocationTask, true)
+    registerPerCoordinateTask(coordinates, nativeTestCompile, "nativeTestCompile", NativeTestCompileInvocationTask, true)
+    // No aggregate wiring for per-coordinate docker pulls; they are invoked by dedicated workflows.
+    registerPerCoordinateTask(coordinates, null, "pullAllowedDockerImages", DockerTask.class, false) { t ->
+        t.setCoordinates(coordinates)
+    }
+    registerPerCoordinateTask(coordinates, checkMetadataFiles, "checkMetadataFiles", MetadataFilesCheckerTask.class, false) { t ->
+        t.setCoordinates(coordinates)
+    }
+    registerPerCoordinateTask(coordinates, "test", "test", TestInvocationTask, true)
 }
 
 // gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
@@ -335,12 +293,6 @@ tasks.register("fetchExistingLibrariesWithNewerVersions", FetchExistingLibraries
     task.setAllLibraryCoordinates(matchingCoordinates)
 }
 
-tasks.register("groupLibrariesByName", GroupUnsupportedLibraries.class) { task ->
-    task.setGroup(METADATA_GROUP)
-    task.setDescription("Extracts groups of libraries from github comments provided in a form of string.")
-}
-
-
 tasks.register("addTestedVersion", TestedVersionUpdaterTask.class) { task ->
     task.setDescription("Updates list of tested versions.")
     task.setGroup(METADATA_GROUP)
@@ -352,57 +304,9 @@ tasks.register("checkAllowedDockerImages", GrypeTask.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
-def imagesFileProvider = project.layout.buildDirectory.file("tck/required-docker-images.txt")
-
-def computeImages = tasks.register("computeAllowedDockerImagesFile", DefaultTask) { task ->
-    task.setDescription("Computes allowed docker images required by matching coordinates and writes them to a file")
+tasks.register("pullAllowedDockerImages", ComputeAndPullAllowedDockerImagesTask.class) { task ->
+    task.setDescription("Computes and pulls allowed docker images required by matching coordinates")
     task.setGroup(METADATA_GROUP)
-    task.outputs.file(imagesFileProvider)
-    task.doFirst {
-        if (matchingCoordinates == null || matchingCoordinates.isEmpty()) {
-            throw new GradleException("No matching coordinates found for property 'coordinates'. Provide -Pcoordinates=<filter> or a fractional batch 'k/n'.")
-        }
-        Set<String> unionRequired = new LinkedHashSet<>()
-        matchingCoordinates.each { c ->
-            def parts = c.split(":")
-            if (parts.length < 3) {
-                logger.warn("Skipping invalid coordinates: ${c}")
-                return
-            }
-            def group = parts[0]
-            def artifact = parts[1]
-            def version = parts[2]
-            File f = project.file("tests/src/${group}/${artifact}/${version}/required-docker-images.txt")
-            if (f.exists()) {
-                f.readLines()
-                        .collect { it?.trim() }
-                        .findAll { it && !it.startsWith("#") }
-                        .each { unionRequired.add(it) }
-            }
-        }
-
-        Set<String> allowed = DockerUtils.getAllAllowedImages()
-        def notAllowed = unionRequired.findAll { !allowed.contains(it) }
-        if (!notAllowed.isEmpty()) {
-            throw new GradleException("The following images are not in the allowed list: ${notAllowed}. " +
-                    "If you need them, add Dockerfiles under tests/tck-build-logic/src/main/resources/allowed-docker-images " +
-                    "per CONTRIBUTING.md, or adjust required-docker-images.txt files.")
-        }
-
-        def finalList = unionRequired.findAll { allowed.contains(it) }.toList()
-        println "Collected ${finalList.size()} required allowed image(s)"
-        File outFile = imagesFileProvider.get().asFile
-        outFile.parentFile.mkdirs()
-        outFile.text = finalList.join(System.lineSeparator())
-    }
-}
-
-tasks.register("pullAllowedDockerImages", PullImagesFromFileTask.class) { task ->
-    task.setDescription("Pull allowed docker images required by matching coordinates")
-    task.setGroup(METADATA_GROUP)
-    task.getImagesFile().set(imagesFileProvider)
-}.configure { t ->
-    t.dependsOn(computeImages)
 }
 
 
@@ -416,10 +320,5 @@ tasks.register("scaffold", ScaffoldTask.class) { task ->
 
 tasks.register("contribute", ContributionTask.class) { task ->
     task.setDescription("Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.")
-    task.setGroup(METADATA_GROUP)
-}
-
-tasks.register("checkConfigFiles", ConfigFilesChecker.class) { task ->
-    task.setDescription("Checks content of config files for a new library.")
     task.setGroup(METADATA_GROUP)
 }

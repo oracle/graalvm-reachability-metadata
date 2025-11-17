@@ -16,6 +16,7 @@ concurrency:
 jobs:
   get-all-libraries:
     name: "📋 Get list of all supported libraries with newer versions"
+    # Opens PRs, with labels and assignees. Works only on the main repo.
     if: github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ubuntu-22.04
     timeout-minutes: 5
@@ -27,12 +28,11 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "🔧 Prepare environment"
-        uses: graalvm/setup-graalvm@v1
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
         with:
-          java-version: '21'
           distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          java-version: '21'
 
       - name: "📅 Set branch name"
         id: set-branch-name
@@ -74,17 +74,17 @@ jobs:
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
         with:
-          distribution: 'oracle'
+          distribution: 'graalvm'
           java-version: '21'
 
-      - name: "🔧 Prepare environment"
+      - name: "🔧 Download GraalVM for metadata testing"
         uses: graalvm/setup-graalvm@v1
         with:
-          set-java-home: 'false'
-          java-version: 21
           distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          java-version: 25
+          set-java-home: 'false'
           native-image-job-reports: 'true'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Check for an existing issue and skip further testing if found"
         id: check_existing_issue
@@ -122,17 +122,17 @@ jobs:
 
       - name: "Pull allowed docker images"
         if: steps.check_existing_issue.outputs.skip != 'true'
-        run: ./gradlew pullAllowedDockerImages --coordinates="${{ env.TEST_COORDINATES }}"
+        run: ./gradlew pullAllowedDockerImages -Pcoordinates="${{ env.TEST_COORDINATES }}"
 
       - name: "Disable docker networking"
         if: steps.check_existing_issue.outputs.skip != 'true'
-        run: bash ./.github/workflows/disable-docker.sh
+        run: bash ./.github/workflows/scripts/disable-docker.sh
 
       - name: "🧪 Run '${{ env.TEST_COORDINATES }}' tests"
         if: steps.check_existing_issue.outputs.skip != 'true'
         id: runtests
         run: |
-          bash ./.github/workflows/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.item.versions) }}' 2>&1 | tee test_results.txt || true
+          bash ./.github/workflows/scripts/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.item.versions) }}' 2>&1 | tee test_results.txt || true
           
           # Extract successful versions
           grep "^PASSED:" test_results.txt | sed 's/PASSED://g' > successful_versions.txt
@@ -174,7 +174,7 @@ jobs:
           update_new_versions() {
             while read version; do
               if [ -n "$version" ]; then
-                ./gradlew addTestedVersion --coordinates="${{ matrix.item.name }}:$version" --lastSupportedVersion="${{ env.LATEST_VERSION }}"
+                ./gradlew addTestedVersion -Pcoordinates="${{ matrix.item.name }}:$version" --lastSupportedVersion="${{ env.LATEST_VERSION }}"
               fi
             done < successful_versions.txt
           }
