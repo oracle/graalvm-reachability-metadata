@@ -15,7 +15,7 @@ jobs:
     name: Map linked issue label to PR label
     runs-on: ubuntu-latest
     steps:
-      - name: Apply mapped label to PR (bash)
+      - name: Apply mapped label to PR
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,7 +77,7 @@ jobs:
           selected=""
           for l in $LABELS; do
             case "$l" in
-              fails-java-compile) selected="fixes-javac-fail"; break;;
+              fails-javac-compile) selected="fixes-javac-fail"; break;;
               fails-java-run) selected="fixes-java-run-fail"; break;;
               fails-native-image-run) selected="fixes-native-image-run-fail"; break;;
               fails-native-image-build) selected="fixes-native-image-build-fail"; break;;
