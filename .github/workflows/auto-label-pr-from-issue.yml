@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   apply-label:
-    name: Map linked issue label(s) to PR label(s)
+    name: Map linked issue label to PR label
     runs-on: ubuntu-latest
     steps:
       - name: Apply mapped label to PR (bash)
@@ -20,14 +20,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
+         
+          command -v jq >/dev/null || { echo "::error title=Missing dependency::jq not found in PATH"; exit 1; }
+          command -v curl >/dev/null || { echo "::error title=Missing dependency::curl not found in PATH"; exit 1; }
 
           PR_NUMBER="$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")"
           OWNER="${GITHUB_REPOSITORY%%/*}"
           REPO="${GITHUB_REPOSITORY#*/}"
 
           # GraphQL query to get the single closing issue and its labels
-          read -r -d '' QUERY <<'GRAPHQL'
+          QUERY="$(cat <<'GRAPHQL'
           query($owner:String!, $repo:String!, $pr:Int!) {
             repository(owner:$owner, name:$repo) {
               pullRequest(number:$pr) {
@@ -43,6 +46,7 @@ jobs:
             }
           }
           GRAPHQL
+          )"
 
           BODY="$(jq -n \
             --arg q "$QUERY" \
@@ -56,10 +60,13 @@ jobs:
             -H "Content-Type: application/json" \
             -d "$BODY" \
             https://api.github.com/graphql)"
+          if jq -e '.errors' >/dev/null 2>&1 <<<"$RESP"; then
+            echo "::error title=GraphQL API errors::$(jq -c '.errors' <<<"$RESP")"
+          fi
 
           ISSUE_NUMBER="$(jq -r '.data.repository.pullRequest.closingIssuesReferences.nodes[0].number // empty' <<<"$RESP")"
           if [[ -z "${ISSUE_NUMBER}" ]]; then
-            # No linked issue
+            echo "::notice title=No linked issue::PR #${PR_NUMBER} has no linked closing issue."
             exit 0
           fi
 
@@ -78,7 +85,7 @@ jobs:
           done
 
           if [[ -z "$selected" ]]; then
-            echo "::error::No 'fails-*' labels found on linked issue #${ISSUE_NUMBER}."
+            echo "::notice title=No mapping found::No 'fails-*' labels found on linked issue #${ISSUE_NUMBER}."
             exit 0
           fi
 
