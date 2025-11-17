@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
@@ -16,6 +17,7 @@ import org.gradle.api.tasks.OutputFiles;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 import org.gradle.util.internal.VersionNumber;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +25,7 @@ import java.nio.file.Files;
 import java.util.Comparator;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
 
     @Option(option = "coordinates", description = "GAV coordinates of the library")
@@ -42,10 +45,10 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
 
     @Input
     @Option(option = "lastSupportedVersion", description = "Last version of the library that passed tests")
-    protected abstract Property<String> getLastSupportedVersion();
+    protected abstract Property<@NotNull String> getLastSupportedVersion();
 
     @Input
-    protected abstract Property<String> getNewVersion();
+    protected abstract Property<@NotNull String> getNewVersion();
 
     @OutputFiles
     protected abstract RegularFileProperty getIndexFile();

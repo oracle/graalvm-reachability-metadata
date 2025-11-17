@@ -1,30 +1,25 @@
 package org.graalvm.internal.tck;
 
 import groovy.json.JsonSlurper;
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 
-import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Checks content of config files for a new library.
  * <p>
- * Run with {@code gradle checkConfigFiles --coordinates com.example:library:1.0.0}.
+ * Run with {@code gradle checkMetadataFiles -Pcoordinates com.example:library:1.0.0}.
  */
-public abstract class ConfigFilesChecker extends DefaultTask {
+@SuppressWarnings("unused")
+public abstract class MetadataFilesCheckerTask extends DefaultTask {
 
     @InputFiles
     protected abstract RegularFileProperty getMetadataRoot();
@@ -32,12 +27,17 @@ public abstract class ConfigFilesChecker extends DefaultTask {
     @InputFiles
     protected abstract RegularFileProperty getIndexFile();
 
-    private final Set<String> EXPECTED_FILES = new HashSet<>(Arrays.asList("index.json", "reflect-config.json", "resource-config.json", "serialization-config.json",
-            "jni-config.json", "proxy-config.json", "predefined-classes-config.json"));
+    private final Set<String> EXPECTED_FILES = new HashSet<>(List.of(
+            "index.json",
+            "reflect-config.json",
+            "resource-config.json",
+            "serialization-config.json",
+            "jni-config.json",
+            "proxy-config.json"));
 
     private final Set<String> ILLEGAL_TYPE_VALUES = new HashSet<>(List.of("java.lang"));
 
-    private final Set<String> PREDEFINED_ALLOWED_PACKAGES = new HashSet<>(Arrays.asList("java.lang", "java.util"));
+    private final Set<String> PREDEFINED_ALLOWED_PACKAGES = new HashSet<>(List.of("java.lang", "java.util"));
 
     Coordinates coordinates;
     List<String> allowedPackages;
@@ -98,7 +98,7 @@ public abstract class ConfigFilesChecker extends DefaultTask {
 
     private List<File> getConfigFilesForMetadataDir(File root) throws RuntimeException {
         List<File> files = new ArrayList<>();
-        File [] content = root.listFiles();
+        File[] content = root.listFiles();
 
         if (content == null) {
             throw new RuntimeException("ERROR: Failed to load content of " + root.toURI());
@@ -121,7 +121,7 @@ public abstract class ConfigFilesChecker extends DefaultTask {
         return ((List<Object>) new JsonSlurper()
                 .parse(file))
                 .stream()
-                .map(e -> (Map<String, Object>)e)
+                .map(e -> (Map<String, Object>) e)
                 .collect(Collectors.toList());
     }
 
@@ -134,7 +134,7 @@ public abstract class ConfigFilesChecker extends DefaultTask {
     private boolean reflectConfigFileContainsErrors(File file) {
         List<Map<String, Object>> entries = getConfigEntries(file);
 
-        if (entries.size() == 0) {
+        if (entries.isEmpty()) {
             System.out.println("ERROR: empty reflect-config detected: " + file.toURI());
             return true;
         }
@@ -159,7 +159,7 @@ public abstract class ConfigFilesChecker extends DefaultTask {
             List<Map<String, Object>> includes = (List<Map<String, Object>>) resources.get("includes");
             List<Map<String, Object>> excludes = (List<Map<String, Object>>) resources.get("excludes");
 
-            if (listNullOrEmpty(includes) && listNullOrEmpty(excludes) && listNullOrEmpty(bundles)){
+            if (listNullOrEmpty(includes) && listNullOrEmpty(excludes) && listNullOrEmpty(bundles)) {
                 System.out.println("ERROR: empty resource-config detected: " + file.toURI());
                 return true;
             }
@@ -189,7 +189,7 @@ public abstract class ConfigFilesChecker extends DefaultTask {
 
     private boolean checkOldSerializationConfig(File file) {
         List<Map<String, Object>> entries = getConfigEntries(file);
-        
+
         if (entries.isEmpty()) {
             System.out.println("ERROR: empty serialization-config detected: " + file.toURI());
             return true;
@@ -248,7 +248,7 @@ public abstract class ConfigFilesChecker extends DefaultTask {
     private boolean proxyConfigFileContainsErrors(File file) {
         List<Map<String, Object>> entries = getConfigEntries(file);
 
-        if (entries.size() == 0) {
+        if (entries.isEmpty()) {
             System.out.println("ERROR: empty proxy-config detected: " + file.toURI());
             return true;
         }
@@ -265,7 +265,7 @@ public abstract class ConfigFilesChecker extends DefaultTask {
     private boolean jniConfigFileContainsErrors(File file) {
         List<Map<String, Object>> entries = getConfigEntries(file);
 
-        if (entries.size() == 0) {
+        if (entries.isEmpty()) {
             System.out.println("ERROR: empty jni-config detected: " + file.toURI());
             return true;
         }
@@ -300,7 +300,6 @@ public abstract class ConfigFilesChecker extends DefaultTask {
         return containsDuplicates;
     }
 
-    @SuppressWarnings("unchecked")
     private boolean checkTypeReachable(Map<String, Object> entry, File file) {
         String typeReachable = getEntryTypeReachable(entry);
         String entryName = getEntryName(entry);
@@ -366,15 +365,15 @@ public abstract class ConfigFilesChecker extends DefaultTask {
             return null;
         }
 
-        return  (String) condition.get("typeReachable");
+        return (String) condition.get("typeReachable");
     }
 
     private String getEntryName(Map<String, Object> entry) {
-        return  (String) entry.get("name");
+        return (String) entry.get("name");
     }
 
-    private boolean listNullOrEmpty(List list) {
-        return list == null || list.size() == 0;
+    private boolean listNullOrEmpty(List<?> list) {
+        return list == null || list.isEmpty();
     }
 
     @SuppressWarnings("unchecked")

@@ -6,7 +6,7 @@ you can enable automatic use of the metadata repository for [Gradle projects](ht
 
 [This web page](https://www.graalvm.org/native-image/libraries-and-frameworks/) provides an overview of libraries and frameworks that are tested and thus ready for GraalVM Native Image.
 If you would like to see your library or framework in the list too, please open a pull request and extend [this JSON file](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
-Before submitting a pull request, please read [this guide](./CONTRIBUTING.md#tested-libraries-and-frameworks).
+Before submitting a pull request, please read [this guide](docs/CONTRIBUTING.md#tested-libraries-and-frameworks).
 
 ## Rationale
 
@@ -25,4 +25,10 @@ Please visit [this web page](https://www.graalvm.org/latest/reference-manual/nat
 ## Contributing
 
 We welcome contributions from the community.
-Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md).
+Before submitting a pull request, please [review our contribution guide](docs/CONTRIBUTING.md).
+
+## Further Information
+
+1. Continuous integration is described in [CI.md](docs/CI.md).  
+2. PR Reviewing guides are described in [REVIEWING.md](docs/REVIEWING.md).
+3. Development is described in [DEVELOPING.md](docs/DEVELOPING.md).  

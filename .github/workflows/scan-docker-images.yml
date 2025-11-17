@@ -18,18 +18,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: graalvm/setup-graalvm@v1
+
+      - uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'graalvm'
+          java-version: '21'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: "Install required tools"
         run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
+          curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin
           sudo apt-get install jq
+
       - name: "🔎 Check changed docker images"
         if: github.event_name == 'pull_request'
         run: ./gradlew checkAllowedDockerImages --baseCommit=${{ github.event.pull_request.base.sha }} --newCommit=${{ github.event.pull_request.head.sha }}
+
       - name: "🔎 Check all docker images"
-        if: github.event_name != 'pull_request' && github.repository == 'oracle/graalvm-reachability-metadata'
+        if: github.event_name == 'schedule' && github.repository == 'oracle/graalvm-reachability-metadata'
         run: ./gradlew checkAllowedDockerImages

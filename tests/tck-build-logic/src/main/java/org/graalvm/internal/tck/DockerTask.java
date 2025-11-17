@@ -1,5 +1,6 @@
 package org.graalvm.internal.tck;
 
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.InputFiles;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 import static org.graalvm.internal.tck.DockerUtils.getAllAllowedImages;
 
+@SuppressWarnings("unused")
 public abstract class DockerTask extends DefaultTask {
 
     @InputFiles

@@ -10,6 +10,7 @@ import org.graalvm.internal.tck.exceptions.ContributingException;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
 import org.graalvm.internal.tck.model.contributing.Question;
 import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.graalvm.internal.tck.utils.FilesUtils;
 import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
 import org.gradle.api.DefaultTask;
