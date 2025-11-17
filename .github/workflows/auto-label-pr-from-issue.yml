@@ -1,0 +1,100 @@
+name: Auto label PR based on linked issue
+
+on:
+  pull_request_target:
+    types:
+      - opened
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  apply-label:
+    name: Auto label PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply label to PR
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -Eeuo pipefail
+         
+          PR_NUMBER="$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")"
+          OWNER="${GITHUB_REPOSITORY%%/*}"
+          REPO="${GITHUB_REPOSITORY#*/}"
+
+          PR_TITLE="$(jq -r '.pull_request.title // empty' "$GITHUB_EVENT_PATH")"
+          if [[ -n "$PR_TITLE" && "$PR_TITLE" == *"[GenAI]"* ]]; then
+            gh pr edit "$PR_NUMBER" -R "${OWNER}/${REPO}" --add-label "GenAI" || {
+              echo "::notice title=Could not add label::gh pr edit failed for 'GenAI' (label may not exist or token lacks write permissions)";
+            }
+          fi
+
+          # Query to get the single closing issue and its labels
+          QUERY="$(cat <<'GRAPHQL'
+          query($owner:String!, $repo:String!, $pr:Int!) {
+            repository(owner:$owner, name:$repo) {
+              pullRequest(number:$pr) {
+                closingIssuesReferences(first: 1) {
+                  nodes {
+                    number
+                    labels(first: 100) {
+                      nodes { name }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          GRAPHQL
+          )"
+
+          BODY="$(jq -n \
+            --arg q "$QUERY" \
+            --arg owner "$OWNER" \
+            --arg repo "$REPO" \
+            --argjson pr "$PR_NUMBER" \
+            '{query:$q, variables:{owner:$owner, repo:$repo, pr:$pr}}')"
+
+          RESP="$(curl -sS \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$BODY" \
+            https://api.github.com/graphql)"
+          if jq -e '.errors' >/dev/null 2>&1 <<<"$RESP"; then
+            echo "::error title=GraphQL API errors::$(jq -c '.errors' <<<"$RESP")"
+          fi
+
+          ISSUE_NUMBER="$(jq -r '.data.repository.pullRequest.closingIssuesReferences.nodes[0].number // empty' <<<"$RESP")"
+          if [[ -z "${ISSUE_NUMBER}" ]]; then
+            echo "::notice title=No linked issue::PR #${PR_NUMBER} has no linked closing issue."
+            exit 0
+          fi
+
+          # Extract label names from the linked issue
+          LABELS="$(jq -r '.data.repository.pullRequest.closingIssuesReferences.nodes[0].labels.nodes[].name' <<<"$RESP" || true)"
+
+          # Pick the first matching 'fails-*' label and map to a single PR label
+          selected=""
+          for l in $LABELS; do
+            case "$l" in
+              fails-javac-compile) selected="fixes-javac-fail"; break;;
+              fails-java-run) selected="fixes-java-run-fail"; break;;
+              fails-native-image-run) selected="fixes-native-image-run-fail"; break;;
+              fails-native-image-build) selected="fixes-native-image-build-fail"; break;;
+            esac
+          done
+
+          if [[ -z "$selected" ]]; then
+            echo "::notice title=No mapping found::No 'fails-*' labels found on linked issue #${ISSUE_NUMBER}."
+            exit 0
+          fi
+          
+          labels_json="$(jq -nc --arg l "$selected" '[$l]')"
+
+          gh pr edit "$PR_NUMBER" -R "${OWNER}/${REPO}" --add-label "$selected" || {
+            echo "::notice title=Could not add label::gh pr edit failed (label may not exist or token lacks write permissions)";
+          }
