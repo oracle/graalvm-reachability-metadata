@@ -6,6 +6,8 @@
  */
 
 
+import groovy.json.JsonSlurper
+
 plugins {
     id 'org.graalvm.internal.tck-base'
     id 'checkstyle'
@@ -51,6 +53,26 @@ String overrideVal = System.getenv("GVM_TCK_EXCLUDE") ?: providers.gradlePropert
 overrideVal = overrideVal ?: "false"
 boolean override = overrideVal.toBoolean()
 
+// Determine native-image build arguments from ci.json.
+def ciJsonFile = rootProject.file("ci.json")
+def nativeImageArgs = []
+if (ciJsonFile.exists()) {
+    try {
+        def parsed = new JsonSlurper().parse(ciJsonFile)
+        def argsFromCi = parsed?.buildArgs
+        if (argsFromCi instanceof Collection && !argsFromCi.isEmpty()) {
+            nativeImageArgs = argsFromCi.collect { it.toString() }
+            // Post-process placeholders in args
+            nativeImageArgs = nativeImageArgs.collect { arg ->
+                arg.replace('{{library.version}}', libraryVersion)
+                   .replace('{{library.coordinates}}', libraryGAV)
+            }
+        }
+    } catch (Exception ignored) {
+        throw new GradleException("ci.json must contain the buildArgs")
+    }
+}
+
 tck.testedLibraryVersion = libraryVersion
 // This value can be used to request specific library version to test with.
 
@@ -78,8 +100,7 @@ graalvmNative {
             if (override) {
                 excludeConfig.put(libraryGAV, [".*"])
             }
-            verbose = true
-            quickBuild = true
+            buildArgs.addAll(nativeImageArgs)
         }
     }
 }

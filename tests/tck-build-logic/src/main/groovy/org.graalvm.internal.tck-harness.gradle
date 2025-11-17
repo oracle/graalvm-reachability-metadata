@@ -15,7 +15,6 @@ import org.graalvm.internal.tck.ContributionTask
 import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.ConfigFilesChecker
 import org.graalvm.internal.tck.DockerUtils
-import org.graalvm.internal.tck.PullImagesFromFileTask
 import org.graalvm.internal.tck.ScaffoldTask
 import org.graalvm.internal.tck.GrypeTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
@@ -28,6 +27,7 @@ import org.graalvm.internal.tck.harness.tasks.NativeTestCompileInvocationTask
 import org.graalvm.internal.tck.updaters.FetchExistingLibrariesWithNewerVersionsTask
 import org.graalvm.internal.tck.updaters.GroupUnsupportedLibraries
 import org.gradle.util.internal.VersionNumber
+import org.graalvm.internal.tck.PullImagesFromFileTask
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
@@ -47,11 +47,11 @@ def writeGithubOutput(String key, String value) {
 String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
 
 // Support fractional batching coordinates in the form "k/n" (e.g., "1/16")
-boolean isFractionalBatch(String s) {
+static boolean isFractionalBatch(String s) {
     return s != null && (s ==~ /\d+\/\d+/)
 }
 
-List<Integer> parseFraction(String s) {
+static List<Integer> parseFraction(String s) {
     def m = s =~ /(\d+)\/(\d+)/
     if (!m.matches()) return null
     int k = (m[0][1] as int)
@@ -59,16 +59,16 @@ List<Integer> parseFraction(String s) {
     return [k, n]
 }
 
-List<String> computeBatchedCoordinates(List<String> allCoords, int k, int n) {
-    if (n <= 0) throw new GradleException("Invalid batches denominator: ${n}")
-    if (k < 1 || k > n) throw new GradleException("Invalid batch index: ${k}/${n}")
-    def sorted = new ArrayList<String>(allCoords)
-    java.util.Collections.sort(sorted)
-    int target = (k - 1)
+static List<String> computeBatchedCoordinates(List<String> coordinates, int index, int batches) {
+    if (batches <= 0) throw new GradleException("Invalid batches denominator: ${batches}")
+    if (index < 1 || index > batches) throw new GradleException("Invalid batch index: ${index}/${batches}")
+    def sorted = new ArrayList<String>(coordinates)
+    Collections.sort(sorted)
+    int target = (index - 1)
     def result = []
     int i = 0
     for (String c : sorted) {
-        if ((i % n) == target) {
+        if ((i % batches) == target) {
             result.add(c)
         }
         i++
@@ -79,10 +79,8 @@ List<String> computeBatchedCoordinates(List<String> allCoords, int k, int n) {
 List<String> matchingCoordinates
 if (isFractionalBatch(coordinateFilter)) {
     def frac = parseFraction(coordinateFilter)
-    int k = frac[0]
-    int n = frac[1]
     List<String> all = tck.getMatchingCoordinates("all")
-    matchingCoordinates = computeBatchedCoordinates(all, k, n)
+    matchingCoordinates = computeBatchedCoordinates(all, frac[0], frac[1])
 } else {
     matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
 }
@@ -123,76 +121,8 @@ tasks.named("check").configure {
 
 final String METADATA_GROUP = "Metadata"
 
-Provider<Task> pullAllowedDockerImagesMatching = tasks.register("pullAllowedDockerImagesMatching", DefaultTask) { task ->
-    task.setDescription("Pull allowed docker images for all matching coordinates")
-    task.setGroup(METADATA_GROUP)
-    task.doFirst {
-        if (matchingCoordinates == null || matchingCoordinates.isEmpty()) {
-            throw new GradleException("No matching coordinates found for property 'coordinates'. Provide -Pcoordinates=<filter> or a fractional batch 'k/n'.")
-        }
-        println "Pulling allowed docker images for ${matchingCoordinates.size()} coordinate(s):"
-        matchingCoordinates.each { c -> println(" - ${c}") }
-    }
-}
 
-// Collect unique required images across matching coordinates and filter by allowed list
-tasks.register("collectRequiredAllowedDockerImagesMatching", DefaultTask) { task ->
-    task.setDescription("Collect unique allowed docker images required by matching coordinates into a file")
-    task.setGroup(METADATA_GROUP)
-    File out = new File(buildDir, "required-docker-images-union.txt")
-    // Declare the output so Gradle can track it
-    task.outputs.file(out)
-    task.doFirst {
-        if (matchingCoordinates == null || matchingCoordinates.isEmpty()) {
-            throw new GradleException("No matching coordinates found for property 'coordinates'. Provide -Pcoordinates=<filter> or a fractional batch 'k/n'.")
-        }
-        Set<String> unionRequired = new LinkedHashSet<>()
-        matchingCoordinates.each { c ->
-            def parts = c.split(":")
-            if (parts.length < 3) {
-                logger.warn("Skipping invalid coordinates: ${c}")
-                return
-            }
-            def group = parts[0]
-            def artifact = parts[1]
-            def version = parts[2]
-            File f = project.file("tests/src/${group}/${artifact}/${version}/required-docker-images.txt")
-            if (f.exists()) {
-                f.readLines()
-                        .collect { it?.trim() }
-                        .findAll { it && !it.startsWith("#") }
-                        .each { unionRequired.add(it) }
-            }
-        }
 
-        Set<String> allowed = DockerUtils.getAllAllowedImages()
-        def notAllowed = unionRequired.findAll { !allowed.contains(it) }
-        if (!notAllowed.isEmpty()) {
-            throw new GradleException("The following images are not in the allowed list: ${notAllowed}. " +
-                    "If you need them, add Dockerfiles under tests/tck-build-logic/src/main/resources/allowed-docker-images " +
-                    "per CONTRIBUTING.md, or adjust required-docker-images.txt files.")
-        }
-
-        out.parentFile.mkdirs()
-        def finalList = unionRequired.findAll { allowed.contains(it) }.toList()
-        out.text = finalList.join(System.lineSeparator())
-        println "Collected ${finalList.size()} required allowed image(s):"
-        finalList.each { println(" - ${it}") }
-    }
-}
-
-// Pull the collected unique images (once)
-tasks.register("pullRequiredAllowedDockerImagesMatching", PullImagesFromFileTask.class) { task ->
-    task.setDescription("Pull unique allowed docker images required by matching coordinates")
-    task.setGroup(METADATA_GROUP)
-    task.dependsOn("collectRequiredAllowedDockerImagesMatching")
-    task.imagesFile.set(new File(buildDir, "required-docker-images-union.txt"))
-}
-
-// Rewire the aggregate to depend on the unique pull task
-pullAllowedDockerImagesMatching.configure {
-    dependsOn("pullRequiredAllowedDockerImagesMatching")
-}
 
 // Here we want to configure all test and checkstyle tasks for all filtered subprojects
 for (String coordinates in matchingCoordinates) {
@@ -422,9 +352,57 @@ tasks.register("checkAllowedDockerImages", GrypeTask.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
-tasks.register("pullAllowedDockerImages", DockerTask.class) { task ->
-    task.setDescription("Pull allowed docker images from list.")
+def imagesFileProvider = project.layout.buildDirectory.file("tck/required-docker-images.txt")
+
+def computeImages = tasks.register("computeAllowedDockerImagesFile", DefaultTask) { task ->
+    task.setDescription("Computes allowed docker images required by matching coordinates and writes them to a file")
     task.setGroup(METADATA_GROUP)
+    task.outputs.file(imagesFileProvider)
+    task.doFirst {
+        if (matchingCoordinates == null || matchingCoordinates.isEmpty()) {
+            throw new GradleException("No matching coordinates found for property 'coordinates'. Provide -Pcoordinates=<filter> or a fractional batch 'k/n'.")
+        }
+        Set<String> unionRequired = new LinkedHashSet<>()
+        matchingCoordinates.each { c ->
+            def parts = c.split(":")
+            if (parts.length < 3) {
+                logger.warn("Skipping invalid coordinates: ${c}")
+                return
+            }
+            def group = parts[0]
+            def artifact = parts[1]
+            def version = parts[2]
+            File f = project.file("tests/src/${group}/${artifact}/${version}/required-docker-images.txt")
+            if (f.exists()) {
+                f.readLines()
+                        .collect { it?.trim() }
+                        .findAll { it && !it.startsWith("#") }
+                        .each { unionRequired.add(it) }
+            }
+        }
+
+        Set<String> allowed = DockerUtils.getAllAllowedImages()
+        def notAllowed = unionRequired.findAll { !allowed.contains(it) }
+        if (!notAllowed.isEmpty()) {
+            throw new GradleException("The following images are not in the allowed list: ${notAllowed}. " +
+                    "If you need them, add Dockerfiles under tests/tck-build-logic/src/main/resources/allowed-docker-images " +
+                    "per CONTRIBUTING.md, or adjust required-docker-images.txt files.")
+        }
+
+        def finalList = unionRequired.findAll { allowed.contains(it) }.toList()
+        println "Collected ${finalList.size()} required allowed image(s)"
+        File outFile = imagesFileProvider.get().asFile
+        outFile.parentFile.mkdirs()
+        outFile.text = finalList.join(System.lineSeparator())
+    }
+}
+
+tasks.register("pullAllowedDockerImages", PullImagesFromFileTask.class) { task ->
+    task.setDescription("Pull allowed docker images required by matching coordinates")
+    task.setGroup(METADATA_GROUP)
+    task.getImagesFile().set(imagesFileProvider)
+}.configure { t ->
+    t.dependsOn(computeImages)
 }
 
 
