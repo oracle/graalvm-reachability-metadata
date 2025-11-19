@@ -1,0 +1,48 @@
+name: "Sync Docker Image Tags"
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: write
+
+jobs:
+  update-images:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: "📝 Sync docker image tags"
+        run: |
+          set -euo pipefail
+
+          # get old FROM lines from master branch in Dockerfiles inside allowed directory
+          OLD_LINES=$(git grep '^FROM ' origin/master -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/.*:FROM //')
+          
+          # get new FROM lines from PR branch
+          NEW_LINES=$(git grep '^FROM ' HEAD -- tests/tck-build-logic/src/main/resources/allowed-docker-images | sed 's/.*:FROM //')
+
+          # replace all occurrences across repo
+          paste <(echo "$OLD_LINES") <(echo "$NEW_LINES") | while read OLD NEW; do
+            if [[ -n "$OLD" && -n "$NEW" && "$OLD" != "$NEW" ]]; then
+              echo "Replacing $OLD → $NEW"
+              grep -rl "$OLD" . | xargs sed -i "s|$OLD|$NEW|g" || true
+            fi
+          done
+
+          # commit and push changes
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync Docker image tags across repo"
+            git push origin "${GITHUB_HEAD_REF}"
+          else
+            echo "No changes to commit"
+          fi
