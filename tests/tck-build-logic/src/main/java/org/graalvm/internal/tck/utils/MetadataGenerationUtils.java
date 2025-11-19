@@ -106,6 +106,22 @@ public final class MetadataGenerationUtils {
         invokeCommand(execOps, gradlew + " metadataCopy --task test --dir " + metadataDirectory, "Cannot perform metadata copy", testsDirectory);
     }
 
+    /**
+     * Runs Gradle tasks to generate metadata using the agent with a specific GVM_TCK_LV
+     * and then copies the results into the computed metadata directory for the given coordinates.
+     */
+    public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, String gvmTckLv) {
+        Path metadataDirectory = MetadataGenerationUtils.computeMetadataDirectory(layout, coordinates);
+
+        Map<String, String> env = Map.of("GVM_TCK_LV", gvmTckLv);
+
+        InteractiveTaskUtils.printUserInfo("Generating metadata");
+        invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), env, "Cannot generate metadata", testsDirectory);
+
+        InteractiveTaskUtils.printUserInfo("Performing metadata copy");
+        invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", metadataDirectory.toString()), env, "Cannot perform metadata copy", testsDirectory);
+    }
+
     public static void writeToFile(Path path, String content, StandardOpenOption writeOption) throws IOException {
         Files.createDirectories(path.getParent());
         Files.writeString(path, content, StandardCharsets.UTF_8, writeOption);
@@ -128,10 +144,21 @@ public final class MetadataGenerationUtils {
      * Captures output and throws a RuntimeException if the exit code is non-zero.
      */
     public static void invokeCommand(ExecOperations execOps, String executable, List<String> args, String errorMessage, Path workingDirectory) {
+        invokeCommand(execOps, executable, args, null, errorMessage, workingDirectory);
+    }
+
+    /**
+     * Executes the given executable with arguments in an optional working directory via Gradle ExecOperations,
+     * allowing custom environment variables.
+     */
+    public static void invokeCommand(ExecOperations execOps, String executable, List<String> args, Map<String, String> env, String errorMessage, Path workingDirectory) {
         ByteArrayOutputStream execOutput = new ByteArrayOutputStream();
         var result = execOps.exec(execSpec -> {
             if (workingDirectory != null) {
                 execSpec.setWorkingDir(workingDirectory);
+            }
+            if (env != null && !env.isEmpty()) {
+                execSpec.environment(env);
             }
             execSpec.setExecutable(executable);
             execSpec.setArgs(args);
@@ -149,5 +176,27 @@ public final class MetadataGenerationUtils {
 
     public static Path computeMetadataDirectory(ProjectLayout layout, String coordinates) {
         return getPathFromProject(layout, CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", CoordinateUtils.fromString(coordinates)));
+    }
+
+    /**
+     * Creates index.json inside the given version directory, listing all files present in that directory.
+     */
+    public static void createIndexJsonSpecificVersion(Path metadataDirectory) throws IOException {
+        try (java.util.stream.Stream<Path> paths = Files.list(metadataDirectory)) {
+            List<String> files = paths
+                    .filter(Files::isRegularFile)
+                    .map(p -> p.getFileName().toString())
+                    .filter(name -> !"index.json".equals(name))
+                    .sorted()
+                    .toList();
+
+            DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
+            printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+            String jsonVersionIndex = objectMapper.writer(printer).writeValueAsString(files);
+            if (!jsonVersionIndex.endsWith(System.lineSeparator())) {
+                jsonVersionIndex = jsonVersionIndex + System.lineSeparator();
+            }
+            Files.writeString(metadataDirectory.resolve("index.json"), jsonVersionIndex, StandardCharsets.UTF_8);
+        }
     }
 }

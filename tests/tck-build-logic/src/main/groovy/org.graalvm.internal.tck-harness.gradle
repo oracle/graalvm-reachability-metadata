@@ -14,6 +14,7 @@ import org.graalvm.internal.tck.ContributionTask
 import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.ConfigFilesChecker
 import org.graalvm.internal.tck.ScaffoldTask
+import org.graalvm.internal.tck.FixTestNativeImageRun
 import org.graalvm.internal.tck.GrypeTask
 import org.graalvm.internal.tck.GenerateMetadataTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
@@ -221,6 +222,11 @@ tasks.register("contribute", ContributionTask.class) { task ->
 // gradle generateMetadata --coordinates=<maven-coordinates> --allowedPackages=<comma-separated list of packages>
 tasks.register("generateMetadata", GenerateMetadataTask.class) { task ->
     task.setDescription("Generates metadata based on provided tests.")
+    task.setGroup(METADATA_GROUP)
+}
+// gradle fixTestNIRun --testLibraryCoordinates=<maven-coordinates> --newLibraryVersion=<library version which needs fix>
+tasks.register("fixTestNIRun", FixTestNativeImageRun.class) { task ->
+    task.setDescription("Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.")
     task.setGroup(METADATA_GROUP)
 }
 

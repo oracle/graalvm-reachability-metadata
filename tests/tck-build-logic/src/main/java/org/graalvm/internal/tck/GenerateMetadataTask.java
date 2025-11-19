@@ -66,5 +66,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         }
         MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
+        Path metadataDirectory = MetadataGenerationUtils.computeMetadataDirectory(getLayout(), coordinates);
+        MetadataGenerationUtils.createIndexJsonSpecificVersion(metadataDirectory);
     }
 }
