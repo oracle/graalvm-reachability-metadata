@@ -8,12 +8,12 @@
     </preConditions>
 
     <changeSet id="1" author="nvoxland">
-        <createTable tableName="news">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="title" type="varchar(50)"/>
-        </createTable>
+        <sql>
+            CREATE TABLE news (
+                                  id INT AUTO_INCREMENT PRIMARY KEY,
+                                  title VARCHAR(50)
+            )
+        </sql>
     </changeSet>
 
     <changeSet id="1.2" author="nvoxland">
@@ -21,17 +21,13 @@
     </changeSet>
 
     <changeSet id="2" author="nvoxland" contextFilter="test">
-        <insert tableName="news">
-            <column name="title" value="Liquibase 0.8 Released"/>
-        </insert>
-        <insert tableName="news">
-            <column name="title" value="Liquibase 0.9 Released"/>
-        </insert>
+        <sql>
+            INSERT INTO news (title) VALUES ('Liquibase 0.8 Released');
+            INSERT INTO news (title) VALUES ('Liquibase 0.9 Released');
+        </sql>
     </changeSet>
 
     <changeSet id="3" author="nvoxland" contextFilter="demo">
-        <insert tableName="news">
-            <column name="title" value="Liquibase 1.0 Released"/>
-        </insert>
+        <sql>INSERT INTO news (title) VALUES ('Liquibase 1.0 Released')</sql>
     </changeSet>
 </databaseChangeLog>

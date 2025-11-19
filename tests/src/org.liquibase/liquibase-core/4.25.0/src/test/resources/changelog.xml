@@ -2,9 +2,10 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <preConditions onSqlOutput="IGNORE" >
+    <preConditions onSqlOutput="IGNORE">
         <dbms type="h2"/>
         <runningAs username=""/>
         <changeLogPropertyDefined property="database.databaseProductName" value="H2"/>
@@ -20,15 +21,13 @@
             They can even be multiple lines if you would like.
             They aren't used to compute the changeSet MD5Sum, so you can update them whenever you want without causing problems.
         </comment>
-        <createTable tableName="person">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="firstname" type="varchar(50)"/>
-            <column name="lastname" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+        <sql>
+            CREATE TABLE person (
+                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                    firstname VARCHAR(50),
+                                    lastname VARCHAR(50) NOT NULL
+            )
+        </sql>
     </changeSet>
 
     <changeSet id="1.1" author="nvoxland">
@@ -43,94 +42,79 @@
 
     <changeSet id="2" author="nvoxland">
         <comment>Add a username column so we can use "person" for authentication</comment>
-        <addColumn tableName="person">
-            <column name="usernae" type="varchar(8)"/>
-        </addColumn>
+        <sql>ALTER TABLE person ADD COLUMN usernae VARCHAR(8)</sql>
     </changeSet>
+
     <changeSet id="3" author="nvoxland">
         <comment>Fix misspelled "username" column</comment>
         <renameColumn tableName="person" oldColumnName="usernae" newColumnName="username" columnDataType="varchar(8)"/>
     </changeSet>
+
     <changeSet id="5" author="nvoxland" contextFilter="test">
-        <insert tableName="person">
-            <column name="firstname" value="John"/>
-            <column name="lastname" value="Doe"/>
-            <column name="username" value="jdoe"/>
-        </insert>
-        <insert tableName="person">
-            <column name="firstname" value="Jane"/>
-            <column name="lastname" value="Doe"/>
-            <column name="username" value="janedoe"/>
-        </insert>
-        <insert tableName="person">
-            <column name="firstname" value="Bob"/>
-            <column name="lastname" value="Johnson"/>
-            <column name="username" value="bjohnson"/>
-        </insert>
+        <sql>
+            INSERT INTO person (firstname, lastname, username) VALUES ('John', 'Doe', 'jdoe');
+            INSERT INTO person (firstname, lastname, username) VALUES ('Jane', 'Doe', 'janedoe');
+            INSERT INTO person (firstname, lastname, username) VALUES ('Bob', 'Johnson', 'bjohnson');
+        </sql>
     </changeSet>
+
     <changeSet id="6" author="nvoxland">
         <comment>Don't keep username in the person table</comment>
         <dropColumn tableName="person" columnName="username"/>
     </changeSet>
+
     <changeSet id="7" author="nvoxland">
-        <createTable tableName="employee">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+        <sql>
+            CREATE TABLE employee (
+                                      id INT AUTO_INCREMENT PRIMARY KEY,
+                                      name VARCHAR(50) NOT NULL
+            )
+        </sql>
     </changeSet>
+
     <changeSet id="7" author="bjohnson" contextFilter="test">
-        <insert tableName="employee">
-            <column name="name" value="ACME Corp"/>
-        </insert>
-        <insert tableName="employee">
-            <column name="name" value="Widgets Inc."/>
-        </insert>
+        <sql>
+            INSERT INTO employee (name) VALUES ('ACME Corp');
+            INSERT INTO employee (name) VALUES ('Widgets Inc.');
+        </sql>
     </changeSet>
+
     <changeSet id="7a" author="nvoxland">
-        <addColumn tableName="employee">
-            <column name="company_id" type="int">
-                <constraints nullable="true" foreignKeyName="fk_employee_company" references="employee(id)"/>
-            </column>
-        </addColumn>
+        <sql>ALTER TABLE employee ADD COLUMN company_id INT</sql>
+        <addForeignKeyConstraint
+                baseTableName="employee"
+                baseColumnNames="company_id"
+                constraintName="fk_employee_company"
+                referencedTableName="employee"
+                referencedColumnNames="id"/>
     </changeSet>
+
     <changeSet id="8" author="bjohnson">
         <dropNotNullConstraint tableName="employee" columnName="name" columnDataType="varchar(50)"/>
     </changeSet>
-    <!--<changeSet id="8.1" author="bjohnson">-->
-    <!--<comment>I guess name needs to be not-null</comment>-->
-    <!--<addNotNullConstraint tableName='employee' columnName="name" defaultNullValue="UNKNOWN" columnDataType="varchar(50)"/>-->
-    <!--</changeSet>-->
+
     <changeSet id="9" author="nvoxland">
         <renameTable oldTableName="employee" newTableName="company"/>
     </changeSet>
+
     <changeSet id="10" author="nvoxland">
-        <createTable tableName="testtable">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="value" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="person_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_test_person" referencedTableName="person" referencedColumnNames="id"/>
-            </column>
-        </createTable>
+        <sql>
+            CREATE TABLE testtable (
+                                       id INT AUTO_INCREMENT PRIMARY KEY,
+                                       "value" VARCHAR(50) NOT NULL,
+                                       person_id INT NOT NULL,
+                                       CONSTRAINT fk_test_person FOREIGN KEY (person_id) REFERENCES person(id)
+            )
+        </sql>
     </changeSet>
+
     <changeSet id="11" author="nvoxland">
         <dropTable tableName="testtable"/>
     </changeSet>
 
     <changeSet id="12" author="nvoxland">
-        <createIndex indexName="idx_company_name" tableName="company">
-            <column name="name"/>
-        </createIndex>
-        <createIndex indexName="idx_person_lastname" tableName="person">
-            <column name="lastname"/>
-        </createIndex>
+        <sql>CREATE INDEX idx_company_name ON company (name)</sql>
+        <sql>CREATE INDEX idx_person_lastname ON person (lastname)</sql>
     </changeSet>
 
     <changeSet id="13" author="nvoxland">
@@ -138,12 +122,8 @@
     </changeSet>
 
     <changeSet id="14" author="nvoxland">
-        <createTable tableName="liquibaseRunInfo">
-            <column name="timesRan" type="int"/>
-        </createTable>
-        <insert tableName="liquibaseRunInfo">
-            <column name="timesRan" valueNumeric="1"/>
-        </insert>
+        <sql>CREATE TABLE liquibaseRunInfo (timesRan INT)</sql>
+        <sql>INSERT INTO liquibaseRunInfo (timesRan) VALUES (1)</sql>
     </changeSet>
 
     <changeSet id="15" author="nvoxland">
@@ -157,7 +137,7 @@
     </changeSet>
 
     <changeSet id="16a" author="nvoxland">
-        <createSequence sequenceName="seq_test" startValue="1000" incrementBy="2" dataType="int" />
+        <createSequence sequenceName="seq_test" startValue="1000" incrementBy="2" dataType="int"/>
     </changeSet>
 
     <changeSet id="17" author="nvoxland">
@@ -183,9 +163,7 @@
     </changeSet>
 
     <changeSet id="22" author="nvoxland">
-        <addColumn tableName="person">
-            <column name="employer_id" type="int"/>
-        </addColumn>
+        <sql>ALTER TABLE person ADD COLUMN employer_id INT</sql>
     </changeSet>
 
     <changeSet id="23" author="nvoxland">
@@ -201,14 +179,16 @@
     </changeSet>
 
     <changeSet id="25" author="nvoxland">
-        <createTable tableName="address">
-            <column name="id" type="int"/>
-            <column name="line1" type="varchar(255)"/>
-            <column name="line2" type="varchar(255)"/>
-            <column name="city" type="varchar(255)"/>
-            <column name="state" type="char(2)"/>
-            <column name="postalcode" type="varchar(15)"/>
-        </createTable>
+        <sql>
+            CREATE TABLE address (
+                                     id INT,
+                                     line1 VARCHAR(255),
+                                     line2 VARCHAR(255),
+                                     city VARCHAR(255),
+                                     state CHAR(2),
+                                     postalcode VARCHAR(15)
+            )
+        </sql>
     </changeSet>
 
     <changeSet id="25.1" author="nvoxland">
@@ -232,10 +212,12 @@
     </changeSet>
 
     <changeSet id="30" author="nvoxland">
-        <createTable tableName="pkTest">
-            <column name="id" type="int"/>
-            <column name="value" type="varchar(50)"/>
-        </createTable>
+        <sql>
+            CREATE TABLE pkTest (
+                                    id INT,
+                                    "value" VARCHAR(50)
+            )
+        </sql>
     </changeSet>
 
     <changeSet id="31.1" author="nvoxland">
@@ -258,11 +240,8 @@
         <dropUniqueConstraint tableName="address" constraintName="uq_address_line1line2"/>
     </changeSet>
 
-
     <changeSet id="35" author="nvoxland">
-        <createTable tableName="tableToRollback">
-            <column name="id" type="int"/>
-        </createTable>
+        <sql>CREATE TABLE tableToRollback (id INT)</sql>
     </changeSet>
 
     <changeSet id="50" author="nvoxland">
@@ -275,10 +254,9 @@
         </createView>
     </changeSet>
 
-
     <include file="included.changelog.xml"/>
-
     <include file="renamed.changelog.xml"/>
+
 
     <changeSet id="56" author="nvoxland">
         <customChange class="org_liquibase.liquibase_core.ExampleCustomSqlChange">
@@ -287,6 +265,7 @@
             <param name="newValue" value="3"/>
         </customChange>
     </changeSet>
+
     <changeSet id="57" author="nvoxland">
         <customChange class="org_liquibase.liquibase_core.ExampleCustomSqlChange">
             <param name="tableName" value="person"/>
@@ -294,6 +273,7 @@
             <param name="newValue" value="4"/>
         </customChange>
     </changeSet>
+
     <changeSet id="58" author="nvoxland">
         <customChange class="org_liquibase.liquibase_core.ExampleCustomTaskChange">
             <param name="helloTo" value="world"/>
@@ -304,53 +284,48 @@
         <preConditions onFail="MARK_RAN" onError="WARN">
             <dbms type="oracle"/>
         </preConditions>
-        <createSequence sequenceName="liquidbase_applicationuserSQ" startValue="1" />
+        <createSequence sequenceName="liquidbase_applicationuserSQ" startValue="1"/>
     </changeSet>
 
     <changeSet id="failingColumnNameSince197" author="tholu">
-        <createTable tableName="columnTest">
-            <column name="table" type="varchar(50)"/>
-        </createTable>
-        <update tableName="columnTest">
-            <column name="table" value="test"/>
-            <where>1</where>
-        </update>
+        <sql>CREATE TABLE columnTest ("table" VARCHAR(50))</sql>
+        <sql>UPDATE columnTest SET "table" = 'test' WHERE 1=1</sql>
     </changeSet>
 
     <changeSet id="addcolumn before after" author="nvoxland">
-        <createTable tableName="before_after">
-            <column name="id" type="int"/>
-            <column name="name" type="int"/>
-        </createTable>
-    </changeSet>
-    <changeSet id="addcolumn before after 2" author="nvoxland">
-        <addColumn tableName="before_after">
-            <column name="before_name" type="int" beforeColumn="name"/>
-        </addColumn>
-    </changeSet>
-    <changeSet id="addcolumn before after 3" author="nvoxland">
-        <addColumn tableName="before_after">
-            <column name="after_name" type="int" afterColumn="name"/>
-        </addColumn>
+        <sql>
+            CREATE TABLE before_after (
+                                          id INT,
+                                          name INT
+            )
+        </sql>
     </changeSet>
 
-    <!-- changesets with ids 2659 are testing if creating a view camel case with quotes won't break subsequent
-     preConditions snapshots of it -->
+    <changeSet id="addcolumn before after 2" author="nvoxland">
+        <sql>ALTER TABLE before_after ADD COLUMN before_name INT BEFORE name</sql>
+    </changeSet>
+
+    <changeSet id="addcolumn before after 3" author="nvoxland">
+        <sql>ALTER TABLE before_after ADD COLUMN after_name INT AFTER name</sql>
+    </changeSet>
+
     <changeSet id="2659-Create-MyView-with-quotes" author="flautert" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <createView viewName="MyViewBreakDb" replaceIfExists="true">select 1</createView>
     </changeSet>
 
-    <changeSet id="2659-Create-MyView-with-quotes-test-must-MARK_RAN" author="flautert" >
-        <preConditions onFail="MARK_RAN" onError="MARK_RAN"><tableExists tableName="NOT_EXISTENT_TABLE"/></preConditions>
+    <changeSet id="2659-Create-MyView-with-quotes-test-must-MARK_RAN" author="flautert">
+        <preConditions onFail="MARK_RAN" onError="MARK_RAN">
+            <tableExists tableName="NOT_EXISTENT_TABLE"/>
+        </preConditions>
         <dropTable tableName="NOT_EXISTENT_TABLE_DOESNT_MATTER"/>
     </changeSet>
 
     <changeSet id="test bigint auto increment" author="ms">
-        <createTable tableName="bigint_test">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-        </createTable>
+        <sql>
+            CREATE TABLE bigint_test (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY
+            )
+        </sql>
     </changeSet>
 
 </databaseChangeLog>
