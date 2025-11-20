@@ -44,8 +44,19 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
 
     @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
     void setCoordinates(String coords) {
-        this.coordinates = Coordinates.parse(coords);
+        extractCoordinates(coords);
+    }
 
+    {
+        // Prefer task option, fallback to -Pcoordinates
+        String prop = (String) getProject().findProperty("coordinates");
+        if (prop != null && !getIndexFile().isPresent()) {
+            extractCoordinates(prop);
+        }
+    }
+
+    private void extractCoordinates(String c) {
+        this.coordinates = Coordinates.parse(c);
         File coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
         getMetadataRoot().set(coordinatesMetadataRoot);
 
@@ -54,7 +65,6 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
 
         this.allowedPackages = getAllowedPackages();
     }
-
 
     @TaskAction
     void run() throws IllegalArgumentException, FileNotFoundException {
