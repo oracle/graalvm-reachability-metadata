@@ -13,5 +13,7 @@ public record MetadataVersionsIndexEntry (
         @JsonProperty("metadata-version")
         String metadataVersion,
         @JsonProperty("tested-versions")
-        List<String> testedVersions
+        List<String> testedVersions,
+        @JsonProperty("skipped-versions")
+        List<SkippedVersionEntry> skippedVersions
 ){}
