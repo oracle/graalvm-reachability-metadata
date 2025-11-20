@@ -29,7 +29,19 @@ import java.util.List;
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
 
     @Option(option = "coordinates", description = "GAV coordinates of the library")
-    void extractInformationFromCoordinates(String c) {
+    void setCoordinates(String c) {
+        extractInformationFromCoordinates(c);
+    }
+
+    {
+        // Prefer task option, fallback to -Pcoordinates
+        String coordinates = (String) getProject().findProperty("coordinates");
+        if (coordinates != null && !getIndexFile().isPresent()) {
+            extractInformationFromCoordinates(coordinates);
+        }
+    }
+
+    private void extractInformationFromCoordinates(String c) {
         String[] coordinatesParts = c.split(":");
         if (coordinatesParts.length != 3) {
             throw new IllegalArgumentException("Maven coordinates should have 3 parts");
