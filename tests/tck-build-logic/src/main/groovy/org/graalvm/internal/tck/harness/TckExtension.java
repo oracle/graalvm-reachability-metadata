@@ -6,11 +6,6 @@
  */
 package org.graalvm.internal.tck.harness;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -18,6 +13,7 @@ import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.process.ExecOperations;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
@@ -28,19 +24,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.graalvm.internal.tck.Utils.coordinatesMatch;
-import static org.graalvm.internal.tck.Utils.extractJsonFile;
-import static org.graalvm.internal.tck.Utils.readIndexFile;
-import static org.graalvm.internal.tck.Utils.splitCoordinates;
+import static org.graalvm.internal.tck.Utils.*;
 
 public abstract class TckExtension {
-    private static final List<String> REPO_ROOT_FILES = List.of("CONTRIBUTING.md", "metadata");
+    private static final List<String> REPO_ROOT_FILES = List.of("LICENSE", "metadata", "tests");
 
     public abstract DirectoryProperty getRepoRoot();
 
@@ -50,7 +40,7 @@ public abstract class TckExtension {
 
     public abstract DirectoryProperty getTckRoot();
 
-    public abstract Property<String> getTestedLibraryVersion();
+    public abstract Property<@NotNull String> getTestedLibraryVersion();
 
     @Inject
     public abstract ExecOperations getExecOperations();
@@ -58,8 +48,13 @@ public abstract class TckExtension {
     public TckExtension(Project project) {
         getRepoRoot().value(project.getObjects().directoryProperty().value(project.getLayout().getProjectDirectory()).map(dir -> {
             Directory current = dir;
+            var level = 0;
+            int maxLevel = 50;
             while (!isRootDir(current)) {
                 current = current.dir("..");
+                if (level++ == maxLevel) {
+                    throw new RuntimeException("Could not detect root dir at level " + maxLevel);
+                }
             }
             return current;
         })).finalizeValueOnRead();
@@ -72,7 +67,7 @@ public abstract class TckExtension {
         return REPO_ROOT_FILES.stream().allMatch(fileName -> dir.file(fileName).getAsFile().exists());
     }
 
-    private static Path toPath(Provider<? extends FileSystemLocation> provider) {
+    private static Path toPath(Provider<? extends @NotNull FileSystemLocation> provider) {
         return provider.get().getAsFile().toPath();
     }
 
@@ -96,7 +91,7 @@ public abstract class TckExtension {
      * Given full coordinates returns matching test directory
      */
     @SuppressWarnings("unchecked")
-    Path getTestDir(String coordinates) {
+    public Path getTestDir(String coordinates) {
         List<String> strings = splitCoordinates(coordinates);
         String groupId = strings.get(0);
         String artifactId = strings.get(1);
@@ -110,19 +105,13 @@ public abstract class TckExtension {
         for (Map<String, ?> entry : index) {
             boolean found = ((List<Map<String, ?>>) entry.get("libraries")).stream().anyMatch(
                     lib -> coordinatesMatch((String) lib.get("name"), groupId, artifactId) &&
-                           ((List<String>) lib.get("versions")).contains(version)
+                            ((List<String>) lib.get("versions")).contains(version)
             );
             if (found) {
                 return testRoot().resolve((String) entry.get("test-project-path"));
             }
         }
         throw new RuntimeException("Missing test-directory for coordinates `" + coordinates + "`");
-    }
-
-    private boolean shouldTestAll = false;
-
-    public boolean shouldTestAll() {
-        return shouldTestAll;
     }
 
     /**
@@ -142,13 +131,11 @@ public abstract class TckExtension {
         List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"));
 
         Path workflowsRoot = repoRoot().resolve(".github").resolve("workflows");
-        AtomicBoolean testAll = new AtomicBoolean(false);
         // Group files by if they belong to 'metadata' or 'test' directory structures.
         Map<String, List<Path>> changed = diffFiles.stream()
                 .map(line -> repoRoot().resolve(line))
                 .collect(Collectors.groupingBy((Path path) -> {
                     if (path.startsWith(tckRoot()) || path.startsWith(workflowsRoot)) {
-                        testAll.set(true);
                         return "logic";
                     } else if (path.startsWith(testRoot())) {
                         return "test";
@@ -158,12 +145,6 @@ public abstract class TckExtension {
                         return "other";
                     }
                 }));
-
-        if (testAll.get()) {
-            shouldTestAll = true;
-            // If tck was changed we should retest everything, just to be safe.
-            return getMatchingCoordinates("");
-        }
 
         // if we didn't change any of metadata, tests or logic we don't need to test anything
         if (changed.get("metadata") != null && changed.get("metadata").isEmpty()
@@ -180,10 +161,8 @@ public abstract class TckExtension {
                 return true;
             }
             Path testDir = getTestDir(c);
-            if (changed.get("test") != null && changed.get("test").stream().anyMatch(f -> f.startsWith(testDir))) {
-                return true;
-            }
-            return false;
+            return changed.get("test") != null &&
+                    changed.get("test").stream().anyMatch(f -> f.startsWith(testDir));
         }).distinct().collect(Collectors.toList());
 
         // if we detected changes in repo, but not in metadata/index.json file, we should throw an exception
@@ -208,10 +187,11 @@ public abstract class TckExtension {
     private boolean metadataIndexContainsChangedEntries(Set<String> changedCoordinates, List<String> changedEntries) {
         boolean containsAll = true;
         for (var n : changedEntries) {
-            boolean containsCurrent =false;
+            boolean containsCurrent = false;
             for (var c : changedCoordinates) {
-                if (n.startsWith(c.replace(":", "/"))){
+                if (n.startsWith(c.replace(":", "/"))) {
                     containsCurrent = true;
+                    break;
                 }
             }
 
@@ -263,7 +243,7 @@ public abstract class TckExtension {
      * @return path to metadata directory
      */
     @SuppressWarnings("unchecked")
-    Path getMetadataDir(String coordinates) {
+    public Path getMetadataDir(String coordinates) {
         List<String> strings = splitCoordinates(coordinates);
         String groupId = strings.get(0);
         String artifactId = strings.get(1);
@@ -293,7 +273,7 @@ public abstract class TckExtension {
      * @return list of all coordinates that
      */
     @SuppressWarnings("unchecked")
-    List<String> getMatchingCoordinates(String coordinateFilter) {
+    public List<String> getMatchingCoordinates(String coordinateFilter) {
         List<String> strings = splitCoordinates(coordinateFilter);
         String groupId = strings.get(0);
         String artifactId = strings.get(1);
@@ -327,11 +307,10 @@ public abstract class TckExtension {
     /**
      * Returns a list of metadata files in a given directory.
      *
-     * @param directory
      * @return list of json files contained in it
      */
     @SuppressWarnings("unchecked")
-    List<String> getMetadataFileList(Path directory) throws IOException {
+    public List<String> getMetadataFileList(Path directory) throws IOException {
         List<String> foundFiles = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(directory)) {
             paths.filter(Files::isRegularFile)

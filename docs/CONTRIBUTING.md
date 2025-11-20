@@ -52,9 +52,9 @@ not be included as it does not compose and can break code in unpredictable ways.
 * Make sure that you are using [Conditional Configuration](https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json)
 in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of
 images.
-* Once you want to create a pull request, you will be asked to fill out the [following list](./pull_request_template.md).
+* Once you want to create a pull request, you will be asked to fill out the [following list](../.github/pull_request_template.md).
 
-ℹ️ To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
+ℹ️ To learn more about collecting metadata, see [How To Collect Metadata](CollectingMetadata.md).
 
 ### Generate Metadata and Test
 

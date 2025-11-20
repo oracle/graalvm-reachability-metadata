@@ -81,4 +81,4 @@ The best thing for the community is to include the generated metadata and build 
  - Copy the metadata to the project sources under META-INF/native-image/artifact.id with `metadataCopy`.
  - Introduce a CI task that tests the library with the newly added metadata.
 
-If the library maintainers do not accept the change, the next best thing is to open a ticket on the library’s issue tracker so the community can upvote this feature. In the meantime, you can open a PR to this repository. See [how to contribute](../CONTRIBUTING.md).
+If the library maintainers do not accept the change, the next best thing is to open a ticket on the library’s issue tracker so the community can upvote this feature. In the meantime, you can open a PR to this repository. See [how to contribute](CONTRIBUTING.md).

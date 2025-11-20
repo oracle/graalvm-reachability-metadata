@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: nvoxland
+      changes:
+        - createTable:
+            tableName: person
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: varchar(50)
+              - column:
+                  name: lastname
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: char(2)
+
+  - changeSet:
+      id: 2
+      author: nvoxland
+      changes:
+        - addColumn:
+            tableName: person
+            columns:
+              - column:
+                  name: username
+                  type: varchar(8)
+
+  - changeSet:
+      id: 3
+      author: nvoxland
+      changes:
+        - createTable:
+            tableName: state
+            columns:
+              - column:
+                  name: id
+                  type: char(2)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - sql: |
+            INSERT INTO state (id)
+            SELECT DISTINCT state
+            FROM person
+            WHERE state IS NOT NULL
+              AND state != ''
+        - addForeignKeyConstraint:
+            baseTableName: person
+            baseColumnNames: state
+            constraintName: fk_person_state
+            referencedTableName: state
+            referencedColumnNames: id

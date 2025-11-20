@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+@SuppressWarnings("unused")
 public abstract class GrypeTask extends DefaultTask {
 
     @Inject
@@ -181,13 +181,13 @@ public abstract class GrypeTask extends DefaultTask {
      * Get all docker images introduced between two commits
      */
     private Set<String> getChangedImages() throws IOException, URISyntaxException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         getExecOperations().exec(spec -> {
-            spec.setStandardOutput(baos);
+            spec.setStandardOutput(outputStream);
             spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT", baseCommit, newCommit);
         });
 
-        String output = baos.toString(StandardCharsets.UTF_8);
+        String output = outputStream.toString(StandardCharsets.UTF_8);
         List<URL> diffFiles = Arrays.stream(output.split("\\r?\\n"))
                 .filter(path -> path.contains(DOCKERFILE_DIRECTORY))
                 .map(path -> path.substring(path.lastIndexOf("/") + 1))
