@@ -1,3 +1,6 @@
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+
 /*
  * Copyright and related rights waived via CC0
  *
@@ -8,7 +11,7 @@
 plugins {
     id 'base'
     id "com.diffplug.spotless" version "6.3.0"
-    id "org.graalvm.internal.tck-harness"
+    id "org.graalvm.internal.tck-base"
 }
 
 allprojects {
@@ -25,17 +28,17 @@ project.version("1.0.0-SNAPSHOT")
 spotless {
     json {
         target(
-                tck.metadataRoot.map { it.toString() +  '/**/*.json' }.get(),
+                tck.metadataRoot.map { it.toString() + '/**/*.json' }.get(),
                 tck.testRoot.map { it.toString() + '/**/*.json' }
         )
         targetExclude(
-                tck.testRoot.map { it.toString()  + '/**/build/**/*.json' },
+                tck.testRoot.map { it.toString() + '/**/build/**/*.json' },
                 tck.repoRoot.map { it.toString() + '/.github/**/*.json' }
         )
         gson()
-            .indentWithSpaces(2)
-            .sortByKeys()
-            .version("2.9.0")
+                .indentWithSpaces(2)
+                .sortByKeys()
+                .version("2.9.0")
     }
 }
 
@@ -52,5 +55,148 @@ tasks.register('package', Zip) { task ->
     // information on library and framework support to the native image Build Report
     from(project.rootDir) {
         include("library-and-framework-list.json")
+    }
+}
+
+tasks.register('test') { t ->
+    t.setDescription("Aggregates tests configured by the TCK harness")
+    t.setGroup("verification")
+}
+
+// Apply the harness after creating the 'test' aggregator to avoid missing property,
+// and without applying the 'java' plugin to avoid task name conflicts.
+apply plugin: "org.graalvm.internal.tck-harness"
+
+ext.runLoggedCommand = { List<String> args, String label, File logFile, File workingDir ->
+    def header = "==== BEGIN ${label}"
+    println(header)
+    logFile.text = header + System.lineSeparator()
+
+    def pb = new ProcessBuilder(args as String[])
+    pb.directory(workingDir)
+    pb.redirectErrorStream(true)
+    pb.redirectOutput(ProcessBuilder.Redirect.appendTo(logFile))
+    def proc = pb.start()
+    int exit = proc.waitFor()
+
+    def footer = exit != 0
+            ? "==== END ${label} FAILURE (exit ${exit})"
+            : "==== END ${label} SUCCESS"
+    logFile.append(footer + System.lineSeparator())
+    println(footer)
+    return exit
+}
+
+static List<Map> testAllCommands(String gradleCmd, String target) {
+    def taskNames = [
+            "checkstyle",
+            "spotlessCheck",
+            "checkMetadataFiles",
+            "fetchExistingLibrariesWithNewerVersions",
+            "test"
+    ]
+    return taskNames.collect { name ->
+        [name: name, args: [gradleCmd, name, "-Pcoordinates=${target}"]]
+    }
+}
+
+tasks.register('testAllParallel') { t ->
+    t.group = "verification"
+    t.setDescription("For each target, run clean and pullAllowedDockerImages first (sequentially), then run style checks and individual testing stages (checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test) concurrently with isolated logs. Options: -Pcoordinates to specify a single coordinate or 1/64 for the pull step; -Pparallelism to control the number of concurrent tasks.")
+
+    doLast {
+        def selectedArtifact = "org.postgresql:postgresql:42.7.3"
+        def selectedBatch = "1/64"
+
+        def gradleCmd = System.getProperty("os.name").toLowerCase().contains("windows") ? "gradlew.bat" : "./gradlew"
+        def parallelismProp = (project.findProperty('parallelism') ?: '').toString().trim()
+        int parallelism = 4
+        if (!parallelismProp.isEmpty()) {
+            try {
+                parallelism = Integer.parseInt(parallelismProp)
+            } catch (NumberFormatException ignored) {
+                throw new GradleException("Invalid -Pparallelism='${parallelismProp}': must be a positive integer.")
+            }
+            if (parallelism <= 0) {
+                throw new GradleException("Invalid -Pparallelism='${parallelismProp}': must be >= 1.")
+            }
+        }
+        println("Using parallelism=${parallelism} for testAllParallel.")
+
+        def logsDir = layout.buildDirectory.dir("command-logs").get().asFile
+        logsDir.mkdirs()
+
+        // Helper to run pull + command set for a given target (artifact or coordinates)
+        def runPhaseForCoordinate = { String coordinate ->
+            // Clean project before pulling Docker images for this coordinate
+            def cleanLogsDir = new File(project.rootDir, "command-logs-clean")
+            cleanLogsDir.mkdirs()
+
+            def fileSuffix = coordinate.replaceAll(File.separator, "-")
+            def cleanLogFile = new File(cleanLogsDir, "clean-${fileSuffix}.log")
+            int cleanExit = project.ext.runLoggedCommand([gradleCmd, "clean", "-Pcoordinates=${coordinate}"], "clean (${coordinate})", cleanLogFile, project.rootDir)
+            if (cleanExit != 0) {
+                throw new GradleException("clean failed with exit code ${cleanExit} (see ${cleanLogFile})")
+            }
+            // Ensure logsDir exists after clean
+            logsDir.mkdirs()
+
+            // Pull Docker images sequentially for this coordinate
+            def pullArgs = [gradleCmd, "pullAllowedDockerImages", "-Pcoordinates=${coordinate}"]
+            def pullLogFile = new File(logsDir, "pullAllowedDockerImages-${fileSuffix}.log")
+            int pullExit = project.ext.runLoggedCommand(pullArgs, "pullAllowedDockerImages (${coordinate})", pullLogFile, project.rootDir)
+            if (pullExit != 0) {
+                throw new GradleException("pullAllowedDockerImages failed with exit code ${pullExit} (see ${pullLogFile})")
+            }
+
+            def commands = testAllCommands(gradleCmd, coordinate)
+            int effectiveParallelism = Math.min(parallelism, commands.size())
+            def pool = Executors.newFixedThreadPool(effectiveParallelism)
+            def failures = Collections.synchronizedList(new ArrayList<Map>())
+            def futures = []
+
+            commands.each { cmd ->
+                futures << pool.submit {
+                    def label = "${cmd.name} (${coordinate})"
+                    def logFile = new File(logsDir, "${cmd.name}-${fileSuffix}.log")
+                    int exit = project.ext.runLoggedCommand(cmd.args, label, logFile, project.rootDir)
+                    if (exit != 0) {
+                        failures.add([label: label, logFile: logFile, exit: exit])
+                    }
+                }
+            }
+
+            futures.each { it.get() }
+            pool.shutdown()
+            pool.awaitTermination(1, TimeUnit.HOURS)
+
+            if (!failures.isEmpty()) {
+                println("Some commands failed (coordinates=${coordinate}). Logs in: ${logsDir}")
+                failures.each { f ->
+                    println(" - ${f.label} failed with exit code ${f.exit} (see ${f.logFile})")
+                }
+                println("==== BEGIN FAILED TASK LOGS (${coordinate})")
+                failures.each { f ->
+                    println("---- LOG: ${f.logFile}")
+                    try {
+                        if (f.logFile?.exists()) {
+                            f.logFile.eachLine { println(it) }
+                        } else {
+                            println("(log file not found)")
+                        }
+                    } catch (Throwable e) {
+                        println("Error reading ${f.logFile}: ${e.message}")
+                    }
+                }
+                println("==== END FAILED TASK LOGS (${coordinate})")
+                throw new GradleException("Failures encountered. See logs above. Logs directory: ${logsDir}")
+            } else {
+                println("All commands succeeded for coordinates=${coordinate}. Logs in: ${logsDir}")
+            }
+        }
+
+        // Run parallel phases sequentially: first the selectedArtifact, then the selectedBatch
+        runPhaseForCoordinate(selectedArtifact)
+        runPhaseForCoordinate(selectedBatch)
     }
 }

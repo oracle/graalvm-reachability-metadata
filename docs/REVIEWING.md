@@ -6,7 +6,7 @@ This document should serve as a guideline for reviewers to simplify and harmoniz
 
 ## Checklist
 First step of every review is to verify the checklist from the pull request description.
-Once the contributor wants to open a pull request [this checklist](pull_request_template.md) will be automatically added to the pull request description.
+Once the contributor wants to open a pull request [this checklist](../.github/pull_request_template.md) will be automatically added to the pull request description.
 * If the PR does not contain such a list, it **should not be reviewed**
 * If any of the items is not checked, the reviewer should ask for an explanation from the contributor
 
@@ -60,5 +60,5 @@ All metadata files **must** be covered by the tests. Every metadata file should:
 * not have entries that describes classes that serve only for tests 
 
 There are various tools that could help checking the content of all json files we are collecting.
-To run these checks automatically, top-level metadata index file must contain `allowed-packages` properly set ([see this](./CONTRIBUTING.md#metadata-structure)).
+To run these checks automatically, top-level metadata index file must contain `allowed-packages` properly set ([see this](CONTRIBUTING.md#metadata-structure)).
 If this field is properly configured, our GitHub workflows will automatically check `typeReachable` and origin of all entries in all config files.

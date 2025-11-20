@@ -1,13 +1,12 @@
-name: "Test all metadata"
+name: "Test all metadata (one version per test suite)"
 
 on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - '**.md'
-      - 'library-and-framework-list*.json'
   workflow_dispatch:
+  pull_request:
+    branches:
+     - master
+    paths:
+      - 'ci.json'
 
 concurrency:
   group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
@@ -15,7 +14,7 @@ concurrency:
 
 jobs:
   get-all-metadata:
-    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    if: github.event_name == 'workflow_dispatch' || github.repository == 'oracle/graalvm-reachability-metadata'
     name: "📋 Get list of all supported libraries"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
@@ -24,22 +23,22 @@ jobs:
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
-      - name: "🔧 Prepare environment"
-        uses: graalvm/setup-graalvm@v1
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          java-version: '21'
+
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
-          ./gradlew generateMatrixMatchingCoordinates -Pcoordinates=all
+          ./gradlew generateMatrixBatchedCoordinates -Pbatches=16
 
   test-all-metadata:
-    if: github.repository == 'oracle/graalvm-reachability-metadata'
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 120
     needs: get-all-metadata
     strategy:
       fail-fast: false
@@ -47,24 +46,29 @@ jobs:
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
+
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
         with:
-          distribution: 'oracle'
-          java-version: '17'
-      - name: "🔧 Prepare environment"
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🔧 Download GraalVM for metadata testing"
         uses: graalvm/setup-graalvm@v1
         with:
-          set-java-home: 'false'
-          java-version: ${{ matrix.version }}
           distribution: 'graalvm'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          java-version: ${{ matrix.version }}
+          set-java-home: 'false'
           native-image-job-reports: 'true'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: "Pull allowed docker images"
         run: |
-          ./gradlew pullAllowedDockerImages --coordinates=${{ matrix.coordinates }}
+          ./gradlew pullAllowedDockerImages -Pcoordinates=${{ matrix.coordinates }}
+
       - name: "Disable docker networking"
-        run: bash ./.github/workflows/disable-docker.sh
+        run: bash ./.github/workflows/scripts/disable-docker.sh
+
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
           ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
@@ -73,7 +77,6 @@ jobs:
     name: "🧪 All metadata tests have passed"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
-    if: ${{ always() }} && github.repository == 'oracle/graalvm-reachability-metadata'
     needs: test-all-metadata
     steps:
       - name: "All tests passed"

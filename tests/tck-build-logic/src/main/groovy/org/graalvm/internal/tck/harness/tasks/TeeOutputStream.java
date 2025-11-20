@@ -7,6 +7,8 @@
 
 package org.graalvm.internal.tck.harness.tasks;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -26,13 +28,13 @@ public class TeeOutputStream extends OutputStream implements AutoCloseable {
     }
 
     @Override
-    public void write(byte[] b) throws IOException {
+    public void write(byte @NotNull [] b) throws IOException {
         out1.write(b);
         out2.write(b);
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
+    public void write(byte @NotNull [] b, int off, int len) throws IOException {
         out1.write(b, off, len);
         out2.write(b, off, len);
     }
