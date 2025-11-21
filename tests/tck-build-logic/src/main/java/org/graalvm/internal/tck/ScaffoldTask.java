@@ -269,13 +269,7 @@ class ScaffoldTask extends DefaultTask {
         List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
 
         // add new entry
-        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(null,
-                null,
-                coordinates.group() + ":" + coordinates.artifact(),
-                null,
-                coordinates.version(),
-                List.of(coordinates.version()),
-                null);
+        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(null, null, coordinates.group() + ":" + coordinates.artifact(), null, coordinates.version(), List.of(coordinates.version()), null);
 
         entries.add(newEntry);
 

@@ -170,6 +170,15 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
         }
     }
 
+    /**
+     * Returns all versions of a given library that are marked as skipped in the
+     * metadata index.
+     * <p>
+     * For the provided Maven coordinates (in the format {@code <groupId>:<artifactId>}),
+     * this method reads the corresponding {@code index.json} file located under:
+     * {@code metadata/<groupId>/<artifactId>/index.json}
+     * and collects all version entries listed under {@code skipped-versions}.
+     */
     static List<String> getSkippedVersions(String libraryModule) {
         try {
             String[] coordinates = libraryModule.split(":");

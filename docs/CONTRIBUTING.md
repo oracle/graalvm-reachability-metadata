@@ -175,7 +175,7 @@ above using this field:
     },
     {
       "version": "1.0.7",
-      "reason": "Resource metadata provided in reflect-config.json."
+      "reason": "Integrated reflect-config.json does not parse."
     }
   ]
 }
