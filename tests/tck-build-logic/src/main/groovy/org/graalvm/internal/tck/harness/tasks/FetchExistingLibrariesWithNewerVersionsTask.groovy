@@ -25,9 +25,9 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example")
 
     /**
-     * Identifies pre-release library versions by pattern matching against common pre-release suffixes.
+     * Identifies library versions, including optional pre-release and ".Final" suffixes.
      * <p>
-     * A version is considered pre-release if its suffix (following the last '.' or '-') matches
+     * A version is considered a pre-release if it has a suffix (following the last '.' or '-') matching
      * one of these case-insensitive patterns:
      * <ul>
      *   <li>{@code alpha} followed by optional numbers (e.g., "alpha", "Alpha1", "alpha123")</li>
@@ -40,9 +40,10 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
      *   <li>{@code preview} followed by optional numbers (e.g., "preview", "preview1", "preview42")</li>
      *   <li>Numeric suffixes separated by '-' (e.g., "-1", "-123")</li>
      * </ul>
+     * <p>
+     * Versions ending with ".Final" are treated as full releases of the base version.
      */
-    private static final Pattern PRE_RELEASE_PATTERN = ~/(?i)^(\d+(?:\.\d+)*)(?:[-.](alpha\d*|beta\d*|rc\d*|cr\d*|m\d+|ea\d*|b\d+|\d+|preview)(?:[-.].*)?)?$/
-    private static final String FINAL_PATTERN = /(?i)\.Final$/
+    private static final Pattern VERSION_PATTERN = ~/(?i)^(\d+(?:\.\d+)*)(?:\.Final)?(?:[-.](alpha\d*|beta\d*|rc\d*|cr\d*|m\d+|ea\d*|b\d+|\d+|preview)(?:[-.].*)?)?$/
 
     @TaskAction
     void action() {
@@ -112,9 +113,9 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
     }
 
     static List<String> filterPreReleases(List<String> versions) {
-        // identify full releases, treating .Final as base
+        // identify full releases
         Set<String> releases = versions.collect { v ->
-            def matcher = PRE_RELEASE_PATTERN.matcher(v.replaceAll(FINAL_PATTERN, ''))
+            def matcher = VERSION_PATTERN.matcher(v)
             if (matcher.matches() && matcher.group(2) == null) {
                 return matcher.group(1)
             }
@@ -123,7 +124,7 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
         // filter pre-releases if full release exists
         return versions.findAll { v ->
-            def matcher = PRE_RELEASE_PATTERN.matcher(v.replaceAll(FINAL_PATTERN, ''))
+            def matcher = VERSION_PATTERN.matcher(v)
             if (matcher.matches()) {
                 String base = matcher.group(1)
                 String preSuffix = matcher.groupCount() > 1 ? matcher.group(2) : null

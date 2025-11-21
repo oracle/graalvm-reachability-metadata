@@ -33,9 +33,9 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
     /**
-     * Identifies pre-release library versions by pattern matching against common pre-release suffixes.
+     * Identifies library versions, including optional pre-release and ".Final" suffixes.
      * <p>
-     * A version is considered pre-release if its suffix (following the last '.' or '-') matches
+     * A version is considered a pre-release if it has a suffix (following the last '.' or '-') matching
      * one of these case-insensitive patterns:
      * <ul>
      *   <li>{@code alpha} followed by optional numbers (e.g., "alpha", "Alpha1", "alpha123")</li>
@@ -48,11 +48,12 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
      *   <li>{@code preview} followed by optional numbers (e.g., "preview", "preview1", "preview42")</li>
      *   <li>Numeric suffixes separated by '-' (e.g., "-1", "-123")</li>
      * </ul>
+     * <p>
+     * Versions ending with ".Final" are treated as full releases of the base version.
      */
-    private static final Pattern PRE_RELEASE_PATTERN = Pattern.compile(
-            "(?i)^(\\d+(?:\\.\\d+)*)(?:[-.](alpha\\d*|beta\\d*|rc\\d*|cr\\d*|m\\d+|ea\\d*|b\\d+|\\d+|preview)(?:[-.].*)?)?$"
+    private static final Pattern VERSION_PATTERN = Pattern.compile(
+            "(?i)^(\\d+(?:\\.\\d+)*)(?:\\.Final)?(?:[-.](alpha\\d*|beta\\d*|rc\\d*|cr\\d*|m\\d+|ea\\d*|b\\d+|\\d+|preview)(?:[-.].*)?)?$"
     );
-    private static final Pattern FINAL_PATTERN = Pattern.compile("(?i)\\.Final$");
 
     @Option(option = "coordinates", description = "GAV coordinates of the library")
     void extractInformationFromCoordinates(String c) {
@@ -119,27 +120,24 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
      *   <li>If the entry's {@code metadataVersion} is a pre-release of the same base version,
      *       it is updated to the new full release. The corresponding metadata and test directories are renamed accordingly.
      *       The {@code gradle.properties} file in the tests directory is updated to refer to the new version.</li>
-     *   <li>Version parsing follows {@link #PRE_RELEASE_PATTERN} and treats ".Final" as a base version.</li>
+     *   <li>Version parsing follows {@link #VERSION_PATTERN} and treats ".Final" as a base version.</li>
      * </ul>
      */
     private MetadataVersionsIndexEntry handlePreReleases(MetadataVersionsIndexEntry entry, String newVersion, Path baseDir) throws IOException {
-        // Normalize version by stripping .Final
-        Matcher versionMatcher = PRE_RELEASE_PATTERN.matcher(FINAL_PATTERN.matcher(newVersion).replaceAll(""));
+        Matcher versionMatcher = VERSION_PATTERN.matcher(newVersion);
         if (!versionMatcher.matches()) return entry; // skip invalid formats
 
         String baseVersion = versionMatcher.group(1);
-        String preReleaseTag = versionMatcher.group(2); // null = full release
-
         // Only remove old pre-releases if this is a full release
-        if (preReleaseTag == null) {
+        if (versionMatcher.group(2) == null) {
             entry.testedVersions().removeIf(version -> {
-                Matcher existingVersionMatcher = PRE_RELEASE_PATTERN.matcher(FINAL_PATTERN.matcher(version).replaceAll(""));
+                Matcher existingVersionMatcher = VERSION_PATTERN.matcher(version);
                 return existingVersionMatcher.matches() && existingVersionMatcher.group(2) != null && baseVersion.equals(existingVersionMatcher.group(1));
             });
 
             // Update metadata version if it was a pre-release of the same base
             String oldMetadata = entry.metadataVersion();
-            Matcher metaMatcher = PRE_RELEASE_PATTERN.matcher(FINAL_PATTERN.matcher(oldMetadata).replaceAll(""));
+            Matcher metaMatcher = VERSION_PATTERN.matcher(oldMetadata);
             if (metaMatcher.matches() && metaMatcher.group(2) != null && baseVersion.equals(metaMatcher.group(1))) {
                 Path oldDir = baseDir.resolve(oldMetadata);
                 Path newDir = baseDir.resolve(newVersion);
