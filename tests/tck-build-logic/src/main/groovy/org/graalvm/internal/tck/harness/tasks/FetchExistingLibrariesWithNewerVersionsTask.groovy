@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import groovy.json.JsonOutput
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry
+import org.graalvm.internal.tck.model.SkippedVersionEntry
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input
@@ -59,6 +60,11 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
             String libraryName = it
             if (INFRASTRUCTURE_TESTS.stream().noneMatch(testName -> libraryName.startsWith(testName))) {
                 List<String> versions = getNewerVersionsFor(libraryName, getLatestLibraryVersion(libraryName))
+                List<String> skipped = getSkippedVersions(libraryName)
+
+                // filter out skipped versions
+                versions = versions.findAll { !skipped.contains(it) }
+
                 versions.forEach {
                     newerVersions.add(libraryName.concat(":").concat(it))
                 }
@@ -164,4 +170,45 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
         }
     }
 
+    /**
+     * Returns all versions of a given library that are marked as skipped in the
+     * metadata index.
+     * <p>
+     * For the provided Maven coordinates (in the format {@code <groupId>:<artifactId>}),
+     * this method reads the corresponding {@code index.json} file located under:
+     * {@code metadata/<groupId>/<artifactId>/index.json}
+     * and collects all version entries listed under {@code skipped-versions}.
+     */
+    static List<String> getSkippedVersions(String libraryModule) {
+        try {
+            String[] coordinates = libraryModule.split(":");
+            String group = coordinates[0];
+            String artifact = coordinates[1];
+
+            File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact + "/index.json");
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(
+                    coordinatesMetadataIndex,
+                    new TypeReference<List<MetadataVersionsIndexEntry>>() {}
+            );
+
+            List<String> skipped = new ArrayList<>();
+            for (MetadataVersionsIndexEntry entry : entries) {
+                if (entry.skippedVersions() != null) {
+                    skipped.addAll(
+                            entry.skippedVersions().stream()
+                                    .map(SkippedVersionEntry::version)
+                                    .toList()
+                    );
+                }
+            }
+
+            return skipped;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

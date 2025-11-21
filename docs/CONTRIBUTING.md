@@ -153,6 +153,34 @@ a regexp (Java format) matching the version pattern. For example, for the exampl
 }
 ```
 
+The optional `skipped-versions` key can be used to explicitly exclude specific
+library versions from being considered as supported metadata. A skipped version
+should include both the version and the reason it is excluded. This is useful
+when a version exists in Maven but is known to be broken, incompatible, or
+should be omitted from testing for any other reason. An example of the library
+above using this field:
+
+```json
+{
+  "metadata-version": "1.0.0",
+  "module": "org.example:library",
+  "tested-versions": [
+    "1.0.0",
+    "1.1.0"
+  ],
+  "skipped-versions": [
+    {
+      "version": "1.0.5",
+      "reason": "Known incompatible API change."
+    },
+    {
+      "version": "1.0.7",
+      "reason": "Integrated reflect-config.json does not parse."
+    }
+  ]
+}
+```
+
 You can also list each supported version is listed in `tested-versions`, as that value is used in build tools to match
 metadata to a specific library, but this is more likely to break when new versions are released.
 Every metadata for a specific library version has a `index.json`. For this
