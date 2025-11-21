@@ -124,24 +124,23 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
      */
     private MetadataVersionsIndexEntry handlePreReleases(MetadataVersionsIndexEntry entry, String newVersion, Path baseDir) throws IOException {
         // Normalize version by stripping .Final
-        String normalizedNew = FINAL_PATTERN.matcher(newVersion).replaceAll("");
-        Matcher newMatcher = PRE_RELEASE_PATTERN.matcher(normalizedNew);
-        if (!newMatcher.matches()) return entry; // skip invalid formats
+        Matcher versionMatcher = PRE_RELEASE_PATTERN.matcher(FINAL_PATTERN.matcher(newVersion).replaceAll(""));
+        if (!versionMatcher.matches()) return entry; // skip invalid formats
 
-        String newBase = newMatcher.group(1);
-        String newLabel = newMatcher.group(2); // null = full release
+        String baseVersion = versionMatcher.group(1);
+        String preReleaseTag = versionMatcher.group(2); // null = full release
 
         // Only remove old pre-releases if this is a full release
-        if (newLabel == null) {
-            entry.testedVersions().removeIf(v -> {
-                Matcher m = PRE_RELEASE_PATTERN.matcher(FINAL_PATTERN.matcher(v).replaceAll(""));
-                return m.matches() && m.group(2) != null && newBase.equals(m.group(1));
+        if (preReleaseTag == null) {
+            entry.testedVersions().removeIf(version -> {
+                Matcher existingVersionMatcher = PRE_RELEASE_PATTERN.matcher(FINAL_PATTERN.matcher(version).replaceAll(""));
+                return existingVersionMatcher.matches() && existingVersionMatcher.group(2) != null && baseVersion.equals(existingVersionMatcher.group(1));
             });
 
             // Update metadata version if it was a pre-release of the same base
             String oldMetadata = entry.metadataVersion();
             Matcher metaMatcher = PRE_RELEASE_PATTERN.matcher(FINAL_PATTERN.matcher(oldMetadata).replaceAll(""));
-            if (metaMatcher.matches() && metaMatcher.group(2) != null && newBase.equals(metaMatcher.group(1))) {
+            if (metaMatcher.matches() && metaMatcher.group(2) != null && baseVersion.equals(metaMatcher.group(1))) {
                 Path oldDir = baseDir.resolve(oldMetadata);
                 Path newDir = baseDir.resolve(newVersion);
                 if (Files.exists(oldDir)) Files.move(oldDir, newDir);

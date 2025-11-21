@@ -84,7 +84,7 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
         List<String> newerVersions = getNewerVersionsFromLibraryIndex(data, startingVersion, library)
 
-        // filter pre-release versions if release exists
+        // filter pre-release versions if full release exists
         return filterPreReleases(newerVersions)
     }
 
@@ -112,21 +112,18 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
     }
 
     static List<String> filterPreReleases(List<String> versions) {
-        // identify base releases, treating .Final as base
+        // identify full releases, treating .Final as base
         Set<String> releases = versions.collect { v ->
-            // strip .Final
-            def cleaned = v.replaceAll(FINAL_PATTERN, '')
-            def matcher = PRE_RELEASE_PATTERN.matcher(cleaned)
+            def matcher = PRE_RELEASE_PATTERN.matcher(v.replaceAll(FINAL_PATTERN, ''))
             if (matcher.matches() && matcher.group(2) == null) {
                 return matcher.group(1)
             }
             return null
         }.findAll { it != null } as Set
 
-        // filter pre-releases if base exists
+        // filter pre-releases if full release exists
         return versions.findAll { v ->
-            def cleaned = v.replaceAll(FINAL_PATTERN, '')
-            def matcher = PRE_RELEASE_PATTERN.matcher(cleaned)
+            def matcher = PRE_RELEASE_PATTERN.matcher(v.replaceAll(FINAL_PATTERN, ''))
             if (matcher.matches()) {
                 String base = matcher.group(1)
                 String preSuffix = matcher.groupCount() > 1 ? matcher.group(2) : null
