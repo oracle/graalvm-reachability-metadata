@@ -162,7 +162,8 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                         entry.module(),
                         entry.defaultFor(),
                         newVersion,
-                        entry.testedVersions()
+                        entry.testedVersions(),
+                        entry.skippedVersions()
                 );
             }
         }
