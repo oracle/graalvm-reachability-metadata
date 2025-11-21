@@ -258,13 +258,22 @@ jobs:
           EOF
 
           echo "Creating a new issue"
+
+          # Choose assignee based on the label:
+          # - "fails-native-image-build": assign to @vjovanov
+          # - Others: assign to @kimeta
+          ASSIGNEE="kimeta"
+          if [ "$FAILURE_LABEL" = "fails-native-image-build" ]; then
+            ASSIGNEE="vjovanov"
+          fi
+
           gh issue create \
             --repo "$REPO" \
             --title "$TITLE" \
             --body-file "$BODY_FILE" \
             --label "library-unsupported-version" \
-            --label "$FAILURE_LABEL"
-        
+            --label "$FAILURE_LABEL" \
+            --assignee "$ASSIGNEE"
 
           rm "$BODY_FILE"
 
