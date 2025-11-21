@@ -94,15 +94,22 @@ jobs:
           
           readarray -t VERSIONS < <(echo '${{ toJson(matrix.item.versions) }}' | jq -r '.[]')
           FIRST_TESTING_VERSION="${VERSIONS[0]}"
+          GAV_COORDINATES="$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
+          TITLE_END="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES"
           
-          TITLE_SEARCH="${{ env.ISSUE_TITLE_MIDDLE }}$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
+          ISSUE_NUMBER=$(
+            gh issue list \
+              --repo "${{ github.repository }}" \
+              --state open \
+              --search "\"$TITLE_END\" in:title" \
+              --json number,title \
+              --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
+          )
           
-          ISSUE_NUMBER=$(gh issue list --repo "${{ github.repository }}" --state open --search "in:title $TITLE_SEARCH" --json number,title --jq \
-            '.[] | select(.title | endswith("'"$TITLE_SEARCH"'")) | .number')
-          
+          echo "Found the issue(s) $ISSUE_NUMBER"
           if [[ -n "$ISSUE_NUMBER" ]]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "There is no progress since last time this version was tested. Skipping further steps."
+            echo "There is no progress since last time for the $GAV_COORDINATES. Skipping further testing!"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
@@ -146,7 +153,7 @@ jobs:
           # Fetch the job URL
           JOB_ID=$(
             gh run view "${{ github.run_id }}" --repo "${{ github.repository }}" --json jobs \
-             | jq -r --arg name "$CURRENT_JOB_NAME" '.jobs[] | select(.name | startswith($name)) | .databaseId' \
+             --jq ".jobs[] | select(.name | startswith(\"$CURRENT_JOB_NAME\")) | .databaseId" \
              | head -n1
           )
           if [ -z "$JOB_ID" ] || [ "$JOB_ID" = "null" ]; then
@@ -218,8 +225,25 @@ jobs:
 
           FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
           REPO="${{ github.repository }}"
-          TITLE="${{ env.ISSUE_TITLE_PREFIX }}${{ steps.runtests.outputs.failure_type }}${{ env.ISSUE_TITLE_MIDDLE }}${{ matrix.item.name }}:$FAILED_VERSION"
+          GAV_COORDINATES="${{ matrix.item.name }}:$FAILED_VERSION"
+          TITLE_END="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES"
+          TITLE="${{ env.ISSUE_TITLE_PREFIX }}${{ steps.runtests.outputs.failure_type }}$TITLE_END"
           FAILURE_LABEL="fails-$(echo "${{ steps.runtests.outputs.failure_type }}" | sed 's/ /-/g')"
+
+          echo "Searching for an issue that ends with: $TITLE_END"
+          ISSUE_NUMBER=$(
+            gh issue list \
+              --repo "${{ github.repository }}" \
+              --state open \
+              --search "\"$TITLE_END\" in:title" \
+              --json number,title \
+              --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
+          )
+          if [ -n "$ISSUE_NUMBER" ]; then
+            echo "Must not reach here as the issue already exists: $ISSUE_NUMBER"
+            echo "The previous stage should of failed before."
+            exit 1
+          fi
 
           BODY_FILE=$(mktemp)
           # Use single-quoted here-doc to disable any shell expansion of log content
@@ -233,19 +257,14 @@ jobs:
           ```
           EOF
 
-          ISSUE_NUMBER=$(gh issue list --repo "$REPO" --state open --search "$TITLE" --json number,title --jq '.[] | select(.title | startswith("'"$TITLE"'")) | .number')
-          if [ -n "$ISSUE_NUMBER" ]; then
-            echo "Updating existing issue #$ISSUE_NUMBER"
-            gh issue edit "$ISSUE_NUMBER" --repo "$REPO" --body-file "$BODY_FILE"
-          else
-            echo "Creating a new issue"
-            gh issue create \
-              --repo "$REPO" \
-              --title "$TITLE" \
-              --body-file "$BODY_FILE" \
-              --label "library-unsupported-version" \
-              --label "$FAILURE_LABEL"
-          fi
+          echo "Creating a new issue"
+          gh issue create \
+            --repo "$REPO" \
+            --title "$TITLE" \
+            --body-file "$BODY_FILE" \
+            --label "library-unsupported-version" \
+            --label "$FAILURE_LABEL"
+        
 
           rm "$BODY_FILE"
 
