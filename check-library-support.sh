@@ -9,10 +9,9 @@ fi
 GAV="$1"
 IFS=':' read -r GROUP ARTIFACT VERSION <<< "$GAV"
 
-METADATA_DIR="metadata/$GROUP/$ARTIFACT"
-INDEX_FILE="$METADATA_DIR/index.json"
+INDEX_FILE="metadata/$GROUP/$ARTIFACT/index.json"
 
-if [ ! -d "$METADATA_DIR" ] || [ ! -f "$INDEX_FILE" ]; then
+if [ ! -f "$INDEX_FILE" ]; then
     echo "Library $GAV is NOT supported by the GraalVM Reachability Metadata repository."
     exit 1
 fi
