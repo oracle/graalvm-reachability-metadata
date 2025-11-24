@@ -38,6 +38,11 @@ Tip: When debugging locally, add `--stacktrace` for better error output.
     ```console
    ./gradlew spotlessCheck
     ```
+3. Auto-fix license headers and formatting locally:
+    ```console
+    ./gradlew spotlessApply
+    ```
+   Spotless enforces the CC0 license header on Java, Groovy, Gradle build scripts, and shell scripts. The metadata/** directory is excluded from header checks.
 
 ### Testing one library locally
 
@@ -128,6 +133,7 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 
 - Style: `./gradlew checkstyle`
 - Format check: `./gradlew spotlessCheck`
+- Format apply: `./gradlew spotlessApply`
 - Pull images (single lib): `./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]`
 - Check metadata (single lib): `./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
