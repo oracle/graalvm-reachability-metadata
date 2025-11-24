@@ -1,3 +1,9 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -39,6 +45,50 @@ spotless {
                 .indentWithSpaces(2)
                 .sortByKeys()
                 .version("2.9.0")
+    }
+    java {
+        target('**/*.java')
+        targetExclude(
+                'metadata/**', // only JSON there
+                '**/build/**',
+                'gradle/header.java')
+        // Place header before package/import/module
+        licenseHeaderFile("$rootDir/gradle/header.java", "package |import |module ")
+    }
+
+    String[] noHeaderDirs = [
+            'docs/**',     // only .md files
+            'metadata/**', // only .json files
+            '**/build/**', // not relevant
+            'gradle/wrapper/**', // not relevant
+    ]
+    groovy {
+        target('**/*.groovy')
+        targetExclude(noHeaderDirs)
+        // Place header before package/import
+        licenseHeaderFile("$rootDir/gradle/header.java", "package |import ")
+    }
+    groovyGradle {
+        // Build scripts (*.gradle)
+        target('**/*.gradle')
+        targetExclude(noHeaderDirs)
+        targetExclude('tests/**')
+        // Insert header at file start (works for any Gradle script layout)
+        licenseHeaderFile("$rootDir/gradle/header.java", "(?m)^(import\\b|plugins\\b|buildscript\\b|apply\\b|rootProject\\b|pluginManagement\\b|dependencyResolutionManagement\\b)")
+    }
+    format('shell') {
+        target('**/*.sh')
+        targetExclude(noHeaderDirs)
+        // Ensure header appears after shebang if present, else at the very top.
+        def shHeader = file("$rootDir/gradle/header.sh").text
+        // If file starts with a shebang and is missing the header, insert it after the shebang
+        replaceRegex('insert-license-after-shebang',
+                     '(?s)\\A(#!.*\\n)(?!# Copyright and related rights waived via CC0\\n)',
+                     '$1' + shHeader + "\n")
+        // If file has no shebang and is missing the header, insert it at the start
+        replaceRegex('insert-license-at-start',
+                     '(?s)\\A(?!#!)(?!# Copyright and related rights waived via CC0\\n)',
+                     shHeader + "\n")
     }
 }
 
