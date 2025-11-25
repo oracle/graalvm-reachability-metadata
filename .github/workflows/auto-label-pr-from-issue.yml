@@ -88,7 +88,9 @@ jobs:
             echo "::notice title=No mapping found::No 'fails-*' labels found on linked issue #${ISSUE_NUMBER}."
             exit 0
           fi
-
+          
+          echo "::notice title=Selected label::$selected";
+          
           labels_json="$(jq -nc --arg l "$selected" '[$l]')"
 
           gh pr edit "$PR_NUMBER" -R "${OWNER}/${REPO}" --add-label "$selected" || {
