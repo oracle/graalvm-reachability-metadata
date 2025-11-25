@@ -13,6 +13,11 @@ To see whether your library or framework is supported, visit [this page](https:/
 If you’d like yours to appear there as well, open a pull request updating [this JSON file](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).  
 Before submitting a pull request, please read [this guide](docs/CONTRIBUTING.md#tested-libraries-and-frameworks).
 
+You can also check if metadata for a library exists on the repository directly from your terminal without cloning it using:
+```
+curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"
+```
+
 ### 📚 Request Support for a New Library
 
 Open a [library-request ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml), include the Maven coordinates, and our automation will take it from there (🤖).
