@@ -29,6 +29,13 @@ jobs:
           OWNER="${GITHUB_REPOSITORY%%/*}"
           REPO="${GITHUB_REPOSITORY#*/}"
 
+          PR_TITLE="$(jq -r '.pull_request.title // empty' "$GITHUB_EVENT_PATH")"
+          if [[ -n "$PR_TITLE" && "$PR_TITLE" == *"[GenAI]"* ]]; then
+            gh pr edit "$PR_NUMBER" -R "${OWNER}/${REPO}" --add-label "GenAI" || {
+              echo "::notice title=Could not add label::gh pr edit failed for 'GenAI' (label may not exist or token lacks write permissions)";
+            }
+          fi
+
           # GraphQL query to get the single closing issue and its labels
           QUERY="$(cat <<'GRAPHQL'
           query($owner:String!, $repo:String!, $pr:Int!) {
