@@ -91,9 +91,6 @@ jobs:
 
           labels_json="$(jq -nc --arg l "$selected" '[$l]')"
 
-          # Apply the single mapped label (assumes labels already exist)
-          curl -sS -X POST \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${OWNER}/${REPO}/issues/${PR_NUMBER}/labels" \
-            -d "{\"labels\":${labels_json}}" >/dev/null
+          gh pr edit "$PR_NUMBER" -R "${OWNER}/${REPO}" --add-label "$selected" || {
+            echo "::notice title=Could not add label::gh pr edit failed (label may not exist or token lacks write permissions)";
+          }
