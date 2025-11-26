@@ -1,0 +1,55 @@
+name: "❓ Question"
+description: Ask a question about proper usage.
+title: "Question: "
+labels:
+  - question
+assignees:
+  - vjovanov
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for opening a question!
+
+  - type: textarea
+    id: question_description
+    attributes:
+      label: Describe the question in more detail
+      description: What do you need help with? What behavior did you observe and what did you expect?
+      placeholder: Provide a clear and concise description of your question or problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce_steps
+    attributes:
+      label: Steps or minimal example (if applicable)
+      description: If your question involves a specific setup or behavior, please provide steps or a minimal example.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+      render: markdown
+    validations:
+      required: false
+
+  - type: input
+    id: reproducer_link
+    attributes:
+      label: Minimal reproducer (optional)
+      description: Link to a public repository/branch or artifact demonstrating the case, if applicable.
+      placeholder: https://github.com/org/repo/tree/branch
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: |
+        Any other context, screenshots, or details that could help clarify your question.
+        Please make sure to follow the [troubleshooting guide](https://www.graalvm.org/latest/reference-manual/native-image/guides/troubleshoot-run-time-errors/) and to include the missing metadata stack traces.
+      placeholder: Environment details, related configurations, or hypotheses (optional).
+    validations:
+      required: false

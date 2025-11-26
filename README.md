@@ -1,28 +1,39 @@
 # GraalVM Reachability Metadata Repository
 
-This repository enables users of [GraalVM Native Image](https://www.graalvm.org/latest/reference-manual/native-image/) to share and reuse metadata for libraries and frameworks in the Java ecosystem.
-The repository is integrated with [GraalVM Native Build Tools](https://github.com/graalvm/native-build-tools) beginning with version `0.9.13`:
-you can enable automatic use of the metadata repository for [Gradle projects](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#metadata-support) or [Maven projects](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#metadata-support).
+This repository provides [reachability metadata](https://www.graalvm.org/latest/reference-manual/native-image/metadata/) that lets Java libraries and frameworks work out of the box with [GraalVM Native Image](https://www.graalvm.org/latest/reference-manual/native-image/). 
 
-[This web page](https://www.graalvm.org/native-image/libraries-and-frameworks/) provides an overview of libraries and frameworks that are tested and thus ready for GraalVM Native Image.
-If you would like to see your library or framework in the list too, please open a pull request and extend [this JSON file](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
-Before submitting a pull request, please read [this guide](./CONTRIBUTING.md#tested-libraries-and-frameworks).
+To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html) or the [GraalVM Maven Plugin](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html); they automatically use the [reachability metadata](https://www.graalvm.org/latest/reference-manual/native-image/metadata/) from this repository.
 
-## Rationale
+---
 
-When you use Native Image to build native executables it only includes the elements reachable from your application entry point, its dependent libraries, and JDK classes discovered through static analysis.
-However, the reachability of some elements (such as classes, methods, or fields) may not be discoverable due to Java’s dynamic features including reflection, resource access, dynamic proxies, and serialization.
-If an element is not reachable, it is not included in the generated executable at build time, which can lead to failures at run time.
-Native Image has built-in metadata for JDK classes but user code and dependencies may use dynamic features of Java that are undiscoverable by the Native Image analysis.
-For this reason, Native Image accepts additional [reachability metadata](https://www.graalvm.org/reference-manual/native-image/metadata/) in the form of JSON files.
-Since this metadata is specific to a specific code base, the JSON files providing the corresponding metadata can be shared for libraries and frameworks.
-This repository is a centralized place for sharing such files for libraries and frameworks that do not provide built-in metadata yet.
-It is also used to retrofit metadata for older versions of libraries and frameworks.
+### 🔎 Check if Your Library or Framework Is Supported
 
-If you are a library or framework maintainer, the best way to make your code ready for GraalVM Native Image is to provide reachability metadata as part of your JARs.
-Please visit [this web page](https://www.graalvm.org/latest/reference-manual/native-image/metadata/) for more information.
+To see whether your library or framework is supported, visit [this page](https://www.graalvm.org/native-image/libraries-and-frameworks/). It lists libraries and frameworks that are tested and ready for GraalVM Native Image.  
 
-## Contributing
+If you’d like yours to appear there as well, open a pull request updating [this JSON file](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).  
+Before submitting a pull request, please read [this guide](docs/CONTRIBUTING.md#tested-libraries-and-frameworks).
 
-We welcome contributions from the community.
-Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md).
+### 📚 Request Support for a New Library
+
+Open a [library-request ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=01_support_new_library.yml), include the Maven coordinates, and our automation will take it from there (🤖).
+
+### 🛠️ Request an Update to an Existing Library
+
+Open an [update ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml) and include the Maven coordinates of the library that needs changes.
+
+---
+
+### Contributing
+
+We welcome contributions from the community. Thank you!
+
+Before submitting a pull request, please [open a ticket](https://github.com/oracle/graalvm-reachability-metadata/issues/new?template=02_update_existing_library.yml), mark that you want to fix it yourself, and [review our contribution guide](docs/CONTRIBUTING.md).
+
+### Further Information
+
+1. Continuous integration is described in [CI.md](docs/CI.md).
+2. Pull request review guidelines are in [REVIEWING.md](docs/REVIEWING.md).
+3. Development workflow is described in [DEVELOPING.md](docs/DEVELOPING.md).
+
+---
+Built with love by the community and the [GraalVM](https://www.graalvm.org/), [Spring](https://spring.io/projects/spring-boot), and [Micronaut](https://micronaut.io/) teams.

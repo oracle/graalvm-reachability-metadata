@@ -12,6 +12,7 @@ permissions:
 jobs:
   get-changed-metadata:
     name: "📋 Get a list of changed metadata"
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
     outputs:
@@ -22,16 +23,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
+
       - name: "🕸️ Get changed metadata matrix"
         id: set-matrix
         run: |
           LATEST_TAG=$(git tag --list | sort -V | tail -1)
-          ./gradlew generateMatrixDiffCoordinates -PbaseCommit=$(git show-ref -s $LATEST_TAG) -PnewCommit=$(git rev-parse HEAD)
+          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=$(git show-ref -s $LATEST_TAG) -PnewCommit=$(git rev-parse HEAD)
 
   release:
     needs: get-changed-metadata
@@ -45,11 +48,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: "🔧 Setup java"
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
+
       - name: "Get tags"
         run: |
           PREVIOUS_RELEASE_TAG=$(git tag --list | sort -V | tail -1)
@@ -57,15 +62,19 @@ jobs:
 
           CURRENT_RELEASE_TAG=$(sed -E 's/^([0-9]+\.)([0-9]+\.)([0-9]+)/echo \1\2$((\3+1))/e' <<< $PREVIOUS_RELEASE_TAG)
           echo "CURRENT_RELEASE_TAG=$CURRENT_RELEASE_TAG" >> ${GITHUB_ENV}
+
       - name: "⬆️ Update version"
         run: |
           sed -i "s/project.version(\"1.0.0-SNAPSHOT\")/project.version(\"${{ env.CURRENT_RELEASE_TAG }}\")/g" build.gradle
+
       - name: "🔍 Run spotless check"
         run: |
           ./gradlew spotlessCheck
+
       - name: "🏭 Generate release artifacts"
         run: |
           ./gradlew package
+
       - name: "📄 Commit changes"
         run: |
           git config --local user.email "actions@github.com"
@@ -74,6 +83,7 @@ jobs:
           git commit -m "Release version ${{ env.CURRENT_RELEASE_TAG }}"
           git tag ${{ env.CURRENT_RELEASE_TAG }}
           git push origin ${{ env.CURRENT_RELEASE_TAG }}
+
       - name: "📝 Publish a release"
         run: |
           gh release create ${{ env.CURRENT_RELEASE_TAG }} build/graalvm-reachability-metadata-*.zip --generate-notes --notes-start-tag ${{ env.PREVIOUS_RELEASE_TAG }}

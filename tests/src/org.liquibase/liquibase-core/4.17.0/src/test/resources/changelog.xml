@@ -5,21 +5,21 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <preConditions onSqlOutput="IGNORE" >
-            <dbms type="h2"/>
-            <runningAs username=""/>
-            <changeLogPropertyDefined property="database.databaseProductName" value="H2"/>
+        <dbms type="h2"/>
+        <runningAs username=""/>
+        <changeLogPropertyDefined property="database.databaseProductName" value="H2"/>
     </preConditions>
 
     <changeSet id="1" author="nvoxland">
         <preConditions onSqlOutput="TEST">
-                <dbms type="h2"/>
-                <runningAs username=""/>
+            <dbms type="h2"/>
+            <runningAs username=""/>
         </preConditions>
         <comment>
             You can add comments to changeSets.
             They can even be multiple lines if you would like.
             They aren't used to compute the changeSet MD5Sum, so you can update them whenever you want without causing problems.
-        </comment>        
+        </comment>
         <createTable tableName="person">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -101,8 +101,8 @@
         <dropNotNullConstraint tableName="employee" columnName="name" columnDataType="varchar(50)"/>
     </changeSet>
     <!--<changeSet id="8.1" author="bjohnson">-->
-        <!--<comment>I guess name needs to be not-null</comment>-->
-        <!--<addNotNullConstraint tableName='employee' columnName="name" defaultNullValue="UNKNOWN" columnDataType="varchar(50)"/>-->
+    <!--<comment>I guess name needs to be not-null</comment>-->
+    <!--<addNotNullConstraint tableName='employee' columnName="name" defaultNullValue="UNKNOWN" columnDataType="varchar(50)"/>-->
     <!--</changeSet>-->
     <changeSet id="9" author="nvoxland">
         <renameTable oldTableName="employee" newTableName="company"/>
@@ -275,7 +275,7 @@
         </createView>
     </changeSet>
 
-    
+
     <include file="included.changelog.xml"/>
 
     <include file="renamed.changelog.xml"/>
@@ -301,10 +301,10 @@
     </changeSet>
 
     <changeSet id="failingPrecondition" author="pcleto">
-      <preConditions onFail="MARK_RAN" onError="WARN">
-         <dbms type="oracle"/>
-      </preConditions>
-      <createSequence sequenceName="liquidbase_applicationuserSQ" startValue="1" />
+        <preConditions onFail="MARK_RAN" onError="WARN">
+            <dbms type="oracle"/>
+        </preConditions>
+        <createSequence sequenceName="liquidbase_applicationuserSQ" startValue="1" />
     </changeSet>
 
     <changeSet id="failingColumnNameSince197" author="tholu">
