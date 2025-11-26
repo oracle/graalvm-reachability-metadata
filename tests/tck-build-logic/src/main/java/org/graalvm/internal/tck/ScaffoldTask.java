@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.model.TestIndexEntry;
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.Input;
@@ -30,6 +31,7 @@ import java.util.List;
  *
  * @author Moritz Halbritter
  */
+@SuppressWarnings("unused")
 class ScaffoldTask extends DefaultTask {
     private final ObjectMapper objectMapper = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT)
@@ -267,12 +269,7 @@ class ScaffoldTask extends DefaultTask {
         List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
 
         // add new entry
-        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(null,
-                null,
-                coordinates.group() + ":" + coordinates.artifact(),
-                null,
-                coordinates.version(),
-                List.of(coordinates.version()));
+        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(null, null, coordinates.group() + ":" + coordinates.artifact(), null, coordinates.version(), List.of(coordinates.version()), null);
 
         entries.add(newEntry);
 
@@ -305,7 +302,7 @@ class ScaffoldTask extends DefaultTask {
 
     private void setLatest( List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {
         MetadataVersionsIndexEntry oldEntry = list.remove(index);
-        list.add(new MetadataVersionsIndexEntry(newValue, oldEntry.override(), oldEntry.module(), oldEntry.defaultFor(), oldEntry.metadataVersion(), oldEntry.testedVersions()));
+        list.add(new MetadataVersionsIndexEntry(newValue, oldEntry.override(), oldEntry.module(), oldEntry.defaultFor(), oldEntry.metadataVersion(), oldEntry.testedVersions(), oldEntry.skippedVersions()));
     }
 
     private String getEmptyJsonArray() {
@@ -333,5 +330,3 @@ class ScaffoldTask extends DefaultTask {
         Files.writeString(path, content, StandardCharsets.UTF_8);
     }
 }
-
-

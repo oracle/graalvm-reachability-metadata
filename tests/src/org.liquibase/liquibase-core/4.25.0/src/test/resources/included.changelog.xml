@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <preConditions>
+        <dbms type="h2"/>
+    </preConditions>
+
+    <changeSet id="1" author="nvoxland">
+        <sql>
+            CREATE TABLE news (
+                                  id INT AUTO_INCREMENT PRIMARY KEY,
+                                  title VARCHAR(50)
+            )
+        </sql>
+    </changeSet>
+
+    <changeSet id="1.2" author="nvoxland">
+        <createSequence sequenceName="seq_news"/>
+    </changeSet>
+
+    <changeSet id="2" author="nvoxland" contextFilter="test">
+        <sql>
+            INSERT INTO news (title) VALUES ('Liquibase 0.8 Released');
+            INSERT INTO news (title) VALUES ('Liquibase 0.9 Released');
+        </sql>
+    </changeSet>
+
+    <changeSet id="3" author="nvoxland" contextFilter="demo">
+        <sql>INSERT INTO news (title) VALUES ('Liquibase 1.0 Released')</sql>
+    </changeSet>
+</databaseChangeLog>

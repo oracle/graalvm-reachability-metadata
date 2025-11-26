@@ -110,7 +110,6 @@ abstract class AbstractSubprojectTask extends DefaultTask {
 
     /**
      * Given project dir returns a tuple that contains a list of inputs.
-     * @param projectDir
      * @return lists of input files
      */
     @Internal

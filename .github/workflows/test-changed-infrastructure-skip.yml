@@ -1,0 +1,25 @@
+name: "Test changed build logic"
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - "tests/tck-build-logic/**"
+      - "gradle/**"
+      - "build.gradle"
+      - "settings.gradle"
+      - "gradle.properties"
+
+jobs:
+  get-changed-infrastructure:
+    name: "📋 Get a list of libraries to test for build-logic changes"
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "No build required"'
+
+  all-infrastructure-passed:
+    name: "🧪 All build-logic triggered tests have passed"
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "No build required"'

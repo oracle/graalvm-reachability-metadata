@@ -52,9 +52,9 @@ not be included as it does not compose and can break code in unpredictable ways.
 * Make sure that you are using [Conditional Configuration](https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json)
 in order to precisely define the metadata scope. This is a hard requirement as it prevents unnecessary bloating of
 images.
-* Once you want to create a pull request, you will be asked to fill out the [following list](./pull_request_template.md).
+* Once you want to create a pull request, you will be asked to fill out the [following list](../.github/pull_request_template.md).
 
-ℹ️ To learn more about collecting metadata, see [How To Collect Metadata](docs/CollectingMetadata.md).
+ℹ️ To learn more about collecting metadata, see [How To Collect Metadata](CollectingMetadata.md).
 
 ### Generate Metadata and Test
 
@@ -150,6 +150,34 @@ a regexp (Java format) matching the version pattern. For example, for the exampl
       "0.0.2"
    ],
    "default-for": "0\\.0\\..*"
+}
+```
+
+The optional `skipped-versions` key can be used to explicitly exclude specific
+library versions from being considered as supported metadata. A skipped version
+should include both the version and the reason it is excluded. This is useful
+when a version exists in Maven but is known to be broken, incompatible, or
+should be omitted from testing for any other reason. An example of the library
+above using this field:
+
+```json
+{
+  "metadata-version": "1.0.0",
+  "module": "org.example:library",
+  "tested-versions": [
+    "1.0.0",
+    "1.1.0"
+  ],
+  "skipped-versions": [
+    {
+      "version": "1.0.5",
+      "reason": "Known incompatible API change."
+    },
+    {
+      "version": "1.0.7",
+      "reason": "Integrated reflect-config.json does not parse."
+    }
+  ]
 }
 ```
 

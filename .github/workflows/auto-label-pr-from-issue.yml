@@ -1,9 +1,9 @@
 name: Auto label PR based on linked issue
 
 on:
-  pull_request_target:
-    types:
-      - opened
+  pull_request:
+    branches:
+      - master
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -Eeuo pipefail
-        
+         
           PR_NUMBER="$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")"
           OWNER="${GITHUB_REPOSITORY%%/*}"
           REPO="${GITHUB_REPOSITORY#*/}"

@@ -1,16 +1,18 @@
 package org.graalvm.internal.tck;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Set;
 
 /**
  * Dependency coordinates in the form 'group:artifact:version'.
  */
-record Coordinates(String group, String artifact, String version) {
+public record Coordinates(String group, String artifact, String version) {
     private static final Set<Character> FORBIDDEN_CHARS = Set.of(
             ':', '-', '.'
     );
 
-    Coordinates {
+    public Coordinates {
         if (group == null || group.isEmpty()) {
             throw new IllegalArgumentException("group must not be empty");
         }
@@ -22,15 +24,15 @@ record Coordinates(String group, String artifact, String version) {
         }
     }
 
-    String sanitizedGroup() {
+    public String sanitizedGroup() {
         return sanitize(group);
     }
 
-    String sanitizedArtifact() {
+    public String sanitizedArtifact() {
         return sanitize(artifact);
     }
 
-    String capitalizedSanitizedArtifact() {
+    public String capitalizedSanitizedArtifact() {
         String sanitizedArtifact = sanitizedArtifact();
         if (sanitizedArtifact.isEmpty()) {
             return sanitizedArtifact;
@@ -39,7 +41,7 @@ record Coordinates(String group, String artifact, String version) {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return group + ":" + artifact + ":" + version;
     }
 

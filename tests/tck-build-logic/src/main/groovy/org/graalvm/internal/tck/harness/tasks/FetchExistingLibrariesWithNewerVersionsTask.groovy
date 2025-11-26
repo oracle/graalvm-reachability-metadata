@@ -1,4 +1,4 @@
-package org.graalvm.internal.tck.updaters
+package org.graalvm.internal.tck.harness.tasks
 
 
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -7,24 +7,44 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import groovy.json.JsonOutput
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry
+import org.graalvm.internal.tck.model.SkippedVersionEntry
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.options.Option
 import org.gradle.util.internal.VersionNumber
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-
+@SuppressWarnings("unused")
 abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
     @Input
     abstract ListProperty<String> getAllLibraryCoordinates()
 
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example")
+
+    /**
+     * Identifies library versions, including optional pre-release and ".Final" suffixes.
+     * <p>
+     * A version is considered a pre-release if it has a suffix (following the last '.' or '-') matching
+     * one of these case-insensitive patterns:
+     * <ul>
+     *   <li>{@code alpha} followed by optional numbers (e.g., "alpha", "Alpha1", "alpha123")</li>
+     *   <li>{@code beta} followed by optional numbers (e.g., "beta", "Beta2", "BETA45")</li>
+     *   <li>{@code rc} followed by optional numbers (e.g., "rc", "RC1", "rc99")</li>
+     *   <li>{@code cr} followed by optional numbers (e.g., "cr", "CR3", "cr10")</li>
+     *   <li>{@code m} followed by REQUIRED numbers (e.g., "M1", "m23")</li>
+     *   <li>{@code ea} followed by optional numbers (e.g., "ea", "ea2", "ea15")</li>
+     *   <li>{@code b} followed by REQUIRED numbers (e.g., "b0244", "b5")</li>
+     *   <li>{@code preview} followed by optional numbers (e.g., "preview", "preview1", "preview42")</li>
+     *   <li>Numeric suffixes separated by '-' (e.g., "-1", "-123")</li>
+     * </ul>
+     * <p>
+     * Versions ending with ".Final" are treated as full releases of the base version.
+     */
+    private static final Pattern VERSION_PATTERN = ~/(?i)^(\d+(?:\.\d+)*)(?:\.Final)?(?:[-.](alpha\d*|beta\d*|rc\d*|cr\d*|m\d+|ea\d*|b\d+|\d+|preview)(?:[-.].*)?)?$/
 
     @TaskAction
     void action() {
@@ -40,6 +60,11 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
             String libraryName = it
             if (INFRASTRUCTURE_TESTS.stream().noneMatch(testName -> libraryName.startsWith(testName))) {
                 List<String> versions = getNewerVersionsFor(libraryName, getLatestLibraryVersion(libraryName))
+                List<String> skipped = getSkippedVersions(libraryName)
+
+                // filter out skipped versions
+                versions = versions.findAll { !skipped.contains(it) }
+
                 versions.forEach {
                     newerVersions.add(libraryName.concat(":").concat(it))
                 }
@@ -64,7 +89,10 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
         String artifact = libraryParts[1]
         def data = new URL(baseUrl + "/" + group + "/" + artifact + "/" + "maven-metadata.xml").getText()
 
-        return getNewerVersionsFromLibraryIndex(data, startingVersion, library)
+        List<String> newerVersions = getNewerVersionsFromLibraryIndex(data, startingVersion, library)
+
+        // filter pre-release versions if full release exists
+        return filterPreReleases(newerVersions)
     }
 
     static List<String> getNewerVersionsFromLibraryIndex(String index, String startingVersion, String libraryName) {
@@ -88,6 +116,28 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
         allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
 
         return allVersions.subList(1, allVersions.size());
+    }
+
+    static List<String> filterPreReleases(List<String> versions) {
+        // identify full releases
+        Set<String> releases = versions.collect { v ->
+            def matcher = VERSION_PATTERN.matcher(v)
+            if (matcher.matches() && matcher.group(2) == null) {
+                return matcher.group(1)
+            }
+            return null
+        }.findAll { it != null } as Set
+
+        // filter pre-releases if full release exists
+        return versions.findAll { v ->
+            def matcher = VERSION_PATTERN.matcher(v)
+            if (matcher.matches()) {
+                String base = matcher.group(1)
+                String preSuffix = matcher.groupCount() > 1 ? matcher.group(2) : null
+                return preSuffix == null || !releases.contains(base)
+            }
+            true
+        }
     }
 
     static String getLatestLibraryVersion(String libraryModule) {
@@ -120,4 +170,45 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
         }
     }
 
+    /**
+     * Returns all versions of a given library that are marked as skipped in the
+     * metadata index.
+     * <p>
+     * For the provided Maven coordinates (in the format {@code <groupId>:<artifactId>}),
+     * this method reads the corresponding {@code index.json} file located under:
+     * {@code metadata/<groupId>/<artifactId>/index.json}
+     * and collects all version entries listed under {@code skipped-versions}.
+     */
+    static List<String> getSkippedVersions(String libraryModule) {
+        try {
+            String[] coordinates = libraryModule.split(":");
+            String group = coordinates[0];
+            String artifact = coordinates[1];
+
+            File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact + "/index.json");
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(
+                    coordinatesMetadataIndex,
+                    new TypeReference<List<MetadataVersionsIndexEntry>>() {}
+            );
+
+            List<String> skipped = new ArrayList<>();
+            for (MetadataVersionsIndexEntry entry : entries) {
+                if (entry.skippedVersions() != null) {
+                    skipped.addAll(
+                            entry.skippedVersions().stream()
+                                    .map(SkippedVersionEntry::version)
+                                    .toList()
+                    );
+                }
+            }
+
+            return skipped;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

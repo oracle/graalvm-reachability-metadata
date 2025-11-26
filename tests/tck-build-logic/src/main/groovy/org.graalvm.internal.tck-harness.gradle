@@ -10,20 +10,24 @@ plugins {
 }
 
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import org.graalvm.internal.tck.ContributionTask
 import org.graalvm.internal.tck.DockerTask
-import org.graalvm.internal.tck.ConfigFilesChecker
+import org.graalvm.internal.tck.MetadataFilesCheckerTask
+import org.graalvm.internal.tck.DockerUtils
 import org.graalvm.internal.tck.ScaffoldTask
 import org.graalvm.internal.tck.GrypeTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CleanInvocationTask
-import org.graalvm.internal.tck.harness.tasks.JavacInvocationTask
+import org.graalvm.internal.tck.harness.tasks.CompileTestJavaInvocationTask
 import org.graalvm.internal.tck.harness.tasks.JavaTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.NativeTestCompileInvocationTask
-import org.graalvm.internal.tck.updaters.FetchExistingLibrariesWithNewerVersionsTask
-import org.graalvm.internal.tck.updaters.GroupUnsupportedLibraries
+import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVersionsTask
+import org.gradle.util.internal.VersionNumber
+import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
+import org.graalvm.internal.tck.utils.CoordinateUtils
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
@@ -31,92 +35,108 @@ import static org.graalvm.internal.tck.Utils.generateTaskName
 logger.lifecycle("GraalVM Reachability Metadata TCK")
 logger.lifecycle("---------------------------------")
 
-String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
-List<String> matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
+final String METADATA_GROUP = "Metadata"
 
-// gradle test -Pcoordinates=<maven-coordinates>
-Provider<Task> test = tasks.register("test", DefaultTask) { task ->
-    task.setDescription("Tests GraalVM Reflection Metadata that matches given coordinates")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+def writeGithubOutput(String key, String value) {
+    def path = System.getenv("GITHUB_OUTPUT")
+    if (path == null || path.trim().isEmpty()) {
+        println "${key}=${value}"
+    } else {
+        new File(path).append("${key}=${value}\n")
+    }
 }
+
+String coordinateFilter = Objects.requireNonNullElse(project.findProperty("coordinates"), "")
+
+
+List<String> matchingCoordinates
+if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
+    def frac = CoordinateUtils.parseFraction(coordinateFilter)
+    List<String> all = tck.getMatchingCoordinates("all")
+    matchingCoordinates = CoordinateUtils.computeBatchedCoordinates(all, frac[0], frac[1])
+} else {
+    matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
+}
+matchingCoordinates = matchingCoordinates.findAll { !it.startsWith("samples:") }
+
 
 // gradle checkstyle -Pcoordinates=<maven-coordinates>
 Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
     task.setDescription("Runs checkstyle on all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-}
+} as Provider<Task>
 
- // gradle javac -Pcoordinates=<maven-coordinates>
-Provider<Task> javac = tasks.register("javac") { task ->
+ // gradle compileTestJava -Pcoordinates=<maven-coordinates>
+Provider<Task> compileTestJava = tasks.register("compileTestJava") { task ->
     task.setDescription("Compiles sources (javac) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
-}
+} as Provider<Task>
+
+// gradle javaTest -Pcoordinates=<maven-coordinates>
+Provider<Task> javaTest = tasks.register("javaTest") { task ->
+    task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+} as Provider<Task>
 
  // gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
 Provider<Task> nativeTestCompile = tasks.register("nativeTestCompile") { task ->
     task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
-}
+} as Provider<Task>
 
- // gradle javaTest -Pcoordinates=<maven-coordinates>
-Provider<Task> javaTest = tasks.register("javaTest") { task ->
-    task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
-    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-}
+// gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
+Provider<Task> checkMetadataFiles = tasks.register("checkMetadataFiles") { task ->
+    task.setDescription("Checks content of metadata files for matching coordinates")
+    task.setGroup(METADATA_GROUP)
+} as Provider<Task>
 
 tasks.named("check").configure {
     dependsOn(checkstyle)
 }
 
-// Here we want to configure all test and checkstyle tasks for all filtered subprojects
+
+ // Here we want to configure all test and checkstyle tasks for all filtered subprojects
+// Extracted helper to register per-coordinate tasks and wire them to aggregate tasks.
+def registerPerCoordinateTask = { String coordinates, Object aggregate, String baseName, Class taskClass, boolean passCtorArg = true, Closure customConfigure = null ->
+    String taskName = generateTaskName(baseName, coordinates)
+    if ((!tasks.getNames().contains(taskName))) {
+        if (passCtorArg) {
+            tasks.register(taskName, taskClass, coordinates)
+        } else {
+            tasks.register(taskName, taskClass) { t ->
+                if (customConfigure != null) {
+                    customConfigure.call(t)
+                }
+            }
+        }
+    }
+    if (aggregate != null) {
+        if (aggregate instanceof org.gradle.api.provider.Provider) {
+            aggregate.configure {
+                dependsOn(taskName)
+            }
+        } else {
+            tasks.named(aggregate.toString()).configure {
+                dependsOn(taskName)
+            }
+        }
+    }
+}
+
 for (String coordinates in matchingCoordinates) {
-    String testTaskName = generateTaskName("test", coordinates)
-    if ((!tasks.getNames().contains(testTaskName))) {
-        tasks.register(testTaskName, TestInvocationTask, coordinates)
+    registerPerCoordinateTask(coordinates, checkstyle, "checkstyle", CheckstyleInvocationTask, true)
+    registerPerCoordinateTask(coordinates, "clean", "clean", CleanInvocationTask, true)
+    registerPerCoordinateTask(coordinates, compileTestJava, "compileTestJava", CompileTestJavaInvocationTask, true)
+    registerPerCoordinateTask(coordinates, javaTest, "javaTest", JavaTestInvocationTask, true)
+    registerPerCoordinateTask(coordinates, nativeTestCompile, "nativeTestCompile", NativeTestCompileInvocationTask, true)
+    // No aggregate wiring for per-coordinate docker pulls; they are invoked by dedicated workflows.
+    registerPerCoordinateTask(coordinates, null, "pullAllowedDockerImages", DockerTask.class, false) { t ->
+        t.setCoordinates(coordinates)
     }
-    test.configure {
-        dependsOn(testTaskName)
+    registerPerCoordinateTask(coordinates, checkMetadataFiles, "checkMetadataFiles", MetadataFilesCheckerTask.class, false) { t ->
+        t.setCoordinates(coordinates)
     }
-
-    String checkstyleTaskName = generateTaskName("checkstyle", coordinates)
-    if ((!tasks.getNames().contains(checkstyleTaskName))) {
-        tasks.register(checkstyleTaskName, CheckstyleInvocationTask, coordinates)
-    }
-    checkstyle.configure {
-        dependsOn(checkstyleTaskName)
-    }
-
-    String cleanTaskName = generateTaskName("clean", coordinates)
-    if ((!tasks.getNames().contains(cleanTaskName))) {
-        tasks.register(cleanTaskName, CleanInvocationTask, coordinates)
-    }
-    clean.configure {
-        dependsOn(cleanTaskName)
-    }
-
-    String javacTaskName = generateTaskName("javac", coordinates)
-    if ((!tasks.getNames().contains(javacTaskName))) {
-        tasks.register(javacTaskName, JavacInvocationTask, coordinates)
-    }
-    javac.configure {
-        dependsOn(javacTaskName)
-    }
-
-    String nativeTestCompileTaskName = generateTaskName("nativeTestCompile", coordinates)
-    if ((!tasks.getNames().contains(nativeTestCompileTaskName))) {
-        tasks.register(nativeTestCompileTaskName, NativeTestCompileInvocationTask, coordinates)
-    }
-    nativeTestCompile.configure {
-        dependsOn(nativeTestCompileTaskName)
-    }
-
-    String javaTestTaskName = generateTaskName("javaTest", coordinates)
-    if ((!tasks.getNames().contains(javaTestTaskName))) {
-        tasks.register(javaTestTaskName, JavaTestInvocationTask, coordinates)
-    }
-    javaTest.configure {
-        dependsOn(javaTestTaskName)
-    }
+    registerPerCoordinateTask(coordinates, "test", "test", TestInvocationTask, true)
 }
 
 // gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
@@ -132,7 +152,6 @@ Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
 }
 
 List<String> diffCoordinates = new ArrayList<>()
-boolean testAll = false
 if (project.hasProperty("baseCommit")) {
     String baseCommit = project.findProperty("baseCommit")
     String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
@@ -146,19 +165,25 @@ if (project.hasProperty("baseCommit")) {
             dependsOn(taskTaskName)
         }
     }
-
-    testAll = tck.shouldTestAll()
 }
 
-def matrixDefault = [
-        "version": [
-            "17",
-            "latest-ea"
-        ],
-        "os"     : ["ubuntu-latest"] // TODO: Add support for "windows-latest", "macos-latest"
-]
+Map<String, Object> loadCi() {
+    File f = project.file("ci.json")
+    if (!f.exists()) {
+        throw new GradleException("Missing ci.json in repo root")
+    }
+    new JsonSlurper().parse(f) as Map<String, Object>
+}
 
-final String METADATA_GROUP = "Metadata"
+Map<String, List<String>> matrixDefaultsFor(String section) {
+    def ci = loadCi()
+    def sec = ci[section]
+    if (sec == null) throw new GradleException("Missing '${section}' in ci.json")
+    [
+        "version": (sec["java"] as List<String>),
+        "os": (sec["os"] as List<String>)
+    ]
+}
 
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
@@ -168,13 +193,31 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
         def matrix = [
                 "coordinates": matchingCoordinates
         ]
-        matrix.putAll(matrixDefault)
-        new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
+        matrix.putAll(matrixDefaultsFor("generateMatrixMatchingCoordinates"))
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
     }
 }
 
-// gradle generateMatrixDiffCoordinates -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDiffCoordinates", DefaultTask) { task ->
+ // gradle generateMatrixBatchedCoordinates [-Pbatches=<n>]
+Provider<Task> generateMatrixBatchedCoordinates = tasks.register("generateMatrixBatchedCoordinates", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with fractional batch coordinates (k/n)")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        int batches = project.hasProperty("batches") ? Integer.parseInt(project.findProperty("batches").toString()) : 16
+        if (batches <= 0) {
+            throw new GradleException("Invalid 'batches' value: ${batches}")
+        }
+        List<String> coords = (1..batches).collect { i -> "${i}/${batches}" }
+        def matrix = [
+                "coordinates": coords
+        ]
+        matrix.putAll(matrixDefaultsFor("generateMatrixBatchedCoordinates"))
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+    }
+}
+
+// gradle generateChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with coordinates of changed libraries")
     task.setGroup(METADATA_GROUP)
     task.doFirst {
@@ -182,40 +225,63 @@ Provider<Task> generateMatrixDiffCoordinates = tasks.register("generateMatrixDif
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
-        if (diffCoordinates.isEmpty()) {
-            def matrix = [
-                "coordinates": ["No matches found!"]
-            ]
-
-            matrix.putAll(matrixDefault)
+        boolean noneFound = diffCoordinates.isEmpty()
+        def matrix = [
+                "coordinates": noneFound ? [] : diffCoordinates
+        ]
+        matrix.putAll(matrixDefaultsFor("generateChangedCoordinatesMatrix"))
+        if (noneFound) {
             println "No changed coordinates were found!"
-            new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
-            new File(System.getenv("GITHUB_OUTPUT")).append("none-found=true\n")
-        } else {
-            def matrix = [
-                    "coordinates": diffCoordinates
-            ]
-
-            matrix.putAll(matrixDefault)
-
-            /**
-             * if we changed some files from tck-build-logic or github workflows, we must run all tests
-             * to check if we accidentally broke something. In this case, we will have a lots of tests, so we can't
-             * run them with all possible JDK versions, because we will hit the following error:
-             * Strategy expansion exceeded 256 results for job 'test-changed-metadata'
-             */
-            if (!testAll) {
-                /**
-                 * when we are introducing a new metadata, we should test it against all versions,
-                 * not just the oldest and the newest one (which we are testing by default)
-                 */
-                matrix.version.add("21")
-                matrix.version.add("25")
-                matrix.version.add("latest-ea")
-            }
-            new File(System.getenv("GITHUB_OUTPUT")).append("matrix=${JsonOutput.toJson(matrix)}\n")
-            new File(System.getenv("GITHUB_OUTPUT")).append("none-found=false\n")
         }
+
+
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
+// gradle generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("generateInfrastructureChangedCoordinatesMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        List<String> selected = []
+        boolean infraChanged = true
+        // Pre-selected modules; keep stable for infra verification
+        List<String> preselectedModules = [
+                'ch.qos.logback:logback-classic',
+                'org.bouncycastle:bcpkix-jdk18on',
+                'io.netty:netty-common',
+                'io.grpc:grpc-core',
+                'org.postgresql:postgresql',
+                'org.apache.kafka:kafka-clients',
+                'com.zaxxer:HikariCP',
+                'org.hibernate.validator:hibernate-validator',
+                'io.undertow:undertow-core',
+                'com.hazelcast:hazelcast'
+        ]
+        preselectedModules.each { module ->
+            List<String> matches = tck.getMatchingCoordinates(module)
+            if (!matches.isEmpty()) {
+                def withVersions = matches.collect { c ->
+                    def v = c.substring(c.lastIndexOf(':') + 1)
+                    [coord: c, ver: v]
+                }
+                def latest = withVersions.max { a, b -> VersionNumber.parse(a.ver) <=> VersionNumber.parse(b.ver) }
+                selected.add(latest.coord)
+            } else {
+                throw new GradleException("No tested versions found for ${module}, skipping")
+            }
+        }
+
+        def matrix = [
+            "coordinates": selected
+        ]
+        matrix.putAll(matrixDefaultsFor("generateInfrastructureChangedCoordinatesMatrix"))
+
+
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", "false")
     }
 }
 
@@ -225,12 +291,6 @@ tasks.register("fetchExistingLibrariesWithNewerVersions", FetchExistingLibraries
     task.setDescription("Returns list of all libraries coordinates")
     task.setAllLibraryCoordinates(matchingCoordinates)
 }
-
-tasks.register("groupLibrariesByName", GroupUnsupportedLibraries.class) { task ->
-    task.setGroup(METADATA_GROUP)
-    task.setDescription("Extracts groups of libraries from github comments provided in a form of string.")
-}
-
 
 tasks.register("addTestedVersion", TestedVersionUpdaterTask.class) { task ->
     task.setDescription("Updates list of tested versions.")
@@ -243,8 +303,8 @@ tasks.register("checkAllowedDockerImages", GrypeTask.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
-tasks.register("pullAllowedDockerImages", DockerTask.class) { task ->
-    task.setDescription("Pull allowed docker images from list.")
+tasks.register("pullAllowedDockerImages", ComputeAndPullAllowedDockerImagesTask.class) { task ->
+    task.setDescription("Computes and pulls allowed docker images required by matching coordinates")
     task.setGroup(METADATA_GROUP)
 }
 
@@ -259,10 +319,5 @@ tasks.register("scaffold", ScaffoldTask.class) { task ->
 
 tasks.register("contribute", ContributionTask.class) { task ->
     task.setDescription("Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.")
-    task.setGroup(METADATA_GROUP)
-}
-
-tasks.register("checkConfigFiles", ConfigFilesChecker.class) { task ->
-    task.setDescription("Checks content of config files for a new library.")
     task.setGroup(METADATA_GROUP)
 }
