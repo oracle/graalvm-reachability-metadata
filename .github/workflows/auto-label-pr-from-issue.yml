@@ -12,19 +12,16 @@ permissions:
 
 jobs:
   apply-label:
-    name: Map linked issue label to PR label
+    name: Auto label PR
     runs-on: ubuntu-latest
     steps:
-      - name: Apply mapped label to PR
+      - name: Apply label to PR
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -Eeuo pipefail
-         
-          command -v jq >/dev/null || { echo "::error title=Missing dependency::jq not found in PATH"; exit 1; }
-          command -v curl >/dev/null || { echo "::error title=Missing dependency::curl not found in PATH"; exit 1; }
-
+        
           PR_NUMBER="$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")"
           OWNER="${GITHUB_REPOSITORY%%/*}"
           REPO="${GITHUB_REPOSITORY#*/}"
@@ -36,7 +33,7 @@ jobs:
             }
           fi
 
-          # GraphQL query to get the single closing issue and its labels
+          # Query to get the single closing issue and its labels
           QUERY="$(cat <<'GRAPHQL'
           query($owner:String!, $repo:String!, $pr:Int!) {
             repository(owner:$owner, name:$repo) {
