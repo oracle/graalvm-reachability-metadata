@@ -4,19 +4,36 @@ on:
   pull_request:
     branches:
       - master
-    paths:
-      - 'metadata/**'
-      - 'tests/src/**'
 
 concurrency:
   group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
   cancel-in-progress: true
 
 jobs:
+  detect-file-changes:
+    name: "🔎 Detect relevant file changes"
+    runs-on: "ubuntu-22.04"
+    outputs:
+      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Check for relevant changes"
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            relevant_files_changed:
+              - 'metadata/**'
+              - 'tests/src/**'
+
   get-changed-metadata:
     name: "📋 Get a list of all changed libraries"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
+    needs: detect-file-changes
+    if: needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}

@@ -2,16 +2,34 @@ name: "Check code style"
 
 on:
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - 'library-and-framework-list*.json'
 
 jobs:
+  detect-file-changes:
+    name: "🔎 Detect relevant file changes"
+    runs-on: "ubuntu-22.04"
+    outputs:
+      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Check for relevant changes"
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            relevant_files_changed:
+              - '!docs/**'
+              - '!**.md'
+              - '!library-and-framework-list*.json'
+          predicate-quantifier: 'every'
+
   checkstyle:
     name: "📋 Check style according to checkstyle.xml"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 15
+    needs: detect-file-changes
+    if: needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
