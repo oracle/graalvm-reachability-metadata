@@ -9,49 +9,38 @@ on:
     - cron: "0 0 * * 6"
 
 jobs:
-  detect-file-changes:
-    name: "🔎 Detect relevant file changes"
-    runs-on: "ubuntu-22.04"
-    outputs:
-      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
-    steps:
-      - name: "☁️ Checkout repository"
-        if: github.event_name == 'pull_request'
-        uses: actions/checkout@v4
-
-      - name: "Check for relevant changes"
-        id: filter
-        if: github.event_name == 'pull_request'
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            relevant_files_changed:
-              - 'tests/tck-build-logic/src/main/resources/allowed-docker-images/**'
-
   scan-images:
     name: "🔎 Scan docker images"
     runs-on: "ubuntu-22.04"
-    needs: detect-file-changes
-    if: github.event_name == 'schedule' || needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            relevant_files_changed:
+              - 'tests/tck-build-logic/src/main/resources/allowed-docker-images/**'
+
       - uses: actions/setup-java@v4
+        if: github.event_name == 'schedule' || steps.filter.outputs.relevant_files_changed == 'true'
         with:
           distribution: 'graalvm'
           java-version: '21'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Install required tools"
+        if: github.event_name == 'schedule' || steps.filter.outputs.relevant_files_changed == 'true'
         run: |
           curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin
           sudo apt-get install jq
 
       - name: "🔎 Check changed docker images"
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.filter.outputs.relevant_files_changed == 'true'
         run: ./gradlew checkAllowedDockerImages --baseCommit=${{ github.event.pull_request.base.sha }} --newCommit=${{ github.event.pull_request.head.sha }}
 
       - name: "🔎 Check all docker images"

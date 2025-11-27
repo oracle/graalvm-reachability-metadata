@@ -4,16 +4,15 @@ on:
   pull_request:
 
 jobs:
-  detect-file-changes:
-    name: "🔎 Detect relevant file changes"
+  checkstyle:
+    name: "📋 Check style according to checkstyle.xml"
     runs-on: "ubuntu-22.04"
-    outputs:
-      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
+    timeout-minutes: 15
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
-      - name: "Check for relevant changes"
+      - name: "🔎 Detect relevant file changes"
         id: filter
         uses: dorny/paths-filter@v3
         with:
@@ -24,22 +23,16 @@ jobs:
               - '!library-and-framework-list*.json'
           predicate-quantifier: 'every'
 
-  checkstyle:
-    name: "📋 Check style according to checkstyle.xml"
-    runs-on: "ubuntu-22.04"
-    timeout-minutes: 15
-    needs: detect-file-changes
-    if: needs.detect-file-changes.outputs.relevant-files-changed == 'true'
-    steps:
-      - name: "☁️ Checkout repository"
-        uses: actions/checkout@v4
-
       - uses: actions/setup-python@v4
+        if: steps.filter.outputs.relevant_files_changed == 'true'
 
       - name: "🔧 Setup java"
+        if: steps.filter.outputs.relevant_files_changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
 
-      - run: ./gradlew checkstyle
+      - name: "Run Checkstyle"
+        if: steps.filter.outputs.relevant_files_changed == 'true'
+        run: ./gradlew checkstyle

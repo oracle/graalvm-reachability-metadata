@@ -10,43 +10,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  detect-file-changes:
-    name: "🔎 Detect relevant file changes"
-    runs-on: "ubuntu-22.04"
-    outputs:
-      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
-    steps:
-      - name: "☁️ Checkout repository"
-        uses: actions/checkout@v4
-
-      - name: "Check for relevant changes"
-        id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            relevant_files_changed:
-              - "tests/tck-build-logic/**"
-              - "gradle/**"
-              - "build.gradle"
-              - "settings.gradle"
-              - "gradle.properties"
-
   get-changed-infrastructure:
     name: "📋 Get a list of libraries to test for build-logic changes"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 5
-    needs: detect-file-changes
-    if: needs.detect-file-changes.outputs.relevant-files-changed == 'true'
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
+      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            relevant_files_changed:
+              - 'tests/tck-build-logic/**'
+              - 'gradle/**'
+              - 'build.gradle'
+              - 'settings.gradle'
+              - 'gradle.properties'
+
       - name: "🔧 Setup java"
+        if: steps.filter.outputs.relevant_files_changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
@@ -54,12 +45,13 @@ jobs:
 
       - name: "🕸️ Populate matrix"
         id: set-matrix
+        if: steps.filter.outputs.relevant_files_changed == 'true'
         run: |
           ./gradlew generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
   test-changed-infrastructure:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-    if: needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.get-changed-infrastructure.outputs.relevant-files-changed == 'true' && needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-changed-infrastructure
@@ -106,10 +98,11 @@ jobs:
     name: "🧪 All build-logic triggered tests have passed"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
-    needs: test-changed-infrastructure
+    needs: [get-changed-infrastructure, test-changed-infrastructure]
+    if: always()
     steps:
       - name: "All tests passed"
-        if: needs.test-changed-infrastructure.result == 'success'
+        if: needs.test-changed-infrastructure.result == 'success' || needs.get-changed-infrastructure.outputs.relevant-files-changed == 'false'
         run: exit 0
 
       - name: "Some tests failed"

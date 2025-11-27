@@ -10,16 +10,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  detect-file-changes:
-    name: "🔎 Detect relevant file changes"
+  get-changed-metadata:
+    name: "📋 Get a list of all changed libraries"
     runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
     outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      none-found: ${{ steps.set-matrix.outputs.none-found }}
       relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: "Check for relevant changes"
+      - name: "🔎 Detect relevant file changes"
         id: filter
         uses: dorny/paths-filter@v3
         with:
@@ -28,34 +33,23 @@ jobs:
               - 'metadata/**'
               - 'tests/src/**'
 
-  get-changed-metadata:
-    name: "📋 Get a list of all changed libraries"
-    runs-on: "ubuntu-22.04"
-    timeout-minutes: 5
-    needs: detect-file-changes
-    if: needs.detect-file-changes.outputs.relevant-files-changed == 'true'
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-      none-found: ${{ steps.set-matrix.outputs.none-found }}
-    steps:
-      - name: "☁️ Checkout repository"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: "🔧 Setup Java"
+        if: steps.filter.outputs.relevant_files_changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: "🕸️ Populate matrix"
         id: set-matrix
+        if: steps.filter.outputs.relevant_files_changed == 'true'
         run: |
           ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
   test-changed-metadata:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-    if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.get-changed-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-changed-metadata
@@ -101,10 +95,11 @@ jobs:
     name: "🧪 All metadata tests have passed"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
-    needs: test-changed-metadata
+    needs: [get-changed-metadata, test-changed-metadata]
+    if: always()
     steps:
       - name: "All tests passed"
-        if: needs.test-changed-metadata.result == 'success'
+        if: needs.test-changed-metadata.result == 'success' || needs.get-changed-metadata.outputs.relevant-files-changed == 'false'
         run: exit 0
 
       - name: "Some tests failed"
