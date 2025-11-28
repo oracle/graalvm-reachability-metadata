@@ -96,7 +96,7 @@ public class InteractiveTaskUtils {
     }
 
     public static void printUserInfo(String message) {
-        ColoredOutput.println("[INFO] " + message + "...", ColoredOutput.OUTPUT_COLOR.BLUE);
+        GeneralUtils.printInfo(message);
         waitForUserToReadMessage();
     }
 
