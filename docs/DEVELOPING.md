@@ -93,6 +93,19 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
 ```
 
+### Generating Metadata
+
+Generates metadata for a single library coordinate. If `agentAllowedPackages` is provided, a new user-code-filter.json will be created or updated to include those packages.
+
+- `coordinates`: group:artifact:version (single coordinate only)
+- `agentAllowedPackages`: comma-separated package list; use `-` for none
+
+Examples:
+   ```console
+   ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3
+   ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=org.example.app,com.acme.service
+   ```
+
 ### Docker image vulnerability scanning
 
 1. Scan only images affected in a commit range:
@@ -136,6 +149,7 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Format apply: `./gradlew spotlessApply`
 - Pull images (single lib): `./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]`
 - Check metadata (single lib): `./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]`
+- Generate metadata (single lib): `./gradlew generateMetadata -Pcoordinates=group:artifact:version`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
 - Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`
 - Scan all Docker images: `./gradlew checkAllowedDockerImages`
