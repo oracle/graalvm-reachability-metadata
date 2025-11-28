@@ -32,7 +32,7 @@ Workflows testing metadata using [ci.json](../ci.json):
 Workflow for testing latest library versions from Maven: [.github/workflows/verify-new-library-version-compatibility.yml](../.github/workflows/verify-new-library-version-compatibility.yml): scheduled verifier for newer upstream library versions; uses pinned Java/OS in the workflow.
 
 Workflows for style and security:
-- [.github/workflows/checkstyle.yml](../.github/workflows/checkstyle.yml) / [.github/workflows/checkstyle-skip.yml](../.github/workflows/checkstyle-skip.yml): code style checks.
-- [.github/workflows/library-and-framework-list-validation.yml](../.github/workflows/library-and-framework-list-validation.yml) / [.github/workflows/library-and-framework-list-validation-skip.yml](../.github/workflows/library-and-framework-list-validation-skip.yml): validates and sorts [library-and-framework-list.json](../library-and-framework-list.json), checks schema.
-- [.github/workflows/scan-docker-images.yml](../.github/workflows/scan-docker-images.yml) / [.github/workflows/scan-docker-images-skip.yml](../.github/workflows/scan-docker-images-skip.yml): scans allowed Docker images on PR/schedule.
+- [.github/workflows/checkstyle.yml](../.github/workflows/checkstyle.yml): code style checks.
+- [.github/workflows/library-and-framework-list-validation.yml](../.github/workflows/library-and-framework-list-validation.yml): validates and sorts [library-and-framework-list.json](../library-and-framework-list.json), checks schema.
+- [.github/workflows/scan-docker-images.yml](../.github/workflows/scan-docker-images.yml): scans allowed Docker images on PR/schedule.
 - [.github/workflows/sync-docker-tags.yml](../.github/workflows/sync-docker-tags.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
