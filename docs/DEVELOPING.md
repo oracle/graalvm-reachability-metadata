@@ -23,7 +23,7 @@ Tip: When debugging locally, add `--stacktrace` for better error output.
 
 ### End-to-end testing before the commit
 ```console
-./gradlew testAllParallel --stacktrace
+./gradlew testAllInfra --stacktrace
 ```
 
 ### Style and formatting

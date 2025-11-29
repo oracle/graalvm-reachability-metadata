@@ -4,7 +4,6 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-
 plugins {
     id 'org.graalvm.internal.tck-base'
 }
@@ -29,6 +28,7 @@ import org.graalvm.internal.tck.harness.tasks.NativeTestCompileInvocationTask
 import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVersionsTask
 import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
+import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 
@@ -63,83 +63,66 @@ if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
 matchingCoordinates = matchingCoordinates.findAll { !it.startsWith("samples:") }
 
 
-// gradle checkstyle -Pcoordinates=<maven-coordinates>
-Provider<Task> checkstyle = tasks.register("checkstyle") { task ->
+ // gradle checkstyle -Pcoordinates=<maven-coordinates>
+tasks.register("checkstyle", CheckstyleInvocationTask.class) { task ->
     task.setDescription("Runs checkstyle on all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-} as Provider<Task>
+}
 
  // gradle compileTestJava -Pcoordinates=<maven-coordinates>
-Provider<Task> compileTestJava = tasks.register("compileTestJava") { task ->
+tasks.register("compileTestJava", CompileTestJavaInvocationTask.class) { task ->
     task.setDescription("Compiles sources (javac) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
-} as Provider<Task>
+}
 
-// gradle javaTest -Pcoordinates=<maven-coordinates>
-Provider<Task> javaTest = tasks.register("javaTest") { task ->
+ // gradle javaTest -Pcoordinates=<maven-coordinates>
+tasks.register("javaTest", JavaTestInvocationTask.class) { task ->
     task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-} as Provider<Task>
+}
 
  // gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
-Provider<Task> nativeTestCompile = tasks.register("nativeTestCompile") { task ->
+tasks.register("nativeTestCompile", NativeTestCompileInvocationTask.class) { task ->
     task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
-} as Provider<Task>
+}
 
-// gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
-Provider<Task> checkMetadataFiles = tasks.register("checkMetadataFiles") { task ->
+ // gradle clean -Pcoordinates=<maven-coordinates>
+if (tasks.findByName("clean") == null) {
+    tasks.register("clean", CleanInvocationTask.class) { t ->
+        t.setDescription("Cleans all matching subprojects")
+        t.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+    }
+} else {
+    tasks.register("tckClean", CleanInvocationTask.class) { t ->
+        t.setDescription("Cleans all matching subprojects (TCK)")
+        t.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+    }
+    tasks.named("clean").configure { it.dependsOn("tckClean") }
+}
+
+ // gradle test -Pcoordinates=<maven-coordinates>
+if (tasks.findByName("test") == null) {
+    tasks.register("test", TestInvocationTask.class) { t ->
+        t.setDescription("Runs Native Image tests for all matching coordinates")
+        t.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    }
+} else {
+    tasks.register("tckTest", TestInvocationTask.class) { t ->
+        t.setDescription("Runs Native Image tests for all matching coordinates (TCK)")
+        t.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    }
+    tasks.named("test").configure { it.dependsOn("tckTest") }
+}
+
+ // gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
+tasks.register("checkMetadataFiles", CheckMetadataFilesAllTask.class) { task ->
     task.setDescription("Checks content of metadata files for matching coordinates")
     task.setGroup(METADATA_GROUP)
-} as Provider<Task>
+}
 
 tasks.named("check").configure {
-    dependsOn(checkstyle)
-}
-
-
- // Here we want to configure all test and checkstyle tasks for all filtered subprojects
-// Extracted helper to register per-coordinate tasks and wire them to aggregate tasks.
-def registerPerCoordinateTask = { String coordinates, Object aggregate, String baseName, Class taskClass, boolean passCtorArg = true, Closure customConfigure = null ->
-    String taskName = generateTaskName(baseName, coordinates)
-    if ((!tasks.getNames().contains(taskName))) {
-        if (passCtorArg) {
-            tasks.register(taskName, taskClass, coordinates)
-        } else {
-            tasks.register(taskName, taskClass) { t ->
-                if (customConfigure != null) {
-                    customConfigure.call(t)
-                }
-            }
-        }
-    }
-    if (aggregate != null) {
-        if (aggregate instanceof org.gradle.api.provider.Provider) {
-            aggregate.configure {
-                dependsOn(taskName)
-            }
-        } else {
-            tasks.named(aggregate.toString()).configure {
-                dependsOn(taskName)
-            }
-        }
-    }
-}
-
-for (String coordinates in matchingCoordinates) {
-    registerPerCoordinateTask(coordinates, checkstyle, "checkstyle", CheckstyleInvocationTask, true)
-    registerPerCoordinateTask(coordinates, "clean", "clean", CleanInvocationTask, true)
-    registerPerCoordinateTask(coordinates, compileTestJava, "compileTestJava", CompileTestJavaInvocationTask, true)
-    registerPerCoordinateTask(coordinates, javaTest, "javaTest", JavaTestInvocationTask, true)
-    registerPerCoordinateTask(coordinates, nativeTestCompile, "nativeTestCompile", NativeTestCompileInvocationTask, true)
-    // No aggregate wiring for per-coordinate docker pulls; they are invoked by dedicated workflows.
-    registerPerCoordinateTask(coordinates, null, "pullAllowedDockerImages", DockerTask.class, false) { t ->
-        t.setCoordinates(coordinates)
-    }
-    registerPerCoordinateTask(coordinates, checkMetadataFiles, "checkMetadataFiles", MetadataFilesCheckerTask.class, false) { t ->
-        t.setCoordinates(coordinates)
-    }
-    registerPerCoordinateTask(coordinates, "test", "test", TestInvocationTask, true)
+    dependsOn("checkstyle")
 }
 
 // gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
@@ -158,15 +141,12 @@ List<String> diffCoordinates = new ArrayList<>()
 if (project.hasProperty("baseCommit")) {
     String baseCommit = project.findProperty("baseCommit")
     String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
-    for (def coordinates in tck.diffCoordinates(baseCommit, newCommit)) {
-        diffCoordinates.add(coordinates)
-        String taskTaskName = generateTaskName("test", coordinates)
-        if ((!tasks.getNames().contains(taskTaskName))) {
-            tasks.register(taskTaskName, TestInvocationTask, coordinates)
-        }
-        diff.configure {
-            dependsOn(taskTaskName)
-        }
+    diffCoordinates.addAll(tck.diffCoordinates(baseCommit, newCommit))
+    tasks.register("testDiff", TestInvocationTask.class) { t ->
+        t.setCoordinatesOverride(diffCoordinates)
+    }
+    diff.configure {
+        dependsOn("testDiff")
     }
 }
 
@@ -251,7 +231,7 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
         List<String> selected = []
         boolean infraChanged = true
         // Pre-selected modules; keep stable for infra verification
-        List<String> preselectedModules = [
+        List<String> preselectedCoordinates = [
                 'ch.qos.logback:logback-classic',
                 'org.bouncycastle:bcpkix-jdk18on',
                 'io.netty:netty-common',
@@ -263,7 +243,7 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
                 'io.undertow:undertow-core',
                 'com.hazelcast:hazelcast'
         ]
-        preselectedModules.each { module ->
+        preselectedCoordinates.each { module ->
             List<String> matches = tck.getMatchingCoordinates(module)
             if (!matches.isEmpty()) {
                 def withVersions = matches.collect { c ->

@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Checks content of config files for a new library.
+ * Checks content of metadata files for a new library.
  * <p>
  * Run with {@code gradle checkMetadataFiles -Pcoordinates com.example:library:1.0.0}.
  */
@@ -54,10 +54,16 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     }
 
     {
-        // Prefer task option, fallback to -Pcoordinates
+        // Prefer task option, fallback to -Pcoordinates when it looks like a single coordinate (group:artifact:version)
         String prop = (String) getProject().findProperty("coordinates");
         if (prop != null && !getIndexFile().isPresent()) {
-            extractCoordinates(prop);
+            // Skip when using fractional batches (k/n) or 'all'. Only parse exact group:artifact:version.
+            if (!CoordinateUtils.isFractionalBatch(prop)) {
+                String[] parts = prop.split(":", -1);
+                if (parts.length == 3) {
+                    extractCoordinates(prop);
+                }
+            }
         }
     }
 

@@ -6,15 +6,10 @@
  */
 import groovy.json.JsonSlurper
 
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-
-/*
- * Copyright and related rights waived via CC0
- *
- * You should have received a copy of the CC0 legalcode along with this
- * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
- */
+import groovy.json.JsonSlurper
 
 plugins {
     id 'base'
@@ -48,33 +43,32 @@ spotless {
                 .sortByKeys()
                 .version("2.9.0")
     }
-    java {
-        target('**/*.java')
-        targetExclude(
-                'metadata/**', // only JSON there
-                '**/build/**',
-                'gradle/header.java')
-        // Place header before package/import/module
-        licenseHeaderFile("$rootDir/gradle/header.java", "package |import |module ")
-    }
-
     String[] noHeaderDirs = [
             'docs/**',     // only .md files
             'metadata/**', // only .json files
             '**/build/**', // not relevant
+            '**/.gradle/**', // not relevant
             'gradle/wrapper/**', // not relevant
+            'gradle/header.java',
     ]
+
+    java {
+        target('**/*.java')
+        targetExclude(*noHeaderDirs);
+        // Place header before package/import/module
+        licenseHeaderFile("$rootDir/gradle/header.java", "package |import |module ")
+    }
+
     groovy {
         target('**/*.groovy')
-        targetExclude(noHeaderDirs)
+        targetExclude(*noHeaderDirs)
         // Place header before package/import
         licenseHeaderFile("$rootDir/gradle/header.java", "package |import ")
     }
     groovyGradle {
         // Build scripts (*.gradle)
         target('**/*.gradle')
-        targetExclude(noHeaderDirs)
-        targetExclude('tests/**')
+        targetExclude(*noHeaderDirs)
         // Insert header at file start (works for any Gradle script layout)
         licenseHeaderFile("$rootDir/gradle/header.java", "(?m)^(import\\b|plugins\\b|buildscript\\b|apply\\b|rootProject\\b|pluginManagement\\b|dependencyResolutionManagement\\b)")
     }
@@ -119,9 +113,196 @@ tasks.register('test') { t ->
 // and without applying the 'java' plugin to avoid task name conflicts.
 apply plugin: "org.graalvm.internal.tck-harness"
 
-ext.runLoggedCommand = { List<String> args, String label, File logFile, File workingDir ->
-    def header = "==== BEGIN ${label}"
+static List<Map> testInfraCommands(String gradleCmd, String target) {
+    def taskNames = [
+            "checkstyle",
+            "spotlessCheck",
+            "checkMetadataFiles",
+            "fetchExistingLibrariesWithNewerVersions",
+            "test",
+    ]
+    return taskNames.collect { name ->
+        [name: name, args: [gradleCmd, name, "-Pcoordinates=${target}"]]
+    }
+}
+
+tasks.register('testInfra') { t ->
+    t.group = "verification"
+    t.setDescription("""Runs clean and pullAllowedDockerImages, then runs (${testInfraCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs for a single coordinate.
+                        Options: -Pcoordinate or -Pcoordinates to specify the target; -Pparallelism to control the number of concurrent tasks.""")
+
+    doLast {
+        def coordinateProp = ((project.findProperty('coordinate') ?: project.findProperty('coordinates')) ?: '').toString().trim()
+        if (coordinateProp.isEmpty()) {
+            throw new GradleException("Missing -Pcoordinate=<group:artifact:version|k/n|all> (or -Pcoordinates).")
+        }
+
+        def gradleCmd = System.getProperty("os.name").toLowerCase().contains("windows") ? "gradlew.bat" : "./gradlew"
+        int parallelism = parsePositiveIntProp('parallelism', 4)
+        println("Using parallelism=${parallelism} for testInfra.")
+
+        def logsDir = layout.buildDirectory.dir("command-logs").get().asFile
+        logsDir.mkdirs()
+
+        // Helper to run pull + command set for a given target (artifact or coordinates)
+        def runPhaseForCoordinate = { String coordinate ->
+            // Clean project before pulling Docker images for this coordinate
+            // Note: 'clean' deletes the build/ directory, so log to a temporary location outside build/,
+            // then move/copy the log into build/ afterwards.
+            def tmpCleanLogsDir = new File(project.rootDir, ".tmp-command-logs-clean")
+            tmpCleanLogsDir.mkdirs()
+            def fileSuffix = sanitizeFileName(coordinate)
+            def tmpCleanLogFile = new File(tmpCleanLogsDir, "clean-${fileSuffix}.log")
+            try {
+                runGradleTaskAndCheck(
+                        [gradleCmd, "clean", "-Pcoordinates=${coordinate}"],
+                        "clean (${coordinate})",
+                        tmpCleanLogFile
+                )
+            } finally {
+                // After clean, move/copy the log into the build folder (clean wipes build/)
+                def cleanLogsDir = layout.buildDirectory.dir("command-logs-clean").get().asFile
+                cleanLogsDir.mkdirs()
+                def cleanLogFile = new File(cleanLogsDir, "clean-${fileSuffix}.log")
+                try {
+                    Files.move(tmpCleanLogFile.toPath(), cleanLogFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+                } catch (Throwable ignored) {
+                    if (tmpCleanLogFile?.exists()) {
+                        cleanLogFile.text = tmpCleanLogFile.text
+                    }
+                }
+            }
+            // Ensure logsDir exists after clean
+            logsDir.mkdirs()
+
+            // Pull Docker images sequentially for this coordinate
+            def pullArgs = [gradleCmd, "pullAllowedDockerImages", "-Pcoordinates=${coordinate}"]
+            def pullLogFile = new File(logsDir, "pullAllowedDockerImages-${fileSuffix}.log")
+            runGradleTaskAndCheck(pullArgs, "pullAllowedDockerImages (${coordinate})", pullLogFile)
+
+            def commands = testInfraCommands(gradleCmd, coordinate)
+            int effectiveParallelism = Math.min(parallelism, commands.size())
+            def pool = Executors.newFixedThreadPool(effectiveParallelism)
+
+            runCommandsWithPool(pool, coordinate, commands)
+        }
+
+        runPhaseForCoordinate(coordinateProp)
+    }
+}
+
+tasks.register('testAllInfra') { t ->
+    t.group = "verification"
+    t.setDescription("Determines one artifact coordinate via generateInfrastructureChangedCoordinatesMatrix (or uses -Pcoordinate/-Pcoordinates if provided), then runs testInfra for that coordinate and also for 1/64. Options: -Pparallelism to control concurrency.")
+    doLast {
+        def gradleCmd = System.getProperty("os.name").toLowerCase().contains("windows") ? "gradlew.bat" : "./gradlew"
+        int parallelism = parsePositiveIntProp('parallelism', 4)
+        println("Using parallelism=${parallelism} for testAllInfra.")
+
+        String artifactCoordinate = ((project.findProperty('coordinate') ?: project.findProperty('coordinates')) ?: '').toString().trim()
+        if (artifactCoordinate.isEmpty()) {
+            def matrixLogsDir = layout.buildDirectory.dir("command-logs").get().asFile
+            matrixLogsDir.mkdirs()
+            def matrixLog = runGenerateMatrixAndCheck(gradleCmd, matrixLogsDir)
+            try {
+                def line = matrixLog.readLines().find { it.startsWith("matrix=") }
+                if (line != null) {
+                    def jsonStr = line.substring("matrix=".length())
+                    def parsed = new JsonSlurper().parseText(jsonStr)
+                    def coords = (parsed["coordinates"] as List) ?: []
+                    if (!coords.isEmpty()) {
+                        artifactCoordinate = coords[0].toString()
+                    }
+                }
+            } catch (Throwable e) {
+                throw new GradleException("Failed to parse matrix output from ${matrixLog}: ${e.message}")
+            }
+            if (!artifactCoordinate) {
+                throw new GradleException("No coordinates found in generateInfrastructureChangedCoordinatesMatrix output. Provide -Pcoordinate or -Pcoordinates to override.")
+            }
+        }
+        println("Selected artifact coordinate: ${artifactCoordinate}")
+
+        def logsDir = layout.buildDirectory.dir("command-logs").get().asFile
+        logsDir.mkdirs()
+
+        def runTestInfraAndCheck = { String coordinate, String gradleCmdParam, int parallelismParam, File logsDirParam, def layoutParam ->
+            def logFile = new File(logsDirParam, "testInfra-${sanitizeFileName(coordinate)}.log")
+            runGradleTaskAndCheck(
+                [gradleCmdParam, "testInfra", "-Pcoordinate=${coordinate}", "-Pparallelism=${parallelismParam}"],
+                "testInfra (${coordinate})",
+                logFile
+            )
+        }
+
+        runTestInfraAndCheck(artifactCoordinate, gradleCmd, parallelism, logsDir, layout)
+        def batchCoordinate = "1/64"
+        runTestInfraAndCheck(batchCoordinate, gradleCmd, parallelism, logsDir, layout)
+
+        println("testAllInfra completed successfully.")
+    }
+}
+
+/**
+ * Runs a Gradle task with logging and throws GradleException on non-zero exit.
+ *
+ * @param args     Full command (gradle executable plus task and its arguments)
+ * @param label    Human-readable label used in logs
+ * @param logFile  Destination log file
+ * @return         The exit code of the process (also throws on non-zero)
+ */
+def runGradleTaskAndCheck(List<String> args, String label, File logFile) {
+    int exit = runLoggedCommand(args, label, logFile, project.rootDir)
+    if (exit != 0) {
+        throw new GradleException("${label} failed with exit code ${exit} (see ${logFile})")
+    }
+    return exit
+}
+
+/**
+ * Runs generateInfrastructureChangedCoordinatesMatrix and returns the log file.
+ *
+ * @param gradleCmd   Gradle executable path (e.g., "./gradlew" or "gradlew.bat")
+ * @param logsDir     Directory where the log will be written
+ * @return            The File pointing to the generated matrix log
+ */
+def runGenerateMatrixAndCheck(String gradleCmd, File logsDir) {
+    logsDir.mkdirs()
+    def logFile = new File(logsDir, "generateInfrastructureChangedCoordinatesMatrix.log")
+    runGradleTaskAndCheck(
+        [gradleCmd, "generateInfrastructureChangedCoordinatesMatrix"],
+        "generateInfrastructureChangedCoordinatesMatrix",
+        logFile
+    )
+    return logFile
+}
+
+/**
+ * Executes an external command, logs its output to both the console and a dedicated file,
+ * and returns the exit code. Prepends and appends custom headers and footers to the log
+ * indicating success or failure.
+ *
+ * Behavior:
+ * - Prints a header to both console and log file before running the command.
+ * - Ensures parent directories for the log file exist, and overwrites the file with the header.
+ * - Runs the provided command in a specified working directory, logging both stdout and stderr to the file.
+ * - Waits for the process to finish and captures its exit code.
+ * - Appends a footer line to both console and log to indicate SUCCESS or FAILURE, including the exit code if failed.
+ * - Returns the process exit code to the caller.
+ *
+ * @param args      The command as a list of strings (executable plus arguments).
+ * @param label     A label for this invocation, included in the header/footer.
+ * @param logFile   File to which all output is logged (will be created/overwritten).
+ * @param workingDir Directory in which to execute the process.
+ * @return          The exit code of the process.
+ */
+def runLoggedCommand(List<String> args, String label, File logFile, File workingDir) {
+    def startTime = new Date().format("yyyy-MM-dd HH:mm:ss")
+    def header = "==== [${startTime}] BEGIN ${label} logged at ${logFile.absolutePath}"
     println(header)
+    if (logFile?.parentFile) {
+        logFile.parentFile.mkdirs()
+    }
     logFile.text = header + System.lineSeparator()
 
     def pb = new ProcessBuilder(args as String[])
@@ -131,25 +312,112 @@ ext.runLoggedCommand = { List<String> args, String label, File logFile, File wor
     def proc = pb.start()
     int exit = proc.waitFor()
 
+    def endTime = new Date().format("yyyy-MM-dd HH:mm:ss")
     def footer = exit != 0
-            ? "==== END ${label} FAILURE (exit ${exit})"
-            : "==== END ${label} SUCCESS"
+            ? "==== [${endTime}] END   ${label} FAILURE (exit ${exit}) logged at ${logFile.absolutePath}"
+            : "==== [${endTime}] END   ${label} SUCCESS logged at ${logFile.absolutePath}"
+
+    if (exit != 0) {
+        println("Failure log for ${label}")
+        try {
+            if (logFile?.exists()) {
+                logFile.eachLine { println(it) }
+            } else {
+                println("(log file not found)")
+            }
+        } catch (Throwable e) {
+            println("Error reading ${logFile}: ${e.message}")
+        }
+    }
+
     logFile.append(footer + System.lineSeparator())
     println(footer)
     return exit
 }
 
-static List<Map> testAllCommands(String gradleCmd, String target) {
-    def taskNames = [
-            "checkstyle",
-            "spotlessCheck",
-            "checkMetadataFiles",
-            "fetchExistingLibrariesWithNewerVersions",
-            "test"
-    ]
-    return taskNames.collect { name ->
-        [name: name, args: [gradleCmd, name, "-Pcoordinates=${target}"]]
+/**
+ * Runs a set of external commands concurrently using the provided ExecutorService, writing
+ * per-command logs under build/command-logs and aggregating failures.
+ *
+ * Behavior:
+ * - Submits each command to the pool via submit(Callable) and waits for all futures to complete.
+ * - Shuts down the pool and awaits termination for up to 1 hour.
+ * - On any non-zero exit, prints a summary and the contents of the failed logs, then throws a GradleException.
+ * - On success, prints a summary message indicating the logs directory.
+ *
+ * @param coordinate A label used for log file names and messages (e.g., an artifact coordinate or a batch like 1/64).
+ * @param commands   List of maps representing commands to run; each entry must contain:
+ *                   - name: String task label (e.g., "checkstyle")
+ *                   - args: List<String> full process arguments passed to ProcessBuilder
+ * @param pool       ExecutorService used to run the commands concurrently; this method will call
+ *                   shutdown() and awaitTermination(...) on it.
+ * @throws GradleException if any command exits with a non-zero status.
+ */
+def runCommandsWithPool(ExecutorService pool, String coordinate, List<Map> commands) {
+    def logsDir = layout.buildDirectory.dir("command-logs").get().asFile
+    logsDir.mkdirs()
+    def fileSuffix = sanitizeFileName(coordinate)
+    def failures = Collections.synchronizedList(new ArrayList<Map>())
+    def futures = []
+
+    commands.each { cmd ->
+        futures << pool.submit {
+            def label = "${cmd.name} (${coordinate})"
+            def logFile = new File(logsDir, "${cmd.name}-${fileSuffix}.log")
+            int exit = runLoggedCommand(cmd.args, label, logFile, project.rootDir)
+            if (exit != 0) {
+                failures.add([label: label, logFile: logFile, exit: exit])
+            }
+        }
     }
+
+    futures.each { it.get() }
+    pool.shutdown()
+    pool.awaitTermination(1, TimeUnit.HOURS)
+
+    if (!failures.isEmpty()) {
+        println("Some commands failed (coordinates=${coordinate}). Logs in: ${logsDir}")
+        failures.each { f ->
+            println(" - ${f.label} failed with exit code ${f.exit} (see ${f.logFile})")
+        }
+        println("==== BEGIN FAILED TASK LOGS (${coordinate})")
+        failures.each { f ->
+            println("---- LOG: ${f.logFile}")
+            try {
+                if (f.logFile?.exists()) {
+                    f.logFile.eachLine { println(it) }
+                } else {
+                    println("(log file not found)")
+                }
+            } catch (Throwable e) {
+                println("Error reading ${f.logFile}: ${e.message}")
+            }
+        }
+        println("==== END FAILED TASK LOGS (${coordinate})")
+        throw new GradleException("Failures encountered. See logs above. Logs directory: ${logsDir}")
+    } else {
+        println("All commands succeeded for coordinates=${coordinate}. Logs in: ${logsDir}")
+    }
+}
+
+/**
+ * Parses a project property as a positive integer, returning defaultValue if empty.
+ * Throws GradleException for invalid or non-positive values.
+ */
+def parsePositiveIntProp(String propertyName, int defaultValue) {
+    def prop = (project.findProperty(propertyName) ?: '').toString().trim()
+    int value = defaultValue
+    if (!prop.isEmpty()) {
+        try {
+            value = Integer.parseInt(prop)
+        } catch (NumberFormatException ignored) {
+            throw new GradleException("Invalid -P${propertyName}='${prop}': must be a positive integer.")
+        }
+        if (value <= 0) {
+            throw new GradleException("Invalid -P${propertyName}='${prop}': must be >= 1.")
+        }
+    }
+    return value
 }
 
 /*
@@ -290,105 +558,6 @@ def testMetadataGeneration(String coordinate, String gradleCmd, File logsDir, St
     }
 }
 
-tasks.register('testAllParallel') { t ->
-    t.group = "verification"
-    t.setDescription("For each target, run clean and pullAllowedDockerImages first (sequentially), then run style checks and individual testing stages (${testAllCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs. Options: -Pcoordinates to specify a single coordinate or 1/64 for the pull step; -Pparallelism to control the number of concurrent tasks.")
-
-    doLast {
-        def selectedArtifact = "org.postgresql:postgresql:42.7.3"
-        def selectedBatch = "1/64"
-
-        def gradleCmd = System.getProperty("os.name").toLowerCase().contains("windows") ? "gradlew.bat" : "./gradlew"
-        def parallelismProp = (project.findProperty('parallelism') ?: '').toString().trim()
-        int parallelism = 4
-        if (!parallelismProp.isEmpty()) {
-            try {
-                parallelism = Integer.parseInt(parallelismProp)
-            } catch (NumberFormatException ignored) {
-                throw new GradleException("Invalid -Pparallelism='${parallelismProp}': must be a positive integer.")
-            }
-            if (parallelism <= 0) {
-                throw new GradleException("Invalid -Pparallelism='${parallelismProp}': must be >= 1.")
-            }
-        }
-        println("Using parallelism=${parallelism} for testAllParallel.")
-
-        def logsDir = layout.buildDirectory.dir("command-logs").get().asFile
-        logsDir.mkdirs()
-
-        // Helper to run pull + command set for a given target (artifact or coordinates)
-        def runPhaseForCoordinate = { String coordinate ->
-            // Clean project before pulling Docker images for this coordinate
-            def cleanLogsDir = new File(project.rootDir, "command-logs-clean")
-            cleanLogsDir.mkdirs()
-
-            def fileSuffix = coordinate.replaceAll(File.separator, "-")
-            def cleanLogFile = new File(cleanLogsDir, "clean-${fileSuffix}.log")
-            int cleanExit = project.ext.runLoggedCommand([gradleCmd, "clean", "-Pcoordinates=${coordinate}"], "clean (${coordinate})", cleanLogFile, project.rootDir)
-            if (cleanExit != 0) {
-                throw new GradleException("clean failed with exit code ${cleanExit} (see ${cleanLogFile})")
-            }
-            // Ensure logsDir exists after clean
-            logsDir.mkdirs()
-
-            // Pull Docker images sequentially for this coordinate
-            def pullArgs = [gradleCmd, "pullAllowedDockerImages", "-Pcoordinates=${coordinate}"]
-            def pullLogFile = new File(logsDir, "pullAllowedDockerImages-${fileSuffix}.log")
-            int pullExit = project.ext.runLoggedCommand(pullArgs, "pullAllowedDockerImages (${coordinate})", pullLogFile, project.rootDir)
-            if (pullExit != 0) {
-                throw new GradleException("pullAllowedDockerImages failed with exit code ${pullExit} (see ${pullLogFile})")
-            }
-
-            def commands = testAllCommands(gradleCmd, coordinate)
-            int effectiveParallelism = Math.min(parallelism, commands.size())
-            def pool = Executors.newFixedThreadPool(effectiveParallelism)
-            def failures = Collections.synchronizedList(new ArrayList<Map>())
-            def futures = []
-
-            commands.each { cmd ->
-                futures << pool.submit {
-                    def label = "${cmd.name} (${coordinate})"
-                    def logFile = new File(logsDir, "${cmd.name}-${fileSuffix}.log")
-                    int exit = project.ext.runLoggedCommand(cmd.args, label, logFile, project.rootDir)
-                    if (exit != 0) {
-                        failures.add([label: label, logFile: logFile, exit: exit])
-                    }
-                }
-            }
-
-            futures.each { it.get() }
-            pool.shutdown()
-            pool.awaitTermination(1, TimeUnit.HOURS)
-
-            if (!failures.isEmpty()) {
-                println("Some commands failed (coordinates=${coordinate}). Logs in: ${logsDir}")
-                failures.each { f ->
-                    println(" - ${f.label} failed with exit code ${f.exit} (see ${f.logFile})")
-                }
-                println("==== BEGIN FAILED TASK LOGS (${coordinate})")
-                failures.each { f ->
-                    println("---- LOG: ${f.logFile}")
-                    try {
-                        if (f.logFile?.exists()) {
-                            f.logFile.eachLine { println(it) }
-                        } else {
-                            println("(log file not found)")
-                        }
-                    } catch (Throwable e) {
-                        println("Error reading ${f.logFile}: ${e.message}")
-                    }
-                }
-                println("==== END FAILED TASK LOGS (${coordinate})")
-                throw new GradleException("Failures encountered. See logs above. Logs directory: ${logsDir}")
-            } else {
-                println("All commands succeeded for coordinates=${coordinate}. Logs in: ${logsDir}")
-            }
-        }
-        def newVersionForFix = "42.7.4"
-
-        // Run parallel phases sequentially: first the selectedArtifact, then the selectedBatch
-        runPhaseForCoordinate(selectedArtifact)
-        testMetadataGeneration(selectedArtifact, gradleCmd, logsDir, newVersionForFix)
-        runPhaseForCoordinate(selectedBatch)
-    }
+private static String sanitizeFileName(String coordinate) {
+    coordinate.replaceAll(File.separator, "-").replaceAll(":", "-")
 }

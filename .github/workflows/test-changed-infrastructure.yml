@@ -82,16 +82,13 @@ jobs:
         run: |
           ./gradlew pullAllowedDockerImages -Pcoordinates=${{ matrix.coordinates }}
 
-      - name: "Disable docker networking"
-        run: bash ./.github/workflows/scripts/disable-docker.sh
-
       - name: "🔎 Check metadata files content"
         run: |
           ./gradlew checkMetadataFiles -Pcoordinates=${{ matrix.coordinates }}
 
       - name: "🧪 Run '${{ matrix.coordinates }}' tests"
         run: |
-          ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
+          ./gradlew testInfra -Pcoordinates=${{ matrix.coordinates }} -Pparallelism=1 --stacktrace
 
   all-infrastructure-passed:
     name: "🧪 All build-logic triggered tests have passed"
