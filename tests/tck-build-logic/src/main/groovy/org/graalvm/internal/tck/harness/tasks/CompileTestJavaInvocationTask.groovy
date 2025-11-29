@@ -6,29 +6,19 @@
  */
 package org.graalvm.internal.tck.harness.tasks
 
-import org.gradle.api.tasks.Input
-
-import javax.inject.Inject
 /**
  * Task that is used to compile subprojects with javac.
  */
 @SuppressWarnings("unused")
-abstract class CompileTestJavaInvocationTask extends AbstractSubprojectTask {
-
-    @Inject
-    CompileTestJavaInvocationTask(String coordinates) {
-        super(coordinates)
-    }
+abstract class CompileTestJavaInvocationTask extends AllCoordinatesExecTask {
 
     @Override
-    @Input
-    List<String> getCommand() {
+    List<String> commandFor(String coordinates) {
         return [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "compileTestJava"]
     }
 
     @Override
-    protected String getErrorMessage(int exitCode) {
+    protected String errorMessageFor(String coordinates, int exitCode) {
         "Compilation failed"
     }
-
 }
