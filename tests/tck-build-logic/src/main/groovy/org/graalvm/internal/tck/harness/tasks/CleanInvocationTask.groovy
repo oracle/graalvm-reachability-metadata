@@ -11,21 +11,16 @@ import org.gradle.api.tasks.Input
 import javax.inject.Inject
 
 @SuppressWarnings('unused')
-abstract class CleanInvocationTask extends AbstractSubprojectTask {
+abstract class CleanInvocationTask extends AllCoordinatesExecTask {
 
-    @Inject
-    CleanInvocationTask(String coordinates) {
-        super(coordinates)
-    }
 
     @Override
-    @Input
-    List<String> getCommand() {
+    List<String> commandFor(String coordinates) {
         return [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "clean"]
     }
 
     @Override
-    protected String getErrorMessage(int exitCode) {
+    protected String errorMessageFor(String coordinates, int exitCode) {
         "Clean task failed"
     }
 

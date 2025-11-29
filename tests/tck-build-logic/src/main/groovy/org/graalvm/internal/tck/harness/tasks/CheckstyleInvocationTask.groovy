@@ -13,21 +13,15 @@ import javax.inject.Inject
  * Task that is used to run checkstyle task on subprojects.
  */
 @SuppressWarnings("unused")
-abstract class CheckstyleInvocationTask extends AbstractSubprojectTask {
+abstract class CheckstyleInvocationTask extends AllCoordinatesExecTask {
 
-    @Inject
-    CheckstyleInvocationTask(String coordinates) {
-        super(coordinates)
-    }
 
-    @Override
-    @Input
-    List<String> getCommand() {
+    List<String> commandFor(String coordinates) {
         return [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "checkstyle"]
     }
 
     @Override
-    protected String getErrorMessage(int exitCode) {
+    protected String errorMessageFor(String coordinates, int exitCode) {
         "Checkstyle failed"
     }
 
