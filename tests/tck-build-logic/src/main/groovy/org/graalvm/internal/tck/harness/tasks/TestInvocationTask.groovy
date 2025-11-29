@@ -7,44 +7,26 @@
 package org.graalvm.internal.tck.harness.tasks
 
 import org.gradle.api.provider.ProviderFactory
-import org.gradle.api.tasks.Input
 
 import javax.inject.Inject
 import java.nio.file.Path
 import java.util.stream.Collectors
-import static org.graalvm.internal.tck.Utils.splitCoordinates;
-import static org.graalvm.internal.tck.Utils.readIndexFile;
+
+import static org.graalvm.internal.tck.Utils.readIndexFile
+import static org.graalvm.internal.tck.Utils.splitCoordinates
 
 /**
- * Task that is used to start subproject tests.
+ * Task that is used to start subproject tests for matching coordinates.
+ * Coordinate resolution is unified and handled by the base class.
  */
 @SuppressWarnings("unused")
-abstract class TestInvocationTask extends AbstractSubprojectTask {
-
-    @Input
-    String coordinates
+abstract class TestInvocationTask extends AllCoordinatesExecTask {
 
     @Inject
-    TestInvocationTask(String coordinates) {
-        super(coordinates)
-        def me = this
-        project.tasks.named("check") {
-            dependsOn(me)
-        }
-        this.coordinates = coordinates
-    }
+    abstract ProviderFactory getProviders()
 
-    @Inject
-    abstract ProviderFactory getProviders();
-
-    /**
-     * Fetches arguments for test invocation from index.json file (if present).
-     * @param coordinates
-     * @return list of processed arguments
-     */
     @Override
-    @Input
-    List<String> getCommand() {
+    List<String> commandFor(String coordinates) {
         def defaultArgs = [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "nativeTest"]
         def installPathsProperty = providers.environmentVariable("TCK_JDK_INSTALLATION_PATHS")
         if (installPathsProperty.isPresent()) {
@@ -88,12 +70,12 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
     }
 
     @Override
-    protected String getErrorMessage(int exitCode) {
+    protected String errorMessageFor(String coordinates, int exitCode) {
         "Test for ${coordinates} failed with exit code ${exitCode}."
     }
 
     @Override
-    protected void beforeExecute() {
+    protected void beforeEach(String coordinates, List<String> command) {
         getLogger().lifecycle("====================")
         getLogger().lifecycle("Testing library: {}", coordinates)
         getLogger().lifecycle("Command: `{}`", String.join(" ", command))
@@ -102,10 +84,9 @@ abstract class TestInvocationTask extends AbstractSubprojectTask {
     }
 
     @Override
-    protected void afterExecute() {
+    protected void afterEach(String coordinates) {
         getLogger().lifecycle("-------")
         getLogger().lifecycle("Test for {} passed.", coordinates)
         getLogger().lifecycle("====================")
     }
-
 }

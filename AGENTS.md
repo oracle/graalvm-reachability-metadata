@@ -11,8 +11,8 @@
   - Windows: gradlew.bat <task> [options]
 - Tip: add --stacktrace for debugging
 
-## One command for complete testing (use at the end of the task to verify)
-./gradlew testAllParallel -Pparallelism=4
+## One command for complete infrastructure testing
+./gradlew testAllInfra -Pparallelism=4 --stacktrace
 
 ## Code Style
 - Always try to reuse existing code.
