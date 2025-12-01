@@ -43,39 +43,39 @@ spotless {
                 .sortByKeys()
                 .version("2.9.0")
     }
+    def noHeaderDirs = [
+            'docs/**',     // only .md files
+            'metadata/**', // only .json files
+            '**/build/**', // not relevant
+            '**/.gradle/**', // not relevant
+            'gradle/wrapper/**', // not relevant
+            'gradle/header.java', // header itself
+            'gradle/header.sh', // header itself
+    ]
+
     java {
         target('**/*.java')
-        targetExclude(
-                'metadata/**', // only JSON there
-                '**/build/**',
-                'gradle/header.java')
+        targetExclude(*noHeaderDirs)
         // Place header before package/import/module
         licenseHeaderFile("$rootDir/gradle/header.java", "package |import |module ")
     }
 
-    String[] noHeaderDirs = [
-            'docs/**',     // only .md files
-            'metadata/**', // only .json files
-            '**/build/**', // not relevant
-            'gradle/wrapper/**', // not relevant
-    ]
     groovy {
         target('**/*.groovy')
-        targetExclude(noHeaderDirs)
+        targetExclude(*noHeaderDirs)
         // Place header before package/import
         licenseHeaderFile("$rootDir/gradle/header.java", "package |import ")
     }
     groovyGradle {
         // Build scripts (*.gradle)
         target('**/*.gradle')
-        targetExclude(noHeaderDirs)
-        targetExclude('tests/**')
+        targetExclude(*noHeaderDirs)
         // Insert header at file start (works for any Gradle script layout)
         licenseHeaderFile("$rootDir/gradle/header.java", "(?m)^(import\\b|plugins\\b|buildscript\\b|apply\\b|rootProject\\b|pluginManagement\\b|dependencyResolutionManagement\\b)")
     }
     format('shell') {
         target('**/*.sh')
-        targetExclude(noHeaderDirs)
+        targetExclude(*noHeaderDirs)
         // Ensure header appears after shebang if present, else at the very top.
         def shHeader = file("$rootDir/gradle/header.sh").text
         // If file starts with a shebang and is missing the header, insert it after the shebang
@@ -223,9 +223,9 @@ tasks.register('testInfra') { t ->
                         Options: -Pcoordinate or -Pcoordinates to specify the target; -Pparallelism to control the number of concurrent tasks.""")
 
     doLast {
-        def coordinateProp = ((project.findProperty('coordinate') ?: project.findProperty('coordinates')) ?: '').toString().trim()
+        def coordinateProp = (project.findProperty('coordinates') ?: '').toString().trim()
         if (coordinateProp.isEmpty()) {
-            throw new GradleException("Missing -Pcoordinate=<group:artifact:version|k/n|all> (or -Pcoordinates).")
+            throw new GradleException("Missing -Pcoordinates=<group:artifact:version|k/n|all> (or -Pcoordinates).")
         }
 
         def gradleCmd = System.getProperty("os.name").toLowerCase().contains("windows") ? "gradlew.bat" : "./gradlew"
@@ -284,13 +284,13 @@ tasks.register('testInfra') { t ->
 
 tasks.register('testAllInfra') { t ->
     t.group = "verification"
-    t.setDescription("Determines one artifact coordinate via generateInfrastructureChangedCoordinatesMatrix (or uses -Pcoordinate/-Pcoordinates if provided), then runs testInfra for that coordinate and also for 1/64. Options: -Pparallelism to control concurrency.")
+    t.setDescription("Determines one artifact coordinate via generateInfrastructureChangedCoordinatesMatrix (or uses -Pcoordinates if provided), then runs testInfra for that coordinate and also for 1/64. Options: -Pparallelism to control concurrency.")
     doLast {
         def gradleCmd = System.getProperty("os.name").toLowerCase().contains("windows") ? "gradlew.bat" : "./gradlew"
         int parallelism = parsePositiveIntProp('parallelism', 4)
         println("Using parallelism=${parallelism} for testAllInfra.")
 
-        String artifactCoordinate = ((project.findProperty('coordinate') ?: project.findProperty('coordinates')) ?: '').toString().trim()
+        String artifactCoordinate = (project.findProperty('coordinates') ?: '').toString().trim()
         if (artifactCoordinate.isEmpty()) {
             def matrixLogsDir = layout.buildDirectory.dir("command-logs").get().asFile
             matrixLogsDir.mkdirs()
@@ -309,7 +309,7 @@ tasks.register('testAllInfra') { t ->
                 throw new GradleException("Failed to parse matrix output from ${matrixLog}: ${e.message}")
             }
             if (!artifactCoordinate) {
-                throw new GradleException("No coordinates found in generateInfrastructureChangedCoordinatesMatrix output. Provide -Pcoordinate or -Pcoordinates to override.")
+                throw new GradleException("No coordinates found in generateInfrastructureChangedCoordinatesMatrix output. Provide -Pcoordinates to override.")
             }
         }
         println("Selected artifact coordinate: ${artifactCoordinate}")
@@ -320,7 +320,7 @@ tasks.register('testAllInfra') { t ->
         def runTestInfraAndCheck = { String coordinate, String gradleCmdParam, int parallelismParam, File logsDirParam, def layoutParam ->
             def logFile = new File(logsDirParam, "testInfra-${sanitizeFileName(coordinate)}.log")
             runGradleTaskAndCheck(
-                [gradleCmdParam, "testInfra", "-Pcoordinate=${coordinate}", "-Pparallelism=${parallelismParam}"],
+                [gradleCmdParam, "testInfra", "-Pcoordinates=${coordinate}", "-Pparallelism=${parallelismParam}"],
                 "testInfra (${coordinate})",
                 logFile
             )

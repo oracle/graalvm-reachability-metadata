@@ -25,9 +25,8 @@ abstract class TestInvocationTask extends AllCoordinatesExecTask {
     @Inject
     abstract ProviderFactory getProviders()
 
-    @Override
     List<String> commandFor(String coordinates) {
-        def defaultArgs = [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "nativeTest"]
+        List<String> defaultArgs = [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "nativeTest"]
         def installPathsProperty = providers.environmentVariable("TCK_JDK_INSTALLATION_PATHS")
         if (installPathsProperty.isPresent()) {
             defaultArgs.addAll(
