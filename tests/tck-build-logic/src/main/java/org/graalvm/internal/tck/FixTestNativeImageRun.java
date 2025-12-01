@@ -7,7 +7,6 @@
 package org.graalvm.internal.tck;
 
 import org.graalvm.internal.tck.utils.GeneralUtils;
-import org.graalvm.internal.tck.utils.InteractiveTaskUtils;
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ProjectLayout;
@@ -100,6 +99,9 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
             MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, List.of(baseCoords.group()));
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
+
+        // Update tests/src/index.json: add newLibraryVersion to the versions of the module under the test project path
+        MetadataGenerationUtils.addNewVersionToTestsIndex(getLayout(), baseCoords, newLibraryVersion);
 
         MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), newCoordsString, gradlewPath, newLibraryVersion);
 
