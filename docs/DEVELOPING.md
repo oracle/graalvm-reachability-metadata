@@ -38,6 +38,11 @@ Tip: When debugging locally, add `--stacktrace` for better error output.
     ```console
    ./gradlew spotlessCheck
     ```
+3. Auto-fix license headers and formatting locally:
+    ```console
+    ./gradlew spotlessApply
+    ```
+   Spotless enforces the CC0 license header on Java, Groovy, Gradle build scripts, and shell scripts. The metadata/** directory is excluded from header checks.
 
 ### Testing one library locally
 
@@ -88,6 +93,35 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
 ```
 
+### Generating Metadata
+
+Generates metadata for a single library coordinate. If `agentAllowedPackages` is provided, a new user-code-filter.json will be created or updated to include those packages.
+
+- `coordinates`: group:artifact:version (single coordinate only)
+- `agentAllowedPackages`: comma-separated package list; use `-` for none
+
+Examples:
+   ```console
+   ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3
+   ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=org.example.app,com.acme.service
+   ```
+
+### Fix failing tasks
+
+Use this when a library's new version causes native-image run test failures. The task will:
+- Update the module's metadata index.json to mark the new version as latest
+- Ensure the tests project has an agent block and a user-code-filter.json if missing
+- Run the agent to collect metadata, then re-run tests (with a retry if needed)
+
+Required properties:
+- -PtestLibraryCoordinates=group:artifact:version (coordinates of an existing tested version whose tests you run)
+- -PnewLibraryVersion=version (the new upstream version number only; do not include group or artifact)
+
+Example:
+```console
+./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=org.postgresql:postgresql:42.7.3 -PnewLibraryVersion=42.7.4
+```
+
 ### Docker image vulnerability scanning
 
 1. Scan only images affected in a commit range:
@@ -128,8 +162,11 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 
 - Style: `./gradlew checkstyle`
 - Format check: `./gradlew spotlessCheck`
+- Format apply: `./gradlew spotlessApply`
 - Pull images (single lib): `./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]`
 - Check metadata (single lib): `./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]`
+- Generate metadata (single lib): `./gradlew generateMetadata -Pcoordinates=group:artifact:version`
+- Fix test that fails Native Image run for new library version: `./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=group:artifact:version -PnewLibraryVersion=version`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
 - Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`
 - Scan all Docker images: `./gradlew checkAllowedDockerImages`

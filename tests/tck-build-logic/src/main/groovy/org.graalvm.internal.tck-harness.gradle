@@ -16,7 +16,9 @@ import org.graalvm.internal.tck.DockerTask
 import org.graalvm.internal.tck.MetadataFilesCheckerTask
 import org.graalvm.internal.tck.DockerUtils
 import org.graalvm.internal.tck.ScaffoldTask
+import org.graalvm.internal.tck.FixTestNativeImageRun
 import org.graalvm.internal.tck.GrypeTask
+import org.graalvm.internal.tck.GenerateMetadataTask
 import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
@@ -308,7 +310,6 @@ tasks.register("pullAllowedDockerImages", ComputeAndPullAllowedDockerImagesTask.
     task.setGroup(METADATA_GROUP)
 }
 
-
 // contributing tasks
 tasks.register("scaffold", ScaffoldTask.class) { task ->
     task.setDescription("Creates a metadata and test scaffold for the given coordindates")
@@ -319,5 +320,17 @@ tasks.register("scaffold", ScaffoldTask.class) { task ->
 
 tasks.register("contribute", ContributionTask.class) { task ->
     task.setDescription("Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.")
+    task.setGroup(METADATA_GROUP)
+}
+
+// gradle generateMetadata -Pcoordinates=<maven-coordinates> [or --coordinates=<maven-coordinates>] --agentAllowedPackages=<comma-separated list of packages>
+tasks.register("generateMetadata", GenerateMetadataTask.class) { task ->
+    task.setDescription("Generates metadata based on provided tests.")
+    task.setGroup(METADATA_GROUP)
+}
+
+// gradle fixTestNIRun -PtestLibraryCoordinates=<maven-coordinates> -PnewLibraryVersion=<library version which needs fix>
+tasks.register("fixTestNativeImageRun", FixTestNativeImageRun.class) { task ->
+    task.setDescription("Fix test that fails Native Image run for new library version.")
     task.setGroup(METADATA_GROUP)
 }

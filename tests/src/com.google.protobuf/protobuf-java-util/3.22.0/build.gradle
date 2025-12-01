@@ -1,0 +1,56 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+plugins {
+    id "org.graalvm.internal.tck"
+    id "com.google.protobuf" version "0.9.5"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    // Put well-known type .proto files on protoc include path only (do not generate code for them)
+    compileProtoPath "com.google.protobuf:protobuf-java:$libraryVersion"
+    testCompileProtoPath "com.google.protobuf:protobuf-java:$libraryVersion"
+
+    // Test protos to generate for this module
+    testProtobuf files("proto/")
+
+    testImplementation "com.google.protobuf:protobuf-java:$libraryVersion"
+    testImplementation "com.google.protobuf:protobuf-java-util:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.google.truth:truth:1.1.3'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$libraryVersion"
+    }
+}
+
+// This module is test-only. Ensure no 'main' sources (including any stale generated protos) are compiled.
+afterEvaluate {
+    sourceSets.main.proto.srcDirs = []
+    sourceSets.main.java.srcDirs = []
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        metadataCopy {
+            mergeWithExisting = true
+            inputTaskNames.add("test")
+            outputDirectories.add("src/test/resources/META-INF/native-image/com.google.protobuf/protobuf-java-util")
+        }
+    }
+}
