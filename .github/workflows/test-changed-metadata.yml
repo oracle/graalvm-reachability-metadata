@@ -17,7 +17,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
-      relevant-files-changed: ${{ steps.filter.outputs.relevant_files_changed }}
+      relevant-files-changed: ${{ steps.filter.outputs.changed }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
@@ -26,30 +26,30 @@ jobs:
 
       - name: "🔎 Detect relevant file changes"
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: ./.github/actions/detect-file-changes
         with:
-          filters: |
-            relevant_files_changed:
-              - 'metadata/**'
-              - 'tests/src/**'
+          file-patterns: |
+            - 'metadata/**'
+            - 'tests/src/**'
 
       - name: "🔧 Setup Java"
-        if: steps.filter.outputs.relevant_files_changed == 'true'
+        if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "🕸️ Populate matrix"
         id: set-matrix
-        if: steps.filter.outputs.relevant_files_changed == 'true'
+        if: steps.filter.outputs.changed == 'true'
         run: |
           ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          echo "Matrix:"
+          echo "${{ steps.set-matrix.outputs.matrix }}"
 
   test-changed-metadata:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-    if: needs.get-changed-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.get-changed-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-changed-metadata

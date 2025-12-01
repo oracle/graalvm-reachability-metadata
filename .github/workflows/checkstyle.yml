@@ -14,25 +14,23 @@ jobs:
 
       - name: "🔎 Detect relevant file changes"
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: ./.github/actions/detect-file-changes
         with:
-          filters: |
-            relevant_files_changed:
-              - '!docs/**'
-              - '!**.md'
-              - '!library-and-framework-list*.json'
-          predicate-quantifier: 'every'
+          file-patterns: |
+            - '!docs/**'
+            - '!**.md'
+            - '!library-and-framework-list*.json'
 
       - uses: actions/setup-python@v4
-        if: steps.filter.outputs.relevant_files_changed == 'true'
+        if: steps.filter.outputs.changed == 'true'
 
       - name: "🔧 Setup java"
-        if: steps.filter.outputs.relevant_files_changed == 'true'
+        if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
 
       - name: "Run Checkstyle"
-        if: steps.filter.outputs.relevant_files_changed == 'true'
+        if: steps.filter.outputs.changed == 'true'
         run: ./gradlew checkstyle
