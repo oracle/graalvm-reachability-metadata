@@ -431,7 +431,7 @@ def runLoggedCommand(List<String> args, String label, File logFile, File working
  * Helper utilities for environment setup, and backup/restore
  * used by testMetadataGeneration.
  */
-def withUnsetTckDir(List<String> baseArgs) {
+def static withUnsetTckDir(List<String> baseArgs) {
     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
         ["cmd.exe", "/d", "/c", "set GVM_TCK_TCKDIR= && " + baseArgs.join(' ')]
     } else {
