@@ -19,7 +19,9 @@
 - Be assertive in code.
 - Write type annotations in all functions and most variables.
 - Document code without being too verbose.
-- In Java and Groovy, always import classes and use them without qualified names.
+- In Java and Groovy, always import classes before using them. Always use classes without qualified names.
+- Link classes in java documentation with @link
+- Use multi-line strings in Java for strings that have multiple lines
 
 ## Testing individual components
 

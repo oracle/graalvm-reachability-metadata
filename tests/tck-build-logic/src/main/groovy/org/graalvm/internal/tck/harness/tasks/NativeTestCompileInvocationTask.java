@@ -4,21 +4,24 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org.graalvm.internal.tck.harness.tasks
+package org.graalvm.internal.tck.harness.tasks;
+
+import java.util.List;
 
 /**
  * Task that is used to compile native tests (Gradle 'nativeTestCompile') on subprojects.
  */
 @SuppressWarnings("unused")
-abstract class NativeTestCompileInvocationTask extends AllCoordinatesExecTask {
+public abstract class NativeTestCompileInvocationTask extends AllCoordinatesExecTask {
 
     @Override
-    List<String> commandFor(String coordinates) {
-        return [tckExtension.repoRoot.get().asFile.toPath().resolve("gradlew").toString(), "nativeTestCompile"]
+    protected List<String> commandFor(String coordinates) {
+        String gradlew = tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString();
+        return java.util.List.of(gradlew, "nativeTestCompile");
     }
 
     @Override
     protected String errorMessageFor(String coordinates, int exitCode) {
-        "Native test compilation failed"
+        return "Native test compilation failed";
     }
 }
