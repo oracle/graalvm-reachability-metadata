@@ -92,22 +92,24 @@ jobs:
           GROUP_ID="$(echo "${{ matrix.item.name }}" | cut -d: -f1)"
           ARTIFACT_ID="$(echo "${{ matrix.item.name }}" | cut -d: -f2)"
           
-          GAV_COORDINATES_VERSIONLESS="$GROUP_ID:$ARTIFACT_ID"
-          TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES_VERSIONLESS"
+          readarray -t VERSIONS < <(echo '${{ toJson(matrix.item.versions) }}' | jq -r '.[]')
+          FIRST_TESTING_VERSION="${VERSIONS[0]}"
+          GAV_COORDINATES="$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
+          TITLE_END="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES"
           
           ISSUE_NUMBER=$(
             gh issue list \
               --repo "${{ github.repository }}" \
               --state open \
-              --search "\"$TITLE_END_VERSIONLESS\" in:title" \
+              --search "\"$TITLE_END\" in:title" \
               --json number,title \
-              --jq ".[] | select(.title | startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and test(\"$TITLE_END_VERSIONLESS(:.*)?\")) | .number"
+              --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
           )
           
           echo "Found the issue(s) $ISSUE_NUMBER"
           if [[ -n "$ISSUE_NUMBER" ]]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "There is no progress since last time for the $GAV_COORDINATES_VERSIONLESS. Skipping further testing!"
+            echo "There is no progress since last time for the $GAV_COORDINATES. Skipping further testing!"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
@@ -238,9 +240,8 @@ jobs:
               --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
           )
           if [ -n "$ISSUE_NUMBER" ]; then
-            echo "Must not reach here as the issue already exists: $ISSUE_NUMBER"
-            echo "The previous stage should of failed before."
-            exit 1
+            echo "Issue already exists: $ISSUE_NUMBER. Skipping creation."
+            exit 0
           fi
 
           BODY_FILE=$(mktemp)
