@@ -30,6 +30,7 @@ import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVer
 import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
+import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
@@ -333,4 +334,32 @@ tasks.register("generateMetadata", GenerateMetadataTask.class) { task ->
 tasks.register("fixTestNativeImageRun", FixTestNativeImageRun.class) { task ->
     task.setDescription("Fix test that fails Native Image run for new library version.")
     task.setGroup(METADATA_GROUP)
+}
+
+// gradle addNewEntryTestsIndexJson -Pcoordinates=<maven-coordinates>
+tasks.register("addNewEntryTestsIndexJson", DefaultTask) { task ->
+    task.setDescription("Adds a new entry to tests/src/index.json for a new library version.")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("coordinates")) {
+            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact:version>")
+        }
+        def coordsStr = project.findProperty("coordinates").toString()
+        def coords = CoordinateUtils.fromString(coordsStr)
+        MetadataGenerationUtils.addNewEntryToTestsIndex(project.layout, coords)
+    }
+}
+
+// gradle addLibraryAsLatestMetadataIndexJson -Pcoordinates=<maven-coordinates>
+tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
+    task.setDescription("Marks given coordinates as latest in metadata/group/artifact/index.json")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("coordinates")) {
+            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact:version>")
+        }
+        def coordsStr = project.findProperty("coordinates").toString()
+        def coords = CoordinateUtils.fromString(coordsStr)
+        MetadataGenerationUtils.makeVersionLatestInIndexJson(project.layout, coords)
+    }
 }
