@@ -1,0 +1,17 @@
+name: "Detect file changes"
+description: "Detects if any files matching the given patterns have changed in the current pull request."
+author: "GraalVM Reachability Metadata repository maintainers"
+inputs:
+  file-patterns:
+    description: "A glob pattern or list of glob patterns to match against. Supports '!' for negation, and standard wildcards ('*', '**', '?')."
+    required: true
+  github_token:
+    description: "GitHub token for API authentication to fetch changed files from the pull request."
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: "node20"
+  main: "detect-file-changes.js"
+outputs:
+  changes_detected:
+    description: "Returns `true` if any changed file matches the specified patterns, `false` otherwise."

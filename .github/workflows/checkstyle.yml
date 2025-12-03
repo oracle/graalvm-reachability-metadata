@@ -2,10 +2,6 @@ name: "Check code style"
 
 on:
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - 'library-and-framework-list*.json'
 
 jobs:
   checkstyle:
@@ -16,12 +12,25 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - '!docs/**'
+            - '!**.md'
+            - '!library-and-framework-list*.json'
+
       - uses: actions/setup-python@v4
+        if: steps.filter.outputs.changed == 'true'
 
       - name: "🔧 Setup java"
+        if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
           java-version: '21'
 
-      - run: ./gradlew spotlessCheck checkstyle
+      - name: "Run Checkstyle"
+        if: steps.filter.outputs.changed == 'true'
+        run: ./gradlew spotlessCheck checkstyle

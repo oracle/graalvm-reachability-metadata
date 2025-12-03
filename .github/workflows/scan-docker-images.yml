@@ -3,8 +3,7 @@ name: "Scan docker images from the allowed docker images list"
 on:
   # we run this job if somebody wants to add/update allowed docker images
   pull_request:
-    paths:
-      - 'tests/tck-build-logic/src/main/resources/allowed-docker-images/**'
+
   # we run this job once a week to check if new vulnerabilities are found in existing images
   schedule:
     - cron: "0 0 * * 6"
@@ -19,19 +18,28 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'tests/tck-build-logic/src/main/resources/allowed-docker-images/**'
+
       - uses: actions/setup-java@v4
+        if: github.event_name == 'schedule' || steps.filter.outputs.changed == 'true'
         with:
           distribution: 'graalvm'
           java-version: '21'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Install required tools"
+        if: github.event_name == 'schedule' || steps.filter.outputs.changed == 'true'
         run: |
           curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin
           sudo apt-get install jq
 
       - name: "🔎 Check changed docker images"
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.filter.outputs.changed == 'true'
         run: ./gradlew checkAllowedDockerImages --baseCommit=${{ github.event.pull_request.base.sha }} --newCommit=${{ github.event.pull_request.head.sha }}
 
       - name: "🔎 Check all docker images"
