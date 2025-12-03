@@ -51,7 +51,7 @@ jobs:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-changed-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 120
     needs: get-changed-metadata
 
     strategy:
@@ -87,9 +87,29 @@ jobs:
         run: |
           ./gradlew checkMetadataFiles -Pcoordinates=${{ matrix.coordinates }}
 
-      - name: "🧪 Run '${{ matrix.coordinates }}' tests"
+      - name: "🧪 Run '${{ matrix.coordinates }}' tests for all tested versions"
         run: |
-          ./gradlew test -Pcoordinates=${{ matrix.coordinates }}
+          GAV_COORDINATES="${{ matrix.coordinates }}"
+          
+          # Extract tested versions for the metadata-version from index.json
+          GROUP_ID=$(echo "$GAV_COORDINATES" | cut -d: -f1)
+          ARTIFACT_ID=$(echo "$GAV_COORDINATES" | cut -d: -f2)
+          METADATA_VERSION=$(echo "$GAV_COORDINATES" | cut -d: -f3)
+          
+          INDEX_FILE="metadata/$GROUP_ID/$ARTIFACT_ID/index.json"
+          
+          # Build JSON array of tested-version for the metadata-version
+          VERSIONS_JSON=$(jq -r --arg mv "$METADATA_VERSION" '.[] | select(.["metadata-version"]==$mv) | ."tested-versions"' "$INDEX_FILE")
+          
+          # Run tests for all previously tested versions
+          bash ./.github/workflows/scripts/run-consecutive-tests.sh "$GAV_COORDINATES" "$VERSIONS_JSON" 2>&1 | tee test_results.txt || true
+          
+          # Check if any version tested-version failed tests
+          if grep -q "^FAILED" test_results.txt; then
+            FAILED_VERSION=$(grep "^FAILED" test_results.txt | head -n 1 | awk -F'[][]' '{print $4}')
+            echo "Tests failed for version $FAILED_VERSION"
+            exit 1
+          fi
 
   all-metadata-passed:
     name: "🧪 All metadata tests have passed"
