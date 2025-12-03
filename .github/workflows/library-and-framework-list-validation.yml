@@ -17,7 +17,8 @@ jobs:
         uses: ./.github/actions/detect-file-changes
         with:
           file-patterns: |
-            - 'library-and-framework-list*.json'
+            - 'library-and-framework-list.json'
+            - 'schemas/library-and-framework-list-schema*.json'
 
       - uses: actions/setup-python@v4
         with:
@@ -43,4 +44,4 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           pip install check-jsonschema
-          check-jsonschema --schemafile library-and-framework-list-schema.json library-and-framework-list.json
+          check-jsonschema --schemafile schemas/library-and-framework-list-schema-v1.0.0.json library-and-framework-list.json

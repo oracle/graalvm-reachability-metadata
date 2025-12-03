@@ -1,0 +1,30 @@
+{
+  "$id": "https://github.com/oracle/graalvm-reachability-metadata/docs/schemas/tests-project-index-schema-v1.0.0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test Project Index",
+  "description": "Schema for tests/src/<groupId>/<artifactId>/<version>/index.json. This file optionally customizes the test invocation via 'test-command'. If omitted or if the property is not present, a default command will be used (gradlew nativeTest with environment overrides) per TestInvocationTask.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "test-command": {
+      "type": "array",
+      "description": "Command line to run for this test project. Supports template parameters: <metadata_dir>, <group_id>, <artifact_id>, <version>.",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Part of the command line. May include template parameters like <metadata_dir>, <group_id>, <artifact_id>, <version>."
+      }
+    }
+  },
+  "examples": [
+    {
+      "test-command": [
+        "gradle",
+        "nativeTest",
+        "-Pmetadata.dir=<metadata_dir>",
+        "-Plibrary.version=<version>"
+      ]
+    }
+  ]
+}
