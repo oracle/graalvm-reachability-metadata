@@ -1,15 +1,16 @@
 // Lightweight in-repository file-change filter for GitHub pull request workflows.
 //
 // It performs the following:
-//   1. Reads a YAML-like input containing glob patterns.
-//      - Supports negation via leading '!'
-//      - Supports wildcards: *, **, ?
-//   2. Fetches changed files from the current Pull Request using the GitHub API.
-//   3. Determines whether any changed file matches the patterns.
+//   1. Reads a YAML-like input containing glob patterns with support for:
+//      - Negation using leading '!'
+//      - Wildcards: '*', '**', '?'
+//   2. Fetches changed files from the current pull request via the GitHub API
+//   3. Matches changed files against the provided patterns
 //   4. Outputs `changed=true|false` via GITHUB_OUTPUT.
 //
 // Example usage in a workflow:
 //
+//   ```yaml
 //   steps:
 //     - uses: ./.github/actions/detect-file-changes
 //       id: filter
@@ -17,10 +18,11 @@
 //         file-patterns: |
 //           - "src/**"
 //           - "!src/generated/**"
+//   ```
 //
 // Output:
-//   steps.filter.outputs.changed = "true" if at least one matching file changed,
-//   otherwise "false".
+//   `steps.filter.outputs.changed` = `"true"` if any files match the patterns,
+//   `steps.filter.outputs.changed` = `"false"` if no files match the patterns
 
 
 const fs = require('fs');
