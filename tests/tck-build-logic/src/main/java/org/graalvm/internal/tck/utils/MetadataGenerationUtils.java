@@ -14,6 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.Coordinates;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
+import org.graalvm.internal.tck.model.TestIndexEntry;
+import org.graalvm.internal.tck.model.TestIndexEntry.LibraryEntry;
+import org.gradle.api.GradleException;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.process.ExecOperations;
 
@@ -201,9 +204,9 @@ public final class MetadataGenerationUtils {
                 null,
                 newCoords.version(),
                 testedVersions,
-                new ArrayList<>()
+                null
         );
-        entries.add(newEntry);
+        entries.addFirst(newEntry);
 
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
@@ -212,5 +215,40 @@ public final class MetadataGenerationUtils {
             json = json + System.lineSeparator();
         }
         Files.writeString(indexFile.toPath(), json, java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Updates tests/src/index.json to add {@code newLibraryVersion} to the versions of the module under the test project path.
+     */
+    public static void addNewVersionToTestsIndex(ProjectLayout layout, Coordinates testCoords, String newLibraryVersion) throws IOException {
+        Path indexPath = GeneralUtils.getPathFromProject(layout, "tests/src/index.json");
+        if (!Files.exists(indexPath)) {
+            return;
+        }
+
+        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+
+        String content = Files.readString(indexPath, StandardCharsets.UTF_8);
+        if (content == null || content.isBlank()) {
+            throw new GradleException("Cannot find test index file at: " + indexPath);
+        }
+
+        List<TestIndexEntry> entries = mapper.readValue(content, new TypeReference<>() {});
+        String testProjectPath = testCoords.group() + "/" + testCoords.artifact() + "/" + testCoords.version();
+
+        for (int i = 0; i < entries.size(); i++) {
+            TestIndexEntry e = entries.get(i);
+            if (testProjectPath.equals(e.testProjectPath())) {
+                LibraryEntry lib = e.libraries().getFirst();
+                lib.versions().add(newLibraryVersion);
+            }
+        }
+        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+        String json = mapper.writer(prettyPrinter).writeValueAsString(entries);
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(indexPath, json, StandardCharsets.UTF_8);
     }
 }
