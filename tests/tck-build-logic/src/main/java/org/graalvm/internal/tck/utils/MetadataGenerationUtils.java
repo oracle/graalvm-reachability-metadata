@@ -251,4 +251,65 @@ public final class MetadataGenerationUtils {
         }
         Files.writeString(indexPath, json, StandardCharsets.UTF_8);
     }
+
+    /**
+     * Adds a new entry to tests/src/index.json for the given coordinates.
+     * The entry is inserted by lexicographic order of test-project-path value.
+     */
+    public static void addNewEntryToTestsIndex(ProjectLayout layout, Coordinates newCoords) throws IOException {
+        Path indexPath = GeneralUtils.getPathFromProject(layout, "tests/src/index.json");
+        if (!Files.exists(indexPath)) {
+            return;
+        }
+
+        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+
+        String content = Files.readString(indexPath, StandardCharsets.UTF_8);
+        if (content == null || content.isBlank()) {
+            throw new GradleException("Cannot find test index file at: " + indexPath);
+        }
+
+        List<TestIndexEntry> entries = mapper.readValue(content, new TypeReference<>() {});
+        String group = newCoords.group();
+        String artifact = newCoords.artifact();
+        String newVersion = newCoords.version();
+        String prefix = group + "/" + artifact + "/";
+        String newTestProjectPath = prefix + newVersion;
+
+        // If the new entry already exists, do nothing
+        for (TestIndexEntry e : entries) {
+            if (newTestProjectPath.equals(e.testProjectPath())) {
+                return;
+            }
+        }
+
+        // Build new entry
+        String libName = group + ":" + artifact;
+        List<String> versions = new ArrayList<>();
+        versions.add(newVersion);
+        LibraryEntry libraryEntry = new LibraryEntry(libName, versions);
+        List<LibraryEntry> libraries = new ArrayList<>();
+        libraries.add(libraryEntry);
+        TestIndexEntry newEntry = new TestIndexEntry(newTestProjectPath, libraries);
+
+        // Insert lexicographic order of test-project-path
+        int insertAt = entries.size();
+        for (int i = 0; i < entries.size(); i++) {
+            String tp = entries.get(i).testProjectPath();
+            if (tp != null && newTestProjectPath.compareTo(tp) < 0) {
+                insertAt = i;
+                break;
+            }
+        }
+
+        entries.add(insertAt, newEntry);
+
+        DefaultPrettyPrinter prettyPrinterNew = new DefaultPrettyPrinter();
+        prettyPrinterNew.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+        String jsonNew = mapper.writer(prettyPrinterNew).writeValueAsString(entries);
+        if (!jsonNew.endsWith(System.lineSeparator())) {
+            jsonNew = jsonNew + System.lineSeparator();
+        }
+        Files.writeString(indexPath, jsonNew, StandardCharsets.UTF_8);
+    }
 }
