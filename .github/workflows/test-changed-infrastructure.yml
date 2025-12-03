@@ -4,12 +4,6 @@ on:
   pull_request:
     branches:
       - master
-    paths:
-      - "tests/tck-build-logic/**"
-      - "gradle/**"
-      - "build.gradle"
-      - "settings.gradle"
-      - "gradle.properties"
 
 concurrency:
   group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
@@ -23,13 +17,26 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
+      relevant-files-changed: ${{ steps.filter.outputs.changed }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'tests/tck-build-logic/**'
+            - 'gradle/**'
+            - 'build.gradle'
+            - 'settings.gradle'
+            - 'gradle.properties'
+
       - name: "🔧 Setup java"
+        if: steps.filter.outputs.changed == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: 'graalvm'
@@ -37,12 +44,13 @@ jobs:
 
       - name: "🕸️ Populate matrix"
         id: set-matrix
+        if: steps.filter.outputs.changed == 'true'
         run: |
           ./gradlew generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
   test-changed-infrastructure:
     name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-    if: needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    if: needs.get-changed-infrastructure.outputs.relevant-files-changed == 'true' && needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-changed-infrastructure
@@ -89,10 +97,11 @@ jobs:
     name: "🧪 All build-logic triggered tests have passed"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
-    needs: test-changed-infrastructure
+    needs: [get-changed-infrastructure, test-changed-infrastructure]
+    if: always()
     steps:
       - name: "All tests passed"
-        if: needs.test-changed-infrastructure.result == 'success'
+        if: needs.test-changed-infrastructure.result == 'success' || needs.get-changed-infrastructure.outputs.relevant-files-changed == 'false'
         run: exit 0
 
       - name: "Some tests failed"
