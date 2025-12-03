@@ -240,9 +240,8 @@ jobs:
               --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
           )
           if [ -n "$ISSUE_NUMBER" ]; then
-            echo "Must not reach here as the issue already exists: $ISSUE_NUMBER"
-            echo "The previous stage should of failed before."
-            exit 1
+            echo "Issue already exists: $ISSUE_NUMBER. Skipping creation."
+            exit 0
           fi
 
           BODY_FILE=$(mktemp)
