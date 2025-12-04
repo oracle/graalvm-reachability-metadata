@@ -8,15 +8,15 @@ To get out-of-the-box support, use the [GraalVM Gradle Plugin](https://graalvm.g
 
 ### 🔎 Check if Your Library or Framework Is Supported
 
-To see whether your library or framework is supported, visit [this page](https://www.graalvm.org/native-image/libraries-and-frameworks/). It lists libraries and frameworks that are tested and ready for GraalVM Native Image.  
+To quickly check whether reachability metadata exists for a specific library, you can run the following command directly from your terminal (works on **Linux** and **macOS**, or on **Windows** with Git Bash / WSL):
+```bash
+curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"
+```
+
+For a broader overview of supported libraries and frameworks, you can visit [this page](https://www.graalvm.org/native-image/libraries-and-frameworks/). It lists libraries and frameworks that are tested and ready for GraalVM Native Image.  
 
 If you’d like yours to appear there as well, open a pull request updating [this JSON file](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).  
 Before submitting a pull request, please read [this guide](docs/CONTRIBUTING.md#tested-libraries-and-frameworks).
-
-You can also check if metadata for a library exists on the repository directly from your terminal without cloning it using:
-```
-curl -sSL https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/check-library-support.sh | bash -s "<groupId>:<artifactId>:<version>"
-```
 
 ### 📚 Request Support for a New Library
 

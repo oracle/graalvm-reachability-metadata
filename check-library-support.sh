@@ -13,6 +13,13 @@ if [ "$#" -ne 1 ]; then
 fi
 
 GAV="$1"
+
+if ! [[ "$GAV" =~ ^[^:]+:[^:]+:[^:]+$ ]]; then
+    echo "Invalid library format: '$GAV'"
+    echo "Expected format: <groupId>:<artifactId>:<version>"
+    exit 1
+fi
+
 IFS=':' read -r GROUP ARTIFACT VERSION <<< "$GAV"
 
 REMOTE_BASE_URL="https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata"
