@@ -1,6 +1,6 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/oracle/graalvm-reachability-metadata/schemas/metadata-root-index.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Schema for metadata/index.json. This file lists modules known to the repository and optionally the directory where their metadata is stored, the allowed package prefixes for metadata, and inter-module requirements. See docs/CONTRIBUTING.md (Metadata structure).",
   "type": "array",
   "items": {
@@ -52,9 +52,15 @@
         "module": "org.example:library"
       },
       {
+        "allowed-packages": ["org.package.name"],
         "module": "org.example:dependant-library",
-        "requires": ["org.example:library"],
-        "allowed-packages": ["org.package.name"]
+        "requires": ["org.example:library"]
+      },
+      {
+        "allowed-packages" : [ "org.hibernate", "jakarta" ],
+        "directory" : "org.hibernate.orm/hibernate-envers",
+        "module" : "org.hibernate.orm:hibernate-envers",
+        "requires" : [ "org.hibernate.orm:hibernate-core" ]
       }
     ]
   ]

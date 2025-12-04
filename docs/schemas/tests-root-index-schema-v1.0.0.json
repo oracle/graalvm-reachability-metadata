@@ -1,6 +1,6 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/oracle/graalvm-reachability-metadata/docs/schemas/tests-root-index-schema-v1.0.0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Tests Root Index",
   "description": "Schema for tests/src/index.json mapping test projects to libraries and versions (see docs/CONTRIBUTING.md).",
   "type": "array",
@@ -14,7 +14,7 @@
         "type": "string",
         "minLength": 1,
         "pattern": "^[^\\s/]+/[^\\s/]+/[^\\s/]+$",
-        "description": "Path under tests/src: <groupId>/<artifactId>/<version> (e.g. 'org.example/library/1.0.0' or 'samples/docker/image-pull')."
+        "description": "Path under tests/src: <groupId>/<artifactId>/<version> (e.g. 'org.hibernate.orm/hibernate-core/7.1.0.Final')."
       },
       "libraries": {
         "type": "array",
@@ -27,7 +27,7 @@
             "name": {
               "type": "string",
               "pattern": "^[^:]+:[^:]+$",
-              "description": "Library coordinates in the form '<groupId>:<artifactId>' (e.g. 'org.example:library', 'samples:docker')."
+              "description": "Library coordinates in the form '<groupId>:<artifactId>' (e.g. 'org.hibernate.orm:hibernate-core')."
             },
             "versions": {
               "type": "array",
@@ -37,7 +37,7 @@
                 "type": "string",
                 "minLength": 1
               },
-              "description": "List of library versions covered by this test project (strings as published upstream, e.g. '1.1.0', '7.1.0.Final', 'image-pull')."
+              "description": "List of library versions covered by this test project (strings as published upstream, e.g. '1.1.0', '7.1.0.Final')."
             }
           }
         },
@@ -52,16 +52,20 @@
         "libraries": [
           {
             "name": "org.example:library",
-            "versions": [ "0.0.1" ]
+            "versions": [
+              "0.0.1"
+            ]
           }
         ]
       },
       {
-        "test-project-path": "samples/docker/image-pull",
-        "libraries": [
+        "test-project-path" : "org.hibernate.orm/hibernate-core/7.1.0.Final",
+        "libraries" : [
           {
-            "name": "samples:docker",
-            "versions": [ "image-pull" ]
+            "name" : "org.hibernate.orm:hibernate-core",
+            "versions" : [
+              "7.1.0.Final"
+            ]
           }
         ]
       }
