@@ -344,4 +344,4 @@ Where:
 
 **Note:** To pass format and style checks, please run `sorted="$(jq -s '.[] | sort_by(.artifact)' library-and-framework-list.json)" && echo -E "${sorted}" > library-and-framework-list.json` before submitting a PR.
 
-**Note:** The entries you add will be validated against [library-and-framework-list-schema.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema.json)
+**Note:** The entries you add will be validated against [library-and-framework-list-schema-v1.0.0.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list-schema-v1.0.0.json)
