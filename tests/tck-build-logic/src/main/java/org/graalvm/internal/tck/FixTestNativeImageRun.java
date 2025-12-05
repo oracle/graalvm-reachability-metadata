@@ -105,8 +105,6 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
 
         MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), newCoordsString, gradlewPath, newLibraryVersion);
 
-        MetadataGenerationUtils.createIndexJsonSpecificVersion(metadataDirectory);
-
         // At the end, attempt to run tests with the new library version.
         // If the build fails, it can be due agent's non-deterministic nature.
         GeneralUtils.printInfo("Running the test with updated metadata");
