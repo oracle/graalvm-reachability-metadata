@@ -124,7 +124,7 @@ public abstract class TckExtension {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         getExecOperations().exec(spec -> {
             spec.setStandardOutput(baos);
-            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT", baseCommit, newCommit);
+            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRTD", baseCommit, newCommit);
         });
 
         String output = baos.toString(StandardCharsets.UTF_8);
