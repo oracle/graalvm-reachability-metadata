@@ -32,11 +32,11 @@ spotless {
     json {
         target(
                 tck.metadataRoot.map { it.toString() + '/**/*.json' }.get(),
-                tck.testRoot.map { it.toString() + '/**/*.json' }
+                tck.testRoot.map { it.toString() + '/**/*.json' }.get()
         )
         targetExclude(
-                tck.testRoot.map { it.toString() + '/**/build/**/*.json' },
-                tck.repoRoot.map { it.toString() + '/.github/**/*.json' }
+                tck.testRoot.map { it.toString() + '/**/build/**/*.json' }.get(),
+                tck.repoRoot.map { it.toString() + '/.github/**/*.json' }.get()
         )
         gson()
                 .indentWithSpaces(2)
@@ -49,7 +49,9 @@ spotless {
             '**/build/**', // not relevant
             '**/.gradle/**', // not relevant
             'gradle/wrapper/**', // not relevant
+            'tests/src/**/generated/**/*.java',
             'gradle/header.java',
+            'gradle/header.sh',
     ]
 
     java {
@@ -74,12 +76,12 @@ spotless {
     }
     format('shell') {
         target('**/*.sh')
-        targetExclude(noHeaderDirs)
+        targetExclude(*noHeaderDirs)
         // Ensure header appears after shebang if present, else at the very top.
         def shHeader = file("$rootDir/gradle/header.sh").text
         // If file starts with a shebang and is missing the header, insert it after the shebang
         replaceRegex('insert-license-after-shebang',
-                     '(?s)\\A(#!.*\\n)(?!# Copyright and related rights waived via CC0\\n)',
+                     '(?s)\\A(#![^\\n]*\\n)(?:[ \\t]*\\n)*(?!# Copyright and related rights waived via CC0\\n)',
                      '$1' + shHeader + "\n")
         // If file has no shebang and is missing the header, insert it at the start
         replaceRegex('insert-license-at-start',
