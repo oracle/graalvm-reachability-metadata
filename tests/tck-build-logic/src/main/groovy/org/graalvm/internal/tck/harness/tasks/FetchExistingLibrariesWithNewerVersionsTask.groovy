@@ -97,6 +97,10 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
         List<String> newerVersions = getNewerVersionsFromLibraryIndex(data, startingVersion, library)
 
+        // filter out already tested versions
+        List<String> testedVersions = getTestedVersions(library);
+        newerVersions.removeAll(testedVersions);
+
         // filter pre-release versions if full release exists
         return filterPreReleases(newerVersions)
     }
@@ -148,29 +152,44 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
     static String getLatestLibraryVersion(String libraryModule) {
         try {
+            List<String> testedVersions = getTestedVersions(libraryModule);
+            if (testedVersions.isEmpty()) {
+                throw new IllegalStateException("Cannot find any tested version for: " + libraryModule);
+            }
+
+            testedVersions.sort(Comparator.comparing(VersionNumber::parse));
+            return testedVersions.get(testedVersions.size() - 1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Reads the tested versions of a given library from its metadata index file.
+     */
+    static List<String> getTestedVersions(String libraryModule) {
+        try {
             String[] coordinates = libraryModule.split(":");
             String group = coordinates[0];
             String artifact = coordinates[1];
 
-            File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact +"/index.json");
+            File indexFile = new File("metadata/" + group + "/" + artifact + "/index.json");
+            if (!indexFile.exists()) {
+                return Collections.emptyList();
+            }
+
             ObjectMapper objectMapper = new ObjectMapper()
                     .enable(SerializationFeature.INDENT_OUTPUT)
                     .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(coordinatesMetadataIndex, new TypeReference<List<MetadataVersionsIndexEntry>>() {
-            });
+            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(indexFile,
+                    new TypeReference<List<MetadataVersionsIndexEntry>>() {});
 
-            List<String> allTested = new ArrayList<>();
+            List<String> testedVersions = new ArrayList<>();
             for (MetadataVersionsIndexEntry entry : entries) {
-                allTested.addAll(entry.testedVersions());
+                testedVersions.addAll(entry.testedVersions());
             }
-
-            if (allTested.isEmpty()) {
-                throw new IllegalStateException("Cannot find any tested version for: " + libraryModule);
-            }
-
-            allTested.sort(Comparator.comparing(VersionNumber::parse));
-            return allTested.get(allTested.size() - 1);
+            return testedVersions;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
