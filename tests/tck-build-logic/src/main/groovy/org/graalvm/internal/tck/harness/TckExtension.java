@@ -311,22 +311,12 @@ public abstract class TckExtension {
      */
     @SuppressWarnings("unchecked")
     public List<String> getMetadataFileList(Path directory) throws IOException {
-        List<String> foundFiles = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(directory)) {
-            paths.filter(Files::isRegularFile)
+            return paths
+                    .filter(Files::isRegularFile)
                     .map(p -> p.getFileName().toString())
-                    .filter(s -> s.endsWith(".json") && !s.endsWith("index.json"))
-                    .forEach(foundFiles::add);
-        }
-        Path indexFile = directory.resolve("index.json");
-        if (indexFile.toFile().exists()) {
-            List<String> indexFiles = (List<String>) extractJsonFile(indexFile);
-            if (!new HashSet<>(indexFiles).equals(new HashSet<>(foundFiles))) {
-                throw new IllegalStateException("Metadata file list in '" + indexFile.toAbsolutePath() + "' is not up to date!");
-            }
-            return indexFiles;
-        } else {
-            return foundFiles;
+                    .filter(name -> name.endsWith(".json"))
+                    .collect(Collectors.toList());
         }
     }
 }

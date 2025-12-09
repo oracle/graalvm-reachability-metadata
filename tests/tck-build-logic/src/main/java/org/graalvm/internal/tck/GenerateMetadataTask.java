@@ -84,6 +84,5 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         }
         MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(getLayout(), coordinates);
-        MetadataGenerationUtils.createIndexJsonSpecificVersion(metadataDirectory);
     }
 }
