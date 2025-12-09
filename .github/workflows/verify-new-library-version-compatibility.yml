@@ -349,7 +349,7 @@ jobs:
     runs-on: ubuntu-22.04
     permissions: write-all
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
     needs:
       - get-all-libraries
       - test-all-metadata
@@ -359,8 +359,6 @@ jobs:
 
       - name: "✏️ PR for supported versions"
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Github Actions"
           git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
           git checkout ${{ needs.get-all-libraries.outputs.branch }}
           gh pr create \
