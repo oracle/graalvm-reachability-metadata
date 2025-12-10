@@ -54,7 +54,7 @@ overrideVal = overrideVal ?: "false"
 boolean override = overrideVal.toBoolean()
 
 // Determine native-image build arguments from ci.json.
-def ciJsonFile = rootProject.file("ci.json")
+def ciJsonFile = tck.repoRoot.file("ci.json").get().asFile
 def nativeImageArgs = []
 if (ciJsonFile.exists()) {
     try {
@@ -71,6 +71,8 @@ if (ciJsonFile.exists()) {
     } catch (Exception ignored) {
         throw new GradleException("ci.json must contain the buildArgs")
     }
+} else {
+    throw new GradleException("Required configuration file ci.json not found at expected path: ${ciJsonFile.absolutePath}\"")
 }
 
 tck.testedLibraryVersion = libraryVersion
