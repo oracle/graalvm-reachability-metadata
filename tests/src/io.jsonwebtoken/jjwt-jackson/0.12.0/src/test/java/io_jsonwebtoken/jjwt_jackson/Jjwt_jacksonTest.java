@@ -29,11 +29,11 @@ class Jjwt_jacksonTest {
         SecretKey firstKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
         String secretString = Encoders.BASE64.encode(firstKey.getEncoded());
         SecretKey secondKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretString));
-        assertThat(Jwts.parserBuilder().setSigningKey(firstKey).build()
-                .parseClaimsJws(Jwts.builder().setSubject("Joe").signWith(firstKey).compact()).getBody().getSubject())
+        assertThat(Jwts.parser().verifyWith(firstKey).build()
+                .parseSignedClaims(Jwts.builder().setSubject("Joe").signWith(firstKey).compact()).getPayload().getSubject())
                 .isEqualTo("Joe");
-        assertThat(Jwts.parserBuilder().setSigningKey(secondKey).build()
-                .parseClaimsJws(Jwts.builder().setSubject("Joe").signWith(secondKey).compact()).getBody().getSubject())
+        assertThat(Jwts.parser().verifyWith(secondKey).build()
+                .parseSignedClaims(Jwts.builder().setSubject("Joe").signWith(secondKey).compact()).getPayload().getSubject())
                 .isEqualTo("Joe");
     }
 
@@ -56,42 +56,42 @@ class Jjwt_jacksonTest {
                 .signWith(firstKey, SignatureAlgorithm.HS256)
                 .compressWith(CompressionCodecs.GZIP)
                 .compact();
-        JwtParserBuilder jwtParserBuilder = Jwts.parserBuilder().setAllowedClockSkewSeconds(3 * 60).setSigningKey(firstKey);
-        assertThat(jwtParserBuilder.build().parseClaimsJws(firstCompactJws).getBody().getSubject()).isEqualTo("Joe");
-        assertDoesNotThrow(() -> jwtParserBuilder.requireSubject("Joe").build().parseClaimsJws(firstCompactJws));
-        assertDoesNotThrow(() -> jwtParserBuilder.requireIssuer("Aaron").build().parseClaimsJws(firstCompactJws));
-        assertDoesNotThrow(() -> jwtParserBuilder.requireAudience("Abel").build().parseClaimsJws(firstCompactJws));
-        assertDoesNotThrow(() -> jwtParserBuilder.requireExpiration(secondDate).build().parseClaimsJws(firstCompactJws));
-        assertDoesNotThrow(() -> jwtParserBuilder.requireNotBefore(firstDate).build().parseClaimsJws(firstCompactJws));
-        assertDoesNotThrow(() -> jwtParserBuilder.requireIssuedAt(firstDate).build().parseClaimsJws(firstCompactJws));
-        assertDoesNotThrow(() -> jwtParserBuilder.requireId(uuidString).build().parseClaimsJws(firstCompactJws));
-        assertDoesNotThrow(() -> jwtParserBuilder.require("exampleClaim", "Adam").build().parseClaimsJws(firstCompactJws));
+        JwtParserBuilder jwtParserBuilder = Jwts.parser().clockSkewSeconds(3 * 60).verifyWith(firstKey);
+        assertThat(jwtParserBuilder.build().parseSignedClaims(firstCompactJws).getPayload().getSubject()).isEqualTo("Joe");
+        assertDoesNotThrow(() -> jwtParserBuilder.requireSubject("Joe").build().parseSignedClaims(firstCompactJws));
+        assertDoesNotThrow(() -> jwtParserBuilder.requireIssuer("Aaron").build().parseSignedClaims(firstCompactJws));
+        assertDoesNotThrow(() -> jwtParserBuilder.requireAudience("Abel").build().parseSignedClaims(firstCompactJws));
+        assertDoesNotThrow(() -> jwtParserBuilder.requireExpiration(secondDate).build().parseSignedClaims(firstCompactJws));
+        assertDoesNotThrow(() -> jwtParserBuilder.requireNotBefore(firstDate).build().parseSignedClaims(firstCompactJws));
+        assertDoesNotThrow(() -> jwtParserBuilder.requireIssuedAt(firstDate).build().parseSignedClaims(firstCompactJws));
+        assertDoesNotThrow(() -> jwtParserBuilder.requireId(uuidString).build().parseSignedClaims(firstCompactJws));
+        assertDoesNotThrow(() -> jwtParserBuilder.require("exampleClaim", "Adam").build().parseSignedClaims(firstCompactJws));
     }
 
     @Test
     void testCompression() {
         SecretKey firstKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        assertThat(Jwts.parserBuilder().setSigningKey(firstKey).build().parseClaimsJws(
+        assertThat(Jwts.parser().verifyWith(firstKey).build().parseSignedClaims(
                 Jwts.builder().setSubject("Joe").signWith(firstKey).compressWith(CompressionCodecs.DEFLATE).compact()
-        ).getBody().getSubject()).isEqualTo("Joe");
-        assertThat(Jwts.parserBuilder().setSigningKey(firstKey).build().parseClaimsJws(
+        ).getPayload().getSubject()).isEqualTo("Joe");
+        assertThat(Jwts.parser().verifyWith(firstKey).build().parseSignedClaims(
                 Jwts.builder().setSubject("Joe").signWith(firstKey).compressWith(CompressionCodecs.GZIP).compact()
-        ).getBody().getSubject()).isEqualTo("Joe");
+        ).getPayload().getSubject()).isEqualTo("Joe");
     }
 
     @Test
     void testSignatureAlgorithms() {
         Stream.of(SignatureAlgorithm.HS256, SignatureAlgorithm.HS384, SignatureAlgorithm.HS512)
                 .map(Keys::secretKeyFor)
-                .forEach(secretKey -> assertThat(Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(
+                .forEach(secretKey -> assertThat(Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(
                         Jwts.builder().setSubject("Joe").signWith(secretKey).compact()
-                ).getBody().getSubject()).isEqualTo("Joe"));
+                ).getPayload().getSubject()).isEqualTo("Joe"));
         Stream.of(SignatureAlgorithm.ES256, SignatureAlgorithm.ES384, SignatureAlgorithm.ES512,
                         SignatureAlgorithm.RS256, SignatureAlgorithm.RS384, SignatureAlgorithm.RS512,
                         SignatureAlgorithm.PS256, SignatureAlgorithm.PS384, SignatureAlgorithm.PS512)
                 .map(Keys::keyPairFor)
-                .forEach(keyPair -> assertThat(Jwts.parserBuilder().setSigningKey(keyPair.getPublic()).build().parseClaimsJws(
+                .forEach(keyPair -> assertThat(Jwts.parser().verifyWith(keyPair.getPublic()).build().parseSignedClaims(
                         Jwts.builder().setSubject("Joe").signWith(keyPair.getPrivate()).compact()
-                ).getBody().getSubject()).isEqualTo("Joe"));
+                ).getPayload().getSubject()).isEqualTo("Joe"));
     }
 }
