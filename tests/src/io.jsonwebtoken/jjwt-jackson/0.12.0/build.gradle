@@ -32,3 +32,8 @@ graalvmNative {
         }
     }
 }
+
+// Allow JJWT 0.12 to reflect into sun.security.util.KeyUtil on Java 21+
+tasks.withType(Test).configureEach {
+    jvmArgs '--add-exports', 'java.base/sun.security.util=ALL-UNNAMED'
+}
