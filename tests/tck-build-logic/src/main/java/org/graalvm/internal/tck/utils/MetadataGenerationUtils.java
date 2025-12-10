@@ -126,28 +126,6 @@ public final class MetadataGenerationUtils {
     }
 
     /**
-     * Creates index.json inside the given version directory, listing all files present in that directory.
-     */
-    public static void createIndexJsonSpecificVersion(Path metadataDirectory) throws IOException {
-        try (java.util.stream.Stream<Path> paths = Files.list(metadataDirectory)) {
-            List<String> files = paths
-                    .filter(Files::isRegularFile)
-                    .map(p -> p.getFileName().toString())
-                    .filter(name -> !"index.json".equals(name))
-                    .sorted()
-                    .toList();
-
-            DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
-            printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-            String jsonVersionIndex = objectMapper.writer(printer).writeValueAsString(files);
-            if (!jsonVersionIndex.endsWith(System.lineSeparator())) {
-                jsonVersionIndex = jsonVersionIndex + System.lineSeparator();
-            }
-            Files.writeString(metadataDirectory.resolve("index.json"), jsonVersionIndex, StandardCharsets.UTF_8);
-        }
-    }
-
-    /**
      * Marks the library version identified by {@code newCoords} as the {@code latest} entry
      * within its corresponding {@code index.json}.
      */

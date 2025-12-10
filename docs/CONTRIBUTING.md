@@ -195,17 +195,6 @@ above using this field:
 
 You can also list each supported version is listed in `tested-versions`, as that value is used in build tools to match
 metadata to a specific library, but this is more likely to break when new versions are released.
-Every metadata for a specific library version has a `index.json`. For this
-example `metadata/org.example/library/0.0.1/index.json` would contain:
-
-```json
-[
-  "jni-config.json",
-  "proxy-config.json",
-  "reflect-config.json",
-  "resource-config.json"
-]
-```
 
 ### Format Metadata Files
 

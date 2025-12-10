@@ -238,29 +238,16 @@ def testMetadataGeneration(String coordinate, String gradleCmd, File logsDir, St
             throw new GradleException("generateMetadata failed with exit code ${genExit} (see ${genLogFile})")
         }
 
-        // Verify output directory and index.json for the specific version
+        // Verify output directory for the specific version
         if (!versionDir.isDirectory()) {
             throw new GradleException("Version directory not found: ${versionDir}")
         }
-        def indexFile = new File(versionDir, "index.json")
-        if (!indexFile.isFile()) {
-            throw new GradleException("Missing index.json in ${versionDir}")
-        }
 
-        def actualFiles = versionDir.listFiles()?.findAll { it.isFile() && it.name != 'index.json' }?.collect { it.name }?.sort() ?: []
+        def actualFiles = versionDir.listFiles()?.findAll { it.isFile() }?.collect { it.name }?.sort() ?: []
         if (actualFiles.isEmpty()) {
-            throw new GradleException("No metadata files found in ${versionDir} (besides index.json)")
+            throw new GradleException("No metadata files found in ${versionDir}")
         }
 
-        def indexList = (List) new JsonSlurper().parse(indexFile)
-        def sortedIndex = indexList.collect { it.toString() }.sort()
-        if (!sortedIndex.equals(actualFiles)) {
-            println("==== BEGIN index.json mismatch (${coordinate})")
-            println("index.json: ${sortedIndex}")
-            println("actual:     ${actualFiles}")
-            println("==== END index.json mismatch (${coordinate})")
-            throw new GradleException("index.json does not match files in ${versionDir}")
-        }
         println("Verified generated metadata for ${coordinate}: ${versionDir}")
     } finally {
         // Revert metadata directory changes

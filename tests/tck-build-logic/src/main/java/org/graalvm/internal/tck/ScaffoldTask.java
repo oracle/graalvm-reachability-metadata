@@ -88,7 +88,7 @@ class ScaffoldTask extends DefaultTask {
 
         // Metadata
         if (!update) {
-            checkExistingMetadata(coordinates, coordinatesMetadataRoot, coordinatesMetadataVersionRoot);
+            checkExistingMetadata(coordinates, coordinatesMetadataRoot);
             writeCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
         } else {
             updateCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
@@ -105,7 +105,7 @@ class ScaffoldTask extends DefaultTask {
         System.out.printf("You can now use 'gradle test -Pcoordinates=%s' to run the tests%n", coordinates);
     }
 
-    private void checkExistingMetadata(Coordinates coordinates, Path metadataVersionRoot, Path coordinatesMetadataVersionRoot) {
+    private void checkExistingMetadata(Coordinates coordinates, Path metadataVersionRoot) {
         if (force) {
             return;
         }
@@ -113,11 +113,6 @@ class ScaffoldTask extends DefaultTask {
         // metadata/$group/$artifact/index.json
         if (Files.exists(metadataVersionRoot.resolve("index.json"))) {
             throw new IllegalStateException("Metadata for '%s:%s' already exists! Use --force to overwrite existing metadata".formatted(coordinates.group(), coordinates.artifact()));
-        }
-
-        // metadata/$group/$artifact/$version/index.json
-        if (Files.exists(coordinatesMetadataVersionRoot.resolve("index.json"))) {
-            throw new IllegalStateException("Metadata for '%s' already exists! Use --force to overwrite existing metadata".formatted(coordinates));
         }
     }
 
@@ -220,12 +215,6 @@ class ScaffoldTask extends DefaultTask {
 
     private void writeCoordinatesMetadataVersionJsons(Path metadataVersionRoot, Coordinates coordinates) throws IOException {
         // Root: metadata/$group$/$artifact$/$version$
-
-        // index.json
-        writeToFile(
-                metadataVersionRoot.resolve("index.json"),
-                CoordinateUtils.replace(loadResource("/scaffold/metadataVersionIndex.json.template"), coordinates)
-        );
 
         // jni-config.json
         writeToFile(

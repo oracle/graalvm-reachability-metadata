@@ -59,7 +59,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 
 public class NettyTests {
-    private static final int PORT = 8080;
+    private int port;
 
     @Test
     void withSsl() throws Exception {
@@ -101,7 +101,7 @@ public class NettyTests {
         }
         Bootstrap b = new Bootstrap();
         b.group(group).channel(NioSocketChannel.class).handler(new HttpClientInitializer(sslContext, callback));
-        Channel ch = b.connect("localhost", PORT).sync().channel();
+        Channel ch = b.connect("localhost", port).sync().channel();
         HttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/", Unpooled.EMPTY_BUFFER);
         request.headers().set(HttpHeaderNames.HOST, "localhost");
         request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
@@ -119,7 +119,8 @@ public class NettyTests {
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(new HttpServerInitializer(sslContext));
-        b.bind(PORT).sync();
+        Channel channel = b.bind(0).sync().channel();
+        this.port = ((NioServerSocketChannel) channel).localAddress().getPort();
     }
 
     private static final class HttpClientInitializer extends ChannelInitializer<SocketChannel> {
