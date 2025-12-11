@@ -51,7 +51,7 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
             return testIndex.get("test-command").stream()
                     .map(c -> processCommand(c, metadataDir, coordinates))
                     .collect(Collectors.toList());
-        } catch (RuntimeException ignored) {
+        } catch (Exception ignored) {
             return defaultArgs;
         }
     }

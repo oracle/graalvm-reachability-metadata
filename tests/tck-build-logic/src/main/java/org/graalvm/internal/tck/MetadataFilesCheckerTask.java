@@ -48,7 +48,7 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     List<String> allowedPackages;
 
     @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
-    void setCoordinates(String coords) {
+    public void setCoordinates(String coords) {
         extractCoordinates(coords);
     }
 
@@ -78,11 +78,7 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     }
 
     @TaskAction
-    void run() throws IllegalArgumentException, FileNotFoundException {
-        if (coordinates.group().equalsIgnoreCase("org.example") || coordinates.group().equalsIgnoreCase("samples")) {
-            return;
-        }
-
+    public void run() throws IllegalArgumentException, FileNotFoundException {
         File coordinatesMetadataRoot = getMetadataRoot().get().getAsFile();
         if (!coordinatesMetadataRoot.exists()) {
             throw new IllegalArgumentException("ERROR: Cannot find metadata directory for given coordinates: " + this.coordinates);
