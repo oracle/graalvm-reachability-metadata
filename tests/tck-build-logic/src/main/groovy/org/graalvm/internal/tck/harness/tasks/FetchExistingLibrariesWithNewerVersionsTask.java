@@ -1,0 +1,249 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.harness.tasks;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
+import org.graalvm.internal.tck.model.SkippedVersionEntry;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.provider.ListProperty;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.TaskAction;
+import org.gradle.util.internal.VersionNumber;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Lists existing libraries that have newer upstream versions available (not yet tested).
+ * Produces a JSON array of objects: [{"name": "group:artifact", "versions": ["x.y.z", ...]}, ...]
+ */
+@SuppressWarnings("unused")
+public abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
+
+    @Input
+    public abstract ListProperty<String> getAllLibraryCoordinates();
+
+    private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example");
+
+    /**
+     * Identifies library versions, including optional pre-release and ".Final" suffixes.
+     *
+     * Pre-release identifiers (case-insensitive): alpha, beta, rc, cr, m<num>, ea, b<num>, preview, and pure numeric suffixes.
+     * Versions ending with ".Final" are treated as full releases of the base version.
+     */
+    private static final Pattern VERSION_PATTERN = Pattern.compile("(?i)^(\\\\d+(?:\\\\.\\\\d+)*)"
+            + "(?:\\\\.Final)?"
+            + "(?:[-.](alpha\\\\d*|beta\\\\d*|rc\\\\d*|cr\\\\d*|m\\\\d+|ea\\\\d*|b\\\\d+|\\\\d+|preview)(?:[-.].*)?)?$");
+
+    @TaskAction
+    public void action() {
+        // Derive set of distinct library modules: group:artifact
+        Set<String> libraries = new LinkedHashSet<>();
+        for (String coord : getAllLibraryCoordinates().get()) {
+            int last = coord.lastIndexOf(':');
+            if (last > 0) {
+                libraries.add(coord.substring(0, last));
+            }
+        }
+
+        // For each library, compute newer versions and filter out infrastructure modules
+        List<String> newerVersions = new ArrayList<>();
+        for (String libraryName : libraries) {
+            if (INFRASTRUCTURE_TESTS.stream().noneMatch(libraryName::startsWith)) {
+                List<String> versions = getNewerVersionsFor(libraryName, getLatestLibraryVersion(libraryName));
+                List<String> skipped = getSkippedVersions(libraryName);
+                versions.removeAll(skipped);
+                for (String v : versions) {
+                    newerVersions.add(libraryName + ":" + v);
+                }
+            }
+        }
+
+        // Aggregate by library name to the requested structure
+        Map<String, List<String>> grouped = new LinkedHashMap<>();
+        for (String coord : newerVersions) {
+            String[] parts = coord.split(":", -1);
+            String key = parts[0] + ":" + parts[1];
+            grouped.computeIfAbsent(key, k -> new ArrayList<>()).add(parts[2]);
+        }
+
+        List<Map<String, Object>> pairs = new ArrayList<>();
+        for (Map.Entry<String, List<String>> e : grouped.entrySet()) {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("name", e.getKey());
+            m.put("versions", e.getValue());
+            pairs.add(m);
+        }
+
+        try {
+            ObjectMapper om = new ObjectMapper()
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            System.out.println(om.writeValueAsString(pairs));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static List<String> getNewerVersionsFor(String library, String startingVersion) {
+        try {
+            String baseUrl = "https://repo1.maven.org/maven2";
+            String[] libraryParts = library.split(":");
+            String group = libraryParts[0].replace(".", "/");
+            String artifact = libraryParts[1];
+            String data = new String(new URL(baseUrl + "/" + group + "/" + artifact + "/maven-metadata.xml").openStream().readAllBytes());
+
+            List<String> newerVersions = getNewerVersionsFromLibraryIndex(data, startingVersion, library);
+
+            // filter out already tested versions
+            List<String> testedVersions = getTestedVersions(library);
+            newerVersions.removeAll(testedVersions);
+
+            // filter pre-release versions if full release exists
+            return filterPreReleases(newerVersions);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static List<String> getNewerVersionsFromLibraryIndex(String index, String startingVersion, String libraryName) {
+        Pattern pattern = Pattern.compile("<version>(.*)</version>");
+        Matcher matcher = pattern.matcher(index);
+        List<String> allVersions = new ArrayList<>();
+
+        if (matcher.groupCount() < 1) {
+            throw new RuntimeException("Cannot find versions in the given index file: " + libraryName);
+        }
+
+        while (matcher.find()) {
+            allVersions.add(matcher.group(1));
+        }
+
+        int indexOfStartingVersion = allVersions.indexOf(startingVersion);
+        if (indexOfStartingVersion < 0) {
+            return new ArrayList<>();
+        }
+
+        allVersions = allVersions.subList(indexOfStartingVersion, allVersions.size());
+        return new ArrayList<>(allVersions.subList(1, allVersions.size()));
+    }
+
+    static List<String> filterPreReleases(List<String> versions) {
+        // Identify base versions that have a full release
+        Set<String> releases = new HashSet<>();
+        for (String v : versions) {
+            Matcher m = VERSION_PATTERN.matcher(v);
+            if (m.matches() && m.group(2) == null) {
+                releases.add(m.group(1));
+            }
+        }
+
+        List<String> result = new ArrayList<>();
+        for (String v : versions) {
+            Matcher m = VERSION_PATTERN.matcher(v);
+            if (m.matches()) {
+                String base = m.group(1);
+                String preSuffix = m.groupCount() > 1 ? m.group(2) : null;
+                if (preSuffix == null || !releases.contains(base)) {
+                    result.add(v);
+                }
+            } else {
+                result.add(v);
+            }
+        }
+        return result;
+    }
+
+    static String getLatestLibraryVersion(String libraryModule) {
+        try {
+            List<String> testedVersions = getTestedVersions(libraryModule);
+            if (testedVersions.isEmpty()) {
+                throw new IllegalStateException("Cannot find any tested version for: " + libraryModule);
+            }
+            testedVersions.sort(Comparator.comparing(VersionNumber::parse));
+            return testedVersions.get(testedVersions.size() - 1);
+        } catch (RuntimeException e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Reads the tested versions of a given library from its metadata index file.
+     */
+    static List<String> getTestedVersions(String libraryModule) {
+        try {
+            String[] coordinates = libraryModule.split(":");
+            String group = coordinates[0];
+            String artifact = coordinates[1];
+
+            File indexFile = new File("metadata/" + group + "/" + artifact + "/index.json");
+            if (!indexFile.exists()) {
+                return Collections.emptyList();
+            }
+
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(
+                    indexFile, new TypeReference<List<MetadataVersionsIndexEntry>>() {});
+            List<String> testedVersions = new ArrayList<>();
+            for (MetadataVersionsIndexEntry entry : entries) {
+                testedVersions.addAll(entry.testedVersions());
+            }
+            return testedVersions;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns all versions of a given library that are marked as skipped in the metadata index.
+     *
+     * For the provided Maven coordinates (groupId:artifactId), reads metadata/<groupId>/<artifactId>/index.json
+     * and collects versions under "skipped-versions".
+     */
+    static List<String> getSkippedVersions(String libraryModule) {
+        try {
+            String[] coordinates = libraryModule.split(":");
+            String group = coordinates[0];
+            String artifact = coordinates[1];
+
+            File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact + "/index.json");
+            if (!coordinatesMetadataIndex.exists()) {
+                return Collections.emptyList();
+            }
+
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+            List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(
+                    coordinatesMetadataIndex, new TypeReference<List<MetadataVersionsIndexEntry>>() {});
+
+            List<String> skipped = new ArrayList<>();
+            for (MetadataVersionsIndexEntry entry : entries) {
+                if (entry.skippedVersions() != null) {
+                    for (SkippedVersionEntry sve : entry.skippedVersions()) {
+                        skipped.add(sve.version());
+                    }
+                }
+            }
+            return skipped;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
