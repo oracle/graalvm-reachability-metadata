@@ -232,15 +232,23 @@ function fileMatches(file, compiled) {
     changedFiles.forEach(f => console.log(`- ${f}`));
 
     // Check if any file matches
-    const matched = changedFiles.some(f => fileMatches(f, compiled));
+    const matchedFiles = changedFiles.filter(f => fileMatches(f, compiled));
+    const matched = matchedFiles.length > 0;
 
-    // Write GitHub Action output
+    // Write GitHub Action outputs
     fs.appendFileSync(
       process.env.GITHUB_OUTPUT,
       `changed=${matched ? 'true' : 'false'}\n`
     );
 
-    console.log(`Files match filter → ${matched}`);
+    // Write the list of matched files as a multiline output
+    fs.appendFileSync(
+      process.env.GITHUB_OUTPUT,
+      `changed_files=${matchedFiles.join(' ')}\n`
+    );
+
+    console.log(`Files matching filter (${matchedFiles.length}):`);
+    matchedFiles.forEach(f => console.log(`- ${f}`));
   } catch (err) {
     console.log(`file-filter encountered an error: ${err?.message || err}`);
     process.exit(0); // Non-fatal for CI
