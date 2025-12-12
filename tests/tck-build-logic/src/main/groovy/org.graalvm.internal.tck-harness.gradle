@@ -301,44 +301,6 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
     }
 }
 
-tasks.register("generateChangedJsonFiles", DefaultTask) { task ->
-    task.group = METADATA_GROUP
-    task.description = "Returns the list of changed JSON files in the repository between two commits"
-
-    doFirst {
-        if (!project.hasProperty("baseCommit") || !project.hasProperty("newCommit")) {
-            throw new GradleException("Missing 'baseCommit' or 'newCommit'! Rerun Gradle with '-PbaseCommit=<commit> -PnewCommit=<commit>'")
-        }
-
-        def base = project.property("baseCommit")
-        def head = project.property("newCommit")
-
-        // Run git diff to get changed files
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine "git", "diff", "--name-only", base, head
-            standardOutput = stdout
-        }
-
-        def changedFiles = stdout.toString().readLines()
-
-        // Filter only the JSON files we care about
-        def jsonFiles = changedFiles.findAll {
-            it == "metadata/index.json" ||
-                    it ==~ /metadata\/[^\/]+\/[^\/]+\/index\.json/ ||
-                    it.startsWith("tests/src/") && it.endsWith("index.json") ||
-                    it == "library-and-framework-list.json"
-        }
-
-        println "Found ${jsonFiles.size()} changed JSON file(s):"
-        jsonFiles.each { println " - $it" }
-
-        // Write outputs for GitHub Actions
-        writeGithubOutput("changed_files", JsonOutput.toJson(jsonFiles))
-        writeGithubOutput("changed", (jsonFiles.size() > 0).toString())
-    }
-}
-
 // new library version updaters tasks
 tasks.register("fetchExistingLibrariesWithNewerVersions", FetchExistingLibrariesWithNewerVersionsTask.class) { task ->
     task.setGroup(METADATA_GROUP)
