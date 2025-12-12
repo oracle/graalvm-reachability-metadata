@@ -1,0 +1,114 @@
+name: "Validate index.json files"
+
+on:
+  pull_request:
+
+jobs:
+  validate-json:
+    name: "📋 Validate changed JSON files"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'metadata/index.json'
+            - 'metadata/*/*/index.json'
+            - 'tests/src/index.json'
+            - 'tests/src/*/*/*/index.json'
+
+      - name: "🔧 Setup Java"
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🕸️ Populate matrix"
+        id: set-matrix
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          ./gradlew generateChangedIndexFileMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+
+          echo "Matrix output:"
+          echo "${{ steps.set-matrix.outputs.matrix }}"
+
+      - name: "Setup Python"
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: "Install validation tools"
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          pip install jq check-jsonschema
+
+      - name: "Check that the changed index.json files conform to their schemas"
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          MATRIX='${{ steps.set-matrix.outputs.matrix }}'
+          
+          # Convert matrix JSON into an array of file paths
+          FILES=($(echo "$MATRIX" | jq -r '.index_files[]'))
+
+          if [ ${#FILES[@]} -eq 0 ]; then
+            echo "No changed index.json files to validate."
+            exit 0
+          fi
+          
+          # Track failures
+          FAILURES=()
+          
+          for FILE in "${FILES[@]}"; do
+          
+            # Determine schema for each file
+            if [[ "$FILE" == "metadata/index.json" ]]; then
+              SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
+            elif [[ "$FILE" == metadata/*/*/index.json ]]; then
+              SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
+            elif [[ "$FILE" == "tests/src/index.json" ]]; then
+              SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
+            elif [[ "$FILE" == tests/src/*/*/*/index.json ]]; then
+              SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
+            else
+              echo "ℹ️ Skipping: $FILE (no schema mapping)"
+              continue
+            fi
+          
+            echo "🔍 Validating $FILE using $SCHEMA"
+          
+            # Step 1: Check JSON well-formedness
+            if ! jq -e . "$FILE" >/dev/null; then
+              echo "❌ $FILE is not valid JSON"
+              FAILURES+=("$FILE (invalid JSON)")
+              continue
+            fi
+          
+            # Step 2: Validate against schema
+            if ! check-jsonschema --schemafile "$SCHEMA" "$FILE"; then
+              FAILURES+=("$FILE (schema failure)")
+              continue
+            fi
+          
+            echo "✅ $FILE validated successfully"
+          done
+          
+          # Fail at the end if any errors occurred
+          if [ ${#FAILURES[@]} -ne 0 ]; then
+            echo "::error ::Some files failed validation:"
+          for f in "${FAILURES[@]}"; do
+            echo "::error ::  $f"
+          done
+            exit 1
+          fi

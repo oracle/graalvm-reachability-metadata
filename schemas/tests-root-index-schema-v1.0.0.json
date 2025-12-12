@@ -1,0 +1,74 @@
+{
+  "$id": "https://github.com/oracle/graalvm-reachability-metadata/docs/schemas/tests-root-index-schema-v1.0.0.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tests Root Index",
+  "description": "Schema for tests/src/index.json mapping test projects to libraries and versions (see docs/CONTRIBUTING.md).",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [ "test-project-path", "libraries" ],
+    "properties": {
+      "test-project-path": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[^\\s/]+/[^\\s/]+/[^\\s/]+$",
+        "description": "Path under tests/src: <groupId>/<artifactId>/<version> (e.g. 'org.hibernate.orm/hibernate-core/7.1.0.Final')."
+      },
+      "libraries": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [ "name", "versions" ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^[^:]+:[^:]+$",
+              "description": "Library coordinates in the form '<groupId>:<artifactId>' (e.g. 'org.hibernate.orm:hibernate-core')."
+            },
+            "versions": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "List of library versions covered by this test project (strings as published upstream, e.g. '1.1.0', '7.1.0.Final')."
+            }
+          }
+        },
+        "description": "Libraries covered by this test project path with the versions to run."
+      }
+    }
+  },
+  "examples": [
+    [
+      {
+        "test-project-path": "org.example/library/0.0.1",
+        "libraries": [
+          {
+            "name": "org.example:library",
+            "versions": [
+              "0.0.1"
+            ]
+          }
+        ]
+      },
+      {
+        "test-project-path" : "org.hibernate.orm/hibernate-core/7.1.0.Final",
+        "libraries" : [
+          {
+            "name" : "org.hibernate.orm:hibernate-core",
+            "versions" : [
+              "7.1.0.Final"
+            ]
+          }
+        ]
+      }
+    ]
+  ]
+}

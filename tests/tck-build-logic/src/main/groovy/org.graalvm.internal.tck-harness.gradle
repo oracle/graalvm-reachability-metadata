@@ -150,6 +150,13 @@ if (project.hasProperty("baseCommit")) {
     }
 }
 
+List<String> diffIndexFiles = new ArrayList<>()
+if (project.hasProperty("baseCommit")) {
+    String baseCommit = project.findProperty("baseCommit")
+    String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
+    diffIndexFiles.addAll(tck.diffIndexFiles(baseCommit, newCommit))
+}
+
 Map<String, Object> loadCi() {
     File f = project.file("ci.json")
     if (!f.exists()) {
@@ -217,6 +224,32 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
             println "No changed coordinates were found!"
         }
 
+
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
+// gradle generateChangedIndexFileMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedIndexFileMatrix = tasks.register("generateChangedIndexFileMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with changed index.json files")
+    task.setGroup(METADATA_GROUP)
+
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        boolean noneFound = diffIndexFiles.isEmpty()
+
+        def matrix = [
+                "index_files": noneFound ? [] : diffIndexFiles
+        ]
+        matrix.putAll(matrixDefaultsFor("generateChangedIndexFileMatrix"))
+
+        if (noneFound) {
+            println "No changed index.json files were found!"
+        }
 
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
         writeGithubOutput("none-found", noneFound.toString())
