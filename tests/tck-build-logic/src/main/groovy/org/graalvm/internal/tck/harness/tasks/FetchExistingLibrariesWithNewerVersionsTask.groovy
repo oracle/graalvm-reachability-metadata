@@ -72,9 +72,7 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
                 versions = versions.findAll { !skipped.contains(it) }
 
                 versions.forEach {
-                    if (!libraryName.contains("netty")) {
-                        newerVersions.add(libraryName.concat(":").concat(it))
-                    }
+                    newerVersions.add(libraryName.concat(":").concat(it))
                 }
             }
         }
