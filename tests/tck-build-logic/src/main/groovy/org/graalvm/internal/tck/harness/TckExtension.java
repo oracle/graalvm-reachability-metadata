@@ -100,16 +100,38 @@ public abstract class TckExtension {
         Objects.requireNonNull(artifactId, "Artifact ID must be specified");
         Objects.requireNonNull(version, "Version must be specified");
 
-        // First, let's try if we can find test directory from the new `tests/src/index.json` file.
-        List<Map<String, ?>> index = (List<Map<String, ?>>) readIndexFile(testRoot());
-        for (Map<String, ?> entry : index) {
-            boolean found = ((List<Map<String, ?>>) entry.get("libraries")).stream().anyMatch(
-                    lib -> coordinatesMatch((String) lib.get("name"), groupId, artifactId) &&
-                            ((List<String>) lib.get("versions")).contains(version)
-            );
-            if (found) {
-                return testRoot().resolve((String) entry.get("test-project-path"));
+        // First, try to locate the test project via the aggregated tests/src/index.json (new layout).
+        try {
+            List<Map<String, ?>> index = (List<Map<String, ?>>) readIndexFile(testRoot());
+            for (Map<String, ?> entry : index) {
+                boolean found = ((List<Map<String, ?>>) entry.get("libraries")).stream().anyMatch(
+                        lib -> coordinatesMatch((String) lib.get("name"), groupId, artifactId) &&
+                                ((List<String>) lib.get("versions")).contains(version)
+                );
+                if (found) {
+                    return testRoot().resolve((String) entry.get("test-project-path"));
+                }
             }
+        } catch (Exception ignored) {
+            // Fall through to conventional layout resolution below.
+        }
+        // Fallback: conventional layout tests/src/<group>/<artifact>/<version>
+        Path conventional = testRoot().resolve(groupId).resolve(artifactId).resolve(version);
+        if (Files.isDirectory(conventional)) {
+            return conventional;
+        }
+        // Secondary fallback: derive test dir from metadata "metadata-version"
+        try {
+            Path mdDir = getMetadataDir(coordinates); // .../metadata/<group>/<artifact>/<metadata-version>
+            Path mdVersion = mdDir.getFileName();
+            if (mdVersion != null) {
+                Path testsForMetadataVersion = testRoot().resolve(groupId).resolve(artifactId).resolve(mdVersion.toString());
+                if (Files.isDirectory(testsForMetadataVersion)) {
+                    return testsForMetadataVersion;
+                }
+            }
+        } catch (Exception ignored) {
+            // ignore and fall through to error
         }
         throw new RuntimeException("Missing test-directory for coordinates `" + coordinates + "`");
     }
