@@ -18,6 +18,8 @@ public record MetadataVersionsIndexEntry (
         String defaultFor,
         @JsonProperty("metadata-version")
         String metadataVersion,
+        @JsonProperty("test-version")
+        String testVersion,
         @JsonProperty("tested-versions")
         List<String> testedVersions,
         @JsonProperty("skipped-versions")

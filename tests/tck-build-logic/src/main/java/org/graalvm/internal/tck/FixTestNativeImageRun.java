@@ -83,7 +83,7 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
         Coordinates baseCoords = Coordinates.parse(testLibraryCoordinates);
         String newCoordsString = baseCoords.group() + ":" + baseCoords.artifact() + ":" + newLibraryVersion;
         Coordinates newCoords = Coordinates.parse(newCoordsString);
-        MetadataGenerationUtils.makeVersionLatestInIndexJson(getLayout(), newCoords);
+        MetadataGenerationUtils.makeVersionLatestInIndexJson(getLayout(), newCoords, baseCoords.version());
 
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(getLayout(), newCoordsString);
         Files.createDirectories(metadataDirectory);
@@ -99,9 +99,6 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
             MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, List.of(baseCoords.group()));
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
-
-        // Update tests/src/index.json: add newLibraryVersion to the versions of the module under the test project path
-        MetadataGenerationUtils.addNewVersionToTestsIndex(getLayout(), baseCoords, newLibraryVersion);
 
         MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), newCoordsString, gradlewPath, newLibraryVersion);
 

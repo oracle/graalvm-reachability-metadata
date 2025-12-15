@@ -165,6 +165,24 @@ a regexp (Java format) matching the version pattern. For example, for the exampl
 }
 ```
 
+The optional `test-version` key can be used to explicitly define the subdirectory containing 
+the test code for a library version. This is useful when multiple versions of a library's metadata 
+share the same tests, allowing for code reuse and preventing test code duplication. 
+An example of the library above using this field:
+
+```json
+{
+  "metadata-version": "1.1.0",
+  "module": "org.example:library",
+  "test-version": "1.0.0",
+  "tested-versions": [
+    "1.1.0",
+    "1.1.1",
+    "1.1.2"
+  ]
+}
+```
+
 The optional `skipped-versions` key can be used to explicitly exclude specific
 library versions from being considered as supported metadata. A skipped version
 should include both the version and the reason it is excluded. This is useful
@@ -218,40 +236,12 @@ and its
 included [JUnit Platform support](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html#testing-support)
 .
 
-All tests are referenced in `tests/src/index.json`. It should look something like this:
+The location of the test code is determined by the library version being tested:
 
-```json
-[
-  {
-    "test-project-path": "org.example/library/0.0.1",
-    "libraries": [
-      {
-        "name": "org.example:library",
-        "versions": [
-          "0.0.1",
-          "0.0.2"
-        ]
-      }
-    ]
-  },
-  {
-    "test-project-path": "org.example/library/1.0.0",
-    "libraries": [
-      {
-        "name": "org.example:library",
-        "versions": [
-          "1.0.0",
-          "1.1.0-M1",
-          "1.1.0"
-        ]
-      }
-    ]
-  },
-  ...
-]
-```
-
-The test code lives in `test-project-path`. In this example that would be `tests/src/org.example/library/0.0.1`.
+By default, the location of the test code directory mirrors the structure of the metadata directory.
+For metadata located at `metadata/<group_id>/<artifact_id>/<version>`, the corresponding test code is expected to be at `tests/src/<group_id>/<artifact_id>/<version>`.
+This path can be overridden to allow multiple metadata versions to share the same set of test code. This mapping is handled by the local metadata index file (`metadata/<group_id>/<artifact_id>/index.json`).
+If an entry in this index contains the optional `test-version` field, the test code is resolved to the path: `tests/src/<group_id>/<artifact_id>/<test-version>`.
 
 **Optionally** test directory may contain `index.json` with content as follows:
 

@@ -100,16 +100,47 @@ public abstract class TckExtension {
         Objects.requireNonNull(artifactId, "Artifact ID must be specified");
         Objects.requireNonNull(version, "Version must be specified");
 
-        // First, let's try if we can find test directory from the new `tests/src/index.json` file.
-        List<Map<String, ?>> index = (List<Map<String, ?>>) readIndexFile(testRoot());
-        for (Map<String, ?> entry : index) {
-            boolean found = ((List<Map<String, ?>>) entry.get("libraries")).stream().anyMatch(
-                    lib -> coordinatesMatch((String) lib.get("name"), groupId, artifactId) &&
-                            ((List<String>) lib.get("versions")).contains(version)
-            );
-            if (found) {
-                return testRoot().resolve((String) entry.get("test-project-path"));
+        // First, try to locate the test project via the metadata/<group>/<artifact>/index.json.
+        try {
+            Path metadataDir = metadataRoot()
+                    .resolve(groupId)
+                    .resolve(artifactId);
+
+            if (Files.exists(metadataDir)) {
+                List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) readIndexFile(metadataDir);
+
+                // Find the entry where 'metadata-version' EXACTLY matches the input library version
+                Optional<Map<String, ?>> matchingEntry = metadataIndex.stream()
+                        .filter(entry -> version.equals(entry.get("metadata-version")))
+                        .findFirst();
+
+                if (matchingEntry.isPresent()) {
+                    Map<String, ?> entry = matchingEntry.get();
+
+                    // Determine the test version to use: 'test-version' if present, otherwise 'metadata-version'
+                    String testVersion;
+                    if (entry.containsKey("test-version")) {
+                        testVersion = (String) entry.get("test-version");
+                    } else {
+                        testVersion = (String) entry.get("metadata-version");
+                    }
+
+                    Path indexedTest = testRoot().resolve(groupId).resolve(artifactId).resolve(testVersion);
+
+                    if (Files.isDirectory(indexedTest)) {
+                        return indexedTest;
+                    }
+                    // Error: The index pointed to a specific test directory that is missing.
+                    throw new RuntimeException("Test directory specified in index.json (`" + indexedTest + "`) is missing for coordinates: " + coordinates);
+                }
             }
+        } catch (Exception ignored) {
+            // Fall through to conventional lookup
+        }
+        // Fallback: conventional layout tests/src/<group>/<artifact>/<version>
+        Path conventional = testRoot().resolve(groupId).resolve(artifactId).resolve(version);
+        if (Files.isDirectory(conventional)) {
+            return conventional;
         }
         throw new RuntimeException("Missing test-directory for coordinates `" + coordinates + "`");
     }

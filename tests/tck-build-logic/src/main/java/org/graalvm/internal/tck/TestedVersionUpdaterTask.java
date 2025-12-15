@@ -27,12 +27,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,7 +110,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 entry.testedVersions().add(newVersion);
                 entry.testedVersions().sort(Comparator.comparing(VersionNumber::parse));
 
-                entries.set(i, handlePreReleases(entry, newVersion, coordinatesMetadataIndex.toPath().getParent()));
+                entries.set(i, handlePreReleases(entry, newVersion, coordinatesMetadataIndex.toPath().getParent(), entries));
             }
         }
 
@@ -141,7 +139,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
      *   <li>Version parsing follows {@link #VERSION_PATTERN} and treats ".Final" and ".RELEASE" as a base version.</li>
      * </ul>
      */
-    private MetadataVersionsIndexEntry handlePreReleases(MetadataVersionsIndexEntry entry, String newVersion, Path baseDir) throws IOException {
+    private MetadataVersionsIndexEntry handlePreReleases(MetadataVersionsIndexEntry entry, String newVersion, Path baseDir, List<MetadataVersionsIndexEntry> entries) throws IOException {
         Matcher versionMatcher = VERSION_PATTERN.matcher(newVersion);
         if (!versionMatcher.matches()) return entry; // skip invalid formats
 
@@ -162,12 +160,14 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 if (Files.exists(oldDir)) Files.move(oldDir, newDir);
 
                 updateTests(baseDir, entry, oldMetadata, newVersion);
+                updateDependentTestVersions(oldMetadata, newVersion, entries);
                 return new MetadataVersionsIndexEntry(
                         entry.latest(),
                         entry.override(),
                         entry.module(),
                         entry.defaultFor(),
                         newVersion,
+                        entry.testVersion(),
                         entry.testedVersions(),
                         entry.skippedVersions()
                 );
@@ -202,8 +202,6 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
         if (Files.exists(oldTestDir)) {
             Files.move(oldTestDir, newTestDir);
             updateGradleProperties(newTestDir, entry, newVersion);
-            updateTestsIndexJson(metadataBaseDir.getParent().getParent().getParent().resolve("tests/src/index.json"),
-                    entry, oldVersion, newVersion);
         }
     }
 
@@ -225,35 +223,29 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
     }
 
     /**
-     * Updates the global tests index.json file to reflect the renamed test directory and new version.
+     * Checks all entries in the index file to see if any are using the old metadata version
+     * (which was a pre-release) as their 'test-version' override, and updates it to the new
+     * full-release version if a match is found.
      */
-    @SuppressWarnings("unchecked")
-    private void updateTestsIndexJson(Path indexJson, MetadataVersionsIndexEntry entry, String oldVersion, String newVersion) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Map<String, Object>> entries = objectMapper.readValue(indexJson.toFile(), new TypeReference<>() {});
+    private void updateDependentTestVersions(String oldTestVersion, String newTestVersion, List<MetadataVersionsIndexEntry> entries) {
+        for (int i = 0; i < entries.size(); i++) {
+            MetadataVersionsIndexEntry entry = entries.get(i);
 
-        String oldPath = entry.module().replace(":", "/") + "/" + oldVersion;
-        String newPath = entry.module().replace(":", "/") + "/" + newVersion;
-
-        for (Map<String, Object> e : entries) {
-            if (oldPath.equals(e.get("test-project-path"))) {
-                e.put("test-project-path", newPath);
-                List<Map<String, Object>> libs = (List<Map<String, Object>>) e.get("libraries");
-                for (Map<String, Object> lib : libs) {
-                    List<String> versions = (List<String>) lib.get("versions");
-                    versions.clear();
-                    versions.add(newVersion);
-                }
-                break;
+            // Check if the entry explicitly points to the old directory via 'test-version'
+            if (oldTestVersion.equals(entry.testVersion())) {
+                // Create a new entry with the updated test-version
+                MetadataVersionsIndexEntry updatedEntry = new MetadataVersionsIndexEntry(
+                        entry.latest(),
+                        entry.override(),
+                        entry.module(),
+                        entry.defaultFor(),
+                        entry.metadataVersion(),
+                        newTestVersion,
+                        entry.testedVersions(),
+                        entry.skippedVersions()
+                );
+                entries.set(i, updatedEntry);
             }
         }
-
-        DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
-        printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-        String json = objectMapper.writer(printer).writeValueAsString(entries);
-        if (!json.endsWith("\n")) {
-            json += System.lineSeparator();
-        }
-        Files.writeString(indexJson, json, StandardCharsets.UTF_8);
     }
 }
