@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public abstract class TestedVersionUpdaterTask extends DefaultTask {
     /**
-     * Identifies library versions, including optional pre-release and ".Final" suffixes.
+     * Identifies library versions, including optional pre-release, ".Final" and ".RELEASE" suffixes.
      * <p>
      * A version is considered a pre-release if it has a suffix (following the last '.' or '-') matching
      * one of these case-insensitive patterns:
@@ -55,10 +55,10 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
      *   <li>Numeric suffixes separated by '-' (e.g., "-1", "-123")</li>
      * </ul>
      * <p>
-     * Versions ending with ".Final" are treated as full releases of the base version.
+     * Versions ending with ".Final" or `.RELEASE` are treated as full releases of the base version.
      */
     private static final Pattern VERSION_PATTERN = Pattern.compile(
-            "(?i)^(\\d+(?:\\.\\d+)*)(?:\\.Final)?(?:[-.](alpha\\d*|beta\\d*|rc\\d*|cr\\d*|m\\d+|ea\\d*|b\\d+|\\d+|preview)(?:[-.].*)?)?$"
+            "(?i)^(\\d+(?:\\.\\d+)*)(?:\\.Final|\\.RELEASE)?(?:[-.](alpha\\d*|beta\\d*|rc\\d*|cr\\d*|m\\d+|ea\\d*|b\\d+|\\d+|preview)(?:[-.].*)?)?$"
     );
 
     @Option(option = "coordinates", description = "GAV coordinates of the library")
@@ -132,13 +132,13 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
      * <p>
      * Rules applied by this method:
      * <ul>
-     *   <li>If the newly added version is a full release (no pre-release label, or ending with ".Final"),
+     *   <li>If the newly added version is a full release (no pre-release label, or ending with ".Final" or ".RELEASE"),
      *       all existing pre-releases of the same base version are removed from {@code testedVersions}.</li>
      *   <li>If the newly added version is itself a pre-release, no versions are removed.</li>
      *   <li>If the entry's {@code metadataVersion} is a pre-release of the same base version,
      *       it is updated to the new full release. The corresponding metadata and test directories are renamed accordingly.
      *       The {@code gradle.properties} file in the tests directory is updated to refer to the new version.</li>
-     *   <li>Version parsing follows {@link #VERSION_PATTERN} and treats ".Final" as a base version.</li>
+     *   <li>Version parsing follows {@link #VERSION_PATTERN} and treats ".Final" and ".RELEASE" as a base version.</li>
      * </ul>
      */
     private MetadataVersionsIndexEntry handlePreReleases(MetadataVersionsIndexEntry entry, String newVersion, Path baseDir) throws IOException {
