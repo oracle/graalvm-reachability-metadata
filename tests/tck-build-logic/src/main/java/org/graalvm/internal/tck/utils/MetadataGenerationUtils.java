@@ -236,9 +236,6 @@ public final class MetadataGenerationUtils {
      */
     public static void addNewEntryToTestsIndex(ProjectLayout layout, Coordinates newCoords) throws IOException {
         Path indexPath = GeneralUtils.getPathFromProject(layout, "tests/src/index.json");
-        if (!Files.exists(indexPath)) {
-            return;
-        }
 
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
