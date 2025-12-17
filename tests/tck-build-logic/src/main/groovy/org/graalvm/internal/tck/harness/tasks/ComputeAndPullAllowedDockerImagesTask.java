@@ -6,9 +6,14 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.DockerUtils;
 import org.graalvm.internal.tck.harness.TckExtension;
+import org.graalvm.internal.tck.model.TestIndexEntry;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
+import org.graalvm.internal.tck.utils.GeneralUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.provider.Property;
@@ -23,7 +28,9 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -93,7 +100,29 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
             String group = parts[0];
             String artifact = parts[1];
             String version = parts[2];
-            File f = getProject().file("tests/src/" + group + "/" + artifact + "/" + version + "/required-docker-images.txt");
+
+
+            ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            Path indexPath = getProject().getProjectDir().toPath().resolve("tests/src/index.json");
+            String content = Files.readString(indexPath, StandardCharsets.UTF_8);
+            if (content == null || content.isBlank()) {
+                throw new GradleException("Cannot find test index file at: " + indexPath);
+            }
+
+            List<TestIndexEntry> entries = mapper.readValue(content, new TypeReference<>() {});
+
+            String dockerImagesPath = null;
+            for (TestIndexEntry e : entries) {
+                if (e.libraries().getFirst().name().equals(group + ":" + artifact) && e.libraries().getFirst().versions().contains(version)) {
+                    dockerImagesPath = "tests/src/" + e.testProjectPath() + "/required-docker-images.txt";
+                }
+            }
+
+            if(dockerImagesPath == null) {
+                throw new GradleException("Cannot find test coordinates in tests/src/index.json");
+            }
+
+            File f = getProject().file(dockerImagesPath);
             if (f.exists()) {
                 Files.readAllLines(f.toPath()).stream()
                         .map(String::trim)
