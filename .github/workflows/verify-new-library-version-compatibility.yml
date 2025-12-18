@@ -299,7 +299,7 @@ jobs:
             if [[ -z "$VERSION" ]]; then continue; fi
           
             # Parse version
-            VERSION_REGEX="^([0-9]+(\.[0-9]+)*)(\.Final)?([-.]$PRE_RELEASE_SUFFIX([-.].*)?)?$"
+            VERSION_REGEX="^([0-9]+(\.[0-9]+)*)(\.Final|\.RELEASE)?([-.]$PRE_RELEASE_SUFFIX([-.].*)?)?$"
             if [[ "$VERSION" =~ $VERSION_REGEX ]]; then
               BASE_VERSION="${BASH_REMATCH[1]}"
               PRE_RELEASE_TAG="${BASH_REMATCH[4]-}"

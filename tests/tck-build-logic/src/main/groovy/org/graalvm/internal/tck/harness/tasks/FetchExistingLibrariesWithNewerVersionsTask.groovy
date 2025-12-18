@@ -32,7 +32,7 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example")
 
     /**
-     * Identifies library versions, including optional pre-release and ".Final" suffixes.
+     * Identifies library versions, including optional pre-release, ".Final" and ".RELEASE" suffixes.
      * <p>
      * A version is considered a pre-release if it has a suffix (following the last '.' or '-') matching
      * one of these case-insensitive patterns:
@@ -48,9 +48,9 @@ abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
      *   <li>Numeric suffixes separated by '-' (e.g., "-1", "-123")</li>
      * </ul>
      * <p>
-     * Versions ending with ".Final" are treated as full releases of the base version.
+     * Versions ending with ".Final" or ".RELEASE" are treated as full releases of the base version.
      */
-    private static final Pattern VERSION_PATTERN = ~/(?i)^(\d+(?:\.\d+)*)(?:\.Final)?(?:[-.](alpha\d*|beta\d*|rc\d*|cr\d*|m\d+|ea\d*|b\d+|\d+|preview)(?:[-.].*)?)?$/
+    private static final Pattern VERSION_PATTERN = ~/(?i)^(\d+(?:\.\d+)*)(?:\.Final|\.RELEASE)?(?:[-.](alpha\d*|beta\d*|rc\d*|cr\d*|m\d+|ea\d*|b\d+|\d+|preview)(?:[-.].*)?)?$/
 
     @TaskAction
     void action() {
