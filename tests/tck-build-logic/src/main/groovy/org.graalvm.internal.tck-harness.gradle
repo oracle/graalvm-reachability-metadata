@@ -316,21 +316,7 @@ tasks.register("fixTestNativeImageRun", FixTestNativeImageRun.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
-// gradle addNewEntryTestsIndexJson -Pcoordinates=<maven-coordinates>
-tasks.register("addNewEntryTestsIndexJson", DefaultTask) { task ->
-    task.setDescription("Adds a new entry to tests/src/index.json for a new library version.")
-    task.setGroup(METADATA_GROUP)
-    task.doFirst {
-        if (!project.hasProperty("coordinates")) {
-            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact:version>")
-        }
-        def coordsStr = project.findProperty("coordinates").toString()
-        def coords = CoordinateUtils.fromString(coordsStr)
-        MetadataGenerationUtils.addNewEntryToTestsIndex(project.layout, coords)
-    }
-}
-
-// gradle addLibraryAsLatestMetadataIndexJson -Pcoordinates=<maven-coordinates>
+// gradle addLibraryAsLatestMetadataIndexJson -Pcoordinates=<maven-coordinates> [-PtestVersion=<version>]
 tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
     task.setDescription("Marks given coordinates as latest in metadata/group/artifact/index.json")
     task.setGroup(METADATA_GROUP)
@@ -340,6 +326,7 @@ tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
         }
         def coordsStr = project.findProperty("coordinates").toString()
         def coords = CoordinateUtils.fromString(coordsStr)
-        MetadataGenerationUtils.makeVersionLatestInIndexJson(project.layout, coords)
+        def testVersion = project.hasProperty("testVersion") ? project.findProperty("testVersion").toString() : null
+        MetadataGenerationUtils.makeVersionLatestInIndexJson(project.layout, coords, testVersion)
     }
 }

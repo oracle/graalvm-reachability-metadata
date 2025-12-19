@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataIndexEntry;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
-import org.graalvm.internal.tck.model.TestIndexEntry;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.logging.LogLevel;
@@ -99,7 +98,6 @@ class ScaffoldTask extends DefaultTask {
 
         // Tests
         writeTestScaffold(coordinatesTestRoot, coordinates);
-        addToTestIndexJson(coordinates);
 
         System.out.printf("Generated metadata and test for %s%n", coordinates);
         System.out.printf("You can now use 'gradle test -Pcoordinates=%s' to run the tests%n", coordinates);
@@ -123,34 +121,6 @@ class ScaffoldTask extends DefaultTask {
         return entries.stream().noneMatch(e -> e.module().equalsIgnoreCase(newModule) && e.metadataVersion().equalsIgnoreCase(coordinates.version()));
     }
 
-
-    private void addToTestIndexJson(Coordinates coordinates) throws IOException {
-        File testIndex = getProject().file("tests/src/index.json");
-        List<TestIndexEntry> entries = objectMapper.readValue(testIndex, new TypeReference<>() {
-        });
-
-        String testProjectPath = coordinates.group() + "/" + coordinates.artifact() + "/" + coordinates.version();
-
-        // Look for existing entry
-        for (TestIndexEntry entry : entries) {
-            if (entry.testProjectPath().equals(testProjectPath)) {
-                getLogger().debug("Found {} in {}", testProjectPath, testIndex);
-                return;
-            }
-        }
-
-        // Entry is not in index.json, add it
-        getLogger().debug("Did not find {} in {}, adding it", testProjectPath, testIndex);
-        entries.add(new TestIndexEntry(testProjectPath, List.of(
-                new TestIndexEntry.LibraryEntry(coordinates.group() + ":" + coordinates.artifact(), List.of(coordinates.version()))
-        )));
-
-        List<TestIndexEntry> sortedEntries = entries.stream()
-                .sorted(Comparator.comparing(TestIndexEntry::testProjectPath))
-                .toList();
-
-        objectMapper.writeValue(testIndex, sortedEntries);
-    }
 
     private void addToMetadataIndexJson(Coordinates coordinates) throws IOException {
         File metadataIndex = getProject().file("metadata/index.json");
@@ -264,7 +234,7 @@ class ScaffoldTask extends DefaultTask {
         List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
 
         // add new entry
-        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(null, null, coordinates.group() + ":" + coordinates.artifact(), null, coordinates.version(), List.of(coordinates.version()), null);
+        MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(null, null, coordinates.group() + ":" + coordinates.artifact(), null, coordinates.version(), null, List.of(coordinates.version()), null);
 
         entries.add(newEntry);
 
@@ -297,7 +267,7 @@ class ScaffoldTask extends DefaultTask {
 
     private void setLatest( List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {
         MetadataVersionsIndexEntry oldEntry = list.remove(index);
-        list.add(new MetadataVersionsIndexEntry(newValue, oldEntry.override(), oldEntry.module(), oldEntry.defaultFor(), oldEntry.metadataVersion(), oldEntry.testedVersions(), oldEntry.skippedVersions()));
+        list.add(new MetadataVersionsIndexEntry(newValue, oldEntry.override(), oldEntry.module(), oldEntry.defaultFor(), oldEntry.metadataVersion(), oldEntry.testVersion(), oldEntry.testedVersions(), oldEntry.skippedVersions()));
     }
 
     private String getEmptyJsonArray() {

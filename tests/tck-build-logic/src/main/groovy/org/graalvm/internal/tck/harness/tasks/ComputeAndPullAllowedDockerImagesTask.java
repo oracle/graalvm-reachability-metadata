@@ -8,12 +8,10 @@ package org.graalvm.internal.tck.harness.tasks;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.DockerUtils;
 import org.graalvm.internal.tck.harness.TckExtension;
-import org.graalvm.internal.tck.model.TestIndexEntry;
+import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
-import org.graalvm.internal.tck.utils.GeneralUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.provider.Property;
@@ -92,6 +90,8 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
 
         // Collect union of required docker images
         Set<String> requiredImages = new LinkedHashSet<>();
+        ObjectMapper mapper = new ObjectMapper();
+
         for (String c : matching) {
             String[] parts = c.split(":");
             if (parts.length < 3) {
@@ -101,34 +101,44 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
             String artifact = parts[1];
             String version = parts[2];
 
-
-            ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-            Path indexPath = getProject().getProjectDir().toPath().resolve("tests/src/index.json");
+            Path indexPath = getProject().getProjectDir().toPath()
+                    .resolve("metadata")
+                    .resolve(group)
+                    .resolve(artifact)
+                    .resolve("index.json");
             String content = Files.readString(indexPath, StandardCharsets.UTF_8);
+
             if (content == null || content.isBlank()) {
-                throw new GradleException("Cannot find test index file at: " + indexPath);
+                throw new GradleException("Cannot find index file at: " + indexPath);
             }
 
-            List<TestIndexEntry> entries = mapper.readValue(content, new TypeReference<>() {});
+            List<MetadataVersionsIndexEntry> entries = mapper.readValue(indexPath.toFile(), new TypeReference<>() {});
 
-            String dockerImagesPath = null;
-            for (TestIndexEntry e : entries) {
-                if (e.libraries().getFirst().name().equals(group + ":" + artifact) && e.libraries().getFirst().versions().contains(version)) {
-                    dockerImagesPath = "tests/src/" + e.testProjectPath() + "/required-docker-images.txt";
+            String testVersion = null;
+            for (MetadataVersionsIndexEntry entry : entries) {
+                // Logic: Check if the current coordinate version is in the tested list
+                if (entry.metadataVersion().equals(version)) {
+                    // Priority: 1. test-version, 2. metadata-version
+                    testVersion = entry.testVersion() != null ? entry.testVersion() : entry.metadataVersion();
+                    break;
                 }
             }
+            if (testVersion != null) {
+                Path dockerImagesPath = getProject().getProjectDir().toPath()
+                        .resolve("tests/src")
+                        .resolve(group)
+                        .resolve(artifact)
+                        .resolve(testVersion)
+                        .resolve("required-docker-images.txt");
 
-            if(dockerImagesPath == null) {
-                throw new GradleException("Cannot find test coordinates in tests/src/index.json");
-            }
-
-            File f = getProject().file(dockerImagesPath);
-            if (f.exists()) {
-                Files.readAllLines(f.toPath()).stream()
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .filter(s -> !s.startsWith("#"))
-                        .forEach(requiredImages::add);
+                File f = getProject().file(dockerImagesPath);
+                if (f.exists()) {
+                    Files.readAllLines(f.toPath()).stream()
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .filter(s -> !s.startsWith("#"))
+                            .forEach(requiredImages::add);
+                }
             }
         }
 

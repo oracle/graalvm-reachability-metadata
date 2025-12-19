@@ -14,9 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.Coordinates;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
-import org.graalvm.internal.tck.model.TestIndexEntry;
-import org.graalvm.internal.tck.model.TestIndexEntry.LibraryEntry;
-import org.gradle.api.GradleException;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.process.ExecOperations;
 
@@ -129,7 +126,7 @@ public final class MetadataGenerationUtils {
      * Marks the library version identified by {@code newCoords} as the {@code latest} entry
      * within its corresponding {@code index.json}.
      */
-    public static void makeVersionLatestInIndexJson(ProjectLayout layout, Coordinates newCoords) throws IOException {
+    public static void makeVersionLatestInIndexJson(ProjectLayout layout, Coordinates newCoords, String testVersion) throws IOException {
         String indexPathTemplate = "metadata/$group$/$artifact$/index.json";
         File indexFile = GeneralUtils.getPathFromProject(layout, CoordinateUtils.replace(indexPathTemplate, newCoords)).toFile();
 
@@ -165,6 +162,7 @@ public final class MetadataGenerationUtils {
                         entry.module(),
                         entry.defaultFor(),
                         entry.metadataVersion(),
+                        entry.testVersion(),
                         entry.testedVersions(),
                         entry.skippedVersions()
                 ));
@@ -181,6 +179,7 @@ public final class MetadataGenerationUtils {
                 moduleName,
                 null,
                 newCoords.version(),
+                testVersion,
                 testedVersions,
                 null
         );
@@ -193,98 +192,5 @@ public final class MetadataGenerationUtils {
             json = json + System.lineSeparator();
         }
         Files.writeString(indexFile.toPath(), json, java.nio.charset.StandardCharsets.UTF_8);
-    }
-
-    /**
-     * Updates tests/src/index.json to add {@code newLibraryVersion} to the versions of the module under the test project path.
-     */
-    public static void addNewVersionToTestsIndex(ProjectLayout layout, Coordinates testCoords, String newLibraryVersion) throws IOException {
-        Path indexPath = GeneralUtils.getPathFromProject(layout, "tests/src/index.json");
-        if (!Files.exists(indexPath)) {
-            return;
-        }
-
-        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-
-        String content = Files.readString(indexPath, StandardCharsets.UTF_8);
-        if (content == null || content.isBlank()) {
-            throw new GradleException("Cannot find test index file at: " + indexPath);
-        }
-
-        List<TestIndexEntry> entries = mapper.readValue(content, new TypeReference<>() {});
-        String testProjectPath = testCoords.group() + "/" + testCoords.artifact() + "/" + testCoords.version();
-
-        for (int i = 0; i < entries.size(); i++) {
-            TestIndexEntry e = entries.get(i);
-            if (testProjectPath.equals(e.testProjectPath())) {
-                LibraryEntry lib = e.libraries().getFirst();
-                lib.versions().add(newLibraryVersion);
-            }
-        }
-        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-        String json = mapper.writer(prettyPrinter).writeValueAsString(entries);
-        if (!json.endsWith(System.lineSeparator())) {
-            json = json + System.lineSeparator();
-        }
-        Files.writeString(indexPath, json, StandardCharsets.UTF_8);
-    }
-
-    /**
-     * Adds a new entry to tests/src/index.json for the given coordinates.
-     * The entry is inserted by lexicographic order of test-project-path value.
-     */
-    public static void addNewEntryToTestsIndex(ProjectLayout layout, Coordinates newCoords) throws IOException {
-        Path indexPath = GeneralUtils.getPathFromProject(layout, "tests/src/index.json");
-
-        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-
-        String content = Files.readString(indexPath, StandardCharsets.UTF_8);
-        if (content == null || content.isBlank()) {
-            throw new GradleException("Cannot find test index file at: " + indexPath);
-        }
-
-        List<TestIndexEntry> entries = mapper.readValue(content, new TypeReference<>() {});
-        String group = newCoords.group();
-        String artifact = newCoords.artifact();
-        String newVersion = newCoords.version();
-        String prefix = group + "/" + artifact + "/";
-        String newTestProjectPath = prefix + newVersion;
-
-        // If the new entry already exists, do nothing
-        for (TestIndexEntry e : entries) {
-            if (newTestProjectPath.equals(e.testProjectPath())) {
-                return;
-            }
-        }
-
-        // Build new entry
-        String libName = group + ":" + artifact;
-        List<String> versions = new ArrayList<>();
-        versions.add(newVersion);
-        LibraryEntry libraryEntry = new LibraryEntry(libName, versions);
-        List<LibraryEntry> libraries = new ArrayList<>();
-        libraries.add(libraryEntry);
-        TestIndexEntry newEntry = new TestIndexEntry(newTestProjectPath, libraries);
-
-        // Insert lexicographic order of test-project-path
-        int insertAt = entries.size();
-        for (int i = 0; i < entries.size(); i++) {
-            String tp = entries.get(i).testProjectPath();
-            if (tp != null && newTestProjectPath.compareTo(tp) < 0) {
-                insertAt = i;
-                break;
-            }
-        }
-
-        entries.add(insertAt, newEntry);
-
-        DefaultPrettyPrinter prettyPrinterNew = new DefaultPrettyPrinter();
-        prettyPrinterNew.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-        String jsonNew = mapper.writer(prettyPrinterNew).writeValueAsString(entries);
-        if (!jsonNew.endsWith(System.lineSeparator())) {
-            jsonNew = jsonNew + System.lineSeparator();
-        }
-        Files.writeString(indexPath, jsonNew, StandardCharsets.UTF_8);
     }
 }
