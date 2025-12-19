@@ -1,5 +1,5 @@
 {
-  "$id": "https://github.com/oracle/graalvm-reachability-metadata/schemas/metadata-library-index.schema.json",
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/schemas/metadata-library-index-schema-v1.0.0.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each entry describes a metadata bundle for a range of library versions.",
   "type": "array",
@@ -31,6 +31,11 @@
           "type": "string",
           "minLength": 1
         }
+      },
+      "test-version": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
       },
       "latest": {
         "type": "boolean",
@@ -78,7 +83,8 @@
         "metadata-version": "0.0.1",
         "module": "org.example:library",
         "tested-versions": [ "0.0.1", "0.0.2" ],
-        "default-for": "0\\.0\\..*"
+        "default-for": "0\\.0\\..*",
+        "test-version": "0.0.1"
       },
       {
         "latest": true,

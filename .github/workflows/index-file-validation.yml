@@ -22,7 +22,6 @@ jobs:
           file-patterns: |
             - 'metadata/index.json'
             - 'metadata/*/*/index.json'
-            - 'tests/src/index.json'
             - 'tests/src/*/*/*/index.json'
 
       - name: "🔧 Setup Java"
@@ -77,8 +76,6 @@ jobs:
               SCHEMA="schemas/metadata-root-index-schema-v1.0.0.json"
             elif [[ "$FILE" == metadata/*/*/index.json ]]; then
               SCHEMA="schemas/metadata-library-index-schema-v1.0.0.json"
-            elif [[ "$FILE" == "tests/src/index.json" ]]; then
-              SCHEMA="schemas/tests-root-index-schema-v1.0.0.json"
             elif [[ "$FILE" == tests/src/*/*/*/index.json ]]; then
               SCHEMA="schemas/tests-project-index-schema-v1.0.0.json"
             else
