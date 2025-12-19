@@ -6,12 +6,12 @@
  */
 package org.graalvm.internal.tck.model.grype;
 
-/*
- * JSON model for metadata/index.json.
- */
 import java.util.List;
 import java.util.Map;
 
+/*
+ * JSON model for metadata/index.json.
+ */
 public class GrypeEntry {
     public String id;
     public String dataSource;
@@ -22,9 +22,17 @@ public class GrypeEntry {
     public List<Cvss> cvss;
     public List<KnownExploited> knownExploited;
     public List<Epss> epss;
+    public List<Cwe> cwes;
     public Fix fix;
     public List<Object> advisories; // unknown structure
     public Double risk;
+}
+
+class Cwe {
+    public String cve;
+    public String cwe;
+    public String source;
+    public String type;
 }
 
 class Cvss {
@@ -35,6 +43,7 @@ class Cvss {
     public Metrics metrics;
     public Map<String, Object> vendorMetadata;
 }
+
 class Metrics {
     public Double baseScore;
     public Double exploitabilityScore;
@@ -66,6 +75,7 @@ class Fix {
     public String state;
     public List<AvailableFix> available;
 }
+
 class AvailableFix {
     public String version;
     public String date;
