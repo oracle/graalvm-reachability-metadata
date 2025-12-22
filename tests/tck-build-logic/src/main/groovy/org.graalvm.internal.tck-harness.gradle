@@ -29,6 +29,7 @@ import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVer
 import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
 import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
+import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 
@@ -115,7 +116,12 @@ if (tasks.findByName("test") == null) {
     tasks.named("test").configure { it.dependsOn("tckTest") }
 }
 
- // gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
+tasks.register("validateIndexFiles", ValidateIndexFilesTask.class) { task ->
+    task.setDescription("Checks content of index.json files for matching coordinates or files")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+// gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
 tasks.register("checkMetadataFiles", CheckMetadataFilesAllTask.class) { task ->
     task.setDescription("Checks content of metadata files for matching coordinates")
     task.setGroup(METADATA_GROUP)
@@ -148,13 +154,6 @@ if (project.hasProperty("baseCommit")) {
     diff.configure {
         dependsOn("testDiff")
     }
-}
-
-List<String> diffIndexFiles = new ArrayList<>()
-if (project.hasProperty("baseCommit")) {
-    String baseCommit = project.findProperty("baseCommit")
-    String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
-    diffIndexFiles.addAll(tck.diffIndexFiles(baseCommit, newCommit))
 }
 
 Map<String, Object> loadCi() {
@@ -230,27 +229,32 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
-// gradle generateChangedIndexFileList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-tasks.register("generateChangedIndexFileList", DefaultTask) { task ->
-    task.setDescription("Returns a list of changed index.json files for validation")
+// gradle generateChangedIndexFileCoordinatesList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+tasks.register("generateChangedIndexFileCoordinatesList", DefaultTask) { task ->
+    task.setDescription("Returns a list of changed coordinates for validation based on git diff")
     task.setGroup(METADATA_GROUP)
 
-    task.doFirst {
+    task.doLast {
         if (!project.hasProperty("baseCommit")) {
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
-        def changedFiles = diffIndexFiles ?: []
-        boolean noneFound = changedFiles.isEmpty()
+        String base = project.property("baseCommit")
+        String head = project.findProperty("newCommit") ?: "HEAD"
+
+        List<String> changedIndexFileCoordinates = tck.diffIndexCoordinates(base, head)
+
+        boolean noneFound = changedIndexFileCoordinates.isEmpty()
 
         if (noneFound) {
             println "No changed index.json files were found!"
         }
 
-        writeGithubOutput("changed-files", changedFiles.join(' '))
+        writeGithubOutput("changed-coordinates", changedIndexFileCoordinates.join(' '))
         writeGithubOutput("none-found", noneFound.toString())
     }
 }
+
 // gradle generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("generateInfrastructureChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")

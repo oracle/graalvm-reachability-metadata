@@ -24,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -216,11 +218,11 @@ public abstract class TckExtension {
     }
 
     /**
-     * Returns a list of changed index.json files between baseCommit and newCommit.
+     * Returns a list of changed coordinates based on index.json files modified between baseCommit and newCommit.
      *
-     * @return List of index.json files
+     * @return List of coordinates (e.g., "org.flywaydb:flyway-core" or "org.example:library:1.0.0")
      */
-    public List<String> diffIndexFiles(String baseCommit, String newCommit) {
+    public List<String> diffIndexCoordinates(String baseCommit, String newCommit) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         getExecOperations().exec(spec -> {
             spec.setStandardOutput(baos);
@@ -229,12 +231,34 @@ public abstract class TckExtension {
         });
 
         String output = baos.toString(StandardCharsets.UTF_8);
-        List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"));
+        String[] lines = output.split("\\r?\\n");
 
-        return diffFiles.stream()
-                .filter(f -> f.endsWith("index.json"))
+        return Arrays.stream(lines)
+                .map(this::indexPathToCoordinate) // Extract coordinate from path
+                .filter(Objects::nonNull)      // Remove paths that weren't index files
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Maps an index.json file path to its corresponding coordinate string.
+     *
+     * @return the coordinate string (G:A or G:A:V), or null if not a match
+     */
+    private String indexPathToCoordinate(String path) {
+        Pattern pattern = Pattern.compile("(?:metadata|tests/src)/([^/]+)/([^/]+)(?:/([^/]+))?/index\\.json");
+        Matcher matcher = pattern.matcher(path);
+
+        if (matcher.matches()) {
+            String group = matcher.group(1);
+            String artifact = matcher.group(2);
+            String version = matcher.group(3);
+
+            return (version != null)
+                    ? String.format("%s:%s:%s", group, artifact, version)
+                    : String.format("%s:%s", group, artifact);
+        }
+        return null;
     }
 
     private boolean metadataIndexContainsChangedEntries(Set<String> changedCoordinates, List<String> changedEntries) {
