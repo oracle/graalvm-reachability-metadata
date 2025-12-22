@@ -31,14 +31,11 @@ jobs:
           distribution: 'graalvm'
           java-version: '21'
 
-      - name: "🕸️ Populate matrix"
-        id: set-matrix
+      - name: "📋 Get changed index files"
+        id: get-files
         if: steps.filter.outputs.changed == 'true'
         run: |
-          ./gradlew generateChangedIndexFileMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
-
-          echo "Matrix output:"
-          echo "${{ steps.set-matrix.outputs.matrix }}"
+          ./gradlew generateChangedIndexFileList -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
       - name: "Setup Python"
         if: steps.filter.outputs.changed == 'true'
@@ -52,24 +49,16 @@ jobs:
           pip install jq check-jsonschema
 
       - name: "Check that the changed index.json files conform to their schemas"
-        if: steps.filter.outputs.changed == 'true'
+        if: steps.filter.outputs.changed == 'true' && steps.get-files.outputs.none_found != 'true'
         run: |
           set -euo pipefail
-
-          MATRIX='${{ steps.set-matrix.outputs.matrix }}'
           
-          # Convert matrix JSON into an array of file paths
-          FILES=($(echo "$MATRIX" | jq -r '.index_files[]'))
-
-          if [ ${#FILES[@]} -eq 0 ]; then
-            echo "No changed index.json files to validate."
-            exit 0
-          fi
+          FILES="${{ steps.get-files.outputs.changed_files }}"
           
           # Track failures
           FAILURES=()
           
-          for FILE in "${FILES[@]}"; do
+          for FILE in $FILES; do
           
             # Determine schema for each file
             if [[ "$FILE" == "metadata/index.json" ]]; then
@@ -104,8 +93,8 @@ jobs:
           # Fail at the end if any errors occurred
           if [ ${#FAILURES[@]} -ne 0 ]; then
             echo "::error ::Some files failed validation:"
-          for f in "${FAILURES[@]}"; do
-            echo "::error ::  $f"
-          done
+            for f in "${FAILURES[@]}"; do
+              echo "::error ::  $f"
+            done
             exit 1
           fi

@@ -230,9 +230,9 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
-// gradle generateChangedIndexFileMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-Provider<Task> generateChangedIndexFileMatrix = tasks.register("generateChangedIndexFileMatrix", DefaultTask) { task ->
-    task.setDescription("Returns matrix definition populated with changed index.json files")
+// gradle generateChangedIndexFileList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+tasks.register("generateChangedIndexFileList", DefaultTask) { task ->
+    task.setDescription("Returns a list of changed index.json files for validation")
     task.setGroup(METADATA_GROUP)
 
     task.doFirst {
@@ -240,22 +240,17 @@ Provider<Task> generateChangedIndexFileMatrix = tasks.register("generateChangedI
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
-        boolean noneFound = diffIndexFiles.isEmpty()
-
-        def matrix = [
-                "index_files": noneFound ? [] : diffIndexFiles
-        ]
-        matrix.putAll(matrixDefaultsFor("generateChangedIndexFileMatrix"))
+        def changedFiles = diffIndexFiles ?: []
+        boolean noneFound = changedFiles.isEmpty()
 
         if (noneFound) {
             println "No changed index.json files were found!"
         }
 
-        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("changed-files", changedFiles.join(' '))
         writeGithubOutput("none-found", noneFound.toString())
     }
 }
-
 // gradle generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("generateInfrastructureChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")
