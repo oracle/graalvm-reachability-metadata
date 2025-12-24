@@ -23,5 +23,9 @@ public record MetadataVersionsIndexEntry (
         @JsonProperty("tested-versions")
         List<String> testedVersions,
         @JsonProperty("skipped-versions")
-        List<SkippedVersionEntry> skippedVersions
+        List<SkippedVersionEntry> skippedVersions,
+        @JsonProperty("allowed-packages")
+        List<String> allowedPackages,
+        @JsonProperty("requires")
+        List<String> requires
 ){}

@@ -164,12 +164,15 @@ public final class MetadataGenerationUtils {
                         entry.metadataVersion(),
                         entry.testVersion(),
                         entry.testedVersions(),
-                        entry.skippedVersions()
+                        entry.skippedVersions(),
+                        entry.allowedPackages(),
+                        entry.requires()
                 ));
             }
         }
 
         // Add the new entry and mark it as latest
+        // TODO: add allowed-packages/requires generation
         String moduleName = newCoords.group() + ":" + newCoords.artifact();
         List<String> testedVersions = new ArrayList<>();
         testedVersions.add(newCoords.version());
@@ -181,6 +184,8 @@ public final class MetadataGenerationUtils {
                 newCoords.version(),
                 testVersion,
                 testedVersions,
+                null,
+                null,
                 null
         );
         entries.addFirst(newEntry);

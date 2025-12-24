@@ -169,7 +169,9 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                         newVersion,
                         entry.testVersion(),
                         entry.testedVersions(),
-                        entry.skippedVersions()
+                        entry.skippedVersions(),
+                        entry.allowedPackages(),
+                        entry.requires()
                 );
             }
         }
@@ -242,7 +244,9 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                         entry.metadataVersion(),
                         newTestVersion,
                         entry.testedVersions(),
-                        entry.skippedVersions()
+                        entry.skippedVersions(),
+                        entry.allowedPackages(),
+                        entry.requires()
                 );
                 entries.set(i, updatedEntry);
             }

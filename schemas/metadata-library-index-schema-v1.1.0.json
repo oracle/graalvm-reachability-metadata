@@ -1,5 +1,5 @@
 {
-  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/schemas/metadata-library-index-schema-v1.0.0.json",
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/schemas/metadata-library-index-schema-v1.1.0.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each entry describes a metadata bundle for a range of library versions.",
   "type": "array",
@@ -9,6 +9,7 @@
     "additionalProperties": false,
     "required": [
       "module",
+      "allowed-packages",
       "metadata-version",
       "tested-versions"
     ],
@@ -49,6 +50,16 @@
         "type": "boolean",
         "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
       },
+      "allowed-packages": {
+        "type": "array",
+        "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
       "skipped-versions": {
         "type": "array",
         "description": "Versions explicitly excluded from support, each with a reason.",
@@ -67,6 +78,15 @@
               "minLength": 1
             }
           }
+        }
+      },
+      "requires": {
+        "type": "array",
+        "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "$ref": "#/$defs/moduleCoordinate"
         }
       }
     }
