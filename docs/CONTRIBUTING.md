@@ -88,131 +88,57 @@ It's expected that they fail, because the scaffold task only generated a stub wh
 
 ### Metadata structure
 
-Metadata lives in a folder structure in the `metadata` directory in root of this repository.
-Per convention, it should be like this: `org.example:library` metadata should be located
-at `metadata/org.example/library`.
-Every metadata has an entry in the `metadata/index.json`. For example:
+Metadata lives in a folder structure in the `metadata` directory at the root of this repository. Per convention, metadata for `org.example:library` is located at `metadata/org.example/library`.
+
+Each artifact directory **must** include an `index.json` file (at `metadata/<groupId>/<artifactId>/index.json`). This file is a JSON array of objects where each entry describes a specific metadata release.
+
+#### Index Entry Fields
+
+**Required Keys:**
+* `metadata-version`: Specifies the subdirectory where the GraalVM configuration files (e.g., `reflect-config.json`) reside.
+* `tested-versions`: An array of library versions verified to work with this specific metadata.
+* `allowed-packages`: An array of package prefixes. The TCK ensures that configuration entries (like reflection targets) belong strictly to these packages.
+
+**Optional Keys:**
+* `latest`: Boolean. If `true`, this is the default metadata version for the artifact.
+* `requires`: An array of `groupId:artifactId` coordinates for libraries this metadata depends on.
+* `default-for`: A Java-format regex used to match library versions if no exact match exists in `tested-versions` (e.g., `"0\\.0\\..*"`).
+* `test-version`: Defines the subdirectory in `tests/src` containing the test code. Use this to share a single test suite across multiple metadata versions.
+* `skipped-versions`: An array of objects (with `version` and `reason`) to explicitly exclude library versions known to be broken or incompatible.
+* `override`: Boolean. If `true`, excludes outdated builtin GraalVM metadata.
+
+#### Comprehensive Example
 
 ```json
 [
-  ...
   {
-    "directory": "org.example/library",
-    "module": "org.example:library"
+    "allowed-packages": ["org.example.library"],
+    "metadata-version": "1.0.0",
+    "tested-versions": [
+      "1.0.0",
+      "1.0.1"
+    ],
+    "skipped-versions": [
+      {
+        "version": "1.0.5",
+        "reason": "Integrated reflect-config.json does not parse."
+      }
+    ]
   },
   {
-    "module": "org.example:dependant-library",
-    "requires": [
-      "org.example:library"
+     "latest": true,
+     "override": true,
+     "allowed-packages": ["org.example.library"],
+     "metadata-version": "1.1.0",
+     "test-version": "1.0.0",
+     "tested-versions": [
+       "1.1.0",
+       "1.1.1"
     ],
-    "allowed-packages": [
-       "org.package.name"
-     ]
+     "requires": ["org.slf4j:slf4j-api"]
   }
 ]
 ```
-
-**Note:** `dependant-library` can feature its own metadata as well if `directory` key is specified.
-
-**Note:** `allowed-packages` describes which packages are expected to contain metadata entries. This way you can prevent metadata from other libraries to be
-pulled into your config files
-
-Every library metadata has another `index.json` file.
-In aforementioned case that would be `metadata/org.example/library/index.json`.
-It should contain the following entries:
-
-```json
-[
-  {
-    "metadata-version": "0.0.1",
-    "module": "org.example:library",
-    "tested-versions": [
-      "0.0.1",
-      "0.0.2"
-    ]
-  },
-  {
-    "latest": true,
-    "metadata-version": "1.0.0",
-    "module": "org.example:library",
-    "tested-versions": [
-      "1.0.0",
-      "1.1.0-M1",
-      "1.1.0"
-    ]
-  },
-  ...
-]
-```
-
-The `metadata-version` key specifies the subdirectory where metadata for tested versions "lives".
-The `override` flag allows to express the intent to exclude outdated builtin metadata when set to `true`.
-So, the metadata for `org.example:library:0.0.1` and `org.example:library:0.0.2` is located
-at `metadata/org.example/library/0.0.1`.
-
-For entries without `"latest": true`, it is recommended to define the optional `default-for` key with a value containing
-a regexp (Java format) matching the version pattern. For example, for the example above, the first entry could be:
-
-```json
-{
-   "metadata-version": "0.0.1",
-   "module": "org.example:library",
-   "tested-versions": [
-      "0.0.1",
-      "0.0.2"
-   ],
-   "default-for": "0\\.0\\..*"
-}
-```
-
-The optional `test-version` key can be used to explicitly define the subdirectory containing 
-the test code for a library version. This is useful when multiple versions of a library's metadata 
-share the same tests, allowing for code reuse and preventing test code duplication. 
-An example of the library above using this field:
-
-```json
-{
-  "metadata-version": "1.1.0",
-  "module": "org.example:library",
-  "test-version": "1.0.0",
-  "tested-versions": [
-    "1.1.0",
-    "1.1.1",
-    "1.1.2"
-  ]
-}
-```
-
-The optional `skipped-versions` key can be used to explicitly exclude specific
-library versions from being considered as supported metadata. A skipped version
-should include both the version and the reason it is excluded. This is useful
-when a version exists in Maven but is known to be broken, incompatible, or
-should be omitted from testing for any other reason. An example of the library
-above using this field:
-
-```json
-{
-  "metadata-version": "1.0.0",
-  "module": "org.example:library",
-  "tested-versions": [
-    "1.0.0",
-    "1.1.0"
-  ],
-  "skipped-versions": [
-    {
-      "version": "1.0.5",
-      "reason": "Known incompatible API change."
-    },
-    {
-      "version": "1.0.7",
-      "reason": "Integrated reflect-config.json does not parse."
-    }
-  ]
-}
-```
-
-You can also list each supported version is listed in `tested-versions`, as that value is used in build tools to match
-metadata to a specific library, but this is more likely to break when new versions are released.
 
 ### Format Metadata Files
 
