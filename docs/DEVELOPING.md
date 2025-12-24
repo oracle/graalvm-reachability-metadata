@@ -114,7 +114,7 @@ Examples:
 ### Fix failing tasks
 
 Use this when a library's new version causes native-image run test failures. The task will:
-- Update the module's metadata index.json to mark the new version as latest
+- Update the artifact's metadata index.json to mark the new version as latest
 - Ensure the tests project has an agent block and a user-code-filter.json if missing
 - Run the agent to collect metadata, then re-run tests (with a retry if needed)
 

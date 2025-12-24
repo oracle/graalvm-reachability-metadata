@@ -71,7 +71,7 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         File coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
         getMetadataRoot().set(coordinatesMetadataRoot);
 
-        File index = getProject().file("metadata/index.json");
+        File index = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates));
         getIndexFile().set(index);
 
         this.allowedPackages = getAllowedPackages();
@@ -399,18 +399,30 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         String groupId = coordinates.group();
         String artifactId = coordinates.artifact();
 
-        List<Map<String, Object>> entries = getConfigEntries(indexFile);
-
-        for (var entry : entries) {
-            if (entry.get("module").toString().startsWith(groupId + ":" + artifactId)) {
-                if (entry.get("allowed-packages") == null) {
-                    throw new IllegalStateException("Missing allowed-packages property for " + groupId + ":" + artifactId);
-                }
-
-                return (List<String>) entry.get("allowed-packages");
-            }
+        if (!indexFile.exists()) {
+            throw new IllegalStateException("Missing artifact-level index.json: " + indexFile.toURI() + " for coordinates " + coordinates);
         }
 
-        throw new IllegalStateException("Missing library name in: " + indexFile.toURI() + " for coordinates " + coordinates);
+        Object parsed = new JsonSlurper().parse(indexFile);
+        if (!(parsed instanceof List)) {
+            throw new IllegalStateException("Invalid artifact-level index.json (expected array): " + indexFile.toURI());
+        }
+
+        List<Map<String, Object>> entries = ((List<Object>) parsed).stream()
+                .map(e -> (Map<String, Object>) e)
+                .toList();
+
+        // With "module" removed, index.json is per artifact path, so simply use the first entry that defines allowed-packages.
+        for (Map<String, Object> entry : entries) {
+            Object ap = entry.get("allowed-packages");
+            if (ap != null) {
+                if (ap instanceof List) {
+                    return (List<String>) ap;
+                } else {
+                    throw new IllegalStateException("Invalid allowed-packages type in " + indexFile.toURI() + " for coordinates " + coordinates + ": " + ap.getClass());
+                }
+            }
+        }
+        throw new IllegalStateException("Missing allowed-packages property for " + groupId + ":" + artifactId + " in " + indexFile.toURI());
     }
 }
