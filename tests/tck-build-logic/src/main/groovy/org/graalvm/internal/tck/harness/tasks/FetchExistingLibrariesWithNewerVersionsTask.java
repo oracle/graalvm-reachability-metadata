@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.TestedVersionUpdaterTask;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.model.SkippedVersionEntry;
 import org.gradle.api.DefaultTask;
@@ -36,16 +37,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
     public abstract ListProperty<String> getAllLibraryCoordinates();
 
     private static final List<String> INFRASTRUCTURE_TESTS = List.of("samples", "org.example");
-
-    /**
-     * Identifies library versions, including optional pre-release and ".Final" suffixes.
-     *
-     * Pre-release identifiers (case-insensitive): alpha, beta, rc, cr, m<num>, ea, b<num>, preview, and pure numeric suffixes.
-     * Versions ending with ".Final" are treated as full releases of the base version.
-     */
-    private static final Pattern VERSION_PATTERN = Pattern.compile("(?i)^(\\\\d+(?:\\\\.\\\\d+)*)"
-            + "(?:\\\\.Final)?"
-            + "(?:[-.](alpha\\\\d*|beta\\\\d*|rc\\\\d*|cr\\\\d*|m\\\\d+|ea\\\\d*|b\\\\d+|\\\\d+|preview)(?:[-.].*)?)?$");
 
     @TaskAction
     public void action() {
@@ -144,7 +135,7 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
         // Identify base versions that have a full release
         Set<String> releases = new HashSet<>();
         for (String v : versions) {
-            Matcher m = VERSION_PATTERN.matcher(v);
+            Matcher m = TestedVersionUpdaterTask.VERSION_PATTERN.matcher(v);
             if (m.matches() && m.group(2) == null) {
                 releases.add(m.group(1));
             }
@@ -152,7 +143,7 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
 
         List<String> result = new ArrayList<>();
         for (String v : versions) {
-            Matcher m = VERSION_PATTERN.matcher(v);
+            Matcher m = TestedVersionUpdaterTask.VERSION_PATTERN.matcher(v);
             if (m.matches()) {
                 String base = m.group(1);
                 String preSuffix = m.groupCount() > 1 ? m.group(2) : null;

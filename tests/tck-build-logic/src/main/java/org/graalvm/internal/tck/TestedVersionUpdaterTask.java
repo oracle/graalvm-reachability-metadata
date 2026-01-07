@@ -55,7 +55,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
      * <p>
      * Versions ending with ".Final" or `.RELEASE` are treated as full releases of the base version.
      */
-    private static final Pattern VERSION_PATTERN = Pattern.compile(
+    public static final Pattern VERSION_PATTERN = Pattern.compile(
             "(?i)^(\\d+(?:\\.\\d+)*)(?:\\.Final|\\.RELEASE)?(?:[-.](alpha\\d*|beta\\d*|rc\\d*|cr\\d*|m\\d+|ea\\d*|b\\d+|\\d+|preview)(?:[-.].*)?)?$"
     );
 
