@@ -145,7 +145,7 @@ public abstract class TckExtension {
         if (Files.isDirectory(conventional)) {
             return conventional;
         }
-        
+
         // Secondary fallback: derive test dir from metadata "metadata-version"
         try {
             Path mdDir = getMetadataDir(coordinates); // .../metadata/<group>/<artifact>/<metadata-version>
