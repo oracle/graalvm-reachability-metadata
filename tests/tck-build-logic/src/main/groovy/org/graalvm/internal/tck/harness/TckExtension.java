@@ -146,19 +146,6 @@ public abstract class TckExtension {
             return conventional;
         }
 
-        // Secondary fallback: derive test dir from metadata "metadata-version"
-        try {
-            Path mdDir = getMetadataDir(coordinates); // .../metadata/<group>/<artifact>/<metadata-version>
-            Path mdVersion = mdDir.getFileName();
-            if (mdVersion != null) {
-                Path testsForMetadataVersion = testRoot().resolve(groupId).resolve(artifactId).resolve(mdVersion.toString());
-                if (Files.isDirectory(testsForMetadataVersion)) {
-                    return testsForMetadataVersion;
-                }
-            }
-        } catch (Exception ignored) {
-            // ignore and fall through to error
-        }
         throw new RuntimeException("Missing test-directory for coordinates `" + coordinates + "`");
     }
 
