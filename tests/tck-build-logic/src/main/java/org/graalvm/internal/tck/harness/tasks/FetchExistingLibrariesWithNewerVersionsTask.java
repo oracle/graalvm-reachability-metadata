@@ -9,7 +9,6 @@ package org.graalvm.internal.tck.harness.tasks;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.TestedVersionUpdaterTask;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.model.SkippedVersionEntry;
@@ -26,10 +25,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Lists existing libraries that have newer upstream versions available (not yet tested).
- * Produces a JSON array of objects: [{"name": "group:artifact", "versions": ["x.y.z", ...]}, ...]
- */
 @SuppressWarnings("unused")
 public abstract class FetchExistingLibrariesWithNewerVersionsTask extends DefaultTask {
 
@@ -40,7 +35,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
 
     @TaskAction
     public void action() {
-        // Derive set of distinct library modules: group:artifact
         Set<String> libraries = new LinkedHashSet<>();
         for (String coord : getAllLibraryCoordinates().get()) {
             int last = coord.lastIndexOf(':');
@@ -49,7 +43,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             }
         }
 
-        // For each library, compute newer versions and filter out infrastructure modules
         List<String> newerVersions = new ArrayList<>();
         for (String libraryName : libraries) {
             if (INFRASTRUCTURE_TESTS.stream().noneMatch(libraryName::startsWith)) {
@@ -62,7 +55,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             }
         }
 
-        // Aggregate by library name to the requested structure
         Map<String, List<String>> grouped = new LinkedHashMap<>();
         for (String coord : newerVersions) {
             String[] parts = coord.split(":", -1);
@@ -80,7 +72,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
 
         try {
             ObjectMapper om = new ObjectMapper()
-                    .enable(SerializationFeature.INDENT_OUTPUT)
                     .setSerializationInclusion(JsonInclude.Include.NON_NULL);
             System.out.println(om.writeValueAsString(pairs));
         } catch (IOException e) {
@@ -98,11 +89,9 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
 
             List<String> newerVersions = getNewerVersionsFromLibraryIndex(data, startingVersion, library);
 
-            // filter out already tested versions
             List<String> testedVersions = getTestedVersions(library);
             newerVersions.removeAll(testedVersions);
 
-            // filter pre-release versions if full release exists
             return filterPreReleases(newerVersions);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -113,10 +102,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
         Pattern pattern = Pattern.compile("<version>(.*)</version>");
         Matcher matcher = pattern.matcher(index);
         List<String> allVersions = new ArrayList<>();
-
-        if (matcher.groupCount() < 1) {
-            throw new RuntimeException("Cannot find versions in the given index file: " + libraryName);
-        }
 
         while (matcher.find()) {
             allVersions.add(matcher.group(1));
@@ -132,7 +117,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
     }
 
     static List<String> filterPreReleases(List<String> versions) {
-        // Identify base versions that have a full release
         Set<String> releases = new HashSet<>();
         for (String v : versions) {
             Matcher m = TestedVersionUpdaterTask.VERSION_PATTERN.matcher(v);
@@ -170,9 +154,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
         }
     }
 
-    /**
-     * Reads the tested versions of a given library from its metadata index file.
-     */
     static List<String> getTestedVersions(String libraryModule) {
         try {
             String[] coordinates = libraryModule.split(":");
@@ -185,7 +166,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
             }
 
             ObjectMapper objectMapper = new ObjectMapper()
-                    .enable(SerializationFeature.INDENT_OUTPUT)
                     .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
             List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(
@@ -200,12 +180,6 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
         }
     }
 
-    /**
-     * Returns all versions of a given library that are marked as skipped in the metadata index.
-     *
-     * For the provided Maven coordinates (groupId:artifactId), reads metadata/<groupId>/<artifactId>/index.json
-     * and collects versions under "skipped-versions".
-     */
     static List<String> getSkippedVersions(String libraryModule) {
         try {
             String[] coordinates = libraryModule.split(":");
@@ -214,11 +188,10 @@ public abstract class FetchExistingLibrariesWithNewerVersionsTask extends Defaul
 
             File coordinatesMetadataIndex = new File("metadata/" + group + "/" + artifact + "/index.json");
             if (!coordinatesMetadataIndex.exists()) {
-                return Collections.emptyList();
+                throw new RuntimeException("Missing index.json for " + libraryModule);
             }
 
             ObjectMapper objectMapper = new ObjectMapper()
-                    .enable(SerializationFeature.INDENT_OUTPUT)
                     .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
             List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(
