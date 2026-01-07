@@ -23,6 +23,76 @@ VERSIONS_JSON="${VERSIONS_JSON%"${VERSIONS_JSON##*[!\']}"}"
 readarray -t VERSIONS < <(echo "$VERSIONS_JSON" | jq -r '.[]')
 export DELIMITER="========================================================================================"
 
+# Timeout configuration (in seconds)
+readonly TIMEOUT_DURATION=600  # 10 minutes
+readonly WARNING_THRESHOLD=480 # 8 minutes (warn before timeout)
+readonly SIGQUIT_WAIT=5        # Wait time after SIGQUIT for stacktrace dump
+
+# Function to monitor command execution with timeout handling
+run_with_timeout() {
+  local cmd_str="$1"
+  local stage="$2"
+
+  # Run command in background, creating a new process group
+  eval "$cmd_str" &
+  local cmd_pid=$!
+  local cmd_pgid
+  cmd_pgid=$(ps -o pgid= -p "$cmd_pid" | tr -d ' ')
+
+  local elapsed=0
+  local warned=false
+
+  # Monitor the process
+  while kill -0 "$cmd_pid" 2>/dev/null; do
+    sleep 1
+    elapsed=$((elapsed + 1))
+
+    # Log warning when approaching timeout
+    if [ $elapsed -ge $WARNING_THRESHOLD ] && [ "$warned" = false ]; then
+      echo "WARNING: Test execution for stage '$stage' has been running for ${elapsed}s (threshold: ${WARNING_THRESHOLD}s)"
+      echo "WARNING: Will timeout in $((TIMEOUT_DURATION - elapsed))s and attempt to capture stacktraces"
+      warned=true
+    fi
+
+    # Handle timeout
+    if [ $elapsed -ge $TIMEOUT_DURATION ]; then
+      echo "ERROR: Timeout reached after ${TIMEOUT_DURATION}s for stage '$stage'"
+      echo "ERROR: Sending SIGQUIT (signal 3) to process group $cmd_pgid to capture stacktraces..."
+
+      # Send SIGQUIT to entire process group to get Java thread dumps
+      if [ -n "$cmd_pgid" ]; then
+        kill -QUIT -"$cmd_pgid" 2>/dev/null || true
+      fi
+
+      # Wait for stacktrace dump to complete
+      echo "Waiting ${SIGQUIT_WAIT}s for stacktrace dump..."
+      sleep "$SIGQUIT_WAIT"
+
+      # Check if process is still running
+      if kill -0 "$cmd_pid" 2>/dev/null; then
+        echo "Process still running after SIGQUIT, sending SIGTERM..."
+        kill -TERM -"$cmd_pgid" 2>/dev/null || kill -TERM "$cmd_pid" 2>/dev/null || true
+        sleep 2
+
+        # Force kill if still running
+        if kill -0 "$cmd_pid" 2>/dev/null; then
+          echo "Process still running after SIGTERM, sending SIGKILL..."
+          kill -KILL -"$cmd_pgid" 2>/dev/null || kill -KILL "$cmd_pid" 2>/dev/null || true
+        fi
+      fi
+
+      # Wait for process to be reaped
+      wait "$cmd_pid" 2>/dev/null || true
+      echo "TIMEOUT: Test execution exceeded ${TIMEOUT_DURATION}s limit"
+      return 124  # Standard timeout exit code
+    fi
+  done
+
+  # Process completed before timeout
+  wait "$cmd_pid"
+  return $?
+}
+
 run_multiple_attempts() {
   local stage="$1"
   local max_attempts="$2"
@@ -41,11 +111,15 @@ run_multiple_attempts() {
       echo "Re-running stage '$stage' (attempt $((attempt + 1))/$max_attempts)"
     fi
 
-    eval "$cmd_str"
+    run_with_timeout "$cmd_str" "$stage"
     result=$?
 
     if [ "$result" -eq 0 ]; then
       return 0
+    fi
+
+    if [ "$result" -eq 124 ]; then
+      echo "TIMEOUT [$stage][$VERSION][$cmd_str]"
     fi
 
     attempt=$((attempt + 1))
