@@ -37,7 +37,7 @@ jobs:
         run: |
           ./gradlew generateChangedIndexFileCoordinatesList -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
-      - name: "Check that the changed index.json files conform to their schemas"
+      - name: "Validate index file schema and version consistency"
         if: steps.filter.outputs.changed == 'true'
         run: |
           ./gradlew validateIndexFiles -Pcoordinates="${{ steps.get-coords.outputs.changed-coordinates }}"
