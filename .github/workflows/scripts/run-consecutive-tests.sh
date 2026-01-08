@@ -6,7 +6,7 @@
 
 set -u
 
-TIMEOUT="10m"
+TIMEOUT="5m"
 
 if [ $# -ne 2 ]; then
   echo "Usage: $0 <test-coordinates> <versions-json-array>"
@@ -43,15 +43,15 @@ run_multiple_attempts() {
       echo "Re-running stage '$stage' (attempt $((attempt + 1))/$max_attempts)"
     fi
 
-    timeout "$TIMEOUT" bash -c "$cmd_str"
+    timeout --signal=QUIT --kill-after=20s "$TIMEOUT" bash -c "$cmd_str"
     result=$?
 
     if [ "$result" -eq 0 ]; then
       return 0
     fi
 
-    if [ "$result" -eq 124 ]; then
-      echo "⚠️  TIMEOUT: '$stage' for $VERSION took longer than $TIMEOUT."
+    if [ "$result" -eq 124 ] || [ "$result" -eq 131 ] || [ "$result" -eq 137 ]; then
+      echo "⚠️  TIMEOUT: '$stage' for $VERSION took longer than $TIMEOUT (exit code $result)."
     else
       echo "❌ ERROR: '$stage' for $VERSION failed with exit code $result."
     fi
