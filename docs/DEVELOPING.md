@@ -51,7 +51,7 @@ For a single coordinate, CI runs three steps in this order:
     ```console
    ./gradlew pullAllowedDockerImages -Pcoordinates=org.postgresql:postgresql:42.7.3
     ```
-2. Validate index.json schemas:
+2. Validate index.json file integrity and schemas:
     ```console
    ./gradlew validateIndexFiles -Pcoordinates=org.postgresql:postgresql:42.7.3
     ```

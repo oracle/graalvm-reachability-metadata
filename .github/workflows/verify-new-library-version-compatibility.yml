@@ -17,7 +17,7 @@ jobs:
   get-all-libraries:
     name: "📋 Get list of all supported libraries with newer versions"
     # Opens PRs, with labels and assignees. Works only on the main repo.
-    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    if: github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions: write-all
@@ -117,15 +117,7 @@ jobs:
       - name: "Extract test path and library version"
         if: steps.check_existing_issue.outputs.skip != 'true'
         id: extract-params
-        run: |
-          LIBRARY_PATH=$(echo "${{ matrix.item.name }}" | sed 's/:/\//g')
-          LATEST_VERSION=$(find tests/src/$LIBRARY_PATH/* -maxdepth 1 -type d | sort -V | tail -1 | cut -d '/' -f5)
-          TEST_PATH="$LIBRARY_PATH/$LATEST_VERSION"
-          TEST_COORDINATES=$(echo "$TEST_PATH" | tr / :)
-          
-          echo "LATEST_VERSION=$LATEST_VERSION" >> ${GITHUB_ENV}
-          echo "TEST_PATH=$TEST_PATH" >> ${GITHUB_ENV}
-          echo "TEST_COORDINATES=$TEST_COORDINATES" >> ${GITHUB_ENV}
+        run: ./gradlew extractLibraryTestParams -Pcoordinates="${{ matrix.item.name }}"
 
       - name: "Pull allowed docker images"
         if: steps.check_existing_issue.outputs.skip != 'true'

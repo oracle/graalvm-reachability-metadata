@@ -19,6 +19,7 @@ import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 import org.jetbrains.annotations.NotNull;
+import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -137,14 +138,24 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
                 );
 
                 JsonNode json = mapper.readTree(jsonFile);
-                Set<ValidationMessage> errors = schema.validate(json);
+                int beforeFailures = failures.size();
 
-                if (errors.isEmpty()) {
-                    getLogger().lifecycle("✅ " + filePath + ": Valid");
-                } else {
+                // Schema validation
+                Set<ValidationMessage> errors = schema.validate(json);
+                if (!errors.isEmpty()) {
                     for (ValidationMessage err : errors) {
                         failures.add("❌ " + filePath + ": " + err.getMessage());
                     }
+                }
+
+                // Additional semantic validations for library metadata index files
+                if (METADATA_PATTERN.matcher(filePath).matches()) {
+                    checkLibraryIndexTestedVersions(json, filePath, failures);
+                }
+
+                // Print success only if no new failures were added by schema or semantic checks
+                if (failures.size() == beforeFailures) {
+                    getLogger().lifecycle("✅ " + filePath + ": Valid");
                 }
             } catch (Exception e) {
                 failures.add("💥 " + filePath + ": Parse Error (" + e.getMessage() + ")");
@@ -154,6 +165,95 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
         if (!failures.isEmpty()) {
             failures.forEach(f -> getLogger().error(f));
             throw new GradleException("Validation failed for " + failures.size() + " file(s).");
+        }
+    }
+
+    /**
+     * Ensures "tested-versions" are mapped to the most appropriate metadata entry.
+     * <p>
+     * Rule: A version in {@code tested-versions} must be strictly less than the
+     * next higher {@code metadata-version} available in the file.
+     * <p>
+     * This prevents "stray" versions from being associated with obsolete metadata
+     * when a more recent metadata entry exists.
+     *
+     * @param json     The JSON array of index entries.
+     * @param filePath Path for error reporting.
+     * @param failures Accumulator for validation errors.
+     */
+    private static void checkLibraryIndexTestedVersions(JsonNode json, String filePath, List<String> failures) {
+        if (json == null || !json.isArray()) {
+            return;
+        }
+
+        // Collect unique metadata-version strings
+        java.util.Set<String> metaStrings = new java.util.LinkedHashSet<>();
+        for (JsonNode entry : json) {
+            JsonNode mv = entry.get("metadata-version");
+            if (mv != null && mv.isTextual()) {
+                metaStrings.add(mv.asText());
+            }
+        }
+        if (metaStrings.isEmpty()) {
+            return;
+        }
+
+        // Parse and sort metadata versions
+        List<VersionNumber> metasSorted = new ArrayList<>();
+        for (String s : metaStrings) {
+            try {
+                metasSorted.add(VersionNumber.parse(s));
+            } catch (Exception ignore) {
+                // Ignore unparsable versions; schema should handle invalid shapes
+            }
+        }
+        if (metasSorted.isEmpty()) {
+            return;
+        }
+        metasSorted.sort(java.util.Comparator.naturalOrder());
+
+        // For each entry, enforce: tested-version < next(metadata-version), if next exists
+        for (JsonNode entry : json) {
+            String underMetaStr = entry.path("metadata-version").isTextual() ? entry.get("metadata-version").asText() : null;
+            if (underMetaStr == null) continue;
+
+            VersionNumber underMeta;
+            try {
+                underMeta = VersionNumber.parse(underMetaStr);
+            } catch (Exception ignore) {
+                continue;
+            }
+
+            // Locate index of current metadata-version in the sorted list
+            int idx = -1;
+            for (int i = 0; i < metasSorted.size(); i++) {
+                if (metasSorted.get(i).compareTo(underMeta) == 0) {
+                    idx = i;
+                    break;
+                }
+            }
+            if (idx == -1) continue;
+
+            VersionNumber nextMeta = (idx < metasSorted.size() - 1) ? metasSorted.get(idx + 1) : null;
+
+            JsonNode tvs = entry.get("tested-versions");
+            if (tvs != null && tvs.isArray() && nextMeta != null) {
+                for (JsonNode tvNode : tvs) {
+                    if (tvNode != null && tvNode.isTextual()) {
+                        try {
+                            VersionNumber tv = VersionNumber.parse(tvNode.asText());
+                            // Must be strictly less than the next metadata-version
+                            if (tv.compareTo(nextMeta) >= 0) {
+                                failures.add("❌ " + filePath + ": tested-versions contains version " + tv
+                                        + " not less than next metadata-version " + nextMeta
+                                        + " (under metadata-version " + underMetaStr + ")");
+                            }
+                        } catch (Exception ignore) {
+                            // ignore unparsable tested versions; schema should catch most cases
+                        }
+                    }
+                }
+            }
         }
     }
 
