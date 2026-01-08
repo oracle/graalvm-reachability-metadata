@@ -119,32 +119,8 @@ jobs:
         id: extract-params
         run: |
           LIBRARY_PATH=$(echo "${{ matrix.item.name }}" | sed 's/:/\//g')
-          INDEX_PATH="metadata/$LIBRARY_PATH/index.json"
-
-          # 1. Determine the target version entry
-          # Try 'latest' tag first. If not found, sort all entries by version and take the highest.
-          TARGET_ENTRY=$(jq -c '.[] | select(.latest == true)' "$INDEX_PATH" 2>/dev/null)
-
-          if [ -z "$TARGET_ENTRY" ]; then
-            HIGHEST_VERSION=$(jq -r '.[]."metadata-version"' "$INDEX_PATH" | sort -V | tail -1)
-          
-            # Now get the JSON entry for that specific version
-            TARGET_ENTRY=$(jq -c ".[] | select(.\"metadata-version\" == \"$HIGHEST_VERSION\")" "$INDEX_PATH")          
-          fi
-
-          # 2. Extract versions from the selected entry
-          if [ -n "$TARGET_ENTRY" ]; then
-            LATEST_VERSION=$(echo "$TARGET_ENTRY" | jq -r '."metadata-version"')
-            # Use test-version from this entry if it exists, otherwise use its metadata-version
-            TEST_VERSION_FOLDER=$(echo "$TARGET_ENTRY" | jq -r '."test-version" // ."metadata-version"')
-          else
-            # Fallback to filesystem parsing
-            LATEST_VERSION=$(jq -r '.[]."metadata-version"' "$INDEX_PATH" | sort -V | tail -1)
-            TEST_VERSION_FOLDER=$(find tests/src/$LIBRARY_PATH/* -maxdepth 0 -type d | sort -V | tail -1 | xargs basename)
-          fi
-
-          # 3. Finalize paths
-          TEST_PATH="$LIBRARY_PATH/$TEST_VERSION_FOLDER"
+          LATEST_VERSION=$(find tests/src/$LIBRARY_PATH/* -maxdepth 1 -type d | sort -V | tail -1 | cut -d '/' -f5)
+          TEST_PATH="$LIBRARY_PATH/$LATEST_VERSION"
           TEST_COORDINATES=$(echo "$TEST_PATH" | tr / :)
           
           echo "LATEST_VERSION=$LATEST_VERSION" >> ${GITHUB_ENV}
