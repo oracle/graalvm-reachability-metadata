@@ -16,3 +16,14 @@ dependencies {
     testImplementation "org.flywaydb:flyway-database-postgresql:$libraryVersion"
     testImplementation "org.postgresql:postgresql:42.3.4"
 }
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
