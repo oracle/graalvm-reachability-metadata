@@ -20,6 +20,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -106,11 +107,16 @@ class XmlsecTest {
         // Canonicalize using XML C14N 1.1 without comments
         String c14n11OmitComments = "http://www.w3.org/2006/12/xml-c14n11";
         Canonicalizer canon = Canonicalizer.getInstance(c14n11OmitComments);
-        byte[] first = canon.canonicalizeSubtree(doc);
+
+        ByteArrayOutputStream firstOut = new ByteArrayOutputStream();
+        canon.canonicalizeSubtree(doc, firstOut);
+        byte[] first = firstOut.toByteArray();
 
         // Parse the canonical output back and canonicalize again - should be identical (idempotent)
         Document reparsed = parseXml(new String(first, StandardCharsets.UTF_8));
-        byte[] second = canon.canonicalizeSubtree(reparsed);
+        ByteArrayOutputStream secondOut = new ByteArrayOutputStream();
+        canon.canonicalizeSubtree(reparsed, secondOut);
+        byte[] second = secondOut.toByteArray();
 
         assertThat(first).as("Canonicalization must be idempotent").isEqualTo(second);
         assertThatNoException().isThrownBy(() -> Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#"));
