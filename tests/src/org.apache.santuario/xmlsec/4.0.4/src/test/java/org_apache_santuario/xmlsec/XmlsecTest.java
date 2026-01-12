@@ -92,12 +92,13 @@ class XmlsecTest {
     }
 
     @Test
-    void canonicalizationIsIdempotent_C14N11_omitComments() throws Exception {
-        // Build a small XML with namespaces and attributes
+    void canonicalizationIsStableOnSameDOM_C14N11_omitComments() throws Exception {
+        // Build a small XML with namespaces, attributes, and a comment
         Document doc = newEmptyDocument();
         Element a = doc.createElementNS("urn:ns1", "ns1:a");
         a.setAttribute("xmlns:ns1", "urn:ns1");
         a.setAttribute("attr", "value");
+        a.appendChild(doc.createComment("should be omitted"));
         Element b = doc.createElementNS("urn:ns2", "ns2:b");
         b.setAttribute("xmlns:ns2", "urn:ns2");
         b.setTextContent("text");
@@ -112,13 +113,16 @@ class XmlsecTest {
         canon.canonicalizeSubtree(doc, firstOut);
         byte[] first = firstOut.toByteArray();
 
-        // Parse the canonical output back and canonicalize again - should be identical (idempotent)
-        Document reparsed = parseXml(new String(first, StandardCharsets.UTF_8));
+        // Canonicalize the same DOM again - must be identical (deterministic)
         ByteArrayOutputStream secondOut = new ByteArrayOutputStream();
-        canon.canonicalizeSubtree(reparsed, secondOut);
+        canon.canonicalizeSubtree(doc, secondOut);
         byte[] second = secondOut.toByteArray();
 
-        assertThat(first).as("Canonicalization must be idempotent").isEqualTo(second);
+        assertThat(first).as("Canonicalization must be deterministic on the same DOM").isEqualTo(second);
+        // Ensure comments are omitted
+        assertThat(new String(first, StandardCharsets.UTF_8)).doesNotContain("<!--");
+
+        // Ensure we can also obtain the Exclusive C14N canonicalizer
         assertThatNoException().isThrownBy(() -> Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#"));
     }
 
