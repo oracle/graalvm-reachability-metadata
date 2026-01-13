@@ -99,10 +99,17 @@ tasks.register('package', Zip) { task ->
     task.destinationDirectory = layout.buildDirectory
 
     from(tck.metadataRoot)
-    // library-and-framework-list.json is used by Native Build Tools to provide additional
-    // information on library and framework support to the native image Build Report
+
     from(project.rootDir) {
+        // library-and-framework-list.json is used by Native Build Tools to provide additional
+        // information on library and framework support to the native image Build Report
         include("library-and-framework-list.json")
+
+        // Schemas are included in the ZIP root to allow Native Build Tools to verify
+        // structural compatibility with this release of GraalVM Reachability Metadata
+        include("schemas/metadata-root-index-schema-v1.0.0.json")
+        include("schemas/metadata-library-index-schema-v1.0.0.json")
+        include("schemas/library-and-framework-list-schema-v1.0.0.json")
     }
 }
 
@@ -117,6 +124,7 @@ apply plugin: "org.graalvm.internal.tck-harness"
 
 static List<Map> testInfraCommands(String gradleCmd, String target) {
     def taskNames = [
+            "validateIndexFiles",
             "checkstyle",
             "spotlessCheck",
             "checkMetadataFiles",

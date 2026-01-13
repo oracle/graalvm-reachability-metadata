@@ -29,6 +29,7 @@ import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVer
 import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
 import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
+import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 
@@ -42,6 +43,15 @@ final String METADATA_GROUP = "Metadata"
 
 def writeGithubOutput(String key, String value) {
     def path = System.getenv("GITHUB_OUTPUT")
+    if (path == null || path.trim().isEmpty()) {
+        println "${key}=${value}"
+    } else {
+        new File(path).append("${key}=${value}\n")
+    }
+}
+
+def writeGithubEnv(String key, String value) {
+    def path = System.getenv("GITHUB_ENV")
     if (path == null || path.trim().isEmpty()) {
         println "${key}=${value}"
     } else {
@@ -63,31 +73,31 @@ if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
 matchingCoordinates = matchingCoordinates.findAll { !it.startsWith("samples:") }
 
 
- // gradle checkstyle -Pcoordinates=<maven-coordinates>
+// gradle checkstyle -Pcoordinates=<maven-coordinates>
 tasks.register("checkstyle", CheckstyleInvocationTask.class) { task ->
     task.setDescription("Runs checkstyle on all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
- // gradle compileTestJava -Pcoordinates=<maven-coordinates>
+// gradle compileTestJava -Pcoordinates=<maven-coordinates>
 tasks.register("compileTestJava", CompileTestJavaInvocationTask.class) { task ->
     task.setDescription("Compiles sources (javac) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
- // gradle javaTest -Pcoordinates=<maven-coordinates>
+// gradle javaTest -Pcoordinates=<maven-coordinates>
 tasks.register("javaTest", JavaTestInvocationTask.class) { task ->
     task.setDescription("Runs JVM tests (Gradle 'test') for all subprojects")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
- // gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
+// gradle nativeTestCompile -Pcoordinates=<maven-coordinates>
 tasks.register("nativeTestCompile", NativeTestCompileInvocationTask.class) { task ->
     task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
- // gradle clean -Pcoordinates=<maven-coordinates>
+// gradle clean -Pcoordinates=<maven-coordinates>
 if (tasks.findByName("clean") == null) {
     tasks.register("clean", CleanInvocationTask.class) { t ->
         t.setDescription("Cleans all matching subprojects")
@@ -101,7 +111,7 @@ if (tasks.findByName("clean") == null) {
     tasks.named("clean").configure { it.dependsOn("tckClean") }
 }
 
- // gradle test -Pcoordinates=<maven-coordinates>
+// gradle test -Pcoordinates=<maven-coordinates>
 if (tasks.findByName("test") == null) {
     tasks.register("test", TestInvocationTask.class) { t ->
         t.setDescription("Runs Native Image tests for all matching coordinates")
@@ -115,7 +125,12 @@ if (tasks.findByName("test") == null) {
     tasks.named("test").configure { it.dependsOn("tckTest") }
 }
 
- // gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
+tasks.register("validateIndexFiles", ValidateIndexFilesTask.class) { task ->
+    task.setDescription("Checks content of index.json files for matching coordinates or files")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+// gradle checkMetadataFiles -Pcoordinates=<maven-coordinates>
 tasks.register("checkMetadataFiles", CheckMetadataFilesAllTask.class) { task ->
     task.setDescription("Checks content of metadata files for matching coordinates")
     task.setGroup(METADATA_GROUP)
@@ -163,8 +178,8 @@ Map<String, List<String>> matrixDefaultsFor(String section) {
     def sec = ci[section]
     if (sec == null) throw new GradleException("Missing '${section}' in ci.json")
     [
-        "version": (sec["java"] as List<String>),
-        "os": (sec["os"] as List<String>)
+            "version": (sec["java"] as List<String>),
+            "os": (sec["os"] as List<String>)
     ]
 }
 
@@ -181,7 +196,7 @@ Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatri
     }
 }
 
- // gradle generateMatrixBatchedCoordinates [-Pbatches=<n>]
+// gradle generateMatrixBatchedCoordinates [-Pbatches=<n>]
 Provider<Task> generateMatrixBatchedCoordinates = tasks.register("generateMatrixBatchedCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with fractional batch coordinates (k/n)")
     task.setGroup(METADATA_GROUP)
@@ -223,6 +238,32 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
+// gradle generateChangedIndexFileCoordinatesList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+tasks.register("generateChangedIndexFileCoordinatesList", DefaultTask) { task ->
+    task.setDescription("Returns a list of changed coordinates for validation based on git diff")
+    task.setGroup(METADATA_GROUP)
+
+    task.doLast {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        String base = project.property("baseCommit")
+        String head = project.findProperty("newCommit") ?: "HEAD"
+
+        List<String> changedIndexFileCoordinates = tck.diffIndexCoordinates(base, head)
+
+        boolean noneFound = changedIndexFileCoordinates.isEmpty()
+
+        if (noneFound) {
+            println "No changed index.json files were found!"
+        }
+
+        writeGithubOutput("changed-coordinates", changedIndexFileCoordinates.join(' '))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
 // gradle generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("generateInfrastructureChangedCoordinatesMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with pre-selected coordinates when test infrastructure has changed")
@@ -258,7 +299,7 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
         }
 
         def matrix = [
-            "coordinates": selected
+                "coordinates": selected
         ]
         matrix.putAll(matrixDefaultsFor("generateInfrastructureChangedCoordinatesMatrix"))
 
@@ -328,5 +369,73 @@ tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
         def coords = CoordinateUtils.fromString(coordsStr)
         def testVersion = project.hasProperty("testVersion") ? project.findProperty("testVersion").toString() : null
         MetadataGenerationUtils.makeVersionLatestInIndexJson(project.layout, coords, testVersion)
+    }
+}
+
+// gradle extractLibraryTestParams -Pcoordinates=<group:artifact[:version]>
+tasks.register("extractLibraryTestParams", DefaultTask) { task ->
+    task.setDescription("Extracts TEST_PATH, LATEST_VERSION and TEST_COORDINATES for given coordinates (group:artifact[:version]). Writes them into GITHUB_ENV.")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("coordinates")) {
+            throw new GradleException("Missing 'coordinates' property! Rerun Gradle with -Pcoordinates=<group:artifact[:version]>")
+        }
+        def coordsStr = project.findProperty("coordinates").toString()
+        def parts = coordsStr.split(":")
+        if (parts.length < 2) {
+            throw new GradleException("Invalid 'coordinates' value; expected group:artifact or group:artifact:version, got: ${coordsStr}")
+        }
+        String lib = parts[0] + ":" + parts[1]
+
+        String libPath = lib.replace(":", "/")
+        File indexFile = project.file("metadata/${libPath}/index.json")
+
+        Map latestEntry = null
+        if (indexFile.exists()) {
+            def entries = new JsonSlurper().parse(indexFile) as List<Map>
+            latestEntry = entries.find { e -> Boolean.TRUE.equals(e["latest"]) }
+            if (latestEntry == null && !entries.isEmpty()) {
+                latestEntry = entries.max { e -> VersionNumber.parse((e["metadata-version"] ?: "").toString()) }
+            }
+        }
+
+        String latestVersion = null
+        String testVersionFolder = null
+
+        if (latestEntry != null) {
+            latestVersion = (latestEntry["metadata-version"] ?: "").toString()
+            def tv = latestEntry["test-version"]
+            testVersionFolder = (tv != null && tv.toString().trim()) ? tv.toString() : latestVersion
+        } else {
+            if (!indexFile.exists()) {
+                throw new GradleException("Missing index.json at ${indexFile}. Cannot determine latest metadata version.")
+            }
+            def entries = new JsonSlurper().parse(indexFile) as List<Map>
+            if (entries.isEmpty()) {
+                throw new GradleException("Empty index.json at ${indexFile}.")
+            }
+            latestVersion = entries.collect { it["metadata-version"].toString() }
+                    .max { v -> VersionNumber.parse(v) }
+        }
+
+        if (testVersionFolder == null || testVersionFolder.trim().isEmpty()) {
+            File testsLibDir = project.file("tests/src/${libPath}")
+            if (!testsLibDir.exists()) {
+                throw new GradleException("No tests directory found for ${lib} at ${testsLibDir}")
+            }
+            File[] dirs = testsLibDir.listFiles()
+            List<File> versionDirs = dirs == null ? [] : dirs.findAll { it.isDirectory() }
+            if (versionDirs.isEmpty()) {
+                throw new GradleException("No version subdirectories found in ${testsLibDir}")
+            }
+            testVersionFolder = versionDirs.max { d -> VersionNumber.parse(d.name) }.name
+        }
+
+        String testPath = "${libPath}/${testVersionFolder}"
+        String testCoordinates = testPath.replace("/", ":")
+
+        writeGithubEnv("LATEST_VERSION", latestVersion)
+        writeGithubEnv("TEST_PATH", testPath)
+        writeGithubEnv("TEST_COORDINATES", testCoordinates)
     }
 }

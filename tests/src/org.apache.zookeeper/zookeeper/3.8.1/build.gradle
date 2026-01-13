@@ -1,0 +1,36 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "org.apache.zookeeper:zookeeper:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+
+    // ZooKeeper server uses Dropwizard Metrics (com.codahale.metrics.*) via an optional dependency.
+    // Add it for runtime to satisfy DefaultMetricsProvider and ServerMetrics initialization.
+    testRuntimeOnly 'io.dropwizard.metrics:metrics-core:4.2.25'
+
+    // ZooKeeper server optionally supports Snappy compression for snapshots/txn logs.
+    // FileTxnSnapLog/Util reference org.xerial.snappy.SnappyInputStream if present.
+    // Add snappy-java at runtime to avoid CNFE during server startup.
+    testRuntimeOnly 'org.xerial.snappy:snappy-java:1.1.10.5'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

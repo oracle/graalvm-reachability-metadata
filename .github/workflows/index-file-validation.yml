@@ -1,0 +1,43 @@
+name: "Validate index.json files"
+
+on:
+  pull_request:
+
+jobs:
+  validate-json:
+    name: "📋 Validate changed JSON files"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'metadata/index.json'
+            - 'metadata/*/*/index.json'
+            - 'tests/src/*/*/*/index.json'
+
+      - name: "🔧 Setup Java"
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "📋 Get changed index files"
+        id: get-coords
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          ./gradlew generateChangedIndexFileCoordinatesList -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+
+      - name: "Validate index file schema and version consistency"
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          ./gradlew validateIndexFiles -Pcoordinates="${{ steps.get-coords.outputs.changed-coordinates }}"

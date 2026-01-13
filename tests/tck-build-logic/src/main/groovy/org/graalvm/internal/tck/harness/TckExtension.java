@@ -24,6 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -137,11 +139,13 @@ public abstract class TckExtension {
         } catch (Exception ignored) {
             // Fall through to conventional lookup
         }
+
         // Fallback: conventional layout tests/src/<group>/<artifact>/<version>
         Path conventional = testRoot().resolve(groupId).resolve(artifactId).resolve(version);
         if (Files.isDirectory(conventional)) {
             return conventional;
         }
+
         throw new RuntimeException("Missing test-directory for coordinates `" + coordinates + "`");
     }
 
@@ -213,6 +217,50 @@ public abstract class TckExtension {
         }
 
         return changedCoordinates;
+    }
+
+    /**
+     * Returns a list of changed coordinates based on index.json files modified between baseCommit and newCommit.
+     *
+     * @return List of coordinates (e.g., "org.flywaydb:flyway-core" or "org.example:library:1.0.0")
+     */
+    public List<String> diffIndexCoordinates(String baseCommit, String newCommit) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        getExecOperations().exec(spec -> {
+            spec.setStandardOutput(baos);
+            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT",
+                    baseCommit, newCommit);
+        });
+
+        String output = baos.toString(StandardCharsets.UTF_8);
+        String[] lines = output.split("\\r?\\n");
+
+        return Arrays.stream(lines)
+                .map(this::indexPathToCoordinate) // Extract coordinate from path
+                .filter(Objects::nonNull)      // Remove paths that weren't index files
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Maps an index.json file path to its corresponding coordinate string.
+     *
+     * @return the coordinate string (G:A or G:A:V), or null if not a match
+     */
+    private String indexPathToCoordinate(String path) {
+        Pattern pattern = Pattern.compile("(?:metadata|tests/src)/([^/]+)/([^/]+)(?:/([^/]+))?/index\\.json");
+        Matcher matcher = pattern.matcher(path);
+
+        if (matcher.matches()) {
+            String group = matcher.group(1);
+            String artifact = matcher.group(2);
+            String version = matcher.group(3);
+
+            return (version != null)
+                    ? String.format("%s:%s:%s", group, artifact, version)
+                    : String.format("%s:%s", group, artifact);
+        }
+        return null;
     }
 
     private boolean metadataIndexContainsChangedEntries(Set<String> changedCoordinates, List<String> changedEntries) {

@@ -20,6 +20,8 @@
 - Write type annotations in all functions and most variables.
 - Document code without being too verbose.
 - In Java and Groovy, always import classes and use them without qualified names.
+- In Java use multi-line strings where possible.
+- In Java use the markdown style for comments.
 
 ## Testing individual components
 

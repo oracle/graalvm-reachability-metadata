@@ -51,6 +51,10 @@ For a single coordinate, CI runs three steps in this order:
     ```console
    ./gradlew pullAllowedDockerImages -Pcoordinates=org.postgresql:postgresql:42.7.3
     ```
+2. Validate index.json file integrity and schemas:
+    ```console
+   ./gradlew validateIndexFiles -Pcoordinates=org.postgresql:postgresql:42.7.3
+    ```
 2. Validate metadata:
     ```console
    ./gradlew checkMetadataFiles -Pcoordinates=org.postgresql:postgresql:42.7.3
@@ -85,6 +89,7 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ```console
 ./gradlew clean -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew validateIndexFiles -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew checkstyle -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew compileTestJava -Pcoordinates=[group:artifact:version|k/n|all]
