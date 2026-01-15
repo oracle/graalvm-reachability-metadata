@@ -143,4 +143,33 @@ class Jackson_module_kotlinTest {
         assertThat(restored.getPattern()).isEqualTo("a.*b");
         assertThat(restored.getOptions()).isEmpty();
     }
+
+    // Additional coverage: Kotlin constructor parameter name introspection for stdlib data classes
+    // Ensure that Pair can be deserialized from a JSON object using property names "first" and "second"
+    @Test
+    void pair_deserializeFromJsonObject_byPropertyNames() throws Exception {
+        JsonMapper mapper = newMapper();
+
+        String json = "{\"first\":\"left\",\"second\":42}";
+        Pair<String, Integer> restored = mapper.readValue(
+                json,
+                new TypeReference<Pair<String, Integer>>() {}
+        );
+
+        assertThat(restored).isEqualTo(new Pair<>("left", 42));
+    }
+
+    // Ensure that Triple can be deserialized from a JSON object using property names "first", "second", and "third"
+    @Test
+    void triple_deserializeFromJsonObject_byPropertyNames() throws Exception {
+        JsonMapper mapper = newMapper();
+
+        String json = "{\"first\":\"name\",\"second\":7,\"third\":true}";
+        Triple<String, Integer, Boolean> restored = mapper.readValue(
+                json,
+                new TypeReference<Triple<String, Integer, Boolean>>() {}
+        );
+
+        assertThat(restored).isEqualTo(new Triple<>("name", 7, Boolean.TRUE));
+    }
 }
