@@ -12,12 +12,16 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import kotlin.Pair;
 import kotlin.Triple;
 import kotlin.Unit;
+import kotlin.text.Regex;
+import kotlin.text.RegexOption;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -110,5 +114,33 @@ class Jackson_module_kotlinTest {
 
         Unit restored = mapper.readValue("null", Unit.class);
         assertThat(restored).isNull();
+    }
+
+    // New coverage: Kotlin Regex support (pattern and options)
+    @Test
+    void regex_roundTrip_withOptions() throws Exception {
+        JsonMapper mapper = newMapper();
+
+        Set<RegexOption> options = EnumSet.of(RegexOption.IGNORE_CASE, RegexOption.MULTILINE);
+        Regex original = new Regex("^abc$", options);
+
+        String json = mapper.writeValueAsString(original);
+        Regex restored = mapper.readValue(json, Regex.class);
+
+        assertThat(restored).isNotNull();
+        assertThat(restored.getPattern()).isEqualTo(original.getPattern());
+        assertThat(restored.getOptions()).containsExactlyInAnyOrderElementsOf(options);
+    }
+
+    @Test
+    void regex_deserializeFromJsonString_literalCreatesRegex() throws Exception {
+        JsonMapper mapper = newMapper();
+
+        String json = "\"a.*b\"";
+        Regex restored = mapper.readValue(json, Regex.class);
+
+        assertThat(restored).isNotNull();
+        assertThat(restored.getPattern()).isEqualTo("a.*b");
+        assertThat(restored.getOptions()).isEmpty();
     }
 }
