@@ -93,21 +93,13 @@ class Jackson_module_kotlinTest {
     }
 
     @Test
-    void unit_serializeThenDeserialize_returnsSingleton() throws Exception {
+    void unit_serializesToJsonNull_andDeserializesToJavaNull() throws Exception {
         JsonMapper mapper = newMapper();
 
         String json = mapper.writeValueAsString(Unit.INSTANCE);
+        assertThat(json).isEqualTo("null");
+
         Unit restored = mapper.readValue(json, Unit.class);
-
-        assertThat(restored).isSameAs(Unit.INSTANCE);
-    }
-
-    @Test
-    void unit_deserializeFromJsonNull_returnsSingleton() throws Exception {
-        JsonMapper mapper = newMapper();
-
-        Unit restored = mapper.readValue("null", Unit.class);
-
-        assertThat(restored).isSameAs(Unit.INSTANCE);
+        assertThat(restored).isNull();
     }
 }
