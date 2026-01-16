@@ -10,19 +10,35 @@ import com.atomikos.icatch.CompositeTransaction;
 import com.atomikos.icatch.CompositeTransactionManager;
 import com.atomikos.icatch.RollbackException;
 import com.atomikos.icatch.config.Configuration;
+import com.atomikos.icatch.config.UserTransactionService;
+import com.atomikos.icatch.config.UserTransactionServiceImp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.*;
 
 class TransactionsTest {
 
     private CompositeTransactionManager tm;
+    private UserTransactionService uts;
 
     @BeforeEach
     void setUp() {
+        // Boot the Atomikos core transaction service so the CTM becomes available
+        Properties props = new Properties();
+        // Use temp directories for logs to keep tests isolated and writable
+        String tmp = System.getProperty("java.io.tmpdir");
+        props.setProperty("com.atomikos.icatch.log_base_dir", tmp);
+        props.setProperty("com.atomikos.icatch.output_dir", tmp);
+
+        uts = new UserTransactionServiceImp();
+        uts.init(props);
+
         tm = Configuration.getCompositeTransactionManager();
+        assertThat(tm).as("CompositeTransactionManager should be available after init").isNotNull();
 
         // Best-effort cleanup in case a previous test left a TX on this thread
         CompositeTransaction current = tm.getCompositeTransaction();
@@ -37,11 +53,23 @@ class TransactionsTest {
     @AfterEach
     void tearDown() {
         // Ensure no transaction leaks to next test
-        CompositeTransaction current = tm.getCompositeTransaction();
-        if (current != null) {
+        if (tm != null) {
+            CompositeTransaction current = tm.getCompositeTransaction();
+            if (current != null) {
+                try {
+                    current.rollback();
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        // Shut down the service to release resources/threads
+        if (uts != null) {
             try {
-                current.rollback();
+                uts.shutdown(true);
             } catch (Exception ignored) {
+            } finally {
+                uts = null;
+                tm = null;
             }
         }
     }
