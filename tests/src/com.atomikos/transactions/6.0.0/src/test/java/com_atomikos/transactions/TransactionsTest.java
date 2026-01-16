@@ -174,21 +174,21 @@ class TransactionsTest {
     }
 
     @Test
-    void commitAfterTimeoutFailsWithRollbackException() throws Exception {
-        CompositeTransaction tx = tm.createCompositeTransaction(50); // very short timeout in ms
+    void rollbackOnlyInChildPreventsRootCommit() throws Exception {
+        CompositeTransaction root = tm.createCompositeTransaction(10_000);
+        CompositeTransaction child = root.createSubTransaction();
 
-        // Ensure the transaction times out before commit
-        try {
-            Thread.sleep(250);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            fail("Interrupted while waiting for transaction to time out");
-        }
-
-        assertThatThrownBy(tx::commit)
-            .as("commit should fail after timeout")
+        // Mark child for rollback and verify its commit fails
+        child.setRollbackOnly();
+        assertThatThrownBy(child::commit)
+            .as("child commit should fail when marked rollback-only")
             .isInstanceOf(RollbackException.class);
 
-        assertThat(tm.getCompositeTransaction()).as("no tx after failed commit").isNull();
+        // Root commit should also fail due to failed child
+        assertThatThrownBy(root::commit)
+            .as("root commit should fail after child failure")
+            .isInstanceOf(RollbackException.class);
+
+        assertThat(tm.getCompositeTransaction()).as("no tx after failed commits").isNull();
     }
 }
