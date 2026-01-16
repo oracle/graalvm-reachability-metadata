@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -130,5 +131,64 @@ class TransactionsTest {
         tm.getCompositeTransaction().commit();
 
         assertThat(tm.getCompositeTransaction()).as("no tx after commit").isNull();
+    }
+
+    @Test
+    void suspendOnOneThreadResumeOnAnotherAndCommit() throws Exception {
+        CompositeTransaction tx = tm.createCompositeTransaction(10_000);
+        String tid = tx.getTid();
+
+        // Suspend on main test thread
+        CompositeTransaction suspended = tm.suspend();
+        assertThat(suspended).isNotNull();
+        assertThat(tm.getCompositeTransaction()).as("main thread cleared on suspend").isNull();
+
+        AtomicReference<Throwable> asyncError = new AtomicReference<>();
+
+        Thread t = new Thread(() -> {
+            try {
+                // Initially no transaction bound on this worker thread
+                assertThat(tm.getCompositeTransaction()).as("worker thread initially has no tx").isNull();
+
+                // Resume the suspended transaction on the worker thread
+                tm.resume(suspended);
+                assertThat(tm.getCompositeTransaction()).isNotNull();
+                assertThat(tm.getCompositeTransaction().getTid()).isEqualTo(tid);
+
+                // Commit on the worker thread
+                tm.getCompositeTransaction().commit();
+
+                // After commit, the worker thread should have no tx bound
+                assertThat(tm.getCompositeTransaction()).as("worker thread cleared after commit").isNull();
+            } catch (Throwable e) {
+                asyncError.set(e);
+            }
+        });
+
+        t.start();
+        t.join();
+
+        assertThat(asyncError.get()).as("no error in worker thread").isNull();
+        // Main thread should still have no transaction bound
+        assertThat(tm.getCompositeTransaction()).as("main thread remains clear").isNull();
+    }
+
+    @Test
+    void commitAfterTimeoutFailsWithRollbackException() throws Exception {
+        CompositeTransaction tx = tm.createCompositeTransaction(50); // very short timeout in ms
+
+        // Ensure the transaction times out before commit
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            fail("Interrupted while waiting for transaction to time out");
+        }
+
+        assertThatThrownBy(tx::commit)
+            .as("commit should fail after timeout")
+            .isInstanceOf(RollbackException.class);
+
+        assertThat(tm.getCompositeTransaction()).as("no tx after failed commit").isNull();
     }
 }
