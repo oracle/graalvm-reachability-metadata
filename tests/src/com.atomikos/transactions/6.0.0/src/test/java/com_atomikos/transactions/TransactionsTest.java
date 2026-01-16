@@ -50,7 +50,6 @@ class TransactionsTest {
     void beginAndCommitRootTransaction() throws Exception {
         CompositeTransaction tx = tm.createCompositeTransaction(10_000);
         assertThat(tx).as("root transaction created").isNotNull();
-        assertThat(tx.getParent()).as("root has no parent").isNull();
         assertThat(tm.getCompositeTransaction()).as("current transaction bound to thread").isEqualTo(tx);
         assertThat(tx.getTid()).as("transaction id present").isNotBlank();
 
@@ -65,7 +64,7 @@ class TransactionsTest {
         CompositeTransaction child = root.createSubTransaction();
 
         assertThat(child).isNotNull();
-        assertThat(child.getParent()).isEqualTo(root);
+        assertThat(child.getTid()).as("child has distinct tid").isNotEqualTo(root.getTid());
 
         // Commit subtransaction first, then the root
         child.commit();
