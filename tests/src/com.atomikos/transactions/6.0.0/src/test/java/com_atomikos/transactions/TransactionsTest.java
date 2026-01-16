@@ -195,4 +195,18 @@ class TransactionsTest {
 
         assertThat(tm.getCompositeTransaction()).as("no tx after commit").isNull();
     }
+
+    @Test
+    void beginAndRollbackRootTransactionClearsContext() throws Exception {
+        // New feature coverage: explicit rollback of a root transaction clears thread context
+        CompositeTransaction tx = tm.createCompositeTransaction(10_000);
+        assertThat(tx).isNotNull();
+        assertThat(tm.getCompositeTransaction()).as("tx bound to thread").isEqualTo(tx);
+
+        // Explicitly rollback
+        tx.rollback();
+
+        // After rollback, the current thread should have no transaction bound
+        assertThat(tm.getCompositeTransaction()).as("no tx after rollback").isNull();
+    }
 }
