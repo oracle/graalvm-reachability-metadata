@@ -6,14 +6,14 @@ Below is an overview of the CI pipelines and the configuration they rely on.
 - GitHub Actions workflows: [.github/workflows](../.github/workflows)/*.yml
 - Source of truth for style checks: [gradle/checkstyle.xml](../gradle/checkstyle.xml)
 
-CI prefetches docker images and temporarily disables Docker networking for test isolation via [`.github/workflows/disable-docker.sh`](../.github/workflows/scripts/disable-docker.sh). 
+CI prefetches docker images and temporarily disables Docker networking for test isolation via [`.github/workflows/disable-docker.sh`](../.github/workflows/scripts/disable-docker.sh).
 You usually do not need this locally.
 
 ## Types of jobs in the CI
 
 The release is made every two weeks if there are metadata changes: [.github/workflows/create-scheduled-release.yml](../.github/workflows/create-scheduled-release.yml).
 
-The test matrx definition starts with [ci.json](../ci.json):
+The test matrix definition starts with [ci.json](../ci.json):
 - A single source of truth for which Java versions and OS runners to test on.
 - Gradle tasks read it to generate GitHub Actions matrices consumed by the workflows below.
 - Way to define build arguments for the build. If this file is changed everything is re-run.
@@ -28,6 +28,9 @@ Workflows testing metadata using [ci.json](../ci.json):
 - Test changed build logic ([.github/workflows/test-changed-infrastructure.yml](../.github/workflows/test-changed-infrastructure.yml))
   - Triggers: PRs to master touching [tests/tck-build-logic/](tests/tck-build-logic/), [gradle/](gradle/), [build.gradle](../build.gradle), [settings.gradle](../settings.gradle), or [gradle.properties](../gradle.properties).
   - Uses: generateInfrastructureChangedCoordinatesMatrix. Pulls allowed images, disables Docker networking, validates config, then runs tests.
+- Test affected Spring AOT smoke tests ([.github/workflows/test-affected-spring-aot-3.4.x.yml](../.github/workflows/test-affected-spring-aot-3.4.x.yml), [.github/workflows/test-affected-spring-aot-3.5.x.yml](../.github/workflows/test-affected-spring-aot-3.5.x.yml), [.github/workflows/test-affected-spring-aot-main.yml](../.github/workflows/test-affected-spring-aot-main.yml))
+  - Triggers: PRs to master touching [metadata/](metadata/) or [tests/src/](tests/src/).
+  - Uses: generateAffectedSpringTestMatrix to compute impacted Spring AOT projects and produce a matrix; runs triaged native tests via [.github/workflows/scripts/run-spring-aot-triaged-test.sh](../.github/workflows/scripts/run-spring-aot-triaged-test.sh).
 
 Workflow for testing latest library versions from Maven: [.github/workflows/verify-new-library-version-compatibility.yml](../.github/workflows/verify-new-library-version-compatibility.yml): scheduled verifier for newer upstream library versions; uses pinned Java/OS in the workflow.
 

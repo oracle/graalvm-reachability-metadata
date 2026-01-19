@@ -183,6 +183,16 @@ Map<String, List<String>> matrixDefaultsFor(String section) {
     ]
 }
 
+Map<String, Object> springAotMatrixConfig() {
+    def ci = loadCi()
+    def sec = ci["generateAffectedSpringTestMatrix"]
+    if (sec == null) throw new GradleException("Missing 'generateAffectedSpringTestMatrix' in ci.json")
+    [
+            "java-branch-mapping": (sec["java-branch-mapping"] as Map<String, String>),
+            "os": sec["os"]
+    ]
+}
+
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
@@ -437,5 +447,122 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
         writeGithubEnv("LATEST_VERSION", latestVersion)
         writeGithubEnv("TEST_PATH", testPath)
         writeGithubEnv("TEST_COORDINATES", testCoordinates)
+    }
+}
+
+// gradle generateAffectedSpringTestMatrix -PbaseCommit=<base> -PnewCommit=<head> -PspringAotBranch=<branch> -PspringAotPath=/path/to/spring-aot-smoke-tests
+tasks.register("generateAffectedSpringTestMatrix") { task ->
+    task.setDescription("Computes GA changes from git diff, scans Spring AOT for impacted tests, and emits a ready-to-use GitHub Actions matrix.")
+    task.setGroup(METADATA_GROUP)
+
+    doLast {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with -PbaseCommit=<commit-hash>")
+        }
+        if (!project.hasProperty("springAotBranch")) {
+            throw new GradleException("Missing 'springAotBranch' property! Rerun Gradle with -PspringAotBranch=<branch>")
+        }
+        if (!project.hasProperty("springAotPath")) {
+            throw new GradleException("Missing 'springAotPath' property! Rerun Gradle with -PspringAotPath=<spring-aot-smoke-tests-path>")
+        }
+
+        // Resolve Spring AOT dir
+        def springDir = project.file(project.findProperty("springAotPath").toString())
+        if (!springDir.exists()) {
+            throw new GradleException("Spring AOT path does not exist: ${springDir.absolutePath}")
+        }
+
+        // Resolve default Java and OS for this branch from ci.json
+        def springAotCfg = springAotMatrixConfig()
+        def javaBranchMapping = (springAotCfg["java-branch-mapping"] as Map<String, String>)
+        def branch = project.findProperty("springAotBranch").toString()
+        String defaultJavaStr = javaBranchMapping.get(branch)
+        if (defaultJavaStr == null || defaultJavaStr.trim().isEmpty()) {
+            throw new GradleException("Unknown springAotBranch '${branch}' in ci.json mapping")
+        }
+        Integer defaultJava = Integer.parseInt(defaultJavaStr)
+
+        // Compute versionless GA targets from diffCoordinates
+        boolean noneFound = diffCoordinates.isEmpty()
+        List<String> versionless = []
+        if (!noneFound) {
+            versionless = diffCoordinates.collect { c ->
+                def parts = c.split(":", 3)
+                "${parts[0]}:${parts[1]}"
+            }.unique()
+            noneFound = versionless.isEmpty()
+        }
+
+        if (noneFound) {
+            writeGithubOutput("impacted_tests", "")
+            writeGithubOutput("matrix", JsonOutput.toJson([include: []]))
+            writeGithubOutput("none-found", "true")
+            return
+        }
+
+        // Init script within this repo (corrected path)
+        File initScript = project.file("tests/tck-build-logic/scripts/spring-aot-impact-scan.gradle")
+        if (!initScript.exists()) {
+            throw new GradleException("Missing init script: ${initScript.absolutePath}")
+        }
+
+        // Execute impact scan in Spring AOT repo
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream()
+        def execOps = project.services.get(ExecOperations)
+        execOps.exec {
+            workingDir = springDir
+            executable = "${springDir.absolutePath}/gradlew"
+            args = [
+                    "-I", initScript.absolutePath,
+                    "-PimpactCoordinatesList=${versionless.join(',')}",
+                    "__internalImpactScan",
+                    "-q",
+                    "--no-daemon",
+                    "--console=plain",
+                    "--warning-mode=none"
+            ]
+            standardOutput = stdout
+            errorOutput = stdout
+            ignoreExitValue = true
+        }
+
+        // Parse impact results
+        List<String> results = stdout.toString().split("\n")
+                .findAll { it.startsWith("IMPACT_MATCH:") }
+                .collect { it.replace("IMPACT_MATCH:", "") }
+                .unique()
+
+        // Write impacted tests (CSV)
+        writeGithubOutput("impacted_tests", results.join(','))
+
+        boolean noneFoundTests = results.isEmpty()
+
+        // Build matrix with per-project Java override detection
+        List<Map<String, String>> include = []
+        results.each { String p ->
+            String relPath = p.replaceFirst("^:", "").replace(":", "/")
+            File gradleFile = new File(springDir, "${relPath}/build.gradle")
+
+            Integer currentJava = defaultJava
+            if (gradleFile.isFile()) {
+                try {
+                    String text = gradleFile.getText("UTF-8")
+                    def m = (text =~ /(?m)^\s*(?:.*?\.)?javaVersion\s*=\s*['"](\d+)['"]/)
+                    if (m.find()) {
+                        Integer override = Integer.parseInt(m.group(1))
+                        if (override > currentJava) {
+                            currentJava = override
+                        }
+                    }
+                } catch (Exception ignore) {
+                    // ignore parse errors, fall back to defaultJava
+                }
+            }
+
+            include.add([project: p, java: currentJava.toString(), os: "ubuntu-latest"])
+        }
+
+        writeGithubOutput("matrix", JsonOutput.toJson([include: include]))
+        writeGithubOutput("none-found", noneFoundTests.toString())
     }
 }
