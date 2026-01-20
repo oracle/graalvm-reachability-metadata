@@ -8,16 +8,11 @@
     "type": "object",
     "additionalProperties": false,
     "required": [
-      "module",
       "allowed-packages",
       "metadata-version",
       "tested-versions"
     ],
     "properties": {
-      "module": {
-        "$ref": "#/$defs/moduleCoordinate",
-        "description": "Maven coordinates in the form '<groupId>:<artifactId>'."
-      },
       "metadata-version": {
         "type": "string",
         "minLength": 1,
@@ -101,22 +96,22 @@
     [
       {
         "metadata-version": "0.0.1",
-        "module": "org.example:library",
         "tested-versions": [ "0.0.1", "0.0.2" ],
         "default-for": "0\\.0\\..*",
-        "test-version": "0.0.1"
+        "test-version": "0.0.1",
+        "allowed-packages": [ "org.example.library" ]
       },
       {
         "latest": true,
         "metadata-version": "1.0.0",
-        "module": "org.example:library",
-        "tested-versions": [ "1.0.0", "1.1.0" , "1.2.0"]
+        "tested-versions": [ "1.0.0", "1.1.0" , "1.2.0"],
+        "allowed-packages": [ "org.example.library" ]
       },
       {
         "metadata-version": "1.19.0",
-        "module": "io.opentelemetry:opentelemetry-sdk-trace",
         "tested-versions": [ "1.19.0" ],
         "override": true,
+        "allowed-packages": [ "io.opentelemetry" ],
         "skipped-versions": [
           { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
         ]

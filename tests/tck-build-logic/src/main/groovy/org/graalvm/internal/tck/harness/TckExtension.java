@@ -319,7 +319,9 @@ public abstract class TckExtension {
             List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(index);
 
             for (Map<String, ?> entry : metadataIndex) {
-                if (coordinatesMatch((String) entry.get("module"), groupId, artifactId) && ((List<String>) entry.get("tested-versions")).contains(version)) {
+                @SuppressWarnings("unchecked")
+                List<String> tv = (List<String>) entry.get("tested-versions");
+                if (tv != null && tv.contains(version)) {
                     return fullDir.resolve((String) entry.get("metadata-version"));
                 }
             }
@@ -341,22 +343,25 @@ public abstract class TckExtension {
 
         Set<String> matchingCoordinates = new HashSet<>();
         for (String directory : getMatchingMetadataDirs(groupId, artifactId)) {
-            Path index = metadataRoot().resolve(directory).resolve("index.json");
+            Path fullDir = metadataRoot().resolve(directory);
+            Path index = fullDir.resolve("index.json");
             List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(index);
 
             for (Map<String, ?> entry : metadataIndex) {
-                List<String> coordinates = splitCoordinates((String) entry.get("module"));
+                @SuppressWarnings("unchecked")
                 List<String> testedVersions = (List<String>) entry.get("tested-versions");
-                if (coordinatesMatch((String) entry.get("module"), groupId, artifactId) && (version == null || testedVersions.contains(version))) {
-                    if (version == null) { // We want all library versions, so let's add them.
-                        testedVersions.stream()
-                                .filter(t -> metadataRoot().resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(t).toFile().exists())
-                                .forEach(t -> matchingCoordinates.add(entry.get("module") + ":" + t));
-                    } else { // We have a specific version pinned.
-                        if (metadataRoot().resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(version).toFile().exists()) {
-                            matchingCoordinates.add(entry.get("module") + ":" + version);
-                        }
-                    }
+                if (testedVersions == null) continue;
+
+                // Derive group/artifact from directory path (index is per artifact)
+                String g = fullDir.getParent().getFileName().toString();
+                String a = fullDir.getFileName().toString();
+
+                if (version == null) { // We want all library versions
+                    testedVersions.stream()
+                            .filter(t -> fullDir.resolve(t).toFile().exists())
+                            .forEach(t -> matchingCoordinates.add(g + ":" + a + ":" + t));
+                } else if (testedVersions.contains(version) && fullDir.resolve(version).toFile().exists()) {
+                    matchingCoordinates.add(g + ":" + a + ":" + version);
                 }
             }
         }

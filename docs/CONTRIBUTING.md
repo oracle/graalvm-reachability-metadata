@@ -95,7 +95,6 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
 #### Index Entry Fields
 
 **Required Keys:**
-* `module`: The full `groupId:artifactId` of the library.
 * `metadata-version`: Specifies the subdirectory where the GraalVM configuration files (e.g., `reflect-config.json`) reside.
 * `tested-versions`: An array of library versions verified to work with this specific metadata.
 * `allowed-packages`: An array of package prefixes. The TCK ensures that configuration entries (like reflection targets) belong strictly to these packages.
@@ -115,7 +114,6 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
   {
     "allowed-packages": ["org.example.library"],
     "metadata-version": "1.0.0",
-    "module": "org.example:library",
     "tested-versions": [
       "1.0.0",
       "1.0.1"
@@ -132,7 +130,6 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
      "override": true,
      "allowed-packages": ["org.example.library"],
      "metadata-version": "1.1.0",
-     "module": "org.example:library",
      "test-version": "1.0.0",
      "tested-versions": [
        "1.1.0",

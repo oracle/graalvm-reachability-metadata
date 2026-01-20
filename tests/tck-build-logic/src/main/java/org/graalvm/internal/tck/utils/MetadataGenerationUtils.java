@@ -159,7 +159,6 @@ public final class MetadataGenerationUtils {
                 entries.set(i, new MetadataVersionsIndexEntry(
                         null, // latest removed
                         entry.override(),
-                        entry.module(),
                         entry.defaultFor(),
                         entry.metadataVersion(),
                         entry.testVersion(),
@@ -173,22 +172,20 @@ public final class MetadataGenerationUtils {
 
         // Add the new entry and mark it as latest
         // TODO: add allowed-packages/requires generation
-        String moduleName = newCoords.group() + ":" + newCoords.artifact();
         List<String> testedVersions = new ArrayList<>();
         testedVersions.add(newCoords.version());
         MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(
-                Boolean.TRUE,
-                null,
-                moduleName,
-                null,
-                newCoords.version(),
-                testVersion,
+                Boolean.TRUE, // latest
+                null, // override
+                null, // default-for
+                newCoords.version(), // metadata-version
+                testVersion, // test-version
                 testedVersions,
-                null,
-                null,
-                null
+                null, // skipped-versions
+                null, // allowed-packages
+                null // requires
         );
-        entries.addFirst(newEntry);
+        entries.add(0, newEntry);
 
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);

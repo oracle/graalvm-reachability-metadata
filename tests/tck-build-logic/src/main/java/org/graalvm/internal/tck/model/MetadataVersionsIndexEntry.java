@@ -10,10 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public record MetadataVersionsIndexEntry (
+/**
+ * Index entry for metadata/<groupId>/<artifactId>/index.json.
+ * The groupId and artifactId are derived from the directory path; no explicit "module" field exists.
+ */
+public record MetadataVersionsIndexEntry(
         Boolean latest,
         Boolean override,
-        String module,
         @JsonProperty("default-for")
         String defaultFor,
         @JsonProperty("metadata-version")
@@ -28,4 +31,4 @@ public record MetadataVersionsIndexEntry (
         List<String> allowedPackages,
         @JsonProperty("requires")
         List<String> requires
-){}
+) {}
