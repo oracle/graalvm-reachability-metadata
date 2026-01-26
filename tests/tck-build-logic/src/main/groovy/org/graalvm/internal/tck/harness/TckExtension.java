@@ -206,8 +206,9 @@ public abstract class TckExtension {
         if (changed.get("metadata") != null) {
             changedEntries = changed.get("metadata")
                     .stream()
-                    .map(m -> m.toString().split("reachability-metadata/metadata/")[1])
-                    .filter(m -> !m.equalsIgnoreCase("index.json"))
+                    .map(p -> metadataRoot().relativize(p).toString().replace('\\', '/'))
+                    .filter(rel -> !rel.equalsIgnoreCase("library-and-framework-list.json"))
+                    .filter(rel -> !rel.startsWith("schemas/"))
                     .toList();
         }
         if (!metadataIndexContainsChangedEntries(metadataIndexEntries, changedEntries)) {
