@@ -17,8 +17,8 @@ jobs:
         uses: ./.github/actions/detect-file-changes
         with:
           file-patterns: |
-            - 'library-and-framework-list.json'
-            - 'schemas/library-and-framework-list-schema*.json'
+            - 'metadata/library-and-framework-list.json'
+            - 'metadata/schemas/library-and-framework-list-schema*.json'
 
       - uses: actions/setup-python@v4
         with:
@@ -29,7 +29,7 @@ jobs:
       - name: Check that the JSON file is well-formatted and sorted by artifact
         if: steps.filter.outputs.changed == 'true'
         run: |
-          JSON="library-and-framework-list.json"
+          JSON="metadata/library-and-framework-list.json"
           if ! jq -e . "${JSON}" >/dev/null; then
             echo "'${JSON}' fails to parse. Please make sure it is a valid JSON file."
             exit 6
@@ -44,4 +44,4 @@ jobs:
         if: steps.filter.outputs.changed == 'true'
         run: |
           pip install check-jsonschema
-          check-jsonschema --schemafile schemas/library-and-framework-list-schema-v1.0.0.json library-and-framework-list.json
+          check-jsonschema --schemafile metadata/schemas/library-and-framework-list-schema-v1.0.0.json metadata/library-and-framework-list.json

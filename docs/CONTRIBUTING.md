@@ -279,7 +279,7 @@ See an [example](https://github.com/oracle/graalvm-reachability-metadata/blob/ma
 
 ## Tested Libraries and Frameworks
 
-If your library or framework is tested with GraalVM Native Image, consider adding it to [this list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/library-and-framework-list.json).
+If your library or framework is tested with GraalVM Native Image, consider adding it to [this list](https://github.com/oracle/graalvm-reachability-metadata/blob/master/metadata/library-and-framework-list.json).
 
 Write an entry as follows:
 ```json
@@ -309,6 +309,6 @@ Where:
    * community-tested (the library is partially tested through some project, e.g. [Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/tests/src))
    * fully-tested (the library is fully tested for each released library version)
 
-**Note:** To pass format and style checks, please run `sorted="$(jq -s '.[] | sort_by(.artifact)' library-and-framework-list.json)" && echo -E "${sorted}" > library-and-framework-list.json` before submitting a PR.
+**Note:** To pass format and style checks, please run `sorted="$(jq -s '.[] | sort_by(.artifact)' metadata/library-and-framework-list.json)" && echo -E "${sorted}" > metadata/library-and-framework-list.json` before submitting a PR.
 
 **Note:** The entries you add will be validated against [library-and-framework-list-schema-v1.0.0.json](https://github.com/oracle/graalvm-reachability-metadata/blob/master/schemas/library-and-framework-list-schema-v1.0.0.json)

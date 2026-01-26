@@ -99,18 +99,6 @@ tasks.register('package', Zip) { task ->
     task.destinationDirectory = layout.buildDirectory
 
     from(tck.metadataRoot)
-
-    from(project.rootDir) {
-        // library-and-framework-list.json is used by Native Build Tools to provide additional
-        // information on library and framework support to the native image Build Report
-        include("library-and-framework-list.json")
-
-        // Schemas are included in the ZIP root to allow Native Build Tools to verify
-        // structural compatibility with this release of GraalVM Reachability Metadata
-        include("schemas/metadata-root-index-schema-v1.0.0.json")
-        include("schemas/metadata-library-index-schema-v1.0.0.json")
-        include("schemas/library-and-framework-list-schema-v1.0.0.json")
-    }
 }
 
 tasks.register('test') { t ->
