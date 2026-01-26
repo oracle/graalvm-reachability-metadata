@@ -243,29 +243,6 @@ For metadata located at `metadata/<group_id>/<artifact_id>/<version>`, the corre
 This path can be overridden to allow multiple metadata versions to share the same set of test code. This mapping is handled by the local metadata index file (`metadata/<group_id>/<artifact_id>/index.json`).
 If an entry in this index contains the optional `test-version` field, the test code is resolved to the path: `tests/src/<group_id>/<artifact_id>/<test-version>`.
 
-**Optionally** test directory may contain `index.json` with content as follows:
-
-```json
-{
-  "test-command": [
-    "gradle",
-    "clean",
-    "nativeTest",
-    "-Pmetadata.dir=<metadata_dir>",
-    "-Plibrary.version=<version>"
-  ]
-}
-```
-
-Supported template parameters for `test-command` are:
-
-* `<metadata_dir>` - absolute path to directory where metadata is stored
-* `<group_id>` - Maven group ID of artifact that is being tested
-* `<artifact_id>`- Maven artifact ID of artifact that is being tested
-* `<version>` - Version of artifact that is being tested
-
-**Note that if `index.json` is omitted `gradle nativeTest` is executed by default.**
-
 ### Executing the tests
 
 In this example this can be done by invoking following command from the repository root:
