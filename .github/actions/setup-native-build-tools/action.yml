@@ -1,0 +1,87 @@
+name: "Setup latest native-build-tools snapshot"
+description: "Sets up JDK 17, checks out latest native-build-tools from master, publishes to mavenLocal, and updates gradle/libs.versions.toml in the caller repo."
+author: "GraalVM Reachability Metadata repository maintainers"
+
+inputs:
+  java-version:
+    description: "Java version to use when building native-build-tools"
+    required: false
+    default: "17.0.12"
+  distribution:
+    description: "Java distribution for setup-java"
+    required: false
+    default: "graalvm"
+  nbt-repo:
+    description: "Repository of native-build-tools"
+    required: false
+    default: "graalvm/native-build-tools"
+  nbt-ref:
+    description: "Ref/branch/tag of native-build-tools to checkout"
+    required: false
+    default: "master"
+  nbt-path:
+    description: "Path to checkout native-build-tools"
+    required: false
+    default: "native-build-tools"
+  github-token:
+    description: "GitHub token used by actions/checkout to access native-build-tools"
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  nbt-version:
+    description: "Detected native-build-tools version"
+    value: ${{ steps.read-version.outputs.nbt-version }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: setup-java-17
+      name: "🔧 Setup Java for native-build-tools"
+      uses: actions/setup-java@v4
+      with:
+        distribution: ${{ inputs.distribution }}
+        java-version: ${{ inputs.java-version }}
+
+    - id: checkout-nbt
+      name: "📦 Checkout native-build-tools"
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.nbt-repo }}
+        ref: ${{ inputs.nbt-ref }}
+        path: ${{ inputs.nbt-path }}
+        token: ${{ inputs.github-token }}
+        fetch-depth: 1
+
+    - id: read-version
+      name: "🔎 Read native-build-tools version from catalog"
+      shell: bash
+      run: |
+        set -euo pipefail
+        pushd "${{ inputs.nbt-path }}" >/dev/null
+        NBT_VERSION=$(sed -n 's/^[[:space:]]*nativeBuildTools[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' gradle/libs.versions.toml | head -n1)
+        popd >/dev/null
+        echo "Detected native-build-tools version: $NBT_VERSION"
+        # Expose to subsequent steps in the workflow
+        echo "ORG_GRADLE_PROJECT_nativeBuildToolsVersion=$NBT_VERSION" >> "$GITHUB_ENV"
+        echo "NBT_VERSION=$NBT_VERSION" >> "$GITHUB_ENV"
+        # Expose as action output
+        echo "nbt-version=$NBT_VERSION" >> "$GITHUB_OUTPUT"
+
+    - id: publish-nbt
+      name: "📦 Publish native-build-tools to mavenLocal"
+      shell: bash
+      run: |
+        set -euo pipefail
+        pushd "${{ inputs.nbt-path }}" >/dev/null
+        ./gradlew publishToMavenLocal --no-parallel --stacktrace
+        popd >/dev/null
+
+    - id: update-catalog
+      name: "✏️ Update libs.versions.toml in caller repo"
+      shell: bash
+      run: |
+        set -euo pipefail
+        NBT_VERSION="${{ steps.read-version.outputs.nbt-version }}"
+        sed -i -E 's/^([[:space:]]*nativeBuildTools[[:space:]]*=[[:space:]]*").*(")/\1'"$NBT_VERSION"'\2/' gradle/libs.versions.toml
+        echo "Updated libs.versions.toml to nativeBuildTools=$NBT_VERSION"
