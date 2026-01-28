@@ -32,6 +32,7 @@ import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
+import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
@@ -95,6 +96,12 @@ tasks.register("javaTest", JavaTestInvocationTask.class) { task ->
 tasks.register("nativeTestCompile", NativeTestCompileInvocationTask.class) { task ->
     task.setDescription("Compiles native tests (nativeTestCompile) for all subprojects")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
+}
+
+// gradle jacocoTestReport -Pcoordinates=<maven-coordinates>
+tasks.register("jacocoTestReport", JacocoTestReportInvocationTask.class) { task ->
+    task.setDescription("Generates JaCoCo coverage reports for all subprojects (runs tests first)")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
 // gradle clean -Pcoordinates=<maven-coordinates>

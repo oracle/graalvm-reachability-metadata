@@ -11,6 +11,7 @@ plugins {
     id 'checkstyle'
     id 'java-library'
     id 'org.graalvm.buildtools.native'
+    id 'jacoco'
 }
 
 repositories {
@@ -90,6 +91,41 @@ tasks.named('test') {
         exceptionFormat = 'full'
         showStackTraces = true
     }
+}
+
+ // Configure JaCoCo report to run after tests and to include only JARs of the library under test
+tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r ->
+    r.dependsOn(tasks.named('test'))
+
+    String targetGroup = ""
+    String targetArtifact = ""
+    def coordsParts = (libraryGAV ?: "").split(":")
+    if (coordsParts.length >= 2) {
+        targetGroup = coordsParts[0]
+        targetArtifact = coordsParts[1]
+    }
+
+    reports {
+        xml.required = true
+        html.required = false
+        csv.required = false
+    }
+
+    // Collect resolved dependency artifacts from the test runtime classpath
+    def artifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
+
+    def matched = artifacts.findAll { a ->
+        (a.moduleVersion.id.group == targetGroup ) && (a.moduleVersion.id.name == targetArtifact)
+    }.collect { it.file }
+    if (matched.isEmpty()) {
+        matched = artifacts.findAll { a ->
+            !(a.moduleVersion.id.group.startsWith('org.junit')
+                    || a.moduleVersion.id.group.startsWith('org.hamcrest')
+                    || a.moduleVersion.id.group.startsWith('org.assertj'))
+        }.collect { it.file }
+    }
+    classDirectories.setFrom(files(matched))
+    additionalClassDirs.setFrom(files(matched))
 }
 
 graalvmNative {
