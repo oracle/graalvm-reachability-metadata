@@ -98,6 +98,27 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
 ```
 
+### Coverage (JaCoCo)
+
+Purpose
+- Generate coverage for the library under test exercised by our tests.
+
+How it works
+- All JacocoReport tasks are wired to depend on `test` task, so running:
+  ```console
+  ./gradlew jacocoTestReport
+  ```
+  
+- Report contains coverage that focus exclusively on the provided library JARs, excluding unrelated external dependencies.
+- Report format: XML only.
+
+Usage
+- From the repository root (orchestrated across coordinates):
+  ```console
+  ./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]
+  ```
+  The root jacocoTestReport is a harness wrapper that invokes the per-project task across matching coordinates.
+
 ### Generating Metadata
 
 Generates metadata for a single library coordinate. If `agentAllowedPackages` is provided, a new user-code-filter.json will be created or updated to include those packages.
@@ -173,6 +194,7 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Generate metadata (single lib): `./gradlew generateMetadata -Pcoordinates=group:artifact:version`
 - Fix test that fails Native Image run for new library version: `./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=group:artifact:version -PnewLibraryVersion=version`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
+- Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`
 - Scan all Docker images: `./gradlew checkAllowedDockerImages`
 - List libs with newer versions: `./gradlew fetchExistingLibrariesWithNewerVersions --quiet`

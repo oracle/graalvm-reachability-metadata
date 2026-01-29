@@ -93,7 +93,7 @@ tasks.named('test') {
     }
 }
 
- // Configure JaCoCo report to run after tests and to include only JARs of the library under test
+ // Configure JaCoCo report to analyze only the effective classes of the target library (handles multi-release JARs)
 tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r ->
     r.dependsOn(tasks.named('test'))
 
@@ -115,17 +115,53 @@ tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r -
     def artifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
 
     def matched = artifacts.findAll { a ->
-        (a.moduleVersion.id.group == targetGroup ) && (a.moduleVersion.id.name == targetArtifact)
+        (a.moduleVersion.id.group == targetGroup) && (a.moduleVersion.id.name == targetArtifact)
     }.collect { it.file }
+
     if (matched.isEmpty()) {
-        matched = artifacts.findAll { a ->
-            !(a.moduleVersion.id.group.startsWith('org.junit')
-                    || a.moduleVersion.id.group.startsWith('org.hamcrest')
-                    || a.moduleVersion.id.group.startsWith('org.assertj'))
-        }.collect { it.file }
+        throw new GradleException("JaCoCo report generation failed. No eligible artifacts found on the classpath for ${libraryGAV}.")
     }
-    classDirectories.setFrom(files(matched))
-    additionalClassDirs.setFrom(files(matched))
+
+    // Produce one deterministic directory of .class files that represents exactly what the JVM would load at runtime for a given library jar, without duplicates
+    int runtimeMajor = (JavaVersion.current().majorVersion as int)
+
+    def effectiveDirs = matched.collect { File jarFile ->
+        String safe = jarFile.name.replaceAll(/[^A-Za-z0-9]/, '_')
+        layout.buildDirectory.dir("jacoco/effective/${safe}").get().asFile
+    }
+
+    r.inputs.files(matched)
+    r.outputs.dirs(effectiveDirs)
+
+    r.doFirst {
+        matched.eachWithIndex { File jarFile, int idx ->
+            File outDir = effectiveDirs[idx]
+            project.delete(outDir)
+            project.copy { CopySpec c ->
+                c.into(outDir)
+                // Base classes only
+                c.from(zipTree(jarFile)) {
+                    include '**/*.class'
+                    exclude 'META-INF/versions/**'
+                    exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/MANIFEST.MF'
+                }
+                // Overlay versioned classes up to current runtime version
+                (9..runtimeMajor).each { int v ->
+                    c.from(zipTree(jarFile)) {
+                        include "META-INF/versions/${v}/**/*.class"
+                        eachFile { fcd ->
+                            fcd.path = fcd.path.replaceFirst("^META-INF/versions/${v}/", "")
+                        }
+                    }
+                }
+                // Ensure later copies overwrite earlier ones
+                c.duplicatesStrategy = DuplicatesStrategy.INCLUDE
+            }
+        }
+    }
+
+    r.classDirectories.setFrom(files(effectiveDirs))
+    r.additionalClassDirs.setFrom(files(effectiveDirs))
 }
 
 graalvmNative {
