@@ -9,9 +9,6 @@ package org.graalvm.internal.tck.model.grype;
 import java.util.List;
 import java.util.Map;
 
-/*
- * JSON model for metadata/index.json.
- */
 public class GrypeEntry {
     public String id;
     public String dataSource;
