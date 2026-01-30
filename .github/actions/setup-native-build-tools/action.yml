@@ -6,7 +6,7 @@ inputs:
   enabled:
     description: "Whether to enable this setup step (set to 'false' to skip)."
     required: false
-    default: "true" # Temporarily true by default until new Native Build Tools release
+    default: "false"
   java-version:
     description: "Java version to use when building native-build-tools"
     required: false
@@ -44,23 +44,13 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - id: setup-java-17
-      if: ${{ inputs.enabled == 'true' }}
-      name: "🔧 Setup Java for native-build-tools"
-      uses: actions/setup-java@v4
-      with:
-        distribution: ${{ inputs.distribution }}
-        java-version: ${{ inputs.java-version }}
-
     - id: compute-ref
-      if: ${{ inputs.enabled == 'true' }}
       name: "🔀 Determine native-build-tools ref"
       shell: bash
       env:
         INPUT_REPO: ${{ inputs.nbt-repo }}
         INPUT_FALLBACK_REF: ${{ inputs.nbt-ref }}
         INPUT_PREFER_SAME: ${{ inputs.prefer-same-branch }}
-        INPUT_TOKEN: ${{ inputs.github-token }}
         # GitHub provides these automatically; HEAD is set for PRs
         GH_HEAD_REF: ${{ github.head_ref }}
         GH_REF_NAME: ${{ github.ref_name }}
@@ -73,28 +63,41 @@ runs:
         fi
 
         SELECTED="$INPUT_FALLBACK_REF"
+        SAME_BRANCH="false"
 
         if [ "${INPUT_PREFER_SAME}" = "true" ] && [ -n "$CANDIDATE" ]; then
-          # Check via GitHub API if branch exists on the target repo
-          CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer ${INPUT_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${INPUT_REPO}/branches/${CANDIDATE}")
-          if [ "$CODE" = "200" ]; then
-            SELECTED="$CANDIDATE"
-            echo "Found same-named branch on ${INPUT_REPO}: ${CANDIDATE}"
+          # Use git to check for the branch existence on the public repository (no API/token required)
+          REMOTE_URL="https://github.com/${INPUT_REPO}.git"
+          if git ls-remote --heads "$REMOTE_URL" "$CANDIDATE" >/dev/null 2>&1; then
+            # ls-remote returns 0 for success even if no match; verify non-empty output
+            if [ -n "$(git ls-remote --heads "$REMOTE_URL" "$CANDIDATE")" ]; then
+              SELECTED="$CANDIDATE"
+              SAME_BRANCH="true"
+              echo "Found same-named branch on ${INPUT_REPO}: ${CANDIDATE}"
+            else
+              echo "Same-named branch not found on ${INPUT_REPO}. Using fallback: ${INPUT_FALLBACK_REF}"
+            fi
           else
-            echo "Same-named branch not found on ${INPUT_REPO} (status $CODE). Using fallback: ${INPUT_FALLBACK_REF}"
+            echo "git ls-remote failed (network or repo issue). Using fallback: ${INPUT_FALLBACK_REF}"
           fi
         else
           echo "Prefer-same-branch disabled or no candidate branch detected. Using fallback: ${INPUT_FALLBACK_REF}"
         fi
 
         echo "nbt-ref=${SELECTED}" >> "$GITHUB_OUTPUT"
-        echo "Resolved native-build-tools ref: ${SELECTED}"
+        echo "same-branch=${SAME_BRANCH}" >> "$GITHUB_OUTPUT"
+        echo "Resolved native-build-tools ref: ${SELECTED} (same-branch=${SAME_BRANCH})"
+
+    - id: setup-java-17
+      if: ${{ inputs.enabled == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
+      name: "🔧 Setup Java for native-build-tools"
+      uses: actions/setup-java@v4
+      with:
+        distribution: ${{ inputs.distribution }}
+        java-version: ${{ inputs.java-version }}
 
     - id: checkout-nbt
-      if: ${{ inputs.enabled == 'true' }}
+      if: ${{ inputs.enabled == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
       name: "📦 Checkout native-build-tools"
       uses: actions/checkout@v4
       with:
@@ -105,7 +108,7 @@ runs:
         fetch-depth: 1
 
     - id: read-version
-      if: ${{ inputs.enabled == 'true' }}
+      if: ${{ inputs.enabled == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
       name: "🔎 Read native-build-tools version from catalog"
       shell: bash
       run: |
@@ -121,7 +124,7 @@ runs:
         echo "nbt-version=$NBT_VERSION" >> "$GITHUB_OUTPUT"
 
     - id: publish-nbt
-      if: ${{ inputs.enabled == 'true' }}
+      if: ${{ inputs.enabled == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
       name: "📦 Publish native-build-tools to mavenLocal"
       shell: bash
       run: |
@@ -131,7 +134,7 @@ runs:
         popd >/dev/null
 
     - id: update-catalog
-      if: ${{ inputs.enabled == 'true' }}
+      if: ${{ inputs.enabled == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
       name: "✏️ Update libs.versions.toml in caller repo"
       shell: bash
       run: |
