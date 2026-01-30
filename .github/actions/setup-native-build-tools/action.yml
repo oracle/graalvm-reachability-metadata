@@ -1,8 +1,12 @@
 name: "Setup latest native-build-tools snapshot"
-description: "Sets up JDK 17, checks out latest native-build-tools from master, publishes to mavenLocal, and updates gradle/libs.versions.toml in the caller repo."
+description: "Sets up JDK 17, checks out native-build-tools (preferring a same-named branch as the caller if available, else fallback), publishes to mavenLocal, and updates gradle/libs.versions.toml in the caller repo."
 author: "GraalVM Reachability Metadata repository maintainers"
 
 inputs:
+  enabled:
+    description: "Whether to enable this setup step (set to 'false' to skip)."
+    required: false
+    default: "true" # Temporarily true by default until new Native Build Tools release
   java-version:
     description: "Java version to use when building native-build-tools"
     required: false
@@ -16,15 +20,19 @@ inputs:
     required: false
     default: "graalvm/native-build-tools"
   nbt-ref:
-    description: "Ref/branch/tag of native-build-tools to checkout"
+    description: "Default ref/branch/tag of native-build-tools to checkout (used if same-named branch not found)"
     required: false
     default: "master"
+  prefer-same-branch:
+    description: "If 'true', prefer checking out a branch with the same name as the caller's branch when it exists on native-build-tools repo."
+    required: false
+    default: "true"
   nbt-path:
     description: "Path to checkout native-build-tools"
     required: false
     default: "native-build-tools"
   github-token:
-    description: "GitHub token used by actions/checkout to access native-build-tools"
+    description: "GitHub token used by actions/checkout and GitHub API lookups"
     required: false
     default: ${{ github.token }}
 
@@ -37,23 +45,67 @@ runs:
   using: "composite"
   steps:
     - id: setup-java-17
+      if: ${{ inputs.enabled == 'true' }}
       name: "🔧 Setup Java for native-build-tools"
       uses: actions/setup-java@v4
       with:
         distribution: ${{ inputs.distribution }}
         java-version: ${{ inputs.java-version }}
 
+    - id: compute-ref
+      if: ${{ inputs.enabled == 'true' }}
+      name: "🔀 Determine native-build-tools ref"
+      shell: bash
+      env:
+        INPUT_REPO: ${{ inputs.nbt-repo }}
+        INPUT_FALLBACK_REF: ${{ inputs.nbt-ref }}
+        INPUT_PREFER_SAME: ${{ inputs.prefer-same-branch }}
+        INPUT_TOKEN: ${{ inputs.github-token }}
+        # GitHub provides these automatically; HEAD is set for PRs
+        GH_HEAD_REF: ${{ github.head_ref }}
+        GH_REF_NAME: ${{ github.ref_name }}
+      run: |
+        set -euo pipefail
+        # Determine candidate branch name from the caller workflow
+        CANDIDATE="${GH_HEAD_REF:-}"
+        if [ -z "$CANDIDATE" ]; then
+          CANDIDATE="${GH_REF_NAME:-}"
+        fi
+
+        SELECTED="$INPUT_FALLBACK_REF"
+
+        if [ "${INPUT_PREFER_SAME}" = "true" ] && [ -n "$CANDIDATE" ]; then
+          # Check via GitHub API if branch exists on the target repo
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${INPUT_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${INPUT_REPO}/branches/${CANDIDATE}")
+          if [ "$CODE" = "200" ]; then
+            SELECTED="$CANDIDATE"
+            echo "Found same-named branch on ${INPUT_REPO}: ${CANDIDATE}"
+          else
+            echo "Same-named branch not found on ${INPUT_REPO} (status $CODE). Using fallback: ${INPUT_FALLBACK_REF}"
+          fi
+        else
+          echo "Prefer-same-branch disabled or no candidate branch detected. Using fallback: ${INPUT_FALLBACK_REF}"
+        fi
+
+        echo "nbt-ref=${SELECTED}" >> "$GITHUB_OUTPUT"
+        echo "Resolved native-build-tools ref: ${SELECTED}"
+
     - id: checkout-nbt
+      if: ${{ inputs.enabled == 'true' }}
       name: "📦 Checkout native-build-tools"
       uses: actions/checkout@v4
       with:
         repository: ${{ inputs.nbt-repo }}
-        ref: ${{ inputs.nbt-ref }}
+        ref: ${{ steps.compute-ref.outputs.nbt-ref }}
         path: ${{ inputs.nbt-path }}
         token: ${{ inputs.github-token }}
         fetch-depth: 1
 
     - id: read-version
+      if: ${{ inputs.enabled == 'true' }}
       name: "🔎 Read native-build-tools version from catalog"
       shell: bash
       run: |
@@ -69,6 +121,7 @@ runs:
         echo "nbt-version=$NBT_VERSION" >> "$GITHUB_OUTPUT"
 
     - id: publish-nbt
+      if: ${{ inputs.enabled == 'true' }}
       name: "📦 Publish native-build-tools to mavenLocal"
       shell: bash
       run: |
@@ -78,6 +131,7 @@ runs:
         popd >/dev/null
 
     - id: update-catalog
+      if: ${{ inputs.enabled == 'true' }}
       name: "✏️ Update libs.versions.toml in caller repo"
       shell: bash
       run: |
