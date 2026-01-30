@@ -1,0 +1,152 @@
+name: "Setup latest native-build-tools snapshot"
+description: "Sets up JDK 17, checks out native-build-tools (preferring a same-named branch as the caller if available, else fallback), publishes to mavenLocal, and updates gradle/libs.versions.toml in the caller repo."
+author: "GraalVM Reachability Metadata repository maintainers"
+
+inputs:
+  enabled-by-default:
+    description: "Whether to enable this setup step even if no same-named branch is found."
+    required: false
+    default: "false"
+  java-version:
+    description: "Java version to use when building native-build-tools"
+    required: false
+    default: "17.0.12"
+  distribution:
+    description: "Java distribution for setup-java"
+    required: false
+    default: "graalvm"
+  nbt-repo:
+    description: "Repository of native-build-tools"
+    required: false
+    default: "graalvm/native-build-tools"
+  nbt-ref:
+    description: "Default ref/branch/tag of native-build-tools to checkout (used if same-named branch not found)"
+    required: false
+    default: "master"
+  prefer-same-branch:
+    description: "If 'true', prefer checking out a branch with the same name as the caller's branch when it exists on native-build-tools repo."
+    required: false
+    default: "true"
+  nbt-path:
+    description: "Path to checkout native-build-tools"
+    required: false
+    default: "native-build-tools"
+  github-token:
+    description: "GitHub token used by actions/checkout and GitHub API lookups"
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  nbt-version:
+    description: "Detected native-build-tools version"
+    value: ${{ steps.read-version.outputs.nbt-version }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: compute-ref
+      name: "🔀 Determine native-build-tools ref"
+      shell: bash
+      env:
+        INPUT_REPO: ${{ inputs.nbt-repo }}
+        INPUT_FALLBACK_REF: ${{ inputs.nbt-ref }}
+        INPUT_PREFER_SAME: ${{ inputs.prefer-same-branch }}
+        # GitHub provides these automatically; HEAD is set for PRs
+        GH_HEAD_REF: ${{ github.head_ref }}
+        GH_REF_NAME: ${{ github.ref_name }}
+      run: |
+        set -euo pipefail
+        # Determine candidate branch name from the caller workflow
+        CANDIDATE="${GH_HEAD_REF:-}"
+        if [ -z "$CANDIDATE" ]; then
+          CANDIDATE="${GH_REF_NAME:-}"
+        fi
+
+        SELECTED="$INPUT_FALLBACK_REF"
+        SAME_BRANCH="false"
+
+        if [ "${INPUT_PREFER_SAME}" = "true" ] && [ -n "$CANDIDATE" ]; then
+          # Use git to check for the branch existence on the public repository (no API/token required)
+          REMOTE_URL="https://github.com/${INPUT_REPO}.git"
+          if git ls-remote --heads "$REMOTE_URL" "$CANDIDATE" >/dev/null 2>&1; then
+            # ls-remote returns 0 for success even if no match; verify non-empty output
+            if [ -n "$(git ls-remote --heads "$REMOTE_URL" "$CANDIDATE")" ]; then
+              SELECTED="$CANDIDATE"
+              SAME_BRANCH="true"
+              echo "Found same-named branch on ${INPUT_REPO}: ${CANDIDATE}"
+            else
+              echo "Same-named branch not found on ${INPUT_REPO}. Using fallback: ${INPUT_FALLBACK_REF}"
+            fi
+          else
+            echo "git ls-remote failed (network or repo issue). Using fallback: ${INPUT_FALLBACK_REF}"
+          fi
+        else
+          echo "Prefer-same-branch disabled or no candidate branch detected. Using fallback: ${INPUT_FALLBACK_REF}"
+        fi
+
+        echo "nbt-ref=${SELECTED}" >> "$GITHUB_OUTPUT"
+        echo "same-branch=${SAME_BRANCH}" >> "$GITHUB_OUTPUT"
+
+        # Log the final decision
+        if [ "${SAME_BRANCH}" = "true" ]; then
+          echo "🚀 NBT snapshot setup will run (matching branch found)."
+        elif [ "${{ inputs.enabled-by-default }}" = "true" ]; then
+          echo "🚀 NBT snapshot setup will run (enabled-by-default is true)."
+        else
+          echo "⏭️ NBT snapshot setup is skipped (no matching branch and not enabled-by-default)."
+        fi
+
+    - id: setup-java-17
+      if: ${{ inputs.enabled-by-default == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
+      name: "🔧 Setup Java for native-build-tools"
+      uses: actions/setup-java@v4
+      with:
+        distribution: ${{ inputs.distribution }}
+        java-version: ${{ inputs.java-version }}
+
+    - id: checkout-nbt
+      if: ${{ inputs.enabled-by-default == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
+      name: "📦 Checkout native-build-tools"
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.nbt-repo }}
+        ref: ${{ steps.compute-ref.outputs.nbt-ref }}
+        path: ${{ inputs.nbt-path }}
+        token: ${{ inputs.github-token }}
+        fetch-depth: 1
+
+    - id: read-version
+      if: ${{ inputs.enabled-by-default == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
+      name: "🔎 Read native-build-tools version from catalog"
+      shell: bash
+      run: |
+        set -euo pipefail
+        pushd "${{ inputs.nbt-path }}" >/dev/null
+        NBT_VERSION=$(sed -n 's/^[[:space:]]*nativeBuildTools[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' gradle/libs.versions.toml | head -n1)
+        popd >/dev/null
+        echo "Detected native-build-tools version: $NBT_VERSION"
+        # Expose to subsequent steps in the workflow
+        echo "ORG_GRADLE_PROJECT_nativeBuildToolsVersion=$NBT_VERSION" >> "$GITHUB_ENV"
+        echo "NBT_VERSION=$NBT_VERSION" >> "$GITHUB_ENV"
+        # Expose as action output
+        echo "nbt-version=$NBT_VERSION" >> "$GITHUB_OUTPUT"
+
+    - id: publish-nbt
+      if: ${{ inputs.enabled-by-default == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
+      name: "📦 Publish native-build-tools to mavenLocal"
+      shell: bash
+      run: |
+        set -euo pipefail
+        pushd "${{ inputs.nbt-path }}" >/dev/null
+        ./gradlew publishToMavenLocal --no-parallel --stacktrace
+        popd >/dev/null
+
+    - id: update-catalog
+      if: ${{ inputs.enabled-by-default == 'true' || steps.compute-ref.outputs.same-branch == 'true' }}
+      name: "✏️ Update libs.versions.toml in caller repo"
+      shell: bash
+      run: |
+        set -euo pipefail
+        NBT_VERSION="${{ steps.read-version.outputs.nbt-version }}"
+        sed -i -E 's/^([[:space:]]*nativeBuildTools[[:space:]]*=[[:space:]]*").*(")/\1'"$NBT_VERSION"'\2/' gradle/libs.versions.toml
+        echo "Updated libs.versions.toml to nativeBuildTools=$NBT_VERSION"
