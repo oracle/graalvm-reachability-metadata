@@ -36,3 +36,7 @@ Workflows for style and security:
 - [.github/workflows/library-and-framework-list-validation.yml](../.github/workflows/library-and-framework-list-validation.yml): validates and sorts [library-and-framework-list.json](../metadata/library-and-framework-list.json), checks schema.
 - [.github/workflows/scan-docker-images.yml](../.github/workflows/scan-docker-images.yml): scans allowed Docker images on PR/schedule.
 - [.github/workflows/sync-docker-tags.yml](../.github/workflows/sync-docker-tags.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
+
+## Native Build Tools snapshot setup
+
+The `setup-native-build-tools` action automatically publishes and uses an NBT snapshot if a branch with the same name exists in the native-build-tools repository. To test against a specific NBT branch, simply ensure both branches share the same name.
