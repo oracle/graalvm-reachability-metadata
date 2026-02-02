@@ -5,6 +5,7 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 import groovy.json.JsonSlurper
+import java.util.jar.JarFile
 
 plugins {
     id 'org.graalvm.internal.tck-base'
@@ -139,14 +140,27 @@ tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r -
             project.delete(outDir)
             project.copy { CopySpec c ->
                 c.into(outDir)
-                // Base classes only
+                // Base classes only (exclude MR payload)
                 c.from(zipTree(jarFile)) {
                     include '**/*.class'
                     exclude 'META-INF/versions/**'
-                    exclude 'META-INF/*.SF', 'META-INF/*.RSA', 'META-INF/MANIFEST.MF'
                 }
-                // Overlay versioned classes up to current runtime version
-                (9..runtimeMajor).each { int v ->
+
+                // Overlay only versions that exist (<= runtimeMajor)
+                def existingMrJavaVersions = new TreeSet<Integer>()
+                new JarFile(jarFile).withCloseable { jf ->
+                    jf.entries().each { e ->
+                        def m = (e.name =~ /^META-INF\/versions\/(\d+)\//)
+                        if (m.find()) {
+                            int v = (m.group(1) as int)
+                            if (v <= runtimeMajor) existingMrJavaVersions.add(v)
+                        }
+                    }
+                }
+
+                // Overlay multi-release JAR bytecode in ascending version order. For each META-INF/versions/<v>/ that exists (v ≤ runtime) copy its classes into the output
+                // tree while stripping the MR prefix, so newer versioned classes overwrite older ones and the result matches JVM per-class selection semantics.
+                existingMrJavaVersions.each { int v ->
                     c.from(zipTree(jarFile)) {
                         include "META-INF/versions/${v}/**/*.class"
                         eachFile { fcd ->
@@ -161,7 +175,7 @@ tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r -
     }
 
     r.classDirectories.setFrom(files(effectiveDirs))
-    r.additionalClassDirs.setFrom(files(effectiveDirs))
+    r.additionalClassDirs.setFrom()
 }
 
 graalvmNative {

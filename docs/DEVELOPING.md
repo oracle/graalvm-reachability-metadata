@@ -100,24 +100,13 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 
 ### Coverage (JaCoCo)
 
-Purpose
-- Generate coverage for the library under test exercised by our tests.
+Generate coverage for the library under test exercised by our tests. Report contains coverage that focus exclusively on the provided library JARs, excluding unrelated external dependencies.
+Report format: XML only.
 
-How it works
-- All JacocoReport tasks are wired to depend on `test` task, so running:
-  ```console
-  ./gradlew jacocoTestReport
-  ```
-  
-- Report contains coverage that focus exclusively on the provided library JARs, excluding unrelated external dependencies.
-- Report format: XML only.
-
-Usage
-- From the repository root (orchestrated across coordinates):
-  ```console
-  ./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]
-  ```
-  The root jacocoTestReport is a harness wrapper that invokes the per-project task across matching coordinates.
+```console
+./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]
+ ```
+The root jacocoTestReport is a harness wrapper that invokes the per-project task across matching coordinates.
 
 ### Generating Metadata
 
