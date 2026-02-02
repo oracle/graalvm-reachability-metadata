@@ -1,4 +1,4 @@
-name: "Test affected Spring AOT smoke tests (4.1.x)"
+name: "Test affected Spring AOT smoke tests (4.0.x)"
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   discover-impacted-tests:
-    name: "📋 Compute impacted Spring AOT tests (4.1.x)"
+    name: "📋 Compute impacted Spring AOT tests (4.0.x)"
     runs-on: "ubuntu-latest"
     timeout-minutes: 20
     outputs:
@@ -39,12 +39,12 @@ jobs:
           distribution: 'graalvm'
           java-version: '21'
 
-      - name: "☁️ Checkout spring-aot-smoke-tests (4.1.x)"
+      - name: "☁️ Checkout spring-aot-smoke-tests (4.0.x)"
         if: steps.filter.outputs.changed == 'true'
         uses: actions/checkout@v4
         with:
           repository: spring-projects/spring-aot-smoke-tests
-          ref: 'main'
+          ref: '4.0.x'
           path: spring-aot-smoke-tests
           fetch-depth: 0
 
@@ -55,12 +55,12 @@ jobs:
           ./gradlew generateAffectedSpringTestMatrix \
             -PbaseCommit=${{ github.event.pull_request.base.sha }} \
             -PnewCommit=${{ github.event.pull_request.head.sha }} \
-            -PspringAotBranch=main \
+            -PspringAotBranch=4.0.x \
             -PspringAotPath='${{ github.workspace }}/spring-aot-smoke-tests'
           echo "Impacted tests: '${{ steps.impact.outputs.impacted_tests || '' }}'"
 
   test-affected-spring-aot:
-    name: "🧪 ${{ matrix.project }} @ spring-aot:4.1.x (GraalVM JDK ${{ matrix.java }})"
+    name: "🧪 ${{ matrix.project }} @ spring-aot:4.0.x (GraalVM JDK ${{ matrix.java }})"
     if: needs.discover-impacted-tests.outputs.relevant-files-changed == 'true' && needs.discover-impacted-tests.result == 'success' && needs.discover-impacted-tests.outputs.none-found != 'true' && github.repository == 'jormundur00/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
@@ -88,11 +88,11 @@ jobs:
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "☁️ Checkout spring-aot-smoke-tests (4.1.x)"
+      - name: "☁️ Checkout spring-aot-smoke-tests (4.0.x)"
         uses: actions/checkout@v4
         with:
           repository: spring-projects/spring-aot-smoke-tests
-          ref: 'main'
+          ref: '4.0.x'
           path: spring-aot-smoke-tests
           fetch-depth: 0
 
@@ -100,10 +100,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          bash .github/workflows/scripts/run-spring-aot-triaged-test.sh '${{ github.workspace }}/spring-aot-smoke-tests' '${{ matrix.project }}' 4.1.x
+          bash .github/workflows/scripts/run-spring-aot-triaged-test.sh '${{ github.workspace }}/spring-aot-smoke-tests' '${{ matrix.project }}' 4.0.x
 
   all-affected-passed:
-    name: "🧪 All affected Spring AOT smoke tests passed (4.1.x)"
+    name: "🧪 All affected Spring AOT smoke tests passed (4.0.x)"
     runs-on: "ubuntu-latest"
     timeout-minutes: 5
     needs: [discover-impacted-tests, test-affected-spring-aot]
