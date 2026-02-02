@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * Single task that:
  * 1) Resolves a set of index.json files based on selected coordinates (supports fractional batching k/n)
  * 2) Always includes the root <code>metadata/index.json</code> for validation
- * 3) Maps each file to its corresponding JSON Schema (root, library, or test project level)
+ * 3) Maps each file to its corresponding JSON Schema (root or library level)
  * 4) Validates the JSON well-formedness and schema compliance
  * 5) Collects and reports all validation failures at the end of execution
  * <p>
@@ -47,7 +47,6 @@ import java.util.regex.Pattern;
 public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
 
     private static final Pattern METADATA_PATTERN = Pattern.compile("metadata/[^/]+/[^/]+/index\\.json");
-    private static final Pattern TEST_PATTERN = Pattern.compile("tests/src/[^/]+/[^/]+/[^/]+/index\\.json");
 
     @Input
     @Optional
@@ -102,9 +101,6 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
                     String[] parts = coord.split(":");
                     if (parts.length >= 2) {
                         targetFiles.add(String.format("metadata/%s/%s/index.json", parts[0], parts[1]));
-                        if (parts.length >= 3) {
-                            targetFiles.add(String.format("tests/src/%s/%s/%s/index.json", parts[0], parts[1], parts[2]));
-                        }
                     }
                 });
 
@@ -123,7 +119,7 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
             if (!jsonFile.exists()) {
                 if ("metadata/index.json".equals(filePath)) {
                     failures.add("❌ Root index missing: " + filePath);
-                } else if (!filePath.startsWith("tests/")) {
+                } else {
                     getLogger().warn("⚠️ File not found: " + filePath);
                 }
                 continue;
@@ -259,13 +255,10 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
 
     public static String mapToSchemaPath(String filePath) {
         if ("metadata/index.json".equals(filePath)) {
-            return "schemas/metadata-root-index-schema-v1.0.0.json";
+            return "metadata/schemas/metadata-root-index-schema-v1.0.0.json";
         }
         if (METADATA_PATTERN.matcher(filePath).matches()) {
-            return "schemas/metadata-library-index-schema-v1.0.0.json";
-        }
-        if (TEST_PATTERN.matcher(filePath).matches()) {
-            return "schemas/tests-project-index-schema-v1.0.0.json";
+            return "metadata/schemas/metadata-library-index-schema-v1.0.0.json";
         }
         return "";
     }

@@ -13,7 +13,7 @@ You usually do not need this locally.
 
 The release is made every two weeks if there are metadata changes: [.github/workflows/create-scheduled-release.yml](../.github/workflows/create-scheduled-release.yml).
 
-The test matrx definition starts with [ci.json](../ci.json):
+The test matrix definition starts with [ci.json](../ci.json):
 - A single source of truth for which Java versions and OS runners to test on.
 - Gradle tasks read it to generate GitHub Actions matrices consumed by the workflows below.
 - Way to define build arguments for the build. If this file is changed everything is re-run.
@@ -33,6 +33,10 @@ Workflow for testing latest library versions from Maven: [.github/workflows/veri
 
 Workflows for style and security:
 - [.github/workflows/checkstyle.yml](../.github/workflows/checkstyle.yml): code style checks.
-- [.github/workflows/library-and-framework-list-validation.yml](../.github/workflows/library-and-framework-list-validation.yml): validates and sorts [library-and-framework-list.json](../library-and-framework-list.json), checks schema.
+- [.github/workflows/library-and-framework-list-validation.yml](../.github/workflows/library-and-framework-list-validation.yml): validates and sorts [library-and-framework-list.json](../metadata/library-and-framework-list.json), checks schema.
 - [.github/workflows/scan-docker-images.yml](../.github/workflows/scan-docker-images.yml): scans allowed Docker images on PR/schedule.
 - [.github/workflows/sync-docker-tags.yml](../.github/workflows/sync-docker-tags.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
+
+## Native Build Tools snapshot setup
+
+The `setup-native-build-tools` action automatically publishes and uses an NBT snapshot if a branch with the same name exists in the native-build-tools repository. To test against a specific NBT branch, simply ensure both branches share the same name.
