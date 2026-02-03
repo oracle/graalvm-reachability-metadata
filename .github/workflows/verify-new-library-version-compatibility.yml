@@ -191,6 +191,9 @@ jobs:
 
             update_new_versions
 
+            # Do not commit changes to the NBT version catalog in this workflow
+            git restore --source=HEAD --staged --worktree gradle/libs.versions.toml || true
+
             # If nothing changed, exit early
             if git status --porcelain | grep -q .; then
               git add -u
