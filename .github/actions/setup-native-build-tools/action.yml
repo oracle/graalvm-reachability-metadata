@@ -65,7 +65,7 @@ runs:
         SELECTED="$INPUT_FALLBACK_REF"
         SAME_BRANCH="false"
 
-        if [ "${INPUT_PREFER_SAME}" = "true" ] && [ -n "$CANDIDATE" ]; then
+        if [ "${INPUT_PREFER_SAME}" = "true" ] && [ -n "$CANDIDATE" ] && [ "$CANDIDATE" != "master" ]; then
           # Use git to check for the branch existence on the public repository (no API/token required)
           REMOTE_URL="https://github.com/${INPUT_REPO}.git"
           if git ls-remote --heads "$REMOTE_URL" "$CANDIDATE" >/dev/null 2>&1; then
@@ -81,7 +81,11 @@ runs:
             echo "git ls-remote failed (network or repo issue). Using fallback: ${INPUT_FALLBACK_REF}"
           fi
         else
-          echo "Prefer-same-branch disabled or no candidate branch detected. Using fallback: ${INPUT_FALLBACK_REF}"
+          if [ "$CANDIDATE" = "master" ]; then
+            echo "Branch matching ignored for 'master'. Using fallback: ${INPUT_FALLBACK_REF}"
+          else
+            echo "Prefer-same-branch disabled or no candidate branch detected. Using fallback: ${INPUT_FALLBACK_REF}"
+          fi
         fi
 
         echo "nbt-ref=${SELECTED}" >> "$GITHUB_OUTPUT"
