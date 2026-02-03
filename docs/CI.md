@@ -28,7 +28,7 @@ Workflows testing metadata using [ci.json](../ci.json):
 - Test changed build logic ([.github/workflows/test-changed-infrastructure.yml](../.github/workflows/test-changed-infrastructure.yml))
   - Triggers: PRs to master touching [tests/tck-build-logic/](tests/tck-build-logic/), [gradle/](gradle/), [build.gradle](../build.gradle), [settings.gradle](../settings.gradle), or [gradle.properties](../gradle.properties).
   - Uses: generateInfrastructureChangedCoordinatesMatrix. Pulls allowed images, disables Docker networking, validates config, then runs tests.
-- Test affected Spring AOT smoke tests ([.github/workflows/test-affected-spring-aot-3.4.x.yml](../.github/workflows/test-affected-spring-aot-3.4.x.yml), [.github/workflows/test-affected-spring-aot-3.5.x.yml](../.github/workflows/test-affected-spring-aot-3.5.x.yml), [.github/workflows/test-affected-spring-aot-4.0.x.yml](../.github/workflows/test-affected-spring-aot-4.0.x.yml), [.github/workflows/test-affected-spring-aot-main.yml](../.github/workflows/test-affected-spring-aot-main.yml))
+- Test affected Spring AOT smoke tests ([.github/workflows/test-affected-spring-aot-3.5.x.yml](../.github/workflows/test-affected-spring-aot-3.5.x.yml), [.github/workflows/test-affected-spring-aot-4.0.x.yml](../.github/workflows/test-affected-spring-aot-4.0.x.yml), [.github/workflows/test-affected-spring-aot-main.yml](../.github/workflows/test-affected-spring-aot-main.yml))
   - Triggers: PRs to master touching [metadata/](metadata/) or [tests/src/](tests/src/).
   - Uses: generateAffectedSpringTestMatrix to compute impacted Spring AOT projects and produce a matrix; runs triaged native tests via [.github/workflows/scripts/run-spring-aot-triaged-test.sh](../.github/workflows/scripts/run-spring-aot-triaged-test.sh).
 
