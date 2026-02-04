@@ -100,10 +100,12 @@ tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r -
 
     String targetGroup = ""
     String targetArtifact = ""
+    String targetVersion = ""
     def coordsParts = (libraryGAV ?: "").split(":")
     if (coordsParts.length >= 2) {
         targetGroup = coordsParts[0]
         targetArtifact = coordsParts[1]
+        targetVersion = coordsParts[2]
     }
 
     reports {
@@ -118,6 +120,15 @@ tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r -
     def matched = artifacts.findAll { a ->
         (a.moduleVersion.id.group == targetGroup) && (a.moduleVersion.id.name == targetArtifact)
     }.collect { it.file }
+
+    if (matched.isEmpty()) {
+        // Fallback for relocated or substituted modules: the requested G:A coordinates may resolve
+        // to a different group in published metadata, so no resolved artifact carries the original group.
+
+        matched = artifacts.findAll { a ->
+            (a.moduleVersion.id.name == targetArtifact) && (a.moduleVersion.id.version == targetVersion)
+        }.collect { it.file }
+    }
 
     if (matched.isEmpty()) {
         throw new GradleException("JaCoCo report generation failed. No eligible artifacts found on the classpath for ${libraryGAV}.")

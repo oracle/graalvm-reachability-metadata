@@ -24,6 +24,6 @@ public abstract class JacocoTestReportInvocationTask extends AllCoordinatesExecT
 
     @Override
     protected String errorMessageFor(String coordinates, int exitCode) {
-        return "JaCoCo report generation failed with error code" + exitCode + ".";
+        return "JaCoCo report generation failed with error code " + exitCode + ".";
     }
 }

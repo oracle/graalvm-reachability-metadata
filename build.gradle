@@ -118,6 +118,7 @@ static List<Map> testInfraCommands(String gradleCmd, String target) {
             "checkMetadataFiles",
             "fetchExistingLibrariesWithNewerVersions",
             "test",
+            "jacocoTestReport",
     ]
     return taskNames.collect { name ->
         [name: name, args: [gradleCmd, name, "-Pcoordinates=${target}"]]
@@ -126,7 +127,7 @@ static List<Map> testInfraCommands(String gradleCmd, String target) {
 
 tasks.register('testInfra') { t ->
     t.group = "verification"
-    t.setDescription("""Runs clean, pullAllowedDockerImages and jacocoTestReport, then runs (${testInfraCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs for a single coordinate.
+    t.setDescription("""Runs clean and pullAllowedDockerImages, then runs (${testInfraCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs for a single coordinate.
                         Options: -Pcoordinate or -Pcoordinates to specify the target; -Pparallelism to control the number of concurrent tasks.""")
 
     doLast {
@@ -177,10 +178,6 @@ tasks.register('testInfra') { t ->
             def pullArgs = [gradleCmd, "pullAllowedDockerImages", "-Pcoordinates=${coordinate}"]
             def pullLogFile = new File(logsDir, "pullAllowedDockerImages-${fileSuffix}.log")
             runGradleTaskAndCheck(pullArgs, "pullAllowedDockerImages (${coordinate})", pullLogFile)
-
-            def jacocoArgs = [gradleCmd, "jacocoTestReport", "-Pcoordinates=${coordinate}"]
-            def jacocoFile = new File(logsDir, "jacocoTestReport-${fileSuffix}.log")
-            runGradleTaskAndCheck(jacocoArgs, "jacocoTestReport (${coordinate})", jacocoFile)
 
             def commands = testInfraCommands(gradleCmd, coordinate)
             int effectiveParallelism = Math.min(parallelism, commands.size())
