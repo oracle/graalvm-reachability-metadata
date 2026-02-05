@@ -273,6 +273,38 @@ class RocksdbjniTest {
         }
     }
 
+    @Test
+    void checkpointCreatesConsistentSnapshot(@TempDir Path tmp) throws Exception {
+        Path srcDbPath = tmp.resolve("src-db");
+        Path checkpointPath = tmp.resolve("checkpoint-db");
+
+        // Create source DB and populate some data
+        try (Options options = new Options().setCreateIfMissing(true);
+             RocksDB db = RocksDB.open(options, srcDbPath.toString())) {
+
+            db.put(b("k1"), b("v1"));
+            db.put(b("k2"), b("v2"));
+
+            // Create a checkpoint capturing current state
+            try (Checkpoint checkpoint = Checkpoint.create(db)) {
+                checkpoint.createCheckpoint(checkpointPath.toString());
+            }
+
+            // Mutate the source DB after checkpoint
+            db.put(b("k3"), b("v3"));
+            db.delete(b("k1"));
+        }
+
+        // Open the checkpoint as a standalone DB and verify it reflects the state at checkpoint time
+        try (Options options = new Options().setCreateIfMissing(false);
+             RocksDB cpDb = RocksDB.open(options, checkpointPath.toString())) {
+
+            assertThat(s(cpDb.get(b("k1")))).isEqualTo("v1"); // existed at checkpoint
+            assertThat(s(cpDb.get(b("k2")))).isEqualTo("v2"); // existed at checkpoint
+            assertThat(cpDb.get(b("k3"))).isNull();           // written after checkpoint
+        }
+    }
+
     private static byte[] b(String s) {
         return s.getBytes(StandardCharsets.UTF_8);
     }
