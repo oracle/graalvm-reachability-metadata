@@ -209,6 +209,9 @@ class TransactionsTest {
 
     @Test
     void shouldEnlistTwoXaResourcesAndTwoPhaseCommit() throws Exception {
+        // Allow Atomikos to auto-register arbitrary XAResources for recovery so they can be enlisted
+        enableAutoResourceRegistration();
+
         UserTransactionManager utm = new UserTransactionManager();
         try {
             utm.init();
@@ -248,6 +251,9 @@ class TransactionsTest {
 
     @Test
     void shouldRollbackEnlistedXaResourceOnRollbackOnly() throws Exception {
+        // Allow Atomikos to auto-register arbitrary XAResources for recovery so they can be enlisted
+        enableAutoResourceRegistration();
+
         UserTransactionManager utm = new UserTransactionManager();
         try {
             utm.init();
@@ -269,6 +275,10 @@ class TransactionsTest {
         } finally {
             utm.close();
         }
+    }
+
+    private static void enableAutoResourceRegistration() {
+        System.setProperty("com.atomikos.icatch.automatic_resource_registration", "true");
     }
 
     /**
