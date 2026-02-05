@@ -305,6 +305,41 @@ class RocksdbjniTest {
         }
     }
 
+    @Test
+    void deleteRangeDeletesHalfOpenIntervalAndAllowsSubsequentWrites(@TempDir Path tmp) throws Exception {
+        Path dbPath = tmp.resolve("range-del-db");
+
+        try (Options options = new Options().setCreateIfMissing(true);
+             RocksDB db = RocksDB.open(options, dbPath.toString())) {
+
+            // Insert k01..k10
+            for (int i = 1; i <= 10; i++) {
+                db.put(b(String.format("k%02d", i)), b("v" + i));
+            }
+
+            // Delete range [k03, k07) -> removes k03..k06
+            db.deleteRange(b("k03"), b("k07"));
+
+            // Outside the range are still present
+            assertThat(db.get(b("k01"))).isNotNull();
+            assertThat(db.get(b("k02"))).isNotNull();
+            assertThat(db.get(b("k07"))).isNotNull();
+            assertThat(db.get(b("k08"))).isNotNull();
+            assertThat(db.get(b("k09"))).isNotNull();
+            assertThat(db.get(b("k10"))).isNotNull();
+
+            // Inside the half-open range are deleted
+            assertThat(db.get(b("k03"))).isNull();
+            assertThat(db.get(b("k04"))).isNull();
+            assertThat(db.get(b("k05"))).isNull();
+            assertThat(db.get(b("k06"))).isNull();
+
+            // Subsequent put inside the deleted range should be visible (tombstone does not mask new writes)
+            db.put(b("k05"), b("after"));
+            assertThat(s(db.get(b("k05")))).isEqualTo("after");
+        }
+    }
+
     private static byte[] b(String s) {
         return s.getBytes(StandardCharsets.UTF_8);
     }
