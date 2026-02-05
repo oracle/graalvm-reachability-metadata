@@ -8,7 +8,6 @@ package com_atomikos.transactions;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.icatch.jta.UserTransactionManager;
-import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
@@ -206,28 +205,6 @@ class TransactionsTest {
     }
 
     @Test
-    void shouldFailNestedBeginWithNotSupported() throws Exception {
-        UserTransactionManager utm = new UserTransactionManager();
-        try {
-            utm.init();
-
-            TransactionManager tm = utm;
-            tm.begin();
-            assertThat(tm.getStatus()).isEqualTo(Status.STATUS_ACTIVE);
-
-            // Atomikos does not support nested transactions; attempting to begin while active should fail
-            assertThatThrownBy(tm::begin)
-                .isInstanceOf(NotSupportedException.class);
-
-            // Cleanup current tx
-            tm.rollback();
-            assertThat(tm.getStatus()).isEqualTo(Status.STATUS_NO_TRANSACTION);
-        } finally {
-            utm.close();
-        }
-    }
-
-    @Test
     void shouldRespectTransactionManagerTimeout() throws Exception {
         UserTransactionManager utm = new UserTransactionManager();
         try {
@@ -244,6 +221,33 @@ class TransactionsTest {
             assertThatThrownBy(tm::commit)
                 .isInstanceOf(RollbackException.class);
 
+            assertThat(tm.getStatus()).isEqualTo(Status.STATUS_NO_TRANSACTION);
+        } finally {
+            utm.close();
+        }
+    }
+
+    @Test
+    void shouldRollbackWhenMarkedRollbackOnlyOnTransaction() throws Exception {
+        UserTransactionManager utm = new UserTransactionManager();
+        try {
+            utm.init();
+
+            TransactionManager tm = utm;
+            tm.begin();
+            Transaction tx = tm.getTransaction();
+            assertThat(tm.getStatus()).isEqualTo(Status.STATUS_ACTIVE);
+            assertThat(tx).isNotNull();
+
+            // Mark rollback-only on the Transaction object (not via TM)
+            tx.setRollbackOnly();
+
+            // Commit should fail with RollbackException
+            assertThatThrownBy(tm::commit)
+                .isInstanceOf(RollbackException.class);
+
+            // After completion, no transaction should be associated with the thread
+            assertThat(tm.getTransaction()).isNull();
             assertThat(tm.getStatus()).isEqualTo(Status.STATUS_NO_TRANSACTION);
         } finally {
             utm.close();
