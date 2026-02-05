@@ -11,6 +11,12 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    // Core library under test
     testImplementation "com.atomikos:transactions:$libraryVersion"
+    // JTA integration for UserTransactionManager/UserTransactionImp and TransactionManager
+    testImplementation "com.atomikos:transactions-jta:$libraryVersion"
+    // javax.transaction API used by Atomikos 6.x
+    testImplementation "javax.transaction:javax.transaction-api:1.3"
+
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
