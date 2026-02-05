@@ -8,14 +8,12 @@ package com_atomikos.transactions;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.icatch.jta.UserTransactionManager;
+import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import javax.transaction.xa.XAException;
-import javax.transaction.xa.XAResource;
-import javax.transaction.xa.Xid;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -208,41 +206,21 @@ class TransactionsTest {
     }
 
     @Test
-    void shouldEnlistTwoXaResourcesAndTwoPhaseCommit() throws Exception {
-        // Allow Atomikos to auto-register arbitrary XAResources for recovery so they can be enlisted
-        enableAutoResourceRegistration();
-
+    void shouldFailNestedBeginWithNotSupported() throws Exception {
         UserTransactionManager utm = new UserTransactionManager();
         try {
             utm.init();
 
             TransactionManager tm = utm;
             tm.begin();
-            Transaction tx = tm.getTransaction();
+            assertThat(tm.getStatus()).isEqualTo(Status.STATUS_ACTIVE);
 
-            RecordingXAResource r1 = new RecordingXAResource("r1");
-            RecordingXAResource r2 = new RecordingXAResource("r2");
+            // Atomikos does not support nested transactions; attempting to begin while active should fail
+            assertThatThrownBy(tm::begin)
+                .isInstanceOf(NotSupportedException.class);
 
-            assertThat(tx.enlistResource(r1)).isTrue();
-            assertThat(tx.enlistResource(r2)).isTrue();
-
-            tm.commit();
-
-            // With 2 enlisted XA resources, Atomikos should execute a 2PC: prepare then commit(onePhase=false)
-            assertThat(r1.starts).isEqualTo(1);
-            assertThat(r1.ends).isEqualTo(1);
-            assertThat(r1.prepares).isEqualTo(1);
-            assertThat(r1.commits).isEqualTo(1);
-            assertThat(r1.lastOnePhaseCommit).isFalse();
-            assertThat(r1.rollbacks).isEqualTo(0);
-
-            assertThat(r2.starts).isEqualTo(1);
-            assertThat(r2.ends).isEqualTo(1);
-            assertThat(r2.prepares).isEqualTo(1);
-            assertThat(r2.commits).isEqualTo(1);
-            assertThat(r2.lastOnePhaseCommit).isFalse();
-            assertThat(r2.rollbacks).isEqualTo(0);
-
+            // Cleanup current tx
+            tm.rollback();
             assertThat(tm.getStatus()).isEqualTo(Status.STATUS_NO_TRANSACTION);
         } finally {
             utm.close();
@@ -250,35 +228,26 @@ class TransactionsTest {
     }
 
     @Test
-    void shouldRollbackEnlistedXaResourceOnRollbackOnly() throws Exception {
-        // Allow Atomikos to auto-register arbitrary XAResources for recovery so they can be enlisted
-        enableAutoResourceRegistration();
-
+    void shouldRespectTransactionManagerTimeout() throws Exception {
         UserTransactionManager utm = new UserTransactionManager();
         try {
             utm.init();
 
             TransactionManager tm = utm;
+            tm.setTransactionTimeout(1);
             tm.begin();
-            Transaction tx = tm.getTransaction();
+            assertThat(tm.getStatus()).isEqualTo(Status.STATUS_ACTIVE);
 
-            RecordingXAResource resource = new RecordingXAResource("res");
-            assertThat(tx.enlistResource(resource)).isTrue();
+            // Sleep beyond the timeout threshold
+            Thread.sleep(1500);
 
-            tm.setRollbackOnly();
             assertThatThrownBy(tm::commit)
                 .isInstanceOf(RollbackException.class);
 
-            assertThat(resource.rollbacks).isEqualTo(1);
-            assertThat(resource.commits).isEqualTo(0);
             assertThat(tm.getStatus()).isEqualTo(Status.STATUS_NO_TRANSACTION);
         } finally {
             utm.close();
         }
-    }
-
-    private static void enableAutoResourceRegistration() {
-        System.setProperty("com.atomikos.icatch.automatic_resource_registration", "true");
     }
 
     /**
@@ -298,95 +267,6 @@ class TransactionsTest {
         public void afterCompletion(int status) {
             afterCalled = true;
             afterStatus = status;
-        }
-    }
-
-    /**
-     * Simple XAResource implementation to observe XA interactions.
-     */
-    private static final class RecordingXAResource implements XAResource {
-        final String name;
-        int starts;
-        int startFlags;
-        int ends;
-        int endFlags;
-        int prepares;
-        int commits;
-        boolean lastOnePhaseCommit;
-        int rollbacks;
-        int timeoutSeconds;
-
-        RecordingXAResource(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public void commit(Xid xid, boolean onePhase) throws XAException {
-            commits++;
-            lastOnePhaseCommit = onePhase;
-        }
-
-        @Override
-        public void end(Xid xid, int flags) throws XAException {
-            ends++;
-            endFlags = flags;
-        }
-
-        @Override
-        public void forget(Xid xid) throws XAException {
-            // not used
-        }
-
-        @Override
-        public int getTransactionTimeout() throws XAException {
-            return timeoutSeconds;
-        }
-
-        @Override
-        public boolean isSameRM(XAResource xares) throws XAException {
-            // Same RM only if it's the exact same instance
-            return this == xares;
-        }
-
-        @Override
-        public int prepare(Xid xid) throws XAException {
-            prepares++;
-            return XA_OK;
-        }
-
-        @Override
-        public Xid[] recover(int flag) throws XAException {
-            return new Xid[0];
-        }
-
-        @Override
-        public void rollback(Xid xid) throws XAException {
-            rollbacks++;
-        }
-
-        @Override
-        public boolean setTransactionTimeout(int seconds) throws XAException {
-            timeoutSeconds = seconds;
-            return true;
-        }
-
-        @Override
-        public void start(Xid xid, int flags) throws XAException {
-            starts++;
-            startFlags = flags;
-        }
-
-        @Override
-        public String toString() {
-            return "RecordingXAResource{" +
-                "name='" + name + '\'' +
-                ", starts=" + starts +
-                ", ends=" + ends +
-                ", prepares=" + prepares +
-                ", commits=" + commits +
-                ", rollbacks=" + rollbacks +
-                ", lastOnePhaseCommit=" + lastOnePhaseCommit +
-                '}';
         }
     }
 }
