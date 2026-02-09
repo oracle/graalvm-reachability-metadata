@@ -6,6 +6,21 @@
  */
 import org.gradle.api.Project
 
+/**
+ * This script identifies which Spring AOT Smoke Tests are transitively affected
+ * by changes in a library's Reachability Metadata. It ensures that any
+ * modification to the library's metadata triggers
+ * the specific native verification suites that rely on it.
+ *
+ * How it works:
+ * 1. Scope: Only targets projects containing 'nativeTest' or 'nativeAppTest' tasks.
+ * 2. Metadata Mapping: Uses '-PimpactCoordinates' to identify the library
+ * whose metadata was updated (e.g., 'org.mongodb:mongodb-driver-core').
+ * 3. Transitive Discovery: Resolves all configurations to find Spring AOT Smoke Tests
+ * that rely on the modified library, even when it is pulled in transitively.
+ * 4. CI Signal: Prints 'IMPACT_MATCH:<path>' to stdout, allowing the CI
+ * to selectively run only the relevant Spring AOT Smoke Tests.
+ */
 allprojects {
     tasks.register('__internalImpactScan') {
         doLast {
