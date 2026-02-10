@@ -29,12 +29,12 @@ Tip: When debugging locally, add `--stacktrace` for better error output.
 ### Style and formatting
 
 1. To check style use
-    ```console 
+    ```console
     ./gradlew checkstyle
    ```
    This will run Checkstyle using `gradle/checkstyle.xml`.
 
-2. Spotless Verifies formatting (used in release workflow prior to packaging): 
+2. Spotless Verifies formatting (used in release workflow prior to packaging):
     ```console
    ./gradlew spotlessCheck
     ```
@@ -46,7 +46,7 @@ Tip: When debugging locally, add `--stacktrace` for better error output.
 
 ### Testing one library locally
 
-For a single coordinate, CI runs three steps in this order: 
+For a single coordinate, CI runs three steps in this order:
 1. Pull Docker images:
     ```console
    ./gradlew pullAllowedDockerImages -Pcoordinates=org.postgresql:postgresql:42.7.3
@@ -82,6 +82,19 @@ All coordinates:
     ./gradlew checkMetadataFiles -Pcoordinates=1/16
     ./gradlew test -Pcoordinates=1/16
     ```
+
+### Listing available coordinates
+
+To print all testable GAV coordinates while honoring the same -Pcoordinates filter semantics used by the harness:
+
+```console
+./gradlew listCoordinates -Pcoordinates=all
+./gradlew listCoordinates -Pcoordinates=group:artifact
+./gradlew listCoordinates -Pcoordinates=group:artifact:version
+./gradlew listCoordinates -Pcoordinates=1/16
+```
+
+In GitHub Actions, this task also writes a space-separated list to the GITHUB_OUTPUT key "coordinates".
 
 ### Testing individual stages
 
@@ -184,6 +197,7 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Fix test that fails Native Image run for new library version: `./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=group:artifact:version -PnewLibraryVersion=version`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
 - Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
+- List available coordinates: `./gradlew listCoordinates -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`
 - Scan all Docker images: `./gradlew checkAllowedDockerImages`
 - List libs with newer versions: `./gradlew fetchExistingLibrariesWithNewerVersions --quiet`

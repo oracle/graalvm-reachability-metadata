@@ -147,6 +147,21 @@ tasks.named("check").configure {
     dependsOn("checkstyle")
 }
 
+tasks.register("listCoordinates", DefaultTask) { task ->
+    task.setDescription("Lists all matching GAV coordinates (one per line) honoring -Pcoordinates filter")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        List<String> coords = new ArrayList<>(matchingCoordinates)
+        coords.sort()
+        if (coords.isEmpty()) {
+            println "No matching coordinates found!"
+        } else {
+            coords.each { println it }
+        }
+        writeGithubOutput("coordinates", coords.join(' '))
+    }
+}
+
 // gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
     task.setDescription("Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'")
