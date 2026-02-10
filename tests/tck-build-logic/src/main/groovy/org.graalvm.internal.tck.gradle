@@ -5,12 +5,14 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 import groovy.json.JsonSlurper
+import java.util.jar.JarFile
 
 plugins {
     id 'org.graalvm.internal.tck-base'
     id 'checkstyle'
     id 'java-library'
     id 'org.graalvm.buildtools.native'
+    id 'jacoco'
 }
 
 repositories {
@@ -90,6 +92,101 @@ tasks.named('test') {
         exceptionFormat = 'full'
         showStackTraces = true
     }
+}
+
+ // Configure JaCoCo report to analyze only the effective classes of the target library (handles multi-release JARs)
+tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r ->
+    r.dependsOn(tasks.named('test'))
+
+    String targetGroup = ""
+    String targetArtifact = ""
+    String targetVersion = ""
+    def coordsParts = (libraryGAV ?: "").split(":")
+    if (coordsParts.length >= 2) {
+        targetGroup = coordsParts[0]
+        targetArtifact = coordsParts[1]
+        targetVersion = coordsParts[2]
+    }
+
+    reports {
+        xml.required = true
+        html.required = false
+        csv.required = false
+    }
+
+    // Collect resolved dependency artifacts from the test runtime classpath
+    def artifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
+
+    def matched = artifacts.findAll { a ->
+        (a.moduleVersion.id.group == targetGroup) && (a.moduleVersion.id.name == targetArtifact)
+    }.collect { it.file }
+
+    if (matched.isEmpty()) {
+        // Fallback for relocated or substituted modules: the requested G:A coordinates may resolve
+        // to a different group in published metadata, so no resolved artifact carries the original group.
+
+        matched = artifacts.findAll { a ->
+            (a.moduleVersion.id.name == targetArtifact) && (a.moduleVersion.id.version == targetVersion)
+        }.collect { it.file }
+    }
+
+    if (matched.isEmpty()) {
+        throw new GradleException("JaCoCo report generation failed. No eligible artifacts found on the classpath for ${libraryGAV}.\nPlease verify that the provided artifact exists.")
+    }
+
+    // Produce one deterministic directory of .class files that represents exactly what the JVM would load at runtime for a given library jar, without duplicates
+    int runtimeMajor = (JavaVersion.current().majorVersion as int)
+
+    def effectiveDirs = matched.collect { File jarFile ->
+        String safe = jarFile.name.replaceAll(/[^A-Za-z0-9]/, '_')
+        layout.buildDirectory.dir("jacoco/effective/${safe}").get().asFile
+    }
+
+    r.inputs.files(matched)
+    r.outputs.dirs(effectiveDirs)
+
+    r.doFirst {
+        matched.eachWithIndex { File jarFile, int idx ->
+            File outDir = effectiveDirs[idx]
+            project.delete(outDir)
+            project.copy { CopySpec c ->
+                c.into(outDir)
+                // Base classes only (exclude MR payload)
+                c.from(zipTree(jarFile)) {
+                    include '**/*.class'
+                    exclude 'META-INF/versions/**'
+                }
+
+                // Overlay only versions that exist (<= runtimeMajor)
+                def existingMrJavaVersions = new TreeSet<Integer>()
+                new JarFile(jarFile).withCloseable { jf ->
+                    jf.entries().each { e ->
+                        def m = (e.name =~ /^META-INF\/versions\/(\d+)\//)
+                        if (m.find()) {
+                            int v = (m.group(1) as int)
+                            if (v <= runtimeMajor) existingMrJavaVersions.add(v)
+                        }
+                    }
+                }
+
+                // Overlay multi-release JAR bytecode in ascending version order. For each META-INF/versions/<v>/ that exists (v ≤ runtime) copy its classes into the output
+                // tree while stripping the MR prefix, so newer versioned classes overwrite older ones and the result matches JVM per-class selection semantics.
+                existingMrJavaVersions.each { int v ->
+                    c.from(zipTree(jarFile)) {
+                        include "META-INF/versions/${v}/**/*.class"
+                        eachFile { fcd ->
+                            fcd.path = fcd.path.replaceFirst("^META-INF/versions/${v}/", "")
+                        }
+                    }
+                }
+                // Ensure later copies overwrite earlier ones
+                c.duplicatesStrategy = DuplicatesStrategy.INCLUDE
+            }
+        }
+    }
+
+    r.classDirectories.setFrom(files(effectiveDirs))
+    r.additionalClassDirs.setFrom()
 }
 
 graalvmNative {
