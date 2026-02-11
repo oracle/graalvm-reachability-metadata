@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.exceptions.ContributingException;
-import org.graalvm.internal.tck.model.MetadataIndexEntry;
 import org.graalvm.internal.tck.model.contributing.Question;
 import org.graalvm.internal.tck.utils.ConfigurationStringBuilder;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
@@ -42,7 +41,6 @@ import java.util.Set;
 
 public abstract class ContributionTask extends DefaultTask {
     private static final String BRANCH_NAME_PREFIX = "add-support-for-";
-    private static final String METADATA_INDEX = "metadata/index.json";
     private static final String GRADLEW = "gradlew";
     private static final String REQUIRED_DOCKER_IMAGES_FILE = "required-docker-images.txt";
 
@@ -242,35 +240,36 @@ public abstract class ContributionTask extends DefaultTask {
     }
 
     private void updateAllowedPackages(List<String> allowedPackages, boolean libraryAlreadyExists) throws IOException {
-        InteractiveTaskUtils.printUserInfo("Updating allowed packages in: " + METADATA_INDEX);
-        File metadataIndex = getProjectFile(METADATA_INDEX);
+        Coordinates dep = CoordinateUtils.fromString(coordinates);
+        String gaPath = dep.group() + "/" + dep.artifact();
+        File artifactIndex = getProjectFile("metadata/" + gaPath + "/index.json");
 
-        List<MetadataIndexEntry> entries = objectMapper.readValue(metadataIndex, new TypeReference<>() {});
-        int replaceEntryIndex = -1;
-        Coordinates dependencyCoordinates = CoordinateUtils.fromString(coordinates);
-        for (int i = 0; i < entries.size(); i++) {
-            if (entries.get(i).module().equals(dependencyCoordinates.group() + ":" + dependencyCoordinates.artifact())) {
-                replaceEntryIndex = i;
-                break;
-            }
+        if (!artifactIndex.isFile()) {
+            throw new RuntimeException("Cannot find artifact-level index.json at: " + artifactIndex);
         }
 
-        if (replaceEntryIndex != -1) {
-            Set<String> extendedAllowedPackages = new HashSet<>();
-            MetadataIndexEntry replacedEntry = entries.remove(replaceEntryIndex);
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> entries = objectMapper.readValue(artifactIndex, new TypeReference<>() {});
+        boolean updated = false;
 
+        for (Map<String, Object> entry : entries) {
+            // Merge with existing allowed-packages if library already exists to avoid breaking tests
+            Set<String> merged = new HashSet<>();
             if (libraryAlreadyExists) {
-                // we don't want to break existing tests, so we must add existing allowed packages
-                extendedAllowedPackages.addAll(replacedEntry.allowedPackages());
+                Object existing = entry.get("allowed-packages");
+                if (existing instanceof List) {
+                    @SuppressWarnings("unchecked")
+                    List<String> existingList = (List<String>) existing;
+                    merged.addAll(existingList);
+                }
             }
-
-            extendedAllowedPackages.addAll(allowedPackages);
-
-            entries.add(new MetadataIndexEntry(replacedEntry.directory(), replacedEntry.module(), replacedEntry.requires(), new ArrayList<>(extendedAllowedPackages)));
+            merged.addAll(allowedPackages);
+            entry.put("allowed-packages", new ArrayList<>(merged));
+            updated = true;
         }
 
-        entries.sort(Comparator.comparing(MetadataIndexEntry::module));
-        objectMapper.writeValue(metadataIndex, entries);
+        // If entries were present, 'updated' will be true. Schema requires at least one entry.
+        objectMapper.writeValue(artifactIndex, entries);
     }
 
     private void addTests(Path originalTestsLocation) {

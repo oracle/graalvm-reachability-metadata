@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.graalvm.internal.tck.Utils.coordinatesMatch;
 import static org.graalvm.internal.tck.Utils.readIndexFile;
 import static org.graalvm.internal.tck.Utils.splitCoordinates;
 
@@ -116,6 +115,7 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         afterEach(coordinates);
     }
 
+    @SuppressWarnings("unchecked")
     protected void configureSpec(ExecSpec spec, String coordinates, List<String> command) {
         List<String> parts = splitCoordinates(coordinates);
         String groupId = parts.get(0);
@@ -126,10 +126,8 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
 
         var metadataIndex = readIndexFile(metadataDir.getParent());
         for (Object entryObj : (Iterable<?>) metadataIndex) {
-            @SuppressWarnings("unchecked")
             Map<String, Object> entry = (Map<String, Object>) entryObj;
-            if (coordinatesMatch((String) entry.get("module"), groupId, artifactId) &&
-                    ((List<String>) entry.get("tested-versions")).contains(version)) {
+            if (((List<String>) entry.get("tested-versions")).contains(version)) {
                 if (entry.containsKey("override")) {
                     Object ov = entry.get("override");
                     if (ov instanceof Boolean b) {
