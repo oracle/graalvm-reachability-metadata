@@ -51,7 +51,7 @@ public class MariaDbTests {
         System.out.println("Starting MariaDB ...");
         process = new ProcessBuilder(
                 "docker", "run", "--rm", "-p", "3306:3306", "-e", "MARIADB_DATABASE=" + DATABASE, "-e", "MARIADB_USER=" + USERNAME,
-                "-e", "MARIADB_PASSWORD=" + PASSWORD, "-e", "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true", "mariadb:12.1").redirectOutput(new File("mariadb-stdout.txt"))
+                "-e", "MARIADB_PASSWORD=" + PASSWORD, "-e", "MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true", "mariadb:12.2").redirectOutput(new File("mariadb-stdout.txt"))
                 .redirectError(new File("mariadb-stderr.txt")).start();
 
         // Wait until connection can be established
