@@ -60,5 +60,5 @@ All metadata files **must** be covered by the tests. Every metadata file should:
 * not have entries that describes classes that serve only for tests 
 
 There are various tools that could help checking the content of all json files we are collecting.
-To run these checks automatically, the artifact-level index file at `metadata/<groupId>/<artifactId>/index.json` must include `allowed-packages` properly set ([see this](CONTRIBUTING.md#metadata-structure)).
+To run these checks automatically, top-level metadata index file must contain `allowed-packages` properly set ([see this](CONTRIBUTING.md#metadata-structure)).
 If this field is properly configured, our GitHub workflows will automatically check `typeReachable` and origin of all entries in all config files.
