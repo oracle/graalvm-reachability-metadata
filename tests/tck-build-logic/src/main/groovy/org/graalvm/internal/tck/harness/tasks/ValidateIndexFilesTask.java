@@ -34,9 +34,10 @@ import java.util.regex.Pattern;
 /**
  * Single task that:
  * 1) Resolves a set of index.json files based on selected coordinates (supports fractional batching k/n)
- * 2) Maps each file to its corresponding JSON Schema
- * 3) Validates the JSON well-formedness and schema compliance
- * 4) Collects and reports all validation failures at the end of execution
+ * 2) Always includes the root <code>metadata/index.json</code> for validation
+ * 3) Maps each file to its corresponding JSON Schema (root or library level)
+ * 4) Validates the JSON well-formedness and schema compliance
+ * 5) Collects and reports all validation failures at the end of execution
  * <p>
  * Coordinates can be provided via:
  * - -Pcoordinates=<filter> (preferred, supports space-separated lists for CI)
@@ -73,7 +74,10 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
     public void validate() {
         Set<String> targetFiles = new LinkedHashSet<>();
 
-        // 1. Resolve coordinates
+        // 1. Always include the root index
+        targetFiles.add("metadata/index.json");
+
+        // 2. Resolve coordinates
         List<String> allResolved = new ArrayList<>();
         List<String> override = getCoordinatesOverride().getOrElse(Collections.emptyList());
 
@@ -89,7 +93,7 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
             }
         }
 
-        // 2. Map resolved coordinates back to physical file paths
+        // 3. Map resolved coordinates back to physical file paths
         allResolved.stream()
                 .filter(coord -> !coord.startsWith("samples:"))
                 .distinct()
@@ -113,7 +117,11 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
             File jsonFile = getProject().file(filePath.replace('\\', '/'));
 
             if (!jsonFile.exists()) {
-                getLogger().warn("⚠️ File not found: " + filePath);
+                if ("metadata/index.json".equals(filePath)) {
+                    failures.add("❌ Root index missing: " + filePath);
+                } else {
+                    getLogger().warn("⚠️ File not found: " + filePath);
+                }
                 continue;
             }
 
@@ -246,8 +254,11 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
     }
 
     public static String mapToSchemaPath(String filePath) {
+        if ("metadata/index.json".equals(filePath)) {
+            return "metadata/schemas/metadata-root-index-schema-v1.0.0.json";
+        }
         if (METADATA_PATTERN.matcher(filePath).matches()) {
-            return "metadata/schemas/metadata-library-index-schema-v2.0.0.json";
+            return "metadata/schemas/metadata-library-index-schema-v1.0.0.json";
         }
         return "";
     }

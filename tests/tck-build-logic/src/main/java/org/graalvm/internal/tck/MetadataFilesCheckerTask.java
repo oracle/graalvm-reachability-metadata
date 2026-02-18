@@ -71,7 +71,7 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         File coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
         getMetadataRoot().set(coordinatesMetadataRoot);
 
-        File index = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates));
+        File index = getProject().file("metadata/index.json");
         getIndexFile().set(index);
 
         this.allowedPackages = getAllowedPackages();
@@ -398,34 +398,19 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         File indexFile = getIndexFile().get().getAsFile();
         String groupId = coordinates.group();
         String artifactId = coordinates.artifact();
-        String metadataVersion = coordinates.version();
 
-        if (!indexFile.exists()) {
-            throw new IllegalStateException("Missing artifact-level index.json: " + indexFile.toURI() + " for coordinates " + coordinates);
+        List<Map<String, Object>> entries = getConfigEntries(indexFile);
+
+        for (var entry : entries) {
+            if (entry.get("module").toString().startsWith(groupId + ":" + artifactId)) {
+                if (entry.get("allowed-packages") == null) {
+                    throw new IllegalStateException("Missing allowed-packages property for " + groupId + ":" + artifactId);
+                }
+
+                return (List<String>) entry.get("allowed-packages");
+            }
         }
 
-        Object parsed = new JsonSlurper().parse(indexFile);
-        if (!(parsed instanceof List)) {
-            throw new IllegalStateException("Invalid artifact-level index.json (expected array): " + indexFile.toURI());
-        }
-
-        List<Map<String, Object>> entries = ((List<Object>) parsed).stream()
-                .map(e -> (Map<String, Object>) e)
-                .toList();
-
-        Map<String, Object> match = entries.stream()
-                .filter(e -> Objects.equals(metadataVersion, e.get("metadata-version")))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException(
-                        "Missing index entry for " + groupId + ":" + artifactId +
-                        " with metadata-version=" + metadataVersion + " in " + indexFile.toURI()));
-
-        Object ap = match.get("allowed-packages");
-        if (ap instanceof List) {
-            return (List<String>) ap;
-        }
-        throw new IllegalStateException(
-                "Missing or invalid allowed-packages for " + groupId + ":" + artifactId +
-                " (metadata-version=" + metadataVersion + ") in " + indexFile.toURI());
+        throw new IllegalStateException("Missing library name in: " + indexFile.toURI() + " for coordinates " + coordinates);
     }
 }

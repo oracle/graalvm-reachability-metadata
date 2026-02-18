@@ -152,8 +152,6 @@ public final class MetadataGenerationUtils {
             }
         }
 
-        List<String> latestAllowedPackages = null;
-        List<String> latestRequires = null;
         // Remove 'latest' flag from any existing latest entry
         for (int i = 0; i < entries.size(); i++) {
             MetadataVersionsIndexEntry entry = entries.get(i);
@@ -161,32 +159,29 @@ public final class MetadataGenerationUtils {
                 entries.set(i, new MetadataVersionsIndexEntry(
                         null, // latest removed
                         entry.override(),
+                        entry.module(),
                         entry.defaultFor(),
                         entry.metadataVersion(),
                         entry.testVersion(),
                         entry.testedVersions(),
-                        entry.skippedVersions(),
-                        entry.allowedPackages(),
-                        entry.requires()
+                        entry.skippedVersions()
                 ));
-                latestAllowedPackages = entry.allowedPackages();
-                latestRequires = entry.requires();
             }
         }
 
         // Add the new entry and mark it as latest
+        String moduleName = newCoords.group() + ":" + newCoords.artifact();
         List<String> testedVersions = new ArrayList<>();
         testedVersions.add(newCoords.version());
         MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(
-                Boolean.TRUE, // latest
-                null, // override
-                null, // default-for
-                newCoords.version(), // metadata-version
-                testVersion, // test-version
+                Boolean.TRUE,
+                null,
+                moduleName,
+                null,
+                newCoords.version(),
+                testVersion,
                 testedVersions,
-                null, // skipped-versions
-                latestAllowedPackages, // allowed-packages
-                latestRequires // requires
+                null
         );
         entries.addFirst(newEntry);
 
