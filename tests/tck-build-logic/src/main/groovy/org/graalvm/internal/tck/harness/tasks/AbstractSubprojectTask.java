@@ -30,7 +30,6 @@ import java.security.MessageDigest;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.graalvm.internal.tck.Utils.coordinatesMatch;
 import static org.graalvm.internal.tck.Utils.readIndexFile;
 import static org.graalvm.internal.tck.Utils.splitCoordinates;
 
@@ -79,6 +78,7 @@ public abstract class AbstractSubprojectTask extends DefaultTask {
         this.coordinates = coordinates;
     }
 
+    @SuppressWarnings("unchecked")
     protected final void configureSpec(ExecSpec spec) {
         List<String> parts = splitCoordinates(coordinates);
         String groupId = parts.get(0);
@@ -91,8 +91,7 @@ public abstract class AbstractSubprojectTask extends DefaultTask {
         for (Object entryObj : (Iterable<?>) metadataIndex) {
             @SuppressWarnings("unchecked")
             Map<String, Object> entry = (Map<String, Object>) entryObj;
-            if (coordinatesMatch((String) entry.get("module"), groupId, artifactId) &&
-                ((List<String>) entry.get("tested-versions")).contains(version)) {
+            if (((List<String>) entry.get("tested-versions")).contains(version)) {
                 if (entry.containsKey("override")) {
                     Object ov = entry.get("override");
                     if (ov instanceof Boolean b) {
