@@ -164,12 +164,13 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 return new MetadataVersionsIndexEntry(
                         entry.latest(),
                         entry.override(),
-                        entry.module(),
                         entry.defaultFor(),
                         newVersion,
                         entry.testVersion(),
                         entry.testedVersions(),
-                        entry.skippedVersions()
+                        entry.skippedVersions(),
+                        entry.allowedPackages(),
+                        entry.requires()
                 );
             }
         }
@@ -193,31 +194,34 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
      * </ol>
      */
     private void updateTests(Path metadataBaseDir, MetadataVersionsIndexEntry entry, String oldVersion, String newVersion) throws IOException {
+        // metadataBaseDir points to metadata/<group>/<artifact>
+        String artifact = metadataBaseDir.getFileName().toString();
+        String group = metadataBaseDir.getParent().getFileName().toString();
         Path testsRoot = metadataBaseDir.getParent().getParent().getParent()
-                .resolve("tests/src").resolve(entry.module().replace(":", "/"));
+                .resolve("tests/src").resolve(group).resolve(artifact);
 
         Path oldTestDir = testsRoot.resolve(oldVersion);
         Path newTestDir = testsRoot.resolve(newVersion);
 
         if (Files.exists(oldTestDir)) {
             Files.move(oldTestDir, newTestDir);
-            updateGradleProperties(newTestDir, entry, newVersion);
+            updateGradleProperties(newTestDir, group, artifact, entry, newVersion);
         }
     }
 
     /**
      * Updates {@code gradle.properties} inside a given test directory to reflect the new version.
      */
-    private void updateGradleProperties(Path testDir, MetadataVersionsIndexEntry entry, String newVersion) throws IOException {
+    private void updateGradleProperties(Path testDir, String group, String artifact, MetadataVersionsIndexEntry entry, String newVersion) throws IOException {
         Path gradleProps = testDir.resolve("gradle.properties");
         if (!Files.exists(gradleProps)) return;
 
         List<String> lines = Files.readAllLines(gradleProps);
         for (int i = 0; i < lines.size(); i++) {
             if (lines.get(i).startsWith("library.version")) lines.set(i, "library.version = " + newVersion);
-            else if (lines.get(i).startsWith("library.coordinates")) lines.set(i, "library.coordinates = " + entry.module() + ":" + newVersion);
+            else if (lines.get(i).startsWith("library.coordinates")) lines.set(i, "library.coordinates = " + group + ":" + artifact + ":" + newVersion);
             else if (lines.get(i).startsWith("metadata.dir"))
-                lines.set(i, "metadata.dir = " + entry.module().replace(":", "/") + "/" + newVersion + "/");
+                lines.set(i, "metadata.dir = " + group + "/" + artifact + "/" + newVersion + "/");
         }
         Files.write(gradleProps, lines);
     }
@@ -237,12 +241,13 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 MetadataVersionsIndexEntry updatedEntry = new MetadataVersionsIndexEntry(
                         entry.latest(),
                         entry.override(),
-                        entry.module(),
                         entry.defaultFor(),
                         entry.metadataVersion(),
                         newTestVersion,
                         entry.testedVersions(),
-                        entry.skippedVersions()
+                        entry.skippedVersions(),
+                        entry.allowedPackages(),
+                        entry.requires()
                 );
                 entries.set(i, updatedEntry);
             }
