@@ -8,6 +8,7 @@ package org_modelmapper.modelmapper;
 
 import org.junit.jupiter.api.Test;
 import org.modelmapper.Condition;
+import org.modelmapper.Conditions;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -247,6 +248,34 @@ class ModelmapperTest {
         DisplayName dest = mm.map(src, DisplayName.class);
 
         assertThat(dest.getFullName()).isEqualTo("Dana Scully");
+    }
+
+    @Test
+    void builtInConditionsComposedWithAnd() {
+        ModelMapper mm = new ModelMapper();
+
+        // Conditions.and() composes two built-in conditions:
+        // only map the property if source value is not null AND not empty string
+        mm.getConfiguration().setPropertyCondition(
+            Conditions.and(
+                Conditions.isNotNull(),
+                ctx -> !ctx.getSource().toString().isEmpty()
+            )
+        );
+
+        NameHolder src = new NameHolder();
+        src.setName("");
+
+        NameHolder dest = new NameHolder();
+        dest.setName("KeepMe");
+
+        mm.map(src, dest);
+        assertThat(dest.getName()).isEqualTo("KeepMe");  // not overwritten
+
+        // now verify the positive case: non-null, non-empty does overwrite
+        src.setName("NewName");
+        mm.map(src, dest);
+        assertThat(dest.getName()).isEqualTo("NewName");  // overwritten
     }
 
     @Test
