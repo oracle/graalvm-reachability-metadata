@@ -285,7 +285,8 @@ class ModelmapperTest {
         src.setItems(Arrays.asList("A", "B"));
 
         CartDest dest = new CartDest();
-        dest.setItems(new ArrayList<>(Arrays.asList("Existing")));
+        // Initialize destination collection with an existing element via getter
+        dest.getItems().add("Existing");
 
         mm.map(src, dest);
 
@@ -622,13 +623,11 @@ class ModelmapperTest {
     }
 
     static class CartDest {
-        private List<String> items;
+        // Expose a modifiable list via getter; no setter so ModelMapper mutates and merges
+        private final List<String> items = new ArrayList<>();
 
         public List<String> getItems() {
             return items;
-        }
-        public void setItems(List<String> items) {
-            this.items = items;
         }
     }
 
