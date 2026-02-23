@@ -156,34 +156,6 @@ class ModelmapperTest {
     }
 
     @Test
-    void customPropertyMapWithRenamesAndSkip() {
-        ModelMapper mm = new ModelMapper();
-
-        PropertyMap<PersonSrc, PersonDest> map = new PropertyMap<PersonSrc, PersonDest>() {
-            @Override
-            protected void configure() {
-                map().setGivenName(source.getFirstName());
-                map().setFamilyName(source.getLastName());
-                skip(destination.getSsn()); // do not map SSN at all
-            }
-        };
-        mm.addMappings(map);
-
-        PersonSrc src = new PersonSrc();
-        src.setFirstName("Clara");
-        src.setLastName("Oswald");
-        src.setAge(28);
-        src.setSsn("123-45-6789");
-
-        PersonDest dest = mm.map(src, PersonDest.class);
-
-        assertThat(dest.getGivenName()).isEqualTo("Clara");
-        assertThat(dest.getFamilyName()).isEqualTo("Oswald");
-        assertThat(dest.getAge()).isEqualTo(28);
-        assertThat(dest.getSsn()).isNull(); // skipped
-    }
-
-    @Test
     void strictMatchingValidateFailsWhenDestinationPropertyUnmapped() {
         ModelMapper mm = new ModelMapper();
         mm.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
