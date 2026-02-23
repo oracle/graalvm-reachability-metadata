@@ -12,6 +12,7 @@ import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.Provider;
+import org.modelmapper.Provider.ProvisionRequest;
 import org.modelmapper.TypeToken;
 import org.modelmapper.ValidationException;
 import org.modelmapper.config.Configuration.AccessLevel;
@@ -20,6 +21,7 @@ import org.modelmapper.spi.MappingContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -272,6 +274,24 @@ class ModelmapperTest {
         DisplayName dest = mm.map(src, DisplayName.class);
 
         assertThat(dest.getFullName()).isEqualTo("Dana Scully");
+    }
+
+    @Test
+    void collectionsMergeKeepsExistingDestinationElements() {
+        ModelMapper mm = new ModelMapper();
+        mm.getConfiguration().setCollectionsMergeEnabled(true);
+
+        CartSrc src = new CartSrc();
+        src.setItems(Arrays.asList("A", "B"));
+
+        CartDest dest = new CartDest();
+        dest.setItems(new ArrayList<>(Arrays.asList("Existing")));
+
+        mm.map(src, dest);
+
+        assertThat(dest.getItems())
+            .hasSize(3)
+            .containsExactlyInAnyOrder("Existing", "A", "B");
     }
 
     // -------- Helper data classes --------
@@ -587,6 +607,28 @@ class ModelmapperTest {
         }
         public void setFullName(String fullName) {
             this.fullName = fullName;
+        }
+    }
+
+    static class CartSrc {
+        private List<String> items;
+
+        public List<String> getItems() {
+            return items;
+        }
+        public void setItems(List<String> items) {
+            this.items = items;
+        }
+    }
+
+    static class CartDest {
+        private List<String> items;
+
+        public List<String> getItems() {
+            return items;
+        }
+        public void setItems(List<String> items) {
+            this.items = items;
         }
     }
 
