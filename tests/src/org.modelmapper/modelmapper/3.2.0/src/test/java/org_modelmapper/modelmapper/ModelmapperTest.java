@@ -249,6 +249,31 @@ class ModelmapperTest {
         assertThat(dest.getName()).isEqualTo("KeepMe");
     }
 
+    @Test
+    void postConverterCanComputeDerivedDestinationFields() {
+        ModelMapper mm = new ModelMapper();
+
+        // Use a post-converter to compute a derived field after standard mapping
+        mm.createTypeMap(NameParts.class, DisplayName.class)
+            .setPostConverter(new Converter<NameParts, DisplayName>() {
+                @Override
+                public DisplayName convert(MappingContext<NameParts, DisplayName> ctx) {
+                    NameParts s = ctx.getSource();
+                    DisplayName d = ctx.getDestination();
+                    d.setFullName(s.getFirstName() + " " + s.getLastName());
+                    return d;
+                }
+            });
+
+        NameParts src = new NameParts();
+        src.setFirstName("Dana");
+        src.setLastName("Scully");
+
+        DisplayName dest = mm.map(src, DisplayName.class);
+
+        assertThat(dest.getFullName()).isEqualTo("Dana Scully");
+    }
+
     // -------- Helper data classes --------
 
     static class PersonDTO {
@@ -533,6 +558,35 @@ class ModelmapperTest {
         }
         public void setName(String name) {
             this.name = name;
+        }
+    }
+
+    static class NameParts {
+        private String firstName;
+        private String lastName;
+
+        public String getFirstName() {
+            return firstName;
+        }
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+        public String getLastName() {
+            return lastName;
+        }
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+    }
+
+    static class DisplayName {
+        private String fullName;
+
+        public String getFullName() {
+            return fullName;
+        }
+        public void setFullName(String fullName) {
+            this.fullName = fullName;
         }
     }
 
