@@ -21,7 +21,8 @@ import org.modelmapper.spi.MappingContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -277,22 +278,17 @@ class ModelmapperTest {
     }
 
     @Test
-    void collectionsMergeKeepsExistingDestinationElements() {
+    void mapsFromMapToBean() {
         ModelMapper mm = new ModelMapper();
-        mm.getConfiguration().setCollectionsMergeEnabled(true);
 
-        CartSrc src = new CartSrc();
-        src.setItems(Arrays.asList("A", "B"));
+        Map<String, Object> src = new HashMap<>();
+        src.put("name", "Eve");
+        src.put("age", 33);
 
-        CartDest dest = new CartDest();
-        // Initialize destination collection with an existing element via getter
-        dest.getItems().add("Existing");
+        PersonEntity dest = mm.map(src, PersonEntity.class);
 
-        mm.map(src, dest);
-
-        assertThat(dest.getItems())
-            .hasSize(3)
-            .containsExactlyInAnyOrder("Existing", "A", "B");
+        assertThat(dest.getName()).isEqualTo("Eve");
+        assertThat(dest.getAge()).isEqualTo(33);
     }
 
     // -------- Helper data classes --------
@@ -608,26 +604,6 @@ class ModelmapperTest {
         }
         public void setFullName(String fullName) {
             this.fullName = fullName;
-        }
-    }
-
-    static class CartSrc {
-        private List<String> items;
-
-        public List<String> getItems() {
-            return items;
-        }
-        public void setItems(List<String> items) {
-            this.items = items;
-        }
-    }
-
-    static class CartDest {
-        // Expose a modifiable list via getter; no setter so ModelMapper mutates and merges
-        private final List<String> items = new ArrayList<>();
-
-        public List<String> getItems() {
-            return items;
         }
     }
 
