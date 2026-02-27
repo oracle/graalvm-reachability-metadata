@@ -38,7 +38,8 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
             "resource-config.json",
             "serialization-config.json",
             "jni-config.json",
-            "proxy-config.json"));
+            "proxy-config.json",
+            "reachability-metadata.json"));
 
     private final Set<String> ILLEGAL_TYPE_VALUES = new HashSet<>(List.of("java.lang"));
 
