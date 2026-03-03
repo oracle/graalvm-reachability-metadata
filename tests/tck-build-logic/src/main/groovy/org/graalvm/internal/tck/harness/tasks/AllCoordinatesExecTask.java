@@ -10,6 +10,7 @@ import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecOperations;
 import org.gradle.process.ExecSpec;
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +22,7 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.graalvm.internal.tck.Utils.coordinatesMatch;
 import static org.graalvm.internal.tck.Utils.readIndexFile;
@@ -66,8 +68,23 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
     public final void runAll() {
         List<String> coords = resolveCoordinates();
         if (coords.isEmpty()) {
-            getLogger().lifecycle("No matching coordinates found. Nothing to do.");
-            return;
+            // If the user explicitly provided -Pcoordinates (non-empty, non-batch), fail fast with a clear error.
+            List<String> override = getCoordinatesOverride().getOrNull();
+            boolean hasProgrammaticOverride = override != null && !override.isEmpty();
+
+            String filter = Objects.toString(getProject().findProperty("coordinates"), "");
+            boolean userProvidedFilter = filter != null && !filter.isBlank();
+            boolean isBatch = userProvidedFilter && CoordinateUtils.isFractionalBatch(filter);
+
+            if (!hasProgrammaticOverride && userProvidedFilter && !isBatch) {
+                throw new GradleException("No matching coordinates found for '" + filter + "'. " +
+                        "The specified coordinate or filter does not exist. " +
+                        "Tip: run './gradlew listCoordinates -Pcoordinates=" + filter + "' to inspect matches.");
+            } else {
+                // Nothing matched (either no filter provided or programmatic override); do not fail.
+                getLogger().lifecycle("No matching coordinates found. Nothing to do.");
+                return;
+            }
         }
         for (String c : coords) {
             runSingle(c);
