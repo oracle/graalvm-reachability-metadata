@@ -47,8 +47,49 @@ fi
 echo "----- gradle.properties (reachability metadata overrides) -----"
 grep -E 'reachabilityMetadata(Url|Version)=' -n "$GP" || true
 
+# If setup-native-build-tools action ran in this job, it exports NBT_VERSION via $GITHUB_ENV.
+# When present, wire the external spring-aot-smoke-tests repo to:
+#  - use that NBT snapshot version in gradle.properties (nbtVersion=...)
+#  - resolve from mavenLocal() for both pluginManagement and the aot-smoke-test-plugin build
+if [ -n "${NBT_VERSION:-}" ]; then
+  echo "Configuring spring-aot-smoke-tests to use native-build-tools ${NBT_VERSION} from mavenLocal"
+
+  # 1) Update gradle.properties with the NBT version
+  if grep -Eq '^[#]*nbtVersion=' "$GP"; then
+    sed -i -E "s|^[#]*nbtVersion=.*|nbtVersion=${NBT_VERSION}|" "$GP"
+  else
+    printf "\nnbtVersion=%s\n" "$NBT_VERSION" >> "$GP"
+  fi
+
+  # 2) Ensure mavenLocal() is available for pluginManagement repositories in settings.gradle
+  SG="${SPRING_DIR}/settings.gradle"
+  if [ -f "$SG" ] && ! grep -q "mavenLocal()" "$SG"; then
+    echo "Adding mavenLocal() to pluginManagement.repositories in settings.gradle"
+    awk '
+      BEGIN{pm=0; inserted=0}
+      /pluginManagement[[:space:]]*\{/ { pm=1 }
+      pm==1 && /repositories[[:space:]]*\{/ && inserted==0 { print; print "    mavenLocal()"; inserted=1; next }
+      { print }
+    ' "$SG" > "$SG.tmp" && mv "$SG.tmp" "$SG" || true
+  fi
+
+  # 3) Ensure mavenLocal() is present in gradle/plugins/aot-smoke-test-plugin/build.gradle repositories
+  PLUG_BG="${SPRING_DIR}/gradle/plugins/aot-smoke-test-plugin/build.gradle"
+  if [ -f "$PLUG_BG" ] && ! grep -q "mavenLocal()" "$PLUG_BG"; then
+    echo "Adding mavenLocal() to repositories in gradle/plugins/aot-smoke-test-plugin/build.gradle"
+    awk '
+      BEGIN{inserted=0}
+      /^[[:space:]]*repositories[[:space:]]*\{/ && inserted==0 { print; print "    mavenLocal()"; inserted=1; next }
+      { print }
+    ' "$PLUG_BG" > "$PLUG_BG.tmp" && mv "$PLUG_BG.tmp" "$PLUG_BG" || true
+  fi
+
+  echo "----- gradle.properties (native-build-tools override) -----"
+  grep -E '^[#]*nbtVersion=' -n "$GP" || true
+fi
+
 set +e
-./gradlew --no-daemon --continue "${P}:nativeTest" "${P}:nativeAppTest"
+./gradlew --no-daemon --continue -PfromMavenLocal=org.graalvm.buildtools "${P}:nativeTest" "${P}:nativeAppTest"
 EXIT_CODE=$?
 set -e
 
