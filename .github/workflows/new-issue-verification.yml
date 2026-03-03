@@ -1,0 +1,152 @@
+name: "Verify new issue"
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    if: ${{ github.event.issue.pull_request == null && (contains(github.event.issue.labels.*.name, 'library-new-request')) }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Extract Maven coordinates"
+        id: extract
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          set -Eeuo pipefail
+          # Normalize CRLF and capture the first non-empty line that follows the "Full Maven coordinates" header
+          COORDS="$(printf '%s\n' "$ISSUE_BODY" | tr -d '\r' | awk '
+            f { if ($0 ~ /^[[:space:]]*$/) next; print; exit }
+            /^###[[:space:]]+Full Maven coordinates[[:space:]]*$/ { f=1 }
+          ')"
+          COORDS="$(echo "$COORDS" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+          echo "coords=$COORDS" >> "$GITHUB_OUTPUT"
+
+      - name: "Validate coordinates format"
+        id: validate
+        run: |
+          set -Eeuo pipefail
+          COORDS="${{ steps.extract.outputs.coords }}"
+          if [[ "$COORDS" =~ ^[^[:space:]:]+:[^[:space:]:]+:[^[:space:]:]+$ ]]; then
+            echo "invalid=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Invalid coordinates format: $COORDS"
+            echo "invalid=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "Close issue - invalid coordinates format"
+        if: ${{ steps.validate.outputs.invalid == 'true' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const coords = "${{ steps.extract.outputs.coords }}";
+            const reason = `Full Maven coordinates format is invalid: '${coords}'.`;
+            const body = [
+              "Automated triage: " + reason,
+              "",
+              "Expected format:",
+              "",
+              "```",
+              "groupId:artifactId:version",
+              "```",
+              "",
+              "Example:",
+              "",
+              "```",
+              "org.hibernate.orm:hibernate-core:1.2.3",
+              "```",
+              "",
+              "This issue will be closed. Please open a new issue with the correct format under the '### Full Maven coordinates' section.",
+              "Reopening will not re-run automation; maintainers will review manually."
+            ].join("\n");
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
+      - name: "Check if library/version is already supported by the repository"
+        if: ${{ steps.validate.outputs.invalid != 'true' }}
+        id: support
+        run: |
+          set -Eeuo pipefail
+          COORDS="${{ steps.extract.outputs.coords }}"
+          echo "Checking support for $COORDS"
+          set +e
+          OUTPUT="$(./check-library-support.sh "$COORDS" 2>&1)"
+          STATUS=$?
+          set -e
+          echo "$OUTPUT"
+          if grep -qF "is supported" <<<"$OUTPUT"; then
+            echo "supported=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "supported=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "exit_code=$STATUS" >> "$GITHUB_OUTPUT"
+
+      - name: "Close issue - already supported by the Reachability Metadata Repository"
+        if: ${{ steps.support.outputs.supported == 'true' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const coords = "${{ steps.extract.outputs.coords }}";
+            const body = [
+              `Automated triage: The requested library (${coords}) is already supported by the GraalVM Reachability Metadata repository.`,
+              "",
+              "Closing this issue. If you believe this is not correct, please reopen the issue with additional details.",
+              "Note: Reopening will not re-run automation; maintainers will review manually."
+            ].join("\n");
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
+      - name: "Derive group:artifact"
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.support.outputs.supported != 'true' }}
+        id: derive
+        run: |
+          set -Eeuo pipefail
+          IFS=':' read -r G A V <<< "${{ steps.extract.outputs.coords }}"
+          GA="$G:$A"
+          echo "ga=$GA" >> "$GITHUB_OUTPUT"
+
+      - name: "Check if listed in library-and-framework-list.json"
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.support.outputs.supported != 'true' }}
+        id: listed
+        run: |
+          set -Eeuo pipefail
+          GA="${{ steps.derive.outputs.ga }}"
+          if jq -e --arg ga "$GA" 'map(.artifact == $ga) | any' metadata/library-and-framework-list.json >/dev/null; then
+            echo "listed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "listed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "Close issue - library listed as supported in library-and-framework-list.json"
+        if: ${{ steps.listed.outputs.listed == 'true' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const coords = "${{ steps.extract.outputs.coords }}";
+            const ga = "${{ steps.derive.outputs.ga }}";
+            const body = [
+              `Automated triage: The library (${ga}) is listed as supported in metadata/library-and-framework-list.json.`,
+              "",
+              "Closing this issue. If you believe this is not correct for the requested coordinates (" + coords + "), please reopen with additional context.",
+              "Note: Reopening will not re-run automation; maintainers will review manually."
+            ].join("\n");
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
