@@ -13,6 +13,7 @@ import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jcajce.util.ProviderJcaJceHelper;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -81,6 +82,7 @@ class BouncyCastleTest {
     }
 
     private void testReadWritePrivatePem(boolean isPKCS1) throws Exception {
+        new ProviderJcaJceHelper(provider); // satisfying the condition for KPG
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", provider);
         keyPairGenerator.initialize(4096, new SecureRandom());
         KeyPair generatedKeyPair = keyPairGenerator.generateKeyPair();
