@@ -6,7 +6,7 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
-    id "org.jetbrains.kotlin.jvm" version "2.0.21"
+    id "org.jetbrains.kotlin.jvm" version "2.1.20"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -14,6 +14,10 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+kotlin {
+    jvmToolchain(21)
 }
 
 compileTestKotlin {
