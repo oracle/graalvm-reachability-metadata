@@ -98,10 +98,29 @@ if [ $EXIT_CODE -eq 0 ]; then
   exit 0
 fi
 
+# Compute project relative path (e.g., :data:data-jpa-kotlin -> data/data-jpa-kotlin)
+REL_PATH="$(echo "$P" | sed 's/^://' | tr ':' '/')"
+PROJ_DIR="${SPRING_DIR}/${REL_PATH}"
+
+# Location of captured logs
+OUTPUT_FILE="${PROJ_DIR}/build/nativeApp/output.txt"
+ERROR_FILE="${PROJ_DIR}/build/nativeApp/error.txt"
+
+# Print logs if they exist (we are past success exit, so build failed)
+if [ -f "$OUTPUT_FILE" ] || [ -f "$ERROR_FILE" ]; then
+  if [ -f "$OUTPUT_FILE" ]; then
+    echo "----- nativeAppTest output.txt ($OUTPUT_FILE) -----"
+    cat "$OUTPUT_FILE"
+  fi
+  if [ -f "$ERROR_FILE" ]; then
+    echo "----- nativeAppTest error.txt ($ERROR_FILE) -----"
+    cat "$ERROR_FILE"
+  fi
+fi
+
 echo "❌ Test $P failed. Triaging..."
 
 # 1. Check local build.gradle for 'expectedToFail'
-REL_PATH=$(echo "${P//:/ /}" | xargs | tr ' ' '/')
 GRADLE_FILE="${SPRING_DIR}/${REL_PATH}/build.gradle"
 
 if [ -f "$GRADLE_FILE" ] && grep -q "expectedToFail" "$GRADLE_FILE"; then
