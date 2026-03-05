@@ -108,7 +108,6 @@ ERROR_FILE="${PROJ_DIR}/build/nativeApp/error.txt"
 
 # Print logs if they exist (we are past success exit, so build failed)
 if [ -f "$OUTPUT_FILE" ] || [ -f "$ERROR_FILE" ]; then
-  echo "::group::nativeAppTest logs for $P"
   if [ -f "$OUTPUT_FILE" ]; then
     echo "----- nativeAppTest output.txt ($OUTPUT_FILE) -----"
     cat "$OUTPUT_FILE"
@@ -117,7 +116,6 @@ if [ -f "$OUTPUT_FILE" ] || [ -f "$ERROR_FILE" ]; then
     echo "----- nativeAppTest error.txt ($ERROR_FILE) -----"
     cat "$ERROR_FILE"
   fi
-  echo "::endgroup::"
 fi
 
 echo "❌ Test $P failed. Triaging..."
