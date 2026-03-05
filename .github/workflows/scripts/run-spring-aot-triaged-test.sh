@@ -25,8 +25,7 @@ echo "Running native tests for project '$P' in '$SPRING_DIR' (branch=$BRANCH)"
 cd "$SPRING_DIR"
 
 # Point spring-aot-smoke-tests to local reachability metadata
-#META_DIR="$(cd "$SPRING_DIR/.." && pwd)/metadata"
-META_DIR="/home/jovan/Work/grm-fork/graalvm-reachability-metadata/metadata"
+META_DIR="$(cd "$SPRING_DIR/.." && pwd)/metadata"
 META_URL="file://${META_DIR}"
 GP="${SPRING_DIR}/gradle.properties"
 
@@ -89,30 +88,6 @@ if [ -n "${NBT_VERSION:-}" ]; then
   grep -E '^[#]*nbtVersion=' -n "$GP" || true
 fi
 
-# Helpers to display nativeAppTest captured logs in CI
-print_file_with_cap() {
-  local file="$1"
-  local label="$2"
-  if [ -f "$file" ]; then
-    local size
-    size=$(wc -c < "$file" || echo 0)
-    echo "----- $label ($file, ${size} bytes) -----"
-    # If file larger than 5MB, show head and tail to avoid log flooding
-    if [ "$size" -le 5242880 ]; then
-      cat "$file"
-    else
-      echo "(file is large; showing first 200KB and last 200KB)"
-      head -c 204800 "$file" || true
-      echo ""
-      echo "----- [SNIP MIDDLE] -----"
-      tail -c 204800 "$file" || true
-      echo ""
-    fi
-  else
-    echo "$label not found at $file"
-  fi
-}
-
 set +e
 BUILD_LOG="$(mktemp)"
 ./gradlew clean --no-daemon --continue -PfromMavenLocal=org.graalvm.buildtools "${P}:nativeTest" "${P}:nativeAppTest" 2>&1 | tee "$BUILD_LOG"
@@ -124,16 +99,7 @@ if [ $EXIT_CODE -eq 0 ]; then
   exit 0
 fi
 
-echo "❌ Test $P failed. Triaging..."
-
-# Detect if nativeAppTest task failed from the Gradle output
-NATIVE_APP_FAILED=0
-if grep -qE "Task[[:space:]]+:.*nativeAppTest[[:space:]]+FAILED" "$BUILD_LOG"; then
-  NATIVE_APP_FAILED=1
-fi
-
-# Attempt to print nativeAppTest captured logs only if nativeAppTest failed
-# Compute project relative path robustly (e.g., :data:data-jpa-kotlin -> data/data-jpa-kotlin)
+# Compute project relative path (e.g., :data:data-jpa-kotlin -> data/data-jpa-kotlin)
 REL_PATH="$(echo "$P" | sed 's/^://' | tr ':' '/')"
 PROJ_DIR="${SPRING_DIR}/${REL_PATH}"
 
@@ -141,14 +107,21 @@ PROJ_DIR="${SPRING_DIR}/${REL_PATH}"
 OUTPUT_FILE="${PROJ_DIR}/build/nativeApp/output.txt"
 ERROR_FILE="${PROJ_DIR}/build/nativeApp/error.txt"
 
-if [ "$NATIVE_APP_FAILED" -eq 1 ]; then
+# Print logs if they exist (we are past success exit, so build failed)
+if [ -f "$OUTPUT_FILE" ] || [ -f "$ERROR_FILE" ]; then
   echo "::group::nativeAppTest logs for $P"
-  print_file_with_cap "$OUTPUT_FILE" "nativeAppTest output.txt"
-  print_file_with_cap "$ERROR_FILE"  "nativeAppTest error.txt"
+  if [ -f "$OUTPUT_FILE" ]; then
+    echo "----- nativeAppTest output.txt ($OUTPUT_FILE) -----"
+    cat "$OUTPUT_FILE"
+  fi
+  if [ -f "$ERROR_FILE" ]; then
+    echo "----- nativeAppTest error.txt ($ERROR_FILE) -----"
+    cat "$ERROR_FILE"
+  fi
   echo "::endgroup::"
-else
-  echo "nativeAppTest did not fail; skipping captured logs."
 fi
+
+echo "❌ Test $P failed. Triaging..."
 
 # 1. Check local build.gradle for 'expectedToFail'
 GRADLE_FILE="${SPRING_DIR}/${REL_PATH}/build.gradle"
