@@ -86,12 +86,19 @@ dependencies {
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+// Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
+tasks.withType(Test).configureEach {
     testLogging {
+        // Options: 'full' or 'short'; use full to include stack traces and causes
         exceptionFormat = 'full'
+        showExceptions = true
+        showCauses = true
         showStackTraces = true
     }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
  // Configure JaCoCo report to analyze only the effective classes of the target library (handles multi-release JARs)

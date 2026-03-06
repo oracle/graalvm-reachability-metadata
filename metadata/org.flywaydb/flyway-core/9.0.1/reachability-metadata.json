@@ -1,0 +1,45 @@
+{
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.apache.commons.logging.Log"
+      },
+      "type": "org.flywaydb.core.internal.logging.apachecommons.ApacheCommonsLogCreator",
+      "allPublicConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.Logger"
+      },
+      "type": "org.flywaydb.core.internal.logging.log4j2.Log4j2LogCreator",
+      "allPublicConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.slf4j.Logger"
+      },
+      "type": "org.flywaydb.core.internal.logging.slf4j.Slf4jLogCreator",
+      "allPublicConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.flywaydb.core.internal.jdbc.JdbcUtils"
+      },
+      "type": "sun.security.provider.SHA2$SHA256",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.flywaydb.core.internal.license.VersionPrinter"
+      },
+      "glob": "org/flywaydb/core/internal/version.txt"
+    }
+  ]
+}
