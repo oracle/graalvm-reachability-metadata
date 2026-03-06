@@ -54,12 +54,17 @@ public class JakartaMailTest {
         Files.delete(Path.of("greenmail-stderr.txt"));
     }
 
-    @Test
-    void sendMailWithSmtp() throws MessagingException {
+    private static Session getSession() {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "localhost");
         properties.put("mail.smtp.port", "3025");
         Session session = Session.getInstance(properties);
+        return session;
+    }
+
+    @Test
+    void sendMailWithSmtp() throws MessagingException {
+        Session session = getSession();
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("alice@localhost"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("bob@localhost"));
@@ -70,10 +75,7 @@ public class JakartaMailTest {
 
     @Test
     void sendMailWithMultipart() throws MessagingException {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", "localhost");
-        properties.put("mail.smtp.port", "3025");
-        Session session = Session.getInstance(properties);
+        Session session = getSession();
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("alice@localhost"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("bob@localhost"));
@@ -88,6 +90,7 @@ public class JakartaMailTest {
 
     @Test
     void resources() {
+        Session session = getSession(); // making the condition reached
         ClassLoader classLoader = getClass().getClassLoader();
         Assertions.assertThat(classLoader.getResource("META-INF/hk2-locator/default")).isNotNull();
         Assertions.assertThat(classLoader.getResource("META-INF/gfprobe-provider.xml")).isNotNull();

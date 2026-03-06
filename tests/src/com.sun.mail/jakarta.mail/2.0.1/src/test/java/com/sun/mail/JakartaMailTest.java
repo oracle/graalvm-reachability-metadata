@@ -54,6 +54,14 @@ public class JakartaMailTest {
         Files.delete(Path.of("greenmail-stderr.txt"));
     }
 
+    private static Session getSession() {
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "localhost");
+        properties.put("mail.smtp.port", "3025");
+        Session session = Session.getInstance(properties);
+        return session;
+    }
+
     @Test
     void sendMailWithSmtp() throws MessagingException {
         Session session = getSession();
@@ -65,20 +73,9 @@ public class JakartaMailTest {
         Transport.send(message);
     }
 
-    private static Session getSession() {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", "localhost");
-        properties.put("mail.smtp.port", "3025");
-        Session session = Session.getInstance(properties);
-        return session;
-    }
-
     @Test
     void sendMailWithMultipart() throws MessagingException {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", "localhost");
-        properties.put("mail.smtp.port", "3025");
-        Session session = Session.getInstance(properties);
+        Session session = getSession();
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("alice@localhost"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("bob@localhost"));
