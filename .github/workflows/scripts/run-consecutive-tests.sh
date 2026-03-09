@@ -59,7 +59,7 @@ run_multiple_attempts() {
     attempt=$((attempt + 1))
   done
 
-  echo "FAILED[$stage][$VERSION][$gradle_command]"
+  echo "FAILED[$stage][$VERSION][$cmd_str]"
   return $result
 }
 
