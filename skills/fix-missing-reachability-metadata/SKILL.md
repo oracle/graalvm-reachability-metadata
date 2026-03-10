@@ -25,7 +25,7 @@ Library coordinates should be provided in the prompt in the format `group:artifa
    - Infer it from the error stack trace.
    - Set the `condition` field to `{ "typeReached": "<class>" }`, where `<class>` is the first class on the stack trace whose package shares the leading namespace with the tested library's package.
    - Package overlap can be partial, full package equality is not required.
-   - Example: missing type `org.hibernate.id...` and the class from a stack trace `org.hibernate.resource...` is a valid match.
+   - Example: tested library's group `org.hibernate.orm...` and the class from a stack trace `org.hibernate.resource...` is a valid match.
 
 5. Verify and iterate:
    - Run `./gradlew test -Pcoordinates=<coordinates>` again.
