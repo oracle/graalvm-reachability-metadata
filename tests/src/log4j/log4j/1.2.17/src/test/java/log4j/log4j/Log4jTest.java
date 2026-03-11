@@ -40,7 +40,8 @@ class Log4jTest {
 
     @Test
     void consoleInfoLogger() {
-        DOMConfigurator.configure(this.getClass().getClassLoader().getResource("log4j.xml"));
+        DOMConfigurator configurator = new DOMConfigurator(); // making the condition reached
+        configurator.configure(this.getClass().getClassLoader().getResource("log4j.xml"));
         final Logger logger = LogManager.getLogger(this.getClass());
         logger.info("info message");
         assertThat(stdOut.toString(StandardCharsets.UTF_8)).contains("info message");
