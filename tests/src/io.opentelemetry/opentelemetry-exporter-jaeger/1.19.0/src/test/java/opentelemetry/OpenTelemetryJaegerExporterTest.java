@@ -35,10 +35,10 @@ public class OpenTelemetryJaegerExporterTest {
                 .setHasEnded(true)
                 .build();
 
-        Assertions.assertTrue(isClassPresent("io.opentelemetry.exporter.jaeger.JaegerGrpcSpanExporter"));
         try (JaegerGrpcSpanExporter exporter = JaegerGrpcSpanExporter.builder().build()) {
             exporter.export(List.of(span));
         }
+        Assertions.assertTrue(isClassPresent("io.opentelemetry.exporter.jaeger.JaegerGrpcSpanExporter"));
     }
 
     private boolean isClassPresent(String className) {
