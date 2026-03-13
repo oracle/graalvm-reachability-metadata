@@ -29,6 +29,7 @@ run_multiple_attempts() {
   local stage="$1"
   local max_attempts="$2"
   local gradle_command="$3"
+  local report_failed="${4:-1}"
 
   echo "$DELIMITER"
   echo " $TEST_COORDINATES:$VERSION stage $stage"
@@ -59,7 +60,11 @@ run_multiple_attempts() {
     attempt=$((attempt + 1))
   done
 
-  echo "FAILED[$stage][$VERSION][$cmd_str]"
+  if [ "$report_failed" -ne 0 ]; then
+    echo "FAILED[$stage][$VERSION][$cmd_str]"
+  else
+    echo "SOFT-FAIL[$stage][$VERSION][$cmd_str]"
+  fi
   return $result
 }
 
@@ -68,7 +73,7 @@ for VERSION in "${VERSIONS[@]}"; do
   echo " Testing $TEST_COORDINATES:$VERSION"
   echo "$DELIMITER"
 
-  if ! run_multiple_attempts "native-image run" 1 test; then
+  if ! run_multiple_attempts "native-image run" 1 test 0; then
       # failing execution: bisect
       if ! run_multiple_attempts "javac compile" 1 compileTestJava; then
         break
