@@ -69,13 +69,41 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
 
     private void extractCoordinates(String c) {
         this.coordinates = Coordinates.parse(c);
-        File coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
+        File coordinatesMetadataRoot = resolveMetadataRoot(this.coordinates);
         getMetadataRoot().set(coordinatesMetadataRoot);
 
         File index = getProject().file("metadata/index.json");
         getIndexFile().set(index);
 
         this.allowedPackages = getAllowedPackages();
+    }
+
+    @SuppressWarnings("unchecked")
+    private File resolveMetadataRoot(Coordinates coordinates) {
+        File conventionalRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", coordinates));
+        if (conventionalRoot.exists()) {
+            return conventionalRoot;
+        }
+
+        File artifactRoot = getProject().file("metadata/" + coordinates.group() + "/" + coordinates.artifact());
+        File artifactIndex = new File(artifactRoot, "index.json");
+        if (!artifactIndex.exists()) {
+            return conventionalRoot;
+        }
+
+        String module = coordinates.group() + ":" + coordinates.artifact();
+        List<Map<String, Object>> entries = getConfigEntries(artifactIndex);
+        for (Map<String, Object> entry : entries) {
+            Object testedVersions = entry.get("tested-versions");
+            if (module.equals(entry.get("module")) && testedVersions instanceof List<?> versions && versions.contains(coordinates.version())) {
+                Object metadataVersion = entry.get("metadata-version");
+                if (metadataVersion instanceof String version) {
+                    return new File(artifactRoot, version);
+                }
+            }
+        }
+
+        return conventionalRoot;
     }
 
     @TaskAction
