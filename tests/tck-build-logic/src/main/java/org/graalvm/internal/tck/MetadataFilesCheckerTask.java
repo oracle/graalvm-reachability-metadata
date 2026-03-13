@@ -34,11 +34,7 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     protected abstract RegularFileProperty getIndexFile();
 
     private final Set<String> EXPECTED_FILES = new HashSet<>(List.of(
-            "reflect-config.json",
-            "resource-config.json",
-            "serialization-config.json",
-            "jni-config.json",
-            "proxy-config.json"));
+            "reachability-metadata.json"));
 
     private final Set<String> ILLEGAL_TYPE_VALUES = new HashSet<>(List.of("java.lang"));
 
