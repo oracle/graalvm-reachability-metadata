@@ -111,9 +111,12 @@ public abstract class TckExtension {
             if (Files.exists(metadataDir)) {
                 List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) readIndexFile(metadataDir);
 
-                // Find the entry where 'metadata-version' EXACTLY matches the input library version
+                // Resolve the entry that declares support for the requested library version.
                 Optional<Map<String, ?>> matchingEntry = metadataIndex.stream()
-                        .filter(entry -> version.equals(entry.get("metadata-version")))
+                        .filter(entry -> {
+                            Object testedVersions = entry.get("tested-versions");
+                            return testedVersions instanceof List<?> versions && versions.contains(version);
+                        })
                         .findFirst();
 
                 if (matchingEntry.isPresent()) {
@@ -369,14 +372,17 @@ public abstract class TckExtension {
                 List<String> coordinates = splitCoordinates((String) entry.get("module"));
                 List<String> testedVersions = (List<String>) entry.get("tested-versions");
                 if (coordinatesMatch((String) entry.get("module"), groupId, artifactId) && (version == null || testedVersions.contains(version))) {
-                    if (version == null) { // We want all library versions, so let's add them.
-                        testedVersions.stream()
-                                .filter(t -> metadataRoot().resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(t).toFile().exists())
-                                .forEach(t -> matchingCoordinates.add(entry.get("module") + ":" + t));
+                    Path metadataVersionDir = metadataRoot()
+                            .resolve(coordinates.get(0))
+                            .resolve(coordinates.get(1))
+                            .resolve((String) entry.get("metadata-version"));
+                    if (!Files.isDirectory(metadataVersionDir)) {
+                        continue;
+                    }
+                    if (version == null) { // We want all library versions supported by this metadata entry.
+                        testedVersions.forEach(t -> matchingCoordinates.add(entry.get("module") + ":" + t));
                     } else { // We have a specific version pinned.
-                        if (metadataRoot().resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(version).toFile().exists()) {
-                            matchingCoordinates.add(entry.get("module") + ":" + version);
-                        }
+                        matchingCoordinates.add(entry.get("module") + ":" + version);
                     }
                 }
             }
