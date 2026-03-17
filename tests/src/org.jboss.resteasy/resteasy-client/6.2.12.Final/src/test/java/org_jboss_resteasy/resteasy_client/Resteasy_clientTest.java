@@ -78,7 +78,9 @@ class Resteasy_clientTest {
 
             assertThat(response.getStatus()).isEqualTo(200);
             assertThat(response.getHeaderString("X-Test-Header")).isEqualTo("ok");
-            assertThat(response.getMediaType().toString()).isEqualTo("text/plain");
+            assertThat(response.getMediaType()).isNotNull();
+            assertThat(response.getMediaType().getType()).isEqualTo("text");
+            assertThat(response.getMediaType().getSubtype()).isEqualTo("plain");
             assertThat(response.readEntity(String.class)).isEqualTo("Hello restEasy");
         }
     }
