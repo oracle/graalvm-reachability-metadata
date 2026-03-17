@@ -90,7 +90,7 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         List<Map<String, Object>> entries = getConfigEntries(artifactIndex);
         for (Map<String, Object> entry : entries) {
             Object testedVersions = entry.get("tested-versions");
-            if (module.equals(entry.get("module")) && testedVersions instanceof List<?> versions && versions.contains(coordinates.version())) {
+            if (testedVersions instanceof List<?> versions && versions.contains(coordinates.version())) {
                 Object metadataVersion = entry.get("metadata-version");
                 if (metadataVersion instanceof String version) {
                     return new File(artifactRoot, version);
@@ -422,34 +422,69 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         File indexFile = getIndexFile().get().getAsFile();
         String groupId = coordinates.group();
         String artifactId = coordinates.artifact();
-        String metadataVersion = coordinates.version();
-
+        String requestedVersion = coordinates.version();
+    
         if (!indexFile.exists()) {
             throw new IllegalStateException("Missing artifact-level index.json: " + indexFile.toURI() + " for coordinates " + coordinates);
         }
-
+    
         Object parsed = new JsonSlurper().parse(indexFile);
         if (!(parsed instanceof List)) {
             throw new IllegalStateException("Invalid artifact-level index.json (expected array): " + indexFile.toURI());
         }
-
+    
         List<Map<String, Object>> entries = ((List<Object>) parsed).stream()
                 .map(e -> (Map<String, Object>) e)
                 .toList();
-
-        Map<String, Object> match = entries.stream()
-                .filter(e -> Objects.equals(metadataVersion, e.get("metadata-version")))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException(
-                        "Missing index entry for " + groupId + ":" + artifactId +
-                        " with metadata-version=" + metadataVersion + " in " + indexFile.toURI()));
-
+    
+        // First try exact match on metadata-version (for callers that pass a metadata-version)
+        Optional<Map<String, Object>> byMetadataVersion = entries.stream()
+                .filter(e -> Objects.equals(requestedVersion, e.get("metadata-version")))
+                .findFirst();
+    
+        // Otherwise try to match by a library version listed in tested-versions
+        Map<String, Object> match = byMetadataVersion.orElseGet(() ->
+                entries.stream()
+                        .filter(e -> {
+                            Object tv = e.get("tested-versions");
+                            return tv instanceof List<?> versions && versions.contains(requestedVersion);
+                        })
+                        .findFirst()
+                        .orElse(null)
+        );
+    
+        if (match == null) {
+            List<String> metadataVersions = entries.stream()
+                    .map(e -> (String) e.get("metadata-version"))
+                    .filter(Objects::nonNull)
+                    .toList();
+            List<String> testedVersions = entries.stream()
+                    .map(e -> {
+                        Object tv = e.get("tested-versions");
+                        if (tv instanceof List<?> list) {
+                            return list.stream().map(Object::toString).collect(Collectors.toList());
+                        }
+                        return Collections.<String>emptyList();
+                    })
+                    .flatMap(List::stream)
+                    .distinct()
+                    .sorted()
+                    .toList();
+    
+            throw new IllegalStateException(
+                    "Missing index entry for " + groupId + ":" + artifactId +
+                    " matching version=" + requestedVersion +
+                    " in " + indexFile.toURI() +
+                    ". Known metadata-versions=" + metadataVersions +
+                    ", tested-versions=" + testedVersions);
+        }
+    
         Object ap = match.get("allowed-packages");
         if (ap instanceof List) {
             return (List<String>) ap;
         }
         throw new IllegalStateException(
                 "Missing or invalid allowed-packages for " + groupId + ":" + artifactId +
-                " (metadata-version=" + metadataVersion + ") in " + indexFile.toURI());
+                " (metadata-version=" + match.get("metadata-version") + ") in " + indexFile.toURI());
     }
 }
