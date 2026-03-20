@@ -191,7 +191,7 @@ public abstract class TckExtension {
 
         // First get all available coordinates, then filter them by if their corresponding metadata / tests directories
         // contain changed files.
-        List<String> changedCoordinates = getMatchingCoordinates("").stream().filter(c -> {
+        List<String> changedCoordinates = getMatchingCoordinatesStrict("").stream().filter(c -> {
             Path metadataDir = getMetadataDir(c);
             if (changed.get("metadata") != null && changed.get("metadata").stream().anyMatch(f -> f.startsWith(metadataDir))) {
                 return true;
@@ -323,46 +323,81 @@ public abstract class TckExtension {
 
     /**
      * Returns all coordinates that match given coordinate filter.
+     * Standard version: Uses 'metadata-version' pointer for shared config folders.
      *
-     * @return list of all coordinates that
+     * @return list of all coordinates that match given coordinate filter.
      */
     @SuppressWarnings("unchecked")
     public List<String> getMatchingCoordinates(String coordinateFilter) {
-        List<String> strings = splitCoordinates(coordinateFilter);
-        String groupId = strings.get(0);
-        String artifactId = strings.get(1);
-        String version = strings.get(2);
+        List<String> parts = splitCoordinates(coordinateFilter);
+        String versionFilter = parts.get(2);
 
-        Set<String> matchingCoordinates = new HashSet<>();
-        for (String directory : getMatchingMetadataDirs(groupId, artifactId)) {
-            Path fullDir = metadataRoot().resolve(directory);
-            Path index = fullDir.resolve("index.json");
-            List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(index);
+        Set<String> results = new HashSet<>();
+        loadMatchingIndices(parts.get(0), parts.get(1)).forEach((fullDir, index) -> {
+            String g = fullDir.getParent().getFileName().toString();
+            String a = fullDir.getFileName().toString();
 
-            // Derive coordinates from the directory structure
-            String derivedGroupId = fullDir.getParent().getFileName().toString();
-            String derivedArtifactId = fullDir.getFileName().toString();
-            String moduleBase = derivedGroupId + ":" + derivedArtifactId;
+            for (Map<String, ?> entry : index) {
+                List<String> tested = (List<String>) entry.get("tested-versions");
+                String metaVer = (String) entry.get("metadata-version");
 
-            for (Map<String, ?> entry : metadataIndex) {
-                List<String> testedVersions = (List<String>) entry.get("tested-versions");
-                String metadataVersion = (String) entry.get("metadata-version");
-
-                if (testedVersions == null || metadataVersion == null) continue;
-
-                Path metadataVersionDir = fullDir.resolve(metadataVersion);
-                if (!Files.isDirectory(metadataVersionDir)) {
+                if (tested == null || metaVer == null || !Files.isDirectory(fullDir.resolve(metaVer))) {
                     continue;
                 }
-                if (version == null) { // We want all library versions supported by this metadata entry.
-                    testedVersions.forEach(t -> matchingCoordinates.add(moduleBase + ":" + t));
-                } else if (testedVersions.contains(version)) { // We have a specific version pinned.
-                    matchingCoordinates.add(moduleBase + ":" + version);
-                }
+
+                tested.stream()
+                        .filter(v -> versionFilter == null || versionFilter.equals(v))
+                        .forEach(v -> results.add(g + ":" + a + ":" + v));
+            }
+        });
+        return new ArrayList<>(results);
+    }
+
+    /**
+     * Returns all coordinates that match given coordinate filter.
+     * Strict version: Requires library version string to match directory name exactly.
+     *
+     * @return list of all coordinates that match given coordinate filter.
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getMatchingCoordinatesStrict(String coordinateFilter) {
+        List<String> parts = splitCoordinates(coordinateFilter);
+        String versionFilter = parts.get(2);
+
+        Set<String> results = new HashSet<>();
+        loadMatchingIndices(parts.get(0), parts.get(1)).forEach((fullDir, index) -> {
+            String g = fullDir.getParent().getFileName().toString();
+            String a = fullDir.getFileName().toString();
+
+            for (Map<String, ?> entry : index) {
+                List<String> tested = (List<String>) entry.get("tested-versions");
+                if (tested == null) continue;
+
+                tested.stream()
+                        .filter(v -> versionFilter == null || versionFilter.equals(v))
+                        .filter(v -> Files.isDirectory(fullDir.resolve(v)))
+                        .forEach(v -> results.add(g + ":" + a + ":" + v));
+            }
+        });
+        return new ArrayList<>(results);
+    }
+
+    /**
+     * Internal helper to load and group index.json files for matching directories.
+     */
+    private Map<Path, List<Map<String, ?>>> loadMatchingIndices(String groupId, String artifactId) {
+        Map<Path, List<Map<String, ?>>> indices = new HashMap<>();
+        for (String directory : getMatchingMetadataDirs(groupId, artifactId)) {
+            Path fullDir = metadataRoot().resolve(directory);
+            Path indexFile = fullDir.resolve("index.json");
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(indexFile);
+            if (metadataIndex != null) {
+                indices.put(fullDir, metadataIndex);
             }
         }
-
-        return new ArrayList<>(matchingCoordinates);
+        return indices;
     }
 
     /**
