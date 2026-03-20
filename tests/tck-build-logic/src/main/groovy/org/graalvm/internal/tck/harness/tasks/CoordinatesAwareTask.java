@@ -68,7 +68,7 @@ public abstract class CoordinatesAwareTask extends DefaultTask {
     protected List<String> computeMatchingCoordinates(String filter) {
         if (CoordinateUtils.isFractionalBatch(filter)) {
             int[] frac = CoordinateUtils.parseFraction(filter);
-            List<String> all = tckExtension.getMatchingCoordinates("all");
+            List<String> all = tckExtension.getMatchingCoordinatesStrict("all");
             return CoordinateUtils.computeBatchedCoordinates(all, frac[0], frac[1]);
         } else {
             return tckExtension.getMatchingCoordinates(filter);

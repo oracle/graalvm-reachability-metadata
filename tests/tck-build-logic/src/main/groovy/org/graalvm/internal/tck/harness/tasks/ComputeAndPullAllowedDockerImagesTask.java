@@ -78,7 +78,7 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
         if (CoordinateUtils.isFractionalBatch(filter)) {
             int[] frac = CoordinateUtils.parseFraction(filter);
             assert frac != null : "Already checked";
-            List<String> all = tck.getMatchingCoordinates("all");
+            List<String> all = tck.getMatchingCoordinatesStrict("all");
             matching = CoordinateUtils.computeBatchedCoordinates(all, frac[0], frac[1]);
         } else {
             matching = tck.getMatchingCoordinates(filter);
