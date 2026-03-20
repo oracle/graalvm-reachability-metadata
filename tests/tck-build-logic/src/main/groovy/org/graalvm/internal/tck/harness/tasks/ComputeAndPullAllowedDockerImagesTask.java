@@ -113,14 +113,26 @@ public abstract class ComputeAndPullAllowedDockerImagesTask extends DefaultTask 
             }
 
             List<MetadataVersionsIndexEntry> entries = mapper.readValue(indexPath.toFile(), new TypeReference<>() {});
-
+ 
             String testVersion = null;
+            // 1) Primary: when a tested-version is provided, find the entry whose tested-versions contains it
             for (MetadataVersionsIndexEntry entry : entries) {
-                // Logic: Check if the current coordinate version is in the tested list
-                if (entry.metadataVersion().equals(version)) {
-                    // Priority: 1. test-version, 2. metadata-version
-                    testVersion = entry.testVersion() != null ? entry.testVersion() : entry.metadataVersion();
+                List<String> tvs = entry.testedVersions();
+                if (tvs != null && tvs.contains(version)) {
+                    // Priority: 1. test-version (if present), 2. metadata-version
+                    String tv = entry.testVersion();
+                    testVersion = (tv != null && !tv.isBlank()) ? tv : entry.metadataVersion();
                     break;
+                }
+            }
+            // 2) Fallback: if the coordinate version is actually a metadata-version, match it directly
+            if (testVersion == null) {
+                for (MetadataVersionsIndexEntry entry : entries) {
+                    if (version.equals(entry.metadataVersion())) {
+                        String tv = entry.testVersion();
+                        testVersion = (tv != null && !tv.isBlank()) ? tv : entry.metadataVersion();
+                        break;
+                    }
                 }
             }
             if (testVersion != null) {
