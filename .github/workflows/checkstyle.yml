@@ -14,9 +14,13 @@ jobs:
     timeout-minutes: 5
     outputs:
       relevant-files-changed: ${{ steps.filter.outputs.changed }}
+      changed-matrix: ${{ steps.changed-matrix.outputs.matrix }}
+      changed-empty: ${{ steps.changed-matrix.outputs.none-found }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: "🔎 Detect relevant file changes"
         id: filter
@@ -26,6 +30,21 @@ jobs:
             - '!docs/**'
             - '!**.md'
             - '!library-and-framework-list*.json'
+
+      - name: "🔧 Setup java"
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "Build changed matrix"
+        id: changed-matrix
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          ./gradlew generateChangedCoordinatesOnlyMatrix \
+            -PbaseCommit=${{ github.event.pull_request.base.sha }} \
+            -PnewCommit=${{ github.event.pull_request.head.sha }}
 
   spotless:
     name: "✨ Spotless"
@@ -46,24 +65,15 @@ jobs:
       - name: "Run Spotless"
         run: ./gradlew spotlessCheck --console=plain
 
-  checkstyle-shards:
-    name: "📋 Checkstyle shard ${{ matrix.coordinates }}"
-    if: needs.detect-relevant-changes.outputs.relevant-files-changed == 'true'
+  checkstyle-coordinates:
+    name: "📋 Checkstyle ${{ matrix.coordinates }}"
+    if: needs.detect-relevant-changes.outputs.relevant-files-changed == 'true' && needs.detect-relevant-changes.outputs.changed-empty != 'true'
     needs: detect-relevant-changes
     runs-on: "ubuntu-22.04"
     timeout-minutes: 20
     strategy:
       fail-fast: false
-      matrix:
-        coordinates:
-          - "1/8"
-          - "2/8"
-          - "3/8"
-          - "4/8"
-          - "5/8"
-          - "6/8"
-          - "7/8"
-          - "8/8"
+      matrix: ${{ fromJson(needs.detect-relevant-changes.outputs.changed-matrix) }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
@@ -83,32 +93,21 @@ jobs:
     needs:
       - detect-relevant-changes
       - spotless
-      - checkstyle-shards
+      - checkstyle-coordinates
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
     steps:
       - name: "Style checks passed"
         if: |
           needs.detect-relevant-changes.result == 'success' &&
-          (
-            needs.detect-relevant-changes.outputs.relevant-files-changed == 'false' ||
-            (
-              needs.spotless.result == 'success' &&
-              needs.checkstyle-shards.result == 'success'
-            )
-          )
+          (needs.spotless.result == 'success' || needs.spotless.result == 'skipped') &&
+          (needs.checkstyle-coordinates.result == 'success' || needs.checkstyle-coordinates.result == 'skipped')
         run: exit 0
 
       - name: "Style checks failed"
         if: |
           needs.detect-relevant-changes.result == 'failure' ||
-          (
-            needs.detect-relevant-changes.outputs.relevant-files-changed == 'true' &&
-            (
-              needs.spotless.result == 'failure' ||
-              needs.checkstyle-shards.result == 'failure' ||
-              needs.spotless.result == 'cancelled' ||
-              needs.checkstyle-shards.result == 'cancelled'
-            )
-          )
+          needs.detect-relevant-changes.result == 'cancelled' ||
+          needs.spotless.result == 'failure' || needs.spotless.result == 'cancelled' ||
+          needs.checkstyle-coordinates.result == 'failure' || needs.checkstyle-coordinates.result == 'cancelled'
         run: exit 1
