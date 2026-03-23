@@ -6,16 +6,25 @@
  */
 package org_apache_groovy.groovy;
 
+import groovy.lang.MissingMethodException;
 import groovy.lang.MissingPropertyException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 class GroovyTest {
     @Test
-    void test() throws Exception {
-        fail("TODO: Add test logic here");
+    void missingMethodExceptionExposesMethodMetadataAndMessage() {
+        Object[] arguments = {1, "two"};
+        MissingMethodException exception =
+                new MissingMethodException("runTask", GroovyTest.class, arguments, false);
+
+        assertThat(exception.getMethod()).isEqualTo("runTask");
+        assertThat(exception.getType()).isEqualTo(GroovyTest.class);
+        assertThat(exception.getArguments()).containsExactly(1, "two");
+        assertThat(exception.getMessage())
+                .contains("runTask")
+                .contains(GroovyTest.class.getName());
     }
 
     @Test
