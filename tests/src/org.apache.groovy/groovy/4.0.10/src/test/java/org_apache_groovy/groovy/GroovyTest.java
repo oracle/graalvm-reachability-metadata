@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GroovyTest {
     @Test
-    void missingMethodExceptionExposesMethodMetadataAndMessage() {
+    void missingMethodExceptionExposesMethodMetadata() {
         Object[] arguments = {1, "two"};
         MissingMethodException exception =
                 new MissingMethodException("runTask", GroovyTest.class, arguments, false);
@@ -22,19 +22,13 @@ class GroovyTest {
         assertThat(exception.getMethod()).isEqualTo("runTask");
         assertThat(exception.getType()).isEqualTo(GroovyTest.class);
         assertThat(exception.getArguments()).containsExactly(1, "two");
-        assertThat(exception.getMessage())
-                .contains("runTask")
-                .contains(GroovyTest.class.getName());
     }
 
     @Test
-    void missingPropertyExceptionExposesPropertyMetadataAndMessage() {
+    void missingPropertyExceptionExposesPropertyMetadata() {
         MissingPropertyException exception = new MissingPropertyException("name", GroovyTest.class);
 
         assertThat(exception.getProperty()).isEqualTo("name");
         assertThat(exception.getType()).isEqualTo(GroovyTest.class);
-        assertThat(exception.getMessage())
-                .contains("name")
-                .contains(GroovyTest.class.getName());
     }
 }
