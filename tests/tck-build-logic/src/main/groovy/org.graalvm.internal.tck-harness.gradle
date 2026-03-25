@@ -33,6 +33,7 @@ import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
+import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
@@ -160,6 +161,12 @@ tasks.register("listCoordinates", DefaultTask) { task ->
         }
         writeGithubOutput("coordinates", coords.join(' '))
     }
+}
+
+// gradle generateDependencyGraph -Pcoordinates=<maven-coordinates>
+tasks.register("generateDependencyGraph", GenerateDependencyGraphTask.class) { task ->
+    task.setDescription("Prints deps.dev dependency graph for matching coordinates")
+    task.setGroup(METADATA_GROUP)
 }
 
 // gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
