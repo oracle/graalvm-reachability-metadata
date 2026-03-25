@@ -1,4 +1,4 @@
-name: "Verify new issue"
+name: "Triage new issues"
 
 on:
   issues:
@@ -9,9 +9,13 @@ permissions:
   issues: write
 
 jobs:
-  triage:
-    if: ${{ github.event.issue.pull_request == null && (contains(github.event.issue.labels.*.name, 'library-new-request')) }}
+  verify-new-issue:
+    name: "🔎 Verify new issue"
+    if: ${{ github.event.issue.pull_request == null && contains(github.event.issue.labels.*.name, 'library-new-request')}}
     runs-on: ubuntu-latest
+    outputs:
+      coords: ${{ steps.extract.outputs.coords }}
+      should_expand: ${{ steps.expand.outputs.should_expand }}
 
     steps:
       - name: "Checkout repository"
@@ -74,8 +78,70 @@ jobs:
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
-      - name: "Check if library/version is already supported by the repository"
+      - name: "Close issue - duplicate request for exact coordinates"
         if: ${{ steps.validate.outputs.invalid != 'true' }}
+        id: duplicate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const coords = "${{ steps.extract.outputs.coords }}";
+            const exactTitle = `Support for ${coords}`;
+
+            function extractCoordinatesFromBody(body) {
+              const lines = (body || "").replace(/\r/g, "").split("\n");
+              let foundHeader = false;
+              for (const line of lines) {
+                if (foundHeader) {
+                  if (line.trim() === "") {
+                    continue;
+                  }
+                  return line.trim();
+                }
+                if (/^###[ \t]+Full Maven coordinates[ \t]*$/.test(line)) {
+                  foundHeader = true;
+                }
+              }
+              return null;
+            }
+
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: "open",
+              per_page: 100
+            });
+
+            const duplicateIssue = openIssues.find((issue) => {
+              if (issue.pull_request || issue.number === issue_number) {
+                return false;
+              }
+              return issue.title === exactTitle || extractCoordinatesFromBody(issue.body) === coords;
+            });
+
+            if (!duplicateIssue) {
+              core.setOutput("duplicate", "false");
+              return;
+            }
+
+            core.setOutput("duplicate", "true");
+            core.setOutput("duplicate_issue_number", String(duplicateIssue.number));
+
+            const body = [
+              `Automated triage: A request for the exact coordinates (${coords}) already exists in #${duplicateIssue.number}.`,
+              "",
+              "Closing this issue as a duplicate.",
+              "If you have additional context, please add it to the existing issue.",
+              "Note: Reopening will not re-run automation; maintainers will review manually."
+            ].join("\n");
+
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
+      - name: "Check if library/version is already supported by the repository"
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' }}
         id: support
         run: |
           set -Eeuo pipefail
@@ -112,7 +178,7 @@ jobs:
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
       - name: "Derive group:artifact"
-        if: ${{ steps.validate.outputs.invalid != 'true' && steps.support.outputs.supported != 'true' }}
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
         id: derive
         run: |
           set -Eeuo pipefail
@@ -121,7 +187,7 @@ jobs:
           echo "ga=$GA" >> "$GITHUB_OUTPUT"
 
       - name: "Check if listed in library-and-framework-list.json"
-        if: ${{ steps.validate.outputs.invalid != 'true' && steps.support.outputs.supported != 'true' }}
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
         id: listed
         run: |
           set -Eeuo pipefail
@@ -150,3 +216,54 @@ jobs:
             ].join("\n");
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
+      - name: "Mark issue eligible for dependency graph expansion"
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' && steps.listed.outputs.listed != 'true' }}
+        id: expand
+        run: |
+          set -Eeuo pipefail
+          echo "should_expand=true" >> "$GITHUB_OUTPUT"
+
+  triage-transitive-dependency-issues:
+    needs: verify-new-issue
+    name: "✏️ Create issues for unsupported transitive dependencies"
+    if: ${{ needs.verify-new-issue.result == 'success' && needs.verify-new-issue.outputs.should_expand == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Setup Java (GraalVM) to run Gradle"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "Run deps.dev graph and capture raw dependency graph"
+        env:
+          COORDS: ${{ needs.verify-new-issue.outputs.coords }}
+        run: |
+          set -Eeuo pipefail
+          DEPS_GRAPH_JSON="$(./gradlew -q generateDependencyGraph -Pcoordinates="$COORDS" --console=plain --no-daemon | tail -n 1)"
+          jq -e . >/dev/null <<<"$DEPS_GRAPH_JSON"
+          {
+            echo 'DEPS_GRAPH_JSON<<EOF'
+            echo "$DEPS_GRAPH_JSON"
+            echo 'EOF'
+          } >> "$GITHUB_ENV"
+
+      - name: "Open dependency issues and link blockers"
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const path = require('path');
+            const scriptPath = path.join(
+              process.env.GITHUB_WORKSPACE,
+              '.github',
+              'workflows',
+              'scripts',
+              'open-dependency-issues-and-link-blockers.js'
+            );
+            const openDependencyIssuesAndLinkBlockers = require(scriptPath);
+            await openDependencyIssuesAndLinkBlockers({ github, context });

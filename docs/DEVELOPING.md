@@ -96,6 +96,19 @@ To print all testable GAV coordinates while honoring the same -Pcoordinates filt
 
 In GitHub Actions, this task also writes a space-separated list to the GITHUB_OUTPUT key "coordinates".
 
+### Generating dependency graphs
+
+To print deps.dev dependency graphs for resolved GAV coordinates while honoring the same `-Pcoordinates` filter semantics used by the harness:
+
+```console
+./gradlew generateDependencyGraph -Pcoordinates=all
+./gradlew generateDependencyGraph -Pcoordinates=group:artifact
+./gradlew generateDependencyGraph -Pcoordinates=group:artifact:version
+./gradlew generateDependencyGraph -Pcoordinates=1/16
+```
+
+The task prints one JSON object per resolved coordinate to stdout. Each JSON object contains the root GAV in `root` and the transitively fetched Maven dependency graph in `nodes[*].id` and `nodes[*].dependencies`.
+
 ### Testing individual stages
 
 Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version|k/n|all]`. Here are the examples:
@@ -198,6 +211,7 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
 - Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - List available coordinates: `./gradlew listCoordinates -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
+- Generate dependency graph: `./gradlew generateDependencyGraph -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`
 - Scan all Docker images: `./gradlew checkAllowedDockerImages`
 - List libs with newer versions: `./gradlew fetchExistingLibrariesWithNewerVersions --quiet`
