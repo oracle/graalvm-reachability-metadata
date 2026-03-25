@@ -464,7 +464,8 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
         }
 
         String testPath = "${libPath}/${testVersionFolder}"
-        String testCoordinates = testPath.replace("/", ":")
+        // Use the latest metadata version for compatibility verification.
+        String testCoordinates = "${lib}:${latestVersion}"
 
         writeGithubEnv("LATEST_VERSION", latestVersion)
         writeGithubEnv("TEST_PATH", testPath)
