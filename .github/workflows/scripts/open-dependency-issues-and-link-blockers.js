@@ -677,7 +677,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
   }
 
   const effectiveBlockerMemo = new Map();
-  const acceptedBlockersByGA = new Map();
+  const acceptedBlockersByIssueNumber = new Map();
 
   /**
    * Returns the direct GA blockers declared by the normalized plan.
@@ -723,29 +723,116 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
   }
 
   /**
-   * Detects whether accepting a blocker link would create a cycle among accepted links.
+   * Records an accepted blocker edge in the in-memory issue dependency graph.
    */
-  function wouldCreateAcceptedCycle(ga, blockerGA) {
-    if (ga === blockerGA) {
+  function addAcceptedBlocker(blockedIssueNumber, blockerIssueNumber) {
+    if (!Number.isInteger(blockedIssueNumber) || !Number.isInteger(blockerIssueNumber)) {
+      return;
+    }
+
+    if (!acceptedBlockersByIssueNumber.has(blockedIssueNumber)) {
+      acceptedBlockersByIssueNumber.set(blockedIssueNumber, new Set());
+    }
+
+    acceptedBlockersByIssueNumber.get(blockedIssueNumber).add(blockerIssueNumber);
+  }
+
+  /**
+   * Lists the issues that currently block a GitHub issue.
+   */
+  async function listBlockedByIssues(issueNumber) {
+    const blockedByIssues = [];
+    let page = 1;
+
+    while (true) {
+      const response = await github.request(
+        'GET /repos/{owner}/{repo}/issues/{issue_number}/dependencies/blocked_by',
+        {
+          owner,
+          repo,
+          issue_number: issueNumber,
+          page,
+          per_page: 100,
+          headers: {
+            accept: 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28'
+          }
+        }
+      );
+
+      const pageItems = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.blocked_by)
+          ? response.data.blocked_by
+          : [];
+
+      blockedByIssues.push(...pageItems);
+
+      if (pageItems.length < 100) {
+        break;
+      }
+      page++;
+    }
+
+    return blockedByIssues;
+  }
+
+  /**
+   * Hydrates the in-memory issue dependency graph from existing GitHub blocker links.
+   *
+   * Traversal is recursive so reused issues cannot hide longer dependency paths that would
+   * turn a newly added link into a cycle.
+   */
+  async function hydrateAcceptedBlockersFromExistingIssues(seedIssueNumbers) {
+    const queue = [...new Set(seedIssueNumbers.filter((issueNumber) => Number.isInteger(issueNumber)))];
+    const hydratedIssueNumbers = new Set();
+
+    while (queue.length > 0) {
+      const issueNumber = queue.shift();
+      if (!Number.isInteger(issueNumber) || hydratedIssueNumbers.has(issueNumber)) {
+        continue;
+      }
+      hydratedIssueNumbers.add(issueNumber);
+
+      const blockedByIssues = await listBlockedByIssues(issueNumber);
+      for (const blockedByIssue of blockedByIssues) {
+        const blockerIssueNumber = blockedByIssue?.number;
+        if (!Number.isInteger(blockerIssueNumber)) {
+          continue;
+        }
+
+        addAcceptedBlocker(issueNumber, blockerIssueNumber);
+        if (!hydratedIssueNumbers.has(blockerIssueNumber)) {
+          queue.push(blockerIssueNumber);
+        }
+      }
+    }
+  }
+
+  /**
+   * Detects whether accepting a blocker link would create a cycle among accepted issue links.
+   */
+  function wouldCreateAcceptedCycle(blockedIssueNumber, blockerIssueNumber) {
+    if (blockedIssueNumber === blockerIssueNumber) {
       return true;
     }
 
     const seen = new Set();
-    const stack = [blockerGA];
+    const stack = [blockerIssueNumber];
 
     while (stack.length > 0) {
-      const currentGA = stack.pop();
-      if (currentGA === ga) {
+      const currentIssueNumber = stack.pop();
+      if (currentIssueNumber === blockedIssueNumber) {
         return true;
       }
-      if (seen.has(currentGA)) {
+      if (seen.has(currentIssueNumber)) {
         continue;
       }
-      seen.add(currentGA);
+      seen.add(currentIssueNumber);
 
-      for (const acceptedBlockerGA of acceptedBlockersByGA.get(currentGA) || []) {
-        if (!seen.has(acceptedBlockerGA)) {
-          stack.push(acceptedBlockerGA);
+      for (const acceptedBlockerIssueNumber of acceptedBlockersByIssueNumber.get(currentIssueNumber) || []) {
+        if (!seen.has(acceptedBlockerIssueNumber)) {
+          stack.push(acceptedBlockerIssueNumber);
         }
       }
     }
@@ -837,6 +924,8 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
     gaIssue.set(ga, issueNumber);
   }
 
+  await hydrateAcceptedBlockersFromExistingIssues(Array.from(gaIssue.values()));
+
   const issueDatabaseIdMemo = new Map();
 
   /**
@@ -913,7 +1002,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
 
     const allowedBlockingIssues = [];
     for (const blockingIssue of blockingIssues) {
-      if (wouldCreateAcceptedCycle(ga, blockingIssue.ga)) {
+      if (wouldCreateAcceptedCycle(issueNumber, blockingIssue.issueNumber)) {
         console.log(
           `Skipping blocker link for ${ga} <- ${blockingIssue.ga} to preserve first-come-first-served ordering and avoid a cycle.`
         );
@@ -929,6 +1018,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
     for (const blockingIssue of allowedBlockingIssues) {
       try {
         await ensureBlockedByRelationship(issueNumber, blockingIssue.issueNumber);
+        addAcceptedBlocker(issueNumber, blockingIssue.issueNumber);
       } catch (error) {
         const message = error?.message || String(error);
         console.log(
@@ -936,14 +1026,6 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
         );
       }
     }
-
-    acceptedBlockersByGA.set(
-      ga,
-      new Set([
-        ...(acceptedBlockersByGA.get(ga) || []),
-        ...allowedBlockingIssues.map((blockingIssue) => blockingIssue.ga)
-      ])
-    );
   }
 
   if (createdCount === 0) {
