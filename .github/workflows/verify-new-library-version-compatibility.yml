@@ -215,17 +215,21 @@ jobs:
               failure: null
             }' > result.json
 
-      - name: "📝 Compute artifact name"
+      - name: "📝 Compute artifact names"
         id: artifact-name
         run: |
           SAFE_NAME="$(printf '%s' '${{ matrix.name }}' | tr ':' '-')"
-          echo "name=compatibility-result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=compatibility-result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+          echo "result_file=result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}.json" >> "$GITHUB_OUTPUT"
+
+      - name: "📝 Rename result file for merged download"
+        run: mv result.json "${{ steps.artifact-name.outputs.result_file }}"
 
       - name: "📦 Upload result artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.artifact-name.outputs.name }}
-          path: result.json
+          name: ${{ steps.artifact-name.outputs.artifact_name }}
+          path: ${{ steps.artifact-name.outputs.result_file }}
           if-no-files-found: error
 
   process-results:
@@ -246,16 +250,28 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
 
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
       - name: "📥 Download matrix results"
         uses: actions/download-artifact@v4
         with:
           path: compatibility-results
           pattern: compatibility-result-*
-          merge-multiple: false
+          merge-multiple: true
 
       - name: "🧮 Aggregate compatibility results"
         id: aggregate
         run: |
+          mapfile -t RESULT_FILES < <(find compatibility-results -type f -name 'result-*.json' | sort)
+          if [[ "${#RESULT_FILES[@]}" -eq 0 ]]; then
+            echo "No result.json artifacts were found under compatibility-results"
+            exit 1
+          fi
+
           jq -s '
             def failures_by_library:
               map(select(.failure != null))
@@ -287,25 +303,28 @@ jobs:
                 });
 
             def successes_by_library:
-              map(select(.skipped != true))
-              | group_by(.name)
-              | map({
-                  name: .[0].name,
-                  latestVersion: .[0].latestVersion,
-                  successfulVersions: (
-                    (map(.successfulVersions) | map(unique)) as $lists
-                    | if ($lists | length) == 0 then []
-                      else reduce $lists[1:][] as $candidate ($lists[0]; [ .[] | select($candidate | index(.)) ])
-                      end
-                  ),
-                  consideredVersions: (map(.successfulVersions + (if .failure == null then [] else [.failure.failedVersion] end)) | add | unique)
-                });
+              group_by(.name)
+              | map(
+                  (. | map(select(.skipped != true))) as $active
+                  | if ($active | length) == 0 then empty else {
+                      name: $active[0].name,
+                      latestVersion: $active[0].latestVersion,
+                      successfulVersions: (
+                        ($active | map(.successfulVersions) | map(unique)) as $lists
+                        | if ($lists | length) == 0 then []
+                          else reduce $lists[1:][] as $candidate ($lists[0]; [ .[] | select($candidate | index(.)) ])
+                          end
+                      ),
+                      consideredVersions: ($active | map(.successfulVersions + (if .failure == null then [] else [.failure.failedVersion] end)) | add | unique)
+                    }
+                  end
+                );
 
             {
               successes: successes_by_library,
               failures: failures_by_library
             }
-          ' compatibility-results/*/result.json compatibility-results/*/*/result.json > aggregate-results.json
+          ' "${RESULT_FILES[@]}" > aggregate-results.json
 
           jq -r '.successes[] | .name as $name | .latestVersion as $latest | .successfulVersions[]? | "\($name):\(.)|\($latest)"' aggregate-results.json > successful_updates.txt
 
