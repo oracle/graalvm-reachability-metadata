@@ -277,6 +277,27 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
+// gradle generateChangedCoordinatesOnlyMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedCoordinatesOnlyMatrix = tasks.register("generateChangedCoordinatesOnlyMatrix", DefaultTask) { task ->
+    task.setDescription("Returns a coordinate-only matrix definition populated with changed coordinates")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        boolean noneFound = diffCoordinates.isEmpty()
+        if (noneFound) {
+            println "No changed coordinates were found!"
+        }
+
+        writeGithubOutput("matrix", JsonOutput.toJson([
+                "coordinates": noneFound ? [] : diffCoordinates
+        ]))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
 // gradle generateChangedIndexFileCoordinatesList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 tasks.register("generateChangedIndexFileCoordinatesList", DefaultTask) { task ->
     task.setDescription("Returns a list of changed coordinates for validation based on git diff")
@@ -309,7 +330,6 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
     task.setGroup(METADATA_GROUP)
     task.doFirst {
         List<String> selected = []
-        boolean infraChanged = true
         // Pre-selected modules; keep stable for infra verification
         List<String> preselectedCoordinates = [
                 'ch.qos.logback:logback-classic',

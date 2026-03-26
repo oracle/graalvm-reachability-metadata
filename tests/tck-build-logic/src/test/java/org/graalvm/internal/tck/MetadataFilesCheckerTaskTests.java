@@ -33,25 +33,13 @@ class MetadataFilesCheckerTaskTests {
                 [
                   {
                     "latest": true,
-                    "module": "com.example:demo",
+                    "allowed-packages": [
+                      "com.example"
+                    ],
                     "metadata-version": "1.0.0",
                     "tested-versions": [
                       "1.0.0",
                       "1.0.1"
-                    ]
-                  }
-                ]
-                """
-        );
-        Files.writeString(
-                tempDir.resolve("metadata/index.json"),
-                """
-                [
-                  {
-                    "directory": "com.example/demo",
-                    "module": "com.example:demo",
-                    "allowed-packages": [
-                      "com.example"
                     ]
                   }
                 ]

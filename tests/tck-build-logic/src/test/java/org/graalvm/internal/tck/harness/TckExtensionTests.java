@@ -30,7 +30,9 @@ class TckExtensionTests {
                 [
                   {
                     "latest": true,
-                    "module": "com.example:demo",
+                    "allowed-packages": [
+                      "com.example"
+                    ],
                     "metadata-version": "1.0.0",
                     "test-version": "0.9.0",
                     "tested-versions": [
@@ -55,7 +57,9 @@ class TckExtensionTests {
                 [
                   {
                     "latest": true,
-                    "module": "com.example:demo",
+                    "allowed-packages": [
+                      "com.example"
+                    ],
                     "metadata-version": "1.0.0",
                     "test-version": "0.9.0",
                     "tested-versions": [
@@ -74,17 +78,6 @@ class TckExtensionTests {
     private TckExtension createExtension(String metadataIndexJson) throws IOException {
         Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
         Files.writeString(tempDir.resolve("metadata/com.example/demo/index.json"), metadataIndexJson);
-        Files.writeString(
-                tempDir.resolve("metadata/index.json"),
-                """
-                [
-                  {
-                    "directory": "com.example/demo",
-                    "module": "com.example:demo"
-                  }
-                ]
-                """
-        );
         Files.createDirectories(tempDir.resolve("tests/src/com.example/demo/0.9.0"));
         Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));
         Files.writeString(tempDir.resolve("LICENSE"), "test");

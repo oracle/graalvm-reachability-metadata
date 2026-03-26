@@ -157,19 +157,8 @@ public abstract class TckExtension {
      */
     @SuppressWarnings("unused")
     List<String> diffCoordinates(String baseCommit, String newCommit) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        getExecOperations().exec(spec -> {
-            spec.setStandardOutput(baos);
-            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRTD", baseCommit, newCommit);
-        });
-
-        String output = baos.toString(StandardCharsets.UTF_8);
-        List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"));
-
         Path workflowsRoot = repoRoot().resolve(".github").resolve("workflows");
-        // Group files by if they belong to 'metadata' or 'test' directory structures.
-        Map<String, List<Path>> changed = diffFiles.stream()
-                .map(line -> repoRoot().resolve(line))
+        Map<String, List<Path>> changed = diffFiles(baseCommit, newCommit, "ACMRTD").stream()
                 .collect(Collectors.groupingBy((Path path) -> {
                     if (path.startsWith(tckRoot()) || path.startsWith(workflowsRoot)) {
                         return "logic";
@@ -182,10 +171,9 @@ public abstract class TckExtension {
                     }
                 }));
 
-        // if we didn't change any of metadata, tests or logic we don't need to test anything
-        if (changed.get("metadata") != null && changed.get("metadata").isEmpty()
-                && changed.get("test") != null && changed.get("test").isEmpty()
-                && changed.get("logic") != null && changed.get("logic").isEmpty()) {
+        if (changed.getOrDefault("metadata", List.of()).isEmpty()
+                && changed.getOrDefault("test", List.of()).isEmpty()
+                && changed.getOrDefault("logic", List.of()).isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -210,20 +198,24 @@ public abstract class TckExtension {
      * @return List of coordinates (e.g., "org.flywaydb:flyway-core" or "org.example:library:1.0.0")
      */
     public List<String> diffIndexCoordinates(String baseCommit, String newCommit) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        getExecOperations().exec(spec -> {
-            spec.setStandardOutput(baos);
-            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT",
-                    baseCommit, newCommit);
-        });
-
-        String output = baos.toString(StandardCharsets.UTF_8);
-        String[] lines = output.split("\\r?\\n");
-
-        return Arrays.stream(lines)
+        return diffFiles(baseCommit, newCommit, "ACMRT").stream()
+                .map(path -> repoRoot().relativize(path).toString().replace('\\', '/'))
                 .map(this::indexPathToCoordinate) // Extract coordinate from path
                 .filter(Objects::nonNull)      // Remove paths that weren't index files
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private List<Path> diffFiles(String baseCommit, String newCommit, String diffFilter) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        getExecOperations().exec(spec -> {
+            spec.setStandardOutput(baos);
+            spec.commandLine("git", "diff", "--name-only", "--diff-filter=" + diffFilter, baseCommit, newCommit);
+        });
+
+        return Arrays.stream(baos.toString(StandardCharsets.UTF_8).split("\\r?\\n"))
+                .filter(line -> !line.isBlank())
+                .map(line -> repoRoot().resolve(line))
                 .collect(Collectors.toList());
     }
 
