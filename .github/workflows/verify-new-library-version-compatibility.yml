@@ -99,17 +99,49 @@ jobs:
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: "Check for an existing issue and skip further testing if found"
+        id: check-existing-issue
+        run: |
+          GROUP_ID="$(echo "${{ matrix.name }}" | cut -d: -f1)"
+          ARTIFACT_ID="$(echo "${{ matrix.name }}" | cut -d: -f2)"
+
+          readarray -t VERSIONS < <(echo '${{ toJson(matrix.versions) }}' | jq -r '.[]')
+          FIRST_TESTING_VERSION="${VERSIONS[0]}"
+          GAV_COORDINATES="$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
+          TITLE_END=" fails for $GAV_COORDINATES"
+
+          ISSUE_NUMBER=$(
+            gh issue list \
+              --repo "${{ github.repository }}" \
+              --state open \
+              --search "\"$TITLE_END\" in:title" \
+              --json number,title \
+              --jq ".[] | select(.title | (startswith(\"[Automation] \") and endswith(\"$TITLE_END\"))) | .number"
+          )
+
+          echo "Found the issue(s) $ISSUE_NUMBER"
+          if [[ -n "$ISSUE_NUMBER" ]]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "There is no progress since last time for the $GAV_COORDINATES. Skipping further testing!"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: "Extract test path and library version"
+        if: steps.check-existing-issue.outputs.skip != 'true'
         id: extract-params
         run: ./gradlew extractLibraryTestParams -Pcoordinates="${{ matrix.name }}"
 
       - name: "Pull allowed docker images"
+        if: steps.check-existing-issue.outputs.skip != 'true'
         run: ./gradlew pullAllowedDockerImages -Pcoordinates="${{ env.TEST_COORDINATES }}"
 
       - name: "Disable docker networking"
+        if: steps.check-existing-issue.outputs.skip != 'true'
         run: bash ./.github/workflows/scripts/disable-docker.sh
 
       - name: "🧪 Run '${{ env.TEST_COORDINATES }}' tests"
+        if: steps.check-existing-issue.outputs.skip != 'true'
         id: runtests
         run: |
           bash ./.github/workflows/scripts/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.versions) }}' 2>&1 | tee test_results.txt || true
@@ -165,6 +197,22 @@ jobs:
                 logLines: $logLines,
                 logTail: ($logTail | split("\n") | .[-($logLines | tonumber):] | join("\n"))
               } end)
+            }' > result.json
+
+      - name: "📝 Write skipped result"
+        if: steps.check-existing-issue.outputs.skip == 'true'
+        run: |
+          jq -n \
+            --arg name "${{ matrix.name }}" \
+            --arg os "${{ matrix.os }}" \
+            --arg jdk "${{ matrix.version }}" \
+            '{
+              name: $name,
+              os: $os,
+              version: $jdk,
+              skipped: true,
+              successfulVersions: [],
+              failure: null
             }' > result.json
 
       - name: "📝 Compute artifact name"
@@ -239,7 +287,8 @@ jobs:
                 });
 
             def successes_by_library:
-              group_by(.name)
+              map(select(.skipped != true))
+              | group_by(.name)
               | map({
                   name: .[0].name,
                   latestVersion: .[0].latestVersion,
