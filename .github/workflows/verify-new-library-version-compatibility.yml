@@ -330,24 +330,6 @@ jobs:
 
           if [[ -s successful_updates.txt ]]; then
             echo "has-successful-updates=true" >> "$GITHUB_OUTPUT"
-
-            {
-              echo "successful-updates-markdown<<EOF"
-              awk -F'[|]' '
-                {
-                  split($1, coordinatesParts, ":")
-                  library = coordinatesParts[1] ":" coordinatesParts[2]
-                  testedVersion = coordinatesParts[3]
-                  updates[library] = updates[library] "\n- `" testedVersion "`"
-                }
-                END {
-                  for (library in updates) {
-                    printf "* `%s`%s\n", library, updates[library]
-                  }
-                }
-              ' successful_updates.txt | sort
-              echo "EOF"
-            } >> "$GITHUB_OUTPUT"
           else
             echo "has-successful-updates=false" >> "$GITHUB_OUTPUT"
           fi
@@ -391,7 +373,21 @@ jobs:
               {
                 printf 'Update tested library versions\n\n'
                 printf 'Added tested versions:\n'
-                printf '%s\n' "${{ steps.aggregate.outputs.successful-updates-markdown }}"
+                awk -F'[|]' '
+                  {
+                    split($1, coordinatesParts, ":")
+                    library = coordinatesParts[1] ":" coordinatesParts[2]
+                    testedVersion = coordinatesParts[3]
+                    updates[library] = updates[library] "\n- `" testedVersion "`"
+                  }
+                  END {
+                    n = asorti(updates, libraries)
+                    for (i = 1; i <= n; i++) {
+                      library = libraries[i]
+                      printf "* `%s`%s\n", library, updates[library]
+                    }
+                  }
+                ' successful_updates.txt
               } > "$COMMIT_BODY_FILE"
               git commit -F "$COMMIT_BODY_FILE"
               rm "$COMMIT_BODY_FILE"
@@ -552,7 +548,21 @@ jobs:
             {
               printf 'This pull request updates supported versions of the existing libraries in the repo.\n\n'
               printf 'Added tested versions:\n'
-              printf '%s\n' "${{ steps.aggregate.outputs.successful-updates-markdown }}"
+              awk -F'[|]' '
+                {
+                  split($1, coordinatesParts, ":")
+                  library = coordinatesParts[1] ":" coordinatesParts[2]
+                  testedVersion = coordinatesParts[3]
+                  updates[library] = updates[library] "\n- `" testedVersion "`"
+                }
+                END {
+                  n = asorti(updates, libraries)
+                  for (i = 1; i <= n; i++) {
+                    library = libraries[i]
+                    printf "* `%s`%s\n", library, updates[library]
+                  }
+                }
+              ' successful_updates.txt
             } > "$PR_BODY_FILE"
             gh pr create \
               --title "[Automation] Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
