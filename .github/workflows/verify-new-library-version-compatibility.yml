@@ -330,6 +330,24 @@ jobs:
 
           if [[ -s successful_updates.txt ]]; then
             echo "has-successful-updates=true" >> "$GITHUB_OUTPUT"
+
+            {
+              echo "successful-updates-markdown<<EOF"
+              awk -F'[|]' '
+                {
+                  split($1, coordinatesParts, ":")
+                  library = coordinatesParts[1] ":" coordinatesParts[2]
+                  testedVersion = coordinatesParts[3]
+                  updates[library] = updates[library] "\n- `" testedVersion "`"
+                }
+                END {
+                  for (library in updates) {
+                    printf "* `%s`%s\n", library, updates[library]
+                  }
+                }
+              ' successful_updates.txt | sort
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
           else
             echo "has-successful-updates=false" >> "$GITHUB_OUTPUT"
           fi
@@ -369,7 +387,14 @@ jobs:
 
             if git status --porcelain | grep -q .; then
               git add -u
-              git commit -m "Update tested library versions"
+              COMMIT_BODY_FILE="$(mktemp)"
+              {
+                printf 'Update tested library versions\n\n'
+                printf 'Added tested versions:\n'
+                printf '%s\n' "${{ steps.aggregate.outputs.successful-updates-markdown }}"
+              } > "$COMMIT_BODY_FILE"
+              git commit -F "$COMMIT_BODY_FILE"
+              rm "$COMMIT_BODY_FILE"
             else
               echo "No tested version updates to commit."
               exit 0
@@ -424,13 +449,14 @@ jobs:
                   ENV_FAILURE_TYPE="$(printf '%s' "$environment" | jq -r '.failureType')"
                   ENV_LOG_LINES="$(printf '%s' "$environment" | jq -r '.logLines')"
                   LOG_TAIL="$(printf '%s' "$environment" | jq -r '.logTail')"
+                  printf '## %s on %s / JDK %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK"
                   printf 'Failure kind: %s\n' "$ENV_FAILURE_TYPE"
                   printf 'OS: %s\n' "$OS"
                   printf 'JDK: %s\n' "$JDK"
                   printf 'Reproducer: `%s`\n' "$COMMAND"
                   printf 'Runner log: %s\n' "$RUNNER_LOG_URL"
                   printf 'Last %s lines of the log:\n' "$ENV_LOG_LINES"
-                  printf '```console\n%s\n```\n' "$LOG_TAIL"
+                  printf '```console\n%s\n```\n\n' "$LOG_TAIL"
                 done
               } > "$BODY_FILE"
 
@@ -522,12 +548,19 @@ jobs:
           git fetch origin "${{ needs.get-all-libraries.outputs.branch }}"
           git checkout "${{ needs.get-all-libraries.outputs.branch }}"
           if git rev-parse --verify HEAD >/dev/null 2>&1 && ! git diff --quiet "origin/master...HEAD"; then
+            PR_BODY_FILE="$(mktemp)"
+            {
+              printf 'This pull request updates supported versions of the existing libraries in the repo.\n\n'
+              printf 'Added tested versions:\n'
+              printf '%s\n' "${{ steps.aggregate.outputs.successful-updates-markdown }}"
+            } > "$PR_BODY_FILE"
             gh pr create \
               --title "[Automation] Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
-              --body "This pull request updates supported versions of the existing libraries in the repo" \
+              --body-file "$PR_BODY_FILE" \
               --reviewer "kimeta" \
               --assignee "vjovanov" \
               --label "library-bulk-update"
+            rm "$PR_BODY_FILE"
           else
             echo "No branch changes available for PR creation."
           fi
