@@ -251,11 +251,17 @@ jobs:
         with:
           path: compatibility-results
           pattern: compatibility-result-*
-          merge-multiple: false
+          merge-multiple: true
 
       - name: "🧮 Aggregate compatibility results"
         id: aggregate
         run: |
+          mapfile -t RESULT_FILES < <(find compatibility-results -type f -name 'result.json' | sort)
+          if [[ "${#RESULT_FILES[@]}" -eq 0 ]]; then
+            echo "No result.json artifacts were found under compatibility-results"
+            exit 1
+          fi
+
           jq -s '
             def failures_by_library:
               map(select(.failure != null))
@@ -305,7 +311,7 @@ jobs:
               successes: successes_by_library,
               failures: failures_by_library
             }
-          ' compatibility-results/*/result.json compatibility-results/*/*/result.json > aggregate-results.json
+          ' "${RESULT_FILES[@]}" > aggregate-results.json
 
           jq -r '.successes[] | .name as $name | .latestVersion as $latest | .successfulVersions[]? | "\($name):\(.)|\($latest)"' aggregate-results.json > successful_updates.txt
 
