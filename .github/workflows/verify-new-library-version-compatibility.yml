@@ -167,10 +167,16 @@ jobs:
               } end)
             }' > result.json
 
+      - name: "📝 Compute artifact name"
+        id: artifact-name
+        run: |
+          SAFE_NAME="$(printf '%s' '${{ matrix.name }}' | tr ':' '-')"
+          echo "name=compatibility-result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+
       - name: "📦 Upload result artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: compatibility-result-${{ matrix.name }}-${{ matrix.version }}-${{ matrix.os }}
+          name: ${{ steps.artifact-name.outputs.name }}
           path: result.json
           if-no-files-found: error
 
