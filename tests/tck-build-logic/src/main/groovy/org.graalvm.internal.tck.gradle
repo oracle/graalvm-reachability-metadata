@@ -86,6 +86,51 @@ dependencies {
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
+Closure<List<File>> resolveTestedLibraryJars = {
+    String targetGroup = ""
+    String targetArtifact = ""
+    String targetVersion = ""
+    def coordsParts = (libraryGAV ?: "").split(":")
+    if (coordsParts.length >= 3) {
+        targetGroup = coordsParts[0]
+        targetArtifact = coordsParts[1]
+        targetVersion = coordsParts[2]
+    }
+
+    def artifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
+    Set<File> matched = new LinkedHashSet<>(artifacts.findAll { artifact ->
+        (artifact.moduleVersion.id.group == targetGroup) && (artifact.moduleVersion.id.name == targetArtifact)
+    }.collect { artifact ->
+        artifact.file
+    })
+
+    if (matched.isEmpty()) {
+        // Fallback for relocated or substituted modules: the requested G:A coordinates may resolve
+        // to a different group in published metadata, so no resolved artifact carries the original group.
+        matched.addAll(artifacts.findAll { artifact ->
+            (artifact.moduleVersion.id.name == targetArtifact) && (artifact.moduleVersion.id.version == targetVersion)
+        }.collect { artifact ->
+            artifact.file
+        })
+    }
+
+    if (matched.isEmpty()) {
+        throw new GradleException("No eligible artifacts found on the classpath for ${libraryGAV}.\nPlease verify that the provided artifact exists.")
+    }
+
+    return matched.toList().sort { File file -> file.absolutePath }
+}
+
+tasks.register("listLibraryJars") { task ->
+    task.setDescription("Lists resolved JARs for the tested library (one per line)")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.doLast {
+        resolveTestedLibraryJars().each { File file ->
+            println file.absolutePath
+        }
+    }
+}
+
 // Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
 tasks.withType(Test).configureEach {
     testLogging {
@@ -105,16 +150,6 @@ tasks.named('test') {
 tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r ->
     r.dependsOn(tasks.named('test'))
 
-    String targetGroup = ""
-    String targetArtifact = ""
-    String targetVersion = ""
-    def coordsParts = (libraryGAV ?: "").split(":")
-    if (coordsParts.length >= 2) {
-        targetGroup = coordsParts[0]
-        targetArtifact = coordsParts[1]
-        targetVersion = coordsParts[2]
-    }
-
     reports {
         xml.required = true
         html.required = false
@@ -122,24 +157,7 @@ tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r -
     }
 
     // Collect resolved dependency artifacts from the test runtime classpath
-    def artifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
-
-    def matched = artifacts.findAll { a ->
-        (a.moduleVersion.id.group == targetGroup) && (a.moduleVersion.id.name == targetArtifact)
-    }.collect { it.file }
-
-    if (matched.isEmpty()) {
-        // Fallback for relocated or substituted modules: the requested G:A coordinates may resolve
-        // to a different group in published metadata, so no resolved artifact carries the original group.
-
-        matched = artifacts.findAll { a ->
-            (a.moduleVersion.id.name == targetArtifact) && (a.moduleVersion.id.version == targetVersion)
-        }.collect { it.file }
-    }
-
-    if (matched.isEmpty()) {
-        throw new GradleException("JaCoCo report generation failed. No eligible artifacts found on the classpath for ${libraryGAV}.\nPlease verify that the provided artifact exists.")
-    }
+    def matched = resolveTestedLibraryJars()
 
     // Produce one deterministic directory of .class files that represents exactly what the JVM would load at runtime for a given library jar, without duplicates
     int runtimeMajor = (JavaVersion.current().majorVersion as int)

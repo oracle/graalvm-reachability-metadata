@@ -30,6 +30,7 @@ import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
 import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
+import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
@@ -38,8 +39,10 @@ import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
-logger.lifecycle("GraalVM Reachability Metadata TCK")
-logger.lifecycle("---------------------------------")
+if (!gradle.startParameter.taskNames.contains("listLibraryJars")) {
+    logger.lifecycle("GraalVM Reachability Metadata TCK")
+    logger.lifecycle("---------------------------------")
+}
 
 final String METADATA_GROUP = "Metadata"
 
@@ -161,6 +164,11 @@ tasks.register("listCoordinates", DefaultTask) { task ->
         }
         writeGithubOutput("coordinates", coords.join(' '))
     }
+}
+
+tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->
+    task.setDescription("Lists resolved tested-library JARs for matching coordinates (one per line)")
+    task.setGroup(METADATA_GROUP)
 }
 
 // gradle generateDependencyGraph -Pcoordinates=<maven-coordinates>
