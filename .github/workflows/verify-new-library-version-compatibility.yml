@@ -106,6 +106,7 @@ jobs:
           ARTIFACT_ID="$(echo "${{ matrix.name }}" | cut -d: -f2)"
 
           readarray -t VERSIONS < <(echo '${{ toJson(matrix.versions) }}' | jq -r '.[]')
+          ISSUE_TITLE_PREFIX="[Automation] "
           FIRST_TESTING_VERSION="${VERSIONS[0]}"
           GAV_COORDINATES="$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
           TITLE_END=" fails for $GAV_COORDINATES"
@@ -116,7 +117,7 @@ jobs:
               --state open \
               --search "\"$TITLE_END\" in:title" \
               --json number,title \
-              --jq ".[] | select(.title | (startswith(\"[Automation] \") and endswith(\"$TITLE_END\"))) | .number"
+              --jq ".[] | select(.title | (startswith(\"$ISSUE_TITLE_PREFIX\") and endswith(\"$TITLE_END\"))) | .number"
           )
 
           echo "Found the issue(s) $ISSUE_NUMBER"
@@ -565,9 +566,9 @@ jobs:
               ' successful_updates.txt
             } > "$PR_BODY_FILE"
             gh pr create \
-              --title "[Automation] Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
+              --title "${{ env.ISSUE_TITLE_PREFIX }}Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
               --body-file "$PR_BODY_FILE" \
-              --reviewer "kimeta" \
+              --reviewer "kimeta,vjovanov" \
               --assignee "vjovanov" \
               --label "library-bulk-update"
             rm "$PR_BODY_FILE"
