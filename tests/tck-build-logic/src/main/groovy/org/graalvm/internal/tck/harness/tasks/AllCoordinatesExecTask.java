@@ -99,8 +99,13 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
 
         var execResult = getExecOperations().exec((ExecSpec spec) -> {
             this.configureSpec(spec, coordinates, command);
-            spec.setStandardOutput(new TeeOutputStream(out, System.out));
-            spec.setErrorOutput(new TeeOutputStream(err, System.err));
+            if (streamSubprocessOutput(coordinates)) {
+                spec.setStandardOutput(new TeeOutputStream(out, System.out));
+                spec.setErrorOutput(new TeeOutputStream(err, System.err));
+            } else {
+                spec.setStandardOutput(out);
+                spec.setErrorOutput(err);
+            }
         });
 
         // write output file like AbstractSubprojectTask
@@ -174,6 +179,10 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         spec.setIgnoreExitValue(true);
         spec.setStandardOutput(System.out);
         spec.setErrorOutput(System.err);
+    }
+
+    protected boolean streamSubprocessOutput(String coordinates) {
+        return true;
     }
 
     private static String md5(String s) {

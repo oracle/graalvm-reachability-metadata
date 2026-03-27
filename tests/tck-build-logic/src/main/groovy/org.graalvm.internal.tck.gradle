@@ -5,6 +5,8 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 import groovy.json.JsonSlurper
+import org.graalvm.internal.tck.utils.DynamicAccessUtils
+
 import java.util.jar.JarFile
 
 plugins {
@@ -53,6 +55,9 @@ libraryGAV = libraryGAV ?: ""
 String overrideVal = System.getenv("GVM_TCK_EXCLUDE") ?: providers.gradleProperty('library.override').getOrElse(null)
 overrideVal = overrideVal ?: "false"
 boolean override = overrideVal.toBoolean()
+
+String listDynamicAccessVal = providers.gradleProperty('tck.listDynamicAccess').getOrElse("false")
+boolean listDynamicAccess = listDynamicAccessVal.toBoolean()
 
 // Determine native-image build arguments from ci.json.
 def ciJsonFile = tck.repoRoot.file("ci.json").get().asFile
@@ -225,6 +230,11 @@ graalvmNative {
                 excludeConfig.put(libraryGAV, [".*"])
             }
             buildArgs.addAll(nativeImageArgs)
+            if (listDynamicAccess) {
+                buildArgs.addAll(providers.provider {
+                    DynamicAccessUtils.buildArgsForClasspathEntries(resolveTestedLibraryJars())
+                })
+            }
         }
     }
 }
