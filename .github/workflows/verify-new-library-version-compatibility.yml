@@ -23,6 +23,7 @@ jobs:
     permissions: write-all
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      none-found: ${{ steps.set-matrix.outputs.none-found }}
       branch: ${{ steps.set-branch-name.outputs.branch }}
     steps:
       - name: "☁️ Checkout repository"
@@ -38,14 +39,25 @@ jobs:
         id: set-branch-name
         run: |
           BRANCH_NAME="check-new-library-versions/$(date '+%Y-%m-%dT%H-%M')"
-          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
 
       - name: "🕸️ Populate matrix"
         id: set-matrix
         run: |
-          echo "matrix=$(./gradlew fetchExistingLibrariesWithNewerVersions --quiet | sed -n '/\[/,$p')" >> $GITHUB_OUTPUT
+          MATRIX_OUTPUT_FILE="$(mktemp)"
+          RAW_OUTPUT="$(./gradlew fetchExistingLibrariesWithNewerVersions --quiet | sed -n '/\[/,$p')"
+          JSON_PAYLOAD="$(printf '%s' "$RAW_OUTPUT" | jq -c '.')"
+          GITHUB_OUTPUT="$MATRIX_OUTPUT_FILE" ./gradlew generateNewLibraryVersionCompatibilityMatrix -PnewLibraryVersionCandidates="$JSON_PAYLOAD"
+
+          {
+            echo "matrix<<EOF"
+            cat "$MATRIX_OUTPUT_FILE" | sed -n 's/^matrix=//p'
+            echo "EOF"
+            echo "none-found=$(sed -n 's/^none-found=//p' "$MATRIX_OUTPUT_FILE")"
+          } >> "$GITHUB_OUTPUT"
 
       - name: "🔨 Create branch"
+        if: steps.set-matrix.outputs.none-found != 'true'
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Github Actions"
@@ -53,20 +65,18 @@ jobs:
           git push origin "${{ steps.set-branch-name.outputs.branch }}"
 
   test-all-metadata:
-    name: "🧪 ${{ matrix.item.name }}"
-    runs-on: ubuntu-22.04
+    name: "🧪 ${{ matrix.name }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    if: needs.get-all-libraries.outputs.none-found != 'true'
+    runs-on: ${{ matrix.os }}
     needs: get-all-libraries
     permissions: write-all
     env:
-      CURRENT_JOB_NAME: "🧪 ${{ matrix.item.name }}"
+      CURRENT_JOB_NAME: "🧪 ${{ matrix.name }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      ISSUE_TITLE_PREFIX: "[Automation] "
-      ISSUE_TITLE_MIDDLE: " fails for "
       LOG_LINES: "300"
     strategy:
       fail-fast: false
-      matrix:
-        item: ${{ fromJson(needs.get-all-libraries.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.get-all-libraries.outputs.matrix) }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v4
@@ -84,31 +94,32 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         with:
           distribution: 'graalvm'
-          java-version: 25
+          java-version: ${{ matrix.version }}
           set-java-home: 'false'
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Check for an existing issue and skip further testing if found"
-        id: check_existing_issue
+        id: check-existing-issue
         run: |
-          GROUP_ID="$(echo "${{ matrix.item.name }}" | cut -d: -f1)"
-          ARTIFACT_ID="$(echo "${{ matrix.item.name }}" | cut -d: -f2)"
-          
-          readarray -t VERSIONS < <(echo '${{ toJson(matrix.item.versions) }}' | jq -r '.[]')
+          GROUP_ID="$(echo "${{ matrix.name }}" | cut -d: -f1)"
+          ARTIFACT_ID="$(echo "${{ matrix.name }}" | cut -d: -f2)"
+
+          readarray -t VERSIONS < <(echo '${{ toJson(matrix.versions) }}' | jq -r '.[]')
+          ISSUE_TITLE_PREFIX="[Automation] "
           FIRST_TESTING_VERSION="${VERSIONS[0]}"
           GAV_COORDINATES="$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
-          TITLE_END="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES"
-          
+          TITLE_END=" fails for $GAV_COORDINATES"
+
           ISSUE_NUMBER=$(
             gh issue list \
               --repo "${{ github.repository }}" \
               --state open \
               --search "\"$TITLE_END\" in:title" \
               --json number,title \
-              --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
+              --jq ".[] | select(.title | (startswith(\"$ISSUE_TITLE_PREFIX\") and endswith(\"$TITLE_END\"))) | .number"
           )
-          
+
           echo "Found the issue(s) $ISSUE_NUMBER"
           if [[ -n "$ISSUE_NUMBER" ]]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -118,54 +129,220 @@ jobs:
           fi
 
       - name: "Extract test path and library version"
-        if: steps.check_existing_issue.outputs.skip != 'true'
+        if: steps.check-existing-issue.outputs.skip != 'true'
         id: extract-params
-        run: ./gradlew extractLibraryTestParams -Pcoordinates="${{ matrix.item.name }}"
+        run: ./gradlew extractLibraryTestParams -Pcoordinates="${{ matrix.name }}"
 
       - name: "Pull allowed docker images"
-        if: steps.check_existing_issue.outputs.skip != 'true'
+        if: steps.check-existing-issue.outputs.skip != 'true'
         run: ./gradlew pullAllowedDockerImages -Pcoordinates="${{ env.TEST_COORDINATES }}"
 
       - name: "Disable docker networking"
-        if: steps.check_existing_issue.outputs.skip != 'true'
+        if: steps.check-existing-issue.outputs.skip != 'true'
         run: bash ./.github/workflows/scripts/disable-docker.sh
 
       - name: "🧪 Run '${{ env.TEST_COORDINATES }}' tests"
-        if: steps.check_existing_issue.outputs.skip != 'true'
+        if: steps.check-existing-issue.outputs.skip != 'true'
         id: runtests
         run: |
-          bash ./.github/workflows/scripts/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.item.versions) }}' 2>&1 | tee test_results.txt || true
-          
-          # Extract successful versions
-          grep "^PASSED:" test_results.txt | sed 's/PASSED://g' > successful_versions.txt
-          echo "successful_versions<<EOF" >> $GITHUB_OUTPUT
-          cat successful_versions.txt >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          bash ./.github/workflows/scripts/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.versions) }}' 2>&1 | tee test_results.txt || true
 
-          # Extract failure type and failed version
-          awk -F'[][]' '/^FAILED/ {print "failure_type="$2; print "failed_version="$4; print "failed_command="$6}' test_results.txt >> $GITHUB_OUTPUT
-          
-          # Fetch the job URL
-          JOB_ID=$(
-            gh run view "${{ github.run_id }}" --repo "${{ github.repository }}" --json jobs \
-             --jq ".jobs[] | select(.name | startswith(\"$CURRENT_JOB_NAME\")) | .databaseId" \
-             | head -n1
-          )
-          if [ -z "$JOB_ID" ] || [ "$JOB_ID" = "null" ]; then
-            # Fallback to run-level URL if job lookup fails
-            echo "runner_log_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_OUTPUT
-          else
-            echo "runner_log_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/$JOB_ID" >> $GITHUB_OUTPUT
+          grep "^PASSED:" test_results.txt | sed 's/PASSED://g' > successful_versions.txt || true
+
+          FAILED_LINE="$(grep "^FAILED" test_results.txt | head -n 1 || true)"
+          FAILURE_TYPE=""
+          FAILED_VERSION=""
+          FAILED_COMMAND=""
+          if [[ -n "$FAILED_LINE" ]]; then
+            FAILURE_TYPE="$(printf '%s\n' "$FAILED_LINE" | awk -F'[][]' '{print $2}')"
+            FAILED_VERSION="$(printf '%s\n' "$FAILED_LINE" | awk -F'[][]' '{print $4}')"
+            FAILED_COMMAND="$(printf '%s\n' "$FAILED_LINE" | awk -F'[][]' '{print $6}')"
           fi
 
-          # Extract log tail
-          echo "log_tail<<EOF" >> $GITHUB_OUTPUT
-          tail "-n${{ env.LOG_LINES }}" test_results.txt | head -c 900000 >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          JOB_ID=$(
+            gh run view "${{ github.run_id }}" --repo "${{ github.repository }}" --json jobs \
+              --jq ".jobs[] | select(.name == \"$CURRENT_JOB_NAME\") | .databaseId" \
+              | head -n1
+          )
+          if [[ -z "$JOB_ID" || "$JOB_ID" == "null" ]]; then
+            RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          else
+            RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/$JOB_ID"
+          fi
+
+          SUCCESSFUL_VERSIONS_JSON="$(jq -R -s 'split("\n") | map(select(length > 0))' successful_versions.txt)"
+
+          jq -n \
+            --arg name "${{ matrix.name }}" \
+            --arg os "${{ matrix.os }}" \
+            --arg jdk "${{ matrix.version }}" \
+            --arg latestVersion "${{ env.LATEST_VERSION }}" \
+            --arg runnerLogUrl "$RUNNER_LOG_URL" \
+            --arg failureType "$FAILURE_TYPE" \
+            --arg failedVersion "$FAILED_VERSION" \
+            --arg failedCommand "$FAILED_COMMAND" \
+            --arg logLines "${{ env.LOG_LINES }}" \
+            --argjson successfulVersions "$SUCCESSFUL_VERSIONS_JSON" \
+            --rawfile logTail test_results.txt \
+            '{
+              name: $name,
+              os: $os,
+              version: $jdk,
+              latestVersion: $latestVersion,
+              runnerLogUrl: $runnerLogUrl,
+              successfulVersions: $successfulVersions,
+              failure: (if $failedVersion == "" then null else {
+                failureType: $failureType,
+                failedVersion: $failedVersion,
+                failedCommand: $failedCommand,
+                logLines: $logLines,
+                logTail: ($logTail | split("\n") | .[-($logLines | tonumber):] | join("\n"))
+              } end)
+            }' > result.json
+
+      - name: "📝 Write skipped result"
+        if: steps.check-existing-issue.outputs.skip == 'true'
+        run: |
+          jq -n \
+            --arg name "${{ matrix.name }}" \
+            --arg os "${{ matrix.os }}" \
+            --arg jdk "${{ matrix.version }}" \
+            '{
+              name: $name,
+              os: $os,
+              version: $jdk,
+              skipped: true,
+              successfulVersions: [],
+              failure: null
+            }' > result.json
+
+      - name: "📝 Compute artifact names"
+        id: artifact-name
+        run: |
+          SAFE_NAME="$(printf '%s' '${{ matrix.name }}' | tr ':' '-')"
+          echo "artifact_name=compatibility-result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
+          echo "result_file=result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}.json" >> "$GITHUB_OUTPUT"
+
+      - name: "📝 Rename result file for merged download"
+        run: mv result.json "${{ steps.artifact-name.outputs.result_file }}"
+
+      - name: "📦 Upload result artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact-name.outputs.artifact_name }}
+          path: ${{ steps.artifact-name.outputs.result_file }}
+          if-no-files-found: error
+
+  process-results:
+    name: "🧪 Process results"
+    runs-on: ubuntu-22.04
+    permissions: write-all
+    env:
+      GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ISSUE_TITLE_PREFIX: "[Automation] "
+      ISSUE_TITLE_MIDDLE: " fails for "
+      LOG_LINES: "300"
+    needs:
+      - get-all-libraries
+      - test-all-metadata
+    if: always() && needs.get-all-libraries.outputs.none-found != 'true' && needs.test-all-metadata.result != 'cancelled'
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "📥 Download matrix results"
+        uses: actions/download-artifact@v4
+        with:
+          path: compatibility-results
+          pattern: compatibility-result-*
+          merge-multiple: true
+
+      - name: "🧮 Aggregate compatibility results"
+        id: aggregate
+        run: |
+          mapfile -t RESULT_FILES < <(find compatibility-results -type f -name 'result-*.json' | sort)
+          if [[ "${#RESULT_FILES[@]}" -eq 0 ]]; then
+            echo "No result.json artifacts were found under compatibility-results"
+            exit 1
+          fi
+
+          jq -s '
+            def failures_by_library:
+              map(select(.failure != null))
+              | group_by(.name)
+              | map({
+                  name: .[0].name,
+                  latestVersion: .[0].latestVersion,
+                  failures: (
+                    map(.failure + {
+                      os: .os,
+                      jdk: .version,
+                      runnerLogUrl: .runnerLogUrl
+                    })
+                    | group_by(.failedVersion)
+                    | map({
+                        failedVersion: .[0].failedVersion,
+                        failureTypes: (map(.failureType) | unique),
+                        environments: map({
+                          os: .os,
+                          jdk: .jdk,
+                          failureType: .failureType,
+                          failedCommand: .failedCommand,
+                          runnerLogUrl: .runnerLogUrl,
+                          logLines: .logLines,
+                          logTail: .logTail
+                        })
+                      })
+                  )
+                });
+
+            def successes_by_library:
+              group_by(.name)
+              | map(
+                  (. | map(select(.skipped != true))) as $active
+                  | if ($active | length) == 0 then empty else {
+                      name: $active[0].name,
+                      latestVersion: $active[0].latestVersion,
+                      successfulVersions: (
+                        ($active | map(.successfulVersions) | map(unique)) as $lists
+                        | if ($lists | length) == 0 then []
+                          else reduce $lists[1:][] as $candidate ($lists[0]; [ .[] | select($candidate | index(.)) ])
+                          end
+                      ),
+                      consideredVersions: ($active | map(.successfulVersions + (if .failure == null then [] else [.failure.failedVersion] end)) | add | unique)
+                    }
+                  end
+                );
+
+            {
+              successes: successes_by_library,
+              failures: failures_by_library
+            }
+          ' "${RESULT_FILES[@]}" > aggregate-results.json
+
+          jq -r '.successes[] | .name as $name | .latestVersion as $latest | .successfulVersions[]? | "\($name):\(.)|\($latest)"' aggregate-results.json > successful_updates.txt
+
+          if [[ -s successful_updates.txt ]]; then
+            echo "has-successful-updates=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-successful-updates=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if jq -e '.failures | length > 0' aggregate-results.json > /dev/null; then
+            echo "has-failures=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-failures=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: "✔️ New library versions are supported (with locks, waiting and retries)"
-        if: steps.check_existing_issue.outputs.skip != 'true' && steps.runtests.outputs.successful_versions != ''
+        if: steps.aggregate.outputs.has-successful-updates == 'true'
         env:
           BRANCH: ${{ needs.get-all-libraries.outputs.branch }}
         run: |
@@ -174,32 +351,49 @@ jobs:
           git config --local user.name "Github Actions"
 
           update_new_versions() {
-            while read version; do
-              if [ -n "$version" ]; then
-                ./gradlew addTestedVersion -Pcoordinates="${{ matrix.item.name }}:$version" --lastSupportedVersion="${{ env.LATEST_VERSION }}"
+            while IFS='|' read -r coordinates latest_version; do
+              if [[ -n "$coordinates" && -n "$latest_version" ]]; then
+                ./gradlew addTestedVersion -Pcoordinates="$coordinates" --lastSupportedVersion="$latest_version"
               fi
-            done < successful_versions.txt
+            done < successful_updates.txt
           }
 
-          # Small jitter to reduce contention start
           sleep $((RANDOM % 5 + 1))
 
           for i in {1..10}; do
-            # Always start from the latest remote state
             git fetch origin "$BRANCH"
             git checkout -B "$BRANCH" "origin/$BRANCH"
 
             update_new_versions
 
-            # Do not commit changes to the NBT version catalog in this workflow
             git restore --source=HEAD --staged --worktree gradle/libs.versions.toml || true
 
-            # If nothing changed, exit early
             if git status --porcelain | grep -q .; then
               git add -u
-              git commit -m "Update tested versions for ${{ matrix.item.name }}"
+              COMMIT_BODY_FILE="$(mktemp)"
+              {
+                printf 'Update tested library versions\n\n'
+                printf 'Added tested versions:\n'
+                awk -F'[|]' '
+                  {
+                    split($1, coordinatesParts, ":")
+                    library = coordinatesParts[1] ":" coordinatesParts[2]
+                    testedVersion = coordinatesParts[3]
+                    updates[library] = updates[library] "\n- `" testedVersion "`"
+                  }
+                  END {
+                    n = asorti(updates, libraries)
+                    for (i = 1; i <= n; i++) {
+                      library = libraries[i]
+                      printf "#### `%s`%s\n", library, updates[library]
+                    }
+                  }
+                ' successful_updates.txt
+              } > "$COMMIT_BODY_FILE"
+              git commit -F "$COMMIT_BODY_FILE"
+              rm "$COMMIT_BODY_FILE"
             else
-              echo "No changes to commit for ${{ matrix.item.name }}."
+              echo "No tested version updates to commit."
               exit 0
             fi
 
@@ -215,88 +409,90 @@ jobs:
           echo "Timed out waiting to push updates after concurrent jobs."
           exit 1
 
-      - name: "❗ New library version is not supported"
-        if: steps.check_existing_issue.outputs.skip != 'true' && steps.runtests.outputs.failed_version != ''
+      - name: "❗ Create aggregated issues for unsupported library versions"
+        if: steps.aggregate.outputs.has-failures == 'true'
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Github Actions"
+          jq -c '.failures[]' aggregate-results.json | while read -r library; do
+            NAME="$(printf '%s' "$library" | jq -r '.name')"
+            printf '%s' "$library" | jq -c '.failures[]' | while read -r failure; do
+              FAILED_VERSION="$(printf '%s' "$failure" | jq -r '.failedVersion')"
+              GAV_COORDINATES="$NAME:$FAILED_VERSION"
+              TITLE_END="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES"
+              FAILURE_TYPE="$(printf '%s' "$failure" | jq -r '.failureTypes | sort | join(", ")')"
+              PRIMARY_FAILURE_TYPE="$(printf '%s' "$failure" | jq -r '.failureTypes | sort | .[0]')"
+              TITLE="${{ env.ISSUE_TITLE_PREFIX }}$PRIMARY_FAILURE_TYPE$TITLE_END"
+              FAILURE_LABEL="fails-$(printf '%s' "$PRIMARY_FAILURE_TYPE" | sed 's/ /-/g')"
 
-          FAILED_VERSION="${{ steps.runtests.outputs.failed_version }}"
-          REPO="${{ github.repository }}"
-          GAV_COORDINATES="${{ matrix.item.name }}:$FAILED_VERSION"
-          TITLE_END="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES"
-          TITLE="${{ env.ISSUE_TITLE_PREFIX }}${{ steps.runtests.outputs.failure_type }}$TITLE_END"
-          FAILURE_LABEL="fails-$(echo "${{ steps.runtests.outputs.failure_type }}" | sed 's/ /-/g')"
+              ISSUE_NUMBER=$(
+                gh issue list \
+                  --repo "${{ github.repository }}" \
+                  --state open \
+                  --search "\"$TITLE_END\" in:title" \
+                  --json number,title \
+                  --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
+              )
+              if [[ -n "$ISSUE_NUMBER" ]]; then
+                echo "Issue already exists: $ISSUE_NUMBER. Skipping creation."
+                continue
+              fi
 
-          echo "Searching for an issue that ends with: $TITLE_END"
-          ISSUE_NUMBER=$(
-            gh issue list \
-              --repo "${{ github.repository }}" \
-              --state open \
-              --search "\"$TITLE_END\" in:title" \
-              --json number,title \
-              --jq ".[] | select(.title | (startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and endswith(\"$TITLE_END\"))) | .number"
-          )
-          if [ -n "$ISSUE_NUMBER" ]; then
-            echo "Issue already exists: $ISSUE_NUMBER. Skipping creation."
-            exit 0
-          fi
+              BODY_FILE="$(mktemp)"
+              {
+                printf '%s\n' "$failure" | jq -c '.environments[]' | while read -r environment; do
+                  OS="$(printf '%s' "$environment" | jq -r '.os')"
+                  JDK="$(printf '%s' "$environment" | jq -r '.jdk')"
+                  COMMAND="$(printf '%s' "$environment" | jq -r '.failedCommand')"
+                  RUNNER_LOG_URL="$(printf '%s' "$environment" | jq -r '.runnerLogUrl')"
+                  ENV_FAILURE_TYPE="$(printf '%s' "$environment" | jq -r '.failureType')"
+                  ENV_LOG_LINES="$(printf '%s' "$environment" | jq -r '.logLines')"
+                  LOG_TAIL="$(printf '%s' "$environment" | jq -r '.logTail')"
+                  printf '## %s on %s / JDK %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK"
+                  printf 'Failure kind: %s\n' "$ENV_FAILURE_TYPE"
+                  printf 'OS: %s\n' "$OS"
+                  printf 'JDK: %s\n' "$JDK"
+                  printf 'Reproducer: `%s`\n' "$COMMAND"
+                  printf 'Runner log: %s\n' "$RUNNER_LOG_URL"
+                  printf 'Last %s lines of the log:\n' "$ENV_LOG_LINES"
+                  printf '```console\n%s\n```\n\n' "$LOG_TAIL"
+                done
+              } > "$BODY_FILE"
 
-          BODY_FILE=$(mktemp)
-          # Use single-quoted here-doc to disable any shell expansion of log content
-          cat > "$BODY_FILE" <<'EOF'
-          Failure kind: ${{ steps.runtests.outputs.failure_type }}
-          Reproducer: `${{ steps.runtests.outputs.failed_command }}`
-          Runner log: ${{ steps.runtests.outputs.runner_log_url }}
-          Last ${{ env.LOG_LINES }} lines of the log:
-          ```console
-          ${{ steps.runtests.outputs.log_tail }}
-          ```
-          EOF
+              ASSIGNEE="kimeta"
+              if [[ "$FAILURE_LABEL" == "fails-native-image-build" ]]; then
+                ASSIGNEE="vjovanov"
+              fi
 
-          echo "Creating a new issue"
+              gh issue create \
+                --repo "${{ github.repository }}" \
+                --title "$TITLE" \
+                --body-file "$BODY_FILE" \
+                --label "library-unsupported-version" \
+                --label "$FAILURE_LABEL" \
+                --assignee "$ASSIGNEE"
 
-          # Choose assignee based on the label:
-          # - "fails-native-image-build": assign to @vjovanov
-          # - Others: assign to @kimeta
-          ASSIGNEE="kimeta"
-          if [ "$FAILURE_LABEL" = "fails-native-image-build" ]; then
-            ASSIGNEE="vjovanov"
-          fi
-
-          gh issue create \
-            --repo "$REPO" \
-            --title "$TITLE" \
-            --body-file "$BODY_FILE" \
-            --label "library-unsupported-version" \
-            --label "$FAILURE_LABEL" \
-            --assignee "$ASSIGNEE"
-
-          rm "$BODY_FILE"
+              rm "$BODY_FILE"
+            done
+          done
 
       - name: "🧹 Close old pre-release issues for tested versions"
-        if: steps.runtests.outputs.successful_versions != '' || steps.runtests.outputs.failed_version != ''
+        if: steps.aggregate.outputs.has-successful-updates == 'true' || steps.aggregate.outputs.has-failures == 'true'
         env:
           REPO: ${{ github.repository }}
           PRE_RELEASE_SUFFIX: "(alpha[0-9]*|beta[0-9]*|rc[0-9]*|cr[0-9]*|m[0-9]+|ea[0-9]*|b[0-9]+|[0-9]+|preview)"
         run: |
           set -euo pipefail
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Github Actions"
-          
-          # Prepare list of versions to consider: successful versions + failed version (if any)
-          VERSIONS_FILE=$(mktemp)
-          if [[ -n "${{ steps.runtests.outputs.successful_versions }}" ]]; then
-            echo "${{ steps.runtests.outputs.successful_versions }}" | tr ' ' '\n' >> "$VERSIONS_FILE"
-          fi
-          if [[ -n "${{ steps.runtests.outputs.failed_version }}" ]]; then
-            echo "${{ steps.runtests.outputs.failed_version }}" >> "$VERSIONS_FILE"
-          fi
-          
+          VERSIONS_FILE="$(mktemp)"
+
+          jq -r '.successes[]?.successfulVersions[]?' aggregate-results.json >> "$VERSIONS_FILE"
+          jq -r '.failures[]?.failures[]?.failedVersion' aggregate-results.json >> "$VERSIONS_FILE"
+
+          sort -u "$VERSIONS_FILE" -o "$VERSIONS_FILE"
+
           while read -r VERSION; do
-            if [[ -z "$VERSION" ]]; then continue; fi
-          
-            # Parse version
+            if [[ -z "$VERSION" ]]; then
+              continue
+            fi
+
             VERSION_REGEX="^([0-9]+(\.[0-9]+)*)(\.Final|\.RELEASE)?([-.]$PRE_RELEASE_SUFFIX([-.].*)?)?$"
             if [[ "$VERSION" =~ $VERSION_REGEX ]]; then
               BASE_VERSION="${BASH_REMATCH[1]}"
@@ -305,63 +501,77 @@ jobs:
               echo "Skipping invalid version: $VERSION"
               continue
             fi
-          
-            # Only full releases trigger closing pre-release issues
+
             if [[ -n "$PRE_RELEASE_TAG" ]]; then
               echo "$VERSION is a pre-release, skipping issue closing."
               continue
             fi
-          
+
             PRE_RELEASE_REGEX="$BASE_VERSION[-.]$PRE_RELEASE_SUFFIX"
-          
-            GROUP_ID="$(echo "${{ matrix.item.name }}" | cut -d: -f1)"
-            ARTIFACT_ID="$(echo "${{ matrix.item.name }}" | cut -d: -f2)"          
-            GAV_COORDINATES_VERSIONLESS="$GROUP_ID:$ARTIFACT_ID"
-            TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES_VERSIONLESS"
-          
-            # Find all open pre-release issues for this library and base version
-            PRE_RELEASE_ISSUES=$(gh issue list \
-              --repo "$REPO" \
-              --state open \
-              --search "\"$TITLE_END_VERSIONLESS\" in:title" \
-              --json number,title \
-              --jq ".[] | select(.title | startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and test(\"$TITLE_END_VERSIONLESS:$PRE_RELEASE_REGEX\"; \"i\")) | .number")
-          
-            if [[ -n "$PRE_RELEASE_ISSUES" ]]; then
-              echo "Closing pre-release issues for ${{ matrix.item.name }} version $BASE_VERSION:"
-              for ISSUE in $PRE_RELEASE_ISSUES; do
-                echo "Closing issue #$ISSUE"
-                gh issue close "$ISSUE" --repo "$REPO" \
-                  -c "Closing this pre-release issue because a full release is now available and/or builds successfully." \
-                  -r "not planned"
-              done
-            else
-              echo "No pre-release issues found for ${{ matrix.item.name }} version $BASE_VERSION"
-            fi
+
+            jq -r '.successes[]?.name, .failures[]?.name' aggregate-results.json | sort -u | while read -r LIBRARY_NAME; do
+              [[ -z "$LIBRARY_NAME" ]] && continue
+              GROUP_ID="$(echo "$LIBRARY_NAME" | cut -d: -f1)"
+              ARTIFACT_ID="$(echo "$LIBRARY_NAME" | cut -d: -f2)"
+              GAV_COORDINATES_VERSIONLESS="$GROUP_ID:$ARTIFACT_ID"
+              TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES_VERSIONLESS"
+
+              PRE_RELEASE_ISSUES=$(gh issue list \
+                --repo "$REPO" \
+                --state open \
+                --search "\"$TITLE_END_VERSIONLESS\" in:title" \
+                --json number,title \
+                --jq ".[] | select(.title | startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and test(\"$TITLE_END_VERSIONLESS:$PRE_RELEASE_REGEX\"; \"i\")) | .number")
+
+              if [[ -n "$PRE_RELEASE_ISSUES" ]]; then
+                echo "Closing pre-release issues for $LIBRARY_NAME version $BASE_VERSION:"
+                for ISSUE in $PRE_RELEASE_ISSUES; do
+                  echo "Closing issue #$ISSUE"
+                  gh issue close "$ISSUE" --repo "$REPO" \
+                    -c "Closing this pre-release issue because a full release is now available and/or builds successfully." \
+                    -r "not planned"
+                done
+              else
+                echo "No pre-release issues found for $LIBRARY_NAME version $BASE_VERSION"
+              fi
+            done
           done < "$VERSIONS_FILE"
-          
+
           rm "$VERSIONS_FILE"
 
-  process-results:
-    name: "🧪 Process results"
-    runs-on: ubuntu-22.04
-    permissions: write-all
-    env:
-      GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
-    needs:
-      - get-all-libraries
-      - test-all-metadata
-    steps:
-      - name: "☁️ Checkout repository"
-        uses: actions/checkout@v4
-
       - name: "✏️ PR for supported versions"
+        if: steps.aggregate.outputs.has-successful-updates == 'true'
         run: |
-          git fetch origin ${{ needs.get-all-libraries.outputs.branch }}
-          git checkout ${{ needs.get-all-libraries.outputs.branch }}
-          gh pr create \
-            --title "[Automation] Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
-            --body "This pull request updates supported versions of the existing libraries in the repo" \
-            --reviewer "kimeta" \
-            --assignee "vjovanov" \
-            --label "library-bulk-update"
+          git fetch origin "${{ needs.get-all-libraries.outputs.branch }}"
+          git checkout "${{ needs.get-all-libraries.outputs.branch }}"
+          if git rev-parse --verify HEAD >/dev/null 2>&1 && ! git diff --quiet "origin/master...HEAD"; then
+            PR_BODY_FILE="$(mktemp)"
+            {
+              printf 'This pull request updates supported versions of the existing libraries in the repo.\n\n'
+              printf 'Added tested versions:\n'
+              awk -F'[|]' '
+                {
+                  split($1, coordinatesParts, ":")
+                  library = coordinatesParts[1] ":" coordinatesParts[2]
+                  testedVersion = coordinatesParts[3]
+                  updates[library] = updates[library] "\n- `" testedVersion "`"
+                }
+                END {
+                  n = asorti(updates, libraries)
+                  for (i = 1; i <= n; i++) {
+                    library = libraries[i]
+                    printf "#### `%s`%s\n", library, updates[library]
+                  }
+                }
+              ' successful_updates.txt
+            } > "$PR_BODY_FILE"
+            gh pr create \
+              --title "${{ env.ISSUE_TITLE_PREFIX }}Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
+              --body-file "$PR_BODY_FILE" \
+              --reviewer "kimeta,vjovanov" \
+              --assignee "vjovanov" \
+              --label "library-bulk-update"
+            rm "$PR_BODY_FILE"
+          else
+            echo "No branch changes available for PR creation."
+          fi
