@@ -31,6 +31,7 @@ import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesT
 import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
+import org.graalvm.internal.tck.harness.tasks.ListDynamicAccessInvocationTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
@@ -39,7 +40,7 @@ import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
-if (!gradle.startParameter.taskNames.contains("listLibraryJars")) {
+if (!gradle.startParameter.taskNames.any { it in ["listLibraryJars", "listDynamicAccess"] }) {
     logger.lifecycle("GraalVM Reachability Metadata TCK")
     logger.lifecycle("---------------------------------")
 }
@@ -168,6 +169,11 @@ tasks.register("listCoordinates", DefaultTask) { task ->
 
 tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->
     task.setDescription("Lists resolved tested-library JARs for matching coordinates (one per line)")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("listDynamicAccess", ListDynamicAccessInvocationTask.class) { task ->
+    task.setDescription("Builds native tests with dynamic-access tracking enabled for matching coordinates")
     task.setGroup(METADATA_GROUP)
 }
 
