@@ -8,6 +8,9 @@ package org.graalvm.internal.tck.harness.tasks;
 
 import java.util.List;
 
+/**
+ * Runs `listLibraryJars` for each matching coordinate and prints resolved tested-library JARs.
+ */
 @SuppressWarnings("unused")
 public abstract class ListLibraryJarsInvocationTask extends AllCoordinatesExecTask {
 

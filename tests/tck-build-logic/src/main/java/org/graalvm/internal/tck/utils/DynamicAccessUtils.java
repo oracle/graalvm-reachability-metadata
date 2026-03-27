@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Utility methods for creating native-image options that track and preserve dynamic access
+ * for each classpath entry used by TCK tests.
+ */
 public abstract class DynamicAccessUtils {
 
     private static final String TRACK_DYNAMIC_ACCESS_PREFIX = "-H:TrackDynamicAccess=path=";

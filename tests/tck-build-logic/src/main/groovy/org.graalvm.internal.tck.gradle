@@ -56,8 +56,8 @@ String overrideVal = System.getenv("GVM_TCK_EXCLUDE") ?: providers.gradlePropert
 overrideVal = overrideVal ?: "false"
 boolean override = overrideVal.toBoolean()
 
-String listDynamicAccessVal = providers.gradleProperty('tck.listDynamicAccess').getOrElse("false")
-boolean listDynamicAccess = listDynamicAccessVal.toBoolean()
+String generateDynamicAccessReportVal = providers.gradleProperty('tck.generateDynamicAccessReport').getOrElse("false")
+boolean generateDynamicAccessReport = generateDynamicAccessReportVal.toBoolean()
 
 // Determine native-image build arguments from ci.json.
 def ciJsonFile = tck.repoRoot.file("ci.json").get().asFile
@@ -230,7 +230,7 @@ graalvmNative {
                 excludeConfig.put(libraryGAV, [".*"])
             }
             buildArgs.addAll(nativeImageArgs)
-            if (listDynamicAccess) {
+            if (generateDynamicAccessReport) {
                 buildArgs.addAll(providers.provider {
                     DynamicAccessUtils.buildArgsForClasspathEntries(resolveTestedLibraryJars())
                 })

@@ -31,7 +31,7 @@ import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesT
 import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
-import org.graalvm.internal.tck.harness.tasks.ListDynamicAccessInvocationTask
+import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessReportInvocationTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
@@ -40,7 +40,7 @@ import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
-if (!gradle.startParameter.taskNames.any { it in ["listLibraryJars", "listDynamicAccess"] }) {
+if (!gradle.startParameter.taskNames.any { it in ["listLibraryJars", "generateDynamicAccessReport"] }) {
     logger.lifecycle("GraalVM Reachability Metadata TCK")
     logger.lifecycle("---------------------------------")
 }
@@ -172,8 +172,8 @@ tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
-tasks.register("listDynamicAccess", ListDynamicAccessInvocationTask.class) { task ->
-    task.setDescription("Builds native tests with dynamic-access tracking enabled for matching coordinates")
+tasks.register("generateDynamicAccessReport", GenerateDynamicAccessReportInvocationTask.class) { task ->
+    task.setDescription("Builds native tests and prints generated dynamic-access JSON report files for matching coordinates")
     task.setGroup(METADATA_GROUP)
 }
 
@@ -376,7 +376,7 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
                 'com.zaxxer:HikariCP',
                 'org.hibernate.validator:hibernate-validator',
                 'io.undertow:undertow-core',
-                'com.hazelcast:hazelcast'
+                'com.h2database:h2'
         ]
         preselectedCoordinates.each { module ->
             List<String> matches = tck.getMatchingCoordinates(module)
