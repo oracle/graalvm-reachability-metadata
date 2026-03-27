@@ -121,7 +121,8 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ./gradlew compileTestJava -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew javaTest -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew nativeTestCompile -Pcoordinates=[group:artifact:version|k/n|all]
-./gradlew listDynamicAccess -Pcoordinates=<group:artifact:version>
+./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
 ```
 
@@ -210,7 +211,8 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Generate metadata (single lib): `./gradlew generateMetadata -Pcoordinates=group:artifact:version`
 - Fix test that fails Native Image run for new library version: `./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=group:artifact:version -PnewLibraryVersion=version`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
-- List dynamic access for a single lib: `./gradlew listDynamicAccess -Pcoordinates=group:artifact:version`
+- List resolved tested-library jars: `./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]`
+- Generate dynamic access report: `./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - List available coordinates: `./gradlew listCoordinates -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Generate dependency graph: `./gradlew generateDependencyGraph -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`

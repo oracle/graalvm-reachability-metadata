@@ -14,15 +14,19 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Runs `nativeTestCompile` for each matching coordinate with dynamic-access tracking enabled and
+ * prints generated JSON files under `build/native/nativeTestCompile/dynamic-access`.
+ */
 @SuppressWarnings("unused")
-public abstract class ListDynamicAccessInvocationTask extends AllCoordinatesExecTask {
+public abstract class GenerateDynamicAccessReportInvocationTask extends AllCoordinatesExecTask {
 
     @Override
     public List<String> commandFor(String coordinates) {
         return List.of(
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "nativeTestCompile",
-                "-Ptck.listDynamicAccess=true"
+                "-Ptck.generateDynamicAccessReport=true"
         );
     }
 
@@ -33,7 +37,7 @@ public abstract class ListDynamicAccessInvocationTask extends AllCoordinatesExec
 
     @Override
     protected boolean streamSubprocessOutput(String coordinates) {
-        return false;
+        return true;
     }
 
     @Override
@@ -55,7 +59,8 @@ public abstract class ListDynamicAccessInvocationTask extends AllCoordinatesExec
                     .sorted()
                     .toList();
             if (jsonFiles.isEmpty()) {
-                throw new GradleException("No dynamic access JSON files were generated for " + coordinates + " in " + dynamicAccessDir);
+                System.out.println("No dynamic access JSON files were generated for " + coordinates + " in " + dynamicAccessDir);
+                return;
             }
             jsonFiles.forEach(path -> System.out.println(path.toAbsolutePath()));
         } catch (IOException e) {
