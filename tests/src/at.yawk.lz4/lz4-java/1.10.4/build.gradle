@@ -14,3 +14,14 @@ dependencies {
     testImplementation "at.yawk.lz4:lz4-java:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
