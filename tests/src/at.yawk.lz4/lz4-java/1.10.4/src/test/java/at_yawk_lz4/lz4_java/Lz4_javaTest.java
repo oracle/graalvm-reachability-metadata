@@ -47,4 +47,21 @@ class Lz4_javaTest {
         assertThat(decompressedLength).isEqualTo(input.length);
         assertThat(restored).isEqualTo(input);
     }
+
+    @Test
+    void shouldRoundTripDataWithFastDecompressor() {
+        LZ4Factory factory = LZ4Factory.safeInstance();
+        byte[] input = ("fast decompressor requires the original length"
+                + " and should restore the compressed payload exactly")
+                .getBytes(StandardCharsets.UTF_8);
+        byte[] compressed = new byte[factory.fastCompressor().maxCompressedLength(input.length)];
+
+        int compressedLength = factory.fastCompressor().compress(input, 0, input.length, compressed, 0, compressed.length);
+
+        byte[] restored = new byte[input.length];
+        int consumedLength = factory.fastDecompressor().decompress(compressed, 0, restored, 0, input.length);
+
+        assertThat(consumedLength).isEqualTo(compressedLength);
+        assertThat(restored).isEqualTo(input);
+    }
 }
