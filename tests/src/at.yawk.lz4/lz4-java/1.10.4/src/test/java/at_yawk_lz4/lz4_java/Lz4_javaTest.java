@@ -6,27 +6,26 @@
  */
 package at_yawk_lz4.lz4_java;
 
+import net.jpountz.lz4.LZ4Factory;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class Lz4_javaTest {
     @Test
-    void shouldHaveLibraryJarOnTestClasspath() throws IOException {
-        Enumeration<URL> manifests = Thread.currentThread()
-                .getContextClassLoader()
-                .getResources("META-INF/MANIFEST.MF");
+    void shouldRoundTripDataWithSafeFactory() {
+        LZ4Factory factory = LZ4Factory.safeInstance();
+        byte[] input = "lz4 native image metadata".getBytes(StandardCharsets.UTF_8);
+        byte[] compressed = new byte[factory.fastCompressor().maxCompressedLength(input.length)];
 
-        List<URL> manifestUrls = Collections.list(manifests);
+        int compressedLength = factory.fastCompressor().compress(input, 0, input.length, compressed, 0, compressed.length);
 
-        assertThat(manifestUrls)
-                .isNotEmpty()
-                .anySatisfy(url -> assertThat(url.toString()).contains("lz4-java-1.10.4.jar"));
+        byte[] restored = new byte[input.length];
+        int decompressedLength = factory.safeDecompressor().decompress(compressed, 0, compressedLength, restored, 0);
+
+        assertThat(decompressedLength).isEqualTo(input.length);
+        assertThat(restored).isEqualTo(input);
     }
 }
