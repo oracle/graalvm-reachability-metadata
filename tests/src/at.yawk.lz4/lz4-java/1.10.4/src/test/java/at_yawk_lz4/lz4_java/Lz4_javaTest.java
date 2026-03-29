@@ -8,13 +8,25 @@ package at_yawk_lz4.lz4_java;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class Lz4_javaTest {
     @Test
-    void shouldHaveLibraryOnTestClasspath() {
-        Package libraryPackage = Package.getPackage("at.yawk");
+    void shouldHaveLibraryJarOnTestClasspath() throws IOException {
+        Enumeration<URL> manifests = Thread.currentThread()
+                .getContextClassLoader()
+                .getResources("META-INF/MANIFEST.MF");
 
-        assertThat(libraryPackage).isNotNull();
+        List<URL> manifestUrls = Collections.list(manifests);
+
+        assertThat(manifestUrls)
+                .isNotEmpty()
+                .anySatisfy(url -> assertThat(url.toString()).contains("lz4-java-1.10.4.jar"));
     }
 }
