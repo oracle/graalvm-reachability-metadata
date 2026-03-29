@@ -28,4 +28,23 @@ class Lz4_javaTest {
         assertThat(decompressedLength).isEqualTo(input.length);
         assertThat(restored).isEqualTo(input);
     }
+
+    @Test
+    void shouldRoundTripDataWithHighCompressor() {
+        LZ4Factory factory = LZ4Factory.safeInstance();
+        byte[] input = ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                + "cccccccccccccccccccccccccccccccc"
+                + "lz4 high compression path")
+                .getBytes(StandardCharsets.UTF_8);
+        byte[] compressed = new byte[factory.highCompressor().maxCompressedLength(input.length)];
+
+        int compressedLength = factory.highCompressor().compress(input, 0, input.length, compressed, 0, compressed.length);
+
+        byte[] restored = new byte[input.length];
+        int decompressedLength = factory.safeDecompressor().decompress(compressed, 0, compressedLength, restored, 0);
+
+        assertThat(decompressedLength).isEqualTo(input.length);
+        assertThat(restored).isEqualTo(input);
+    }
 }
