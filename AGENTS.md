@@ -66,7 +66,7 @@
 - All allowed images:
   - ./gradlew checkAllowedDockerImages
 
-##s Compatibility Automation (latest library versions)
+## Compatibility Automation (latest library versions)
 - List libs with newer upstream versions:
   - ./gradlew fetchExistingLibrariesWithNewerVersions --quiet
 - Record a newly tested version:

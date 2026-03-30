@@ -49,7 +49,11 @@ public abstract class GenerateDynamicAccessReportInvocationTask extends AllCoord
                 .resolve("dynamic-access");
 
         if (!Files.isDirectory(dynamicAccessDir)) {
-            throw new GradleException("Dynamic access output directory was not created for " + coordinates + ": " + dynamicAccessDir);
+            System.out.println("No dynamic access JSON files were generated for "
+                    + coordinates
+                    + " because the output directory is missing: "
+                    + dynamicAccessDir);
+            return;
         }
 
         try (Stream<Path> files = Files.walk(dynamicAccessDir)) {

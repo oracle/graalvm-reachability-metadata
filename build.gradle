@@ -32,7 +32,8 @@ spotless {
     json {
         target(
                 tck.metadataRoot.map { it.toString() + '/**/*.json' }.get(),
-                tck.testRoot.map { it.toString() + '/**/*.json' }.get()
+                tck.testRoot.map { it.toString() + '/**/*.json' }.get(),
+                tck.repoRoot.map { it.toString() + '/stats/**/*.json' }.get()
         )
         targetExclude(
                 tck.testRoot.map { it.toString() + '/**/build/**/*.json' }.get(),
@@ -111,6 +112,10 @@ tasks.register('test') { t ->
 // and without applying the 'java' plugin to avoid task name conflicts.
 apply plugin: "org.graalvm.internal.tck-harness"
 
+tasks.named("check").configure {
+    dependsOn("validateLibraryStats")
+}
+
 static List<Map> testInfraCommands(String gradleCmd, String target) {
     def taskNames = [
             "validateIndexFiles",
@@ -122,6 +127,8 @@ static List<Map> testInfraCommands(String gradleCmd, String target) {
             "jacocoTestReport",
             "listLibraryJars",
             "generateDynamicAccessReport",
+            "generateLibraryStats",
+            "validateLibraryStats",
             "listCoordinates",
             "generateDependencyGraph"
     ]
