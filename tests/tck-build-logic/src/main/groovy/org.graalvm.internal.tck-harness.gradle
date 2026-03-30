@@ -36,6 +36,9 @@ import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
+import org.graalvm.internal.tck.harness.tasks.GenerateLibraryStatsTask
+import org.graalvm.internal.tck.harness.tasks.ValidateLibraryStatsTask
+import org.graalvm.internal.tck.harness.tasks.AnalyzeExternalLibraryDynamicAccessTask
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
@@ -174,6 +177,21 @@ tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->
 
 tasks.register("generateDynamicAccessReport", GenerateDynamicAccessReportInvocationTask.class) { task ->
     task.setDescription("Builds native tests and prints generated dynamic-access JSON report files for matching coordinates")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("generateLibraryStats", GenerateLibraryStatsTask.class) { task ->
+    task.setDescription("Generates artifact-indexed stats and updates stats/stats.json")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("validateLibraryStats", ValidateLibraryStatsTask.class) { task ->
+    task.setDescription("Validates stats/stats.json against the committed JSON schema")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+tasks.register("analyzeExternalLibraryDynamicAccess", AnalyzeExternalLibraryDynamicAccessTask.class) { task ->
+    task.setDescription("Resolves an external Maven coordinate and reports preserve/track dynamic-access totals")
     task.setGroup(METADATA_GROUP)
 }
 

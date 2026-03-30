@@ -10,7 +10,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.PathSensitive;
 import org.gradle.api.tasks.PathSensitivity;
@@ -129,7 +128,6 @@ public abstract class AbstractSubprojectTask extends DefaultTask {
      * Given project dir returns a list of inputs.
      * @return list of input files
      */
-    @Internal
     protected List<Path> inputsFor(Path projectDir) {
         List<String> excludedSubdirNames = List.of(".gradle", ".mvn");
         List<String> excludedSubdirs = excludedSubdirNames.stream()

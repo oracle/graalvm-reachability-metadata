@@ -1,0 +1,33 @@
+name: "Validate library stats"
+
+on:
+  pull_request:
+
+jobs:
+  validate-library-stats:
+    name: "📊 Validate library stats JSON"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'stats/stats.json'
+            - 'stats/schemas/library-stats-schema*.json'
+
+      - name: "🔧 Setup Java"
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "Validate library stats"
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          ./gradlew validateLibraryStats

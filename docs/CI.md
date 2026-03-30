@@ -34,6 +34,9 @@ Workflows testing metadata using [ci.json](../ci.json):
 - Test affected Spring AOT smoke tests ([.github/workflows/test-affected-spring-aot-main.yml](../.github/workflows/test-affected-spring-aot-main.yml))
   - Triggers: PRs to master touching [metadata/](metadata/).
   - Uses: generateAffectedSpringTestMatrix to compute impacted Spring AOT projects and produce a matrix; runs triaged native tests via [.github/workflows/scripts/run-spring-aot-triaged-test.sh](../.github/workflows/scripts/run-spring-aot-triaged-test.sh).
+- Validate library stats ([.github/workflows/library-stats-validation.yml](../.github/workflows/library-stats-validation.yml))
+  - Triggers: PRs that touch [stats/stats.json](../stats/stats.json) or [stats/schemas/library-stats-schema-v1.0.0.json](../stats/schemas/library-stats-schema-v1.0.0.json).
+  - Uses: [`validateLibraryStats`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) to enforce schema compliance and normalized sorting.
 - Verify new library version compatibility ([.github/workflows/verify-new-library-version-compatibility.yml](../.github/workflows/verify-new-library-version-compatibility.yml))
   - Triggers: scheduled run and manual ([`workflow_dispatch`](../.github/workflows/verify-new-library-version-compatibility.yml)).
   - Uses: [`fetchExistingLibrariesWithNewerVersions`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) plus [`generateNewLibraryVersionCompatibilityMatrix`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) to build a [`ci.json`](../ci.json)-driven matrix, runs compatibility tests on all configured GraalVM JDK/OS combinations, records tested versions only after they pass on every required environment, and creates a single aggregated failure issue per failed library version while preserving the prior failure issue format with added OS and JDK lines.
@@ -41,6 +44,7 @@ Workflows testing metadata using [ci.json](../ci.json):
 Workflows for style and security:
 - [.github/workflows/checkstyle.yml](../.github/workflows/checkstyle.yml): code style checks.
 - [.github/workflows/library-and-framework-list-validation.yml](../.github/workflows/library-and-framework-list-validation.yml): validates and sorts [library-and-framework-list.json](../metadata/library-and-framework-list.json), checks schema.
+- [.github/workflows/library-stats-validation.yml](../.github/workflows/library-stats-validation.yml): validates and sorts mirrored stats files under [stats/](../stats/), checks schema.
 - [.github/workflows/scan-docker-images.yml](../.github/workflows/scan-docker-images.yml): scans allowed Docker images on PR/schedule.
 - [.github/workflows/sync-docker-tags.yml](../.github/workflows/sync-docker-tags.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
 

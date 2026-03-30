@@ -155,34 +155,10 @@ class ScaffoldTask extends DefaultTask {
     private void writeCoordinatesMetadataVersionJsons(Path metadataVersionRoot, Coordinates coordinates) throws IOException {
         // Root: metadata/$group$/$artifact$/$version$
 
-        // jni-config.json
+        // reachability-metadata.json
         writeToFile(
-                metadataVersionRoot.resolve("jni-config.json"),
-                getEmptyJsonArray()
-        );
-
-        // proxy-config.json
-        writeToFile(
-                metadataVersionRoot.resolve("proxy-config.json"),
-                getEmptyJsonArray()
-        );
-
-        // reflect-config.json
-        writeToFile(
-                metadataVersionRoot.resolve("reflect-config.json"),
-                getEmptyJsonArray()
-        );
-
-        // resource-config.json
-        writeToFile(
-                metadataVersionRoot.resolve("resource-config.json"),
-                getEmptyJsonObject()
-        );
-
-        // serialization-config.json
-        writeToFile(
-                metadataVersionRoot.resolve("serialization-config.json"),
-                CoordinateUtils.replace(loadResource("/scaffold/serialization-config.json.template"), coordinates)
+                metadataVersionRoot.resolve("reachability-metadata.json"),
+                CoordinateUtils.replace(loadResource("/scaffold/reachability-metadata.json.template"), coordinates)
         );
     }
 
@@ -257,14 +233,6 @@ class ScaffoldTask extends DefaultTask {
                 oldEntry.allowedPackages(),
                 oldEntry.requires()
         ));
-    }
-
-    private String getEmptyJsonArray() {
-        return "[]\n";
-    }
-
-    private String getEmptyJsonObject() {
-        return "{}\n";
     }
 
     private String loadResource(String name) throws IOException {

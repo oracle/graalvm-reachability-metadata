@@ -123,6 +123,8 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ./gradlew nativeTestCompile -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]
+./gradlew validateLibraryStats
 ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
 ```
 
@@ -135,6 +137,32 @@ Report format: XML only.
 ./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]
  ```
 The root jacocoTestReport is a harness wrapper that invokes the per-project task across matching coordinates.
+
+### Library stats
+
+`generateLibraryStats` writes a single artifact-indexed stats file:
+- `stats/stats.json`
+- One entry per `groupId:artifactId`
+- Each artifact entry can contain multiple `metadata-version` buckets
+
+Schema:
+- `stats/schemas/library-stats-schema-v1.0.0.json`
+
+```console
+./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]
+./gradlew validateLibraryStats
+```
+
+- `generateLibraryStats`: recomputes selected coordinates and updates `stats/stats.json`.
+- `validateLibraryStats`: validates mirrored committed stats files, schema compliance, and normalized sorting without recomputing metrics.
+
+For new-library issue triage, the repository also exposes:
+
+```console
+./gradlew analyzeExternalLibraryDynamicAccess --coordinates=group:artifact:version
+```
+
+This resolves the requested library, runs Native Image with `Preserve` and `TrackDynamicAccess`, and prints a JSON summary suitable for issue comments.
 
 ### Generating Metadata
 
@@ -214,8 +242,11 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - List resolved tested-library jars: `./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]`
 - Generate dynamic access report: `./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
+- Generate library stats: `./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
+- Validate library stats: `./gradlew validateLibraryStats`
 - List available coordinates: `./gradlew listCoordinates -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Generate dependency graph: `./gradlew generateDependencyGraph -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
+- Analyze external dynamic access: `./gradlew analyzeExternalLibraryDynamicAccess --coordinates=group:artifact:version`
 - Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`
 - Scan all Docker images: `./gradlew checkAllowedDockerImages`
 - List libs with newer versions: `./gradlew fetchExistingLibrariesWithNewerVersions --quiet`
