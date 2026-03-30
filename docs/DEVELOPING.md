@@ -96,6 +96,19 @@ To print all testable GAV coordinates while honoring the same -Pcoordinates filt
 
 In GitHub Actions, this task also writes a space-separated list to the GITHUB_OUTPUT key "coordinates".
 
+### Generating dependency graphs
+
+To print deps.dev dependency graphs for resolved GAV coordinates while honoring the same `-Pcoordinates` filter semantics used by the harness:
+
+```console
+./gradlew generateDependencyGraph -Pcoordinates=all
+./gradlew generateDependencyGraph -Pcoordinates=group:artifact
+./gradlew generateDependencyGraph -Pcoordinates=group:artifact:version
+./gradlew generateDependencyGraph -Pcoordinates=1/16
+```
+
+The task prints one JSON object per resolved coordinate to stdout. Each JSON object contains the root GAV in `root` and the transitively fetched Maven dependency graph in `nodes[*].id` and `nodes[*].dependencies`.
+
 ### Testing individual stages
 
 Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version|k/n|all]`. Here are the examples:
@@ -108,6 +121,8 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ./gradlew compileTestJava -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew javaTest -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew nativeTestCompile -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]
+./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
 ```
 
@@ -137,7 +152,7 @@ Examples:
 ### Fix failing tasks
 
 Use this when a library's new version causes native-image run test failures. The task will:
-- Update the module's metadata index.json to mark the new version as latest
+- Update the artifact's metadata index.json to mark the new version as latest
 - Ensure the tests project has an agent block and a user-code-filter.json if missing
 - Run the agent to collect metadata, then re-run tests (with a retry if needed)
 
@@ -196,8 +211,11 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Generate metadata (single lib): `./gradlew generateMetadata -Pcoordinates=group:artifact:version`
 - Fix test that fails Native Image run for new library version: `./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=group:artifact:version -PnewLibraryVersion=version`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
+- List resolved tested-library jars: `./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]`
+- Generate dynamic access report: `./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - List available coordinates: `./gradlew listCoordinates -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
+- Generate dependency graph: `./gradlew generateDependencyGraph -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`
 - Scan all Docker images: `./gradlew checkAllowedDockerImages`
 - List libs with newer versions: `./gradlew fetchExistingLibrariesWithNewerVersions --quiet`

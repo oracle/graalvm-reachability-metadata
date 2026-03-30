@@ -6,6 +6,7 @@
  */
 package org.graalvm.internal.tck.harness;
 
+import groovy.json.JsonSlurper;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -18,11 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,9 +110,12 @@ public abstract class TckExtension {
             if (Files.exists(metadataDir)) {
                 List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) readIndexFile(metadataDir);
 
-                // Find the entry where 'metadata-version' EXACTLY matches the input library version
+                // Resolve the entry that declares support for the requested library version.
                 Optional<Map<String, ?>> matchingEntry = metadataIndex.stream()
-                        .filter(entry -> version.equals(entry.get("metadata-version")))
+                        .filter(entry -> {
+                            Object testedVersions = entry.get("tested-versions");
+                            return testedVersions instanceof List<?> versions && versions.contains(version);
+                        })
                         .findFirst();
 
                 if (matchingEntry.isPresent()) {
@@ -156,19 +158,8 @@ public abstract class TckExtension {
      */
     @SuppressWarnings("unused")
     List<String> diffCoordinates(String baseCommit, String newCommit) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        getExecOperations().exec(spec -> {
-            spec.setStandardOutput(baos);
-            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRTD", baseCommit, newCommit);
-        });
-
-        String output = baos.toString(StandardCharsets.UTF_8);
-        List<String> diffFiles = Arrays.asList(output.split("\\r?\\n"));
-
         Path workflowsRoot = repoRoot().resolve(".github").resolve("workflows");
-        // Group files by if they belong to 'metadata' or 'test' directory structures.
-        Map<String, List<Path>> changed = diffFiles.stream()
-                .map(line -> repoRoot().resolve(line))
+        Map<String, List<Path>> changed = diffFiles(baseCommit, newCommit, "ACMRTD").stream()
                 .collect(Collectors.groupingBy((Path path) -> {
                     if (path.startsWith(tckRoot()) || path.startsWith(workflowsRoot)) {
                         return "logic";
@@ -181,42 +172,36 @@ public abstract class TckExtension {
                     }
                 }));
 
+        List<Path> changedMetadataFiles = changed.getOrDefault("metadata", Collections.emptyList());
+        List<Path> changedTestFiles = changed.getOrDefault("test", Collections.emptyList());
+        List<Path> changedLogicFiles = changed.getOrDefault("logic", Collections.emptyList());
+
         // if we didn't change any of metadata, tests or logic we don't need to test anything
-        if (changed.get("metadata") != null && changed.get("metadata").isEmpty()
-                && changed.get("test") != null && changed.get("test").isEmpty()
-                && changed.get("logic") != null && changed.get("logic").isEmpty()) {
+        if (changedMetadataFiles.isEmpty() && changedTestFiles.isEmpty() && changedLogicFiles.isEmpty()) {
             return new ArrayList<>();
         }
 
-        // First get all available coordinates, then filter them by if their corresponding metadata / tests directories
-        // contain changed files.
-        List<String> changedCoordinates = getMatchingCoordinates("").stream().filter(c -> {
+        List<String> changedCoordinates = getMatchingCoordinatesStrict("").stream().filter(c -> {
             Path metadataDir = getMetadataDir(c);
-            if (changed.get("metadata") != null && changed.get("metadata").stream().anyMatch(f -> f.startsWith(metadataDir))) {
+            if (changedMetadataFiles.stream().anyMatch(f -> f.startsWith(metadataDir))) {
                 return true;
             }
             Path testDir = getTestDir(c);
-            return changed.get("test") != null &&
-                    changed.get("test").stream().anyMatch(f -> f.startsWith(testDir));
-        }).distinct().collect(Collectors.toList());
+            return changedTestFiles.stream().anyMatch(f -> f.startsWith(testDir));
+        }).distinct().collect(Collectors.toCollection(ArrayList::new));
 
-        // if we detected changes in repo, but not in metadata/index.json file, we should throw an exception
-        Set<String> metadataIndexEntries = getMatchingMetadataDirs(null, null);
-        List<String> changedEntries = new ArrayList<>();
-        if (changed.get("metadata") != null) {
-            changedEntries = changed.get("metadata")
-                    .stream()
-                    .map(p -> metadataRoot().relativize(p).toString().replace('\\', '/'))
-                    .filter(rel -> !rel.equalsIgnoreCase("library-and-framework-list.json"))
-                    .filter(rel -> !rel.equalsIgnoreCase("index.json"))
-                    .filter(rel -> !rel.startsWith("schemas/"))
-                    .toList();
-        }
-        if (!metadataIndexContainsChangedEntries(metadataIndexEntries, changedEntries)) {
-            URI metadataRootIndex = Paths.get(metadataRoot() + "/index.json").toUri();
-            throw new IllegalStateException("Changes detected but no corresponding entries found in " + metadataRootIndex +
-                    ". Please, check whether you added new entries in index file or not.");
-        }
+        // For changed metadata/*/*/index.json files, detect changed index entries by metadata-version
+        // and map them to tested coordinates.
+        Set<String> coordinatesFromIndexEntries = new LinkedHashSet<>();
+        changedMetadataFiles.stream()
+                .filter(this::isMetadataIndexFile)
+                .forEach(indexPath -> coordinatesFromIndexEntries.addAll(diffCoordinatesFromChangedIndexEntries(indexPath, baseCommit, newCommit)));
+
+        coordinatesFromIndexEntries.forEach(coord -> {
+            if (!changedCoordinates.contains(coord)) {
+                changedCoordinates.add(coord);
+            }
+        });
 
         return changedCoordinates;
     }
@@ -227,20 +212,24 @@ public abstract class TckExtension {
      * @return List of coordinates (e.g., "org.flywaydb:flyway-core" or "org.example:library:1.0.0")
      */
     public List<String> diffIndexCoordinates(String baseCommit, String newCommit) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        getExecOperations().exec(spec -> {
-            spec.setStandardOutput(baos);
-            spec.commandLine("git", "diff", "--name-only", "--diff-filter=ACMRT",
-                    baseCommit, newCommit);
-        });
-
-        String output = baos.toString(StandardCharsets.UTF_8);
-        String[] lines = output.split("\\r?\\n");
-
-        return Arrays.stream(lines)
+        return diffFiles(baseCommit, newCommit, "ACMRT").stream()
+                .map(path -> repoRoot().relativize(path).toString().replace('\\', '/'))
                 .map(this::indexPathToCoordinate) // Extract coordinate from path
                 .filter(Objects::nonNull)      // Remove paths that weren't index files
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private List<Path> diffFiles(String baseCommit, String newCommit, String diffFilter) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        getExecOperations().exec(spec -> {
+            spec.setStandardOutput(baos);
+            spec.commandLine("git", "diff", "--name-only", "--diff-filter=" + diffFilter, baseCommit, newCommit);
+        });
+
+        return Arrays.stream(baos.toString(StandardCharsets.UTF_8).split("\\r?\\n"))
+                .filter(line -> !line.isBlank())
+                .map(line -> repoRoot().resolve(line))
                 .collect(Collectors.toList());
     }
 
@@ -265,21 +254,122 @@ public abstract class TckExtension {
         return null;
     }
 
-    private boolean metadataIndexContainsChangedEntries(Set<String> changedCoordinates, List<String> changedEntries) {
-        boolean containsAll = true;
-        for (var n : changedEntries) {
-            boolean containsCurrent = false;
-            for (var c : changedCoordinates) {
-                if (n.startsWith(c.replace(":", "/"))) {
-                    containsCurrent = true;
-                    break;
-                }
-            }
+    /**
+     * Returns {@code true} if the given path is metadata/<group>/<artifact>/index.json.
+     */
+    private boolean isMetadataIndexFile(Path path) {
+        if (path == null) {
+            return false;
+        }
+        Path relative;
+        try {
+            relative = repoRoot().relativize(path.normalize());
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+        return relative.getNameCount() == 4
+                && "metadata".equals(relative.getName(0).toString())
+                && "index.json".equals(relative.getName(3).toString());
+    }
 
-            containsAll = containsAll && containsCurrent;
+    /**
+     * Computes tested coordinates affected by changed entries in a metadata index.json file.
+     * Entry identity is based on {@code metadata-version}.
+     */
+    @SuppressWarnings("unchecked")
+    private List<String> diffCoordinatesFromChangedIndexEntries(Path indexPath, String baseCommit, String newCommit) {
+        Path relative = repoRoot().relativize(indexPath.normalize());
+        String relativePath = relative.toString().replace("\\", "/");
+        if (!isMetadataIndexFile(indexPath)) {
+            return Collections.emptyList();
         }
 
-        return containsAll;
+        List<Map<String, ?>> baseEntries = readIndexFileFromCommit(baseCommit, relativePath);
+        List<Map<String, ?>> headEntries = readIndexFileFromCommit(newCommit, relativePath);
+
+        Map<String, Map<String, ?>> byMetaBase = indexByMetadataVersion(baseEntries);
+        Map<String, Map<String, ?>> byMetaHead = indexByMetadataVersion(headEntries);
+
+        Set<String> changedMetadataVersions = new LinkedHashSet<>();
+        Set<String> allMetaVersions = new LinkedHashSet<>();
+        allMetaVersions.addAll(byMetaBase.keySet());
+        allMetaVersions.addAll(byMetaHead.keySet());
+
+        for (String metadataVersion : allMetaVersions) {
+            Map<String, ?> baseEntry = byMetaBase.get(metadataVersion);
+            Map<String, ?> headEntry = byMetaHead.get(metadataVersion);
+            if (!Objects.equals(baseEntry, headEntry)) {
+                changedMetadataVersions.add(metadataVersion);
+            }
+        }
+
+        Set<String> changedCoordinates = new LinkedHashSet<>();
+        for (String metadataVersion : changedMetadataVersions) {
+            Map<String, ?> headEntry = byMetaHead.get(metadataVersion);
+            if (headEntry == null) {
+                // Entry removed from HEAD. Use base entry to keep tests aligned with the changed item.
+                headEntry = byMetaBase.get(metadataVersion);
+            }
+            if (headEntry == null) {
+                continue;
+            }
+            String group = relative.getName(1).toString();
+            String artifact = relative.getName(2).toString();
+            changedCoordinates.add(group + ":" + artifact + ":" + metadataVersion);
+        }
+
+        return new ArrayList<>(changedCoordinates);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Map<String, ?>> readIndexFileFromCommit(String commit, String relativePath) {
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        var result = getExecOperations().exec(spec -> {
+            spec.setIgnoreExitValue(true);
+            spec.setStandardOutput(stdout);
+            spec.setErrorOutput(stderr);
+            spec.commandLine("git", "show", commit + ":" + relativePath);
+        });
+        if (result.getExitValue() != 0) {
+            return Collections.emptyList();
+        }
+        String json = stdout.toString(StandardCharsets.UTF_8);
+        if (json == null || json.isBlank()) {
+            return Collections.emptyList();
+        }
+        Object parsed = parseTextJson(json);
+        if (parsed instanceof List<?> list) {
+            return list.stream()
+                    .filter(Map.class::isInstance)
+                    .map(entry -> (Map<String, ?>) entry)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Map<String, ?>> indexByMetadataVersion(List<Map<String, ?>> entries) {
+        Map<String, Map<String, ?>> indexed = new LinkedHashMap<>();
+        for (Map<String, ?> entry : entries) {
+            if (entry == null) {
+                continue;
+            }
+            Object metadataVersionRaw = entry.get("metadata-version");
+            if (metadataVersionRaw == null) {
+                continue;
+            }
+            indexed.put(metadataVersionRaw.toString(), entry);
+        }
+        return indexed;
+    }
+
+    private Object parseTextJson(String json) {
+        try {
+            return new JsonSlurper().parseText(json);
+        } catch (Exception ex) {
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -288,33 +378,32 @@ public abstract class TckExtension {
      *
      * @return set of all directories that match given criteria
      */
-    @SuppressWarnings("unchecked")
     Set<String> getMatchingMetadataDirs(String groupId, String artifactId) {
-        Set<String> dirs = new HashSet<>();
-        List<Map<String, ?>> index = (List<Map<String, ?>>) readIndexFile(metadataRoot());
-        for (Map<String, ?> library : index) {
-            if (coordinatesMatch((String) library.get("module"), groupId, artifactId)) {
-                if (library.containsKey("directory")) {
-                    dirs.add((String) library.get("directory"));
-                }
-                if (library.containsKey("requires")) {
-                    for (String dep : (Collection<String>) library.get("requires")) {
-                        List<String> strings = splitCoordinates(dep);
-                        String depGroup = strings.get(0);
-                        String depArtifact = strings.get(1);
-                        dirs.addAll(getMatchingMetadataDirs(depGroup, depArtifact));
-                    }
-                }
-            }
-        }
+        Set<String> dirs = new LinkedHashSet<>();
+        Path root = metadataRoot();
 
-        if (groupId != null && artifactId != null) {
-            // Let's see if library wasn't added to index but is present on the disk.
-            Path defaultDir = metadataRoot().resolve(groupId).resolve(artifactId);
-            if (defaultDir.resolve("index.json").toFile().exists()) {
-                dirs.add(defaultDir.toString());
-            }
-        }
+        try (Stream<Path> groupDirs = Files.list(root)) {
+            groupDirs.filter(Files::isDirectory).forEach(g -> {
+                String gName = g.getFileName().toString();
+                // Filter by group if provided
+                if (groupId != null && !groupId.equals(gName)) return;
+
+                try (Stream<Path> artifactDirs = Files.list(g)) {
+                    artifactDirs.filter(Files::isDirectory).forEach(a -> {
+                        String aName = a.getFileName().toString();
+                        // Filter by artifact if provided
+                        if (artifactId != null && !artifactId.equals(aName)) return;
+
+                        Path indexPath = a.resolve("index.json");
+                        if (Files.isRegularFile(indexPath)) {
+                            // Add this artifact directory
+                            dirs.add(a.toAbsolutePath().toString());
+                        }
+                    });
+                } catch (IOException ignored) {}
+            });
+        } catch (IOException ignored) {}
+
         return dirs;
     }
 
@@ -333,16 +422,24 @@ public abstract class TckExtension {
         Objects.requireNonNull(artifactId, "Artifact ID must be specified");
         Objects.requireNonNull(version, "Version must be specified");
 
-        Set<String> matchingDirs = getMatchingMetadataDirs(groupId, artifactId);
-        for (String directory : matchingDirs) {
-            Path fullDir = metadataRoot().resolve(directory);
-            Path index = fullDir.resolve("index.json");
-            List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(index);
+        // Resolve directly to metadata/<groupId>/<artifactId>/index.json without expanding "requires"
+        Path artifactDir = metadataRoot().resolve(groupId).resolve(artifactId);
+        Path indexPath = artifactDir.resolve("index.json");
+        if (!Files.isRegularFile(indexPath)) {
+            throw new RuntimeException("Missing index.json for " + groupId + ":" + artifactId + " at " + indexPath);
+        }
 
-            for (Map<String, ?> entry : metadataIndex) {
-                if (coordinatesMatch((String) entry.get("module"), groupId, artifactId) && ((List<String>) entry.get("tested-versions")).contains(version)) {
-                    return fullDir.resolve((String) entry.get("metadata-version"));
+        List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(indexPath);
+        for (Map<String, ?> entry : metadataIndex) {
+            @SuppressWarnings("unchecked")
+            List<String> tv = (List<String>) entry.get("tested-versions");
+            if (tv != null && tv.contains(version)) {
+                String metaVersion = (String) entry.get("metadata-version");
+                Path result = artifactDir.resolve(metaVersion);
+                if (Files.isDirectory(result)) {
+                    return result;
                 }
+                throw new RuntimeException("Index.json for " + groupId + ":" + artifactId + " maps version " + version + " to missing dir " + result);
             }
         }
         throw new RuntimeException("Missing metadata for " + coordinates);
@@ -350,39 +447,81 @@ public abstract class TckExtension {
 
     /**
      * Returns all coordinates that match given coordinate filter.
+     * Standard version: Uses 'metadata-version' pointer for shared config folders.
      *
-     * @return list of all coordinates that
+     * @return list of all coordinates that match given coordinate filter.
      */
     @SuppressWarnings("unchecked")
     public List<String> getMatchingCoordinates(String coordinateFilter) {
-        List<String> strings = splitCoordinates(coordinateFilter);
-        String groupId = strings.get(0);
-        String artifactId = strings.get(1);
-        String version = strings.get(2);
+        List<String> parts = splitCoordinates(coordinateFilter);
+        String versionFilter = parts.get(2);
 
-        Set<String> matchingCoordinates = new HashSet<>();
-        for (String directory : getMatchingMetadataDirs(groupId, artifactId)) {
-            Path index = metadataRoot().resolve(directory).resolve("index.json");
-            List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(index);
+        Set<String> results = new HashSet<>();
+        loadMatchingIndices(parts.get(0), parts.get(1)).forEach((fullDir, index) -> {
+            String g = fullDir.getParent().getFileName().toString();
+            String a = fullDir.getFileName().toString();
 
-            for (Map<String, ?> entry : metadataIndex) {
-                List<String> coordinates = splitCoordinates((String) entry.get("module"));
-                List<String> testedVersions = (List<String>) entry.get("tested-versions");
-                if (coordinatesMatch((String) entry.get("module"), groupId, artifactId) && (version == null || testedVersions.contains(version))) {
-                    if (version == null) { // We want all library versions, so let's add them.
-                        testedVersions.stream()
-                                .filter(t -> metadataRoot().resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(t).toFile().exists())
-                                .forEach(t -> matchingCoordinates.add(entry.get("module") + ":" + t));
-                    } else { // We have a specific version pinned.
-                        if (metadataRoot().resolve(coordinates.get(0)).resolve(coordinates.get(1)).resolve(version).toFile().exists()) {
-                            matchingCoordinates.add(entry.get("module") + ":" + version);
-                        }
-                    }
+            for (Map<String, ?> entry : index) {
+                List<String> tested = (List<String>) entry.get("tested-versions");
+                String metaVer = (String) entry.get("metadata-version");
+
+                if (tested == null || metaVer == null || !Files.isDirectory(fullDir.resolve(metaVer))) {
+                    continue;
                 }
+
+                tested.stream()
+                        .filter(v -> versionFilter == null || versionFilter.equals(v))
+                        .forEach(v -> results.add(g + ":" + a + ":" + v));
+            }
+        });
+        return new ArrayList<>(results);
+    }
+
+    /**
+     * Returns all coordinates that match given coordinate filter.
+     * Strict version: Requires library version string to match directory name exactly.
+     *
+     * @return list of all coordinates that match given coordinate filter.
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getMatchingCoordinatesStrict(String coordinateFilter) {
+        List<String> parts = splitCoordinates(coordinateFilter);
+        String versionFilter = parts.get(2);
+
+        Set<String> results = new HashSet<>();
+        loadMatchingIndices(parts.get(0), parts.get(1)).forEach((fullDir, index) -> {
+            String g = fullDir.getParent().getFileName().toString();
+            String a = fullDir.getFileName().toString();
+
+            for (Map<String, ?> entry : index) {
+                List<String> tested = (List<String>) entry.get("tested-versions");
+                if (tested == null) continue;
+
+                tested.stream()
+                        .filter(v -> versionFilter == null || versionFilter.equals(v))
+                        .filter(v -> Files.isDirectory(fullDir.resolve(v)))
+                        .forEach(v -> results.add(g + ":" + a + ":" + v));
+            }
+        });
+        return new ArrayList<>(results);
+    }
+
+    /**
+     * Internal helper to load and group index.json files for matching directories.
+     */
+    private Map<Path, List<Map<String, ?>>> loadMatchingIndices(String groupId, String artifactId) {
+        Map<Path, List<Map<String, ?>>> indices = new HashMap<>();
+        for (String directory : getMatchingMetadataDirs(groupId, artifactId)) {
+            Path fullDir = metadataRoot().resolve(directory);
+            Path indexFile = fullDir.resolve("index.json");
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(indexFile);
+            if (metadataIndex != null) {
+                indices.put(fullDir, metadataIndex);
             }
         }
-
-        return new ArrayList<>(matchingCoordinates);
+        return indices;
     }
 
     /**
@@ -390,7 +529,6 @@ public abstract class TckExtension {
      *
      * @return list of json files contained in it
      */
-    @SuppressWarnings("unchecked")
     public List<String> getMetadataFileList(Path directory) throws IOException {
         try (Stream<Path> paths = Files.walk(directory)) {
             return paths

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.graalvm.internal.tck.Utils.coordinatesMatch;
 import static org.graalvm.internal.tck.Utils.readIndexFile;
 import static org.graalvm.internal.tck.Utils.splitCoordinates;
 
@@ -100,8 +99,13 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
 
         var execResult = getExecOperations().exec((ExecSpec spec) -> {
             this.configureSpec(spec, coordinates, command);
-            spec.setStandardOutput(new TeeOutputStream(out, System.out));
-            spec.setErrorOutput(new TeeOutputStream(err, System.err));
+            if (streamSubprocessOutput(coordinates)) {
+                spec.setStandardOutput(new TeeOutputStream(out, System.out));
+                spec.setErrorOutput(new TeeOutputStream(err, System.err));
+            } else {
+                spec.setStandardOutput(out);
+                spec.setErrorOutput(err);
+            }
         });
 
         // write output file like AbstractSubprojectTask
@@ -133,6 +137,7 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         afterEach(coordinates);
     }
 
+    @SuppressWarnings("unchecked")
     protected void configureSpec(ExecSpec spec, String coordinates, List<String> command) {
         List<String> parts = splitCoordinates(coordinates);
         String groupId = parts.get(0);
@@ -143,10 +148,8 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
 
         var metadataIndex = readIndexFile(metadataDir.getParent());
         for (Object entryObj : (Iterable<?>) metadataIndex) {
-            @SuppressWarnings("unchecked")
             Map<String, Object> entry = (Map<String, Object>) entryObj;
-            if (coordinatesMatch((String) entry.get("module"), groupId, artifactId) &&
-                    ((List<String>) entry.get("tested-versions")).contains(version)) {
+            if (((List<String>) entry.get("tested-versions")).contains(version)) {
                 if (entry.containsKey("override")) {
                     Object ov = entry.get("override");
                     if (ov instanceof Boolean b) {
@@ -176,6 +179,10 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         spec.setIgnoreExitValue(true);
         spec.setStandardOutput(System.out);
         spec.setErrorOutput(System.err);
+    }
+
+    protected boolean streamSubprocessOutput(String coordinates) {
+        return true;
     }
 
     private static String md5(String s) {

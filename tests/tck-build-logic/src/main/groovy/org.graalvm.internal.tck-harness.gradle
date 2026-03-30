@@ -30,15 +30,20 @@ import org.gradle.util.internal.VersionNumber
 import org.graalvm.internal.tck.harness.tasks.ComputeAndPullAllowedDockerImagesTask
 import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
+import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
+import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessReportInvocationTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
+import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
 
-logger.lifecycle("GraalVM Reachability Metadata TCK")
-logger.lifecycle("---------------------------------")
+if (!gradle.startParameter.taskNames.any { it in ["listLibraryJars", "generateDynamicAccessReport"] }) {
+    logger.lifecycle("GraalVM Reachability Metadata TCK")
+    logger.lifecycle("---------------------------------")
+}
 
 final String METADATA_GROUP = "Metadata"
 
@@ -162,6 +167,22 @@ tasks.register("listCoordinates", DefaultTask) { task ->
     }
 }
 
+tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->
+    task.setDescription("Lists resolved tested-library JARs for matching coordinates (one per line)")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("generateDynamicAccessReport", GenerateDynamicAccessReportInvocationTask.class) { task ->
+    task.setDescription("Builds native tests and prints generated dynamic-access JSON report files for matching coordinates")
+    task.setGroup(METADATA_GROUP)
+}
+
+// gradle generateDependencyGraph -Pcoordinates=<maven-coordinates>
+tasks.register("generateDependencyGraph", GenerateDependencyGraphTask.class) { task ->
+    task.setDescription("Prints deps.dev dependency graph for matching coordinates")
+    task.setGroup(METADATA_GROUP)
+}
+
 // gradle diff -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
     task.setDescription("Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'")
@@ -213,6 +234,27 @@ Map<String, Object> springAotMatrixConfig() {
             "java-branch-mapping": (sec["java-branch-mapping"] as Map<String, String>),
             "os": sec["os"]
     ]
+}
+
+List<Map<String, Object>> expandNewLibraryVersionCompatibilityMatrix(List<Map<String, Object>> libraries) {
+    def defaults = matrixDefaultsFor("generateNewLibraryVersionCompatibilityMatrix")
+    List<String> javaVersions = defaults["version"]
+    List<String> operatingSystems = defaults["os"]
+
+    List<Map<String, Object>> include = []
+    libraries.each { Map<String, Object> library ->
+        javaVersions.each { String javaVersion ->
+            operatingSystems.each { String operatingSystem ->
+                include.add([
+                        "name": library["name"],
+                        "versions": library["versions"],
+                        "version": javaVersion,
+                        "os": operatingSystem
+                ])
+            }
+        }
+    }
+    include
 }
 
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
@@ -270,6 +312,27 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
+// gradle generateChangedCoordinatesOnlyMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedCoordinatesOnlyMatrix = tasks.register("generateChangedCoordinatesOnlyMatrix", DefaultTask) { task ->
+    task.setDescription("Returns a coordinate-only matrix definition populated with changed coordinates")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        boolean noneFound = diffCoordinates.isEmpty()
+        if (noneFound) {
+            println "No changed coordinates were found!"
+        }
+
+        writeGithubOutput("matrix", JsonOutput.toJson([
+                "coordinates": noneFound ? [] : diffCoordinates
+        ]))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
 // gradle generateChangedIndexFileCoordinatesList -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
 tasks.register("generateChangedIndexFileCoordinatesList", DefaultTask) { task ->
     task.setDescription("Returns a list of changed coordinates for validation based on git diff")
@@ -302,7 +365,6 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
     task.setGroup(METADATA_GROUP)
     task.doFirst {
         List<String> selected = []
-        boolean infraChanged = true
         // Pre-selected modules; keep stable for infra verification
         List<String> preselectedCoordinates = [
                 'ch.qos.logback:logback-classic',
@@ -314,7 +376,7 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
                 'com.zaxxer:HikariCP',
                 'org.hibernate.validator:hibernate-validator',
                 'io.undertow:undertow-core',
-                'com.hazelcast:hazelcast'
+                'com.h2database:h2'
         ]
         preselectedCoordinates.each { module ->
             List<String> matches = tck.getMatchingCoordinates(module)
@@ -346,6 +408,27 @@ tasks.register("fetchExistingLibrariesWithNewerVersions", FetchExistingLibraries
     task.setGroup(METADATA_GROUP)
     task.setDescription("Returns list of all libraries coordinates")
     task.setAllLibraryCoordinates(matchingCoordinates)
+}
+
+tasks.register("generateNewLibraryVersionCompatibilityMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with newer library versions and CI environments")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("newLibraryVersionCandidates")) {
+            throw new GradleException("Missing 'newLibraryVersionCandidates' property! Rerun Gradle with -PnewLibraryVersionCandidates=<json-array>")
+        }
+
+        String json = project.findProperty("newLibraryVersionCandidates").toString()
+        List<Map<String, Object>> libraries = (new JsonSlurper().parseText(json) as List<Map<String, Object>>)
+        boolean noneFound = libraries.isEmpty()
+
+        if (noneFound) {
+            println "No libraries with newer versions were found!"
+        }
+
+        writeGithubOutput("matrix", JsonOutput.toJson([include: noneFound ? [] : expandNewLibraryVersionCompatibilityMatrix(libraries)]))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
 }
 
 tasks.register("addTestedVersion", TestedVersionUpdaterTask.class) { task ->
@@ -464,7 +547,8 @@ tasks.register("extractLibraryTestParams", DefaultTask) { task ->
         }
 
         String testPath = "${libPath}/${testVersionFolder}"
-        String testCoordinates = testPath.replace("/", ":")
+        // Use the latest metadata version for compatibility verification.
+        String testCoordinates = "${lib}:${latestVersion}"
 
         writeGithubEnv("LATEST_VERSION", latestVersion)
         writeGithubEnv("TEST_PATH", testPath)

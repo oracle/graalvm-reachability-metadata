@@ -31,8 +31,9 @@ Workflows testing metadata using [ci.json](../ci.json):
 - Test affected Spring AOT smoke tests ([.github/workflows/test-affected-spring-aot-main.yml](../.github/workflows/test-affected-spring-aot-main.yml))
   - Triggers: PRs to master touching [metadata/](metadata/).
   - Uses: generateAffectedSpringTestMatrix to compute impacted Spring AOT projects and produce a matrix; runs triaged native tests via [.github/workflows/scripts/run-spring-aot-triaged-test.sh](../.github/workflows/scripts/run-spring-aot-triaged-test.sh).
-
-Workflow for testing latest library versions from Maven: [.github/workflows/verify-new-library-version-compatibility.yml](../.github/workflows/verify-new-library-version-compatibility.yml): scheduled verifier for newer upstream library versions; uses pinned Java/OS in the workflow.
+- Verify new library version compatibility ([.github/workflows/verify-new-library-version-compatibility.yml](../.github/workflows/verify-new-library-version-compatibility.yml))
+  - Triggers: scheduled run and manual ([`workflow_dispatch`](../.github/workflows/verify-new-library-version-compatibility.yml)).
+  - Uses: [`fetchExistingLibrariesWithNewerVersions`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) plus [`generateNewLibraryVersionCompatibilityMatrix`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) to build a [`ci.json`](../ci.json)-driven matrix, runs compatibility tests on all configured GraalVM JDK/OS combinations, records tested versions only after they pass on every required environment, and creates a single aggregated failure issue per failed library version while preserving the prior failure issue format with added OS and JDK lines.
 
 Workflows for style and security:
 - [.github/workflows/checkstyle.yml](../.github/workflows/checkstyle.yml): code style checks.
