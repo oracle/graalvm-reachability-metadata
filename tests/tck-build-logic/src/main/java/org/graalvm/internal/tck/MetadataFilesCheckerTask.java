@@ -6,6 +6,13 @@
  */
 package org.graalvm.internal.tck;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
+import com.networknt.schema.ValidationMessage;
 import groovy.json.JsonSlurper;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.DefaultTask;
@@ -15,7 +22,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,6 +33,10 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("unused")
 public abstract class MetadataFilesCheckerTask extends DefaultTask {
+    private static final String REACHABILITY_METADATA_FILE_NAME = "reachability-metadata.json";
+    private static final String REACHABILITY_METADATA_SCHEMA_PATH = "metadata/schemas/reachability-metadata-schema-v1.2.0.json";
+    private static final JsonSchemaFactory REACHABILITY_METADATA_SCHEMA_FACTORY =
+            JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
 
     @InputFiles
     protected abstract RegularFileProperty getMetadataRoot();
@@ -34,14 +45,11 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     protected abstract RegularFileProperty getIndexFile();
 
     private final Set<String> EXPECTED_FILES = new HashSet<>(List.of(
-            "reachability-metadata.json"));
-
-    private final Set<String> ILLEGAL_TYPE_VALUES = new HashSet<>(List.of("java.lang"));
-
-    private final Set<String> PREDEFINED_ALLOWED_PACKAGES = new HashSet<>(List.of("java.lang", "java.util"));
+            REACHABILITY_METADATA_FILE_NAME));
 
     Coordinates coordinates;
-    List<String> allowedPackages;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private JsonSchema reachabilityMetadataSchema;
 
     @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
     public void setCoordinates(String coords) {
@@ -69,8 +77,6 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
 
         File index = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates));
         getIndexFile().set(index);
-
-        this.allowedPackages = getAllowedPackages();
     }
 
     @SuppressWarnings("unchecked")
@@ -86,7 +92,6 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
             return conventionalRoot;
         }
 
-        String module = coordinates.group() + ":" + coordinates.artifact();
         List<Map<String, Object>> entries = getConfigEntries(artifactIndex);
         for (Map<String, Object> entry : entries) {
             Object testedVersions = entry.get("tested-versions");
@@ -102,7 +107,7 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     }
 
     @TaskAction
-    public void run() throws IllegalArgumentException, FileNotFoundException {
+    public void run() throws IllegalArgumentException {
         File coordinatesMetadataRoot = getMetadataRoot().get().getAsFile();
         if (!coordinatesMetadataRoot.exists()) {
             throw new IllegalArgumentException("ERROR: Cannot find metadata directory for given coordinates: " + this.coordinates);
@@ -111,24 +116,8 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         boolean containsErrors = false;
         List<File> filesInMetadata = getConfigFilesForMetadataDir(coordinatesMetadataRoot);
         for (File file : filesInMetadata) {
-            if (file.getName().equalsIgnoreCase("reflect-config.json")) {
-                containsErrors |= reflectConfigFileContainsErrors(file);
-            }
-
-            if (file.getName().equalsIgnoreCase("resource-config.json")) {
-                containsErrors |= resourceConfigFileContainsErrors(file);
-            }
-
-            if (file.getName().equalsIgnoreCase("serialization-config.json")) {
-                containsErrors |= serializationConfigFileContainsErrors(file);
-            }
-
-            if (file.getName().equalsIgnoreCase("proxy-config.json")) {
-                containsErrors |= proxyConfigFileContainsErrors(file);
-            }
-
-            if (file.getName().equalsIgnoreCase("jni-config.json")) {
-                containsErrors |= jniConfigFileContainsErrors(file);
+            if (file.getName().equalsIgnoreCase(REACHABILITY_METADATA_FILE_NAME)) {
+                containsErrors |= reachabilityMetadataFileContainsErrors(file);
             }
         }
 
@@ -153,7 +142,88 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
             files.add(file);
         });
 
+        if (files.stream().noneMatch(file -> file.getName().equalsIgnoreCase(REACHABILITY_METADATA_FILE_NAME))) {
+            throw new IllegalStateException("ERROR: Missing " + REACHABILITY_METADATA_FILE_NAME + " in " + root.toURI());
+        }
+
         return files;
+    }
+
+    private boolean reachabilityMetadataFileContainsErrors(File file) {
+        try {
+            JsonNode metadata = objectMapper.readTree(file);
+            JsonSchema schema = getReachabilityMetadataSchema();
+            boolean containsErrors = false;
+            Set<ValidationMessage> errors = schema.validate(metadata);
+            if (!errors.isEmpty()) {
+                errors.forEach(error -> System.out.println("ERROR: Invalid reachability metadata in " + file.toURI() + ": " + error.getMessage()));
+                containsErrors = true;
+            }
+
+            containsErrors |= containsDuplicatedEntries(metadata.path("reflection"), "reflection", file);
+            containsErrors |= containsDuplicatedEntries(metadata.path("resources"), "resources", file);
+            containsErrors |= containsDuplicatedEntries(metadata.path("serialization"), "serialization", file);
+            containsErrors |= containsDuplicatedEntries(metadata.path("foreign").path("downcalls"), "foreign.downcalls", file);
+            containsErrors |= containsDuplicatedEntries(metadata.path("foreign").path("upcalls"), "foreign.upcalls", file);
+            containsErrors |= containsDuplicatedEntries(metadata.path("foreign").path("directUpcalls"), "foreign.directUpcalls", file);
+
+            return containsErrors;
+        } catch (Exception e) {
+            System.out.println("ERROR: Failed to parse reachability metadata file " + file.toURI() + ": " + e.getMessage());
+            return true;
+        }
+    }
+
+    private JsonSchema getReachabilityMetadataSchema() throws IOException {
+        if (reachabilityMetadataSchema == null) {
+            File schemaFile = getProject().file(REACHABILITY_METADATA_SCHEMA_PATH);
+            JsonNode schemaRoot = objectMapper.readTree(schemaFile);
+            if (!(schemaRoot instanceof ObjectNode schemaObject)) {
+                throw new IllegalStateException("ERROR: Invalid reachability metadata schema in " + schemaFile.toURI());
+            }
+
+            // The checked-in schema includes a non-standard "version" keyword and does not
+            // yet model the repository's legacy top-level "serialization" block.
+            ObjectNode adjustedSchema = schemaObject.deepCopy();
+            adjustedSchema.remove("version");
+            ObjectNode properties = requireObjectNode(adjustedSchema, "properties", schemaFile);
+            if (!properties.has("serialization")) {
+                properties.set("serialization", createLegacySerializationSchema());
+            }
+
+            reachabilityMetadataSchema = REACHABILITY_METADATA_SCHEMA_FACTORY.getSchema(adjustedSchema);
+        }
+
+        return reachabilityMetadataSchema;
+    }
+
+    private ObjectNode requireObjectNode(ObjectNode parent, String fieldName, File schemaFile) {
+        JsonNode node = parent.get(fieldName);
+        if (!(node instanceof ObjectNode objectNode)) {
+            throw new IllegalStateException("ERROR: Schema file " + schemaFile.toURI()
+                    + " is missing an object-valued '" + fieldName + "' node");
+        }
+        return objectNode;
+    }
+
+    private ObjectNode createLegacySerializationSchema() {
+        ObjectNode serializationSchema = objectMapper.createObjectNode();
+        serializationSchema.put("title", "Legacy serialization metadata supported by this repository");
+        serializationSchema.put("type", "array");
+        serializationSchema.putArray("default");
+
+        ObjectNode itemSchema = serializationSchema.putObject("items");
+        itemSchema.put("title", "Type that should be registered for serialization");
+        itemSchema.put("type", "object");
+
+        ObjectNode properties = itemSchema.putObject("properties");
+        properties.putObject("reason").put("$ref", "#/$defs/reason");
+        properties.putObject("condition").put("$ref", "#/$defs/condition");
+        properties.putObject("type").put("$ref", "#/$defs/className");
+
+        itemSchema.putArray("required").add("type");
+        itemSchema.put("additionalProperties", false);
+        return serializationSchema;
     }
 
     @SuppressWarnings("unchecked")
@@ -166,325 +236,58 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
                 .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("unchecked")
-    // in case when config file is an object
-    private Map<String, Object> getConfigEntry(File file) {
-        return (Map<String, Object>) new JsonSlurper().parse(file);
-    }
-
-    private boolean reflectConfigFileContainsErrors(File file) {
-        List<Map<String, Object>> entries = getConfigEntries(file);
-
-        if (entries.isEmpty()) {
-            System.out.println("ERROR: empty reflect-config detected: " + file.toURI());
-            return true;
+    private boolean containsDuplicatedEntries(JsonNode entries, String sectionName, File file) {
+        if (!entries.isArray() || entries.isEmpty()) {
+            return false;
         }
 
-        boolean containsErrors = containsDuplicatedEntries(entries, file);
-        for (var entry : entries) {
-            containsErrors |= checkTypeReachable(entry, file);
-            containsErrors |= containsEntriesNotFromLibrary(entry, file);
-        }
-
-        return containsErrors;
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean resourceConfigFileContainsErrors(File file) {
-        Map<String, Object> entries = getConfigEntry(file);
-        List<Map<String, Object>> bundles = (List<Map<String, Object>>) entries.get("bundles");
-        Map<String, Object> resources = (Map<String, Object>) entries.get("resources");
-
-        boolean containsErrors = false;
-        if (resources != null) {
-            List<Map<String, Object>> includes = (List<Map<String, Object>>) resources.get("includes");
-            List<Map<String, Object>> excludes = (List<Map<String, Object>>) resources.get("excludes");
-
-            if (listNullOrEmpty(includes) && listNullOrEmpty(excludes) && listNullOrEmpty(bundles)) {
-                System.out.println("ERROR: empty resource-config detected: " + file.toURI());
-                return true;
-            }
-
-            // check include entries
-            if (includes != null) {
-                containsErrors |= containsDuplicatedEntries(includes, file);
-
-                for (var entry : includes) {
-                    containsErrors |= checkTypeReachable(entry, file);
-                }
-            }
-
-            // check exclude entries
-            if (excludes != null) {
-                containsErrors |= containsDuplicatedEntries(excludes, file);
-
-                for (var entry : excludes) {
-                    containsErrors |= checkTypeReachable(entry, file);
-                    containsErrors |= containsEntriesNotFromLibrary(entry, file);
-                }
-            }
-        }
-
-        return containsErrors;
-    }
-
-    private boolean checkOldSerializationConfig(File file) {
-        List<Map<String, Object>> entries = getConfigEntries(file);
-
-        if (entries.isEmpty()) {
-            System.out.println("ERROR: empty serialization-config detected: " + file.toURI());
-            return true;
-        }
-
-        boolean containsErrors = containsDuplicatedEntries(entries, file);
-        for (var entry : entries) {
-            containsErrors |= checkTypeReachable(entry, file);
-            containsErrors |= containsEntriesNotFromLibrary(entry, file);
-        }
-
-        return containsErrors;
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean checkNewSerializationConfig(File file) {
-        boolean containsErrors = false;
-        Map<String, Object> entries = getConfigEntry(file);
-
-        List<Map<String, Object>> types = (List<Map<String, Object>>) entries.get("types");
-        List<Map<String, Object>> lambdaCapturingTypes = (List<Map<String, Object>>) entries.get("lambdaCapturingTypes");
-
-        if (listNullOrEmpty(types) && listNullOrEmpty(lambdaCapturingTypes)) {
-            System.out.println("ERROR: empty serialization-config detected: " + file.toURI());
-            return true;
-        }
-
-        if (types != null) {
-            // check include entries
-            containsErrors |= containsDuplicatedEntries(types, file);
-
-            for (var entry : types) {
-                containsErrors |= checkTypeReachable(entry, file);
-                containsErrors |= containsEntriesNotFromLibrary(entry, file);
-            }
-        }
-
-        if (lambdaCapturingTypes != null) {
-            // check include entries
-            containsErrors |= containsDuplicatedEntries(lambdaCapturingTypes, file);
-
-            for (var entry : lambdaCapturingTypes) {
-                containsErrors |= checkTypeReachable(entry, file);
-                containsErrors |= containsEntriesNotFromLibrary(entry, file);
-            }
-        }
-
-        return containsErrors;
-    }
-
-    private boolean serializationConfigFileContainsErrors(File file) throws FileNotFoundException {
-        Scanner sc = new Scanner(file);
-        return sc.nextLine().contains("[") ? checkOldSerializationConfig(file) : checkNewSerializationConfig(file);
-    }
-
-    private boolean proxyConfigFileContainsErrors(File file) {
-        List<Map<String, Object>> entries = getConfigEntries(file);
-
-        if (entries.isEmpty()) {
-            System.out.println("ERROR: empty proxy-config detected: " + file.toURI());
-            return true;
-        }
-
-        boolean containsErrors = containsDuplicatedEntries(entries, file);
-        for (var entry : entries) {
-            containsErrors |= checkTypeReachable(entry, file);
-            containsErrors |= containsEntriesNotFromLibrary(entry, file);
-        }
-
-        return containsErrors;
-    }
-
-    private boolean jniConfigFileContainsErrors(File file) {
-        List<Map<String, Object>> entries = getConfigEntries(file);
-
-        if (entries.isEmpty()) {
-            System.out.println("ERROR: empty jni-config detected: " + file.toURI());
-            return true;
-        }
-
-        boolean containsErrors = containsDuplicatedEntries(entries, file);
-        for (var entry : entries) {
-            containsErrors |= checkTypeReachable(entry, file);
-            containsErrors |= containsEntriesNotFromLibrary(entry, file);
-        }
-
-        return containsErrors;
-    }
-
-    private boolean containsDuplicatedEntries(List<Map<String, Object>> entries, File file) {
-        Map<Map<String, Object>, Integer> duplicates = new HashMap<>();
+        Map<JsonNode, Integer> duplicates = new LinkedHashMap<>();
         entries.forEach(entry -> duplicates.merge(entry, 1, Integer::sum));
 
-        // print all entries that appears more than once
         boolean containsDuplicates = false;
-        for (var entry : duplicates.entrySet()) {
+        for (Map.Entry<JsonNode, Integer> entry : duplicates.entrySet()) {
             if (entry.getValue() > 1) {
-                String entryName = getEntryName(entry.getKey());
-                if (entryName == null) {
-                    entryName = entry.getKey().toString();
-                }
-
                 containsDuplicates = true;
-                System.out.println("ERROR: In file " + file.toURI() + " there is a duplicated entry " + entryName);
+                System.out.println("ERROR: In file " + file.toURI() + " there is a duplicated " + sectionName +
+                        " entry " + describeEntry(entry.getKey()));
             }
         }
 
         return containsDuplicates;
     }
 
-    private boolean checkTypeReachable(Map<String, Object> entry, File file) {
-        String typeReachable = getEntryTypeReachable(entry);
-        String entryName = getEntryName(entry);
-
-        // check if condition entry exists
-        if (typeReachable == null) {
-            System.out.println("ERROR: In file " + file.toURI() + " there is an entry " + entry + " with missing condition field.");
-            return true;
+    private String describeEntry(JsonNode entry) {
+        if (entry == null || entry.isMissingNode() || entry.isNull()) {
+            return "<missing>";
         }
-
-        // check if both entryName and typeReachable are from PREDEFINED_ALLOWED_PACKAGES since there are some cases where this is allowed
-        if (entryName != null && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(typeReachable::contains) && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(entryName::contains)) {
-            return false;
+        if (entry.hasNonNull("name")) {
+            return entry.get("name").asText();
         }
-
-        // check if typeReachable exists inside condition entry
-        if (ILLEGAL_TYPE_VALUES.stream().anyMatch(typeReachable::startsWith)) {
-            // get name of entry that misses typeReachable. If name cannot be determinate, write whole entry
-            if (entryName == null) {
-                entryName = entry.toString();
+        if (entry.hasNonNull("glob")) {
+            return entry.get("glob").asText();
+        }
+        if (entry.hasNonNull("bundle")) {
+            return entry.get("bundle").asText();
+        }
+        if (entry.hasNonNull("class")) {
+            return entry.get("class").asText();
+        }
+        if (entry.hasNonNull("method")) {
+            return entry.get("method").asText();
+        }
+        if (entry.has("type")) {
+            JsonNode type = entry.get("type");
+            if (type.isTextual()) {
+                return type.asText();
             }
-
-            System.out.println("ERROR: In file " + file.toURI() + " entry: " + entryName + " contains illegal typeReachable value. Field" +
-                    " typeReachable cannot be any of the following values: " + ILLEGAL_TYPE_VALUES);
-            return true;
+            if (type.has("proxy")) {
+                return type.get("proxy").toString();
+            }
+            if (type.has("lambda")) {
+                return type.get("lambda").toString();
+            }
         }
-
-        return false;
+        return entry.toString();
     }
 
-    private boolean containsEntriesNotFromLibrary(Map<String, Object> entry, File file) {
-        String typeReachable = getEntryTypeReachable(entry);
-        String entryName = getEntryName(entry);
-
-        // this is not a valid situation since every entry must have typeReachable
-        if (typeReachable == null) {
-            return true;
-        }
-
-        // valid case is when both typeReachable and entryName are from ALLOWED_PACKAGES
-        if (entryName != null && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(typeReachable::contains) && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(entryName::contains)) {
-            return false;
-        }
-
-        // if typeReachable is not from allowedPackages we have to report an error
-        if (this.allowedPackages.stream().noneMatch(typeReachable::contains)) {
-            System.out.println("ERROR: In file " + file.toURI() + "\n" +
-                    "Entry: " + entryName + "\n" +
-                    "TypeReachable: " + typeReachable + "\n" +
-                    "doesn't belong to any of the specified packages: " + this.allowedPackages + "\n");
-            return true;
-        }
-
-        return false;
-    }
-
-    @SuppressWarnings("unchecked")
-    private String getEntryTypeReachable(Map<String, Object> entry) {
-        Map<String, Object> condition = (Map<String, Object>) entry.get("condition");
-
-        // check if condition entry exists
-        if (condition == null) {
-            return null;
-        }
-
-        return (String) condition.get("typeReachable");
-    }
-
-    private String getEntryName(Map<String, Object> entry) {
-        return (String) entry.get("name");
-    }
-
-    private boolean listNullOrEmpty(List<?> list) {
-        return list == null || list.isEmpty();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<String> getAllowedPackages() {
-        File indexFile = getIndexFile().get().getAsFile();
-        String groupId = coordinates.group();
-        String artifactId = coordinates.artifact();
-        String requestedVersion = coordinates.version();
-    
-        if (!indexFile.exists()) {
-            throw new IllegalStateException("Missing artifact-level index.json: " + indexFile.toURI() + " for coordinates " + coordinates);
-        }
-    
-        Object parsed = new JsonSlurper().parse(indexFile);
-        if (!(parsed instanceof List)) {
-            throw new IllegalStateException("Invalid artifact-level index.json (expected array): " + indexFile.toURI());
-        }
-    
-        List<Map<String, Object>> entries = ((List<Object>) parsed).stream()
-                .map(e -> (Map<String, Object>) e)
-                .toList();
-    
-        // First try exact match on metadata-version (for callers that pass a metadata-version)
-        Optional<Map<String, Object>> byMetadataVersion = entries.stream()
-                .filter(e -> Objects.equals(requestedVersion, e.get("metadata-version")))
-                .findFirst();
-    
-        // Otherwise try to match by a library version listed in tested-versions
-        Map<String, Object> match = byMetadataVersion.orElseGet(() ->
-                entries.stream()
-                        .filter(e -> {
-                            Object tv = e.get("tested-versions");
-                            return tv instanceof List<?> versions && versions.contains(requestedVersion);
-                        })
-                        .findFirst()
-                        .orElse(null)
-        );
-    
-        if (match == null) {
-            List<String> metadataVersions = entries.stream()
-                    .map(e -> (String) e.get("metadata-version"))
-                    .filter(Objects::nonNull)
-                    .toList();
-            List<String> testedVersions = entries.stream()
-                    .map(e -> {
-                        Object tv = e.get("tested-versions");
-                        if (tv instanceof List<?> list) {
-                            return list.stream().map(Object::toString).collect(Collectors.toList());
-                        }
-                        return Collections.<String>emptyList();
-                    })
-                    .flatMap(List::stream)
-                    .distinct()
-                    .sorted()
-                    .toList();
-    
-            throw new IllegalStateException(
-                    "Missing index entry for " + groupId + ":" + artifactId +
-                    " matching version=" + requestedVersion +
-                    " in " + indexFile.toURI() +
-                    ". Known metadata-versions=" + metadataVersions +
-                    ", tested-versions=" + testedVersions);
-        }
-    
-        Object ap = match.get("allowed-packages");
-        if (ap instanceof List) {
-            return (List<String>) ap;
-        }
-        throw new IllegalStateException(
-                "Missing or invalid allowed-packages for " + groupId + ":" + artifactId +
-                " (metadata-version=" + match.get("metadata-version") + ") in " + indexFile.toURI());
-    }
 }
