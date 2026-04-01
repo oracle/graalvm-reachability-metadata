@@ -36,12 +36,10 @@ class ValidateLibraryStatsTaskTests {
                 {
                   "entries": {
                     "com.example:demo": {
-                      "artifactId": "demo",
                       "metadataVersions": {
                         "1.0.0": {
                           "versions": [
                             {
-                              "coordinate": "com.example:demo:1.0.0",
                               "dynamicAccess": {
                                 "breakdown": {
                                   "reflection": {
@@ -102,15 +100,14 @@ class ValidateLibraryStatsTaskTests {
     }
 
     @Test
-    void validateRejectsArtifactIdentityMismatch() throws IOException {
+    void validateRejectsOrphanArtifactEntry() throws IOException {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
                 """
                 {
                   "entries": {
-                    "com.example:demo": {
-                      "artifactId": "other",
+                    "com.example:other": {
                       "metadataVersions": {
                         "1.0.0": {
                           "versions": []
@@ -124,7 +121,7 @@ class ValidateLibraryStatsTaskTests {
 
         TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
         assertThatThrownBy(task::validate)
-                .hasMessageContaining("artifactId mismatch");
+                .hasMessageContaining("Orphan artifact entry");
     }
 
     @Test
@@ -136,7 +133,6 @@ class ValidateLibraryStatsTaskTests {
                 {
                   "entries": {
                     "com.example:demo": {
-                      "artifactId": "demo",
                       "metadataVersions": {
                         "1.0.0": {
                           "versions": []
@@ -176,7 +172,6 @@ class ValidateLibraryStatsTaskTests {
                           "versions": [
                             {
                               "version": "1.0.0",
-                              "coordinate": "com.example:demo:1.0.0",
                               "libraryCoverage": {
                                 "method": {
                                   "covered": 3,
@@ -212,8 +207,7 @@ class ValidateLibraryStatsTaskTests {
                             }
                           ]
                         }
-                      },
-                      "artifactId": "demo"
+                      }
                     }
                   }
                 }
@@ -223,6 +217,131 @@ class ValidateLibraryStatsTaskTests {
         TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
         assertThatThrownBy(task::validate)
                 .hasMessageContaining("not normalized and sorted");
+    }
+
+    @Test
+    void validateRejectsRatioMismatchBeyondTolerance() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": [
+                            {
+                              "dynamicAccess": {
+                                "breakdown": {
+                                  "reflection": {
+                                    "coveredCalls": 1,
+                                    "coverageRatio": 0.5,
+                                    "totalCalls": 2
+                                  }
+                                },
+                                "coveredCalls": 1,
+                                "coverageRatio": 0.25,
+                                "totalCalls": 2
+                              },
+                              "libraryCoverage": {
+                                "instruction": {
+                                  "covered": 2,
+                                  "missed": 1,
+                                  "ratio": 0.666667,
+                                  "total": 3
+                                },
+                                "line": {
+                                  "covered": 1,
+                                  "missed": 1,
+                                  "ratio": 0.5,
+                                  "total": 2
+                                },
+                                "method": {
+                                  "covered": 3,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 3
+                                }
+                              },
+                              "version": "1.0.0"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
+        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatThrownBy(task::validate)
+                .hasMessageContaining("Ratio mismatch");
+    }
+
+    @Test
+    void validateAcceptsRatioWithinTolerance() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": [
+                            {
+                              "dynamicAccess": {
+                                "breakdown": {
+                                  "reflection": {
+                                    "coveredCalls": 1,
+                                    "coverageRatio": 0.5000009,
+                                    "totalCalls": 2
+                                  }
+                                },
+                                "coveredCalls": 1,
+                                "coverageRatio": 0.5000009,
+                                "totalCalls": 2
+                              },
+                              "libraryCoverage": {
+                                "instruction": {
+                                  "covered": 2,
+                                  "missed": 1,
+                                  "ratio": 0.6666673,
+                                  "total": 3
+                                },
+                                "line": {
+                                  "covered": 1,
+                                  "missed": 1,
+                                  "ratio": 0.5000009,
+                                  "total": 2
+                                },
+                                "method": {
+                                  "covered": 3,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 3
+                                }
+                              },
+                              "version": "1.0.0"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
+        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatCode(task::validate).doesNotThrowAnyException();
     }
 
     private Project createProjectSkeleton() throws IOException {
