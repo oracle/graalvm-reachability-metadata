@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Gradle task to fix test failures during native-image runs.
@@ -89,12 +88,7 @@ public abstract class FixTestNativeImageRun extends DefaultTask {
         Files.createDirectories(metadataDirectory);
 
         // Ensure the tests build.gradle has an agent block; if not, create user-code-filter.json and add the agent block.
-        Path buildFilePath = testsDirectory.resolve("build.gradle");
-        if (!Files.isRegularFile(buildFilePath)) {
-            throw new GradleException("Cannot find tests build file at: " + buildFilePath);
-        }
-        String buildGradle = Files.readString(buildFilePath, java.nio.charset.StandardCharsets.UTF_8);
-        boolean hasAgentBlock = Pattern.compile("(?s)\\bagent\\s*\\{").matcher(buildGradle).find();
+        boolean hasAgentBlock = MetadataGenerationUtils.hasAgentConfigBlock(testsDirectory);
         if (!hasAgentBlock) {
             MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, List.of(baseCoords.group()));
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);

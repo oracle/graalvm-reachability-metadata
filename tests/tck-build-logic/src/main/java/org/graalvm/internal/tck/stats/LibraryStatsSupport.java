@@ -61,6 +61,13 @@ public final class LibraryStatsSupport {
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
     private static final int RATIO_SCALE = 6;
+    private static final Map<String, String> DYNAMIC_ACCESS_TYPE_ALIASES = Map.of(
+            "reflection", "reflection",
+            "resource", "resources",
+            "resources", "resources",
+            "jni", "foreign",
+            "foreign", "foreign"
+    );
 
     private LibraryStatsSupport() {
     }
@@ -122,16 +129,11 @@ public final class LibraryStatsSupport {
     public static LibraryStatsModels.MetadataVersionStats metadataVersionStats(
             LibraryStatsModels.LibraryStats libraryStats,
             String artifact,
-            String artifactId,
             String metadataVersion
     ) {
         LibraryStatsModels.ArtifactStats artifactStats = libraryStats.entries().get(artifact);
         if (artifactStats == null) {
             return emptyMetadataVersionStats();
-        }
-        if (!artifactId.equals(artifactStats.artifactId())) {
-            throw new GradleException("Invalid artifactId for " + artifact + ": expected " + artifactId + " but found "
-                    + artifactStats.artifactId());
         }
         LibraryStatsModels.MetadataVersionStats metadataVersionStats = artifactStats.metadataVersions().get(metadataVersion);
         if (metadataVersionStats == null) {
@@ -143,7 +145,6 @@ public final class LibraryStatsSupport {
     public static LibraryStatsModels.LibraryStats withMetadataVersionStats(
             LibraryStatsModels.LibraryStats libraryStats,
             String artifact,
-            String artifactId,
             String metadataVersion,
             LibraryStatsModels.MetadataVersionStats metadataVersionStats
     ) {
@@ -153,18 +154,13 @@ public final class LibraryStatsSupport {
         }
 
         LibraryStatsModels.ArtifactStats existingArtifactStats = entries.get(artifact);
-        if (existingArtifactStats != null && !artifactId.equals(existingArtifactStats.artifactId())) {
-            throw new GradleException("Invalid artifactId for " + artifact + ": expected " + existingArtifactStats.artifactId()
-                    + " but received " + artifactId);
-        }
-
         NavigableMap<String, LibraryStatsModels.MetadataVersionStats> metadataVersions = new TreeMap<>();
         if (existingArtifactStats != null && existingArtifactStats.metadataVersions() != null) {
             metadataVersions.putAll(existingArtifactStats.metadataVersions());
         }
         metadataVersions.put(metadataVersion, normalizeMetadataVersionStats(metadataVersionStats));
 
-        entries.put(artifact, new LibraryStatsModels.ArtifactStats(artifactId, metadataVersions));
+        entries.put(artifact, new LibraryStatsModels.ArtifactStats(metadataVersions));
         return new LibraryStatsModels.LibraryStats(entries);
     }
 
@@ -185,14 +181,6 @@ public final class LibraryStatsSupport {
         return Coordinates.parse(coordinate).version();
     }
 
-    public static String artifactIdFromArtifact(String artifact) {
-        int separatorIndex = artifact.indexOf(':');
-        if (separatorIndex < 0 || separatorIndex == artifact.length() - 1) {
-            throw new GradleException("Invalid artifact identifier " + artifact);
-        }
-        return artifact.substring(separatorIndex + 1);
-    }
-
     public static LibraryStatsModels.VersionStats buildVersionStats(
             String coordinate,
             List<Path> libraryJars,
@@ -203,7 +191,6 @@ public final class LibraryStatsSupport {
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
         ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
         return new LibraryStatsModels.VersionStats(
-                coordinate,
                 versionFromCoordinate(coordinate),
                 parsedDynamicAccess.dynamicAccessStats(),
                 new LibraryStatsModels.LibraryCoverage(
@@ -275,7 +262,7 @@ public final class LibraryStatsSupport {
                 }
             }
 
-            entries.put(artifact, new LibraryStatsModels.ArtifactStats(artifactStats.artifactId(), metadataVersions));
+            entries.put(artifact, new LibraryStatsModels.ArtifactStats(metadataVersions));
         }
 
         return new LibraryStatsModels.LibraryStats(entries);
@@ -378,7 +365,7 @@ public final class LibraryStatsSupport {
         if (!matcher.matches()) {
             return;
         }
-        String reportType = matcher.group(1).toLowerCase(Locale.ROOT);
+        String reportType = normalizeDynamicAccessReportType(matcher.group(1), path);
 
         try (InputStream inputStream = Files.newInputStream(path)) {
             Map<String, List<String>> report = OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
@@ -405,6 +392,18 @@ public final class LibraryStatsSupport {
         } catch (IOException e) {
             throw new GradleException("Failed to parse dynamic access report " + path, e);
         }
+    }
+
+    private static String normalizeDynamicAccessReportType(String rawType, Path path) {
+        String normalizedRawType = rawType.toLowerCase(Locale.ROOT);
+        String normalizedType = DYNAMIC_ACCESS_TYPE_ALIASES.get(normalizedRawType);
+        if (normalizedType != null) {
+            return normalizedType;
+        }
+        throw new GradleException(
+                "Unsupported dynamic access report type '" + rawType + "' in " + path
+                        + ". Supported types are reflection, resources, and foreign."
+        );
     }
 
     private static ParsedStackFrame parseStackFrame(String rawFrame) {
