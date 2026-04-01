@@ -257,6 +257,32 @@ List<Map<String, Object>> expandNewLibraryVersionCompatibilityMatrix(List<Map<St
     include
 }
 
+List<Map<String, Object>> expandChangedTestedVersionsMatrix(List<Map<String, Object>> entries) {
+    def defaults = matrixDefaultsFor("generateChangedTestedVersionsMatrix")
+    List<String> javaVersions = defaults["version"]
+    List<String> operatingSystems = defaults["os"]
+
+    List<Map<String, Object>> include = []
+    entries.each { Map<String, Object> entry ->
+        List<Map<String, Object>> matrixEntries = entry.containsKey("entries")
+                ? (entry["entries"] as List<Map<String, Object>>)
+                : [entry]
+        matrixEntries.each { Map<String, Object> matrixEntry ->
+            javaVersions.each { String javaVersion ->
+                operatingSystems.each { String operatingSystem ->
+                    include.add([
+                            "coordinates": matrixEntry["coordinates"],
+                            "versions": matrixEntry["versions"],
+                            "version": javaVersion,
+                            "os": operatingSystem
+                    ])
+                }
+            }
+        }
+    }
+    include
+}
+
 // gradle generateMatrixMatchingCoordinates -Pcoordinates=<maven-coordinates>
 Provider<Task> generateMatrixMatchingCoordinates = tasks.register("generateMatrixMatchingCoordinates", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with all matching coordinates")
@@ -306,6 +332,31 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
             println "No changed coordinates were found!"
         }
 
+
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
+// gradle generateChangedTestedVersionsMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedTestedVersionsMatrix = tasks.register("generateChangedTestedVersionsMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with artifact coordinates and newly added tested versions from changed metadata index files")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        String base = project.property("baseCommit")
+        String head = project.findProperty("newCommit") ?: "HEAD"
+        List<Map<String, Object>> changedIndexEntries = tck.diffIndexTestedVersions(base, head)
+
+        boolean noneFound = changedIndexEntries.isEmpty()
+        List<Map<String, Object>> include = noneFound ? [] : expandChangedTestedVersionsMatrix(changedIndexEntries)
+        def matrix = [include: include]
+        if (noneFound) {
+            println "No changed metadata index tested-version additions were found!"
+        }
 
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
         writeGithubOutput("none-found", noneFound.toString())
