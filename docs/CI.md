@@ -25,6 +25,9 @@ Workflows testing metadata using [ci.json](../ci.json):
 - Test changed metadata ([.github/workflows/test-changed-metadata.yml](../.github/workflows/test-changed-metadata.yml))
   - Triggers: PRs to master touching [metadata/](metadata/) or [tests/src/](tests/src/).
   - Uses: generateChangedCoordinatesMatrix with base/head SHAs to test only what changed. Pulls allowed images, disables Docker networking, validates config, then runs tests.
+- Test new library versions ([.github/workflows/test-new-library-versions.yml](../.github/workflows/test-new-library-versions.yml))
+  - Triggers: PRs to master touching artifact-level [metadata/**/index.json](../metadata/).
+  - Uses: [`generateChangedTestedVersionsMatrix`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) to compute only newly added [`tested-versions`](../metadata/com.google.protobuf/protobuf-java-util/index.json) from the base/head diff and pairs them with the matching [`metadata-version`](../metadata/com.google.protobuf/protobuf-java-util/index.json), then runs [`run-consecutive-tests.sh`](../.github/workflows/scripts/run-consecutive-tests.sh) only for those added versions.
 - Test changed build logic ([.github/workflows/test-changed-infrastructure.yml](../.github/workflows/test-changed-infrastructure.yml))
   - Triggers: PRs to master touching [tests/tck-build-logic/](tests/tck-build-logic/), [gradle/](gradle/), [build.gradle](../build.gradle), [settings.gradle](../settings.gradle), or [gradle.properties](../gradle.properties).
   - Uses: generateInfrastructureChangedCoordinatesMatrix. Pulls allowed images, disables Docker networking, validates config, then runs tests.

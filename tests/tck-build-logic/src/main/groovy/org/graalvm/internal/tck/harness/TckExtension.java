@@ -190,33 +190,32 @@ public abstract class TckExtension {
             return changedTestFiles.stream().anyMatch(f -> f.startsWith(testDir));
         }).distinct().collect(Collectors.toCollection(ArrayList::new));
 
-        // For changed metadata/*/*/index.json files, detect changed index entries by metadata-version
-        // and map them to tested coordinates.
-        Set<String> coordinatesFromIndexEntries = new LinkedHashSet<>();
-        changedMetadataFiles.stream()
-                .filter(this::isMetadataIndexFile)
-                .forEach(indexPath -> coordinatesFromIndexEntries.addAll(diffCoordinatesFromChangedIndexEntries(indexPath, baseCommit, newCommit)));
-
-        coordinatesFromIndexEntries.forEach(coord -> {
-            if (!changedCoordinates.contains(coord)) {
-                changedCoordinates.add(coord);
-            }
-        });
-
         return changedCoordinates;
     }
 
     /**
-     * Returns a list of changed coordinates based on index.json files modified between baseCommit and newCommit.
+     * Returns a list of changed artifact coordinates based on artifact-level index.json files modified between baseCommit and newCommit.
      *
-     * @return List of coordinates (e.g., "org.flywaydb:flyway-core" or "org.example:library:1.0.0")
+     * @return List of coordinates (e.g., "org.flywaydb:flyway-core" or "org.example:library")
      */
     public List<String> diffIndexCoordinates(String baseCommit, String newCommit) {
         return diffFiles(baseCommit, newCommit, "ACMRT").stream()
                 .map(path -> repoRoot().relativize(path).toString().replace('\\', '/'))
-                .map(this::indexPathToCoordinate) // Extract coordinate from path
-                .filter(Objects::nonNull)      // Remove paths that weren't index files
+                .map(this::indexPathToCoordinate)
+                .filter(Objects::nonNull)
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns changed artifact coordinates paired with only newly added tested-versions from artifact-level index.json diffs.
+     */
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> diffIndexTestedVersions(String baseCommit, String newCommit) {
+        return diffFiles(baseCommit, newCommit, "ACMRT").stream()
+                .map(path -> repoRoot().relativize(path).toString().replace('\\', '/'))
+                .map(relativePath -> diffIndexTestedVersionsEntry(baseCommit, newCommit, relativePath))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -234,9 +233,9 @@ public abstract class TckExtension {
     }
 
     /**
-     * Maps an index.json file path to its corresponding coordinate string.
+     * Maps an artifact-level metadata index.json file path to its corresponding coordinate string.
      *
-     * @return the coordinate string (G:A or G:A:V), or null if not a match
+     * @return the coordinate string (G:A), or null if not a match
      */
     private String indexPathToCoordinate(String path) {
         Pattern pattern = Pattern.compile("(?:metadata|tests/src)/([^/]+)/([^/]+)(?:/([^/]+))?/index\\.json");
@@ -254,75 +253,49 @@ public abstract class TckExtension {
         return null;
     }
 
-    /**
-     * Returns {@code true} if the given path is metadata/<group>/<artifact>/index.json.
-     */
-    private boolean isMetadataIndexFile(Path path) {
-        if (path == null) {
-            return false;
-        }
-        Path relative;
-        try {
-            relative = repoRoot().relativize(path.normalize());
-        } catch (IllegalArgumentException ex) {
-            return false;
-        }
-        return relative.getNameCount() == 4
-                && "metadata".equals(relative.getName(0).toString())
-                && "index.json".equals(relative.getName(3).toString());
-    }
-
-    /**
-     * Computes tested coordinates affected by changed entries in a metadata index.json file.
-     * Entry identity is based on {@code metadata-version}.
-     */
     @SuppressWarnings("unchecked")
-    private List<String> diffCoordinatesFromChangedIndexEntries(Path indexPath, String baseCommit, String newCommit) {
-        Path relative = repoRoot().relativize(indexPath.normalize());
-        String relativePath = relative.toString().replace("\\", "/");
-        if (!isMetadataIndexFile(indexPath)) {
-            return Collections.emptyList();
+    private Map<String, Object> diffIndexTestedVersionsEntry(String baseCommit, String newCommit, String relativePath) {
+        String coordinates = indexPathToCoordinate(relativePath);
+        if (coordinates == null) {
+            return null;
         }
 
-        List<Map<String, ?>> baseEntries = readIndexFileFromCommit(baseCommit, relativePath);
-        List<Map<String, ?>> headEntries = readIndexFileFromCommit(newCommit, relativePath);
+        List<Map<String, ?>> baseEntries = readJsonListFromCommit(baseCommit, relativePath);
+        List<Map<String, ?>> headEntries = readJsonListFromCommit(newCommit, relativePath);
 
-        Map<String, Map<String, ?>> byMetaBase = indexByMetadataVersion(baseEntries);
-        Map<String, Map<String, ?>> byMetaHead = indexByMetadataVersion(headEntries);
+        Map<String, Set<String>> baseByMetadataVersion = testedVersionsByMetadataVersion(baseEntries);
+        Map<String, Set<String>> headByMetadataVersion = testedVersionsByMetadataVersion(headEntries);
 
-        Set<String> changedMetadataVersions = new LinkedHashSet<>();
-        Set<String> allMetaVersions = new LinkedHashSet<>();
-        allMetaVersions.addAll(byMetaBase.keySet());
-        allMetaVersions.addAll(byMetaHead.keySet());
-
-        for (String metadataVersion : allMetaVersions) {
-            Map<String, ?> baseEntry = byMetaBase.get(metadataVersion);
-            Map<String, ?> headEntry = byMetaHead.get(metadataVersion);
-            if (!Objects.equals(baseEntry, headEntry)) {
-                changedMetadataVersions.add(metadataVersion);
+        List<Map<String, Object>> changedMetadataVersions = new ArrayList<>();
+        for (Map.Entry<String, Set<String>> headEntry : headByMetadataVersion.entrySet()) {
+            String metadataVersion = headEntry.getKey();
+            Set<String> baseVersions = baseByMetadataVersion.getOrDefault(metadataVersion, Collections.emptySet());
+            List<String> addedVersions = headEntry.getValue().stream()
+                    .filter(testedVersion -> !baseVersions.contains(testedVersion))
+                    .toList();
+            if (!addedVersions.isEmpty()) {
+                changedMetadataVersions.add(Map.of(
+                        "coordinates", coordinates + ":" + metadataVersion,
+                        "versions", addedVersions
+                ));
             }
         }
 
-        Set<String> changedCoordinates = new LinkedHashSet<>();
-        for (String metadataVersion : changedMetadataVersions) {
-            Map<String, ?> headEntry = byMetaHead.get(metadataVersion);
-            if (headEntry == null) {
-                // Entry removed from HEAD. Use base entry to keep tests aligned with the changed item.
-                headEntry = byMetaBase.get(metadataVersion);
-            }
-            if (headEntry == null) {
-                continue;
-            }
-            String group = relative.getName(1).toString();
-            String artifact = relative.getName(2).toString();
-            changedCoordinates.add(group + ":" + artifact + ":" + metadataVersion);
+        if (changedMetadataVersions.isEmpty()) {
+            return null;
         }
 
-        return new ArrayList<>(changedCoordinates);
+        if (changedMetadataVersions.size() == 1) {
+            return changedMetadataVersions.get(0);
+        }
+
+        return Map.of(
+                "entries", changedMetadataVersions
+        );
     }
 
     @SuppressWarnings("unchecked")
-    private List<Map<String, ?>> readIndexFileFromCommit(String commit, String relativePath) {
+    private List<Map<String, ?>> readJsonListFromCommit(String commit, String relativePath) {
         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
         ByteArrayOutputStream stderr = new ByteArrayOutputStream();
         var result = getExecOperations().exec(spec -> {
@@ -349,19 +322,25 @@ public abstract class TckExtension {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Map<String, ?>> indexByMetadataVersion(List<Map<String, ?>> entries) {
-        Map<String, Map<String, ?>> indexed = new LinkedHashMap<>();
+    private Map<String, Set<String>> testedVersionsByMetadataVersion(List<Map<String, ?>> entries) {
+        Map<String, Set<String>> testedVersions = new LinkedHashMap<>();
         for (Map<String, ?> entry : entries) {
             if (entry == null) {
                 continue;
             }
-            Object metadataVersionRaw = entry.get("metadata-version");
-            if (metadataVersionRaw == null) {
+            Object metadataVersion = entry.get("metadata-version");
+            Object testedVersionsRaw = entry.get("tested-versions");
+            if (!(metadataVersion instanceof String metadataVersionString) || !(testedVersionsRaw instanceof List<?> versions)) {
                 continue;
             }
-            indexed.put(metadataVersionRaw.toString(), entry);
+            testedVersions.put(
+                    metadataVersionString,
+                    versions.stream()
+                            .map(Object::toString)
+                            .collect(Collectors.toCollection(LinkedHashSet::new))
+            );
         }
-        return indexed;
+        return testedVersions;
     }
 
     private Object parseTextJson(String json) {

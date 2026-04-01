@@ -1,0 +1,118 @@
+name: "Test new library versions"
+
+on:
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
+  cancel-in-progress: true
+
+jobs:
+  get-changed-index-metadata:
+    name: "📋 Get a list of changed metadata index files"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      none-found: ${{ steps.set-matrix.outputs.none-found }}
+      relevant-files-changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "🔎 Detect changed index files"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'metadata/**/index.json'
+
+      - name: "🔧 Setup Java"
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🕸️ Populate matrix"
+        id: set-matrix
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          ./gradlew generateChangedTestedVersionsMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+
+  test-new-library-versions:
+    name: "🧪 ${{ matrix.coordinates }} tested-version diff (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    if: needs.get-changed-index-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-index-metadata.result == 'success' && needs.get-changed-index-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 480
+    needs: get-changed-index-metadata
+
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.get-changed-index-metadata.outputs.matrix) }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "🛠️ Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🔧 Download GraalVM for metadata testing"
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: 'graalvm'
+          java-version: ${{ matrix.version }}
+          set-java-home: 'false'
+          native-image-job-reports: 'true'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Pull allowed docker images"
+        run: |
+          ./gradlew pullAllowedDockerImages -Pcoordinates=${{ matrix.coordinates }}
+
+      - name: "Disable docker networking"
+        run: bash ./.github/workflows/scripts/disable-docker.sh
+
+      - name: "🔎 Check metadata files content"
+        run: |
+          ./gradlew checkMetadataFiles -Pcoordinates=${{ matrix.coordinates }}
+
+      - name: "🧪 Run '${{ matrix.coordinates }}' tests for newly added tested versions"
+        run: |
+          GAV_COORDINATES="${{ matrix.coordinates }}"
+          VERSIONS_JSON='${{ toJson(matrix.versions) }}'
+
+          bash ./.github/workflows/scripts/run-consecutive-tests.sh "$GAV_COORDINATES" "$VERSIONS_JSON" 2>&1 | tee test_results.txt || true
+
+          if grep -q "^FAILED" test_results.txt; then
+            FAILED_VERSION=$(grep "^FAILED" test_results.txt | head -n 1 | awk -F'[][]' '{print $4}')
+            echo "Tests failed for version $FAILED_VERSION"
+            exit 1
+          fi
+
+  all-new-library-version-tests-passed:
+    name: "🧪 All new library version tests have passed"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 1
+    needs: [get-changed-index-metadata, test-new-library-versions]
+    if: always()
+    steps:
+      - name: "All tests passed"
+        if: needs.test-new-library-versions.result == 'success' || needs.get-changed-index-metadata.outputs.relevant-files-changed == 'false'
+        run: exit 0
+
+      - name: "Some tests failed"
+        if: needs.test-new-library-versions.result == 'failure'
+        run: exit 1
