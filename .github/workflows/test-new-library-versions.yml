@@ -1,4 +1,4 @@
-name: "Test changed index metadata"
+name: "Test new library versions"
 
 on:
   pull_request:
@@ -42,9 +42,9 @@ jobs:
         id: set-matrix
         if: steps.filter.outputs.changed == 'true'
         run: |
-          ./gradlew generateChangedIndexMetadataMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          ./gradlew generateChangedTestedVersionsMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
-  test-changed-index-metadata:
+  test-new-library-versions:
     name: "🧪 ${{ matrix.coordinates }} tested-version diff (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-changed-index-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-index-metadata.result == 'success' && needs.get-changed-index-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
@@ -102,17 +102,17 @@ jobs:
             exit 1
           fi
 
-  all-index-metadata-passed:
-    name: "🧪 All index metadata tests have passed"
+  all-new-library-version-tests-passed:
+    name: "🧪 All new library version tests have passed"
     runs-on: "ubuntu-22.04"
     timeout-minutes: 1
-    needs: [get-changed-index-metadata, test-changed-index-metadata]
+    needs: [get-changed-index-metadata, test-new-library-versions]
     if: always()
     steps:
       - name: "All tests passed"
-        if: needs.test-changed-index-metadata.result == 'success' || needs.get-changed-index-metadata.outputs.relevant-files-changed == 'false'
+        if: needs.test-new-library-versions.result == 'success' || needs.get-changed-index-metadata.outputs.relevant-files-changed == 'false'
         run: exit 0
 
       - name: "Some tests failed"
-        if: needs.test-changed-index-metadata.result == 'failure'
+        if: needs.test-new-library-versions.result == 'failure'
         run: exit 1

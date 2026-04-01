@@ -257,21 +257,26 @@ List<Map<String, Object>> expandNewLibraryVersionCompatibilityMatrix(List<Map<St
     include
 }
 
-List<Map<String, Object>> expandChangedIndexMetadataMatrix(List<Map<String, Object>> entries) {
-    def defaults = matrixDefaultsFor("generateChangedIndexMetadataMatrix")
+List<Map<String, Object>> expandChangedTestedVersionsMatrix(List<Map<String, Object>> entries) {
+    def defaults = matrixDefaultsFor("generateChangedTestedVersionsMatrix")
     List<String> javaVersions = defaults["version"]
     List<String> operatingSystems = defaults["os"]
 
     List<Map<String, Object>> include = []
     entries.each { Map<String, Object> entry ->
-        javaVersions.each { String javaVersion ->
-            operatingSystems.each { String operatingSystem ->
-                include.add([
-                        "coordinates": entry["coordinates"],
-                        "versions": entry["versions"],
-                        "version": javaVersion,
-                        "os": operatingSystem
-                ])
+        List<Map<String, Object>> matrixEntries = entry.containsKey("entries")
+                ? (entry["entries"] as List<Map<String, Object>>)
+                : [entry]
+        matrixEntries.each { Map<String, Object> matrixEntry ->
+            javaVersions.each { String javaVersion ->
+                operatingSystems.each { String operatingSystem ->
+                    include.add([
+                            "coordinates": matrixEntry["coordinates"],
+                            "versions": matrixEntry["versions"],
+                            "version": javaVersion,
+                            "os": operatingSystem
+                    ])
+                }
             }
         }
     }
@@ -333,8 +338,8 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
     }
 }
 
-// gradle generateChangedIndexMetadataMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
-Provider<Task> generateChangedIndexMetadataMatrix = tasks.register("generateChangedIndexMetadataMatrix", DefaultTask) { task ->
+// gradle generateChangedTestedVersionsMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedTestedVersionsMatrix = tasks.register("generateChangedTestedVersionsMatrix", DefaultTask) { task ->
     task.setDescription("Returns matrix definition populated with artifact coordinates and newly added tested versions from changed metadata index files")
     task.setGroup(METADATA_GROUP)
     task.doFirst {
@@ -347,7 +352,7 @@ Provider<Task> generateChangedIndexMetadataMatrix = tasks.register("generateChan
         List<Map<String, Object>> changedIndexEntries = tck.diffIndexTestedVersions(base, head)
 
         boolean noneFound = changedIndexEntries.isEmpty()
-        List<Map<String, Object>> include = noneFound ? [] : expandChangedIndexMetadataMatrix(changedIndexEntries)
+        List<Map<String, Object>> include = noneFound ? [] : expandChangedTestedVersionsMatrix(changedIndexEntries)
         def matrix = [include: include]
         if (noneFound) {
             println "No changed metadata index tested-version additions were found!"

@@ -266,23 +266,31 @@ public abstract class TckExtension {
         Map<String, Set<String>> baseByMetadataVersion = testedVersionsByMetadataVersion(baseEntries);
         Map<String, Set<String>> headByMetadataVersion = testedVersionsByMetadataVersion(headEntries);
 
-        Set<String> addedVersions = new LinkedHashSet<>();
+        List<Map<String, Object>> changedMetadataVersions = new ArrayList<>();
         for (Map.Entry<String, Set<String>> headEntry : headByMetadataVersion.entrySet()) {
-            Set<String> baseVersions = baseByMetadataVersion.getOrDefault(headEntry.getKey(), Collections.emptySet());
-            for (String testedVersion : headEntry.getValue()) {
-                if (!baseVersions.contains(testedVersion)) {
-                    addedVersions.add(testedVersion);
-                }
+            String metadataVersion = headEntry.getKey();
+            Set<String> baseVersions = baseByMetadataVersion.getOrDefault(metadataVersion, Collections.emptySet());
+            List<String> addedVersions = headEntry.getValue().stream()
+                    .filter(testedVersion -> !baseVersions.contains(testedVersion))
+                    .toList();
+            if (!addedVersions.isEmpty()) {
+                changedMetadataVersions.add(Map.of(
+                        "coordinates", coordinates + ":" + metadataVersion,
+                        "versions", addedVersions
+                ));
             }
         }
 
-        if (addedVersions.isEmpty()) {
+        if (changedMetadataVersions.isEmpty()) {
             return null;
         }
 
+        if (changedMetadataVersions.size() == 1) {
+            return changedMetadataVersions.get(0);
+        }
+
         return Map.of(
-                "coordinates", coordinates,
-                "versions", new ArrayList<>(addedVersions)
+                "entries", changedMetadataVersions
         );
     }
 
