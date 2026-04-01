@@ -70,7 +70,8 @@ public abstract class GenerateMetadataTask extends DefaultTask {
     public void run() throws IOException {
         Path testsDirectory = GeneralUtils.computeTestsDirectory(getLayout(), coordinates);
         Path gradlewPath = GeneralUtils.getPathFromProject(getLayout(), GRADLEW);
-        
+        Coordinates coordinatesValue = Coordinates.parse(coordinates);
+
         List<String> packageList = (agentAllowedPackages == null || agentAllowedPackages.isBlank() || agentAllowedPackages.equals("-"))
                 ? List.of()
                 : Arrays.stream(agentAllowedPackages.split(","))
@@ -81,8 +82,11 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         if (!packageList.isEmpty()) {
             MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, packageList);
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
+        } else if (!MetadataGenerationUtils.hasAgentConfigBlock(testsDirectory)) {
+            // Fresh scaffolds have no agent block; default to library group package so conditional metadata can be generated.
+            MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, List.of(coordinatesValue.group()));
+            MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
         MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
-        Path metadataDirectory = GeneralUtils.computeMetadataDirectory(getLayout(), coordinates);
     }
 }

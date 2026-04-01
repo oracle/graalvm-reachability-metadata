@@ -24,7 +24,6 @@ public final class LibraryStatsModels {
     }
 
     public record ArtifactStats(
-            String artifactId,
             Map<String, MetadataVersionStats> metadataVersions
     ) {
     }
@@ -35,7 +34,6 @@ public final class LibraryStatsModels {
     }
 
     public record VersionStats(
-            String coordinate,
             String version,
             DynamicAccessStats dynamicAccess,
             LibraryCoverage libraryCoverage

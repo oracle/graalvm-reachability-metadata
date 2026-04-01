@@ -43,6 +43,18 @@ public final class MetadataGenerationUtils {
     }
 
     /**
+     * Returns true if the tests build.gradle already contains a native-image agent block.
+     */
+    public static boolean hasAgentConfigBlock(Path testsDirectory) throws IOException {
+        Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
+        if (!Files.isRegularFile(buildFilePath)) {
+            throw new RuntimeException("Cannot check agent block in " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
+        }
+        String buildGradle = Files.readString(buildFilePath, StandardCharsets.UTF_8);
+        return Pattern.compile("(?s)\\bagent\\s*\\{").matcher(buildGradle).find();
+    }
+
+    /**
      * Creates a user-code-filter.json file including the given packages (and excluding all others),
      * used to restrict metadata generation to user code.
      */
@@ -70,13 +82,8 @@ public final class MetadataGenerationUtils {
         Path buildFilePath = testsDirectory.resolve(BUILD_FILE);
         GeneralUtils.printInfo("Configuring agent block in: " + BUILD_FILE);
 
-        if (!Files.isRegularFile(buildFilePath)) {
-            throw new RuntimeException("Cannot add agent block to " + buildFilePath + ". Please check if a " + BUILD_FILE + " exists on that location.");
-        }
-
         // Skip generation if agent block already exists
-        String buildGradle = Files.readString(buildFilePath, StandardCharsets.UTF_8);
-        boolean hasAgentBlock = Pattern.compile("(?s)\\bagent\\s*\\{").matcher(buildGradle).find();
+        boolean hasAgentBlock = hasAgentConfigBlock(testsDirectory);
         if (hasAgentBlock) {
             GeneralUtils.printInfo("Agent block already present in: " + BUILD_FILE + " - skipping");
             return;

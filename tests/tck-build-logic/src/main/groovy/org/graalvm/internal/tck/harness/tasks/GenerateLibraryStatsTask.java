@@ -38,7 +38,6 @@ public abstract class GenerateLibraryStatsTask extends AbstractLibraryStatsTask 
             LibraryStatsModels.MetadataVersionStats existingMetadataVersionStats = LibraryStatsSupport.metadataVersionStats(
                     libraryStats,
                     location.artifact(),
-                    location.artifactId(),
                     location.metadataVersion()
             );
             LibraryStatsModels.MetadataVersionStats mergedMetadataVersionStats = LibraryStatsSupport.mergeStats(
@@ -49,7 +48,6 @@ public abstract class GenerateLibraryStatsTask extends AbstractLibraryStatsTask 
             libraryStats = LibraryStatsSupport.withMetadataVersionStats(
                     libraryStats,
                     location.artifact(),
-                    location.artifactId(),
                     location.metadataVersion(),
                     mergedMetadataVersionStats
             );

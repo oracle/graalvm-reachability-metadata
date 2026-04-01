@@ -90,15 +90,14 @@ class LibraryStatsSupportTests {
                 jacocoReport
         );
 
-        assertThat(versionStats.coordinate()).isEqualTo("com.example:demo:1.0.0");
         assertThat(versionStats.version()).isEqualTo("1.0.0");
         assertThat(versionStats.dynamicAccess().totalCalls()).isEqualTo(3);
         assertThat(versionStats.dynamicAccess().coveredCalls()).isEqualTo(1);
-        assertThat(versionStats.dynamicAccess().breakdown().keySet()).containsExactly("reflection", "resource");
+        assertThat(versionStats.dynamicAccess().breakdown().keySet()).containsExactly("reflection", "resources");
         assertThat(versionStats.dynamicAccess().breakdown().get("reflection").totalCalls()).isEqualTo(2);
         assertThat(versionStats.dynamicAccess().breakdown().get("reflection").coveredCalls()).isEqualTo(1);
-        assertThat(versionStats.dynamicAccess().breakdown().get("resource").totalCalls()).isEqualTo(1);
-        assertThat(versionStats.dynamicAccess().breakdown().get("resource").coveredCalls()).isEqualTo(0);
+        assertThat(versionStats.dynamicAccess().breakdown().get("resources").totalCalls()).isEqualTo(1);
+        assertThat(versionStats.dynamicAccess().breakdown().get("resources").coveredCalls()).isEqualTo(0);
         assertThat(versionStats.libraryCoverage().line().covered()).isEqualTo(1);
         assertThat(versionStats.libraryCoverage().line().missed()).isEqualTo(1);
         assertThat(versionStats.libraryCoverage().line().total()).isEqualTo(2);
@@ -144,7 +143,6 @@ class LibraryStatsSupportTests {
     @Test
     void mergeStatsReplacesWholeMetadataVersionWhenRequested() {
         LibraryStatsModels.VersionStats existingVersion = new LibraryStatsModels.VersionStats(
-                "com.example:demo:1.0.0",
                 "1.0.0",
                 new LibraryStatsModels.DynamicAccessStats(1, 1, java.math.BigDecimal.ONE, java.util.Map.of()),
                 new LibraryStatsModels.LibraryCoverage(
@@ -154,7 +152,6 @@ class LibraryStatsSupportTests {
                 )
         );
         LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
-                "com.example:demo:1.1.0",
                 "1.1.0",
                 new LibraryStatsModels.DynamicAccessStats(3, 2, new java.math.BigDecimal("0.666667"), java.util.Map.of()),
                 new LibraryStatsModels.LibraryCoverage(
@@ -176,7 +173,6 @@ class LibraryStatsSupportTests {
     @Test
     void mergeStatsUpdatesSingleVersionAndKeepsExistingOnPartialRefresh() {
         LibraryStatsModels.VersionStats existingVersion = new LibraryStatsModels.VersionStats(
-                "com.example:demo:1.0.0",
                 "1.0.0",
                 new LibraryStatsModels.DynamicAccessStats(1, 1, java.math.BigDecimal.ONE, java.util.Map.of()),
                 new LibraryStatsModels.LibraryCoverage(
@@ -186,7 +182,6 @@ class LibraryStatsSupportTests {
                 )
         );
         LibraryStatsModels.VersionStats untouchedVersion = new LibraryStatsModels.VersionStats(
-                "com.example:demo:1.1.0",
                 "1.1.0",
                 new LibraryStatsModels.DynamicAccessStats(2, 1, new java.math.BigDecimal("0.500000"), java.util.Map.of()),
                 new LibraryStatsModels.LibraryCoverage(
@@ -196,7 +191,6 @@ class LibraryStatsSupportTests {
                 )
         );
         LibraryStatsModels.VersionStats replacement = new LibraryStatsModels.VersionStats(
-                "com.example:demo:1.0.0",
                 "1.0.0",
                 new LibraryStatsModels.DynamicAccessStats(3, 2, new java.math.BigDecimal("0.666667"), java.util.Map.of()),
                 new LibraryStatsModels.LibraryCoverage(
@@ -213,41 +207,37 @@ class LibraryStatsSupportTests {
         );
 
         assertThat(merged.versions()).containsExactly(replacement, untouchedVersion);
-        assertThat(LibraryStatsSupport.requireVersionStats(merged, replacement.coordinate())).isEqualTo(replacement);
+        assertThat(LibraryStatsSupport.requireVersionStats(merged, "com.example:demo:1.0.0")).isEqualTo(replacement);
     }
 
     @Test
     void withMetadataVersionStatsStoresArtifactIndexedEntries() {
-        LibraryStatsModels.VersionStats firstVersion = createVersionStats("com.example:demo:1.0.0", "1.0.0", 2, 1);
-        LibraryStatsModels.VersionStats secondVersion = createVersionStats("com.example:demo:1.1.0", "1.1.0", 3, 2);
-        LibraryStatsModels.VersionStats thirdVersion = createVersionStats("org.demo:alpha:0.9.0", "0.9.0", 1, 1);
+        LibraryStatsModels.VersionStats firstVersion = createVersionStats("1.0.0", 2, 1);
+        LibraryStatsModels.VersionStats secondVersion = createVersionStats("1.1.0", 3, 2);
+        LibraryStatsModels.VersionStats thirdVersion = createVersionStats("0.9.0", 1, 1);
 
         LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of());
         libraryStats = LibraryStatsSupport.withMetadataVersionStats(
                 libraryStats,
                 "com.example:demo",
-                "demo",
                 "10.0.0",
                 new LibraryStatsModels.MetadataVersionStats(List.of(secondVersion))
         );
         libraryStats = LibraryStatsSupport.withMetadataVersionStats(
                 libraryStats,
                 "com.example:demo",
-                "demo",
                 "10.0.0",
                 new LibraryStatsModels.MetadataVersionStats(List.of(firstVersion, secondVersion))
         );
         libraryStats = LibraryStatsSupport.withMetadataVersionStats(
                 libraryStats,
                 "com.example:demo",
-                "demo",
                 "11.0.0",
                 new LibraryStatsModels.MetadataVersionStats(List.of(secondVersion))
         );
         libraryStats = LibraryStatsSupport.withMetadataVersionStats(
                 libraryStats,
                 "org.demo:alpha",
-                "alpha",
                 "1.0.0",
                 new LibraryStatsModels.MetadataVersionStats(List.of(thirdVersion))
         );
@@ -261,7 +251,6 @@ class LibraryStatsSupportTests {
         assertThat(LibraryStatsSupport.metadataVersionStats(
                 libraryStats,
                 "org.demo:alpha",
-                "alpha",
                 "1.0.0"
         ).versions()).extracting(LibraryStatsModels.VersionStats::version).containsExactly("0.9.0");
     }
@@ -277,11 +266,10 @@ class LibraryStatsSupportTests {
         LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
                 "com.example:demo",
                 new LibraryStatsModels.ArtifactStats(
-                        "demo",
                         Map.of(
                                 "1.0.0",
                                 new LibraryStatsModels.MetadataVersionStats(
-                                        List.of(createVersionStats("com.example:demo:1.0.0", "1.0.0", 1, 1))
+                                        List.of(createVersionStats("1.0.0", 1, 1))
                                 )
                         )
                 )
@@ -296,13 +284,11 @@ class LibraryStatsSupportTests {
     }
 
     private LibraryStatsModels.VersionStats createVersionStats(
-            String coordinate,
             String version,
             long totalCalls,
             long coveredCalls
     ) {
         return new LibraryStatsModels.VersionStats(
-                coordinate,
                 version,
                 new LibraryStatsModels.DynamicAccessStats(
                         totalCalls,

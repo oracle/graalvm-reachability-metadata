@@ -21,15 +21,13 @@
     {
       "entries": {
         "org.example:demo-lib": {
-          "artifactId": "demo-lib",
           "metadataVersions": {
             "1.0.0": {
               "versions": [
                 {
-                  "coordinate": "org.example:demo-lib:1.2.3",
                   "dynamicAccess": {
                     "breakdown": {
-                      "jni": {
+                      "foreign": {
                         "coveredCalls": 2,
                         "coverageRatio": 1.0,
                         "totalCalls": 2
@@ -67,13 +65,17 @@
                   "version": "1.2.3"
                 },
                 {
-                  "coordinate": "org.example:demo-lib:1.2.4",
                   "dynamicAccess": {
                     "breakdown": {
-                      "jni": {
+                      "foreign": {
                         "coveredCalls": 3,
                         "coverageRatio": 1.0,
                         "totalCalls": 3
+                      },
+                      "resources": {
+                        "coveredCalls": 4,
+                        "coverageRatio": 0.666667,
+                        "totalCalls": 6
                       },
                       "reflection": {
                         "coveredCalls": 6,
@@ -81,9 +83,9 @@
                         "totalCalls": 8
                       }
                     },
-                    "coveredCalls": 9,
-                    "coverageRatio": 0.818182,
-                    "totalCalls": 11
+                    "coveredCalls": 13,
+                    "coverageRatio": 0.764706,
+                    "totalCalls": 17
                   },
                   "libraryCoverage": {
                     "instruction": {
@@ -112,13 +114,17 @@
             "2.0.0": {
               "versions": [
                 {
-                  "coordinate": "org.example:demo-lib:2.0.1",
                   "dynamicAccess": {
                     "breakdown": {
-                      "proxy": {
+                      "foreign": {
                         "coveredCalls": 4,
-                        "coverageRatio": 0.666667,
-                        "totalCalls": 6
+                        "coverageRatio": 0.8,
+                        "totalCalls": 5
+                      },
+                      "resources": {
+                        "coveredCalls": 2,
+                        "coverageRatio": 0.4,
+                        "totalCalls": 5
                       },
                       "reflection": {
                         "coveredCalls": 10,
@@ -126,9 +132,9 @@
                         "totalCalls": 11
                       }
                     },
-                    "coveredCalls": 14,
-                    "coverageRatio": 0.823529,
-                    "totalCalls": 17
+                    "coveredCalls": 16,
+                    "coverageRatio": 0.761905,
+                    "totalCalls": 21
                   },
                   "libraryCoverage": {
                     "instruction": {
@@ -227,7 +233,11 @@
         "breakdown": {
           "type": "object",
           "propertyNames": {
-            "pattern": "^[A-Za-z0-9._-]+$"
+            "enum": [
+              "foreign",
+              "reflection",
+              "resources"
+            ]
           },
           "additionalProperties": {
             "$ref": "#/definitions/dynamicAccessBreakdown"
@@ -270,16 +280,11 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "coordinate",
         "dynamicAccess",
         "libraryCoverage",
         "version"
       ],
       "properties": {
-        "coordinate": {
-          "type": "string",
-          "pattern": "^[^:\\s]+:[^:\\s]+:[^:\\s]+$"
-        },
         "dynamicAccess": {
           "$ref": "#/definitions/dynamicAccessStats"
         },
@@ -311,14 +316,9 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "artifactId",
         "metadataVersions"
       ],
       "properties": {
-        "artifactId": {
-          "type": "string",
-          "minLength": 1
-        },
         "metadataVersions": {
           "type": "object",
           "propertyNames": {

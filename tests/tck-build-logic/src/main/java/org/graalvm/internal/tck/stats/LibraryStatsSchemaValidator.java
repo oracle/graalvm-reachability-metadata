@@ -15,6 +15,8 @@ import com.networknt.schema.ValidationMessage;
 import org.gradle.api.GradleException;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +38,9 @@ import java.util.stream.Stream;
 public final class LibraryStatsSchemaValidator {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final int RATIO_SCALE = 6;
+    private static final int EXPECTED_RATIO_SCALE = 12;
+    private static final BigDecimal RATIO_TOLERANCE = new BigDecimal("0.000001");
 
     private static final JsonSchemaFactory JSON_SCHEMA_FACTORY = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
 
@@ -67,7 +72,7 @@ public final class LibraryStatsSchemaValidator {
             throw new GradleException("Failed to load library stats schema from " + schemaFile, e);
         }
 
-        Map<String, ExpectedArtifact> expectedArtifacts = collectExpectedArtifacts(metadataRoot);
+        Map<String, Set<String>> expectedArtifacts = collectExpectedArtifacts(metadataRoot);
         List<String> failures = new ArrayList<>();
         final Path[] statsFileHolder = new Path[1];
 
@@ -99,6 +104,7 @@ public final class LibraryStatsSchemaValidator {
         if (statsFile != null) {
             validateAgainstSchema(statsFile, schema, failures);
             validateEntriesAlignment(statsFile, expectedArtifacts, failures);
+            validateRatioConsistency(statsFile, failures);
             validateNormalizedContent(statsFile, failures);
         }
 
@@ -134,8 +140,8 @@ public final class LibraryStatsSchemaValidator {
         return relativePath.getNameCount() >= 2 && "schemas".equals(relativePath.getName(0).toString());
     }
 
-    private static Map<String, ExpectedArtifact> collectExpectedArtifacts(Path metadataRoot) {
-        Map<String, ExpectedArtifact> expected = new TreeMap<>();
+    private static Map<String, Set<String>> collectExpectedArtifacts(Path metadataRoot) {
+        Map<String, Set<String>> expected = new TreeMap<>();
         if (!Files.isDirectory(metadataRoot)) {
             return expected;
         }
@@ -159,7 +165,7 @@ public final class LibraryStatsSchemaValidator {
                         } catch (IOException e) {
                             throw new GradleException("Failed to list metadata versions under " + artifactDir, e);
                         }
-                        expected.put(artifact, new ExpectedArtifact(artifactId, metadataVersions));
+                        expected.put(artifact, metadataVersions);
                     });
                 } catch (IOException e) {
                     throw new GradleException("Failed to list metadata artifacts under " + groupDir, e);
@@ -174,7 +180,7 @@ public final class LibraryStatsSchemaValidator {
 
     private static void validateEntriesAlignment(
             Path statsFile,
-            Map<String, ExpectedArtifact> expectedArtifacts,
+            Map<String, Set<String>> expectedArtifacts,
             List<String> failures
     ) {
         JsonNode json;
@@ -202,12 +208,12 @@ public final class LibraryStatsSchemaValidator {
 
         for (Map.Entry<String, JsonNode> entry : actualArtifacts.entrySet()) {
             String artifact = entry.getKey();
-            ExpectedArtifact expectedArtifact = expectedArtifacts.get(artifact);
-            if (expectedArtifact == null) {
+            Set<String> expectedArtifactMetadataVersions = expectedArtifacts.get(artifact);
+            if (expectedArtifactMetadataVersions == null) {
                 failures.add("Orphan artifact entry in stats file without matching metadata directory: " + artifact);
                 continue;
             }
-            validateArtifactEntry(statsFile, artifact, entry.getValue(), expectedArtifact, failures);
+            validateArtifactEntry(statsFile, artifact, entry.getValue(), expectedArtifactMetadataVersions, failures);
         }
     }
 
@@ -215,15 +221,9 @@ public final class LibraryStatsSchemaValidator {
             Path statsFile,
             String artifact,
             JsonNode artifactEntry,
-            ExpectedArtifact expectedArtifact,
+            Set<String> expectedMetadataVersionsForArtifact,
             List<String> failures
     ) {
-        String artifactId = textOrNull(artifactEntry.get("artifactId"));
-        if (!expectedArtifact.artifactId().equals(artifactId)) {
-            failures.add("Stats file artifactId mismatch for " + artifact + " in " + statsFile + ": expected '"
-                    + expectedArtifact.artifactId() + "' but found '" + artifactId + "'.");
-        }
-
         JsonNode metadataVersions = artifactEntry.get("metadataVersions");
         if (metadataVersions == null || !metadataVersions.isObject()) {
             failures.add("Stats file is missing object field 'metadataVersions' for " + artifact + " in " + statsFile);
@@ -233,14 +233,14 @@ public final class LibraryStatsSchemaValidator {
         Set<String> actualMetadataVersions = new TreeSet<>();
         metadataVersions.fieldNames().forEachRemaining(actualMetadataVersions::add);
 
-        for (String expectedMetadataVersion : expectedArtifact.metadataVersions()) {
+        for (String expectedMetadataVersion : expectedMetadataVersionsForArtifact) {
             if (!actualMetadataVersions.contains(expectedMetadataVersion)) {
                 failures.add("Missing metadata-version entry for " + artifact + ":" + expectedMetadataVersion + " in " + statsFile);
             }
         }
 
         for (String actualMetadataVersion : actualMetadataVersions) {
-            if (!expectedArtifact.metadataVersions().contains(actualMetadataVersion)) {
+            if (!expectedMetadataVersionsForArtifact.contains(actualMetadataVersion)) {
                 failures.add("Orphan metadata-version entry in stats file for " + artifact + ":" + actualMetadataVersion);
             }
         }
@@ -276,10 +276,95 @@ public final class LibraryStatsSchemaValidator {
         }
     }
 
-    private static String textOrNull(JsonNode node) {
-        return node != null && node.isTextual() ? node.asText() : null;
+    private static void validateRatioConsistency(Path statsFile, List<String> failures) {
+        LibraryStatsModels.LibraryStats libraryStats;
+        try {
+            libraryStats = LibraryStatsSupport.loadStats(statsFile);
+        } catch (Exception e) {
+            failures.add("Failed to validate ratio consistency for " + statsFile + ": " + e.getMessage());
+            return;
+        }
+
+        libraryStats.entries().forEach((artifact, artifactStats) ->
+                artifactStats.metadataVersions().forEach((metadataVersion, metadataVersionStats) ->
+                        metadataVersionStats.versions().forEach(versionStats ->
+                                validateVersionRatios(artifact, metadataVersion, versionStats, failures)
+                        )
+                )
+        );
     }
 
-    private record ExpectedArtifact(String artifactId, Set<String> metadataVersions) {
+    private static void validateVersionRatios(
+            String artifact,
+            String metadataVersion,
+            LibraryStatsModels.VersionStats versionStats,
+            List<String> failures
+    ) {
+        String locationPrefix = artifact + ":" + metadataVersion + ":" + versionStats.version();
+
+        LibraryStatsModels.DynamicAccessStats dynamicAccess = versionStats.dynamicAccess();
+        validateRatio(
+                locationPrefix + ":dynamicAccess.coverageRatio",
+                dynamicAccess.coverageRatio(),
+                dynamicAccess.coveredCalls(),
+                dynamicAccess.totalCalls(),
+                failures
+        );
+        dynamicAccess.breakdown().forEach((reportType, breakdown) -> validateRatio(
+                locationPrefix + ":dynamicAccess.breakdown." + reportType + ".coverageRatio",
+                breakdown.coverageRatio(),
+                breakdown.coveredCalls(),
+                breakdown.totalCalls(),
+                failures
+        ));
+
+        validateCoverageMetric(locationPrefix, "line", versionStats.libraryCoverage().line(), failures);
+        validateCoverageMetric(locationPrefix, "instruction", versionStats.libraryCoverage().instruction(), failures);
+        validateCoverageMetric(locationPrefix, "method", versionStats.libraryCoverage().method(), failures);
     }
+
+    private static void validateCoverageMetric(
+            String locationPrefix,
+            String metricName,
+            LibraryStatsModels.CoverageMetric metric,
+            List<String> failures
+    ) {
+        long expectedTotal = metric.covered() + metric.missed();
+        if (metric.total() != expectedTotal) {
+            failures.add("Inconsistent totals at " + locationPrefix + ":libraryCoverage." + metricName
+                    + ".total: expected " + expectedTotal + " from covered+missed but found " + metric.total());
+        }
+        validateRatio(
+                locationPrefix + ":libraryCoverage." + metricName + ".ratio",
+                metric.ratio(),
+                metric.covered(),
+                metric.total(),
+                failures
+        );
+    }
+
+    private static void validateRatio(
+            String location,
+            BigDecimal actualRatio,
+            long covered,
+            long total,
+            List<String> failures
+    ) {
+        BigDecimal expectedRatio = expectedRatio(covered, total);
+        BigDecimal difference = actualRatio.subtract(expectedRatio).abs();
+        if (difference.compareTo(RATIO_TOLERANCE) > 0) {
+            failures.add("Ratio mismatch at " + location + ": expected " + expectedRatio
+                    + " from covered=" + covered + ", total=" + total
+                    + " but found " + actualRatio + " (tolerance " + RATIO_TOLERANCE + ")");
+        }
+    }
+
+    private static BigDecimal expectedRatio(long covered, long total) {
+        if (total == 0L) {
+            return BigDecimal.ZERO.setScale(RATIO_SCALE, RoundingMode.HALF_UP);
+        }
+        return BigDecimal.valueOf(covered)
+                .divide(BigDecimal.valueOf(total), EXPECTED_RATIO_SCALE, RoundingMode.HALF_UP);
+    }
+
 }
