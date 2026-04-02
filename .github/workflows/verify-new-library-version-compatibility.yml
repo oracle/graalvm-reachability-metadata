@@ -242,6 +242,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ISSUE_TITLE_PREFIX: "[Automation] "
       ISSUE_TITLE_MIDDLE: " fails for "
+      ISSUE_BODY_CHAR_LIMIT: "60000"
       LOG_LINES: "300"
     needs:
       - get-all-libraries
@@ -437,15 +438,32 @@ jobs:
               fi
 
               BODY_FILE="$(mktemp)"
-              {
-                printf '%s\n' "$failure" | jq -c '.environments[]' | while read -r environment; do
-                  OS="$(printf '%s' "$environment" | jq -r '.os')"
-                  JDK="$(printf '%s' "$environment" | jq -r '.jdk')"
-                  COMMAND="$(printf '%s' "$environment" | jq -r '.failedCommand')"
-                  RUNNER_LOG_URL="$(printf '%s' "$environment" | jq -r '.runnerLogUrl')"
-                  ENV_FAILURE_TYPE="$(printf '%s' "$environment" | jq -r '.failureType')"
-                  ENV_LOG_LINES="$(printf '%s' "$environment" | jq -r '.logLines')"
-                  LOG_TAIL="$(printf '%s' "$environment" | jq -r '.logTail')"
+              BODY_CHAR_LIMIT="${{ env.ISSUE_BODY_CHAR_LIMIT }}"
+              CODE_BLOCK_PREFIX=$'```console\n'
+              CODE_BLOCK_SUFFIX=$'\n```\n\n'
+
+              mapfile -t ENVIRONMENTS < <(printf '%s\n' "$failure" | jq -c '.environments[]')
+              ENVIRONMENT_COUNT="${#ENVIRONMENTS[@]}"
+
+              declare -a NORMAL_PREFIXES
+              declare -a TRUNCATED_PREFIXES
+              declare -a LOG_TAILS
+              declare -a LOG_LENGTHS
+
+              FULL_BODY_LENGTH=0
+              FIXED_TRUNCATED_LENGTH=0
+              TOTAL_LOG_LENGTH=0
+
+              for environment in "${ENVIRONMENTS[@]}"; do
+                OS="$(printf '%s' "$environment" | jq -r '.os')"
+                JDK="$(printf '%s' "$environment" | jq -r '.jdk')"
+                COMMAND="$(printf '%s' "$environment" | jq -r '.failedCommand')"
+                RUNNER_LOG_URL="$(printf '%s' "$environment" | jq -r '.runnerLogUrl')"
+                ENV_FAILURE_TYPE="$(printf '%s' "$environment" | jq -r '.failureType')"
+                ENV_LOG_LINES="$(printf '%s' "$environment" | jq -r '.logLines')"
+                LOG_TAIL="$(printf '%s' "$environment" | jq -r '.logTail')"
+
+                NORMAL_PREFIX="$(
                   printf '## %s on %s / JDK %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK"
                   printf 'Failure kind: %s\n' "$ENV_FAILURE_TYPE"
                   printf 'OS: %s\n' "$OS"
@@ -453,9 +471,79 @@ jobs:
                   printf 'Reproducer: `%s`\n' "$COMMAND"
                   printf 'Runner log: %s\n' "$RUNNER_LOG_URL"
                   printf 'Last %s lines of the log:\n' "$ENV_LOG_LINES"
-                  printf '```console\n%s\n```\n\n' "$LOG_TAIL"
+                )"
+                TRUNCATED_PREFIX="$(
+                  printf '## %s on %s / JDK %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK"
+                  printf 'Failure kind: %s\n' "$ENV_FAILURE_TYPE"
+                  printf 'OS: %s\n' "$OS"
+                  printf 'JDK: %s\n' "$JDK"
+                  printf 'Reproducer: `%s`\n' "$COMMAND"
+                  printf 'Runner log: %s\n' "$RUNNER_LOG_URL"
+                  printf 'Last %s lines of the log (excerpt truncated to fit the GitHub issue size limit):\n' "$ENV_LOG_LINES"
+                )"
+                LOG_LENGTH="$(printf '%s' "$LOG_TAIL" | wc -c)"
+
+                NORMAL_PREFIXES+=("$NORMAL_PREFIX")
+                TRUNCATED_PREFIXES+=("$TRUNCATED_PREFIX")
+                LOG_TAILS+=("$LOG_TAIL")
+                LOG_LENGTHS+=("$LOG_LENGTH")
+
+                FULL_BODY_LENGTH=$((FULL_BODY_LENGTH + $(printf '%s' "$NORMAL_PREFIX" | wc -c) + $(printf '%s' "$CODE_BLOCK_PREFIX" | wc -c) + LOG_LENGTH + $(printf '%s' "$CODE_BLOCK_SUFFIX" | wc -c)))
+                FIXED_TRUNCATED_LENGTH=$((FIXED_TRUNCATED_LENGTH + $(printf '%s' "$TRUNCATED_PREFIX" | wc -c) + $(printf '%s' "$CODE_BLOCK_PREFIX" | wc -c) + $(printf '%s' "$CODE_BLOCK_SUFFIX" | wc -c)))
+                TOTAL_LOG_LENGTH=$((TOTAL_LOG_LENGTH + LOG_LENGTH))
+              done
+
+              : > "$BODY_FILE"
+
+              if (( FULL_BODY_LENGTH <= BODY_CHAR_LIMIT )); then
+                for i in "${!ENVIRONMENTS[@]}"; do
+                  printf '%s' "${NORMAL_PREFIXES[$i]}" >> "$BODY_FILE"
+                  printf '%s' "$CODE_BLOCK_PREFIX" >> "$BODY_FILE"
+                  printf '%s' "${LOG_TAILS[$i]}" >> "$BODY_FILE"
+                  printf '%s' "$CODE_BLOCK_SUFFIX" >> "$BODY_FILE"
                 done
-              } > "$BODY_FILE"
+              else
+                REMAINING_LOG_BUDGET=$((BODY_CHAR_LIMIT - FIXED_TRUNCATED_LENGTH))
+                if (( REMAINING_LOG_BUDGET < 0 )); then
+                  echo "Issue metadata exceeds the configured issue body size limit."
+                  exit 1
+                fi
+
+                declare -a LOG_BUDGETS
+                ASSIGNED_LOG_BUDGET=0
+                for i in "${!ENVIRONMENTS[@]}"; do
+                  if (( TOTAL_LOG_LENGTH == 0 )); then
+                    LOG_BUDGET=0
+                  else
+                    LOG_BUDGET=$((LOG_LENGTHS[$i] * REMAINING_LOG_BUDGET / TOTAL_LOG_LENGTH))
+                  fi
+                  LOG_BUDGETS+=("$LOG_BUDGET")
+                  ASSIGNED_LOG_BUDGET=$((ASSIGNED_LOG_BUDGET + LOG_BUDGET))
+                done
+
+                EXTRA_BYTES=$((REMAINING_LOG_BUDGET - ASSIGNED_LOG_BUDGET))
+                NEXT_INDEX=0
+                while (( EXTRA_BYTES > 0 && ENVIRONMENT_COUNT > 0 )); do
+                  LOG_BUDGETS[$NEXT_INDEX]=$((LOG_BUDGETS[$NEXT_INDEX] + 1))
+                  EXTRA_BYTES=$((EXTRA_BYTES - 1))
+                  NEXT_INDEX=$(((NEXT_INDEX + 1) % ENVIRONMENT_COUNT))
+                done
+
+                for i in "${!ENVIRONMENTS[@]}"; do
+                  printf '%s' "${TRUNCATED_PREFIXES[$i]}" >> "$BODY_FILE"
+                  printf '%s' "$CODE_BLOCK_PREFIX" >> "$BODY_FILE"
+
+                  if (( LOG_BUDGETS[$i] > 0 )); then
+                    if (( LOG_BUDGETS[$i] >= LOG_LENGTHS[$i] )); then
+                      printf '%s' "${LOG_TAILS[$i]}" >> "$BODY_FILE"
+                    else
+                      printf '%s' "${LOG_TAILS[$i]}" | tail -c "${LOG_BUDGETS[$i]}" >> "$BODY_FILE"
+                    fi
+                  fi
+
+                  printf '%s' "$CODE_BLOCK_SUFFIX" >> "$BODY_FILE"
+                done
+              fi
 
               ASSIGNEE="kimeta"
               if [[ "$FAILURE_LABEL" == "fails-native-image-build" ]]; then
