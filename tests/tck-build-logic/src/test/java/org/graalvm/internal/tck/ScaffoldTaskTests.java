@@ -63,6 +63,9 @@ class ScaffoldTaskTests {
                 "metadata/com.example.lib/some-artifact/1.0.0.FINAL/reachability-metadata.json",
                 "/scaffold/reachability-metadata.json.template"
         );
+        assertGeneratedReachabilityMetadataIsEmptyJsonObject(
+                "metadata/com.example.lib/some-artifact/1.0.0.FINAL/reachability-metadata.json"
+        );
         assertGeneratedFileMatchesTemplate(
                 coordinates,
                 "tests/src/com.example.lib/some-artifact/1.0.0.FINAL/.gitignore",
@@ -201,6 +204,14 @@ class ScaffoldTaskTests {
         String expectedContent = CoordinateUtils.replace(loadResource(templateResourcePath), coordinates);
         String actualContent = Files.readString(tempDir.resolve(relativePath), StandardCharsets.UTF_8);
         assertThat(actualContent).isEqualTo(expectedContent);
+    }
+
+    private void assertGeneratedReachabilityMetadataIsEmptyJsonObject(String relativePath) throws IOException {
+        Map<String, Object> reachabilityMetadata = OBJECT_MAPPER.readValue(
+                tempDir.resolve(relativePath).toFile(),
+                new TypeReference<>() {}
+        );
+        assertThat(reachabilityMetadata).isEmpty();
     }
 
     private List<String> listGeneratedFiles() throws IOException {
