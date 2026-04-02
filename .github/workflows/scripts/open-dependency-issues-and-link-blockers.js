@@ -129,14 +129,6 @@ function buildIssueBody(ga, version) {
     '',
     `${ga}:${version}`,
     '',
-    '### Library source code URL',
-    '',
-    'N/A',
-    '',
-    '### Link to the existing test suite',
-    '',
-    'N/A',
-    '',
     '_This issue was created by automation._'
   ].join('\n');
 }
