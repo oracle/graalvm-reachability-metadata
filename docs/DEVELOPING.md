@@ -92,9 +92,11 @@ To print all testable GAV coordinates while honoring the same -Pcoordinates filt
 ./gradlew listCoordinates -Pcoordinates=group:artifact
 ./gradlew listCoordinates -Pcoordinates=group:artifact:version
 ./gradlew listCoordinates -Pcoordinates=1/16
+./gradlew listCoordinates -Pcoordinates=group:artifact -PstrictCoordinates=true
 ```
 
 In GitHub Actions, this task also writes a space-separated list to the GITHUB_OUTPUT key "coordinates".
+With `-PstrictCoordinates=true`, `listCoordinates` uses strict matching (`getMatchingCoordinatesStrict`) while keeping the same output format.
 
 ### Generating dependency graphs
 
@@ -244,7 +246,7 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - Generate library stats: `./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Validate library stats: `./gradlew validateLibraryStats`
-- List available coordinates: `./gradlew listCoordinates -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
+- List available coordinates: `./gradlew listCoordinates -Pcoordinates=[group:artifact:version|group:artifact|k/n|all] [-PstrictCoordinates=true]`
 - Generate dependency graph: `./gradlew generateDependencyGraph -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Analyze external dynamic access: `./gradlew analyzeExternalLibraryDynamicAccess --coordinates=group:artifact:version`
 - Scan changed Docker images: `./gradlew checkAllowedDockerImages --baseCommit=<sha1> --newCommit=<sha2>`

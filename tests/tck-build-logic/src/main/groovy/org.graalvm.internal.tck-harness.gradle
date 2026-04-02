@@ -32,6 +32,7 @@ import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessReportInvocationTask
+import org.graalvm.internal.tck.harness.tasks.SearchArtifactURLsTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
@@ -156,10 +157,24 @@ tasks.named("check").configure {
 }
 
 tasks.register("listCoordinates", DefaultTask) { task ->
-    task.setDescription("Lists all matching GAV coordinates (one per line) honoring -Pcoordinates filter")
+    task.setDescription("Lists all matching GAV coordinates (one per line) honoring -Pcoordinates filter; use -PstrictCoordinates=true for strict matching")
     task.setGroup(METADATA_GROUP)
     task.doFirst {
-        List<String> coords = new ArrayList<>(matchingCoordinates)
+        boolean strictCoordinates = project.hasProperty("strictCoordinates") &&
+                Objects.toString(project.findProperty("strictCoordinates"), "false").toBoolean()
+        List<String> coords
+        if (strictCoordinates) {
+            if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
+                def frac = CoordinateUtils.parseFraction(coordinateFilter)
+                List<String> allStrict = tck.getMatchingCoordinatesStrict("all")
+                coords = CoordinateUtils.computeBatchedCoordinates(allStrict, frac[0], frac[1])
+            } else {
+                coords = tck.getMatchingCoordinatesStrict(coordinateFilter)
+            }
+            coords = coords.findAll { !it.startsWith("samples:") }
+        } else {
+            coords = new ArrayList<>(matchingCoordinates)
+        }
         coords.sort()
         if (coords.isEmpty()) {
             println "No matching coordinates found!"
@@ -168,6 +183,11 @@ tasks.register("listCoordinates", DefaultTask) { task ->
         }
         writeGithubOutput("coordinates", coords.join(' '))
     }
+}
+
+tasks.register("populateArtifactURLs", SearchArtifactURLsTask.class) { task ->
+    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, and documentation-url in matching metadata index entries.")
+    task.setGroup(METADATA_GROUP)
 }
 
 tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->

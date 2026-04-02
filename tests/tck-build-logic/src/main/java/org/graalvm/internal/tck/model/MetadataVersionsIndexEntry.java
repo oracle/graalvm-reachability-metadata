@@ -23,6 +23,14 @@ public record MetadataVersionsIndexEntry(
         String metadataVersion,
         @JsonProperty("test-version")
         String testVersion,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
         @JsonProperty("tested-versions")
         List<String> testedVersions,
         @JsonProperty("skipped-versions")

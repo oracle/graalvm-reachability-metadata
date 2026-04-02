@@ -51,6 +51,33 @@ class TckExtensionTests {
     }
 
     @Test
+    void getMatchingCoordinatesStrictRequiresExactVersionDirectory() throws IOException {
+        TckExtension extension = createExtension(
+                """
+                [
+                  {
+                    "latest": true,
+                    "allowed-packages": [
+                      "com.example"
+                    ],
+                    "metadata-version": "1.0.0",
+                    "test-version": "0.9.0",
+                    "tested-versions": [
+                      "1.0.0",
+                      "1.0.1"
+                    ]
+                  }
+                ]
+                """
+        );
+
+        assertThat(extension.getMatchingCoordinatesStrict("com.example:demo"))
+                .containsExactly("com.example:demo:1.0.0");
+        assertThat(extension.getMatchingCoordinatesStrict("com.example:demo:1.0.1"))
+                .isEmpty();
+    }
+
+    @Test
     void getTestDirUsesSharedTestVersionForSupportedVersion() throws IOException {
         TckExtension extension = createExtension(
                 """
