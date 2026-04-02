@@ -141,6 +141,65 @@ class LibraryStatsSupportTests {
     }
 
     @Test
+    void buildVersionStatsAllowsJacocoReportsWithoutLineCoverageData() throws IOException {
+        Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Foo.class"));
+
+        Path dynamicAccessDir = tempDir.resolve("dynamic-access");
+        Files.createDirectories(dynamicAccessDir.resolve("demo"));
+        Files.writeString(
+                dynamicAccessDir.resolve("demo").resolve("reflection-calls.json"),
+                """
+                {
+                  "java.lang.Class#forName(java.lang.String)": [
+                    "com.example.Foo.load(Foo.java:10)"
+                  ]
+                }
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        Path jacocoReport = tempDir.resolve("jacoco.xml");
+        Files.writeString(
+                jacocoReport,
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <report name="demo">
+                  <package name="com/example">
+                    <class name="com/example/Foo">
+                      <method name="load" desc="()V">
+                        <counter type="INSTRUCTION" missed="1" covered="2"/>
+                        <counter type="METHOD" missed="0" covered="1"/>
+                      </method>
+                      <counter type="INSTRUCTION" missed="1" covered="2"/>
+                      <counter type="METHOD" missed="0" covered="1"/>
+                      <counter type="CLASS" missed="0" covered="1"/>
+                    </class>
+                  </package>
+                  <counter type="INSTRUCTION" missed="1" covered="2"/>
+                  <counter type="METHOD" missed="0" covered="1"/>
+                </report>
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStats(
+                "com.example:demo:1.0.0",
+                List.of(libraryJar),
+                dynamicAccessDir,
+                jacocoReport
+        );
+
+        assertThat(versionStats.dynamicAccess().totalCalls()).isEqualTo(1);
+        assertThat(versionStats.dynamicAccess().coveredCalls()).isEqualTo(0);
+        assertThat(versionStats.dynamicAccess().coverageRatio()).isEqualByComparingTo("0");
+        assertThat(versionStats.libraryCoverage().line().isAvailable()).isFalse();
+        assertThat(versionStats.libraryCoverage().instruction().covered()).isEqualTo(2);
+        assertThat(versionStats.libraryCoverage().instruction().missed()).isEqualTo(1);
+        assertThat(versionStats.libraryCoverage().method().covered()).isEqualTo(1);
+        assertThat(versionStats.libraryCoverage().method().missed()).isEqualTo(0);
+    }
+
+    @Test
     void mergeStatsReplacesWholeMetadataVersionWhenRequested() {
         LibraryStatsModels.VersionStats existingVersion = new LibraryStatsModels.VersionStats(
                 "1.0.0",
@@ -257,9 +316,9 @@ class LibraryStatsSupportTests {
 
     @Test
     void writeStatsProducesPayloadValidAgainstSchema() throws IOException {
-        Path schemaFile = tempDir.resolve("library-stats-schema-v1.0.0.json");
+        Path schemaFile = tempDir.resolve("library-stats-schema-v1.0.1.json");
         Files.copy(
-                locateRepoFile("stats/schemas/library-stats-schema-v1.0.0.json"),
+                locateRepoFile("stats/schemas/library-stats-schema-v1.0.1.json"),
                 schemaFile
         );
 
@@ -281,6 +340,73 @@ class LibraryStatsSupportTests {
                 statsFile,
                 schemaFile
         )).doesNotThrowAnyException();
+    }
+
+    @Test
+    void writeStatsSerializesVersionBeforeOtherVersionFields() throws IOException {
+        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
+                "com.example:demo",
+                new LibraryStatsModels.ArtifactStats(
+                        Map.of(
+                                "1.0.0",
+                                new LibraryStatsModels.MetadataVersionStats(
+                                        List.of(createVersionStats("1.0.0", 1, 1))
+                                )
+                        )
+                )
+        ));
+        Path statsFile = tempDir.resolve("stats.json");
+
+        LibraryStatsSupport.writeStats(statsFile, libraryStats);
+
+        String content = Files.readString(statsFile, StandardCharsets.UTF_8);
+        int versionIndex = content.indexOf("\"version\"");
+        int dynamicAccessIndex = content.indexOf("\"dynamicAccess\"");
+        int libraryCoverageIndex = content.indexOf("\"libraryCoverage\"");
+
+        assertThat(versionIndex).isGreaterThanOrEqualTo(0);
+        assertThat(dynamicAccessIndex).isGreaterThanOrEqualTo(0);
+        assertThat(libraryCoverageIndex).isGreaterThanOrEqualTo(0);
+        assertThat(versionIndex).isLessThan(dynamicAccessIndex);
+        assertThat(versionIndex).isLessThan(libraryCoverageIndex);
+    }
+
+    @Test
+    void writeStatsSerializesUnavailableCoverageMetricAsNa() throws IOException {
+        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
+                "com.example:demo",
+                new LibraryStatsModels.ArtifactStats(
+                        Map.of(
+                                "1.0.0",
+                                new LibraryStatsModels.MetadataVersionStats(
+                                        List.of(new LibraryStatsModels.VersionStats(
+                                                "1.0.0",
+                                                new LibraryStatsModels.DynamicAccessStats(
+                                                        1,
+                                                        0,
+                                                        java.math.BigDecimal.ZERO,
+                                                        Map.of()
+                                                ),
+                                                new LibraryStatsModels.LibraryCoverage(
+                                                        LibraryStatsModels.CoverageMetricValue.notAvailable(),
+                                                        LibraryStatsModels.CoverageMetricValue.available(
+                                                                new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667"))
+                                                        ),
+                                                        LibraryStatsModels.CoverageMetricValue.available(
+                                                                new LibraryStatsModels.CoverageMetric(3, 0, 3, java.math.BigDecimal.ONE)
+                                                        )
+                                                )
+                                        ))
+                                )
+                        )
+                )
+        ));
+        Path statsFile = tempDir.resolve("stats.json");
+
+        LibraryStatsSupport.writeStats(statsFile, libraryStats);
+
+        String content = Files.readString(statsFile, StandardCharsets.UTF_8);
+        assertThat(content).contains("\"line\" : \"N/A\"");
     }
 
     private LibraryStatsModels.VersionStats createVersionStats(

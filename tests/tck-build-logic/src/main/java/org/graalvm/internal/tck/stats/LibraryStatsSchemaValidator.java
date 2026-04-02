@@ -202,7 +202,10 @@ public final class LibraryStatsSchemaValidator {
 
         for (String expectedArtifact : expectedArtifacts.keySet()) {
             if (!actualArtifacts.containsKey(expectedArtifact)) {
-                failures.add("Missing artifact entry in stats file for " + expectedArtifact + " (" + statsFile + ")");
+                Set<String> expectedArtifactMetadataVersions = expectedArtifacts.get(expectedArtifact);
+                for (String expectedMetadataVersion : expectedArtifactMetadataVersions) {
+                    failures.add("Missing metadata-version entry for " + expectedArtifact + ":" + expectedMetadataVersion + " in " + statsFile);
+                }
             }
         }
 
@@ -236,13 +239,39 @@ public final class LibraryStatsSchemaValidator {
         for (String expectedMetadataVersion : expectedMetadataVersionsForArtifact) {
             if (!actualMetadataVersions.contains(expectedMetadataVersion)) {
                 failures.add("Missing metadata-version entry for " + artifact + ":" + expectedMetadataVersion + " in " + statsFile);
+                continue;
             }
+            JsonNode metadataVersionEntry = metadataVersions.get(expectedMetadataVersion);
+            validateMetadataVersionEntry(statsFile, artifact, expectedMetadataVersion, metadataVersionEntry, failures);
         }
 
         for (String actualMetadataVersion : actualMetadataVersions) {
             if (!expectedMetadataVersionsForArtifact.contains(actualMetadataVersion)) {
                 failures.add("Orphan metadata-version entry in stats file for " + artifact + ":" + actualMetadataVersion);
             }
+        }
+    }
+
+    private static void validateMetadataVersionEntry(
+            Path statsFile,
+            String artifact,
+            String metadataVersion,
+            JsonNode metadataVersionEntry,
+            List<String> failures
+    ) {
+        if (metadataVersionEntry == null || !metadataVersionEntry.isObject()) {
+            failures.add("Stats file is missing object entry for " + artifact + ":" + metadataVersion + " in " + statsFile);
+            return;
+        }
+
+        JsonNode versions = metadataVersionEntry.get("versions");
+        if (versions == null || !versions.isArray()) {
+            failures.add("Stats file is missing array field 'versions' for " + artifact + ":" + metadataVersion + " in " + statsFile);
+            return;
+        }
+
+        if (versions.isEmpty()) {
+            failures.add("Missing version report entries in stats file for " + artifact + ":" + metadataVersion + " in " + statsFile);
         }
     }
 
@@ -326,9 +355,12 @@ public final class LibraryStatsSchemaValidator {
     private static void validateCoverageMetric(
             String locationPrefix,
             String metricName,
-            LibraryStatsModels.CoverageMetric metric,
+            LibraryStatsModels.CoverageMetricValue metric,
             List<String> failures
     ) {
+        if (metric == null || !metric.isAvailable()) {
+            return;
+        }
         long expectedTotal = metric.covered() + metric.missed();
         if (metric.total() != expectedTotal) {
             failures.add("Inconsistent totals at " + locationPrefix + ":libraryCoverage." + metricName

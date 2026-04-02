@@ -153,7 +153,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
     protected Path getStatsSchemaFile() {
         return getStatsRoot()
                 .resolve("schemas")
-                .resolve("library-stats-schema-v1.0.0.json");
+                .resolve("library-stats-schema-v1.0.1.json");
     }
 
     @Internal

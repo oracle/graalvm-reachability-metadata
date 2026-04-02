@@ -468,9 +468,9 @@ public final class LibraryStatsSupport {
             Map<String, LibraryStatsModels.CoverageMetric> rootCounters = parseRootCounters(root);
             return new ParsedJacocoReport(
                     coveredLinesBySource,
-                    requireCoverageMetric(rootCounters, "LINE"),
-                    requireCoverageMetric(rootCounters, "INSTRUCTION"),
-                    requireCoverageMetric(rootCounters, "METHOD")
+                    coverageMetricOrNa(rootCounters, "LINE"),
+                    coverageMetricOrNa(rootCounters, "INSTRUCTION"),
+                    coverageMetricOrNa(rootCounters, "METHOD")
             );
         } catch (Exception e) {
             throw new GradleException("Failed to parse JaCoCo report " + jacocoReport, e);
@@ -494,15 +494,15 @@ public final class LibraryStatsSupport {
         return counters;
     }
 
-    private static LibraryStatsModels.CoverageMetric requireCoverageMetric(
+    private static LibraryStatsModels.CoverageMetricValue coverageMetricOrNa(
             Map<String, LibraryStatsModels.CoverageMetric> counters,
             String type
     ) {
         LibraryStatsModels.CoverageMetric coverageMetric = counters.get(type);
         if (coverageMetric == null) {
-            throw new GradleException("JaCoCo report is missing root counter type " + type);
+            return LibraryStatsModels.CoverageMetricValue.notAvailable();
         }
-        return coverageMetric;
+        return LibraryStatsModels.CoverageMetricValue.available(coverageMetric);
     }
 
     private static String sourceKey(String className, String sourceFile) {
@@ -530,9 +530,9 @@ public final class LibraryStatsSupport {
 
     private record ParsedJacocoReport(
             Map<String, Set<Integer>> coveredLinesBySource,
-            LibraryStatsModels.CoverageMetric line,
-            LibraryStatsModels.CoverageMetric instruction,
-            LibraryStatsModels.CoverageMetric method
+            LibraryStatsModels.CoverageMetricValue line,
+            LibraryStatsModels.CoverageMetricValue instruction,
+            LibraryStatsModels.CoverageMetricValue method
     ) {
     }
 
