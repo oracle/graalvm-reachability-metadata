@@ -186,6 +186,14 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
                 .resolve("dynamic-access");
     }
 
+    protected Path getDynamicAccessCoverageReport(String coordinates) {
+        return tckExtension.getTestDir(coordinates)
+                .resolve("build")
+                .resolve("reports")
+                .resolve("dynamic-access")
+                .resolve("dynamic-access-coverage.json");
+    }
+
     protected LibraryStatsModels.VersionStats computeVersionStats(String coordinates) {
         generateReportsForCoordinate(coordinates);
         List<Path> libraryJars = listLibraryJars(coordinates);

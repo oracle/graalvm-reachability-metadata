@@ -210,6 +210,26 @@ public final class LibraryStatsSupport {
         );
     }
 
+    public static LibraryStatsModels.DynamicAccessCoverageReport buildDynamicAccessCoverageReport(
+            String coordinate,
+            List<Path> libraryJars,
+            Path dynamicAccessDir,
+            Path jacocoReport
+    ) {
+        Set<String> libraryClasses = loadLibraryClasses(libraryJars);
+        ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        return new LibraryStatsModels.DynamicAccessCoverageReport(
+                coordinate,
+                parsedDynamicAccess.dynamicAccessStats().totalCalls() > 0,
+                new LibraryStatsModels.DynamicAccessCoverageTotals(
+                        parsedDynamicAccess.dynamicAccessStats().totalCalls(),
+                        parsedDynamicAccess.dynamicAccessStats().coveredCalls()
+                ),
+                parsedDynamicAccess.classCoverage()
+        );
+    }
+
     public static JsonNode toJsonTree(Object value) {
         return OBJECT_MAPPER.valueToTree(value);
     }
@@ -229,6 +249,10 @@ public final class LibraryStatsSupport {
         } catch (IOException e) {
             throw new GradleException("Failed to serialize normalized library stats JSON", e);
         }
+    }
+
+    public static void writeJson(Path targetFile, Object value) {
+        writeJsonWithTrailingNewline(targetFile, value, "Failed to write JSON to ");
     }
 
     private static LibraryStatsModels.LibraryStats emptyLibraryStats() {
@@ -319,17 +343,33 @@ public final class LibraryStatsSupport {
             return emptyDynamicAccess();
         }
 
-        Map<String, Set<String>> totalKeysByType = new TreeMap<>();
-        Map<String, Set<String>> coveredKeysByType = new TreeMap<>();
+        Map<String, ParsedDynamicAccessCallSite> callSitesByKey = new LinkedHashMap<>();
 
         try {
             Files.walk(dynamicAccessDir)
                     .filter(Files::isRegularFile)
                     .filter(path -> DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString()).matches())
                     .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
-                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, totalKeysByType, coveredKeysByType));
+                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, callSitesByKey));
         } catch (IOException e) {
             throw new GradleException("Failed to traverse dynamic access directory " + dynamicAccessDir, e);
+        }
+
+        if (callSitesByKey.isEmpty()) {
+            return emptyDynamicAccess();
+        }
+
+        Map<String, Set<String>> totalKeysByType = new TreeMap<>();
+        Map<String, Set<String>> coveredKeysByType = new TreeMap<>();
+        Map<String, List<ParsedDynamicAccessCallSite>> callSitesByClass = new TreeMap<>();
+
+        for (Map.Entry<String, ParsedDynamicAccessCallSite> entry : callSitesByKey.entrySet()) {
+            ParsedDynamicAccessCallSite callSite = entry.getValue();
+            totalKeysByType.computeIfAbsent(callSite.metadataType(), ignored -> new LinkedHashSet<>()).add(entry.getKey());
+            if (callSite.covered()) {
+                coveredKeysByType.computeIfAbsent(callSite.metadataType(), ignored -> new LinkedHashSet<>()).add(entry.getKey());
+            }
+            callSitesByClass.computeIfAbsent(callSite.className(), ignored -> new ArrayList<>()).add(callSite);
         }
 
         long totalCalls = totalKeysByType.values().stream().mapToLong(Set::size).sum();
@@ -343,14 +383,24 @@ public final class LibraryStatsSupport {
             breakdown.put(reportType, new LibraryStatsModels.DynamicAccessBreakdown(total, covered, ratio(covered, total)));
         }
 
+        List<LibraryStatsModels.DynamicAccessClassCoverage> classCoverage = callSitesByClass.entrySet().stream()
+                .map(entry -> toClassCoverage(entry.getKey(), entry.getValue()))
+                .sorted(Comparator
+                        .comparingLong((LibraryStatsModels.DynamicAccessClassCoverage value) -> value.totalCalls() - value.coveredCalls())
+                        .reversed()
+                        .thenComparing(LibraryStatsModels.DynamicAccessClassCoverage::className))
+                .toList();
+
         return new ParsedDynamicAccess(
-                new LibraryStatsModels.DynamicAccessStats(totalCalls, coveredCalls, ratio(coveredCalls, totalCalls), breakdown)
+                new LibraryStatsModels.DynamicAccessStats(totalCalls, coveredCalls, ratio(coveredCalls, totalCalls), breakdown),
+                classCoverage
         );
     }
 
     private static ParsedDynamicAccess emptyDynamicAccess() {
         return new ParsedDynamicAccess(
-                new LibraryStatsModels.DynamicAccessStats(0, 0, ratio(0, 0), Map.of())
+                new LibraryStatsModels.DynamicAccessStats(0, 0, ratio(0, 0), Map.of()),
+                List.of()
         );
     }
 
@@ -358,8 +408,7 @@ public final class LibraryStatsSupport {
             Path path,
             Set<String> libraryClasses,
             Map<String, Set<Integer>> coveredLinesBySource,
-            Map<String, Set<String>> totalKeysByType,
-            Map<String, Set<String>> coveredKeysByType
+            Map<String, ParsedDynamicAccessCallSite> callSitesByKey
     ) {
         Matcher matcher = DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString());
         if (!matcher.matches()) {
@@ -378,15 +427,27 @@ public final class LibraryStatsSupport {
                         continue;
                     }
                     String callSiteKey = reportType + '\u0000' + trackedApi + '\u0000' + rawFrame;
-                    totalKeysByType.computeIfAbsent(reportType, ignored -> new LinkedHashSet<>()).add(callSiteKey);
-                    if (parsedFrame.lineNumber() == null) {
+                    if (callSitesByKey.containsKey(callSiteKey)) {
                         continue;
                     }
-                    String sourceKey = sourceKey(parsedFrame.className(), parsedFrame.sourceFile());
-                    Set<Integer> coveredLines = coveredLinesBySource.get(sourceKey);
-                    if (coveredLines != null && coveredLines.contains(parsedFrame.lineNumber())) {
-                        coveredKeysByType.computeIfAbsent(reportType, ignored -> new LinkedHashSet<>()).add(callSiteKey);
+                    boolean covered = false;
+                    if (parsedFrame.lineNumber() != null) {
+                        String sourceKey = sourceKey(parsedFrame.className(), parsedFrame.sourceFile());
+                        Set<Integer> coveredLines = coveredLinesBySource.get(sourceKey);
+                        covered = coveredLines != null && coveredLines.contains(parsedFrame.lineNumber());
                     }
+                    callSitesByKey.put(
+                            callSiteKey,
+                            new ParsedDynamicAccessCallSite(
+                                    reportType,
+                                    trackedApi,
+                                    rawFrame,
+                                    parsedFrame.className(),
+                                    parsedFrame.sourceFile(),
+                                    parsedFrame.lineNumber(),
+                                    covered
+                            )
+                    );
                 }
             }
         } catch (IOException e) {
@@ -522,10 +583,58 @@ public final class LibraryStatsSupport {
                 .divide(BigDecimal.valueOf(total), RATIO_SCALE, RoundingMode.HALF_UP);
     }
 
+    private static LibraryStatsModels.DynamicAccessClassCoverage toClassCoverage(
+            String className,
+            List<ParsedDynamicAccessCallSite> callSites
+    ) {
+        List<LibraryStatsModels.DynamicAccessCallSiteCoverage> sortedCallSites = callSites.stream()
+                .sorted(Comparator
+                        .comparing(ParsedDynamicAccessCallSite::metadataType)
+                        .thenComparing(ParsedDynamicAccessCallSite::trackedApi)
+                        .thenComparing(ParsedDynamicAccessCallSite::frame))
+                .map(callSite -> new LibraryStatsModels.DynamicAccessCallSiteCoverage(
+                        callSite.metadataType(),
+                        callSite.trackedApi(),
+                        callSite.frame(),
+                        callSite.line(),
+                        callSite.covered()
+                ))
+                .toList();
+
+        long coveredCalls = callSites.stream().filter(ParsedDynamicAccessCallSite::covered).count();
+        String sourceFile = callSites.stream()
+                .map(ParsedDynamicAccessCallSite::sourceFile)
+                .filter(value -> value != null && !value.isBlank())
+                .findFirst()
+                .orElse(null);
+
+        return new LibraryStatsModels.DynamicAccessClassCoverage(
+                className,
+                sourceFile,
+                callSites.size(),
+                coveredCalls,
+                sortedCallSites
+        );
+    }
+
     private record ParsedStackFrame(String className, String sourceFile, Integer lineNumber) {
     }
 
-    private record ParsedDynamicAccess(LibraryStatsModels.DynamicAccessStats dynamicAccessStats) {
+    private record ParsedDynamicAccess(
+            LibraryStatsModels.DynamicAccessStats dynamicAccessStats,
+            List<LibraryStatsModels.DynamicAccessClassCoverage> classCoverage
+    ) {
+    }
+
+    private record ParsedDynamicAccessCallSite(
+            String metadataType,
+            String trackedApi,
+            String frame,
+            String className,
+            String sourceFile,
+            Integer line,
+            boolean covered
+    ) {
     }
 
     private record ParsedJacocoReport(

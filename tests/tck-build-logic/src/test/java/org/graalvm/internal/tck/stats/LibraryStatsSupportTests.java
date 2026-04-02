@@ -200,6 +200,126 @@ class LibraryStatsSupportTests {
     }
 
     @Test
+    void buildDynamicAccessCoverageReportGroupsCallSitesByClassAndSortsByUncoveredCalls() throws IOException {
+        Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of(
+                "com/example/Foo.class",
+                "com/example/Bar.class"
+        ));
+
+        Path dynamicAccessDir = tempDir.resolve("dynamic-access");
+        Files.createDirectories(dynamicAccessDir.resolve("demo"));
+        Files.writeString(
+                dynamicAccessDir.resolve("demo").resolve("reflection-calls.json"),
+                """
+                {
+                  "java.lang.Class#forName(java.lang.String)": [
+                    "com.example.Foo.load(Foo.java:10)",
+                    "com.example.Foo.load(Foo.java:10)",
+                    "com.example.Foo.noLine(Foo.java)",
+                    "com.example.Bar.load(Bar.java:20)"
+                  ]
+                }
+                """,
+                StandardCharsets.UTF_8
+        );
+        Files.writeString(
+                dynamicAccessDir.resolve("demo").resolve("resource-calls.json"),
+                """
+                {
+                  "java.lang.Class#getResource(java.lang.String)": [
+                    "com.example.Bar.lookup(Bar.java:21)"
+                  ]
+                }
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        Path jacocoReport = tempDir.resolve("jacoco.xml");
+        Files.writeString(
+                jacocoReport,
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <report name="demo">
+                  <package name="com/example">
+                    <sourcefile name="Foo.java">
+                      <line nr="10" mi="0" ci="3" mb="0" cb="0"/>
+                    </sourcefile>
+                    <sourcefile name="Bar.java">
+                      <line nr="20" mi="1" ci="0" mb="0" cb="0"/>
+                      <line nr="21" mi="0" ci="2" mb="0" cb="0"/>
+                    </sourcefile>
+                  </package>
+                  <counter type="INSTRUCTION" missed="4" covered="6"/>
+                  <counter type="LINE" missed="1" covered="2"/>
+                  <counter type="METHOD" missed="2" covered="3"/>
+                </report>
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
+                "com.example:demo:1.0.0",
+                List.of(libraryJar),
+                dynamicAccessDir,
+                jacocoReport
+        );
+
+        assertThat(report.coordinate()).isEqualTo("com.example:demo:1.0.0");
+        assertThat(report.hasDynamicAccess()).isTrue();
+        assertThat(report.totals().totalCalls()).isEqualTo(4);
+        assertThat(report.totals().coveredCalls()).isEqualTo(2);
+        assertThat(report.classes()).extracting(LibraryStatsModels.DynamicAccessClassCoverage::className)
+                .containsExactly("com.example.Bar", "com.example.Foo");
+        assertThat(report.classes().get(0).sourceFile()).isEqualTo("Bar.java");
+        assertThat(report.classes().get(0).totalCalls()).isEqualTo(2);
+        assertThat(report.classes().get(0).coveredCalls()).isEqualTo(1);
+        assertThat(report.classes().get(0).callSites())
+                .extracting(LibraryStatsModels.DynamicAccessCallSiteCoverage::frame)
+                .containsExactly(
+                        "com.example.Bar.load(Bar.java:20)",
+                        "com.example.Bar.lookup(Bar.java:21)"
+                );
+        assertThat(report.classes().get(0).callSites())
+                .extracting(LibraryStatsModels.DynamicAccessCallSiteCoverage::covered)
+                .containsExactly(false, true);
+        assertThat(report.classes().get(1).totalCalls()).isEqualTo(2);
+        assertThat(report.classes().get(1).coveredCalls()).isEqualTo(1);
+    }
+
+    @Test
+    void buildDynamicAccessCoverageReportReturnsEmptyClassesWhenDynamicAccessDirectoryIsMissing() throws IOException {
+        Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Foo.class"));
+
+        Path missingDynamicAccessDir = tempDir.resolve("dynamic-access-missing");
+
+        Path jacocoReport = tempDir.resolve("jacoco.xml");
+        Files.writeString(
+                jacocoReport,
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <report name="demo">
+                  <counter type="INSTRUCTION" missed="1" covered="2"/>
+                  <counter type="LINE" missed="1" covered="1"/>
+                  <counter type="METHOD" missed="0" covered="1"/>
+                </report>
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
+                "com.example:demo:1.0.0",
+                List.of(libraryJar),
+                missingDynamicAccessDir,
+                jacocoReport
+        );
+
+        assertThat(report.hasDynamicAccess()).isFalse();
+        assertThat(report.totals().totalCalls()).isEqualTo(0);
+        assertThat(report.totals().coveredCalls()).isEqualTo(0);
+        assertThat(report.classes()).isEmpty();
+    }
+
+    @Test
     void mergeStatsReplacesWholeMetadataVersionWhenRequested() {
         LibraryStatsModels.VersionStats existingVersion = new LibraryStatsModels.VersionStats(
                 "1.0.0",
