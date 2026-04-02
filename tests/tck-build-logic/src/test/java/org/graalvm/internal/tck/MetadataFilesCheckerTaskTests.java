@@ -14,6 +14,8 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -129,6 +131,161 @@ class MetadataFilesCheckerTaskTests {
     }
 
     @Test
+    void runFailsWhenConditionTypeReachedIsOutsideAllowedPackages() throws IOException {
+        createMetadataIndex();
+        copyReachabilitySchemaFile();
+        Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
+        Files.writeString(
+                tempDir.resolve("metadata/com.example/demo/1.0.0/reachability-metadata.json"),
+                """
+                {
+                  "reflection": [
+                    {
+                      "condition": {
+                        "typeReached": "org.other.Library"
+                      },
+                      "type": "com.example.Demo",
+                      "allDeclaredMethods": true
+                    }
+                  ]
+                }
+                """
+        );
+
+        TestMetadataFilesCheckerTask task = createTask();
+        task.setCoordinates("com.example:demo:1.0.1");
+
+        assertThatThrownBy(task::run)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Errors above found");
+    }
+
+    @Test
+    void runAllowsJavaLangTypeReachedWhenEntryAlsoTargetsJavaLang() throws IOException {
+        createMetadataIndex();
+        copyReachabilitySchemaFile();
+        Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
+        Files.writeString(
+                tempDir.resolve("metadata/com.example/demo/1.0.0/reachability-metadata.json"),
+                """
+                {
+                  "reflection": [
+                    {
+                      "condition": {
+                        "typeReached": "java.lang.ClassLoader"
+                      },
+                      "type": "java.lang.ClassLoader",
+                      "jniAccessible": true
+                    }
+                  ]
+                }
+                """
+        );
+
+        TestMetadataFilesCheckerTask task = createTask();
+        task.setCoordinates("com.example:demo:1.0.1");
+
+        assertThatCode(task::run).doesNotThrowAnyException();
+    }
+
+    @Test
+    void runAllowsRenamedPackageFromAllowedPackagesInResources() throws IOException {
+        createMetadataIndex(
+                "org.freemarker",
+                "freemarker",
+                "2.3.31",
+                List.of("org.freemarker", "freemarker"),
+                List.of("2.3.31", "2.3.34")
+        );
+        copyReachabilitySchemaFile();
+        Files.createDirectories(tempDir.resolve("metadata/org.freemarker/freemarker/2.3.31"));
+        Files.writeString(
+                tempDir.resolve("metadata/org.freemarker/freemarker/2.3.31/reachability-metadata.json"),
+                """
+                {
+                  "resources": [
+                    {
+                      "condition": {
+                        "typeReached": "freemarker.template.utility.ClassUtil"
+                      },
+                      "glob": "freemarker/version.properties"
+                    }
+                  ]
+                }
+                """
+        );
+
+        TestMetadataFilesCheckerTask task = createTask();
+        task.setCoordinates("org.freemarker:freemarker:2.3.34");
+
+        assertThatCode(task::run).doesNotThrowAnyException();
+    }
+
+    @Test
+    void runFailsWhenResourcesDependOnExternalTriggerPackage() throws IOException {
+        createMetadataIndex(
+                "ch.qos.logback",
+                "logback-classic",
+                "1.5.7",
+                List.of("ch.qos.logback"),
+                List.of("1.5.7", "1.5.8")
+        );
+        copyReachabilitySchemaFile();
+        Files.createDirectories(tempDir.resolve("metadata/ch.qos.logback/logback-classic/1.5.7"));
+        Files.writeString(
+                tempDir.resolve("metadata/ch.qos.logback/logback-classic/1.5.7/reachability-metadata.json"),
+                """
+                {
+                  "resources": [
+                    {
+                      "condition": {
+                        "typeReached": "org.slf4j.LoggerFactory"
+                      },
+                      "glob": "META-INF/services/org.slf4j.spi.SLF4JServiceProvider"
+                    }
+                  ]
+                }
+                """
+        );
+
+        TestMetadataFilesCheckerTask task = createTask();
+        task.setCoordinates("ch.qos.logback:logback-classic:1.5.8");
+
+        assertThatThrownBy(task::run)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Errors above found");
+    }
+
+    @Test
+    void runDoesNotApplyJavaUtilExceptionToResourceBundles() throws IOException {
+        createMetadataIndex();
+        copyReachabilitySchemaFile();
+        Files.createDirectories(tempDir.resolve("metadata/com.example/demo/1.0.0"));
+        Files.writeString(
+                tempDir.resolve("metadata/com.example/demo/1.0.0/reachability-metadata.json"),
+                """
+                {
+                  "resources": [
+                    {
+                      "condition": {
+                        "typeReached": "java.util.ServiceLoader"
+                      },
+                      "bundle": "java.util.logging"
+                    }
+                  ]
+                }
+                """
+        );
+
+        TestMetadataFilesCheckerTask task = createTask();
+        task.setCoordinates("com.example:demo:1.0.1");
+
+        assertThatThrownBy(task::run)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Errors above found");
+    }
+
+    @Test
     void runAllowsLegacySerializationEntriesWithRealSchema() throws IOException {
         createMetadataIndex();
         copyReachabilitySchemaFile();
@@ -194,25 +351,42 @@ class MetadataFilesCheckerTaskTests {
     }
 
     private void createMetadataIndex() throws IOException {
-        Files.createDirectories(tempDir.resolve("metadata/com.example/demo"));
+        createMetadataIndex(
+                "com.example",
+                "demo",
+                "1.0.0",
+                List.of("com.example"),
+                List.of("1.0.0", "1.0.1")
+        );
+    }
+
+    private void createMetadataIndex(
+            String group,
+            String artifact,
+            String metadataVersion,
+            List<String> allowedPackages,
+            List<String> testedVersions
+    ) throws IOException {
+        Files.createDirectories(tempDir.resolve("metadata/" + group + "/" + artifact));
         Files.writeString(
-                tempDir.resolve("metadata/com.example/demo/index.json"),
+                tempDir.resolve("metadata/" + group + "/" + artifact + "/index.json"),
                 """
                 [
                   {
                     "latest": true,
-                    "allowed-packages": [
-                      "com.example"
-                    ],
-                    "metadata-version": "1.0.0",
-                    "tested-versions": [
-                      "1.0.0",
-                      "1.0.1"
-                    ]
+                    "allowed-packages": %s,
+                    "metadata-version": "%s",
+                    "tested-versions": %s
                   }
                 ]
-                """
+                """.formatted(toJsonArray(allowedPackages), metadataVersion, toJsonArray(testedVersions))
         );
+    }
+
+    private String toJsonArray(List<String> values) {
+        return values.stream()
+                .map(value -> "\"" + value + "\"")
+                .collect(Collectors.joining(", ", "[", "]"));
     }
 
     private void copyReachabilitySchemaFile() throws IOException {

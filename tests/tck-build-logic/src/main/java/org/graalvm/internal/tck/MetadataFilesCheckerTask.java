@@ -47,7 +47,12 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     private final Set<String> EXPECTED_FILES = new HashSet<>(List.of(
             REACHABILITY_METADATA_FILE_NAME));
 
+    private final Set<String> ILLEGAL_TYPE_VALUES = new HashSet<>(List.of("java.lang"));
+
+    private final Set<String> PREDEFINED_ALLOWED_PACKAGES = new HashSet<>(List.of("java.lang", "java.util"));
+
     Coordinates coordinates;
+    private List<String> allowedPackages;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private JsonSchema reachabilityMetadataSchema;
 
@@ -77,6 +82,8 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
 
         File index = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", coordinates));
         getIndexFile().set(index);
+
+        this.allowedPackages = getAllowedPackages();
     }
 
     @SuppressWarnings("unchecked")
@@ -166,6 +173,12 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
             containsErrors |= containsDuplicatedEntries(metadata.path("foreign").path("downcalls"), "foreign.downcalls", file);
             containsErrors |= containsDuplicatedEntries(metadata.path("foreign").path("upcalls"), "foreign.upcalls", file);
             containsErrors |= containsDuplicatedEntries(metadata.path("foreign").path("directUpcalls"), "foreign.directUpcalls", file);
+            containsErrors |= containsInvalidTypeReachedEntries(metadata.path("reflection"), file);
+            containsErrors |= containsInvalidTypeReachedEntries(metadata.path("resources"), file);
+            containsErrors |= containsInvalidTypeReachedEntries(metadata.path("serialization"), file);
+            containsErrors |= containsInvalidTypeReachedEntries(metadata.path("foreign").path("downcalls"), file);
+            containsErrors |= containsInvalidTypeReachedEntries(metadata.path("foreign").path("upcalls"), file);
+            containsErrors |= containsInvalidTypeReachedEntries(metadata.path("foreign").path("directUpcalls"), file);
 
             return containsErrors;
         } catch (Exception e) {
@@ -256,6 +269,86 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         return containsDuplicates;
     }
 
+    private boolean containsInvalidTypeReachedEntries(JsonNode entries, File file) {
+        if (!entries.isArray() || entries.isEmpty()) {
+            return false;
+        }
+
+        boolean containsErrors = false;
+        for (JsonNode entry : entries) {
+            containsErrors |= checkTypeReached(entry, file);
+            containsErrors |= containsEntriesNotFromLibrary(entry, file);
+        }
+        return containsErrors;
+    }
+
+    private boolean checkTypeReached(JsonNode entry, File file) {
+        String typeReached = getEntryTypeReached(entry);
+        if (typeReached == null) {
+            return false;
+        }
+
+        String entryDescription = describeEntry(entry);
+        if (isAllowedPredefinedEntry(typeReached, entry)) {
+            return false;
+        }
+
+        if (ILLEGAL_TYPE_VALUES.stream().anyMatch(typeReached::startsWith)) {
+            System.out.println("ERROR: In file " + file.toURI() + " entry: " + entryDescription + " contains illegal typeReached value. Field" +
+                    " typeReached cannot be any of the following values: " + ILLEGAL_TYPE_VALUES);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean containsEntriesNotFromLibrary(JsonNode entry, File file) {
+        String typeReached = getEntryTypeReached(entry);
+        if (typeReached == null) {
+            return false;
+        }
+
+        String entryDescription = describeEntry(entry);
+        if (isAllowedPredefinedEntry(typeReached, entry)) {
+            return false;
+        }
+
+        if (this.allowedPackages.stream().noneMatch(typeReached::contains)) {
+            System.out.println("ERROR: In file " + file.toURI() + "\n" +
+                    "Entry: " + entryDescription + "\n" +
+                    "TypeReached: " + typeReached + "\n" +
+                    "doesn't belong to any of the specified packages: " + this.allowedPackages + "\n");
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isAllowedPredefinedEntry(String typeReached, JsonNode entry) {
+        String entryName = getEntryName(entry);
+        return entryName != null
+                && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(typeReached::contains)
+                && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(entryName::contains);
+    }
+
+    private String getEntryTypeReached(JsonNode entry) {
+        JsonNode condition = entry.path("condition");
+        if (!condition.isObject() || !condition.hasNonNull("typeReached")) {
+            return null;
+        }
+        return condition.get("typeReached").asText();
+    }
+
+    private String getEntryName(JsonNode entry) {
+        if (entry.hasNonNull("name")) {
+            return entry.get("name").asText();
+        }
+        if (entry.has("type") && entry.get("type").isTextual()) {
+            return entry.get("type").asText();
+        }
+        return null;
+    }
+
     private String describeEntry(JsonNode entry) {
         if (entry == null || entry.isMissingNode() || entry.isNull()) {
             return "<missing>";
@@ -288,6 +381,75 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
             }
         }
         return entry.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> getAllowedPackages() {
+        File indexFile = getIndexFile().get().getAsFile();
+        String groupId = coordinates.group();
+        String artifactId = coordinates.artifact();
+        String requestedVersion = coordinates.version();
+
+        if (!indexFile.exists()) {
+            throw new IllegalStateException("Missing artifact-level index.json: " + indexFile.toURI() + " for coordinates " + coordinates);
+        }
+
+        Object parsed = new JsonSlurper().parse(indexFile);
+        if (!(parsed instanceof List)) {
+            throw new IllegalStateException("Invalid artifact-level index.json (expected array): " + indexFile.toURI());
+        }
+
+        List<Map<String, Object>> entries = ((List<Object>) parsed).stream()
+                .map(entry -> (Map<String, Object>) entry)
+                .toList();
+
+        Optional<Map<String, Object>> byMetadataVersion = entries.stream()
+                .filter(entry -> Objects.equals(requestedVersion, entry.get("metadata-version")))
+                .findFirst();
+
+        Map<String, Object> match = byMetadataVersion.orElseGet(() ->
+                entries.stream()
+                        .filter(entry -> {
+                            Object testedVersions = entry.get("tested-versions");
+                            return testedVersions instanceof List<?> versions && versions.contains(requestedVersion);
+                        })
+                        .findFirst()
+                        .orElse(null)
+        );
+
+        if (match == null) {
+            List<String> metadataVersions = entries.stream()
+                    .map(entry -> (String) entry.get("metadata-version"))
+                    .filter(Objects::nonNull)
+                    .toList();
+            List<String> testedVersions = entries.stream()
+                    .map(entry -> {
+                        Object value = entry.get("tested-versions");
+                        if (value instanceof List<?> versions) {
+                            return versions.stream().map(Object::toString).collect(Collectors.toList());
+                        }
+                        return Collections.<String>emptyList();
+                    })
+                    .flatMap(List::stream)
+                    .distinct()
+                    .sorted()
+                    .toList();
+
+            throw new IllegalStateException(
+                    "Missing index entry for " + groupId + ":" + artifactId +
+                    " matching version=" + requestedVersion +
+                    " in " + indexFile.toURI() +
+                    ". Known metadata-versions=" + metadataVersions +
+                    ", tested-versions=" + testedVersions);
+        }
+
+        Object allowedPackagesValue = match.get("allowed-packages");
+        if (allowedPackagesValue instanceof List) {
+            return (List<String>) allowedPackagesValue;
+        }
+        throw new IllegalStateException(
+                "Missing or invalid allowed-packages for " + groupId + ":" + artifactId +
+                " (metadata-version=" + match.get("metadata-version") + ") in " + indexFile.toURI());
     }
 
 }
