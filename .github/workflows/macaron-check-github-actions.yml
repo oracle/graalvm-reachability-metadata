@@ -1,0 +1,25 @@
+name: "Check GitHub Actions with Macaron"
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: "ubuntu-22.04"
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Run Macaron action"
+        uses: oracle/macaron@v0.23.0
+        with:
+          repo_path: ./
+          policy_file: check-github-actions
+          policy_purl: pkg:github.com/oracle/graalvm-reachability-metadata@.*
+          reports_retention_days: 90
