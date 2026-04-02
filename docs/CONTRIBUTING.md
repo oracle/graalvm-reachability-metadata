@@ -104,6 +104,10 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
 * `requires`: An array of `groupId:artifactId` coordinates for libraries this metadata depends on.
 * `default-for`: A Java-format regex used to match library versions if no exact match exists in `tested-versions` (e.g., `"0\\.0\\..*"`).
 * `test-version`: Defines the subdirectory in `tests/src` containing the test code. Use this to share a single test suite across multiple metadata versions.
+* `source-code-url`: URL to the metadata source code location for this index entry.
+* `repository-url`: URL to the canonical project repository for this index entry.
+* `test-code-url`: URL to the test source code location for this index entry.
+* `documentation-url`: URL to the project documentation for this index entry.
 * `skipped-versions`: An array of objects (with `version` and `reason`) to explicitly exclude library versions known to be broken or incompatible.
 * `override`: Boolean. If `true`, excludes outdated builtin GraalVM metadata.
 
@@ -131,6 +135,10 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
      "allowed-packages": ["org.example.library"],
      "metadata-version": "1.1.0",
      "test-version": "1.0.0",
+     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+     "repository-url": "https://github.com/example/repo",
+     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
      "tested-versions": [
        "1.1.0",
        "1.1.1"
@@ -138,6 +146,35 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
      "requires": ["org.slf4j:slf4j-api"]
   }
 ]
+```
+
+#### Populate Artifact URLs With an Agent
+
+To populate `source-code-url`, `repository-url`, `test-code-url`, and `documentation-url` fields in matching `index.json` entries:
+
+```bash
+./gradlew populateArtifactURLs \
+  --coordinates=all \
+  --agent-command='codex -a never exec -s danger-full-access'
+```
+
+By default, this task skips entries where all four URL fields are already set and only fills missing URL fields in partially populated entries.
+To overwrite existing URL values, add `--overwrite-existing`:
+
+```bash
+./gradlew populateArtifactURLs \
+  --coordinates=all \
+  --overwrite-existing \
+  --agent-command='codex -a never exec -s danger-full-access'
+```
+
+To require source/test-source verification (for Maven and non-Maven candidates) before selecting source URLs, add `--verify-artifact-sources`:
+
+```bash
+./gradlew populateArtifactURLs \
+  --coordinates=all \
+  --verify-artifact-sources \
+  --agent-command='codex -a never exec -s danger-full-access'
 ```
 
 ### Format Metadata Files
