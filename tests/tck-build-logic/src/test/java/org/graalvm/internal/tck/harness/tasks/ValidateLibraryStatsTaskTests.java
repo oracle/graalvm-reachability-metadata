@@ -85,7 +85,7 @@ class ValidateLibraryStatsTaskTests {
         Path statsFile = tempDir.resolve("stats").resolve("stats.json");
         LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
 
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatCode(task::validate).doesNotThrowAnyException();
     }
 
@@ -94,7 +94,7 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
 
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
                 .hasMessageContaining("Missing stats file");
     }
@@ -119,7 +119,7 @@ class ValidateLibraryStatsTaskTests {
                 """
         );
 
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
                 .hasMessageContaining("Orphan artifact entry");
     }
@@ -153,7 +153,7 @@ class ValidateLibraryStatsTaskTests {
                 StandardCharsets.UTF_8
         );
 
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
                 .hasMessageContaining("Unexpected JSON file");
     }
@@ -214,7 +214,7 @@ class ValidateLibraryStatsTaskTests {
                 """
         );
 
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
                 .hasMessageContaining("not normalized and sorted");
     }
@@ -277,7 +277,7 @@ class ValidateLibraryStatsTaskTests {
         Path statsFile = tempDir.resolve("stats").resolve("stats.json");
         LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
 
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
                 .hasMessageContaining("Ratio mismatch");
     }
@@ -340,7 +340,7 @@ class ValidateLibraryStatsTaskTests {
         Path statsFile = tempDir.resolve("stats").resolve("stats.json");
         LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
 
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatCode(task::validate).doesNotThrowAnyException();
     }
 

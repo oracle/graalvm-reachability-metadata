@@ -49,7 +49,7 @@ class MetadataFilesCheckerTaskTests {
         Project project = ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
                 .build();
-        TestMetadataFilesCheckerTask task = project.getTasks().create("checkMetadataFiles", TestMetadataFilesCheckerTask.class);
+        TestMetadataFilesCheckerTask task = project.getTasks().register("checkMetadataFiles", TestMetadataFilesCheckerTask.class).get();
         task.setCoordinates("com.example:demo:1.0.1");
 
         assertThatCode(task::run).doesNotThrowAnyException();

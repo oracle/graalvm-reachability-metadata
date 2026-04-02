@@ -192,47 +192,34 @@ class ScaffoldTask extends DefaultTask {
         );
 
         entries.add(newEntry);
-
-        // determine updates
-        int previousLatest = -1;
-        int newLatest = -1;
-        VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
-        for (int i = 0; i < entries.size(); i++) {
-            if (entries.get(i).latest() != null && entries.get(i).latest()) {
-                previousLatest = i;
-            }
-
-            VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
-            if (latestVersion.compareTo(nextVersion) < 0){
-                newLatest = i;
-            }
-        }
-
-        if (previousLatest != -1) {
-            setLatest(entries, previousLatest, null);
-        }
-
-        if (newLatest != -1) {
-            setLatest(entries, newLatest, true);
-        }
-
         entries.sort(Comparator.comparing(e -> VersionNumber.parse(e.metadataVersion())));
-        objectMapper.writeValue(metadataIndex, entries);
-    }
 
-    private void setLatest(List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {
-        MetadataVersionsIndexEntry oldEntry = list.remove(index);
-        list.add(new MetadataVersionsIndexEntry(
-                newValue,
-                oldEntry.override(),
-                oldEntry.defaultFor(),
-                oldEntry.metadataVersion(),
-                oldEntry.testVersion(),
-                oldEntry.testedVersions(),
-                oldEntry.skippedVersions(),
-                oldEntry.allowedPackages(),
-                oldEntry.requires()
-        ));
+        int latestIndex = 0;
+        VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
+        for (int i = 1; i < entries.size(); i++) {
+            VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
+            if (latestVersion.compareTo(nextVersion) < 0) {
+                latestVersion = nextVersion;
+                latestIndex = i;
+            }
+        }
+
+        for (int i = 0; i < entries.size(); i++) {
+            MetadataVersionsIndexEntry oldEntry = entries.get(i);
+            entries.set(i, new MetadataVersionsIndexEntry(
+                    i == latestIndex ? true : null,
+                    oldEntry.override(),
+                    oldEntry.defaultFor(),
+                    oldEntry.metadataVersion(),
+                    oldEntry.testVersion(),
+                    oldEntry.testedVersions(),
+                    oldEntry.skippedVersions(),
+                    oldEntry.allowedPackages(),
+                    oldEntry.requires()
+            ));
+        }
+
+        objectMapper.writeValue(metadataIndex, entries);
     }
 
     private String loadResource(String name) throws IOException {
