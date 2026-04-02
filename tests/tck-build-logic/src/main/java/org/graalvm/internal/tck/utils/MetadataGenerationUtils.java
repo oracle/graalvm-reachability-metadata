@@ -171,6 +171,10 @@ public final class MetadataGenerationUtils {
                         entry.defaultFor(),
                         entry.metadataVersion(),
                         entry.testVersion(),
+                        entry.sourceCodeUrl(),
+                        entry.repositoryUrl(),
+                        entry.testCodeUrl(),
+                        entry.documentationUrl(),
                         entry.testedVersions(),
                         entry.skippedVersions(),
                         entry.allowedPackages(),
@@ -190,6 +194,10 @@ public final class MetadataGenerationUtils {
                 null, // default-for
                 newCoords.version(), // metadata-version
                 testVersion, // test-version
+                null, // source-code-url
+                null, // repository-url
+                null, // test-code-url
+                null, // documentation-url
                 testedVersions,
                 null, // skipped-versions
                 latestAllowedPackages, // allowed-packages

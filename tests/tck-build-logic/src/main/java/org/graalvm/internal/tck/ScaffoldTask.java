@@ -185,6 +185,10 @@ class ScaffoldTask extends DefaultTask {
                 null, // default-for
                 coordinates.version(), // metadata-version
                 null, // test-version
+                null, // source-code-url
+                null, // repository-url
+                null, // test-code-url
+                null, // documentation-url
                 List.of(coordinates.version()), // tested-versions
                 null, // skipped-versions
                 List.of(coordinates.group()), // allowed-packages (default to group)
@@ -228,6 +232,10 @@ class ScaffoldTask extends DefaultTask {
                 oldEntry.defaultFor(),
                 oldEntry.metadataVersion(),
                 oldEntry.testVersion(),
+                oldEntry.sourceCodeUrl(),
+                oldEntry.repositoryUrl(),
+                oldEntry.testCodeUrl(),
+                oldEntry.documentationUrl(),
                 oldEntry.testedVersions(),
                 oldEntry.skippedVersions(),
                 oldEntry.allowedPackages(),
