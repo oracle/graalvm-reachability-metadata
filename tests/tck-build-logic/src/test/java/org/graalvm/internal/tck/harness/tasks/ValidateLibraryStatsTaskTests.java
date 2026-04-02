@@ -100,6 +100,83 @@ class ValidateLibraryStatsTaskTests {
     }
 
     @Test
+    void validateListsEachMissingMetadataVersionWhenArtifactEntryIsAbsent() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        createMetadataVersion("com.example", "demo", "1.1.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                  }
+                }
+                """
+        );
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatThrownBy(task::validate)
+                .hasMessageContaining("Missing metadata-version entry for com.example:demo:1.0.0")
+                .hasMessageContaining("Missing metadata-version entry for com.example:demo:1.1.0");
+    }
+
+    @Test
+    void validateAcceptsUnavailableCoverageMetric() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": [
+                            {
+                              "dynamicAccess": {
+                                "breakdown": {
+                                  "reflection": {
+                                    "coveredCalls": 0,
+                                    "coverageRatio": 0.0,
+                                    "totalCalls": 2
+                                  }
+                                },
+                                "coveredCalls": 0,
+                                "coverageRatio": 0.0,
+                                "totalCalls": 2
+                              },
+                              "libraryCoverage": {
+                                "instruction": {
+                                  "covered": 2,
+                                  "missed": 1,
+                                  "ratio": 0.666667,
+                                  "total": 3
+                                },
+                                "line": "N/A",
+                                "method": {
+                                  "covered": 3,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 3
+                                }
+                              },
+                              "version": "1.0.0"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
+        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatCode(task::validate).doesNotThrowAnyException();
+    }
+
+    @Test
     void validateRejectsOrphanArtifactEntry() throws IOException {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
@@ -122,6 +199,31 @@ class ValidateLibraryStatsTaskTests {
         TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
                 .hasMessageContaining("Orphan artifact entry");
+    }
+
+    @Test
+    void validateRejectsMetadataVersionWithoutVersionReportEntries() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": []
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatThrownBy(task::validate)
+                .hasMessageContaining("Missing version report entries");
     }
 
     @Test
@@ -351,9 +453,9 @@ class ValidateLibraryStatsTaskTests {
         Files.createDirectories(tempDir.resolve("stats/schemas"));
         Files.writeString(tempDir.resolve("LICENSE"), "test", StandardCharsets.UTF_8);
         Files.writeString(
-                tempDir.resolve("stats/schemas/library-stats-schema-v1.0.0.json"),
+                tempDir.resolve("stats/schemas/library-stats-schema-v1.0.1.json"),
                 Files.readString(
-                        locateRepoFile("stats/schemas/library-stats-schema-v1.0.0.json"),
+                        locateRepoFile("stats/schemas/library-stats-schema-v1.0.1.json"),
                         StandardCharsets.UTF_8
                 ),
                 StandardCharsets.UTF_8
