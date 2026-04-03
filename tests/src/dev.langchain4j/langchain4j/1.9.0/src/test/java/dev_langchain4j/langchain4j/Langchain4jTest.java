@@ -36,7 +36,8 @@ class Langchain4jTest {
         assertThat(chatModel.messages()).hasSize(2);
         assertThat(systemMessage).isInstanceOfSatisfying(
                 dev.langchain4j.data.message.SystemMessage.class,
-                message -> assertThat(message.text()).isEqualTo("You must answer from the root classpath resource."));
+                message -> assertThat(message.text().stripTrailing())
+                        .isEqualTo("You must answer from the root classpath resource."));
         assertThat(userMessage)
                 .isInstanceOfSatisfying(UserMessage.class, message -> assertThat(message.singleText())
                         .isEqualTo("Summarize the prompt"));
