@@ -221,7 +221,11 @@ class ScaffoldTask extends DefaultTask {
         }
 
         entries.sort(Comparator.comparing(e -> VersionNumber.parse(e.metadataVersion())));
-        objectMapper.writeValue(metadataIndex, entries);
+        String json = objectMapper.writeValueAsString(entries);
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(metadataIndex.toPath(), json, StandardCharsets.UTF_8);
     }
 
     private void setLatest(List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {

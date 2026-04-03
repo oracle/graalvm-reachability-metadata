@@ -70,8 +70,12 @@ public final class MetadataGenerationUtils {
 
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-        File out = testsDirectory.resolve(USER_CODE_FILTER_FILE).toFile();
-        objectMapper.writer(prettyPrinter).writeValue(out, Map.of("rules", filterFileRules));
+        Path out = testsDirectory.resolve(USER_CODE_FILTER_FILE);
+        String json = objectMapper.writer(prettyPrinter).writeValueAsString(Map.of("rules", filterFileRules));
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(out, json, StandardCharsets.UTF_8);
     }
 
     /**
