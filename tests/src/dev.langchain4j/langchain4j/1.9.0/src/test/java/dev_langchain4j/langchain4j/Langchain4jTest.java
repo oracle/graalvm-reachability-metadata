@@ -8,11 +8,14 @@ package dev_langchain4j.langchain4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
+import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.document.source.ClassPathSource;
 import dev.langchain4j.data.document.splitter.DocumentBySentenceSplitter;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
@@ -80,6 +83,20 @@ class Langchain4jTest {
     }
 
     @Test
+    void registersOnlyDeclaredToolMethodsFromToolObjects() {
+        ToolCallingChatModel chatModel = new ToolCallingChatModel();
+        Assistant assistant = AiServices.builder(Assistant.class)
+                .chatModel(chatModel)
+                .tools(new DeclaredToolContainer())
+                .build();
+
+        String response = assistant.answer("Check tools");
+
+        assertThat(response).isEqualTo("tool-backed answer");
+        assertThat(chatModel.invocationCount()).isEqualTo(2);
+    }
+
+    @Test
     void splitsTextIntoSentencesUsingTheBundledSentenceModel() {
         DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(100, 0);
 
@@ -102,6 +119,22 @@ class Langchain4jTest {
         }
     }
 
+    private static class InheritedToolContainer {
+
+        @Tool
+        public String inheritedTool() {
+            return "inherited response";
+        }
+    }
+
+    private static final class DeclaredToolContainer extends InheritedToolContainer {
+
+        @Tool
+        public String declaredTool() {
+            return "declared response";
+        }
+    }
+
     private static final class RecordingChatModel implements ChatModel {
 
         private List<ChatMessage> messages;
@@ -116,6 +149,41 @@ class Langchain4jTest {
 
         List<ChatMessage> messages() {
             return messages;
+        }
+    }
+
+    private static final class ToolCallingChatModel implements ChatModel {
+
+        private int invocationCount;
+
+        @Override
+        public ChatResponse doChat(ChatRequest chatRequest) {
+            invocationCount++;
+            if (invocationCount == 1) {
+                assertThat(chatRequest.toolSpecifications())
+                        .extracting(ToolSpecification::name)
+                        .containsExactly("declaredTool");
+                return ChatResponse.builder()
+                        .aiMessage(AiMessage.from(ToolExecutionRequest.builder()
+                                .id("tool-call-2")
+                                .name("declaredTool")
+                                .arguments("{}")
+                                .build()))
+                        .build();
+            }
+
+            ChatMessage lastMessage = chatRequest.messages().get(chatRequest.messages().size() - 1);
+            assertThat(lastMessage).isInstanceOfSatisfying(ToolExecutionResultMessage.class, message -> {
+                assertThat(message.toolName()).isEqualTo("declaredTool");
+                assertThat(message.text()).isEqualTo("declared response");
+            });
+            return ChatResponse.builder()
+                    .aiMessage(AiMessage.from("tool-backed answer"))
+                    .build();
+        }
+
+        int invocationCount() {
+            return invocationCount;
         }
     }
 }
