@@ -269,7 +269,11 @@ public abstract class ContributionTask extends DefaultTask {
         }
 
         // If entries were present, 'updated' will be true. Schema requires at least one entry.
-        objectMapper.writeValue(artifactIndex, entries);
+        String json = objectMapper.writeValueAsString(entries);
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(artifactIndex.toPath(), json, java.nio.charset.StandardCharsets.UTF_8);
     }
 
     private void addTests(Path originalTestsLocation) {
