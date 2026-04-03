@@ -25,6 +25,18 @@ class ServiceOutputParserTest {
                 .contains("\nUNKNOWN");
     }
 
+    @Test
+    void includesPojoFieldsInFormatInstructions() {
+        ServiceOutputParser serviceOutputParser = new ServiceOutputParser();
+
+        String formatInstructions = serviceOutputParser.outputFormatInstructions(StructuredAssistantResponse.class);
+
+        assertThat(formatInstructions)
+                .contains("\"message\": (assistant reply; type: string)")
+                .contains("\"confidence\": (type: float)")
+                .doesNotContain("IGNORED_STATIC_FIELD");
+    }
+
     private enum AssistantResponse {
 
         @Description("safe to return to the user")
@@ -34,5 +46,15 @@ class ServiceOutputParserTest {
         REJECTED,
 
         UNKNOWN
+    }
+
+    private static final class StructuredAssistantResponse {
+
+        static final String IGNORED_STATIC_FIELD = "ignored";
+
+        @Description("assistant reply")
+        String message;
+
+        float confidence;
     }
 }
