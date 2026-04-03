@@ -127,7 +127,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
         return jars;
     }
 
-    protected void generateReportsForCoordinate(String coordinates) {
+    protected boolean generateReportsForCoordinate(String coordinates) {
         CommandResult jacoco = runGradle(List.of("jacocoTestReport", "-Pcoordinates=" + coordinates), true);
         if (jacoco.exitCode() != 0) {
             throw new GradleException("JaCoCo report generation failed for " + coordinates + ":\n" + jacoco.stderr());
@@ -135,8 +135,14 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
 
         CommandResult dynamicAccess = runGradle(List.of("generateDynamicAccessReport", "-Pcoordinates=" + coordinates), true);
         if (dynamicAccess.exitCode() != 0) {
-            throw new GradleException("Dynamic access report generation failed for " + coordinates + ":\n" + dynamicAccess.stderr());
+            getLogger().warn(
+                    "Dynamic access report generation failed for {} with exit code {}. Writing dynamicAccess as N/A.",
+                    coordinates,
+                    dynamicAccess.exitCode()
+            );
+            return false;
         }
+        return true;
     }
 
     @Internal
@@ -153,7 +159,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
     protected Path getStatsSchemaFile() {
         return getStatsRoot()
                 .resolve("schemas")
-                .resolve("library-stats-schema-v1.0.1.json");
+                .resolve("library-stats-schema-v1.0.2.json");
     }
 
     @Internal
@@ -195,9 +201,22 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
     }
 
     protected LibraryStatsModels.VersionStats computeVersionStats(String coordinates) {
-        generateReportsForCoordinate(coordinates);
+        boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinates);
         List<Path> libraryJars = listLibraryJars(coordinates);
-        return LibraryStatsSupport.buildVersionStats(coordinates, libraryJars, getDynamicAccessDir(coordinates), getJacocoReport(coordinates));
+        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStats(
+                coordinates,
+                libraryJars,
+                getDynamicAccessDir(coordinates),
+                getJacocoReport(coordinates)
+        );
+        if (dynamicAccessAvailable) {
+            return versionStats;
+        }
+        return new LibraryStatsModels.VersionStats(
+                versionStats.version(),
+                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
+                versionStats.libraryCoverage()
+        );
     }
 
     protected void validateCommittedStatsFiles() {

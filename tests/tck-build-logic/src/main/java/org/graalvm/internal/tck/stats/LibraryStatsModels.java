@@ -53,9 +53,12 @@ public final class LibraryStatsModels {
     })
     public record VersionStats(
             String version,
-            DynamicAccessStats dynamicAccess,
+            DynamicAccessStatsValue dynamicAccess,
             LibraryCoverage libraryCoverage
     ) {
+        public VersionStats(String version, DynamicAccessStats dynamicAccess, LibraryCoverage libraryCoverage) {
+            this(version, DynamicAccessStatsValue.available(dynamicAccess), libraryCoverage);
+        }
     }
 
     public record DynamicAccessStats(
@@ -71,6 +74,49 @@ public final class LibraryStatsModels {
             long coveredCalls,
             BigDecimal coverageRatio
     ) {
+    }
+
+    @JsonSerialize(using = DynamicAccessStatsValueSerializer.class)
+    @JsonDeserialize(using = DynamicAccessStatsValueDeserializer.class)
+    public record DynamicAccessStatsValue(
+            DynamicAccessStats dynamicAccessStats
+    ) {
+        private static final String NOT_AVAILABLE = "N/A";
+
+        public static DynamicAccessStatsValue available(DynamicAccessStats dynamicAccessStats) {
+            return new DynamicAccessStatsValue(dynamicAccessStats);
+        }
+
+        public static DynamicAccessStatsValue notAvailable() {
+            return new DynamicAccessStatsValue(null);
+        }
+
+        public boolean isAvailable() {
+            return dynamicAccessStats != null;
+        }
+
+        public long totalCalls() {
+            return requireDynamicAccessStats().totalCalls();
+        }
+
+        public long coveredCalls() {
+            return requireDynamicAccessStats().coveredCalls();
+        }
+
+        public BigDecimal coverageRatio() {
+            return requireDynamicAccessStats().coverageRatio();
+        }
+
+        public Map<String, DynamicAccessBreakdown> breakdown() {
+            return requireDynamicAccessStats().breakdown();
+        }
+
+        private DynamicAccessStats requireDynamicAccessStats() {
+            if (!isAvailable()) {
+                throw new IllegalStateException("Dynamic access stats are not available");
+            }
+            return dynamicAccessStats;
+        }
     }
 
     public record DynamicAccessCoverageReport(
@@ -201,6 +247,40 @@ public final class LibraryStatsModels {
                 }
             }
             throw JsonMappingException.from(parser, "Coverage metric must be an object or the string 'N/A'");
+        }
+    }
+
+    public static final class DynamicAccessStatsValueSerializer extends JsonSerializer<DynamicAccessStatsValue> {
+
+        @Override
+        public void serialize(DynamicAccessStatsValue value, JsonGenerator generator, SerializerProvider serializers) throws IOException {
+            if (value == null || !value.isAvailable()) {
+                generator.writeString(DynamicAccessStatsValue.NOT_AVAILABLE);
+                return;
+            }
+            generator.writeObject(value.dynamicAccessStats());
+        }
+    }
+
+    public static final class DynamicAccessStatsValueDeserializer extends JsonDeserializer<DynamicAccessStatsValue> {
+
+        @Override
+        public DynamicAccessStatsValue deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+            JsonNode node = parser.getCodec().readTree(parser);
+            if (node != null && node.isTextual() && DynamicAccessStatsValue.NOT_AVAILABLE.equals(node.textValue())) {
+                return DynamicAccessStatsValue.notAvailable();
+            }
+            if (node != null && node.isObject()) {
+                JsonNode coveredCallsNode = node.get("coveredCalls");
+                JsonNode coverageRatioNode = node.get("coverageRatio");
+                JsonNode totalCallsNode = node.get("totalCalls");
+                JsonNode breakdownNode = node.get("breakdown");
+                if (coveredCallsNode != null && coverageRatioNode != null && totalCallsNode != null && breakdownNode != null) {
+                    DynamicAccessStats dynamicAccessStats = parser.getCodec().treeToValue(node, DynamicAccessStats.class);
+                    return DynamicAccessStatsValue.available(dynamicAccessStats);
+                }
+            }
+            throw JsonMappingException.from(parser, "Dynamic access stats must be an object or the string 'N/A'");
         }
     }
 }

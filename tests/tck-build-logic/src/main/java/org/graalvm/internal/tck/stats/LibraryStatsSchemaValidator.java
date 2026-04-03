@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,6 +43,8 @@ public final class LibraryStatsSchemaValidator {
     private static final int RATIO_SCALE = 6;
     private static final int EXPECTED_RATIO_SCALE = 12;
     private static final BigDecimal RATIO_TOLERANCE = new BigDecimal("0.000001");
+    private static final Pattern MISSING_METADATA_VERSION_ENTRY_PATTERN =
+            Pattern.compile("^Missing metadata-version entry for ([^\\s]+) in .+$");
 
     private static final JsonSchemaFactory JSON_SCHEMA_FACTORY = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
 
@@ -110,8 +114,28 @@ public final class LibraryStatsSchemaValidator {
 
         if (!failures.isEmpty()) {
             String message = failures.stream().sorted().collect(Collectors.joining(System.lineSeparator()));
+            String remediation = buildRemediation(message);
+            if (!remediation.isEmpty()) {
+                message = message + System.lineSeparator() + System.lineSeparator() + remediation;
+            }
             throw new GradleException("Library stats repository validation failed:" + System.lineSeparator() + message);
         }
+    }
+
+    private static String buildRemediation(String message) {
+        Set<String> missingCoordinates = message.lines()
+                .map(MISSING_METADATA_VERSION_ENTRY_PATTERN::matcher)
+                .filter(Matcher::matches)
+                .map(matcher -> matcher.group(1))
+                .collect(Collectors.toCollection(TreeSet::new));
+
+        if (missingCoordinates.isEmpty()) {
+            return "";
+        }
+
+        return missingCoordinates.stream()
+                .map(coordinate -> "Add the missing library stats entry with: ./gradlew generateLibraryStats -Pcoordinates=" + coordinate)
+                .collect(Collectors.joining(System.lineSeparator()));
     }
 
     private static Path validateStatsPath(
@@ -331,21 +355,23 @@ public final class LibraryStatsSchemaValidator {
     ) {
         String locationPrefix = artifact + ":" + metadataVersion + ":" + versionStats.version();
 
-        LibraryStatsModels.DynamicAccessStats dynamicAccess = versionStats.dynamicAccess();
-        validateRatio(
-                locationPrefix + ":dynamicAccess.coverageRatio",
-                dynamicAccess.coverageRatio(),
-                dynamicAccess.coveredCalls(),
-                dynamicAccess.totalCalls(),
-                failures
-        );
-        dynamicAccess.breakdown().forEach((reportType, breakdown) -> validateRatio(
-                locationPrefix + ":dynamicAccess.breakdown." + reportType + ".coverageRatio",
-                breakdown.coverageRatio(),
-                breakdown.coveredCalls(),
-                breakdown.totalCalls(),
-                failures
-        ));
+        LibraryStatsModels.DynamicAccessStatsValue dynamicAccess = versionStats.dynamicAccess();
+        if (dynamicAccess != null && dynamicAccess.isAvailable()) {
+            validateRatio(
+                    locationPrefix + ":dynamicAccess.coverageRatio",
+                    dynamicAccess.coverageRatio(),
+                    dynamicAccess.coveredCalls(),
+                    dynamicAccess.totalCalls(),
+                    failures
+            );
+            dynamicAccess.breakdown().forEach((reportType, breakdown) -> validateRatio(
+                    locationPrefix + ":dynamicAccess.breakdown." + reportType + ".coverageRatio",
+                    breakdown.coverageRatio(),
+                    breakdown.coveredCalls(),
+                    breakdown.totalCalls(),
+                    failures
+            ));
+        }
 
         validateCoverageMetric(locationPrefix, "line", versionStats.libraryCoverage().line(), failures);
         validateCoverageMetric(locationPrefix, "instruction", versionStats.libraryCoverage().instruction(), failures);
