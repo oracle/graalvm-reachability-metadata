@@ -73,6 +73,38 @@ public final class LibraryStatsModels {
     ) {
     }
 
+    public record DynamicAccessCoverageReport(
+            String coordinate,
+            boolean hasDynamicAccess,
+            DynamicAccessCoverageTotals totals,
+            List<DynamicAccessClassCoverage> classes
+    ) {
+    }
+
+    public record DynamicAccessCoverageTotals(
+            long totalCalls,
+            long coveredCalls
+    ) {
+    }
+
+    public record DynamicAccessClassCoverage(
+            String className,
+            String sourceFile,
+            long totalCalls,
+            long coveredCalls,
+            List<DynamicAccessCallSiteCoverage> callSites
+    ) {
+    }
+
+    public record DynamicAccessCallSiteCoverage(
+            String metadataType,
+            String trackedApi,
+            String frame,
+            Integer line,
+            boolean covered
+    ) {
+    }
+
     public record LibraryCoverage(
             CoverageMetricValue line,
             CoverageMetricValue instruction,

@@ -243,6 +243,9 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
 - List resolved tested-library jars: `./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]`
 - Generate dynamic access report: `./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]`
+- Generate dynamic access coverage report: `./gradlew generateDynamicAccessCoverageReport -Pcoordinates=[group:artifact:version|k/n|all]`
+  Output: `metadata/<group>/<artifact>/<version>/test/build/reports/dynamic-access/dynamic-access-coverage.json`
+  JSON top-level fields: `coordinate`, `hasDynamicAccess`, `totals`, `classes`
 - Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - Generate library stats: `./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Validate library stats: `./gradlew validateLibraryStats`

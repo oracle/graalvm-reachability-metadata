@@ -32,6 +32,7 @@ import org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask
 import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessReportInvocationTask
+import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessCoverageReportTask
 import org.graalvm.internal.tck.harness.tasks.SearchArtifactURLsTask
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
@@ -197,6 +198,11 @@ tasks.register("listLibraryJars", ListLibraryJarsInvocationTask.class) { task ->
 
 tasks.register("generateDynamicAccessReport", GenerateDynamicAccessReportInvocationTask.class) { task ->
     task.setDescription("Builds native tests and prints generated dynamic-access JSON report files for matching coordinates")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("generateDynamicAccessCoverageReport", GenerateDynamicAccessCoverageReportTask.class) { task ->
+    task.setDescription("Generates a per-class dynamic-access coverage report for matching coordinates")
     task.setGroup(METADATA_GROUP)
 }
 
