@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.data.document.source.ClassPathSource;
+import dev.langchain4j.data.document.splitter.DocumentBySentenceSplitter;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
@@ -76,6 +77,16 @@ class Langchain4jTest {
         String result = toolExecutor.execute(toolExecutionRequest, "memory-1");
 
         assertThat(result).isEqualTo("tool response");
+    }
+
+    @Test
+    void splitsTextIntoSentencesUsingTheBundledSentenceModel() {
+        DocumentBySentenceSplitter splitter = new DocumentBySentenceSplitter(100, 0);
+
+        String[] sentences = splitter.split("First sentence. Second sentence? Third sentence!");
+
+        assertThat(sentences)
+                .containsExactly("First sentence.", "Second sentence?", "Third sentence!");
     }
 
     interface Assistant {
