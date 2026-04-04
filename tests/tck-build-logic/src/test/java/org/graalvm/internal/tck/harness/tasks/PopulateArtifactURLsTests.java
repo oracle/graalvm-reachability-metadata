@@ -21,7 +21,7 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SearchArtifactURLsTaskTests {
+class PopulateArtifactURLsTests {
 
     @TempDir
     Path tempDir;
