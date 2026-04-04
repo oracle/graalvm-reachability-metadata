@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  * source-code, repository, test-code, and documentation URLs in metadata index files.
  */
 @SuppressWarnings("unused")
-public class SearchArtifactURLsTask extends DefaultTask {
+public class PopulateArtifactURLs extends DefaultTask {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String PROMPT_PLACEHOLDER = "{prompt}";

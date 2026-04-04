@@ -29,9 +29,9 @@ class SearchArtifactURLsTaskTests {
     @Test
     void runPrintsPromptWithoutInvokingAgentForOpencodeRun() throws IOException, InterruptedException {
         Project project = createProjectWithMetadata();
-        SearchArtifactURLsTask task = project.getTasks().create(
+        PopulateArtifactURLs task = project.getTasks().create(
                 "populateArtifactURLs",
-                SearchArtifactURLsTask.class
+                PopulateArtifactURLs.class
         );
         task.setCoordinatesOption("ch.qos.logback:logback-classic:1.4.1");
         task.setAgentCommandOption("opencode run");
@@ -64,9 +64,9 @@ class SearchArtifactURLsTaskTests {
     @Test
     void runWithLimitSkipsPrePopulatedCoordinatesAndStillPrompts() throws IOException, InterruptedException {
         Project project = createProjectWithMixedMetadata();
-        SearchArtifactURLsTask task = project.getTasks().create(
+        PopulateArtifactURLs task = project.getTasks().create(
                 "populateArtifactURLs",
-                SearchArtifactURLsTask.class
+                PopulateArtifactURLs.class
         );
         task.setAgentCommandOption("opencode run");
         task.setLimitOption("1");
@@ -89,9 +89,9 @@ class SearchArtifactURLsTaskTests {
     @Test
     void runWithOverwriteExistingIncludesPrePopulatedCoordinates() throws IOException, InterruptedException {
         Project project = createProjectWithMixedMetadata();
-        SearchArtifactURLsTask task = project.getTasks().create(
+        PopulateArtifactURLs task = project.getTasks().create(
                 "populateArtifactURLs",
-                SearchArtifactURLsTask.class
+                PopulateArtifactURLs.class
         );
         task.setAgentCommandOption("opencode run");
         task.setOverwriteExistingOption(true);
@@ -116,9 +116,9 @@ class SearchArtifactURLsTaskTests {
     @Test
     void runWithVerifyArtifactSourcesAddsVerificationPromptSection() throws IOException, InterruptedException {
         Project project = createProjectWithMetadata();
-        SearchArtifactURLsTask task = project.getTasks().create(
+        PopulateArtifactURLs task = project.getTasks().create(
                 "populateArtifactURLs",
-                SearchArtifactURLsTask.class
+                PopulateArtifactURLs.class
         );
         task.setCoordinatesOption("ch.qos.logback:logback-classic:1.4.1");
         task.setAgentCommandOption("opencode run");
