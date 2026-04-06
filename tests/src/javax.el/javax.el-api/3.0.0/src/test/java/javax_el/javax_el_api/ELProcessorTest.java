@@ -41,8 +41,7 @@ class ELProcessorTest {
     void restoreExpressionFactoryProvider() {
         if (this.originalProvider == null) {
             System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
-        }
-        else {
+        } else {
             System.setProperty(EXPRESSION_FACTORY_PROPERTY, this.originalProvider);
         }
         Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);

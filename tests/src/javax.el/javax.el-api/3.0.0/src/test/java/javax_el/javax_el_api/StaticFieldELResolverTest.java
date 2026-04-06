@@ -41,8 +41,7 @@ class StaticFieldELResolverTest {
     void restoreExpressionFactoryProvider() {
         if (this.originalProvider == null) {
             System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
-        }
-        else {
+        } else {
             System.setProperty(EXPRESSION_FACTORY_PROPERTY, this.originalProvider);
         }
         Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
@@ -79,8 +78,8 @@ class StaticFieldELResolverTest {
                 context,
                 new ELClass(ExplicitConstruction.class),
                 "<init>",
-                new Class<?>[] { String.class, int.class },
-                new Object[] { "alpha", 7 }
+                new Class<?>[]{String.class, int.class},
+                new Object[]{"alpha", 7}
         );
 
         assertThat(instance).isInstanceOf(ExplicitConstruction.class);
@@ -99,7 +98,7 @@ class StaticFieldELResolverTest {
                 new ELClass(InferredConstruction.class),
                 "<init>",
                 null,
-                new Object[] { "beta" }
+                new Object[]{"beta"}
         );
 
         assertThat(instance).isInstanceOf(InferredConstruction.class);
@@ -116,8 +115,8 @@ class StaticFieldELResolverTest {
                 context,
                 new ELClass(StaticLibrary.class),
                 "multiply",
-                new Class<?>[] { int.class, int.class },
-                new Object[] { 6, 7 }
+                new Class<?>[]{int.class, int.class},
+                new Object[]{6, 7}
         );
 
         assertThat(result).isEqualTo(42);
@@ -158,7 +157,7 @@ class StaticFieldELResolverTest {
 
         private final int count;
 
-        public ExplicitConstruction(String label, int count) {
+        ExplicitConstruction(String label, int count) {
             this.label = label;
             this.count = count;
         }
@@ -176,7 +175,7 @@ class StaticFieldELResolverTest {
 
         private final String label;
 
-        public InferredConstruction(String label) {
+        InferredConstruction(String label) {
             this.label = label;
         }
 

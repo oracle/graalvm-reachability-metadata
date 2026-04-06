@@ -33,8 +33,7 @@ class FactoryFinderTest {
             ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
 
             assertThat(expressionFactory).isInstanceOf(NoArgExpressionFactory.class);
-        }
-        finally {
+        } finally {
             restoreExpressionFactoryProperty(originalProvider);
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
@@ -55,8 +54,7 @@ class FactoryFinderTest {
 
             assertThat(expressionFactory).isInstanceOf(PropertiesExpressionFactory.class);
             assertThat(((PropertiesExpressionFactory) expressionFactory).getProperties()).isSameAs(properties);
-        }
-        finally {
+        } finally {
             restoreExpressionFactoryProperty(originalProvider);
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
@@ -65,8 +63,7 @@ class FactoryFinderTest {
     private static void restoreExpressionFactoryProperty(String originalProvider) {
         if (originalProvider == null) {
             System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
-        }
-        else {
+        } else {
             System.setProperty(EXPRESSION_FACTORY_PROPERTY, originalProvider);
         }
     }
@@ -97,7 +94,7 @@ class FactoryFinderTest {
 
     public static final class NoArgExpressionFactory extends StubExpressionFactory {
 
-        public NoArgExpressionFactory() {
+        NoArgExpressionFactory() {
         }
     }
 
@@ -105,7 +102,7 @@ class FactoryFinderTest {
 
         private final Properties properties;
 
-        public PropertiesExpressionFactory(Properties properties) {
+        PropertiesExpressionFactory(Properties properties) {
             this.properties = properties;
         }
 

@@ -40,8 +40,7 @@ public class BeanELResolverTest {
     void restoreExpressionFactoryProvider() {
         if (this.originalProvider == null) {
             System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
-        }
-        else {
+        } else {
             System.setProperty(EXPRESSION_FACTORY_PROPERTY, this.originalProvider);
         }
         Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
@@ -57,7 +56,7 @@ public class BeanELResolverTest {
                 new InstanceLibrary(),
                 "join",
                 null,
-                new Object[] { "left", "right" }
+                new Object[]{"left", "right"}
         );
 
         assertThat(result).isEqualTo("left:right");
