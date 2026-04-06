@@ -49,7 +49,7 @@ jobs:
 
       - name: "Close issue - invalid coordinates format"
         if: ${{ steps.validate.outputs.invalid == 'true' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const owner = context.repo.owner;
@@ -81,7 +81,7 @@ jobs:
       - name: "Close issue - duplicate request for exact coordinates"
         if: ${{ steps.validate.outputs.invalid != 'true' }}
         id: duplicate
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const owner = context.repo.owner;
@@ -161,7 +161,7 @@ jobs:
 
       - name: "Close issue - already supported by the Reachability Metadata Repository"
         if: ${{ steps.support.outputs.supported == 'true' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const owner = context.repo.owner;
@@ -200,7 +200,7 @@ jobs:
 
       - name: "Close issue - library listed as supported in library-and-framework-list.json"
         if: ${{ steps.listed.outputs.listed == 'true' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const owner = context.repo.owner;
@@ -254,7 +254,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: "Open dependency issues and link blockers"
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const path = require('path');
