@@ -2,6 +2,8 @@ name: "Validate library stats"
 
 on:
   pull_request:
+    branches:
+      - master
 
 jobs:
   validate-library-stats:
@@ -19,6 +21,7 @@ jobs:
           file-patterns: |
             - 'stats/stats.json'
             - 'stats/schemas/library-stats-schema*.json'
+            - 'metadata/*/*/*/**'
 
       - name: "🔧 Setup Java"
         if: steps.filter.outputs.changed == 'true'

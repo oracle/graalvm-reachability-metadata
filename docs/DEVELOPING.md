@@ -148,7 +148,7 @@ The root jacocoTestReport is a harness wrapper that invokes the per-project task
 - Each artifact entry can contain multiple `metadata-version` buckets
 
 Schema:
-- `stats/schemas/library-stats-schema-v1.0.1.json`
+- `stats/schemas/library-stats-schema-v1.0.2.json`
 
 ```console
 ./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]

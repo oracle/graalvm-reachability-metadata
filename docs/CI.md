@@ -35,7 +35,7 @@ Workflows testing metadata using [ci.json](../ci.json):
   - Triggers: PRs to master touching [metadata/](metadata/).
   - Uses: generateAffectedSpringTestMatrix to compute impacted Spring AOT projects and produce a matrix; runs triaged native tests via [.github/workflows/scripts/run-spring-aot-triaged-test.sh](../.github/workflows/scripts/run-spring-aot-triaged-test.sh).
 - Validate library stats ([.github/workflows/library-stats-validation.yml](../.github/workflows/library-stats-validation.yml))
-  - Triggers: PRs that touch [stats/stats.json](../stats/stats.json) or [stats/schemas/library-stats-schema-v1.0.1.json](../stats/schemas/library-stats-schema-v1.0.1.json).
+  - Triggers: PRs to master that change [stats/stats.json](../stats/stats.json), [stats/schemas/library-stats-schema-v1.0.2.json](../stats/schemas/library-stats-schema-v1.0.2.json), or mirrored files under [metadata/](../metadata/).
   - Uses: [`validateLibraryStats`](../tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle) to enforce schema compliance and normalized sorting.
 - Verify new library version compatibility ([.github/workflows/verify-new-library-version-compatibility.yml](../.github/workflows/verify-new-library-version-compatibility.yml))
   - Triggers: scheduled run and manual ([`workflow_dispatch`](../.github/workflows/verify-new-library-version-compatibility.yml)).

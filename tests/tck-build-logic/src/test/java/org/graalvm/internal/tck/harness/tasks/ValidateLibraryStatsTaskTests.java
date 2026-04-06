@@ -116,7 +116,9 @@ class ValidateLibraryStatsTaskTests {
         TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
         assertThatThrownBy(task::validate)
                 .hasMessageContaining("Missing metadata-version entry for com.example:demo:1.0.0")
-                .hasMessageContaining("Missing metadata-version entry for com.example:demo:1.1.0");
+                .hasMessageContaining("Missing metadata-version entry for com.example:demo:1.1.0")
+                .hasMessageContaining("Add the missing library stats entry with: ./gradlew generateLibraryStats -Pcoordinates=com.example:demo:1.0.0")
+                .hasMessageContaining("Add the missing library stats entry with: ./gradlew generateLibraryStats -Pcoordinates=com.example:demo:1.1.0");
     }
 
     @Test
@@ -152,6 +154,114 @@ class ValidateLibraryStatsTaskTests {
                                   "total": 3
                                 },
                                 "line": "N/A",
+                                "method": {
+                                  "covered": 3,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 3
+                                }
+                              },
+                              "version": "1.0.0"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
+        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatCode(task::validate).doesNotThrowAnyException();
+    }
+
+    @Test
+    void validateAcceptsUnavailableDynamicAccess() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": [
+                            {
+                              "dynamicAccess": "N/A",
+                              "libraryCoverage": {
+                                "instruction": {
+                                  "covered": 2,
+                                  "missed": 1,
+                                  "ratio": 0.666667,
+                                  "total": 3
+                                },
+                                "line": {
+                                  "covered": 1,
+                                  "missed": 1,
+                                  "ratio": 0.5,
+                                  "total": 2
+                                },
+                                "method": {
+                                  "covered": 3,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 3
+                                }
+                              },
+                              "version": "1.0.0"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
+        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatCode(task::validate).doesNotThrowAnyException();
+    }
+
+    @Test
+    void validateAcceptsEmptyDynamicAccessAsFullCoverage() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": [
+                            {
+                              "dynamicAccess": {
+                                "breakdown": {
+                                },
+                                "coveredCalls": 0,
+                                "coverageRatio": 1.0,
+                                "totalCalls": 0
+                              },
+                              "libraryCoverage": {
+                                "instruction": {
+                                  "covered": 2,
+                                  "missed": 1,
+                                  "ratio": 0.666667,
+                                  "total": 3
+                                },
+                                "line": {
+                                  "covered": 1,
+                                  "missed": 1,
+                                  "ratio": 0.5,
+                                  "total": 2
+                                },
                                 "method": {
                                   "covered": 3,
                                   "missed": 0,
@@ -453,9 +563,9 @@ class ValidateLibraryStatsTaskTests {
         Files.createDirectories(tempDir.resolve("stats/schemas"));
         Files.writeString(tempDir.resolve("LICENSE"), "test", StandardCharsets.UTF_8);
         Files.writeString(
-                tempDir.resolve("stats/schemas/library-stats-schema-v1.0.1.json"),
+                tempDir.resolve("stats/schemas/library-stats-schema-v1.0.2.json"),
                 Files.readString(
-                        locateRepoFile("stats/schemas/library-stats-schema-v1.0.1.json"),
+                        locateRepoFile("stats/schemas/library-stats-schema-v1.0.2.json"),
                         StandardCharsets.UTF_8
                 ),
                 StandardCharsets.UTF_8
