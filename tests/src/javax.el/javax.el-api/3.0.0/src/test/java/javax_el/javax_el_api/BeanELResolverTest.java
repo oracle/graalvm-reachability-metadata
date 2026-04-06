@@ -13,11 +13,39 @@ import javax.el.MethodExpression;
 import javax.el.StandardELContext;
 import javax.el.ValueExpression;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanELResolverTest {
+
+    private static final String EXPRESSION_FACTORY_PROPERTY = ExpressionFactory.class.getName();
+
+    private ClassLoader originalContextClassLoader;
+
+    private String originalProvider;
+
+    @BeforeEach
+    void setUpExpressionFactoryProvider() {
+        this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        this.originalProvider = System.getProperty(EXPRESSION_FACTORY_PROPERTY);
+
+        Thread.currentThread().setContextClassLoader(BeanELResolverTest.class.getClassLoader());
+        System.setProperty(EXPRESSION_FACTORY_PROPERTY, StubExpressionFactory.class.getName());
+    }
+
+    @AfterEach
+    void restoreExpressionFactoryProvider() {
+        if (this.originalProvider == null) {
+            System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
+        }
+        else {
+            System.setProperty(EXPRESSION_FACTORY_PROPERTY, this.originalProvider);
+        }
+        Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
+    }
 
     @Test
     void invokesInstanceMethodWhenParameterTypesAreInferred() {
