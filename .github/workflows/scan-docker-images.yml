@@ -38,7 +38,15 @@ jobs:
       - name: "Install required tools"
         if: github.event_name == 'schedule' || steps.filter.outputs.changed == 'true'
         run: |
-          curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin
+          GRYPE_VERSION="v0.104.0"
+          GRYPE_VERSION_NO_V="${GRYPE_VERSION#v}"
+          GRYPE_TARBALL="grype_${GRYPE_VERSION_NO_V}_linux_amd64.tar.gz"
+          GRYPE_BASE_URL="https://github.com/anchore/grype/releases/download/${GRYPE_VERSION}"
+          curl -sSfL -o "${GRYPE_TARBALL}" "${GRYPE_BASE_URL}/${GRYPE_TARBALL}"
+          curl -sSfL -o grype_checksums.txt "${GRYPE_BASE_URL}/grype_${GRYPE_VERSION_NO_V}_checksums.txt"
+          grep " ${GRYPE_TARBALL}$" grype_checksums.txt | sha256sum -c -
+          tar -xzf "${GRYPE_TARBALL}" grype
+          sudo install -m 0755 grype /usr/local/bin/grype
           sudo apt-get install jq
 
       - name: "🔎 Check changed docker images"
