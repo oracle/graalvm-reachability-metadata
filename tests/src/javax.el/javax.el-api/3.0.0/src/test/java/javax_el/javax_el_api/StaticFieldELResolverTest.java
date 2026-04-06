@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ELUtilTest {
+class StaticFieldELResolverTest {
 
     private static final String EXPRESSION_FACTORY_PROPERTY = ExpressionFactory.class.getName();
 
@@ -33,7 +33,7 @@ class ELUtilTest {
         this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         this.originalProvider = System.getProperty(EXPRESSION_FACTORY_PROPERTY);
 
-        Thread.currentThread().setContextClassLoader(ELUtilTest.class.getClassLoader());
+        Thread.currentThread().setContextClassLoader(StaticFieldELResolverTest.class.getClassLoader());
         System.setProperty(EXPRESSION_FACTORY_PROPERTY, StubExpressionFactory.class.getName());
     }
 
@@ -49,7 +49,29 @@ class ELUtilTest {
     }
 
     @Test
-    void staticFieldResolverInvokesConstructorWithExplicitParameterTypes() {
+    void getTypeReturnsPublicStaticFieldType() {
+        StaticFieldELResolver resolver = new StaticFieldELResolver();
+        StandardELContext context = createContext();
+
+        Class<?> type = resolver.getType(context, new ELClass(StaticFieldLibrary.class), "MESSAGE");
+
+        assertThat(type).isEqualTo(String.class);
+        assertThat(context.isPropertyResolved()).isTrue();
+    }
+
+    @Test
+    void getValueReturnsPublicStaticFieldValue() {
+        StaticFieldELResolver resolver = new StaticFieldELResolver();
+        StandardELContext context = createContext();
+
+        Object value = resolver.getValue(context, new ELClass(StaticFieldLibrary.class), "MESSAGE");
+
+        assertThat(value).isEqualTo(StaticFieldLibrary.MESSAGE);
+        assertThat(context.isPropertyResolved()).isTrue();
+    }
+
+    @Test
+    void invokesConstructorWithExplicitParameterTypes() {
         StaticFieldELResolver resolver = new StaticFieldELResolver();
         StandardELContext context = createContext();
 
@@ -68,7 +90,7 @@ class ELUtilTest {
     }
 
     @Test
-    void staticFieldResolverInvokesConstructorWhenParameterTypesAreInferred() {
+    void invokesConstructorWhenParameterTypesAreInferred() {
         StaticFieldELResolver resolver = new StaticFieldELResolver();
         StandardELContext context = createContext();
 
@@ -86,7 +108,7 @@ class ELUtilTest {
     }
 
     @Test
-    void staticFieldResolverInvokesStaticMethodWithExplicitParameterTypes() {
+    void invokesStaticMethodWithExplicitParameterTypes() {
         StaticFieldELResolver resolver = new StaticFieldELResolver();
         StandardELContext context = createContext();
 
@@ -161,6 +183,11 @@ class ELUtilTest {
         String getLabel() {
             return this.label;
         }
+    }
+
+    public static final class StaticFieldLibrary {
+
+        public static final String MESSAGE = "resolved";
     }
 
     public static final class StaticLibrary {
