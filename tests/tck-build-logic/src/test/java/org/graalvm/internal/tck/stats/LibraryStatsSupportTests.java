@@ -141,6 +141,37 @@ class LibraryStatsSupportTests {
     }
 
     @Test
+    void buildVersionStatsWithoutDynamicAccessPreservesCoverageAndMarksDynamicAccessAsUnavailable() throws IOException {
+        Path jacocoReport = tempDir.resolve("jacoco.xml");
+        Files.writeString(
+                jacocoReport,
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <report name="demo">
+                  <counter type="INSTRUCTION" missed="1" covered="2"/>
+                  <counter type="LINE" missed="1" covered="1"/>
+                  <counter type="METHOD" missed="0" covered="1"/>
+                </report>
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
+                "com.example:demo:1.0.0",
+                jacocoReport
+        );
+
+        assertThat(versionStats.version()).isEqualTo("1.0.0");
+        assertThat(versionStats.dynamicAccess().isAvailable()).isFalse();
+        assertThat(versionStats.libraryCoverage().line().covered()).isEqualTo(1);
+        assertThat(versionStats.libraryCoverage().line().missed()).isEqualTo(1);
+        assertThat(versionStats.libraryCoverage().instruction().covered()).isEqualTo(2);
+        assertThat(versionStats.libraryCoverage().instruction().missed()).isEqualTo(1);
+        assertThat(versionStats.libraryCoverage().method().covered()).isEqualTo(1);
+        assertThat(versionStats.libraryCoverage().method().missed()).isEqualTo(0);
+    }
+
+    @Test
     void buildVersionStatsAllowsJacocoReportsWithoutLineCoverageData() throws IOException {
         Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Foo.class"));
 

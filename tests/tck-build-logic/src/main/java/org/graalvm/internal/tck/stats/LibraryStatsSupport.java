@@ -190,14 +190,22 @@ public final class LibraryStatsSupport {
         Set<String> libraryClasses = loadLibraryClasses(libraryJars);
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
         ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
-        return new LibraryStatsModels.VersionStats(
-                versionFromCoordinate(coordinate),
-                parsedDynamicAccess.dynamicAccessStats(),
-                new LibraryStatsModels.LibraryCoverage(
-                        parsedJacocoReport.line(),
-                        parsedJacocoReport.instruction(),
-                        parsedJacocoReport.method()
-                )
+        return versionStats(
+                coordinate,
+                LibraryStatsModels.DynamicAccessStatsValue.available(parsedDynamicAccess.dynamicAccessStats()),
+                parsedJacocoReport
+        );
+    }
+
+    public static LibraryStatsModels.VersionStats buildVersionStatsWithoutDynamicAccess(
+            String coordinate,
+            Path jacocoReport
+    ) {
+        ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
+        return versionStats(
+                coordinate,
+                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
+                parsedJacocoReport
         );
     }
 
@@ -227,6 +235,22 @@ public final class LibraryStatsSupport {
                         parsedDynamicAccess.dynamicAccessStats().coveredCalls()
                 ),
                 parsedDynamicAccess.classCoverage()
+        );
+    }
+
+    private static LibraryStatsModels.VersionStats versionStats(
+            String coordinate,
+            LibraryStatsModels.DynamicAccessStatsValue dynamicAccess,
+            ParsedJacocoReport parsedJacocoReport
+    ) {
+        return new LibraryStatsModels.VersionStats(
+                versionFromCoordinate(coordinate),
+                dynamicAccess,
+                new LibraryStatsModels.LibraryCoverage(
+                        parsedJacocoReport.line(),
+                        parsedJacocoReport.instruction(),
+                        parsedJacocoReport.method()
+                )
         );
     }
 

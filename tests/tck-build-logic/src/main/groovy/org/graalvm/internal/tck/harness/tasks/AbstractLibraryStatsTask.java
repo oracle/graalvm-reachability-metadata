@@ -202,20 +202,18 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
 
     protected LibraryStatsModels.VersionStats computeVersionStats(String coordinates) {
         boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinates);
-        List<Path> libraryJars = listLibraryJars(coordinates);
-        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStats(
-                coordinates,
-                libraryJars,
-                getDynamicAccessDir(coordinates),
-                getJacocoReport(coordinates)
-        );
         if (dynamicAccessAvailable) {
-            return versionStats;
+            List<Path> libraryJars = listLibraryJars(coordinates);
+            return LibraryStatsSupport.buildVersionStats(
+                    coordinates,
+                    libraryJars,
+                    getDynamicAccessDir(coordinates),
+                    getJacocoReport(coordinates)
+            );
         }
-        return new LibraryStatsModels.VersionStats(
-                versionStats.version(),
-                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
-                versionStats.libraryCoverage()
+        return LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
+                coordinates,
+                getJacocoReport(coordinates)
         );
     }
 
