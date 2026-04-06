@@ -3,6 +3,9 @@ name: "Check code style"
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
   cancel-in-progress: true
@@ -18,7 +21,7 @@ jobs:
       changed-empty: ${{ steps.changed-matrix.outputs.none-found }}
     steps:
       - name: "☁️ Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
 
@@ -33,7 +36,7 @@ jobs:
 
       - name: "🔧 Setup java"
         if: steps.filter.outputs.changed == 'true'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
           distribution: 'graalvm'
           java-version: '21'
@@ -54,10 +57,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: "☁️ Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: "🔧 Setup java"
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
           distribution: 'graalvm'
           java-version: '21'
@@ -76,10 +79,10 @@ jobs:
       matrix: ${{ fromJson(needs.detect-relevant-changes.outputs.changed-matrix) }}
     steps:
       - name: "☁️ Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: "🔧 Setup java"
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
           distribution: 'graalvm'
           java-version: '21'
