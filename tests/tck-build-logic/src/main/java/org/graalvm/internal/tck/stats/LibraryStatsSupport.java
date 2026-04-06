@@ -300,9 +300,94 @@ public final class LibraryStatsSupport {
         }
         NavigableMap<String, LibraryStatsModels.VersionStats> byVersion = new TreeMap<>();
         for (LibraryStatsModels.VersionStats versionStats : metadataVersionStats.versions()) {
-            byVersion.put(versionStats.version(), versionStats);
+            byVersion.put(versionStats.version(), normalizeVersionStats(versionStats));
         }
         return new LibraryStatsModels.MetadataVersionStats(new ArrayList<>(byVersion.values()));
+    }
+
+    private static LibraryStatsModels.VersionStats normalizeVersionStats(LibraryStatsModels.VersionStats versionStats) {
+        if (versionStats == null) {
+            return null;
+        }
+
+        return new LibraryStatsModels.VersionStats(
+                versionStats.version(),
+                normalizeDynamicAccessStatsValue(versionStats.dynamicAccess()),
+                normalizeLibraryCoverage(versionStats.libraryCoverage())
+        );
+    }
+
+    private static LibraryStatsModels.DynamicAccessStatsValue normalizeDynamicAccessStatsValue(
+            LibraryStatsModels.DynamicAccessStatsValue dynamicAccess
+    ) {
+        if (dynamicAccess == null || !dynamicAccess.isAvailable()) {
+            return LibraryStatsModels.DynamicAccessStatsValue.notAvailable();
+        }
+
+        Map<String, LibraryStatsModels.DynamicAccessBreakdown> normalizedBreakdown = new TreeMap<>();
+        dynamicAccess.breakdown().forEach((reportType, breakdown) ->
+                normalizedBreakdown.put(reportType, normalizeDynamicAccessBreakdown(breakdown))
+        );
+
+        return LibraryStatsModels.DynamicAccessStatsValue.available(new LibraryStatsModels.DynamicAccessStats(
+                dynamicAccess.totalCalls(),
+                dynamicAccess.coveredCalls(),
+                normalizeRatio(dynamicAccess.coverageRatio()),
+                normalizedBreakdown
+        ));
+    }
+
+    private static LibraryStatsModels.DynamicAccessBreakdown normalizeDynamicAccessBreakdown(
+            LibraryStatsModels.DynamicAccessBreakdown breakdown
+    ) {
+        if (breakdown == null) {
+            return null;
+        }
+
+        return new LibraryStatsModels.DynamicAccessBreakdown(
+                breakdown.totalCalls(),
+                breakdown.coveredCalls(),
+                normalizeRatio(breakdown.coverageRatio())
+        );
+    }
+
+    private static LibraryStatsModels.LibraryCoverage normalizeLibraryCoverage(LibraryStatsModels.LibraryCoverage libraryCoverage) {
+        if (libraryCoverage == null) {
+            return null;
+        }
+
+        return new LibraryStatsModels.LibraryCoverage(
+                normalizeCoverageMetricValue(libraryCoverage.line()),
+                normalizeCoverageMetricValue(libraryCoverage.instruction()),
+                normalizeCoverageMetricValue(libraryCoverage.method())
+        );
+    }
+
+    private static LibraryStatsModels.CoverageMetricValue normalizeCoverageMetricValue(
+            LibraryStatsModels.CoverageMetricValue coverageMetricValue
+    ) {
+        if (coverageMetricValue == null || !coverageMetricValue.isAvailable()) {
+            return LibraryStatsModels.CoverageMetricValue.notAvailable();
+        }
+
+        return LibraryStatsModels.CoverageMetricValue.available(new LibraryStatsModels.CoverageMetric(
+                coverageMetricValue.covered(),
+                coverageMetricValue.missed(),
+                coverageMetricValue.total(),
+                normalizeRatio(coverageMetricValue.ratio())
+        ));
+    }
+
+    private static BigDecimal normalizeRatio(BigDecimal value) {
+        if (value == null) {
+            return null;
+        }
+
+        BigDecimal normalized = value.stripTrailingZeros();
+        if (normalized.scale() <= 0) {
+            return normalized.setScale(1);
+        }
+        return normalized;
     }
 
     private static Set<String> loadLibraryClasses(List<Path> libraryJars) {

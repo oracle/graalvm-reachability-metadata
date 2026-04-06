@@ -569,6 +569,56 @@ class LibraryStatsSupportTests {
         ).dynamicAccess().isAvailable()).isFalse();
     }
 
+    @Test
+    void writeStatsCanonicalizesTrailingZeroRatios() throws IOException {
+        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
+                "com.example:demo",
+                new LibraryStatsModels.ArtifactStats(
+                        Map.of(
+                                "1.0.0",
+                                new LibraryStatsModels.MetadataVersionStats(
+                                        List.of(new LibraryStatsModels.VersionStats(
+                                                "1.0.0",
+                                                new LibraryStatsModels.DynamicAccessStats(
+                                                        13,
+                                                        13,
+                                                        new java.math.BigDecimal("1.000000"),
+                                                        Map.of(
+                                                                "reflection",
+                                                                new LibraryStatsModels.DynamicAccessBreakdown(
+                                                                        9,
+                                                                        9,
+                                                                        new java.math.BigDecimal("1.000000")
+                                                                ),
+                                                                "resources",
+                                                                new LibraryStatsModels.DynamicAccessBreakdown(
+                                                                        4,
+                                                                        4,
+                                                                        new java.math.BigDecimal("0.500000")
+                                                                )
+                                                        )
+                                                ),
+                                                new LibraryStatsModels.LibraryCoverage(
+                                                        new LibraryStatsModels.CoverageMetric(1, 1, 2, new java.math.BigDecimal("0.500000")),
+                                                        new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667")),
+                                                        new LibraryStatsModels.CoverageMetric(3, 0, 3, new java.math.BigDecimal("1.000000"))
+                                                )
+                                        ))
+                                )
+                        )
+                )
+        ));
+        Path statsFile = tempDir.resolve("stats.json");
+
+        LibraryStatsSupport.writeStats(statsFile, libraryStats);
+
+        String content = Files.readString(statsFile, StandardCharsets.UTF_8);
+        assertThat(content).contains("\"coverageRatio\" : 1.0");
+        assertThat(content).contains("\"coverageRatio\" : 0.5");
+        assertThat(content).doesNotContain("\"coverageRatio\" : 1.000000");
+        assertThat(content).doesNotContain("\"coverageRatio\" : 0.500000");
+    }
+
     private LibraryStatsModels.VersionStats createVersionStats(
             String version,
             long totalCalls,
