@@ -8,13 +8,16 @@ on:
   schedule:
     - cron: "0 0 * * 6"
 
+permissions:
+  contents: read
+
 jobs:
   scan-images:
     name: "🔎 Scan docker images"
     runs-on: "ubuntu-22.04"
     steps:
       - name: "☁️ Checkout repository"
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
 
@@ -25,7 +28,7 @@ jobs:
           file-patterns: |
             - 'tests/tck-build-logic/src/main/resources/allowed-docker-images/**'
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         if: github.event_name == 'schedule' || steps.filter.outputs.changed == 'true'
         with:
           distribution: 'graalvm'
