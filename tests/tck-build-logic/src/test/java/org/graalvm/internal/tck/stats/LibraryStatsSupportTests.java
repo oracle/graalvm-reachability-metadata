@@ -137,7 +137,7 @@ class LibraryStatsSupportTests {
         assertThat(versionStats.dynamicAccess().totalCalls()).isEqualTo(0);
         assertThat(versionStats.dynamicAccess().coveredCalls()).isEqualTo(0);
         assertThat(versionStats.dynamicAccess().breakdown()).isEmpty();
-        assertThat(versionStats.dynamicAccess().coverageRatio()).isEqualByComparingTo("0");
+        assertThat(versionStats.dynamicAccess().coverageRatio()).isEqualByComparingTo("1");
     }
 
     @Test

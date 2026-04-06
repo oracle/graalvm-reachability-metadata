@@ -362,6 +362,7 @@ public final class LibraryStatsSchemaValidator {
                     dynamicAccess.coverageRatio(),
                     dynamicAccess.coveredCalls(),
                     dynamicAccess.totalCalls(),
+                    true,
                     failures
             );
             dynamicAccess.breakdown().forEach((reportType, breakdown) -> validateRatio(
@@ -369,6 +370,7 @@ public final class LibraryStatsSchemaValidator {
                     breakdown.coverageRatio(),
                     breakdown.coveredCalls(),
                     breakdown.totalCalls(),
+                    true,
                     failures
             ));
         }
@@ -397,6 +399,7 @@ public final class LibraryStatsSchemaValidator {
                 metric.ratio(),
                 metric.covered(),
                 metric.total(),
+                false,
                 failures
         );
     }
@@ -406,9 +409,10 @@ public final class LibraryStatsSchemaValidator {
             BigDecimal actualRatio,
             long covered,
             long total,
+            boolean treatZeroTotalAsFullCoverage,
             List<String> failures
     ) {
-        BigDecimal expectedRatio = expectedRatio(covered, total);
+        BigDecimal expectedRatio = expectedRatio(covered, total, treatZeroTotalAsFullCoverage);
         BigDecimal difference = actualRatio.subtract(expectedRatio).abs();
         if (difference.compareTo(RATIO_TOLERANCE) > 0) {
             failures.add("Ratio mismatch at " + location + ": expected " + expectedRatio
@@ -417,8 +421,11 @@ public final class LibraryStatsSchemaValidator {
         }
     }
 
-    private static BigDecimal expectedRatio(long covered, long total) {
+    private static BigDecimal expectedRatio(long covered, long total, boolean treatZeroTotalAsFullCoverage) {
         if (total == 0L) {
+            if (treatZeroTotalAsFullCoverage) {
+                return BigDecimal.ONE.setScale(RATIO_SCALE, RoundingMode.HALF_UP);
+            }
             return BigDecimal.ZERO.setScale(RATIO_SCALE, RoundingMode.HALF_UP);
         }
         return BigDecimal.valueOf(covered)

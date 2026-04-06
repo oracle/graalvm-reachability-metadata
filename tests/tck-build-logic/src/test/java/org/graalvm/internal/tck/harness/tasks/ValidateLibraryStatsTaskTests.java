@@ -230,6 +230,63 @@ class ValidateLibraryStatsTaskTests {
     }
 
     @Test
+    void validateAcceptsEmptyDynamicAccessAsFullCoverage() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": [
+                            {
+                              "dynamicAccess": {
+                                "breakdown": {
+                                },
+                                "coveredCalls": 0,
+                                "coverageRatio": 1.0,
+                                "totalCalls": 0
+                              },
+                              "libraryCoverage": {
+                                "instruction": {
+                                  "covered": 2,
+                                  "missed": 1,
+                                  "ratio": 0.666667,
+                                  "total": 3
+                                },
+                                "line": {
+                                  "covered": 1,
+                                  "missed": 1,
+                                  "ratio": 0.5,
+                                  "total": 2
+                                },
+                                "method": {
+                                  "covered": 3,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 3
+                                }
+                              },
+                              "version": "1.0.0"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
+        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatCode(task::validate).doesNotThrowAnyException();
+    }
+
+    @Test
     void validateRejectsOrphanArtifactEntry() throws IOException {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");

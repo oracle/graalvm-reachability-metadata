@@ -508,7 +508,7 @@ public final class LibraryStatsSupport {
 
     private static ParsedDynamicAccess emptyDynamicAccess() {
         return new ParsedDynamicAccess(
-                new LibraryStatsModels.DynamicAccessStats(0, 0, ratio(0, 0), Map.of()),
+                new LibraryStatsModels.DynamicAccessStats(0, 0, BigDecimal.ONE.setScale(RATIO_SCALE, RoundingMode.HALF_UP), Map.of()),
                 List.of()
         );
     }
