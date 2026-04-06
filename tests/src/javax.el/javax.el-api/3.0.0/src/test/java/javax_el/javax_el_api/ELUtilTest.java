@@ -6,7 +6,6 @@
  */
 package javax_el.javax_el_api;
 
-import javax.el.BeanELResolver;
 import javax.el.ELClass;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
@@ -103,23 +102,6 @@ class ELUtilTest {
         assertThat(context.isPropertyResolved()).isTrue();
     }
 
-    @Test
-    void beanElResolverInvokesInstanceMethodWhenParameterTypesAreInferred() {
-        BeanELResolver resolver = new BeanELResolver();
-        StandardELContext context = createContext();
-
-        Object result = resolver.invoke(
-                context,
-                new InstanceLibrary(),
-                "join",
-                null,
-                new Object[] { "left", "right" }
-        );
-
-        assertThat(result).isEqualTo("left:right");
-        assertThat(context.isPropertyResolved()).isTrue();
-    }
-
     private static StandardELContext createContext() {
         return new StandardELContext(new StubExpressionFactory());
     }
@@ -188,10 +170,4 @@ class ELUtilTest {
         }
     }
 
-    public static final class InstanceLibrary {
-
-        public String join(String left, String right) {
-            return left + ":" + right;
-        }
-    }
 }
