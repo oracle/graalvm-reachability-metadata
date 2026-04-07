@@ -41,6 +41,7 @@ import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
 import org.graalvm.internal.tck.harness.tasks.GenerateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.ValidateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.AnalyzeExternalLibraryDynamicAccessTask
+import org.graalvm.internal.tck.harness.tasks.GenerateReadmeBadgeSummaryTask
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
@@ -208,6 +209,11 @@ tasks.register("generateDynamicAccessCoverageReport", GenerateDynamicAccessCover
 
 tasks.register("generateLibraryStats", GenerateLibraryStatsTask.class) { task ->
     task.setDescription("Generates artifact-indexed stats and updates stats/stats.json")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("generateReadmeBadgeSummary", GenerateReadmeBadgeSummaryTask.class) { task ->
+    task.setDescription("Generates current README metrics data and updates README metrics history")
     task.setGroup(METADATA_GROUP)
 }
 
