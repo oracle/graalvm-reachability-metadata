@@ -15,3 +15,15 @@ dependencies {
     testImplementation "$group$:$artifact$:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+        accessFilterFiles.from("access-filter.json")
+    }
+}
