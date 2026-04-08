@@ -231,6 +231,46 @@ class LibraryStatsSupportTests {
     }
 
     @Test
+    void buildVersionStatsTreatsLibrariesWithoutExecutableBytecodeAsFullyCovered() throws IOException {
+        Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Marker.class"));
+
+        Path jacocoReport = tempDir.resolve("jacoco.xml");
+        Files.writeString(
+                jacocoReport,
+                """
+                <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                <report name="demo">
+                  <package name="com/example">
+                    <class name="com/example/Marker"/>
+                  </package>
+                  <counter type="INSTRUCTION" missed="0" covered="0"/>
+                  <counter type="METHOD" missed="0" covered="0"/>
+                </report>
+                """,
+                StandardCharsets.UTF_8
+        );
+
+        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
+                "com.example:demo:1.0.0",
+                jacocoReport
+        );
+
+        assertThat(versionStats.libraryCoverage().line().isAvailable()).isTrue();
+        assertThat(versionStats.libraryCoverage().line().covered()).isZero();
+        assertThat(versionStats.libraryCoverage().line().missed()).isZero();
+        assertThat(versionStats.libraryCoverage().line().total()).isZero();
+        assertThat(versionStats.libraryCoverage().line().ratio()).isEqualByComparingTo("1.0");
+        assertThat(versionStats.libraryCoverage().instruction().covered()).isZero();
+        assertThat(versionStats.libraryCoverage().instruction().missed()).isZero();
+        assertThat(versionStats.libraryCoverage().instruction().total()).isZero();
+        assertThat(versionStats.libraryCoverage().instruction().ratio()).isEqualByComparingTo("1.0");
+        assertThat(versionStats.libraryCoverage().method().covered()).isZero();
+        assertThat(versionStats.libraryCoverage().method().missed()).isZero();
+        assertThat(versionStats.libraryCoverage().method().total()).isZero();
+        assertThat(versionStats.libraryCoverage().method().ratio()).isEqualByComparingTo("1.0");
+    }
+
+    @Test
     void buildDynamicAccessCoverageReportGroupsCallSitesByClassAndSortsByUncoveredCalls() throws IOException {
         Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of(
                 "com/example/Foo.class",
@@ -648,6 +688,50 @@ class LibraryStatsSupportTests {
         assertThat(content).contains("\"coverageRatio\" : 0.5");
         assertThat(content).doesNotContain("\"coverageRatio\" : 1.000000");
         assertThat(content).doesNotContain("\"coverageRatio\" : 0.500000");
+    }
+
+    @Test
+    void writeStatsNormalizesZeroTotalCoverageMetricRatioToFullCoverage() throws IOException {
+        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
+                "com.example:demo",
+                new LibraryStatsModels.ArtifactStats(
+                        Map.of(
+                                "1.0.0",
+                                new LibraryStatsModels.MetadataVersionStats(
+                                        List.of(new LibraryStatsModels.VersionStats(
+                                                "1.0.0",
+                                                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
+                                                new LibraryStatsModels.LibraryCoverage(
+                                                        LibraryStatsModels.CoverageMetricValue.available(
+                                                                new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
+                                                        ),
+                                                        LibraryStatsModels.CoverageMetricValue.available(
+                                                                new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
+                                                        ),
+                                                        LibraryStatsModels.CoverageMetricValue.available(
+                                                                new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
+                                                        )
+                                                )
+                                        ))
+                                )
+                        )
+                )
+        ));
+        Path statsFile = tempDir.resolve("stats.json");
+
+        LibraryStatsSupport.writeStats(statsFile, libraryStats);
+        LibraryStatsModels.LibraryStats loadedStats = LibraryStatsSupport.loadStats(statsFile);
+        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.requireVersionStats(
+                LibraryStatsSupport.metadataVersionStats(loadedStats, "com.example:demo", "1.0.0"),
+                "com.example:demo:1.0.0"
+        );
+
+        String content = Files.readString(statsFile, StandardCharsets.UTF_8);
+        assertThat(content).contains("\"ratio\" : 1.0");
+        assertThat(content).doesNotContain("\"ratio\" : 0.0");
+        assertThat(versionStats.libraryCoverage().line().ratio()).isEqualByComparingTo("1.0");
+        assertThat(versionStats.libraryCoverage().instruction().ratio()).isEqualByComparingTo("1.0");
+        assertThat(versionStats.libraryCoverage().method().ratio()).isEqualByComparingTo("1.0");
     }
 
     private LibraryStatsModels.VersionStats createVersionStats(

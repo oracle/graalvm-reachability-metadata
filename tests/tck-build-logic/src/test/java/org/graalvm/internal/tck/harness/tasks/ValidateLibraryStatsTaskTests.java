@@ -179,6 +179,106 @@ class ValidateLibraryStatsTaskTests {
     }
 
     @Test
+    void validateAcceptsZeroTotalLibraryCoverageAsFullCoverage() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": [
+                            {
+                              "dynamicAccess": "N/A",
+                              "libraryCoverage": {
+                                "instruction": {
+                                  "covered": 0,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 0
+                                },
+                                "line": {
+                                  "covered": 0,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 0
+                                },
+                                "method": {
+                                  "covered": 0,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 0
+                                }
+                              },
+                              "version": "1.0.0"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
+        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatCode(task::validate).doesNotThrowAnyException();
+    }
+
+    @Test
+    void validateRejectsZeroTotalLibraryCoverageWhenRatioIsNotFullCoverage() throws IOException {
+        Project project = createProjectSkeleton();
+        createMetadataVersion("com.example", "demo", "1.0.0");
+        writeStatsFile(
+                """
+                {
+                  "entries": {
+                    "com.example:demo": {
+                      "metadataVersions": {
+                        "1.0.0": {
+                          "versions": [
+                            {
+                              "dynamicAccess": "N/A",
+                              "libraryCoverage": {
+                                "instruction": {
+                                  "covered": 0,
+                                  "missed": 0,
+                                  "ratio": 0.0,
+                                  "total": 0
+                                },
+                                "line": {
+                                  "covered": 0,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 0
+                                },
+                                "method": {
+                                  "covered": 0,
+                                  "missed": 0,
+                                  "ratio": 1.0,
+                                  "total": 0
+                                }
+                              },
+                              "version": "1.0.0"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+                """
+        );
+        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
+        assertThatThrownBy(task::validate)
+                .hasMessageContaining("not normalized and sorted");
+    }
+
+    @Test
     void validateAcceptsUnavailableDynamicAccess() throws IOException {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
