@@ -147,9 +147,9 @@ jobs:
         run: |
           bash ./.github/workflows/scripts/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.versions) }}' 2>&1 | tee test_results.txt || true
 
-          grep "^PASSED:" test_results.txt | sed 's/PASSED://g' > successful_versions.txt || true
+          grep -a "^PASSED:" test_results.txt | sed 's/PASSED://g' > successful_versions.txt || true
 
-          FAILED_LINE="$(grep "^FAILED" test_results.txt | head -n 1 || true)"
+          FAILED_LINE="$(grep -a "^FAILED" test_results.txt | head -n 1 || true)"
           FAILURE_TYPE=""
           FAILED_VERSION=""
           FAILED_COMMAND=""
