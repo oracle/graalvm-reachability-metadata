@@ -15,3 +15,14 @@ dependencies {
     testImplementation "org.osgi:org.osgi.compendium:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

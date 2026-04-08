@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
@@ -76,7 +75,7 @@ public class XMLParserActivator1Test {
         assertThat(TestDocumentBuilderFactory.constructorCalls).isEqualTo(1);
         assertThat(context.registrationClasses).containsExactly(XMLParserActivator.DOMFACTORYNAME);
         assertThat(context.registrationProperties).hasSize(1);
-        Hashtable<String, Object> properties = context.registrationProperties.get(0);
+        Map<String, Object> properties = context.registrationProperties.get(0);
         assertThat(properties.get(Constants.SERVICE_DESCRIPTION))
                 .isEqualTo("A JAXP Compliant DOM Parser");
         assertThat(properties.get(Constants.SERVICE_PID))
@@ -168,7 +167,7 @@ public class XMLParserActivator1Test {
     private static final class TestBundleContext implements BundleContext {
         private final TestBundle bundle;
         private final List<String> registrationClasses = new ArrayList<>();
-        private final List<Hashtable<String, Object>> registrationProperties =
+        private final List<Map<String, Object>> registrationProperties =
                 new ArrayList<>();
 
         private TestBundleContext(TestBundle bundle) {
@@ -314,8 +313,8 @@ public class XMLParserActivator1Test {
             throw new UnsupportedOperationException();
         }
 
-        private static Hashtable<String, Object> copyDictionary(Dictionary<String, ?> properties) {
-            Hashtable<String, Object> copiedProperties = new Hashtable<>();
+        private static Map<String, Object> copyDictionary(Dictionary<String, ?> properties) {
+            Map<String, Object> copiedProperties = new HashMap<>();
             Enumeration<String> keys = properties.keys();
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement();
