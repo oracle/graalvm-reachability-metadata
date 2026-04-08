@@ -394,12 +394,13 @@ public final class LibraryStatsSchemaValidator {
             failures.add("Inconsistent totals at " + locationPrefix + ":libraryCoverage." + metricName
                     + ".total: expected " + expectedTotal + " from covered+missed but found " + metric.total());
         }
+        boolean zeroTotalMetric = metric.total() == 0L;
         validateRatio(
                 locationPrefix + ":libraryCoverage." + metricName + ".ratio",
                 metric.ratio(),
                 metric.covered(),
                 metric.total(),
-                false,
+                zeroTotalMetric,
                 failures
         );
     }
