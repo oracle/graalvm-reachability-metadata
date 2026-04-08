@@ -125,6 +125,18 @@ class ScaffoldTask extends DefaultTask {
                 CoordinateUtils.replace(loadResource("/scaffold/build.gradle.template"), coordinates)
         );
 
+        // access-filter.json
+        writeToFile(
+                coordinatesTestRoot.resolve("access-filter.json"),
+                CoordinateUtils.replace(loadResource("/scaffold/access-filter.json.template"), coordinates)
+        );
+
+        // user-code-filter.json
+        writeToFile(
+                coordinatesTestRoot.resolve("user-code-filter.json"),
+                CoordinateUtils.replace(loadResource("/scaffold/user-code-filter.json.template"), coordinates)
+        );
+
         // settings.gradle
         writeToFile(
                 coordinatesTestRoot.resolve("settings.gradle"),
@@ -229,8 +241,8 @@ class ScaffoldTask extends DefaultTask {
     }
 
     private void setLatest(List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {
-        MetadataVersionsIndexEntry oldEntry = list.remove(index);
-        list.add(new MetadataVersionsIndexEntry(
+        MetadataVersionsIndexEntry oldEntry = list.get(index);
+        list.set(index, new MetadataVersionsIndexEntry(
                 newValue,
                 oldEntry.override(),
                 oldEntry.defaultFor(),
