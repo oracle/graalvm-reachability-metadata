@@ -45,6 +45,7 @@ Workflows for style and security:
 - [.github/workflows/checkstyle.yml](../.github/workflows/checkstyle.yml): code style checks.
 - [.github/workflows/library-and-framework-list-validation.yml](../.github/workflows/library-and-framework-list-validation.yml): validates and sorts [library-and-framework-list.json](../metadata/library-and-framework-list.json), checks schema.
 - [.github/workflows/library-stats-validation.yml](../.github/workflows/library-stats-validation.yml): validates and sorts mirrored stats files under [stats/](../stats/), checks schema.
+- [.github/workflows/publish-scheduled-coverage.yml](../.github/workflows/publish-scheduled-coverage.yml): scheduled/manual workflow that generates repository coverage badges and the coverage dashboard from [stats/stats.json](../stats/stats.json) and repository [metadata/**/index.json](../metadata/), then force-pushes the published artifacts to the `stats/coverage` branch. The published branch only keeps `latest/badges.json`, `latest/metrics-over-time.svg`, and `history/history.json`.
 - [.github/workflows/scan-docker-images.yml](../.github/workflows/scan-docker-images.yml): scans allowed Docker images on PR/schedule.
 - [.github/workflows/sync-docker-tags.yml](../.github/workflows/sync-docker-tags.yml): automatically synchronizes Docker image tags across the repository when Dependabot updates `allowed-docker-images`. Commits replacements directly into the Dependabot PR, making it merge-ready.
 
