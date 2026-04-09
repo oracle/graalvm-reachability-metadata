@@ -10,8 +10,11 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Handler;
@@ -31,7 +34,9 @@ import com.sun.istack.SAXException2;
 import com.sun.istack.SAXParseException2;
 import com.sun.istack.XMLStreamException2;
 import com.sun.istack.XMLStreamReaderToContentHandler;
+import com.sun.istack.localization.Localizable;
 import com.sun.istack.localization.LocalizableMessage;
+import com.sun.istack.localization.LocalizableMessageFactory;
 import com.sun.istack.localization.NullLocalizable;
 import com.sun.istack.localization.Localizer;
 import com.sun.istack.logging.Logger;
@@ -143,6 +148,26 @@ class Istack_commons_runtimeTest {
         assertThat(message.getResourceBundle(Locale.US)).isNull();
         assertThat(localizer.localize(message)).isEqualTo("[failed to localize] outer(value, 7)");
         assertThat(localizer.localize(new NullLocalizable("literal"))).isEqualTo("literal");
+    }
+
+    @Test
+    void localizerResolvesSuppliedBundlesNestedMessagesAndUndefinedKeys() {
+        AtomicInteger supplierCalls = new AtomicInteger();
+        LocalizableMessageFactory messageFactory = new LocalizableMessageFactory(
+            "test.bundle",
+            locale -> {
+                supplierCalls.incrementAndGet();
+                return new TestMessages();
+            }
+        );
+        Localizer localizer = new Localizer(Locale.US);
+        Localizable nestedMessage = messageFactory.getMessage("inner", "payload");
+        Localizable outerMessage = messageFactory.getMessage("outer", nestedMessage, 9);
+        Localizable missingMessage = messageFactory.getMessage("missing", "fallback");
+
+        assertThat(localizer.localize(outerMessage)).isEqualTo("Outer sees Inner payload and 9");
+        assertThat(localizer.localize(missingMessage)).isEqualTo("Undefined fallback");
+        assertThat(supplierCalls).hasValue(1);
     }
 
     @Test
@@ -348,6 +373,25 @@ class Istack_commons_runtimeTest {
 
         @Override
         public void close() {
+        }
+    }
+
+    private static final class TestMessages extends java.util.ResourceBundle {
+
+        private static final Map<String, String> MESSAGES = Map.of(
+            "inner", "Inner {0}",
+            "outer", "Outer sees {0} and {1}",
+            "undefined", "Undefined {0}"
+        );
+
+        @Override
+        protected Object handleGetObject(String key) {
+            return MESSAGES.get(key);
+        }
+
+        @Override
+        public Enumeration<String> getKeys() {
+            return Collections.enumeration(MESSAGES.keySet());
         }
     }
 }
