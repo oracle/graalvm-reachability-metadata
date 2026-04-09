@@ -149,7 +149,6 @@ class ScaffoldTaskTests {
 
         updateTask.run();
 
-        Path updatedMetadataRoot = tempDir.resolve("metadata/com.example/demo/2.0.0");
         assertGeneratedFileMatchesTemplate(
                 updatedCoordinates,
                 "metadata/com.example/demo/2.0.0/reachability-metadata.json",
@@ -197,7 +196,7 @@ class ScaffoldTaskTests {
     }
 
     @Test
-    void runWithoutUpdateFailsWhenArtifactMetadataAlreadyExists() throws IOException {
+    void runWithoutUpdateAddsNewVersionWhenArtifactMetadataAlreadyExists() throws IOException {
         Project project = ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
                 .build();
@@ -208,10 +207,68 @@ class ScaffoldTaskTests {
 
         ScaffoldTask secondTask = project.getTasks().register("scaffoldSecond", ScaffoldTask.class).get();
         secondTask.setCoordinates("com.example:demo:2.0.0");
+        secondTask.run();
+
+        List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
+                tempDir.resolve("metadata/com.example/demo/index.json").toFile(),
+                new TypeReference<>() {}
+        );
+        assertThat(indexEntries).hasSize(2);
+        assertThat(indexEntries.get(0)).containsEntry("metadata-version", "1.0.0")
+                .containsEntry("tested-versions", List.of("1.0.0"))
+                .doesNotContainKey("latest");
+        assertThat(indexEntries.get(1)).containsEntry("metadata-version", "2.0.0")
+                .containsEntry("tested-versions", List.of("2.0.0"))
+                .containsEntry("latest", true);
+        assertThat(tempDir.resolve("tests/src/com.example/demo/2.0.0/build.gradle")).exists();
+        assertThat(tempDir.resolve("metadata/com.example/demo/2.0.0/reachability-metadata.json")).exists();
+        assertThat(Files.readString(tempDir.resolve("metadata/com.example/demo/index.json"), StandardCharsets.UTF_8))
+                .startsWith("[\n  {\n")
+                .contains("\n  },\n  {\n")
+                .doesNotContain("[ {");
+    }
+
+    @Test
+    void runWithoutUpdateKeepsLatestOnHighestVersion() throws IOException {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+
+        ScaffoldTask initialTask = project.getTasks().register("scaffoldInitial", ScaffoldTask.class).get();
+        initialTask.setCoordinates("com.example:demo:2.0.0");
+        initialTask.run();
+
+        ScaffoldTask secondTask = project.getTasks().register("scaffoldSecond", ScaffoldTask.class).get();
+        secondTask.setCoordinates("com.example:demo:1.5.0");
+        secondTask.run();
+
+        List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
+                tempDir.resolve("metadata/com.example/demo/index.json").toFile(),
+                new TypeReference<>() {}
+        );
+        assertThat(indexEntries).hasSize(2);
+        assertThat(indexEntries.get(0)).containsEntry("metadata-version", "1.5.0")
+                .doesNotContainKey("latest");
+        assertThat(indexEntries.get(1)).containsEntry("metadata-version", "2.0.0")
+                .containsEntry("latest", true);
+    }
+
+    @Test
+    void runWithoutForceFailsWhenExactVersionMetadataAlreadyExists() throws IOException {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+
+        ScaffoldTask initialTask = project.getTasks().register("scaffoldInitial", ScaffoldTask.class).get();
+        initialTask.setCoordinates("com.example:demo:1.0.0");
+        initialTask.run();
+
+        ScaffoldTask secondTask = project.getTasks().register("scaffoldSecond", ScaffoldTask.class).get();
+        secondTask.setCoordinates("com.example:demo:1.0.0");
 
         assertThatThrownBy(secondTask::run)
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("Metadata for 'com.example:demo' already exists");
+                .hasMessageContaining("Metadata for 'com.example:demo:1.0.0' already exists");
     }
 
     private void assertGeneratedFileMatchesTemplate(Coordinates coordinates, String relativePath, String templateResourcePath) throws IOException {
