@@ -44,6 +44,7 @@ import com.sun.istack.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -223,6 +224,20 @@ class Istack_commons_runtimeTest {
     }
 
     @Test
+    void xmlStreamReaderBridgeWrapsSaxFailuresAsXmlStreamException2() throws Exception {
+        XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader("<root>text</root>"));
+        SAXException cause = new SAXException("characters failure");
+        XMLStreamReaderToContentHandler bridge =
+            new XMLStreamReaderToContentHandler(reader, new ThrowingContentHandler(cause), false, false);
+
+        assertThatThrownBy(bridge::bridge)
+            .isInstanceOf(XMLStreamException2.class)
+            .hasCause(cause);
+        assertThat(reader.getEventType()).isEqualTo(XMLStreamConstants.CHARACTERS);
+    }
+
+    @Test
     void loggerWritesStructuredRecordsAndReturnsLoggedException() {
         String loggerName = "test.istack." + UUID.randomUUID();
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger(loggerName);
@@ -373,6 +388,20 @@ class Istack_commons_runtimeTest {
 
         @Override
         public void close() {
+        }
+    }
+
+    private static final class ThrowingContentHandler extends DefaultHandler {
+
+        private final SAXException cause;
+
+        private ThrowingContentHandler(SAXException cause) {
+            this.cause = cause;
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) throws SAXException {
+            throw this.cause;
         }
     }
 
