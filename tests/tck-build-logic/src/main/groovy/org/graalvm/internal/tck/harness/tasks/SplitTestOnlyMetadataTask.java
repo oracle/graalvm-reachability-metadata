@@ -4,7 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org.graalvm.internal.tck;
+package org.graalvm.internal.tck.harness.tasks;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
@@ -14,12 +14,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.graalvm.internal.tck.Coordinates;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.options.Option;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -36,42 +35,49 @@ import java.util.regex.Pattern;
  * test-resources reachability-metadata.json.
  */
 @SuppressWarnings("unused")
-public class SplitTestOnlyMetadataTask extends DefaultTask {
+public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     private static final String REACHABILITY_METADATA_FILE = "reachability-metadata.json";
     private static final Pattern PACKAGE_PATTERN = Pattern.compile("(?m)^\\s*package\\s+([A-Za-z0-9_.]+)\\s*;?");
 
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-    private String coordinates;
+    @TaskAction
+    public void run() {
+        List<String> coordinates = resolveCoordinates();
+        if (coordinates.isEmpty()) {
+            getLogger().lifecycle("No matching coordinates found for splitTestOnlyMetadata. Nothing to do.");
+            return;
+        }
 
-    @Option(option = "coordinates", description = "Coordinates in the form of group:artifact:version")
-    public void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    @Input
-    public String getCoordinates() {
-        if (coordinates == null || coordinates.isBlank()) {
-            Object coordsProp = getProject().findProperty("coordinates");
-            if (coordsProp != null) {
-                coordinates = coordsProp.toString();
+        List<String> failures = new java.util.ArrayList<>();
+        for (String coordinate : coordinates) {
+            if (coordinate.startsWith("samples:") || coordinate.startsWith("org.example:")) {
+                continue;
+            }
+            try {
+                splitMetadata(coordinate);
+            } catch (Exception exception) {
+                failures.add(coordinate + ": " + exception.getMessage());
+                getLogger().error("splitTestOnlyMetadata failed for {}: {}", coordinate, exception.getMessage());
             }
         }
-        return coordinates;
+
+        if (!failures.isEmpty()) {
+            throw new GradleException("splitTestOnlyMetadata failed for the following coordinates:\n - " + String.join("\n - ", failures));
+        }
     }
 
-    @TaskAction
-    public void run() throws IOException {
-        Coordinates parsedCoordinates = Coordinates.parse(getCoordinates());
+    private void splitMetadata(String coordinate) throws IOException {
+        Coordinates parsedCoordinates = Coordinates.parse(coordinate);
         Path metadataDirectory = resolveMetadataDirectory(parsedCoordinates);
         Path testsDirectory = resolveTestsDirectory(parsedCoordinates);
         Path metadataFile = metadataDirectory.resolve(REACHABILITY_METADATA_FILE);
 
         if (!Files.isRegularFile(metadataFile)) {
-            throw new IllegalArgumentException("Cannot find metadata file for " + coordinates + ": " + metadataFile);
+            throw new IllegalArgumentException("Cannot find metadata file for " + coordinate + ": " + metadataFile);
         }
         if (!Files.isDirectory(testsDirectory)) {
-            throw new IllegalArgumentException("Cannot find tests directory for " + coordinates + ": " + testsDirectory);
+            throw new IllegalArgumentException("Cannot find tests directory for " + coordinate + ": " + testsDirectory);
         }
 
         Set<String> testPackages = discoverTestPackages(testsDirectory);
@@ -86,7 +92,7 @@ public class SplitTestOnlyMetadataTask extends DefaultTask {
         splitResources(libraryMetadata, movedMetadata, testPackages);
 
         if (movedMetadata.isEmpty()) {
-            getLogger().lifecycle("No test-only reachability metadata entries found for {}", coordinates);
+            getLogger().lifecycle("No test-only reachability metadata entries found for {}", coordinate);
             return;
         }
 
@@ -97,6 +103,7 @@ public class SplitTestOnlyMetadataTask extends DefaultTask {
 
         writeJson(metadataFile, libraryMetadata);
         writeJson(testMetadataFile, mergedTestMetadata);
+        getLogger().lifecycle("splitTestOnlyMetadata completed for {}", coordinate);
     }
 
     private Path resolveMetadataDirectory(Coordinates parsedCoordinates) throws IOException {
@@ -105,7 +112,7 @@ public class SplitTestOnlyMetadataTask extends DefaultTask {
             return conventional;
         }
 
-        throw new IllegalArgumentException("Cannot find metadata directory for " + coordinates);
+        throw new IllegalArgumentException("Cannot find metadata directory for " + parsedCoordinates);
     }
 
     private Path resolveTestsDirectory(Coordinates parsedCoordinates) throws IOException {
@@ -116,7 +123,7 @@ public class SplitTestOnlyMetadataTask extends DefaultTask {
 
         Path indexFile = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/index.json", parsedCoordinates)).toPath();
         if (!Files.isRegularFile(indexFile)) {
-            throw new IllegalArgumentException("Cannot find tests directory for " + coordinates + ": " + conventional
+            throw new IllegalArgumentException("Cannot find tests directory for " + parsedCoordinates + ": " + conventional
                     + " does not exist and no index.json is present at " + indexFile);
         }
 
@@ -133,7 +140,7 @@ public class SplitTestOnlyMetadataTask extends DefaultTask {
             return getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/" + testVersion, parsedCoordinates)).toPath();
         }
 
-        throw new IllegalArgumentException("Cannot find tests directory for " + coordinates
+        throw new IllegalArgumentException("Cannot find tests directory for " + parsedCoordinates
                 + ": no index.json entry with metadata-version " + parsedCoordinates.version() + " in " + indexFile);
     }
 
