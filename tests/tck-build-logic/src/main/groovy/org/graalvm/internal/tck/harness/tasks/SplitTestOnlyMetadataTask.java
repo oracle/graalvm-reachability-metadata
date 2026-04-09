@@ -195,8 +195,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         ArrayNode movedEntries = objectMapper.createArrayNode();
         for (JsonNode entry : sourceEntries) {
             JsonNode typeNode = entry.isObject() ? entry.get("type") : null;
-            boolean testOnly = typeNode != null && typeNode.isTextual()
-                    && testPackages.stream().anyMatch(testPackage -> referencesTestPackage(typeNode.asText(), testPackage));
+            boolean testOnly = isTestOnlyReflectionType(typeNode, testPackages);
             if (testOnly) {
                 movedEntries.add(entry.deepCopy());
             } else {
@@ -205,6 +204,29 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         }
 
         applySplitResult(source, moved, "reflection", keptEntries, movedEntries);
+    }
+
+    private boolean isTestOnlyReflectionType(JsonNode typeNode, Set<String> testPackages) {
+        if (typeNode == null) {
+            return false;
+        }
+        if (typeNode.isTextual()) {
+            return testPackages.stream().anyMatch(testPackage -> referencesTestPackage(typeNode.asText(), testPackage));
+        }
+        if (typeNode.isObject()) {
+            JsonNode proxyNode = typeNode.get("proxy");
+            if (!(proxyNode instanceof ArrayNode proxyArray) || proxyArray.isEmpty()) {
+                return false;
+            }
+            for (JsonNode proxyType : proxyArray) {
+                if (!proxyType.isTextual()
+                        || testPackages.stream().noneMatch(testPackage -> referencesTestPackage(proxyType.asText(), testPackage))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     private void splitResources(ObjectNode source, ObjectNode moved, Set<String> testResources) {
