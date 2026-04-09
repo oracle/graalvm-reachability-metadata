@@ -247,7 +247,7 @@ jobs:
     needs:
       - get-all-libraries
       - test-all-metadata
-    if: always() && needs.get-all-libraries.outputs.none-found != 'true' && needs.test-all-metadata.result != 'cancelled'
+    if: needs.get-all-libraries.outputs.none-found != 'true'
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
