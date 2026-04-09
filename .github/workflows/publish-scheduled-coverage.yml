@@ -5,6 +5,10 @@ on:
   schedule:
     - cron: "0 6 * * *"
 
+concurrency:
+  group: publish-coverage
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -17,6 +21,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       COVERAGE_BRANCH: stats/coverage
       COVERAGE_DIR: ${{ github.workspace }}/.tmp/stats-coverage
+      COVERAGE_HISTORY_BACKUP: ${{ github.workspace }}/.tmp/stats-coverage-history.json
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -33,6 +38,7 @@ jobs:
       - name: "🌿 Prepare coverage branch workspace"
         run: |
           rm -rf "${COVERAGE_DIR}"
+          rm -f "${COVERAGE_HISTORY_BACKUP}"
           mkdir -p "${COVERAGE_DIR}"
           cd "${COVERAGE_DIR}"
           git init
@@ -42,10 +48,17 @@ jobs:
 
           if git fetch --depth 1 origin "${COVERAGE_BRANCH}"; then
             git checkout -B "${COVERAGE_BRANCH}" FETCH_HEAD
+            if [ -f history/history.json ]; then
+              cp history/history.json "${COVERAGE_HISTORY_BACKUP}"
+            fi
           else
             git checkout --orphan "${COVERAGE_BRANCH}"
           fi
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          mkdir -p history
+          if [ -f "${COVERAGE_HISTORY_BACKUP}" ]; then
+            mv "${COVERAGE_HISTORY_BACKUP}" history/history.json
+          fi
 
       - name: "🏷️ Generate coverage artifacts"
         run: |
