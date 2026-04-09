@@ -47,7 +47,6 @@ class ScaffoldTaskTests {
                 "metadata/com.example.lib/some-artifact/1.0.0.FINAL/reachability-metadata.json",
                 "metadata/com.example.lib/some-artifact/index.json",
                 "tests/src/com.example.lib/some-artifact/1.0.0.FINAL/.gitignore",
-                "tests/src/com.example.lib/some-artifact/1.0.0.FINAL/access-filter.json",
                 "tests/src/com.example.lib/some-artifact/1.0.0.FINAL/build.gradle",
                 "tests/src/com.example.lib/some-artifact/1.0.0.FINAL/gradle.properties",
                 "tests/src/com.example.lib/some-artifact/1.0.0.FINAL/settings.gradle",
@@ -72,11 +71,6 @@ class ScaffoldTaskTests {
                 coordinates,
                 "tests/src/com.example.lib/some-artifact/1.0.0.FINAL/.gitignore",
                 "/scaffold/.gitignore.template"
-        );
-        assertGeneratedFileMatchesTemplate(
-                coordinates,
-                "tests/src/com.example.lib/some-artifact/1.0.0.FINAL/access-filter.json",
-                "/scaffold/access-filter.json.template"
         );
         assertGeneratedFileMatchesTemplate(
                 coordinates,
@@ -121,7 +115,6 @@ class ScaffoldTaskTests {
                 "metadata/com.example/demo/1.0.0/reachability-metadata.json",
                 "metadata/com.example/demo/index.json",
                 "tests/src/com.example/demo/1.0.0/.gitignore",
-                "tests/src/com.example/demo/1.0.0/access-filter.json",
                 "tests/src/com.example/demo/1.0.0/build.gradle",
                 "tests/src/com.example/demo/1.0.0/gradle.properties",
                 "tests/src/com.example/demo/1.0.0/settings.gradle",
