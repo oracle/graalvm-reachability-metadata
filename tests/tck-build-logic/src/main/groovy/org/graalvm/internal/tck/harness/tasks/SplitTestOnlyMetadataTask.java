@@ -67,11 +67,21 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     private void splitMetadata(String coordinate) throws IOException {
         Coordinates parsedCoordinates = Coordinates.parse(coordinate);
         Path metadataDirectory = resolveMetadataDirectory(parsedCoordinates);
-        Path testsDirectory = resolveTestsDirectory(parsedCoordinates);
+        if (metadataDirectory == null) {
+            getLogger().lifecycle(
+                    "Skipping {}: library version {} does not have its own metadata directory. "
+                            + "splitTestOnlyMetadata only runs for versions that have their own metadata.",
+                    coordinate,
+                    parsedCoordinates.version()
+            );
+            return;
+        }
+        Path testsDirectory = resolveTestsDirectoryForMetadataVersion(parsedCoordinates);
         Path metadataFile = metadataDirectory.resolve(REACHABILITY_METADATA_FILE);
 
         if (!Files.isRegularFile(metadataFile)) {
-            throw new IllegalArgumentException("Cannot find metadata file for " + coordinate + ": " + metadataFile);
+            getLogger().lifecycle("Skipping {}: no {} found in {}", coordinate, REACHABILITY_METADATA_FILE, metadataDirectory);
+            return;
         }
         if (!Files.isDirectory(testsDirectory)) {
             throw new IllegalArgumentException("Cannot find tests directory for " + coordinate + ": " + testsDirectory);
@@ -104,16 +114,15 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         getLogger().lifecycle("splitTestOnlyMetadata completed for {}", coordinate);
     }
 
-    private Path resolveMetadataDirectory(Coordinates parsedCoordinates) throws IOException {
+    private Path resolveMetadataDirectory(Coordinates parsedCoordinates) {
         Path conventional = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", parsedCoordinates)).toPath();
         if (Files.isDirectory(conventional)) {
             return conventional;
         }
-
-        throw new IllegalArgumentException("Cannot find metadata directory for " + parsedCoordinates);
+        return null;
     }
 
-    private Path resolveTestsDirectory(Coordinates parsedCoordinates) throws IOException {
+    private Path resolveTestsDirectoryForMetadataVersion(Coordinates parsedCoordinates) throws IOException {
         Path conventional = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", parsedCoordinates)).toPath();
         if (Files.isDirectory(conventional)) {
             return conventional;
@@ -125,21 +134,32 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
                     + " does not exist and no index.json is present at " + indexFile);
         }
 
-        List<MetadataVersionsIndexEntry> entries = objectMapper.readValue(indexFile.toFile(), new TypeReference<>() {});
+        List<MetadataVersionsIndexEntry> entries = readIndexEntries(indexFile);
         for (MetadataVersionsIndexEntry entry : entries) {
             if (!parsedCoordinates.version().equals(entry.metadataVersion())) {
                 continue;
             }
-            String testVersion = entry.testVersion();
-            if (testVersion == null || testVersion.isBlank()) {
-                throw new IllegalStateException("Index entry for metadata-version " + entry.metadataVersion()
-                        + " in " + indexFile + " has no test-version");
-            }
-            return getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/" + testVersion, parsedCoordinates)).toPath();
+            return resolveTestsDirectoryForEntry(parsedCoordinates, entry, indexFile);
         }
 
         throw new IllegalArgumentException("Cannot find tests directory for " + parsedCoordinates
                 + ": no index.json entry with metadata-version " + parsedCoordinates.version() + " in " + indexFile);
+    }
+
+    private Path resolveTestsDirectoryForEntry(Coordinates parsedCoordinates, MetadataVersionsIndexEntry entry, Path indexFile) {
+        String testVersion = entry.testVersion();
+        if (testVersion == null || testVersion.isBlank()) {
+            testVersion = entry.metadataVersion();
+        }
+        if (testVersion == null || testVersion.isBlank()) {
+            throw new IllegalStateException("Index entry for metadata-version " + entry.metadataVersion()
+                    + " in " + indexFile + " has no test-version or metadata-version");
+        }
+        return getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/" + testVersion, parsedCoordinates)).toPath();
+    }
+
+    private List<MetadataVersionsIndexEntry> readIndexEntries(Path indexFile) throws IOException {
+        return objectMapper.readValue(indexFile.toFile(), new TypeReference<>() {});
     }
 
     private Set<String> discoverTestPackages(Path testsDirectory) throws IOException {
