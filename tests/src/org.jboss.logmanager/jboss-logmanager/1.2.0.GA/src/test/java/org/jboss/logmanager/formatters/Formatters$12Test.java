@@ -97,10 +97,11 @@ class Formatters$12Test {
     @Test
     void extendedExceptionFormattingUsesPrivilegedClassLoaderResourceLookupWhenSecurityManagerIsInstalled()
             throws Exception {
-        Assumptions.assumeTrue(securityManagerIsSupported(),
-                "Security Manager is not supported by this runtime");
+        final Path securityManagerJavaExecutable = findSecurityManagerCapableJavaExecutable();
+        Assumptions.assumeTrue(securityManagerJavaExecutable != null,
+                "No installed Java runtime with Security Manager support found");
 
-        final Process process = new ProcessBuilder(createSecurityManagerJavaCommand())
+        final Process process = new ProcessBuilder(createSecurityManagerJavaCommand(securityManagerJavaExecutable))
                 .redirectErrorStream(true)
                 .start();
         final String output;
@@ -119,9 +120,9 @@ class Formatters$12Test {
         return (Formatter) formatterClass.getConstructor(String.class).newInstance("%E");
     }
 
-    private static List<String> createSecurityManagerJavaCommand() throws Exception {
+    private static List<String> createSecurityManagerJavaCommand(final Path javaExecutable) throws Exception {
         final List<String> command = new ArrayList<>();
-        command.add(Path.of(System.getProperty("java.home"), "bin", javaExecutableName()).toString());
+        command.add(javaExecutable.toString());
         command.add("-Djava.security.manager=allow");
         command.add("-cp");
         command.add(String.join(File.pathSeparator,
@@ -139,8 +140,64 @@ class Formatters$12Test {
         return System.getProperty("os.name").startsWith("Windows") ? "java.exe" : "java";
     }
 
-    private static boolean securityManagerIsSupported() {
-        return Runtime.version().feature() < 24;
+    private static Path findSecurityManagerCapableJavaExecutable() throws Exception {
+        final List<Path> candidateExecutables = new ArrayList<>();
+        addJavaExecutable(candidateExecutables, normalizedJavaHome(Path.of(System.getProperty("java.home"))));
+
+        final String javaHome = System.getenv("JAVA_HOME");
+        if (javaHome != null && !javaHome.isBlank()) {
+            addJavaExecutable(candidateExecutables, normalizedJavaHome(Path.of(javaHome)));
+        }
+
+        final Path currentJavaHome = normalizedJavaHome(Path.of(System.getProperty("java.home")));
+        final Path siblingParent = currentJavaHome.getParent();
+        if (siblingParent != null) {
+            final File[] siblingHomes = siblingParent.toFile().listFiles(File::isDirectory);
+            if (siblingHomes != null) {
+                for (File siblingHome : siblingHomes) {
+                    addJavaExecutable(candidateExecutables, siblingHome.toPath());
+                }
+            }
+        }
+
+        for (Path candidateExecutable : candidateExecutables) {
+            if (supportsSecurityManager(candidateExecutable)) {
+                return candidateExecutable;
+            }
+        }
+        return null;
+    }
+
+    private static Path normalizedJavaHome(final Path javaHome) {
+        final Path fileName = javaHome.getFileName();
+        if (fileName != null && "jre".equals(fileName.toString())) {
+            return javaHome.getParent();
+        }
+        return javaHome;
+    }
+
+    private static void addJavaExecutable(final List<Path> candidateExecutables, final Path javaHome) {
+        if (javaHome == null) {
+            return;
+        }
+        final Path javaExecutable = javaHome.resolve("bin").resolve(javaExecutableName());
+        if (!candidateExecutables.contains(javaExecutable)) {
+            candidateExecutables.add(javaExecutable);
+        }
+    }
+
+    private static boolean supportsSecurityManager(final Path javaExecutable) throws Exception {
+        if (!javaExecutable.toFile().isFile()) {
+            return false;
+        }
+
+        final Process process = new ProcessBuilder(javaExecutable.toString(), "-Djava.security.manager=allow", "-version")
+                .redirectErrorStream(true)
+                .start();
+        try (InputStream processStream = process.getInputStream()) {
+            processStream.readAllBytes();
+        }
+        return process.waitFor() == 0;
     }
 
     private static byte[] readClassBytes(final Class<?> type) throws IOException {
