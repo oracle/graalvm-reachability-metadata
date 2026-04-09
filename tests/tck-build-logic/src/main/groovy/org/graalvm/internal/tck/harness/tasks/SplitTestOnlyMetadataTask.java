@@ -27,8 +27,6 @@ import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Splits test-only entries out of library reachability metadata into a separate
@@ -37,7 +35,6 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
     private static final String REACHABILITY_METADATA_FILE = "reachability-metadata.json";
-    private static final Pattern PACKAGE_PATTERN = Pattern.compile("(?m)^\\s*package\\s+([A-Za-z0-9_.]+)\\s*;?");
 
     private final ObjectMapper objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -81,28 +78,29 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         }
 
         Set<String> testPackages = discoverTestPackages(testsDirectory);
-        if (testPackages.isEmpty()) {
-            throw new IllegalStateException("Cannot determine test packages in " + testsDirectory);
-        }
+        Set<String> testResources = discoverTestResources(testsDirectory);
 
         ObjectNode libraryMetadata = requireObjectNode(objectMapper.readTree(metadataFile.toFile()), metadataFile);
         ObjectNode movedMetadata = objectMapper.createObjectNode();
+        Path testMetadataFile = testsDirectory
+                .resolve("src/test/resources/META-INF/native-image")
+                .resolve(REACHABILITY_METADATA_FILE);
+        ObjectNode existingTestMetadata = readReachabilityMetadataIfPresent(testMetadataFile);
+        ObjectNode retainedTestMetadata = retainTestOnlyMetadata(existingTestMetadata, testPackages, testResources);
 
         splitReflection(libraryMetadata, movedMetadata, testPackages);
-        splitResources(libraryMetadata, movedMetadata, testPackages);
+        splitResources(libraryMetadata, movedMetadata, testResources);
 
-        if (movedMetadata.isEmpty()) {
+        ObjectNode finalTestMetadata = mergeReachabilityMetadata(retainedTestMetadata, movedMetadata);
+
+        if (finalTestMetadata.isEmpty()) {
+            deleteFileIfPresent(testMetadataFile);
             getLogger().lifecycle("No test-only reachability metadata entries found for {}", coordinate);
             return;
         }
 
-        Path testMetadataFile = testsDirectory
-                .resolve("src/test/resources/META-INF/native-image")
-                .resolve(REACHABILITY_METADATA_FILE);
-        ObjectNode mergedTestMetadata = mergeReachabilityMetadata(readReachabilityMetadataIfPresent(testMetadataFile), movedMetadata);
-
         writeJson(metadataFile, libraryMetadata);
-        writeJson(testMetadataFile, mergedTestMetadata);
+        writeJson(testMetadataFile, finalTestMetadata);
         getLogger().lifecycle("splitTestOnlyMetadata completed for {}", coordinate);
     }
 
@@ -146,25 +144,45 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
 
     private Set<String> discoverTestPackages(Path testsDirectory) throws IOException {
         Set<String> packages = new LinkedHashSet<>();
-        Path sourceRoot = testsDirectory.resolve("src/test/java");
+        discoverTestPackages(testsDirectory.resolve("src/test/java"), packages);
+        discoverTestPackages(testsDirectory.resolve("src/test/kotlin"), packages);
+        return packages;
+    }
+
+    private void discoverTestPackages(Path sourceRoot, Set<String> packages) throws IOException {
         if (!Files.isDirectory(sourceRoot)) {
-            return packages;
+            return;
         }
         try (var pathStream = Files.walk(sourceRoot)) {
-            pathStream.filter(Files::isRegularFile).filter(path -> path.getFileName().toString().endsWith(".java")).forEach(path -> {
-                try {
-                    String fileContent = Files.readString(path, StandardCharsets.UTF_8);
-                    Matcher matcher = PACKAGE_PATTERN.matcher(fileContent);
-                    if (matcher.find()) {
-                        packages.add(matcher.group(1));
-                    }
-                } catch (IOException exception) {
-                    throw new RuntimeException("Cannot read test source file " + path, exception);
-                }
-            });
+            pathStream.filter(Files::isRegularFile)
+                    .forEach(path -> {
+                        Path relativeParent = sourceRoot.relativize(path).getParent();
+                        if (relativeParent == null) {
+                            return;
+                        }
+                        String packageName = relativeParent.toString().replace('/', '.').replace('\\', '.');
+                        if (!packageName.isBlank()) {
+                            packages.add(packageName);
+                        }
+                    });
+        }
+    }
+
+    private Set<String> discoverTestResources(Path testsDirectory) throws IOException {
+        Set<String> resources = new LinkedHashSet<>();
+        Path resourceRoot = testsDirectory.resolve("src/test/resources");
+        if (!Files.isDirectory(resourceRoot)) {
+            return resources;
+        }
+        try (var pathStream = Files.walk(resourceRoot)) {
+            pathStream.filter(Files::isRegularFile)
+                    .map(resourceRoot::relativize)
+                    .map(Path::toString)
+                    .map(this::normalizeResourcePath)
+                    .forEach(resources::add);
         }
 
-        return packages;
+        return resources;
     }
 
     private void splitReflection(ObjectNode source, ObjectNode moved, Set<String> testPackages) {
@@ -189,7 +207,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         applySplitResult(source, moved, "reflection", keptEntries, movedEntries);
     }
 
-    private void splitResources(ObjectNode source, ObjectNode moved, Set<String> testPackages) {
+    private void splitResources(ObjectNode source, ObjectNode moved, Set<String> testResources) {
         JsonNode field = source.get("resources");
         if (!(field instanceof ArrayNode sourceEntries)) {
             return;
@@ -200,7 +218,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         for (JsonNode entry : sourceEntries) {
             JsonNode globNode = entry.isObject() ? entry.get("glob") : null;
             boolean testOnly = globNode != null && globNode.isTextual()
-                    && testPackages.stream().anyMatch(testPackage -> globMatchesTestPackage(globNode.asText(), testPackage));
+                    && testResources.contains(normalizeResourcePath(globNode.asText()));
             if (testOnly) {
                 movedEntries.add(entry.deepCopy());
             } else {
@@ -227,10 +245,19 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         return value.equals(testPackage) || value.startsWith(testPackage + ".");
     }
 
-    private boolean globMatchesTestPackage(String glob, String testPackage) {
-        String normalized = glob.startsWith("/") ? glob.substring(1) : glob;
-        String packageDirectory = testPackage.replace('.', '/');
-        return normalized.equals(packageDirectory) || normalized.startsWith(packageDirectory + "/");
+    private String normalizeResourcePath(String path) {
+        String normalized = path.replace('\\', '/');
+        if (normalized.startsWith("/")) {
+            return normalized.substring(1);
+        }
+        return normalized;
+    }
+
+    private ObjectNode retainTestOnlyMetadata(ObjectNode existingMetadata, Set<String> testPackages, Set<String> testResources) {
+        ObjectNode retainedMetadata = objectMapper.createObjectNode();
+        splitReflection(existingMetadata.deepCopy(), retainedMetadata, testPackages);
+        splitResources(existingMetadata.deepCopy(), retainedMetadata, testResources);
+        return retainedMetadata;
     }
 
     private ObjectNode readReachabilityMetadataIfPresent(Path file) throws IOException {
@@ -275,6 +302,11 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         }
     }
 
+    private void deleteFileIfPresent(Path file) throws IOException {
+        if (Files.isRegularFile(file)) {
+            Files.delete(file);
+        }
+    }
     private ObjectNode requireObjectNode(JsonNode node, Path path) {
         if (node instanceof ObjectNode objectNode) {
             return objectNode;
