@@ -12,5 +12,17 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "com.sun.istack:istack-commons-runtime:$libraryVersion"
+    testImplementation 'com.sun.activation:javax.activation:1.2.0'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
 }
