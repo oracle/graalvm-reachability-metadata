@@ -179,6 +179,17 @@ Examples:
    ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=org.example.app,com.acme.service
    ```
 
+### Splitting test-only metadata
+
+Moves test-only entries from library `reachability-metadata.json` in `metadata/`, into the corresponding test resources metadata file.
+
+Examples:
+```console
+./gradlew splitTestOnlyMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3
+./gradlew splitTestOnlyMetadata -Pcoordinates=org.postgresql:postgresql
+./gradlew splitTestOnlyMetadata -Pcoordinates=1/16
+```
+
 ### Fix failing tasks
 
 Use this when a library's new version causes native-image run test failures. The task will:
@@ -239,6 +250,7 @@ These tasks support the scheduled workflow that checks newer upstream library ve
 - Pull images (single lib): `./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]`
 - Check metadata (single lib): `./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]`
 - Generate metadata (single lib): `./gradlew generateMetadata -Pcoordinates=group:artifact:version`
+- Split test-only metadata: `./gradlew splitTestOnlyMetadata -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
 - Fix test that fails Native Image run for new library version: `./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=group:artifact:version -PnewLibraryVersion=version`
 - Test (single lib): `./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]`
 - List resolved tested-library jars: `./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]`
