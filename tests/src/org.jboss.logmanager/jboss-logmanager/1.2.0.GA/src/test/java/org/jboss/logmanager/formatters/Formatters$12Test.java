@@ -142,6 +142,7 @@ class Formatters$12Test {
 
     private static Path findSecurityManagerCapableJavaExecutable() throws Exception {
         final List<Path> candidateExecutables = new ArrayList<>();
+        final int requiredFeatureVersion = requiredFeatureVersion(Formatters$12SecurityManagerMain.class);
         addJavaExecutable(candidateExecutables, normalizedJavaHome(Path.of(System.getProperty("java.home"))));
 
         final String javaHome = System.getenv("JAVA_HOME");
@@ -161,7 +162,7 @@ class Formatters$12Test {
         }
 
         for (Path candidateExecutable : candidateExecutables) {
-            if (supportsSecurityManager(candidateExecutable)) {
+            if (supportsSecurityManager(candidateExecutable, requiredFeatureVersion)) {
                 return candidateExecutable;
             }
         }
@@ -186,8 +187,12 @@ class Formatters$12Test {
         }
     }
 
-    private static boolean supportsSecurityManager(final Path javaExecutable) throws Exception {
+    private static boolean supportsSecurityManager(final Path javaExecutable, final int requiredFeatureVersion)
+            throws Exception {
         if (!javaExecutable.toFile().isFile()) {
+            return false;
+        }
+        if (javaFeatureVersion(javaExecutable) < requiredFeatureVersion) {
             return false;
         }
 
@@ -198,6 +203,37 @@ class Formatters$12Test {
             processStream.readAllBytes();
         }
         return process.waitFor() == 0;
+    }
+
+    private static int requiredFeatureVersion(final Class<?> type) throws IOException {
+        final byte[] classBytes = readClassBytes(type);
+        final int majorVersion = ((classBytes[6] & 0xff) << 8) | (classBytes[7] & 0xff);
+        return majorVersion - 44;
+    }
+
+    private static int javaFeatureVersion(final Path javaExecutable) throws Exception {
+        final Process process = new ProcessBuilder(javaExecutable.toString(), "-XshowSettings:properties", "-version")
+                .redirectErrorStream(true)
+                .start();
+        final String output;
+        try (InputStream processStream = process.getInputStream()) {
+            output = new String(processStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        if (process.waitFor() != 0) {
+            return -1;
+        }
+
+        final String marker = "java.class.version = ";
+        final int markerIndex = output.indexOf(marker);
+        if (markerIndex == -1) {
+            return -1;
+        }
+        final int versionStart = markerIndex + marker.length();
+        final int versionEnd = output.indexOf('.', versionStart);
+        if (versionEnd == -1) {
+            return -1;
+        }
+        return Integer.parseInt(output.substring(versionStart, versionEnd)) - 44;
     }
 
     private static byte[] readClassBytes(final Class<?> type) throws IOException {
