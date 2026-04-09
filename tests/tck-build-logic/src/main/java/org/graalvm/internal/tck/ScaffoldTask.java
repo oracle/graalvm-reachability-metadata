@@ -125,12 +125,6 @@ class ScaffoldTask extends DefaultTask {
                 CoordinateUtils.replace(loadResource("/scaffold/build.gradle.template"), coordinates)
         );
 
-        // access-filter.json
-        writeToFile(
-                coordinatesTestRoot.resolve("access-filter.json"),
-                CoordinateUtils.replace(loadResource("/scaffold/access-filter.json.template"), coordinates)
-        );
-
         // user-code-filter.json
         writeToFile(
                 coordinatesTestRoot.resolve("user-code-filter.json"),
