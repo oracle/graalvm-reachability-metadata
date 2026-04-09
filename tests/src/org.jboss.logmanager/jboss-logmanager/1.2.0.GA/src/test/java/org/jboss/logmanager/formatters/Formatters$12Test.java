@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import org.jboss.logmanager.ExtLogRecord;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 class Formatters$12Test {
@@ -96,6 +97,9 @@ class Formatters$12Test {
     @Test
     void extendedExceptionFormattingUsesPrivilegedClassLoaderResourceLookupWhenSecurityManagerIsInstalled()
             throws Exception {
+        Assumptions.assumeTrue(securityManagerIsSupported(),
+                "Security Manager is not supported by this runtime");
+
         final Process process = new ProcessBuilder(createSecurityManagerJavaCommand())
                 .redirectErrorStream(true)
                 .start();
@@ -133,6 +137,10 @@ class Formatters$12Test {
 
     private static String javaExecutableName() {
         return System.getProperty("os.name").startsWith("Windows") ? "java.exe" : "java";
+    }
+
+    private static boolean securityManagerIsSupported() {
+        return Runtime.version().feature() < 24;
     }
 
     private static byte[] readClassBytes(final Class<?> type) throws IOException {
