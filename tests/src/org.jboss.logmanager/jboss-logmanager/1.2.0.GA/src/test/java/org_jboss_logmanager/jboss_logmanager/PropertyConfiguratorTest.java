@@ -89,7 +89,7 @@ class PropertyConfiguratorTest {
                 "filter.testFilter.pattern=allow",
                 "formatter.testFormatter=" + TestFormatter.class.getName(),
                 "formatter.testFormatter.properties=suffix",
-                "formatter.testFormatter.suffix= formatted",
+                "formatter.testFormatter.suffix=\\ formatted",
                 "");
     }
 
