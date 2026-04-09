@@ -11,12 +11,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Set;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 import org.jboss.logmanager.ExtLogRecord;
 import org.junit.jupiter.api.Test;
 
 class Formatters$12Test {
+
+    private static final String NULL_LOADER_ONLY_CLASS_NAME = ThreadDeath.class.getName();
 
     @Test
     void extendedExceptionFormattingUsesAllClassResolutionFallbacks() throws Exception {
@@ -48,6 +54,42 @@ class Formatters$12Test {
         } finally {
             thread.setContextClassLoader(originalContextClassLoader);
         }
+    }
+
+    @Test
+    void extendedExceptionFormattingFallsBackToCallerAndBootstrapClassLoaders() throws Exception {
+        final Thread thread = Thread.currentThread();
+        final ClassLoader originalContextClassLoader = thread.getContextClassLoader();
+        final ClassLoader contextClassLoader = new BlockingClassLoader(Set.of(
+                IsolatedLoaderVisibleFrame.class.getName(),
+                NULL_LOADER_ONLY_CLASS_NAME));
+        final Throwable thrown = new IllegalStateException("boom");
+        final StackTraceElement[] stackTrace = {
+                new StackTraceElement(IsolatedLoaderVisibleFrame.class.getName(), "invoke", "IsolatedLoaderVisibleFrame.java", 18),
+                new StackTraceElement(NULL_LOADER_ONLY_CLASS_NAME, "invoke", "ThreadDeath.java", 27)
+        };
+        final LogRecord record = new LogRecord(Level.SEVERE, "message");
+
+        thrown.setStackTrace(stackTrace);
+        record.setThrown(thrown);
+
+        try (IsolatedFormatterClassLoader formatterClassLoader = new IsolatedFormatterClassLoader(Set.of(NULL_LOADER_ONLY_CLASS_NAME))) {
+            final Formatter formatter = createFormatter(formatterClassLoader);
+            thread.setContextClassLoader(contextClassLoader);
+
+            final String formatted = formatter.format(record);
+
+            assertThat(formatted)
+                    .contains(IsolatedLoaderVisibleFrame.class.getName())
+                    .contains(NULL_LOADER_ONLY_CLASS_NAME);
+        } finally {
+            thread.setContextClassLoader(originalContextClassLoader);
+        }
+    }
+
+    private static Formatter createFormatter(final ClassLoader formatterClassLoader) throws Exception {
+        final Class<?> formatterClass = formatterClassLoader.loadClass(PatternFormatter.class.getName());
+        return (Formatter) formatterClass.getConstructor(String.class).newInstance("%E");
     }
 
     private static byte[] readClassBytes(final Class<?> type) throws IOException {
@@ -83,9 +125,66 @@ class Formatters$12Test {
             return null;
         }
     }
+
+    private static final class BlockingClassLoader extends ClassLoader {
+        private final Set<String> blockedClassNames;
+
+        private BlockingClassLoader(final Set<String> blockedClassNames) {
+            super(ClassLoader.getPlatformClassLoader());
+            this.blockedClassNames = blockedClassNames;
+        }
+
+        @Override
+        protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+            if (blockedClassNames.contains(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name, resolve);
+        }
+    }
+
+    private static final class IsolatedFormatterClassLoader extends URLClassLoader {
+        private static final String ISOLATED_PACKAGE_PREFIX = "org.jboss.logmanager.";
+
+        private final Set<String> blockedClassNames;
+
+        private IsolatedFormatterClassLoader(final Set<String> blockedClassNames) {
+            super(new URL[] {
+                    PatternFormatter.class.getProtectionDomain().getCodeSource().getLocation(),
+                    Formatters$12Test.class.getProtectionDomain().getCodeSource().getLocation()
+            }, ClassLoader.getPlatformClassLoader());
+            this.blockedClassNames = blockedClassNames;
+        }
+
+        @Override
+        protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                final Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass != null) {
+                    return loadedClass;
+                }
+                if (blockedClassNames.contains(name)) {
+                    throw new ClassNotFoundException(name);
+                }
+                if (name.startsWith(ISOLATED_PACKAGE_PREFIX)) {
+                    final Class<?> isolatedClass = findClass(name);
+                    if (resolve) {
+                        resolveClass(isolatedClass);
+                    }
+                    return isolatedClass;
+                }
+                return super.loadClass(name, resolve);
+            }
+        }
+    }
 }
 
 final class ContextLoadedFrame {
     private ContextLoadedFrame() {
+    }
+}
+
+final class IsolatedLoaderVisibleFrame {
+    private IsolatedLoaderVisibleFrame() {
     }
 }
