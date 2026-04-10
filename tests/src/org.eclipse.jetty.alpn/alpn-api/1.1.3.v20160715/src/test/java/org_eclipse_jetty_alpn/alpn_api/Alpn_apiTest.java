@@ -91,6 +91,39 @@ class Alpn_apiTest {
     }
 
     @Test
+    void keepsSocketAndEngineRegistrationsIndependentAcrossProviderTypes() throws Exception {
+        final SSLSocket socket = newSslSocket();
+        final SSLEngine engine = newSslEngine();
+        final RecordingServerProvider socketProvider = new RecordingServerProvider("http/1.1");
+        final RecordingClientProvider engineProvider = new RecordingClientProvider(List.of("h2", "http/1.1"));
+
+        try {
+            ALPN.put(socket, socketProvider);
+            ALPN.put(engine, engineProvider);
+
+            assertThat(ALPN.get(socket)).isSameAs(socketProvider);
+            assertThat(ALPN.get(engine)).isSameAs(engineProvider);
+            assertThat(((ALPN.ServerProvider) ALPN.get(socket)).select(List.of("http/1.1", "h2"))).isEqualTo("http/1.1");
+            assertThat(((ALPN.ClientProvider) ALPN.get(engine)).protocols()).containsExactly("h2", "http/1.1");
+
+            assertThat(ALPN.remove(socket)).isSameAs(socketProvider);
+            assertThat(ALPN.get(socket)).isNull();
+            assertThat(ALPN.get(engine)).isSameAs(engineProvider);
+
+            ((ALPN.ClientProvider) ALPN.get(engine)).selected("h2");
+
+            assertThat(socketProvider.getOfferedProtocols()).containsExactly("http/1.1", "h2");
+            assertThat(engineProvider.getSelectedProtocol()).isEqualTo("h2");
+            assertThat(ALPN.remove(engine)).isSameAs(engineProvider);
+            assertThat(ALPN.get(engine)).isNull();
+        } finally {
+            ALPN.remove(socket);
+            socket.close();
+            ALPN.remove(engine);
+        }
+    }
+
+    @Test
     void rejectsNullEndpointsAndNullProviders() throws Exception {
         final SSLSocket socket = newSslSocket();
         final SSLEngine engine = newSslEngine();
