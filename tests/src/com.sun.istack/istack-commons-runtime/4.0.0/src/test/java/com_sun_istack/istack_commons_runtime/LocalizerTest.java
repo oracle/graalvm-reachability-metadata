@@ -22,10 +22,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class LocalizerTest {
 
+    private static final String DEFAULT_BUNDLE_NAME =
+        "com_sun_istack.istack_commons_runtime.localization.IstackLocalizerMessages";
     private static final String TOP_LEVEL_BUNDLE_NAME =
         "com_sun_istack.istack_commons_runtime.localization.IstackLocalizerTopLevelMessages";
     private static final String CONTEXT_LOADER_BUNDLE_NAME =
         "com_sun_istack.istack_commons_runtime.localization.IstackLocalizerContextMessages";
+
+    @Test
+    void localizeLoadsBundleByConfiguredName() {
+        Localizer localizer = new Localizer(Locale.ENGLISH);
+        LocalizableMessageFactory messageFactory = new LocalizableMessageFactory(DEFAULT_BUNDLE_NAME);
+
+        String localized = localizer.localize(messageFactory.getMessage("greeting", "world"));
+
+        assertThat(localized).isEqualTo("Hello from package world");
+    }
 
     @Test
     void localizeFallsBackToTopLevelBundleName() {
