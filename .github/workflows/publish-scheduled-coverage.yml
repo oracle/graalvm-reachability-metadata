@@ -1,0 +1,86 @@
+name: "Publish coverage"
+
+on:
+  schedule:
+    - cron: "15 3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: publish-coverage
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish-coverage:
+    name: "🏷️ Publish coverage"
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      COVERAGE_BRANCH: stats/coverage
+      COVERAGE_DIR: ${{ github.workspace }}/.tmp/stats-coverage
+      COVERAGE_HISTORY_BACKUP: ${{ github.workspace }}/.tmp/stats-coverage-history.json
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: "🔧 Setup Java"
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🌿 Prepare coverage branch workspace"
+        run: |
+          rm -rf "${COVERAGE_DIR}"
+          rm -f "${COVERAGE_HISTORY_BACKUP}"
+          mkdir -p "${COVERAGE_DIR}"
+          cd "${COVERAGE_DIR}"
+          git init
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          if git fetch --depth 1 origin "${COVERAGE_BRANCH}"; then
+            git checkout -B "${COVERAGE_BRANCH}" FETCH_HEAD
+            if [ -f history/history.json ]; then
+              cp history/history.json "${COVERAGE_HISTORY_BACKUP}"
+            fi
+          else
+            git checkout --orphan "${COVERAGE_BRANCH}"
+          fi
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          mkdir -p history
+          if [ -f "${COVERAGE_HISTORY_BACKUP}" ]; then
+            mv "${COVERAGE_HISTORY_BACKUP}" history/history.json
+          fi
+
+      - name: "🏷️ Generate coverage artifacts"
+        run: |
+          ./gradlew generateReadmeBadgeSummary -PreadmeMetricsOutputRoot="${COVERAGE_DIR}" --stacktrace
+
+      - name: "🧹 Keep only published coverage data"
+        run: |
+          cd "${COVERAGE_DIR}"
+          mkdir -p latest history
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name latest ! -name history -exec rm -rf {} +
+          find latest -mindepth 1 ! -name badges.json ! -name metrics-over-time.svg -exec rm -rf {} +
+          find history -mindepth 1 ! -name history.json -exec rm -rf {} +
+
+      - name: "🚀 Commit and push coverage branch"
+        run: |
+          cd "${COVERAGE_DIR}"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Coverage branch is already up to date."
+            exit 0
+          fi
+
+          git commit -m "Update coverage for $(date -u +%F)"
+          git push --force origin "HEAD:${COVERAGE_BRANCH}"

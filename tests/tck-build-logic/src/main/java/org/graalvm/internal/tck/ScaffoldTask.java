@@ -8,6 +8,8 @@ package org.graalvm.internal.tck;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
@@ -83,13 +85,23 @@ class ScaffoldTask extends DefaultTask {
         Path coordinatesMetadataRoot = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$", coordinates)).toPath();
         Path coordinatesMetadataVersionRoot = coordinatesMetadataRoot.resolve(coordinates.version());
         Path coordinatesTestRoot = getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/$version$", coordinates)).toPath();
+        Path coordinatesMetadataIndex = coordinatesMetadataRoot.resolve("index.json");
+        boolean metadataRootExists = Files.exists(coordinatesMetadataIndex);
+        boolean metadataEntryExists = metadataRootExists && !shouldAddNewMetadataEntry(coordinatesMetadataRoot, coordinates);
 
         // Metadata
-        if (!update) {
-            checkExistingMetadata(coordinates, coordinatesMetadataRoot);
-            writeCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+        checkExistingScaffold(coordinates, coordinatesMetadataVersionRoot, coordinatesTestRoot, metadataRootExists, metadataEntryExists);
+        if (metadataRootExists) {
+            if (metadataEntryExists) {
+                getLogger().log(LogLevel.INFO, "Metadata index entry for {} already exists, keeping artifact index unchanged", coordinates);
+            } else {
+                if (!update) {
+                    getLogger().log(LogLevel.INFO, "Artifact metadata root already exists for {}, appending new version entry", coordinates);
+                }
+                updateCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+            }
         } else {
-            updateCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
+            writeCoordinatesMetadataRootJson(coordinatesMetadataRoot, coordinates);
         }
 
         writeCoordinatesMetadataVersionJsons(coordinatesMetadataVersionRoot, coordinates);
@@ -101,14 +113,19 @@ class ScaffoldTask extends DefaultTask {
         System.out.printf("You can now use 'gradle test -Pcoordinates=%s' to run the tests%n", coordinates);
     }
 
-    private void checkExistingMetadata(Coordinates coordinates, Path metadataVersionRoot) {
+    private void checkExistingScaffold(Coordinates coordinates, Path metadataVersionRoot, Path testRoot, boolean metadataRootExists, boolean metadataEntryExists) {
         if (force) {
             return;
         }
 
-        // metadata/$group/$artifact/index.json
-        if (Files.exists(metadataVersionRoot.resolve("index.json"))) {
-            throw new IllegalStateException("Metadata for '%s:%s' already exists! Use --force to overwrite existing metadata".formatted(coordinates.group(), coordinates.artifact()));
+        boolean metadataVersionExists = Files.exists(metadataVersionRoot);
+        boolean testRootExists = Files.exists(testRoot);
+        if (metadataVersionExists || testRootExists || metadataEntryExists) {
+            throw new IllegalStateException("Metadata for '%s' already exists! Use --force to overwrite existing metadata".formatted(coordinates));
+        }
+
+        if (metadataRootExists) {
+            getLogger().log(LogLevel.INFO, "Artifact metadata root exists for {}, scaffold will add a new version", coordinates);
         }
     }
 
@@ -209,31 +226,12 @@ class ScaffoldTask extends DefaultTask {
 
         entries.add(newEntry);
 
-        // determine updates
-        int previousLatest = -1;
-        int newLatest = -1;
-        VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
-        for (int i = 0; i < entries.size(); i++) {
-            if (entries.get(i).latest() != null && entries.get(i).latest()) {
-                previousLatest = i;
-            }
-
-            VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
-            if (latestVersion.compareTo(nextVersion) < 0){
-                newLatest = i;
-            }
-        }
-
-        if (previousLatest != -1) {
-            setLatest(entries, previousLatest, null);
-        }
-
-        if (newLatest != -1) {
-            setLatest(entries, newLatest, true);
-        }
+        updateLatestEntry(entries);
 
         entries.sort(Comparator.comparing(e -> VersionNumber.parse(e.metadataVersion())));
-        String json = objectMapper.writeValueAsString(entries);
+        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+        String json = objectMapper.writer(prettyPrinter).writeValueAsString(entries);
         if (!json.endsWith(System.lineSeparator())) {
             json = json + System.lineSeparator();
         }
@@ -257,6 +255,22 @@ class ScaffoldTask extends DefaultTask {
                 oldEntry.allowedPackages(),
                 oldEntry.requires()
         ));
+    }
+
+    private void updateLatestEntry(List<MetadataVersionsIndexEntry> entries) {
+        int latestIndex = 0;
+        VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
+        for (int i = 1; i < entries.size(); i++) {
+            VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
+            if (latestVersion.compareTo(nextVersion) < 0) {
+                latestVersion = nextVersion;
+                latestIndex = i;
+            }
+        }
+
+        for (int i = 0; i < entries.size(); i++) {
+            setLatest(entries, i, i == latestIndex ? true : null);
+        }
     }
 
     private String loadResource(String name) throws IOException {

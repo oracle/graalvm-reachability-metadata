@@ -394,11 +394,14 @@ public final class LibraryStatsSupport {
             return LibraryStatsModels.CoverageMetricValue.notAvailable();
         }
 
+        BigDecimal ratio = coverageMetricValue.total() == 0L
+                ? fullyCoveredRatio()
+                : normalizeRatio(coverageMetricValue.ratio());
         return LibraryStatsModels.CoverageMetricValue.available(new LibraryStatsModels.CoverageMetric(
                 coverageMetricValue.covered(),
                 coverageMetricValue.missed(),
                 coverageMetricValue.total(),
-                normalizeRatio(coverageMetricValue.ratio())
+                ratio
         ));
     }
 
@@ -636,6 +639,15 @@ public final class LibraryStatsSupport {
             }
 
             Map<String, LibraryStatsModels.CoverageMetric> rootCounters = parseRootCounters(root);
+            if (hasNothingToCover(root, rootCounters)) {
+                LibraryStatsModels.CoverageMetricValue fullyCoveredMetric = fullyCoveredCoverageMetricValue();
+                return new ParsedJacocoReport(
+                        coveredLinesBySource,
+                        fullyCoveredMetric,
+                        fullyCoveredMetric,
+                        fullyCoveredMetric
+                );
+            }
             return new ParsedJacocoReport(
                     coveredLinesBySource,
                     coverageMetricOrNa(rootCounters, "LINE"),
@@ -645,6 +657,35 @@ public final class LibraryStatsSupport {
         } catch (Exception e) {
             throw new GradleException("Failed to parse JaCoCo report " + jacocoReport, e);
         }
+    }
+
+    private static boolean hasNothingToCover(
+            Element root,
+            Map<String, LibraryStatsModels.CoverageMetric> rootCounters
+    ) {
+        LibraryStatsModels.CoverageMetric method = rootCounters.get("METHOD");
+        if (method != null) {
+            return method.total() == 0L;
+        }
+        return !hasAnyClassElements(root);
+    }
+
+    private static boolean hasAnyClassElements(Element root) {
+        NodeList packages = root.getChildNodes();
+        for (int i = 0; i < packages.getLength(); i++) {
+            Node packageNode = packages.item(i);
+            if (!(packageNode instanceof Element packageElement) || !"package".equals(packageElement.getTagName())) {
+                continue;
+            }
+            NodeList packageChildren = packageElement.getChildNodes();
+            for (int j = 0; j < packageChildren.getLength(); j++) {
+                Node child = packageChildren.item(j);
+                if (child instanceof Element childElement && "class".equals(childElement.getTagName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static Map<String, LibraryStatsModels.CoverageMetric> parseRootCounters(Element root) {
@@ -686,10 +727,23 @@ public final class LibraryStatsSupport {
 
     private static BigDecimal ratio(long covered, long total) {
         if (total == 0L) {
-            return BigDecimal.ZERO.setScale(RATIO_SCALE, RoundingMode.HALF_UP);
+            return fullyCoveredRatio();
         }
         return BigDecimal.valueOf(covered)
                 .divide(BigDecimal.valueOf(total), RATIO_SCALE, RoundingMode.HALF_UP);
+    }
+
+    private static LibraryStatsModels.CoverageMetricValue fullyCoveredCoverageMetricValue() {
+        return LibraryStatsModels.CoverageMetricValue.available(new LibraryStatsModels.CoverageMetric(
+                0L,
+                0L,
+                0L,
+                fullyCoveredRatio()
+        ));
+    }
+
+    private static BigDecimal fullyCoveredRatio() {
+        return BigDecimal.ONE.setScale(1, RoundingMode.HALF_UP);
     }
 
     private static LibraryStatsModels.DynamicAccessClassCoverage toClassCoverage(
