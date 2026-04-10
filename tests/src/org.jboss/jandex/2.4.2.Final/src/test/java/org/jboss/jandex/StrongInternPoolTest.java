@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +52,8 @@ class StrongInternPoolTest {
         while (iterator.hasNext()) {
             entries.add(iterator.next());
         }
-        assertThat(entries).contains("alpha", null);
+        assertThat(entries).contains("alpha");
+        assertThat(entries.stream().anyMatch(Objects::isNull)).isTrue();
         assertThat(entries).anySatisfy(entry -> {
             assertThat(entry).isInstanceOf(byte[].class);
             assertThat((byte[]) entry).containsExactly(1, 2, 3);
