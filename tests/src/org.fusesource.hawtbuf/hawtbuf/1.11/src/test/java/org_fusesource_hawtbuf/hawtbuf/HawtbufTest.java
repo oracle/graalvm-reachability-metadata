@@ -65,10 +65,11 @@ class HawtbufTest {
         assertThat(deepCopy).isEqualTo(buffer);
         assertThat(deepCopy).isNotSameAs(buffer);
 
-        Buffer joined = Buffer.join(Arrays.asList(
-                new AsciiBuffer("hello").buffer(),
-                new AsciiBuffer(" ").buffer(),
-                new AsciiBuffer("world").buffer()));
+        Buffer joined = Buffer.join(
+                Arrays.asList(
+                        new AsciiBuffer("hello").buffer(),
+                        new AsciiBuffer("world").buffer()),
+                new AsciiBuffer(" ").buffer());
         assertThat(joined.ascii().toString()).isEqualTo("hello world");
     }
 
