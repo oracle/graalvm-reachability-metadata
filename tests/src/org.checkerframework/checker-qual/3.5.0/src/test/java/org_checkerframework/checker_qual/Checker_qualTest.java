@@ -38,6 +38,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.optional.qual.Present;
 import org.checkerframework.checker.regex.RegexUtil;
+import org.checkerframework.checker.regex.RegexUtil.CheckedPatternSyntaxException;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.checkerframework.checker.signedness.SignednessUtil;
 import org.checkerframework.checker.signedness.qual.Unsigned;
@@ -206,6 +207,23 @@ class Checker_qualTest {
         assertThatThrownBy(() -> RegexUtil.asRegex(invalidPattern))
                 .isInstanceOf(Error.class)
                 .hasCauseInstanceOf(PatternSyntaxException.class);
+    }
+
+    @Test
+    void checkedPatternSyntaxExceptionPreservesPatternDiagnostics() {
+        PatternSyntaxException syntaxException = new PatternSyntaxException("bad regex", "[", 0);
+        CheckedPatternSyntaxException wrapped = new CheckedPatternSyntaxException(syntaxException);
+        CheckedPatternSyntaxException created = new CheckedPatternSyntaxException("missing close", "(", 0);
+
+        assertThat(wrapped.getDescription()).isEqualTo("bad regex");
+        assertThat(wrapped.getPattern()).isEqualTo("[");
+        assertThat(wrapped.getIndex()).isEqualTo(0);
+        assertThat(wrapped).hasMessageContaining("bad regex near index 0");
+
+        assertThat(created.getDescription()).isEqualTo("missing close");
+        assertThat(created.getPattern()).isEqualTo("(");
+        assertThat(created.getIndex()).isEqualTo(0);
+        assertThat(created).hasMessageContaining("missing close near index 0");
     }
 
     @Test
