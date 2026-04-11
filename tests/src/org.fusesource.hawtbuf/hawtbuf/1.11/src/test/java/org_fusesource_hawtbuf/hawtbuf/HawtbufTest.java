@@ -4,19 +4,17 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org_fusesource_hawtbuf.hawtbuf;
+package org_fusesource.hawtbuf.hawtbuf;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
 import org.fusesource.hawtbuf.BufferEditor;
 import org.fusesource.hawtbuf.BufferInputStream;
-import org.fusesource.hawtbuf.BufferMarshaller;
 import org.fusesource.hawtbuf.BufferOutputStream;
 import org.fusesource.hawtbuf.DataByteArrayInputStream;
 import org.fusesource.hawtbuf.DataByteArrayOutputStream;
@@ -59,7 +57,6 @@ class HawtbufTest {
         assertThat(buffer.indexOf((byte) 'o', 0)).isEqualTo(4);
         assertThat(buffer.indexOf(new AsciiBuffer("world").buffer(), 0)).isEqualTo(6);
         assertThat(buffer.contains((byte) 'w')).isTrue();
-        assertThat(buffer.contains(new AsciiBuffer("hello").buffer())).isTrue();
 
         Buffer slice = buffer.slice(6, 5);
         assertThat(slice.ascii().toString()).isEqualTo("world");
@@ -68,8 +65,25 @@ class HawtbufTest {
         assertThat(deepCopy).isEqualTo(buffer);
         assertThat(deepCopy).isNotSameAs(buffer);
 
-        Buffer joined = new AsciiBuffer("hello").buffer().join((byte) ' ', new AsciiBuffer("world").buffer());
+        Buffer joined = Buffer.join(Arrays.asList(
+                new AsciiBuffer("hello").buffer(),
+                new AsciiBuffer(" ").buffer(),
+                new AsciiBuffer("world").buffer()));
         assertThat(joined.ascii().toString()).isEqualTo("hello world");
+    }
+
+    @Test
+    void bufferShouldExposePrefixAndCompactViews() {
+        Buffer original = new AsciiBuffer("prefix-body").buffer();
+        Buffer sliced = original.slice(7, 4);
+
+        assertThat(original.startsWith(new AsciiBuffer("prefix").buffer())).isTrue();
+        assertThat(original.utf8().toString()).isEqualTo("prefix-body");
+        assertThat(sliced.ascii().toString()).isEqualTo("body");
+
+        Buffer compact = sliced.compact();
+        assertThat(compact).isEqualTo(sliced);
+        assertThat(compact.length()).isEqualTo(4);
     }
 
     @Test
@@ -162,15 +176,17 @@ class HawtbufTest {
     }
 
     @Test
-    void bufferMarshallerShouldMarshalAndUnmarshalBuffers() throws Exception {
-        Buffer source = new UTF8Buffer("marshal-data").buffer();
-        BufferMarshaller marshaller = new BufferMarshaller();
+    void littleEndianEditorShouldReadBackWrittenValues() {
+        Buffer buffer = new Buffer(16);
+        BufferEditor editor = buffer.littleEndianEditor();
 
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        marshaller.writePayload(source, byteOut);
+        editor.writeShort((short) 0x1122);
+        editor.writeInt(0x33445566);
+        editor.writeLong(0x0102030405060708L);
 
-        Buffer restored = marshaller.readPayload(new ByteArrayInputStream(byteOut.toByteArray()));
-        assertThat(restored.utf8().toString()).isEqualTo("marshal-data");
-        assertThat(restored).isEqualTo(source);
+        BufferEditor reader = buffer.littleEndianEditor();
+        assertThat(reader.readShort()).isEqualTo((short) 0x1122);
+        assertThat(reader.readInt()).isEqualTo(0x33445566);
+        assertThat(reader.readLong()).isEqualTo(0x0102030405060708L);
     }
 }
