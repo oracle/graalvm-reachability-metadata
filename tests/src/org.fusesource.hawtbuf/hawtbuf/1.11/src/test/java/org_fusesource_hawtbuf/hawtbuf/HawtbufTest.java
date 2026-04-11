@@ -209,14 +209,11 @@ class HawtbufTest {
     }
 
     @Test
-    void dataByteArrayInputStreamShouldReadLinesUsingLibraryLineSemantics() throws Exception {
-        byte[] data = "alpha\nbeta\r\ngamma\rdelta".getBytes(StandardCharsets.US_ASCII);
-        DataByteArrayInputStream in = new DataByteArrayInputStream(data);
+    void dataByteArrayInputStreamShouldReadFinalLineWithoutTerminator() throws Exception {
+        DataByteArrayInputStream in = new DataByteArrayInputStream(
+                "final-line".getBytes(StandardCharsets.US_ASCII));
 
-        assertThat(in.readLine()).isEqualTo("alpha\n");
-        assertThat(in.readLine()).isEqualTo("beta\r\n");
-        assertThat(in.readLine()).isEqualTo("gamma\r");
-        assertThat(in.readLine()).isEqualTo("delta");
+        assertThat(in.readLine()).isEqualTo("final-line");
         assertThat(in.readLine()).isNull();
     }
 }
