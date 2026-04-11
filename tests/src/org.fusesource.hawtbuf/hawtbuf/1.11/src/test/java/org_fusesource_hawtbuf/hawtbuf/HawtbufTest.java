@@ -207,4 +207,16 @@ class HawtbufTest {
         assertThat(joined.indexOf((byte) '-', 0)).isEqualTo(2);
         assertThat(joined.indexOf((byte) '-', 3)).isEqualTo(5);
     }
+
+    @Test
+    void dataByteArrayInputStreamShouldReadLinesAcrossDifferentLineEndings() throws Exception {
+        byte[] data = "alpha\nbeta\r\ngamma\rdelta".getBytes(StandardCharsets.US_ASCII);
+        DataByteArrayInputStream in = new DataByteArrayInputStream(data);
+
+        assertThat(in.readLine()).isEqualTo("alpha");
+        assertThat(in.readLine()).isEqualTo("beta");
+        assertThat(in.readLine()).isEqualTo("gamma");
+        assertThat(in.readLine()).isEqualTo("delta");
+        assertThat(in.readLine()).isNull();
+    }
 }
