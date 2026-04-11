@@ -96,6 +96,25 @@ class HawtbufTest {
     }
 
     @Test
+    void bufferShouldCreateSlicesWithIndependentContentBoundaries() {
+        Buffer original = new AsciiBuffer("header:payload:footer").buffer();
+
+        Buffer payload = original.slice(7, 7);
+        Buffer footer = original.slice(15, 6);
+
+        assertThat(payload.ascii().toString()).isEqualTo("payload");
+        assertThat(payload.length()).isEqualTo(7);
+        assertThat(payload.startsWith(new AsciiBuffer("pay").buffer())).isTrue();
+        assertThat(payload.indexOf((byte) 'o', 0)).isEqualTo(4);
+        assertThat(payload.indexOf(new AsciiBuffer("load").buffer(), 0)).isEqualTo(3);
+
+        assertThat(footer.ascii().toString()).isEqualTo("footer");
+        assertThat(footer.length()).isEqualTo(6);
+        assertThat(footer.get(0)).isEqualTo((byte) 'f');
+        assertThat(footer.get(5)).isEqualTo((byte) 'r');
+    }
+
+    @Test
     void dataByteArrayStreamsShouldRoundTripPrimitiveValues() throws Exception {
         DataByteArrayOutputStream out = new DataByteArrayOutputStream();
 
