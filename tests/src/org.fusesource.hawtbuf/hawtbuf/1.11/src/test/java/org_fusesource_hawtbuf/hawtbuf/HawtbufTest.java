@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
+import org.fusesource.hawtbuf.BufferInputStream;
 import org.fusesource.hawtbuf.DataByteArrayInputStream;
 import org.fusesource.hawtbuf.DataByteArrayOutputStream;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -96,22 +97,30 @@ class HawtbufTest {
     }
 
     @Test
-    void bufferShouldCreateSlicesWithIndependentContentBoundaries() {
-        Buffer original = new AsciiBuffer("header:payload:footer").buffer();
+    void bufferInputStreamShouldReadSequentiallyAndSupportMarkReset() throws Exception {
+        Buffer source = new AsciiBuffer("stream-data").buffer();
+        BufferInputStream input = new BufferInputStream(source);
 
-        Buffer payload = original.slice(7, 7);
-        Buffer footer = original.slice(15, 6);
+        assertThat(input.read()).isEqualTo((int) 's');
+        assertThat(input.read()).isEqualTo((int) 't');
+        assertThat(input.markSupported()).isTrue();
 
-        assertThat(payload.ascii().toString()).isEqualTo("payload");
-        assertThat(payload.length()).isEqualTo(7);
-        assertThat(payload.startsWith(new AsciiBuffer("pay").buffer())).isTrue();
-        assertThat(payload.indexOf((byte) 'o', 0)).isEqualTo(4);
-        assertThat(payload.indexOf(new AsciiBuffer("load").buffer(), 0)).isEqualTo(3);
+        input.mark(source.length());
 
-        assertThat(footer.ascii().toString()).isEqualTo("footer");
-        assertThat(footer.length()).isEqualTo(6);
-        assertThat(footer.get(0)).isEqualTo((byte) 'f');
-        assertThat(footer.get(5)).isEqualTo((byte) 'r');
+        byte[] nextBytes = new byte[4];
+        int bytesRead = input.read(nextBytes);
+
+        assertThat(bytesRead).isEqualTo(4);
+        assertThat(nextBytes).containsExactly("ream".getBytes(StandardCharsets.US_ASCII));
+
+        input.reset();
+
+        byte[] rereadBytes = new byte[4];
+        int rereadCount = input.read(rereadBytes);
+
+        assertThat(rereadCount).isEqualTo(4);
+        assertThat(rereadBytes).containsExactly("ream".getBytes(StandardCharsets.US_ASCII));
+        assertThat(input.read()).isEqualTo((int) '-');
     }
 
     @Test
