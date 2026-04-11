@@ -144,6 +144,24 @@ class Checker_qualTest {
     }
 
     @Test
+    void i18nFormatUtilitiesHandleChoicePatternsAndInvalidSubformats() {
+        String choicePattern = "{0,choice,0#no files|1#one file|1<{0,number,integer} files} at {1,time,short}";
+        String invalidChoicePattern = "{0,choice}";
+        String invalidDatePattern = "{0,date,invalid pattern [}";
+
+        I18nConversionCategory[] categories = I18nFormatUtil.formatParameterCategories(choicePattern);
+        I18nFormatUtil.tryFormatSatisfiability(choicePattern);
+
+        assertThat(i18nConversionNames(categories)).containsExactly("NUMBER", "DATE");
+        assertThatThrownBy(() -> I18nFormatUtil.formatParameterCategories(invalidChoicePattern))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Choice Pattern requires Subformat Pattern: ");
+        assertThatThrownBy(() -> I18nFormatUtil.tryFormatSatisfiability(invalidDatePattern))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Illegal pattern character");
+    }
+
+    @Test
     void optAndNullnessUtilitiesModelOptionalAndNullContracts() {
         String value = "value";
         AtomicReference<String> seen = new AtomicReference<>();
