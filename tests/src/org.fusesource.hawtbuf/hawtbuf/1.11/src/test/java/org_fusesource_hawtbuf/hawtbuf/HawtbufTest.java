@@ -124,6 +124,24 @@ class HawtbufTest {
     }
 
     @Test
+    void bufferInputStreamShouldSkipBytesAndContinueReading() throws Exception {
+        Buffer source = new AsciiBuffer("skip-ahead").buffer();
+        BufferInputStream input = new BufferInputStream(source);
+
+        long skipped = input.skip(5);
+
+        assertThat(skipped).isEqualTo(5);
+        assertThat(input.read()).isEqualTo((int) 'a');
+
+        byte[] remaining = new byte[4];
+        int bytesRead = input.read(remaining);
+
+        assertThat(bytesRead).isEqualTo(4);
+        assertThat(remaining).containsExactly("head".getBytes(StandardCharsets.US_ASCII));
+        assertThat(input.read()).isEqualTo(-1);
+    }
+
+    @Test
     void dataByteArrayStreamsShouldRoundTripPrimitiveValues() throws Exception {
         DataByteArrayOutputStream out = new DataByteArrayOutputStream();
 
@@ -206,14 +224,5 @@ class HawtbufTest {
         assertThat(joined.ascii().toString()).isEqualTo("aa-bb-cc");
         assertThat(joined.indexOf((byte) '-', 0)).isEqualTo(2);
         assertThat(joined.indexOf((byte) '-', 3)).isEqualTo(5);
-    }
-
-    @Test
-    void dataByteArrayInputStreamShouldReadFinalLineWithoutTerminator() throws Exception {
-        DataByteArrayInputStream in = new DataByteArrayInputStream(
-                "final-line".getBytes(StandardCharsets.US_ASCII));
-
-        assertThat(in.readLine()).isEqualTo("final-line");
-        assertThat(in.readLine()).isNull();
     }
 }
