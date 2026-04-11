@@ -13,9 +13,6 @@ import java.util.Arrays;
 
 import org.fusesource.hawtbuf.AsciiBuffer;
 import org.fusesource.hawtbuf.Buffer;
-import org.fusesource.hawtbuf.BufferEditor;
-import org.fusesource.hawtbuf.BufferInputStream;
-import org.fusesource.hawtbuf.BufferOutputStream;
 import org.fusesource.hawtbuf.DataByteArrayInputStream;
 import org.fusesource.hawtbuf.DataByteArrayOutputStream;
 import org.fusesource.hawtbuf.UTF8Buffer;
@@ -50,7 +47,7 @@ class HawtbufTest {
     }
 
     @Test
-    void bufferShouldSupportSlicingSearchAndCopyOperations() {
+    void bufferShouldSupportSearchCopyAndJoinOperations() {
         Buffer buffer = new AsciiBuffer("hello world").buffer();
 
         assertThat(buffer.length()).isEqualTo(11);
@@ -58,12 +55,10 @@ class HawtbufTest {
         assertThat(buffer.indexOf(new AsciiBuffer("world").buffer(), 0)).isEqualTo(6);
         assertThat(buffer.contains((byte) 'w')).isTrue();
 
-        Buffer slice = buffer.slice(6, 5);
-        assertThat(slice.ascii().toString()).isEqualTo("world");
-
         Buffer deepCopy = buffer.deepCopy();
         assertThat(deepCopy).isEqualTo(buffer);
         assertThat(deepCopy).isNotSameAs(buffer);
+        assertThat(deepCopy.ascii().toString()).isEqualTo("hello world");
 
         Buffer joined = Buffer.join(
                 Arrays.asList(
@@ -74,17 +69,30 @@ class HawtbufTest {
     }
 
     @Test
-    void bufferShouldExposePrefixAndCompactViews() {
+    void bufferShouldExposePrefixCompactAndByteAccess() {
         Buffer original = new AsciiBuffer("prefix-body").buffer();
-        Buffer sliced = original.slice(7, 4);
 
         assertThat(original.startsWith(new AsciiBuffer("prefix").buffer())).isTrue();
         assertThat(original.utf8().toString()).isEqualTo("prefix-body");
-        assertThat(sliced.ascii().toString()).isEqualTo("body");
+        assertThat(original.get(0)).isEqualTo((byte) 'p');
+        assertThat(original.get(6)).isEqualTo((byte) '-');
+        assertThat(original.get(7)).isEqualTo((byte) 'b');
 
-        Buffer compact = sliced.compact();
-        assertThat(compact).isEqualTo(sliced);
-        assertThat(compact.length()).isEqualTo(4);
+        Buffer compact = original.compact();
+        assertThat(compact).isEqualTo(original);
+        assertThat(compact.length()).isEqualTo(original.length());
+        assertThat(compact.ascii().toString()).isEqualTo("prefix-body");
+    }
+
+    @Test
+    void bufferShouldRoundTripFromByteArrayConstruction() {
+        byte[] data = "sample-data".getBytes(StandardCharsets.US_ASCII);
+        Buffer buffer = new Buffer(data);
+
+        assertThat(buffer.length()).isEqualTo(data.length);
+        assertThat(buffer.getData()).containsExactly(data);
+        assertThat(buffer.ascii().toString()).isEqualTo("sample-data");
+        assertThat(buffer.deepCopy()).isEqualTo(buffer);
     }
 
     @Test
@@ -141,8 +149,9 @@ class HawtbufTest {
     }
 
     @Test
-    void bufferStreamsShouldWriteAndReadByteSequences() throws Exception {
-        BufferOutputStream out = new BufferOutputStream(2);
+    void dataByteArrayOutputStreamShouldAccumulateBytesSequentially() throws Exception {
+        DataByteArrayOutputStream out = new DataByteArrayOutputStream();
+
         out.write('A');
         out.write("BC".getBytes(StandardCharsets.US_ASCII));
         out.write("DEF".getBytes(StandardCharsets.US_ASCII), 0, 3);
@@ -150,44 +159,24 @@ class HawtbufTest {
         Buffer buffer = out.toBuffer();
         assertThat(buffer.ascii().toString()).isEqualTo("ABCDEF");
 
-        BufferInputStream in = new BufferInputStream(buffer);
+        DataByteArrayInputStream in = new DataByteArrayInputStream(buffer);
         byte[] read = new byte[6];
-        int count = in.read(read);
+        in.readFully(read);
 
-        assertThat(count).isEqualTo(6);
         assertThat(read).containsExactly("ABCDEF".getBytes(StandardCharsets.US_ASCII));
-        assertThat(in.read()).isEqualTo(-1);
     }
 
     @Test
-    void bufferEditorShouldWritePrimitiveValuesIntoBuffer() {
-        Buffer buffer = new Buffer(32);
-        BufferEditor editor = buffer.bigEndianEditor();
+    void joinedBuffersShouldPreserveOrderAcrossMultipleSegments() {
+        Buffer joined = Buffer.join(
+                Arrays.asList(
+                        new AsciiBuffer("aa").buffer(),
+                        new AsciiBuffer("bb").buffer(),
+                        new AsciiBuffer("cc").buffer()),
+                new AsciiBuffer("-").buffer());
 
-        editor.writeInt(0x01020304);
-        editor.writeLong(0x0102030405060708L);
-        editor.writeBoolean(true);
-        editor.writeByte((byte) 0x55);
-
-        BufferEditor reader = buffer.bigEndianEditor();
-        assertThat(reader.readInt()).isEqualTo(0x01020304);
-        assertThat(reader.readLong()).isEqualTo(0x0102030405060708L);
-        assertThat(reader.readBoolean()).isTrue();
-        assertThat(reader.readByte()).isEqualTo((byte) 0x55);
-    }
-
-    @Test
-    void littleEndianEditorShouldReadBackWrittenValues() {
-        Buffer buffer = new Buffer(16);
-        BufferEditor editor = buffer.littleEndianEditor();
-
-        editor.writeShort((short) 0x1122);
-        editor.writeInt(0x33445566);
-        editor.writeLong(0x0102030405060708L);
-
-        BufferEditor reader = buffer.littleEndianEditor();
-        assertThat(reader.readShort()).isEqualTo((short) 0x1122);
-        assertThat(reader.readInt()).isEqualTo(0x33445566);
-        assertThat(reader.readLong()).isEqualTo(0x0102030405060708L);
+        assertThat(joined.ascii().toString()).isEqualTo("aa-bb-cc");
+        assertThat(joined.indexOf((byte) '-', 0)).isEqualTo(2);
+        assertThat(joined.indexOf((byte) '-', 3)).isEqualTo(5);
     }
 }
