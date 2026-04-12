@@ -65,6 +65,15 @@ class Audience_annotationsTest {
         assertThat(limitedPrivate.annotationType()).isSameAs(InterfaceAudience.LimitedPrivate.class);
     }
 
+    @Test
+    void audienceAnnotationsCanClassifyCustomAnnotationTypesUsedByRecords() {
+        BuildStep compile = new BuildStep("compile", 2);
+        BuildStep test = new BuildStep("test", 3);
+
+        assertThat(compile.describe()).isEqualTo("2:compile");
+        assertThat(test.describeAfter(compile)).isEqualTo("3:test after 2:compile");
+    }
+
     @InterfaceAudience.LimitedPrivate("tests")
     @InterfaceStability.Evolving
     interface Formatter {
@@ -175,6 +184,37 @@ class Audience_annotationsTest {
         @InterfaceStability.Unstable
         int current() {
             return value;
+        }
+    }
+
+    @InterfaceAudience.Public
+    @InterfaceStability.Stable
+    @interface PublicBuildLabel {
+    }
+
+    @InterfaceAudience.LimitedPrivate("tests")
+    @InterfaceStability.Evolving
+    @interface InternalBuildStage {
+        String owner();
+    }
+
+    @PublicBuildLabel
+    @InterfaceAudience.Public
+    @InterfaceStability.Stable
+    record BuildStep(
+            @InterfaceAudience.Public @InterfaceStability.Stable String name,
+            @InternalBuildStage(owner = "tests") @InterfaceAudience.LimitedPrivate("tests") @InterfaceStability.Evolving int order) {
+
+        @InterfaceAudience.Public
+        @InterfaceStability.Stable
+        String describe() {
+            return order + ":" + name;
+        }
+
+        @InterfaceAudience.LimitedPrivate("tests")
+        @InterfaceStability.Evolving
+        String describeAfter(@InterfaceAudience.Public @InterfaceStability.Stable BuildStep previous) {
+            return describe() + " after " + previous.describe();
         }
     }
 }
