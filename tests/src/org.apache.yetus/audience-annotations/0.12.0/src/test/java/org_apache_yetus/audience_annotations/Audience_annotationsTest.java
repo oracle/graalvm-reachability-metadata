@@ -11,6 +11,8 @@ import java.util.Locale;
 
 import org.apache.yetus.audience.InterfaceAudience;
 import org.apache.yetus.audience.InterfaceStability;
+import org.apache.yetus.audience.tools.ExcludePrivateAnnotationsStandardDoclet;
+import org.apache.yetus.audience.tools.IncludePublicAnnotationsStandardDoclet;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,6 +74,21 @@ class Audience_annotationsTest {
 
         assertThat(compile.describe()).isEqualTo("2:compile");
         assertThat(test.describeAfter(compile)).isEqualTo("3:test after 2:compile");
+    }
+
+    @Test
+    void standardDocletAdaptersRecognizeYetusStabilityOptionsCaseInsensitively() {
+        ExcludePrivateAnnotationsStandardDoclet excludePrivateDoclet = new ExcludePrivateAnnotationsStandardDoclet();
+        IncludePublicAnnotationsStandardDoclet includePublicDoclet = new IncludePublicAnnotationsStandardDoclet();
+
+        assertThat(excludePrivateDoclet).isNotNull();
+        assertThat(includePublicDoclet).isNotNull();
+        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-stable")).isEqualTo(1);
+        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-EvOlViNg")).isEqualTo(1);
+        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-UNSTABLE")).isEqualTo(1);
+        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-stable")).isEqualTo(1);
+        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-EvOlViNg")).isEqualTo(1);
+        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-UNSTABLE")).isEqualTo(1);
     }
 
     @InterfaceAudience.LimitedPrivate("tests")
