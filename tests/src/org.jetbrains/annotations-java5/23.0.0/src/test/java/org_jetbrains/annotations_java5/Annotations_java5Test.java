@@ -40,6 +40,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -158,6 +159,15 @@ class Annotations_java5Test {
         assertThat(processor.advanceMonth(Calendar.MARCH, -4)).isEqualTo(Calendar.NOVEMBER);
     }
 
+    @Test
+    void languageAndPatternAllowDerivedDomainSpecificAnnotations() {
+        DerivedAnnotationProcessor processor = new DerivedAnnotationProcessor();
+
+        assertThat(processor.wrapJavaExpression("40 + 2"))
+            .isEqualTo("class ExpressionHost { int evaluate() { return 40 + 2; } }");
+        assertThat(processor.normalizeTicketCode("AB-123")).isEqualTo("ab-123");
+    }
+
     private static Method annotationMember(Class<? extends Annotation> annotationType, String memberName) throws NoSuchMethodException {
         return annotationType.getMethod(memberName);
     }
@@ -226,6 +236,31 @@ class Annotations_java5Test {
         @JdkConstants.CalendarMonth
         int advanceMonth(@JdkConstants.CalendarMonth int month, int delta) {
             return Math.floorMod(month + delta, 12);
+        }
+    }
+
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
+    @Language(value = "JAVA", prefix = "class ExpressionHost { int evaluate() { return ", suffix = "; } }")
+    private @interface JavaExpression {
+    }
+
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
+    @Pattern("[A-Z]{2}-\\d{3}")
+    private @interface TicketCode {
+    }
+
+    private static final class DerivedAnnotationProcessor {
+        String wrapJavaExpression(@JavaExpression String expression) {
+            @JavaExpression String javaExpression = expression;
+            return "class ExpressionHost { int evaluate() { return " + javaExpression + "; } }";
+        }
+
+        String normalizeTicketCode(@TicketCode String ticketCode) {
+            @TicketCode String validatedTicketCode = ticketCode;
+            assertThat(validatedTicketCode).matches("[A-Z]{2}-\\d{3}");
+            return validatedTicketCode.toLowerCase(Locale.ROOT);
         }
     }
 
