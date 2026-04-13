@@ -222,6 +222,11 @@ tasks.register('testAllInfra') { t ->
                     def jsonStr = line.substring("matrix=".length())
                     def parsed = new JsonSlurper().parseText(jsonStr)
                     def coords = (parsed["coordinates"] as List) ?: []
+                    if (coords.isEmpty()) {
+                        coords = ((parsed["include"] as List) ?: [])
+                                .collect { it instanceof Map ? it["coordinates"] : null }
+                                .findAll { it != null }
+                    }
                     if (!coords.isEmpty()) {
                         artifactCoordinate = coords[0].toString()
                     }
