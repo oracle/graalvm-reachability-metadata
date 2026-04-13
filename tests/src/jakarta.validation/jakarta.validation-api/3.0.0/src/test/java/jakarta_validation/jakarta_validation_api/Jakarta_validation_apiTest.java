@@ -5,12 +5,3 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 package jakarta_validation.jakarta_validation_api;
-
-import org.junit.jupiter.api.Test;
-
-class Jakarta_validation_apiTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
-    }
-}
