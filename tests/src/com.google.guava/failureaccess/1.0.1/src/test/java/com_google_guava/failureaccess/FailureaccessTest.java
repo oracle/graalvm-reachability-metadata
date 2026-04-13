@@ -10,6 +10,11 @@ import com.google.common.util.concurrent.internal.InternalFutureFailureAccess;
 import com.google.common.util.concurrent.internal.InternalFutures;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,6 +72,34 @@ class FailureaccessTest {
                 .isInstanceOf(NullPointerException.class);
     }
 
+    @Test
+    void exposesFailureConsistentlyWithTheCompletedFutureContract() {
+        Throwable failure = new IllegalArgumentException("failed future");
+        CompletedFutureFailureAccess future = CompletedFutureFailureAccess.failed(failure);
+
+        Throwable result = InternalFutures.tryInternalFastPathGetFailure(future);
+
+        assertThat(result).isSameAs(failure);
+        assertThat(future.isDone()).isTrue();
+        assertThat(future.isCancelled()).isFalse();
+        assertThatThrownBy(future::get)
+                .isInstanceOf(ExecutionException.class)
+                .hasCauseReference(failure);
+    }
+
+    @Test
+    void doesNotTreatCancellationAsAFailure() {
+        CompletedFutureFailureAccess future = CompletedFutureFailureAccess.cancelled();
+
+        Throwable result = InternalFutures.tryInternalFastPathGetFailure(future);
+
+        assertThat(result).isNull();
+        assertThat(future.isDone()).isTrue();
+        assertThat(future.isCancelled()).isTrue();
+        assertThatThrownBy(future::get)
+                .isInstanceOf(CancellationException.class);
+    }
+
     private static final class CountingFailureAccess extends InternalFutureFailureAccess {
         private final Throwable failure;
         private final RuntimeException exceptionToThrow;
@@ -88,6 +121,60 @@ class FailureaccessTest {
 
         private int invocationCount() {
             return invocationCount.get();
+        }
+    }
+
+    private static final class CompletedFutureFailureAccess extends InternalFutureFailureAccess implements Future<Object> {
+        private final Throwable failure;
+        private final boolean cancelled;
+
+        private CompletedFutureFailureAccess(Throwable failure, boolean cancelled) {
+            this.failure = failure;
+            this.cancelled = cancelled;
+        }
+
+        private static CompletedFutureFailureAccess failed(Throwable failure) {
+            return new CompletedFutureFailureAccess(failure, false);
+        }
+
+        private static CompletedFutureFailureAccess cancelled() {
+            return new CompletedFutureFailureAccess(null, true);
+        }
+
+        @Override
+        protected Throwable tryInternalFastPathGetFailure() {
+            return failure;
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return cancelled;
+        }
+
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+
+        @Override
+        public Object get() throws ExecutionException {
+            if (cancelled) {
+                throw new CancellationException("cancelled");
+            }
+            if (failure != null) {
+                throw new ExecutionException(failure);
+            }
+            return null;
+        }
+
+        @Override
+        public Object get(long timeout, TimeUnit unit) throws ExecutionException, TimeoutException {
+            return get();
         }
     }
 }
