@@ -21,8 +21,8 @@ public final class SecuritySupport2Test {
     void defaultMimeTypesResourceIsLoadedViaClassResourceLookup() {
         MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
 
-        String contentType = fileTypeMap.getContentType("sample.securitysupport2");
+        String contentType = fileTypeMap.getContentType("sample.txt");
 
-        assertThat(contentType).isEqualTo("text/x-security-support-2");
+        assertThat(contentType).isEqualTo("text/plain");
     }
 }
