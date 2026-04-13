@@ -6,10 +6,11 @@
  */
 import groovy.json.JsonSlurper
 
+import org.graalvm.internal.tck.utils.CoordinateUtils
+
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import groovy.json.JsonSlurper
 
 plugins {
     id 'base'
@@ -138,6 +139,32 @@ static List<Map> testInfraCommands(String gradleCmd, String target) {
     }
 }
 
+List<String> resolveConcreteCoordinates(String coordinateFilter) {
+    List<String> matchingCoordinates
+    if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
+        int[] fraction = CoordinateUtils.parseFraction(coordinateFilter)
+        List<String> allCoordinates = tck.getMatchingCoordinatesStrict("all")
+        matchingCoordinates = CoordinateUtils.computeBatchedCoordinates(allCoordinates, fraction[0], fraction[1])
+    } else {
+        matchingCoordinates = tck.getMatchingCoordinates(coordinateFilter)
+    }
+    return matchingCoordinates.findAll { !it.startsWith("samples:") }
+}
+
+void printTestInfraReproducer(String gradleCmd, String coordinate, int parallelism) {
+    String nativeImageMode = System.getenv("GVM_TCK_NATIVE_IMAGE_MODE")
+    String command = "${gradleCmd} testInfra -Pcoordinates=${coordinate} -Pparallelism=${parallelism} --stacktrace"
+    if (nativeImageMode != null && !nativeImageMode.trim().isEmpty()) {
+        command = "GVM_TCK_NATIVE_IMAGE_MODE=${nativeImageMode} ${command}"
+    }
+
+    String delimiter = "========================================================================"
+    println(delimiter)
+    println("REPRODUCER ${coordinate}")
+    println(command)
+    println(delimiter)
+}
+
 tasks.register('testInfra') { t ->
     t.group = "verification"
     t.setDescription("""Runs clean and pullAllowedDockerImages, then runs (${testInfraCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs for a single coordinate.
@@ -152,6 +179,14 @@ tasks.register('testInfra') { t ->
         def gradleCmd = System.getProperty("os.name").toLowerCase().contains("windows") ? "gradlew.bat" : "./gradlew"
         int parallelism = parsePositiveIntProp('parallelism', 4)
         println("Using parallelism=${parallelism} for testInfra.")
+
+        List<String> concreteCoordinates = resolveConcreteCoordinates(coordinateProp)
+        if (concreteCoordinates.isEmpty()) {
+            throw new GradleException("No matching coordinates found for '${coordinateProp}'.")
+        }
+        concreteCoordinates.each { coordinate ->
+            printTestInfraReproducer(gradleCmd, coordinate, parallelism)
+        }
 
         def logsDir = layout.buildDirectory.dir("command-logs").get().asFile
         logsDir.mkdirs()
