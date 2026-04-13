@@ -94,19 +94,71 @@ public final class NativeImageConfigUtils {
     }
 
     /**
+     * Returns the Java versions allowed for each native-image mode, falling back to the matrix defaults.
+     */
+    public static Map<String, List<String>> javaVersionsByMode(
+            Map<String, Object> ci,
+            List<String> defaultJavaVersions,
+            List<String> nativeImageModes
+    ) {
+        Object overridesValue = ci.get("nativeImageModeJavaVersions");
+        Map<String, List<String>> overrides = new LinkedHashMap<>();
+        if (overridesValue != null) {
+            if (!(overridesValue instanceof Map<?, ?> rawOverrides)) {
+                throw new GradleException("ci.json field 'nativeImageModeJavaVersions' must be an object when present");
+            }
+            for (Map.Entry<?, ?> entry : rawOverrides.entrySet()) {
+                if (!(entry.getKey() instanceof String modeName) || modeName.isBlank()) {
+                    throw new GradleException("ci.json nativeImageModeJavaVersions must use non-empty string keys");
+                }
+                if (!nativeImageModes.contains(modeName)) {
+                    throw new GradleException("ci.json nativeImageModeJavaVersions contains unknown mode '" + modeName + "'");
+                }
+                List<String> versions = requireStringList(rawOverrides, modeName, "ci.json nativeImageModeJavaVersions");
+                if (versions.isEmpty()) {
+                    throw new GradleException("ci.json nativeImageModeJavaVersions for mode '" + modeName + "' must not be empty");
+                }
+                overrides.put(modeName, new ArrayList<>(new LinkedHashSet<>(versions)));
+            }
+        }
+
+        List<String> normalizedDefaultJavaVersions = new ArrayList<>(new LinkedHashSet<>(defaultJavaVersions));
+        if (normalizedDefaultJavaVersions.isEmpty()) {
+            throw new GradleException("Matrix Java versions must not be empty");
+        }
+
+        Map<String, List<String>> javaVersionsByMode = new LinkedHashMap<>();
+        for (String nativeImageMode : new LinkedHashSet<>(nativeImageModes)) {
+            javaVersionsByMode.put(
+                    nativeImageMode,
+                    overrides.getOrDefault(nativeImageMode, normalizedDefaultJavaVersions)
+            );
+        }
+        return javaVersionsByMode;
+    }
+
+    /**
      * Expands a matrix include list with Java, OS, and native-image mode dimensions.
      */
     public static List<Map<String, Object>> expandMatrixEntries(
             List<Map<String, Object>> entries,
             List<String> javaVersions,
             List<String> operatingSystems,
-            List<String> nativeImageModes
+            List<String> nativeImageModes,
+            Map<String, List<String>> javaVersionsByMode
     ) {
         List<Map<String, Object>> include = new ArrayList<>();
+        List<String> normalizedJavaVersions = new ArrayList<>(new LinkedHashSet<>(javaVersions));
+        List<String> normalizedOperatingSystems = new ArrayList<>(new LinkedHashSet<>(operatingSystems));
+        List<String> normalizedNativeImageModes = new ArrayList<>(new LinkedHashSet<>(nativeImageModes));
         for (Map<String, Object> entry : entries) {
-            for (String javaVersion : new LinkedHashSet<>(javaVersions)) {
-                for (String operatingSystem : new LinkedHashSet<>(operatingSystems)) {
-                    for (String nativeImageMode : new LinkedHashSet<>(nativeImageModes)) {
+            for (String javaVersion : normalizedJavaVersions) {
+                for (String operatingSystem : normalizedOperatingSystems) {
+                    for (String nativeImageMode : normalizedNativeImageModes) {
+                        List<String> versionsForMode = javaVersionsByMode.get(nativeImageMode);
+                        if (versionsForMode == null || !versionsForMode.contains(javaVersion)) {
+                            continue;
+                        }
                         Map<String, Object> matrixEntry = new LinkedHashMap<>(entry);
                         matrixEntry.put("version", javaVersion);
                         matrixEntry.put("os", operatingSystem);

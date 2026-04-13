@@ -82,12 +82,38 @@ class NativeImageConfigUtilsTests {
     }
 
     @Test
+    void javaVersionsByModeUsesOverridesWhenPresent() {
+        Map<String, Object> ci = new LinkedHashMap<>();
+        ci.put("buildArgs", List.of("--verbose"));
+        Map<String, Object> nativeImageModes = new LinkedHashMap<>();
+        nativeImageModes.put("current-defaults", List.of());
+        nativeImageModes.put("future-defaults-all", List.of("--future-defaults=all"));
+        ci.put("nativeImageModes", nativeImageModes);
+        ci.put("nativeImageModeJavaVersions", Map.of(
+                "future-defaults-all", List.of("latest-ea")
+        ));
+
+        assertThat(NativeImageConfigUtils.javaVersionsByMode(
+                ci,
+                List.of("25", "latest-ea"),
+                List.of("current-defaults", "future-defaults-all")
+        )).containsExactly(
+                Map.entry("current-defaults", List.of("25", "latest-ea")),
+                Map.entry("future-defaults-all", List.of("latest-ea"))
+        );
+    }
+
+    @Test
     void expandMatrixEntriesAddsNativeImageModeToEveryEnvironmentCombination() {
         List<Map<String, Object>> include = NativeImageConfigUtils.expandMatrixEntries(
                 List.of(Map.of("coordinates", "1/2")),
                 List.of("25"),
                 List.of("ubuntu-latest", "macos-latest"),
-                List.of("current-defaults", "future-defaults-all")
+                List.of("current-defaults", "future-defaults-all"),
+                Map.of(
+                        "current-defaults", List.of("25"),
+                        "future-defaults-all", List.of("25")
+                )
         );
 
         assertThat(include).containsExactly(
@@ -113,6 +139,41 @@ class NativeImageConfigUtilsTests {
                         "coordinates", "1/2",
                         "version", "25",
                         "os", "macos-latest",
+                        "nativeImageMode", "future-defaults-all"
+                )
+        );
+    }
+
+    @Test
+    void expandMatrixEntriesSkipsJavaVersionsDisallowedForNativeImageMode() {
+        List<Map<String, Object>> include = NativeImageConfigUtils.expandMatrixEntries(
+                List.of(Map.of("coordinates", "1/2")),
+                List.of("25", "latest-ea"),
+                List.of("ubuntu-latest"),
+                List.of("current-defaults", "future-defaults-all"),
+                Map.of(
+                        "current-defaults", List.of("25", "latest-ea"),
+                        "future-defaults-all", List.of("latest-ea")
+                )
+        );
+
+        assertThat(include).containsExactly(
+                Map.of(
+                        "coordinates", "1/2",
+                        "version", "25",
+                        "os", "ubuntu-latest",
+                        "nativeImageMode", "current-defaults"
+                ),
+                Map.of(
+                        "coordinates", "1/2",
+                        "version", "latest-ea",
+                        "os", "ubuntu-latest",
+                        "nativeImageMode", "current-defaults"
+                ),
+                Map.of(
+                        "coordinates", "1/2",
+                        "version", "latest-ea",
+                        "os", "ubuntu-latest",
                         "nativeImageMode", "future-defaults-all"
                 )
         );
