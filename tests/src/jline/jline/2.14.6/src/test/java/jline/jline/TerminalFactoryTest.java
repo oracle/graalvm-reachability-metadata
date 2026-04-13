@@ -30,8 +30,8 @@ public final class TerminalFactoryTest {
     void setUp() {
         this.previousTerminalType = System.getProperty(TerminalFactory.JLINE_TERMINAL);
         this.previousContextClassLoader = Thread.currentThread().getContextClassLoader();
-        TestConfiguredTerminal.reset();
-        TestFlavorTerminal.reset();
+        TestConfiguredTerminal.resetState();
+        TestFlavorTerminal.resetState();
         TerminalFactory.reset();
     }
 
@@ -47,8 +47,8 @@ public final class TerminalFactoryTest {
         TerminalFactory.registerFlavor(TerminalFactory.Flavor.UNIX, UnixTerminal.class);
         TerminalFactory.registerFlavor(TerminalFactory.Flavor.OSV, OSvTerminal.class);
         TerminalFactory.reset();
-        TestConfiguredTerminal.reset();
-        TestFlavorTerminal.reset();
+        TestConfiguredTerminal.resetState();
+        TestFlavorTerminal.resetState();
     }
 
     @Test
@@ -118,7 +118,7 @@ public final class TerminalFactoryTest {
             constructorCalls++;
         }
 
-        private static void reset() {
+        private static void resetState() {
             constructorCalls = 0;
         }
     }
@@ -140,7 +140,7 @@ public final class TerminalFactoryTest {
             lastTtyDevice = ttyDevice;
         }
 
-        private static void reset() {
+        private static void resetState() {
             noArgConstructorCalls = 0;
             stringConstructorCalls = 0;
             lastTtyDevice = null;
