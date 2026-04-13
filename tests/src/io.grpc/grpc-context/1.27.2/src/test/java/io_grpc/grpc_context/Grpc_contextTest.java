@@ -223,6 +223,33 @@ class Grpc_contextTest {
         }
     }
 
+    @Test
+    void expiredDeadlinesCancelContextsImmediatelyAndNotifyLateListeners() throws Exception {
+        MutableTicker ticker = new MutableTicker();
+        Deadline expiredDeadline = Deadline.after(5, TimeUnit.SECONDS, ticker);
+        ticker.advance(6, TimeUnit.SECONDS);
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        try {
+            Context.CancellableContext expiredContext = Context.ROOT.withDeadline(expiredDeadline, scheduler);
+            CountDownLatch lateListenerLatch = new CountDownLatch(1);
+            AtomicReference<Context> notifiedContext = new AtomicReference<>();
+
+            expiredContext.addListener(context -> {
+                notifiedContext.set(context);
+                lateListenerLatch.countDown();
+            }, Runnable::run);
+
+            assertThat(expiredContext.getDeadline()).isSameAs(expiredDeadline);
+            assertThat(expiredContext.isCancelled()).isTrue();
+            assertThat(expiredContext.cancellationCause()).isInstanceOf(TimeoutException.class).hasMessage("context timed out");
+            assertThat(lateListenerLatch.getCount()).isZero();
+            assertThat(notifiedContext.get()).isSameAs(expiredContext);
+        } finally {
+            shutdown(scheduler);
+        }
+    }
+
     private static void shutdown(ExecutorService executor) throws InterruptedException {
         executor.shutdownNow();
         assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
