@@ -8,6 +8,7 @@ package org_jetbrains.annotations_java5;
 
 import org.intellij.lang.annotations.Flow;
 import org.intellij.lang.annotations.Identifier;
+import org.intellij.lang.annotations.JdkConstants;
 import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 import org.intellij.lang.annotations.Pattern;
@@ -36,7 +37,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -140,6 +145,19 @@ class Annotations_java5Test {
         assertThat(processor.wasBaseMethodInvoked()).isTrue();
     }
 
+    @Test
+    void jdkConstantAnnotatedApisHandlePatternFlagsAndCalendarMonths() {
+        JdkConstantProcessor processor = new JdkConstantProcessor();
+
+        assertThat(processor.findMatches("Alpha\nbeta\nALPHA", "^alpha$", java.util.regex.Pattern.CASE_INSENSITIVE | java.util.regex.Pattern.MULTILINE))
+            .containsExactly("Alpha", "ALPHA");
+        assertThat(processor.findMatches("abc", "^z$", 0)).isEmpty();
+
+        assertThat(processor.advanceMonth(Calendar.JANUARY, 2)).isEqualTo(Calendar.MARCH);
+        assertThat(processor.advanceMonth(Calendar.DECEMBER, 1)).isEqualTo(Calendar.JANUARY);
+        assertThat(processor.advanceMonth(Calendar.MARCH, -4)).isEqualTo(Calendar.NOVEMBER);
+    }
+
     private static Method annotationMember(Class<? extends Annotation> annotationType, String memberName) throws NoSuchMethodException {
         return annotationType.getMethod(memberName);
     }
@@ -191,6 +209,23 @@ class Annotations_java5Test {
 
         protected final boolean wasBaseMethodInvoked() {
             return this.baseMethodInvoked;
+        }
+    }
+
+    private static final class JdkConstantProcessor {
+        List<String> findMatches(String text, String expression, @JdkConstants.PatternFlags int flags) {
+            java.util.regex.Pattern compiledPattern = java.util.regex.Pattern.compile(expression, flags);
+            Matcher matcher = compiledPattern.matcher(text);
+            List<String> matches = new ArrayList<>();
+            while (matcher.find()) {
+                matches.add(matcher.group());
+            }
+            return matches;
+        }
+
+        @JdkConstants.CalendarMonth
+        int advanceMonth(@JdkConstants.CalendarMonth int month, int delta) {
+            return Math.floorMod(month + delta, 12);
         }
     }
 
