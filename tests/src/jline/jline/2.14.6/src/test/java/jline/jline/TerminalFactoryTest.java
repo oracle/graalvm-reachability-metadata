@@ -94,9 +94,12 @@ public final class TerminalFactoryTest {
     }
 
     @Test
-    void getFlavorWithTtyDeviceFailsWhenFlavorDoesNotExposeStringConstructor() {
+    void getFlavorWithTtyDevicePropagatesNoSuchMethodExceptionBeforeNullConstructorFallback() {
         TerminalFactory.registerFlavor(TerminalFactory.Flavor.UNIX, NoStringConstructorTerminal.class);
 
+        // `Class#getConstructor(String.class)` either returns a constructor or throws.
+        // It never returns null, so TerminalFactory's fallback at line 202 is not reachable
+        // through the public API on a regular JVM.
         assertThrows(
             NoSuchMethodException.class,
             () -> TerminalFactory.getFlavor(TerminalFactory.Flavor.UNIX, "/dev/pts/missing-constructor")
