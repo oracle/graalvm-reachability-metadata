@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class TerminalFactoryTest {
@@ -32,6 +33,7 @@ public final class TerminalFactoryTest {
         this.previousContextClassLoader = Thread.currentThread().getContextClassLoader();
         TestConfiguredTerminal.resetState();
         TestFlavorTerminal.resetState();
+        NoStringConstructorTerminal.resetState();
         TerminalFactory.reset();
     }
 
@@ -49,6 +51,7 @@ public final class TerminalFactoryTest {
         TerminalFactory.reset();
         TestConfiguredTerminal.resetState();
         TestFlavorTerminal.resetState();
+        NoStringConstructorTerminal.resetState();
     }
 
     @Test
@@ -88,6 +91,17 @@ public final class TerminalFactoryTest {
         assertEquals(1, TestFlavorTerminal.noArgConstructorCalls);
         assertEquals(1, TestFlavorTerminal.stringConstructorCalls);
         assertEquals(ttyDevice, TestFlavorTerminal.lastTtyDevice);
+    }
+
+    @Test
+    void getFlavorWithTtyDeviceFailsWhenFlavorDoesNotExposeStringConstructor() {
+        TerminalFactory.registerFlavor(TerminalFactory.Flavor.UNIX, NoStringConstructorTerminal.class);
+
+        assertThrows(
+            NoSuchMethodException.class,
+            () -> TerminalFactory.getFlavor(TerminalFactory.Flavor.UNIX, "/dev/pts/missing-constructor")
+        );
+        assertEquals(0, NoStringConstructorTerminal.constructorCalls);
     }
 
     private static final class RecordingClassLoader extends ClassLoader {
@@ -144,6 +158,19 @@ public final class TerminalFactoryTest {
             noArgConstructorCalls = 0;
             stringConstructorCalls = 0;
             lastTtyDevice = null;
+        }
+    }
+
+    public static final class NoStringConstructorTerminal extends UnsupportedTerminal {
+
+        private static int constructorCalls;
+
+        public NoStringConstructorTerminal() {
+            constructorCalls++;
+        }
+
+        private static void resetState() {
+            constructorCalls = 0;
         }
     }
 }
