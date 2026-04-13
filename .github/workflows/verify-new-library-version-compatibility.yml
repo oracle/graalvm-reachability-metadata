@@ -65,13 +65,14 @@ jobs:
           git push origin "${{ steps.set-branch-name.outputs.branch }}"
 
   test-all-metadata:
-    name: "🧪 ${{ matrix.name }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.name }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-all-libraries.outputs.none-found != 'true'
     runs-on: ${{ matrix.os }}
     needs: get-all-libraries
     permissions: write-all
     env:
-      CURRENT_JOB_NAME: "🧪 ${{ matrix.name }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+      CURRENT_JOB_NAME: "🧪 ${{ matrix.name }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ matrix.nativeImageMode }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       LOG_LINES: "300"
     strategy:
@@ -99,50 +100,17 @@ jobs:
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Check for an existing issue and skip further testing if found"
-        id: check-existing-issue
-        run: |
-          GROUP_ID="$(echo "${{ matrix.name }}" | cut -d: -f1)"
-          ARTIFACT_ID="$(echo "${{ matrix.name }}" | cut -d: -f2)"
-
-          readarray -t VERSIONS < <(echo '${{ toJson(matrix.versions) }}' | jq -r '.[]')
-          ISSUE_TITLE_PREFIX="[Automation] "
-          FIRST_TESTING_VERSION="${VERSIONS[0]}"
-          GAV_COORDINATES="$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
-          TITLE_END=" fails for $GAV_COORDINATES"
-
-          ISSUE_NUMBER=$(
-            gh issue list \
-              --repo "${{ github.repository }}" \
-              --state open \
-              --search "\"$TITLE_END\" in:title" \
-              --json number,title \
-              --jq ".[] | select(.title | (startswith(\"$ISSUE_TITLE_PREFIX\") and endswith(\"$TITLE_END\"))) | .number"
-          )
-
-          echo "Found the issue(s) $ISSUE_NUMBER"
-          if [[ -n "$ISSUE_NUMBER" ]]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "There is no progress since last time for the $GAV_COORDINATES. Skipping further testing!"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: "Extract test path and library version"
-        if: steps.check-existing-issue.outputs.skip != 'true'
         id: extract-params
         run: ./gradlew extractLibraryTestParams -Pcoordinates="${{ matrix.name }}"
 
       - name: "Pull allowed docker images"
-        if: steps.check-existing-issue.outputs.skip != 'true'
         run: ./gradlew pullAllowedDockerImages -Pcoordinates="${{ env.TEST_COORDINATES }}"
 
       - name: "Disable docker networking"
-        if: steps.check-existing-issue.outputs.skip != 'true'
         run: bash ./.github/workflows/scripts/disable-docker.sh
 
       - name: "🧪 Run '${{ env.TEST_COORDINATES }}' tests"
-        if: steps.check-existing-issue.outputs.skip != 'true'
         id: runtests
         run: |
           bash ./.github/workflows/scripts/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.versions) }}' 2>&1 | tee test_results.txt || true
@@ -176,6 +144,7 @@ jobs:
             --arg name "${{ matrix.name }}" \
             --arg os "${{ matrix.os }}" \
             --arg jdk "${{ matrix.version }}" \
+            --arg nativeImageMode "${{ matrix.nativeImageMode }}" \
             --arg latestVersion "${{ env.LATEST_VERSION }}" \
             --arg runnerLogUrl "$RUNNER_LOG_URL" \
             --arg failureType "$FAILURE_TYPE" \
@@ -188,6 +157,7 @@ jobs:
               name: $name,
               os: $os,
               version: $jdk,
+              nativeImageMode: $nativeImageMode,
               latestVersion: $latestVersion,
               runnerLogUrl: $runnerLogUrl,
               successfulVersions: $successfulVersions,
@@ -200,28 +170,13 @@ jobs:
               } end)
             }' > result.json
 
-      - name: "📝 Write skipped result"
-        if: steps.check-existing-issue.outputs.skip == 'true'
-        run: |
-          jq -n \
-            --arg name "${{ matrix.name }}" \
-            --arg os "${{ matrix.os }}" \
-            --arg jdk "${{ matrix.version }}" \
-            '{
-              name: $name,
-              os: $os,
-              version: $jdk,
-              skipped: true,
-              successfulVersions: [],
-              failure: null
-            }' > result.json
-
       - name: "📝 Compute artifact names"
         id: artifact-name
         run: |
           SAFE_NAME="$(printf '%s' '${{ matrix.name }}' | tr ':' '-')"
-          echo "artifact_name=compatibility-result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}" >> "$GITHUB_OUTPUT"
-          echo "result_file=result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}.json" >> "$GITHUB_OUTPUT"
+          SAFE_MODE="$(printf '%s' '${{ matrix.nativeImageMode }}' | tr ':' '-')"
+          echo "artifact_name=compatibility-result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}-$SAFE_MODE" >> "$GITHUB_OUTPUT"
+          echo "result_file=result-$SAFE_NAME-${{ matrix.version }}-${{ matrix.os }}-$SAFE_MODE.json" >> "$GITHUB_OUTPUT"
 
       - name: "📝 Rename result file for merged download"
         run: mv result.json "${{ steps.artifact-name.outputs.result_file }}"
@@ -285,6 +240,7 @@ jobs:
                     map(.failure + {
                       os: .os,
                       jdk: .version,
+                      nativeImageMode: .nativeImageMode,
                       runnerLogUrl: .runnerLogUrl
                     })
                     | group_by(.failedVersion)
@@ -294,6 +250,7 @@ jobs:
                         environments: map({
                           os: .os,
                           jdk: .jdk,
+                          nativeImageMode: .nativeImageMode,
                           failureType: .failureType,
                           failedCommand: .failedCommand,
                           runnerLogUrl: .runnerLogUrl,
@@ -457,6 +414,7 @@ jobs:
               for environment in "${ENVIRONMENTS[@]}"; do
                 OS="$(printf '%s' "$environment" | jq -r '.os')"
                 JDK="$(printf '%s' "$environment" | jq -r '.jdk')"
+                NATIVE_IMAGE_MODE="$(printf '%s' "$environment" | jq -r '.nativeImageMode')"
                 COMMAND="$(printf '%s' "$environment" | jq -r '.failedCommand')"
                 RUNNER_LOG_URL="$(printf '%s' "$environment" | jq -r '.runnerLogUrl')"
                 ENV_FAILURE_TYPE="$(printf '%s' "$environment" | jq -r '.failureType')"
@@ -464,19 +422,21 @@ jobs:
                 LOG_TAIL="$(printf '%s' "$environment" | jq -r '.logTail')"
 
                 NORMAL_PREFIX="$(
-                  printf '## %s on %s / JDK %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK"
+                  printf '## %s on %s / JDK %s / mode %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK" "$NATIVE_IMAGE_MODE"
                   printf 'Failure kind: %s\n' "$ENV_FAILURE_TYPE"
                   printf 'OS: %s\n' "$OS"
                   printf 'JDK: %s\n' "$JDK"
+                  printf 'Native-image mode: %s\n' "$NATIVE_IMAGE_MODE"
                   printf 'Reproducer: `%s`\n' "$COMMAND"
                   printf 'Runner log: %s\n' "$RUNNER_LOG_URL"
                   printf 'Last %s lines of the log:\n' "$ENV_LOG_LINES"
                 )"
                 TRUNCATED_PREFIX="$(
-                  printf '## %s on %s / JDK %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK"
+                  printf '## %s on %s / JDK %s / mode %s\n\n' "$ENV_FAILURE_TYPE" "$OS" "$JDK" "$NATIVE_IMAGE_MODE"
                   printf 'Failure kind: %s\n' "$ENV_FAILURE_TYPE"
                   printf 'OS: %s\n' "$OS"
                   printf 'JDK: %s\n' "$JDK"
+                  printf 'Native-image mode: %s\n' "$NATIVE_IMAGE_MODE"
                   printf 'Reproducer: `%s`\n' "$COMMAND"
                   printf 'Runner log: %s\n' "$RUNNER_LOG_URL"
                   printf 'Last %s lines of the log (excerpt truncated to fit the GitHub issue size limit):\n' "$ENV_LOG_LINES"

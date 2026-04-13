@@ -26,6 +26,11 @@ Tip: When debugging locally, add `--stacktrace` for better error output.
 ./gradlew testAllInfra --stacktrace
 ```
 
+To run the same coverage with future defaults enabled:
+```console
+GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew testAllInfra --stacktrace
+```
+
 ### Style and formatting
 
 1. To check style use
@@ -63,6 +68,11 @@ For a single coordinate, CI runs three steps in this order:
     ```console
    ./gradlew test -Pcoordinates=org.postgresql:postgresql:42.7.3
    ```
+
+To run the same coordinate with future defaults enabled:
+```console
+GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test -Pcoordinates=org.postgresql:postgresql:42.7.3
+```
 
 ### Testing libraries in bulk
 
@@ -139,6 +149,16 @@ Report format: XML only.
 ./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]
  ```
 The root jacocoTestReport is a harness wrapper that invokes the per-project task across matching coordinates.
+
+### Native-image modes
+
+Local runs default to `current-defaults`.
+
+During the transition period, metadata CI runs both:
+- `current-defaults`
+- `future-defaults-all`
+
+Select the future lane locally with `GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all`.
 
 ### Library stats
 

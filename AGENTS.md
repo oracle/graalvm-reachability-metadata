@@ -14,6 +14,9 @@
 ## One command for complete infrastructure testing
 ./gradlew testAllInfra -Pparallelism=4 --stacktrace
 
+Run the future-defaults lane locally with:
+GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew testAllInfra -Pparallelism=4 --stacktrace
+
 ## Code Style
 - Always try to reuse existing code.
 - Be assertive in code.
@@ -44,10 +47,13 @@
   - ./gradlew pullAllowedDockerImages -Pcoordinates=group:artifact:version
   - ./gradlew checkMetadataFiles -Pcoordinates=group:artifact:version
   - ./gradlew test -Pcoordinates=group:artifact:version
+  - GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test -Pcoordinates=group:artifact:version
 - Sharded example (1/64):
   - ./gradlew pullAllowedDockerImages -Pcoordinates=1/64
   - ./gradlew checkMetadataFiles -Pcoordinates=1/64
   - ./gradlew test -Pcoordinates=1/64
+
+Metadata CI currently runs both `current-defaults` and `future-defaults-all`.
 
 ### Generating Metadata
 - Generate metadata for a certain library version:

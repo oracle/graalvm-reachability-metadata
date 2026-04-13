@@ -6,6 +6,7 @@
  */
 import groovy.json.JsonSlurper
 import org.graalvm.internal.tck.utils.DynamicAccessUtils
+import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 import java.util.jar.JarFile
 
@@ -65,17 +66,22 @@ def nativeImageArgs = []
 if (ciJsonFile.exists()) {
     try {
         def parsed = new JsonSlurper().parse(ciJsonFile)
-        def argsFromCi = parsed?.buildArgs
-        if (argsFromCi instanceof Collection && !argsFromCi.isEmpty()) {
-            nativeImageArgs = argsFromCi.collect { it.toString() }
-            // Post-process placeholders in args
-            nativeImageArgs = nativeImageArgs.collect { arg ->
-                arg.replace('{{library.version}}', libraryVersion)
-                   .replace('{{library.coordinates}}', libraryGAV)
-            }
-        }
-    } catch (Exception ignored) {
-        throw new GradleException("ci.json must contain the buildArgs")
+        String selectedNativeImageMode = NativeImageConfigUtils.resolveSelectedMode(
+                System.getenv("GVM_TCK_NATIVE_IMAGE_MODE"),
+                providers.gradleProperty("tck.nativeImageMode").getOrElse(null)
+        )
+        nativeImageArgs = NativeImageConfigUtils.resolvedBuildArgs(
+                parsed as Map<String, Object>,
+                selectedNativeImageMode,
+                [
+                        "{{library.version}}"    : libraryVersion,
+                        "{{library.coordinates}}": libraryGAV
+                ]
+        )
+    } catch (GradleException e) {
+        throw e
+    } catch (Exception e) {
+        throw new GradleException("Failed to resolve native-image args from ci.json", e)
     }
 } else {
     throw new GradleException("Required configuration file ci.json not found at expected path: ${ciJsonFile.absolutePath}\"")
