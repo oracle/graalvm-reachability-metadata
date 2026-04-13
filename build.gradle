@@ -7,6 +7,7 @@
 import groovy.json.JsonSlurper
 
 import org.graalvm.internal.tck.utils.CoordinateUtils
+import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -151,11 +152,19 @@ List<String> resolveConcreteCoordinates(String coordinateFilter) {
     return matchingCoordinates.findAll { !it.startsWith("samples:") }
 }
 
+String resolveSelectedNativeImageMode() {
+    return NativeImageConfigUtils.resolveSelectedMode(
+            System.getenv("GVM_TCK_NATIVE_IMAGE_MODE"),
+            project.findProperty("tck.nativeImageMode")?.toString()
+    )
+}
+
 void printTestInfraReproducer(String gradleCmd, String coordinate, int parallelism) {
-    String nativeImageMode = System.getenv("GVM_TCK_NATIVE_IMAGE_MODE")
+    String nativeImageMode = resolveSelectedNativeImageMode()
     String command = "${gradleCmd} testInfra -Pcoordinates=${coordinate} -Pparallelism=${parallelism} --stacktrace"
-    if (nativeImageMode != null && !nativeImageMode.trim().isEmpty()) {
-        command = "GVM_TCK_NATIVE_IMAGE_MODE=${nativeImageMode} ${command}"
+    if (nativeImageMode != null && !nativeImageMode.trim().isEmpty()
+            && nativeImageMode != NativeImageConfigUtils.DEFAULT_MODE) {
+        command = "GVM_TCK_NATIVE_IMAGE_MODE='${nativeImageMode}' ${command}"
     }
 
     String delimiter = "========================================================================"
@@ -359,7 +368,7 @@ def runLoggedCommand(List<String> args, String label, File logFile, File working
 
     def pb = new ProcessBuilder(args as String[])
     pb.directory(workingDir)
-    String nativeImageMode = System.getenv("GVM_TCK_NATIVE_IMAGE_MODE")
+    String nativeImageMode = resolveSelectedNativeImageMode()
     if (nativeImageMode != null && !nativeImageMode.trim().isEmpty()) {
         pb.environment().put("GVM_TCK_NATIVE_IMAGE_MODE", nativeImageMode)
     }
