@@ -493,7 +493,8 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
         }
 
         def matrix = [
-                "include": expandMatrixEntries(
+                "coordinates": selected,
+                "include"    : expandMatrixEntries(
                         selected.collect { coordinate -> ["coordinates": coordinate] },
                         "generateInfrastructureChangedCoordinatesMatrix"
                 )
