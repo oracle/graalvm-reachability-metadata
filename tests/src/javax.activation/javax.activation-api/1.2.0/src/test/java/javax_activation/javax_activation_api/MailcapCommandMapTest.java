@@ -25,6 +25,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class MailcapCommandMapTest {
 
     @Test
+    void createDataContentHandlerUsesContextClassLoaderWhenItCanLoadHandler() {
+        MailcapCommandMap commandMap = new MailcapCommandMap();
+        String mimeType = "text/x-mailcap-command-map-context-loader";
+        String handlerClassName = RecordingDataContentHandler.class.getName();
+        Thread currentThread = Thread.currentThread();
+        ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
+
+        commandMap.addMailcap(mimeType + "; ; x-java-content-handler=" + handlerClassName);
+
+        currentThread.setContextClassLoader(RecordingDataContentHandler.class.getClassLoader());
+        try {
+            DataContentHandler dataContentHandler = commandMap.createDataContentHandler(mimeType);
+
+            assertThat(dataContentHandler).isInstanceOf(RecordingDataContentHandler.class);
+        }
+        finally {
+            currentThread.setContextClassLoader(originalContextClassLoader);
+        }
+    }
+
+    @Test
     void createDataContentHandlerFallsBackToClassForNameWhenContextClassLoaderCannotLoadHandler() {
         MailcapCommandMap commandMap = new MailcapCommandMap();
         String mimeType = "text/x-mailcap-command-map";
