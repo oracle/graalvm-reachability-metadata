@@ -224,6 +224,36 @@ class Grpc_contextTest {
     }
 
     @Test
+    void shorterChildDeadlineCancelsOnlyChildAndKeepsParentActive() throws Exception {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        Context.CancellableContext parent = null;
+        try {
+            parent = Context.ROOT.withDeadlineAfter(500, TimeUnit.MILLISECONDS, scheduler);
+            Context.CancellableContext child = parent.withDeadlineAfter(50, TimeUnit.MILLISECONDS, scheduler);
+            CountDownLatch childCancelledLatch = new CountDownLatch(1);
+            AtomicReference<Context> notifiedContext = new AtomicReference<>();
+
+            child.addListener(context -> {
+                notifiedContext.set(context);
+                childCancelledLatch.countDown();
+            }, Runnable::run);
+
+            assertThat(child.getDeadline().isBefore(parent.getDeadline())).isTrue();
+            assertThat(childCancelledLatch.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(notifiedContext.get()).isSameAs(child);
+            assertThat(child.isCancelled()).isTrue();
+            assertThat(child.cancellationCause()).isInstanceOf(TimeoutException.class).hasMessage("context timed out");
+            assertThat(parent.isCancelled()).isFalse();
+            assertThat(parent.cancellationCause()).isNull();
+        } finally {
+            if (parent != null) {
+                parent.cancel(null);
+            }
+            shutdown(scheduler);
+        }
+    }
+
+    @Test
     void expiredDeadlinesCancelContextsImmediatelyAndNotifyLateListeners() throws Exception {
         MutableTicker ticker = new MutableTicker();
         Deadline expiredDeadline = Deadline.after(5, TimeUnit.SECONDS, ticker);
