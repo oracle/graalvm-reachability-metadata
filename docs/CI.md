@@ -15,6 +15,7 @@ The release is made every two weeks if there are metadata changes: [.github/work
 
 The test matrix definition starts with [ci.json](../ci.json):
 - A single source of truth for which Java versions and OS runners to test on.
+- Supports optional per-native-image-mode Java overrides via `nativeImageModeJavaVersions` when a mode should run on only a subset of the configured JDKs.
 - Gradle tasks read it to generate GitHub Actions matrices consumed by the workflows below.
 - Way to define build arguments for the build. If this file is changed everything is re-run.
 

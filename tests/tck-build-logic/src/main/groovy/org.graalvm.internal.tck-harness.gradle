@@ -284,11 +284,13 @@ List<String> nativeImageModesForMatrix() {
 
 List<Map<String, Object>> expandMatrixEntries(List<Map<String, Object>> entries, String section) {
     def defaults = matrixDefaultsFor(section)
+    List<String> nativeImageModes = nativeImageModesForMatrix()
     NativeImageConfigUtils.expandMatrixEntries(
             entries,
             defaults["version"],
             defaults["os"],
-            nativeImageModesForMatrix()
+            nativeImageModes,
+            NativeImageConfigUtils.javaVersionsByMode(loadCi(), defaults["version"], nativeImageModes)
     )
 }
 
