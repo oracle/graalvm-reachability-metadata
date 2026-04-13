@@ -51,11 +51,13 @@ jobs:
           echo "${{ steps.set-matrix.outputs.matrix }}"
 
   test-changed-metadata:
-    name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-changed-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
     needs: get-changed-metadata
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ matrix.nativeImageMode }}
 
     strategy:
       fail-fast: false

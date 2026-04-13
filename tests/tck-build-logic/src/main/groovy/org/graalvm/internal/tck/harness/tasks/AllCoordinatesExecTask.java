@@ -170,6 +170,9 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         if (System.getenv("GVM_TCK_LV") == null) {
             env.put("GVM_TCK_LV", version);
         }
+        if (System.getenv("GVM_TCK_NATIVE_IMAGE_MODE") != null) {
+            env.put("GVM_TCK_NATIVE_IMAGE_MODE", System.getenv("GVM_TCK_NATIVE_IMAGE_MODE"));
+        }
         env.put("GVM_TCK_MD", metadataDir.toAbsolutePath().toString());
         env.put("GVM_TCK_TCKDIR", tckExtension.getTckRoot().get().getAsFile().toPath().toAbsolutePath().toString());
 

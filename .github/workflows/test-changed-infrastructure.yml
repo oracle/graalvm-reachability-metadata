@@ -52,11 +52,13 @@ jobs:
           ./gradlew generateInfrastructureChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
   test-changed-infrastructure:
-    name: "🧪 ${{ matrix.coordinates }} (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-changed-infrastructure.outputs.relevant-files-changed == 'true' && needs.get-changed-infrastructure.result == 'success' && needs.get-changed-infrastructure.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     needs: get-changed-infrastructure
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ matrix.nativeImageMode }}
 
     strategy:
       fail-fast: false

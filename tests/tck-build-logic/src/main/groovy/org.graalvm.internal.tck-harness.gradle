@@ -43,6 +43,7 @@ import org.graalvm.internal.tck.harness.tasks.ValidateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.AnalyzeExternalLibraryDynamicAccessTask
 import org.graalvm.internal.tck.harness.tasks.GenerateReadmeBadgeSummaryTask
 import org.graalvm.internal.tck.harness.tasks.SplitTestOnlyMetadataTask
+import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 
 import static org.graalvm.internal.tck.Utils.generateTaskName
@@ -277,6 +278,20 @@ Map<String, List<String>> matrixDefaultsFor(String section) {
     ]
 }
 
+List<String> nativeImageModesForMatrix() {
+    NativeImageConfigUtils.modeNames(loadCi())
+}
+
+List<Map<String, Object>> expandMatrixEntries(List<Map<String, Object>> entries, String section) {
+    def defaults = matrixDefaultsFor(section)
+    NativeImageConfigUtils.expandMatrixEntries(
+            entries,
+            defaults["version"],
+            defaults["os"],
+            nativeImageModesForMatrix()
+    )
+}
+
 Map<String, Object> springAotMatrixConfig() {
     def ci = loadCi()
     def sec = ci["generateAffectedSpringTestMatrix"]
@@ -288,48 +303,26 @@ Map<String, Object> springAotMatrixConfig() {
 }
 
 List<Map<String, Object>> expandNewLibraryVersionCompatibilityMatrix(List<Map<String, Object>> libraries) {
-    def defaults = matrixDefaultsFor("generateNewLibraryVersionCompatibilityMatrix")
-    List<String> javaVersions = defaults["version"]
-    List<String> operatingSystems = defaults["os"]
-
-    List<Map<String, Object>> include = []
-    libraries.each { Map<String, Object> library ->
-        javaVersions.each { String javaVersion ->
-            operatingSystems.each { String operatingSystem ->
-                include.add([
-                        "name": library["name"],
-                        "versions": library["versions"],
-                        "version": javaVersion,
-                        "os": operatingSystem
-                ])
-            }
-        }
-    }
-    include
+    expandMatrixEntries(libraries.collect { Map<String, Object> library ->
+        [
+                "name"    : library["name"],
+                "versions": library["versions"]
+        ]
+    }, "generateNewLibraryVersionCompatibilityMatrix")
 }
 
 List<Map<String, Object>> expandChangedTestedVersionsMatrix(List<Map<String, Object>> entries) {
-    def defaults = matrixDefaultsFor("generateChangedTestedVersionsMatrix")
-    List<String> javaVersions = defaults["version"]
-    List<String> operatingSystems = defaults["os"]
-
     List<Map<String, Object>> include = []
     entries.each { Map<String, Object> entry ->
         List<Map<String, Object>> matrixEntries = entry.containsKey("entries")
                 ? (entry["entries"] as List<Map<String, Object>>)
                 : [entry]
-        matrixEntries.each { Map<String, Object> matrixEntry ->
-            javaVersions.each { String javaVersion ->
-                operatingSystems.each { String operatingSystem ->
-                    include.add([
-                            "coordinates": matrixEntry["coordinates"],
-                            "versions": matrixEntry["versions"],
-                            "version": javaVersion,
-                            "os": operatingSystem
-                    ])
-                }
-            }
-        }
+        include.addAll(expandMatrixEntries(matrixEntries.collect { Map<String, Object> matrixEntry ->
+            [
+                    "coordinates": matrixEntry["coordinates"],
+                    "versions"   : matrixEntry["versions"]
+            ]
+        }, "generateChangedTestedVersionsMatrix"))
     }
     include
 }
@@ -356,11 +349,12 @@ Provider<Task> generateMatrixBatchedCoordinates = tasks.register("generateMatrix
         if (batches <= 0) {
             throw new GradleException("Invalid 'batches' value: ${batches}")
         }
-        List<String> coords = (1..batches).collect { i -> "${i}/${batches}" }
         def matrix = [
-                "coordinates": coords
+                "include": expandMatrixEntries(
+                        (1..batches).collect { i -> ["coordinates": "${i}/${batches}"] },
+                        "generateMatrixBatchedCoordinates"
+                )
         ]
-        matrix.putAll(matrixDefaultsFor("generateMatrixBatchedCoordinates"))
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
     }
 }
@@ -376,9 +370,13 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
 
         boolean noneFound = diffCoordinates.isEmpty()
         def matrix = [
-                "coordinates": noneFound ? [] : diffCoordinates
+                "include": noneFound
+                        ? []
+                        : expandMatrixEntries(
+                                diffCoordinates.collect { coordinate -> ["coordinates": coordinate] },
+                                "generateChangedCoordinatesMatrix"
+                        )
         ]
-        matrix.putAll(matrixDefaultsFor("generateChangedCoordinatesMatrix"))
         if (noneFound) {
             println "No changed coordinates were found!"
         }
@@ -495,11 +493,11 @@ Provider<Task> generateInfrastructureChangedCoordinatesMatrix = tasks.register("
         }
 
         def matrix = [
-                "coordinates": selected
+                "include": expandMatrixEntries(
+                        selected.collect { coordinate -> ["coordinates": coordinate] },
+                        "generateInfrastructureChangedCoordinatesMatrix"
+                )
         ]
-        matrix.putAll(matrixDefaultsFor("generateInfrastructureChangedCoordinatesMatrix"))
-
-
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))
         writeGithubOutput("none-found", "false")
     }

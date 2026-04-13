@@ -39,7 +39,11 @@ run_multiple_attempts() {
   local result=0
 
   while [ $attempt -lt "$max_attempts" ]; do
-    local cmd_str="GVM_TCK_LV=\"$VERSION\" ./gradlew clean $gradle_command -Pcoordinates=\"$TEST_COORDINATES\""
+    local native_image_mode_prefix=""
+    if [ -n "${GVM_TCK_NATIVE_IMAGE_MODE:-}" ]; then
+      native_image_mode_prefix="GVM_TCK_NATIVE_IMAGE_MODE=\"$GVM_TCK_NATIVE_IMAGE_MODE\" "
+    fi
+    local cmd_str="${native_image_mode_prefix}GVM_TCK_LV=\"$VERSION\" ./gradlew clean $gradle_command -Pcoordinates=\"$TEST_COORDINATES\""
     if [ $attempt -gt 0 ]; then
       echo "Re-running stage '$stage' (attempt $((attempt + 1))/$max_attempts)"
     fi

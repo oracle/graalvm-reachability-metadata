@@ -48,11 +48,13 @@ jobs:
           ./gradlew generateChangedTestedVersionsMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
 
   test-new-library-versions:
-    name: "🧪 ${{ matrix.coordinates }} tested-version diff (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} tested-version diff [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-changed-index-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-index-metadata.result == 'success' && needs.get-changed-index-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
     needs: get-changed-index-metadata
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ matrix.nativeImageMode }}
 
     strategy:
       fail-fast: false
