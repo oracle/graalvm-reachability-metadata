@@ -17,20 +17,20 @@ class LangTest {
     void loadsGenericLanguageRules() {
         Lang genericLang = Lang.instance(NameType.GENERIC);
 
-        assertThat(genericLang.guessLanguage("ţ")).isEqualTo("romanian");
+        assertThat(genericLang.guessLanguage("\u0163")).isEqualTo("romanian");
     }
 
     @Test
     void loadsAshkenaziLanguageRules() {
         Lang ashkenaziLang = Lang.instance(NameType.ASHKENAZI);
 
-        assertThat(ashkenaziLang.guessLanguage("ß")).isEqualTo("german");
+        assertThat(ashkenaziLang.guessLanguage("\u00df")).isEqualTo("german");
     }
 
     @Test
     void loadsSephardicLanguageRules() {
         Lang sephardicLang = Lang.instance(NameType.SEPHARDIC);
 
-        assertThat(sephardicLang.guessLanguage("ñ")).isEqualTo("spanish");
+        assertThat(sephardicLang.guessLanguage("\u00f1")).isEqualTo("spanish");
     }
 }
