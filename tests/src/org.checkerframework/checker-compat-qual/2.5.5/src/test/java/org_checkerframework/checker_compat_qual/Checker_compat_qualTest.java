@@ -6,6 +6,12 @@
  */
 package org_checkerframework.checker_compat_qual;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedArrayType;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
@@ -86,6 +92,44 @@ class Checker_compat_qualTest {
         KeyForType keyForType = wildcardType.getAnnotatedUpperBounds()[0].getAnnotation(KeyForType.class);
         Assertions.assertThat(keyForType).isNotNull();
         Assertions.assertThat(keyForType.value()).containsExactly("entries");
+    }
+
+    @Test
+    void declarationCompatibilityAnnotationsExposeDeclarationOnlyMetaAnnotations() {
+        assertDeclarationAnnotationContract(NonNullDecl.class);
+        assertDeclarationAnnotationContract(NullableDecl.class);
+        assertDeclarationAnnotationContract(MonotonicNonNullDecl.class);
+        assertDeclarationAnnotationContract(PolyNullDecl.class);
+        assertDeclarationAnnotationContract(KeyForDecl.class);
+    }
+
+    @Test
+    void typeCompatibilityAnnotationsExposeTypeUseMetaAnnotations() {
+        assertTypeUseAnnotationContract(NonNullType.class);
+        assertTypeUseAnnotationContract(NullableType.class);
+        assertTypeUseAnnotationContract(MonotonicNonNullType.class);
+        assertTypeUseAnnotationContract(PolyNullType.class);
+        assertTypeUseAnnotationContract(KeyForType.class);
+    }
+
+    private static void assertDeclarationAnnotationContract(Class<? extends Annotation> annotationType) {
+        Retention retention = annotationType.getAnnotation(Retention.class);
+
+        Assertions.assertThat(annotationType.isAnnotationPresent(Documented.class)).isTrue();
+        Assertions.assertThat(retention).isNotNull();
+        Assertions.assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
+        Assertions.assertThat(annotationType.getAnnotation(Target.class)).isNull();
+    }
+
+    private static void assertTypeUseAnnotationContract(Class<? extends Annotation> annotationType) {
+        Retention retention = annotationType.getAnnotation(Retention.class);
+        Target target = annotationType.getAnnotation(Target.class);
+
+        Assertions.assertThat(annotationType.isAnnotationPresent(Documented.class)).isTrue();
+        Assertions.assertThat(retention).isNotNull();
+        Assertions.assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
+        Assertions.assertThat(target).isNotNull();
+        Assertions.assertThat(target.value()).containsExactly(ElementType.TYPE_USE, ElementType.TYPE_PARAMETER);
     }
 
     @NonNullDecl
