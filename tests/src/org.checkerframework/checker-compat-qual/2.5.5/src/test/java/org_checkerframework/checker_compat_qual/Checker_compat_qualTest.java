@@ -114,6 +114,21 @@ class Checker_compat_qualTest {
         assertEquals("rawValue", exception.getMessage());
     }
 
+    @Test
+    void compatAnnotationsCanBeUsedOnRecordComponents() {
+        RecordFixture fixture = new RecordFixture("  primary  ", List.of("secondary", "backup"), null);
+
+        assertEquals("primary", fixture.normalizedPrimary());
+        assertEquals("secondary", fixture.firstAlias());
+        assertNull(fixture.optionalTag());
+    }
+
+    @Test
+    void typeAnnotationsCanBeUsedInPatternMatchingBranches() {
+        assertEquals("secondary", RecordFixture.normalize("  secondary  "));
+        assertNull(RecordFixture.normalize(42));
+    }
+
     @NonNullDecl
     private static final class DeclarationFixture {
 
@@ -245,6 +260,27 @@ class Checker_compat_qualTest {
 
         private @KeyForType("cache") String primaryKey() {
             return primaryKey;
+        }
+    }
+
+    private record RecordFixture(
+            @NonNullType String primary,
+            List<@NonNullType String> aliases,
+            @NullableDecl String optionalTag) {
+
+        private @NonNullType String normalizedPrimary() {
+            return primary.strip();
+        }
+
+        private @NonNullType String firstAlias() {
+            return aliases.get(0);
+        }
+
+        private static @NullableType String normalize(@NullableType Object candidate) {
+            if (candidate instanceof @NonNullType String text) {
+                return text.strip();
+            }
+            return null;
         }
     }
 }
