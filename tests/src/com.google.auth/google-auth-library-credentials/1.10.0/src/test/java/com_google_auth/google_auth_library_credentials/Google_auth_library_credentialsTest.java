@@ -78,6 +78,19 @@ class Google_auth_library_credentialsTest {
     }
 
     @Test
+    void blockingGetToCallbackSendsSuccessToCallback() {
+        RecordingCredentials credentials = new RecordingCredentials(TEST_METADATA);
+        RecordingCallback callback = new RecordingCallback();
+
+        credentials.invokeBlockingGetToCallback(TEST_URI, callback);
+
+        assertThat(credentials.lastUri).isEqualTo(TEST_URI);
+        assertThat(callback.successCount).isEqualTo(1);
+        assertThat(callback.failureCount).isZero();
+        assertThat(callback.metadata).isEqualTo(TEST_METADATA);
+    }
+
+    @Test
     void blockingGetToCallbackSendsFailuresToCallback() {
         RetryableIOException failure = new RetryableIOException("temporary failure", true, 3);
         RecordingCredentials credentials = new RecordingCredentials(failure);
