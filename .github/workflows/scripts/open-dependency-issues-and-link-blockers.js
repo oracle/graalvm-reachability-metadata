@@ -423,23 +423,6 @@ function parseCreateTSV(createTSV) {
 }
 
 /**
- * Loads the curated list of artifacts already tracked by the repository.
- */
-function loadListedArtifacts(workspaceDir) {
-  const listedArtifactsPath = path.join(
-    workspaceDir,
-    'metadata',
-    'library-and-framework-list.json'
-  );
-  const listedArtifacts = JSON.parse(fs.readFileSync(listedArtifactsPath, 'utf8'));
-  return new Set(
-    listedArtifacts
-      .map((entry) => entry?.artifact)
-      .filter((artifact) => typeof artifact === 'string' && artifact.length > 0)
-  );
-}
-
-/**
  * Checks whether repository automation already supports the given coordinates.
  */
 function isRepositorySupported(workspaceDir, gav) {
@@ -464,17 +447,11 @@ function prepareCreationInputs(plan, workspaceDir) {
   const supportedGA = new Set();
   const excludedGA = new Set();
   const toCreate = new Map();
-  const listedArtifacts = loadListedArtifacts(workspaceDir);
 
   for (const node of Array.isArray(plan.nodes) ? plan.nodes : []) {
     const ga = node?.ga;
     const version = node?.version;
     if (!ga || !version) {
-      continue;
-    }
-
-    if (listedArtifacts.has(ga)) {
-      supportedGA.add(ga);
       continue;
     }
 
@@ -1026,7 +1003,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
     const diagnosticComment = [
       'Automation: No dependency issues were created by the triage workflow.',
       '',
-      'This typically means every dependency in the deps.dev expansion is already supported by the repository or listed in metadata/library-and-framework-list.json.',
+      'This typically means every dependency in the deps.dev expansion is already supported by the repository.',
       '',
       'Plan nodes:',
       '```',
