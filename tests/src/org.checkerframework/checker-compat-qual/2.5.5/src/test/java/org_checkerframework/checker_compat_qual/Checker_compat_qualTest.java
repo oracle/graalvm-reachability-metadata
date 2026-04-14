@@ -97,6 +97,13 @@ class Checker_compat_qualTest {
                 .annotationType()).isEqualTo(NullableType.class);
     }
 
+    @Test
+    void typeAnnotationsAreRetainedOnMethodReceiverTypes() throws Exception {
+        Method method = ReceiverTypeFixture.class.getMethod("replaceValue", String.class);
+        assertThat(typeAnnotationOn(method.getAnnotatedReceiverType(), NonNullType.class).annotationType())
+                .isEqualTo(NonNullType.class);
+    }
+
     private static <A extends Annotation> A annotationOn(AnnotatedElement element, Class<A> annotationType) {
         A annotation = element.getAnnotation(annotationType);
         assertThat(annotation).isNotNull();
@@ -154,5 +161,13 @@ class Checker_compat_qualTest {
         public List<? extends @NonNullType CharSequence> boundedValues = List.of("value");
 
         public @NullableType String @NonNullType [] annotatedArray = {"value"};
+    }
+
+    static final class ReceiverTypeFixture {
+        private String value = "value";
+
+        public void replaceValue(@NonNullType ReceiverTypeFixture this, String newValue) {
+            this.value = newValue;
+        }
     }
 }
