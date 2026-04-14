@@ -100,6 +100,20 @@ class FailureaccessTest {
                 .isInstanceOf(CancellationException.class);
     }
 
+    @Test
+    void exposesNoFailureForASuccessfullyCompletedFuture() throws ExecutionException, TimeoutException {
+        Object value = new Object();
+        CompletedFutureFailureAccess future = CompletedFutureFailureAccess.successful(value);
+
+        Throwable result = InternalFutures.tryInternalFastPathGetFailure(future);
+
+        assertThat(result).isNull();
+        assertThat(future.isDone()).isTrue();
+        assertThat(future.isCancelled()).isFalse();
+        assertThat(future.get()).isSameAs(value);
+        assertThat(future.get(1, TimeUnit.SECONDS)).isSameAs(value);
+    }
+
     private static final class CountingFailureAccess extends InternalFutureFailureAccess {
         private final Throwable failure;
         private final RuntimeException exceptionToThrow;
@@ -125,20 +139,26 @@ class FailureaccessTest {
     }
 
     private static final class CompletedFutureFailureAccess extends InternalFutureFailureAccess implements Future<Object> {
+        private final Object value;
         private final Throwable failure;
         private final boolean cancelled;
 
-        private CompletedFutureFailureAccess(Throwable failure, boolean cancelled) {
+        private CompletedFutureFailureAccess(Object value, Throwable failure, boolean cancelled) {
+            this.value = value;
             this.failure = failure;
             this.cancelled = cancelled;
         }
 
+        private static CompletedFutureFailureAccess successful(Object value) {
+            return new CompletedFutureFailureAccess(value, null, false);
+        }
+
         private static CompletedFutureFailureAccess failed(Throwable failure) {
-            return new CompletedFutureFailureAccess(failure, false);
+            return new CompletedFutureFailureAccess(null, failure, false);
         }
 
         private static CompletedFutureFailureAccess cancelled() {
-            return new CompletedFutureFailureAccess(null, true);
+            return new CompletedFutureFailureAccess(null, null, true);
         }
 
         @Override
@@ -169,7 +189,7 @@ class FailureaccessTest {
             if (failure != null) {
                 throw new ExecutionException(failure);
             }
-            return null;
+            return value;
         }
 
         @Override
