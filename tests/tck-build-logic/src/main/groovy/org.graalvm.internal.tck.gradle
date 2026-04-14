@@ -7,6 +7,8 @@
 import groovy.json.JsonSlurper
 import org.graalvm.internal.tck.utils.DynamicAccessUtils
 
+import org.gradle.api.tasks.PathSensitivity
+
 import java.util.jar.JarFile
 
 plugins {
@@ -57,7 +59,10 @@ overrideVal = overrideVal ?: "false"
 boolean override = overrideVal.toBoolean()
 
 String generateDynamicAccessReportVal = providers.gradleProperty('tck.generateDynamicAccessReport').getOrElse("false")
-boolean generateDynamicAccessReport = generateDynamicAccessReportVal.toBoolean()
+boolean generateDynamicAccessReportTaskRequested = gradle.startParameter.taskNames.any { taskName ->
+    taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport")
+}
+boolean generateDynamicAccessReport = generateDynamicAccessReportVal.toBoolean() || generateDynamicAccessReportTaskRequested
 
 // Determine native-image build arguments from ci.json.
 def ciJsonFile = tck.repoRoot.file("ci.json").get().asFile
@@ -134,6 +139,31 @@ tasks.register("listLibraryJars") { task ->
             println file.absolutePath
         }
     }
+}
+
+Provider<Directory> dynamicAccessOutputDir = layout.buildDirectory.dir("native/nativeTestCompile/dynamic-access")
+
+tasks.register("generateDynamicAccessReport") { task ->
+    task.setDescription("Builds native tests with dynamic-access tracking and reuses Gradle up-to-date checks when inputs and classpath are unchanged")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.dependsOn(tasks.named("nativeTestCompile"))
+    // JARs resolve from the Gradle cache where filenames are content-addressed, so name-only is sufficient.
+    task.inputs.files(providers.provider { resolveTestedLibraryJars() })
+            .withPropertyName("trackedLibraryJars")
+            .withPathSensitivity(PathSensitivity.NAME_ONLY)
+    task.inputs.files(sourceSets.test.output)
+            .withPropertyName("testOutputs")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    // metadataPath is scoped to the active coordinate via GVM_TCK_MD / -Pmetadata.dir, not the repo-wide metadata root.
+    task.inputs.files(fileTree(metadataPath) { include("**/*.json") })
+            .withPropertyName("metadataFiles")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    task.inputs.file(ciJsonFile)
+            .withPropertyName("ciJsonFile")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    task.inputs.property("nativeImageArgs", providers.provider { nativeImageArgs })
+    task.outputs.dir(dynamicAccessOutputDir)
+            .withPropertyName("dynamicAccessOutputDir")
 }
 
 // Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
