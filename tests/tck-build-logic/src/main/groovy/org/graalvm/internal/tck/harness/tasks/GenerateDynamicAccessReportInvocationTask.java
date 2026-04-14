@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Runs `nativeTestCompile` for each matching coordinate with dynamic-access tracking enabled and
- * prints generated JSON files under `build/native/nativeTestCompile/dynamic-access`.
+ * Runs the subproject `generateDynamicAccessReport` task for each matching coordinate and prints
+ * generated JSON files under `build/native/nativeTestCompile/dynamic-access`.
  */
 @SuppressWarnings("unused")
 public abstract class GenerateDynamicAccessReportInvocationTask extends AllCoordinatesExecTask {
@@ -25,7 +25,7 @@ public abstract class GenerateDynamicAccessReportInvocationTask extends AllCoord
     public List<String> commandFor(String coordinates) {
         return List.of(
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
-                "nativeTestCompile",
+                "generateDynamicAccessReport",
                 "-Ptck.generateDynamicAccessReport=true"
         );
     }
