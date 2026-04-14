@@ -38,7 +38,7 @@ class HawtbufTest {
 
     @Test
     void utf8BufferShouldPreserveUnicodeContent() {
-        String text = "héllo 世界";
+        String text = "h\u00e9llo \u4e16\u754c";
         UTF8Buffer utf8 = new UTF8Buffer(text);
 
         assertThat(utf8.toString()).isEqualTo(text);
