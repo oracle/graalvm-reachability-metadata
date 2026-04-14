@@ -177,48 +177,8 @@ jobs:
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
-      - name: "Derive group:artifact"
-        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
-        id: derive
-        run: |
-          set -Eeuo pipefail
-          IFS=':' read -r G A V <<< "${{ steps.extract.outputs.coords }}"
-          GA="$G:$A"
-          echo "ga=$GA" >> "$GITHUB_OUTPUT"
-
-      - name: "Check if listed in library-and-framework-list.json"
-        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
-        id: listed
-        run: |
-          set -Eeuo pipefail
-          GA="${{ steps.derive.outputs.ga }}"
-          if jq -e --arg ga "$GA" 'map(.artifact == $ga) | any' metadata/library-and-framework-list.json >/dev/null; then
-            echo "listed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "listed=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: "Close issue - library listed as supported in library-and-framework-list.json"
-        if: ${{ steps.listed.outputs.listed == 'true' }}
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
-        with:
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const issue_number = context.issue.number;
-            const coords = "${{ steps.extract.outputs.coords }}";
-            const ga = "${{ steps.derive.outputs.ga }}";
-            const body = [
-              `Automated triage: The library (${ga}) is listed as supported in metadata/library-and-framework-list.json.`,
-              "",
-              "Closing this issue. If you believe this is not correct for the requested coordinates (" + coords + "), please reopen with additional context.",
-              "Note: Reopening will not re-run automation; maintainers will review manually."
-            ].join("\n");
-            await github.rest.issues.createComment({ owner, repo, issue_number, body });
-            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
-
       - name: "Mark issue eligible for dependency graph expansion"
-        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' && steps.listed.outputs.listed != 'true' }}
+        if: ${{ steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
         id: expand
         run: |
           set -Eeuo pipefail
