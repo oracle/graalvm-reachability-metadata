@@ -37,6 +37,8 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 
 3. Review the test source before reading the metadata.
    - The test must be library-specific, not a lightly edited scaffold.
+   - Keep test packages separate from library packages. Reject tests that live under the target library's package unless the PR clearly needs that package placement to exercise the library.
+   - Separate packages matter because tests placed inside the library package can bypass visibility boundaries and produce false confidence about what user code can access.
    - Reject tests that only instantiate the obvious type, mirror the generated skeleton, or fail to exercise the code path that would need metadata.
 
 4. Review the metadata with the test in mind.
@@ -66,6 +68,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 - Weak PR:
   - PR pushes metadata or tests for more than one library.
   - Test class still looks like the scaffold.
+  - Test sources are placed in the library package without a demonstrated need.
   - Metadata appears without a demonstrated trigger path.
   - Claimed coverage is not credible from the diff.
 
