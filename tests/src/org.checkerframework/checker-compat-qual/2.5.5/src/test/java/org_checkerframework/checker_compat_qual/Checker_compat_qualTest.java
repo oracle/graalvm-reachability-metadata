@@ -7,9 +7,11 @@
 package org_checkerframework.checker_compat_qual;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedArrayType;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.AnnotatedWildcardType;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
@@ -78,6 +80,23 @@ class Checker_compat_qualTest {
                 .isEqualTo(NonNullType.class);
     }
 
+    @Test
+    void typeAnnotationsAreRetainedOnWildcardBoundsAndArrayComponents() throws Exception {
+        AnnotatedParameterizedType wildcardContainerType =
+                (AnnotatedParameterizedType) NestedTypeUseFixture.class.getField("boundedValues").getAnnotatedType();
+        AnnotatedWildcardType wildcardType =
+                (AnnotatedWildcardType) wildcardContainerType.getAnnotatedActualTypeArguments()[0];
+        assertThat(typeAnnotationOn(wildcardType.getAnnotatedUpperBounds()[0], NonNullType.class).annotationType())
+                .isEqualTo(NonNullType.class);
+
+        AnnotatedArrayType annotatedArrayType =
+                (AnnotatedArrayType) NestedTypeUseFixture.class.getField("annotatedArray").getAnnotatedType();
+        assertThat(typeAnnotationOn(annotatedArrayType, NonNullType.class).annotationType())
+                .isEqualTo(NonNullType.class);
+        assertThat(typeAnnotationOn(annotatedArrayType.getAnnotatedGenericComponentType(), NullableType.class)
+                .annotationType()).isEqualTo(NullableType.class);
+    }
+
     private static <A extends Annotation> A annotationOn(AnnotatedElement element, Class<A> annotationType) {
         A annotation = element.getAnnotation(annotationType);
         assertThat(annotation).isNotNull();
@@ -129,5 +148,11 @@ class Checker_compat_qualTest {
             assertThat(value).isNotNull();
             return value;
         }
+    }
+
+    static final class NestedTypeUseFixture {
+        public List<? extends @NonNullType CharSequence> boundedValues = List.of("value");
+
+        public @NullableType String @NonNullType [] annotatedArray = {"value"};
     }
 }
