@@ -14,7 +14,12 @@ It runs the target tests, identifies missing metadata entries from the error out
 ### `review-library-bulk-update`
 
 Reviews automated pull requests with the `library-bulk-update` label.
-It encodes the historical approve/close/rerun logic for bulk tested-version updates, checks that the diff stays limited to `metadata/**/index.json`, and adds explicit verification rules for URL field changes such as `source-code-url` and `test-code-url`.
+It encodes the historical approve/close/rerun logic for bulk tested-version updates, checks that the diff stays limited to `metadata/**/index.json`, requires `REQUEST_CHANGES` whenever the review leaves a blocking comment, and approves clean PRs without merging them yet.
+
+### `review-genai-pr`
+
+Reviews pull requests with the `GenAI` label.
+It encodes the review rules that have already emerged in this repository for AI-generated metadata PRs, especially rejecting scaffold-only tests, requiring test packages to stay separate from library packages, and questioning metadata coverage claims that are not supported by the diff.
 
 ## Loading Locally
 
