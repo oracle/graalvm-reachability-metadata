@@ -54,7 +54,7 @@ class Audience_annotationsTest {
         InterfaceAudience.LimitedPrivate limitedPrivate = new InterfaceAudience.LimitedPrivate() {
             @Override
             public String[] value() {
-                return new String[] { "analytics", "reporting" };
+                return new String[] {"analytics", "reporting"};
             }
 
             @Override
