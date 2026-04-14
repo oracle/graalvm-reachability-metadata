@@ -13,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedArrayType;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.AnnotatedWildcardType;
@@ -37,12 +38,12 @@ import org.junit.jupiter.api.Test;
 class Checker_compat_qualTest {
     @Test
     void declarationAnnotationsAreVisibleAtRuntime() {
-        KeyForDecl keyForDecl = DeclarationFixture.class.getAnnotation(KeyForDecl.class);
+        KeyForDecl keyForDecl = getSingleAnnotation(DeclarationFixture.class, KeyForDecl.class);
 
-        Assertions.assertThat(DeclarationFixture.class.isAnnotationPresent(NonNullDecl.class)).isTrue();
-        Assertions.assertThat(DeclarationFixture.class.isAnnotationPresent(NullableDecl.class)).isTrue();
-        Assertions.assertThat(DeclarationFixture.class.isAnnotationPresent(MonotonicNonNullDecl.class)).isTrue();
-        Assertions.assertThat(DeclarationFixture.class.isAnnotationPresent(PolyNullDecl.class)).isTrue();
+        Assertions.assertThat(hasAnnotation(DeclarationFixture.class, NonNullDecl.class)).isTrue();
+        Assertions.assertThat(hasAnnotation(DeclarationFixture.class, NullableDecl.class)).isTrue();
+        Assertions.assertThat(hasAnnotation(DeclarationFixture.class, MonotonicNonNullDecl.class)).isTrue();
+        Assertions.assertThat(hasAnnotation(DeclarationFixture.class, PolyNullDecl.class)).isTrue();
         Assertions.assertThat(keyForDecl).isNotNull();
         Assertions.assertThat(keyForDecl.value()).containsExactly("entries");
     }
@@ -53,18 +54,22 @@ class Checker_compat_qualTest {
         AnnotatedType annotatedSuperclass = TypeUseFixture.class.getAnnotatedSuperclass();
         AnnotatedType annotatedInterface = TypeUseFixture.class.getAnnotatedInterfaces()[0];
 
-        Assertions.assertThat(typeParameter.getAnnotation(PolyNullType.class)).isNotNull();
-        Assertions.assertThat(annotatedSuperclass.getAnnotation(NonNullType.class)).isNotNull();
-        Assertions.assertThat(annotatedInterface.getAnnotation(NullableType.class)).isNotNull();
+        Assertions.assertThat(getSingleAnnotation(typeParameter, PolyNullType.class)).isNotNull();
+        Assertions.assertThat(getSingleAnnotation(annotatedSuperclass, NonNullType.class)).isNotNull();
+        Assertions.assertThat(getSingleAnnotation(annotatedInterface, NullableType.class)).isNotNull();
 
         AnnotatedParameterizedType parameterizedSuperclass = (AnnotatedParameterizedType) annotatedSuperclass;
         AnnotatedParameterizedType parameterizedInterface = (AnnotatedParameterizedType) annotatedInterface;
 
         Assertions.assertThat(
-                parameterizedSuperclass.getAnnotatedActualTypeArguments()[0].getAnnotation(MonotonicNonNullType.class)
+                getSingleAnnotation(
+                        parameterizedSuperclass.getAnnotatedActualTypeArguments()[0],
+                        MonotonicNonNullType.class)
         ).isNotNull();
 
-        KeyForType keyForType = parameterizedInterface.getAnnotatedActualTypeArguments()[0].getAnnotation(KeyForType.class);
+        KeyForType keyForType = getSingleAnnotation(
+                parameterizedInterface.getAnnotatedActualTypeArguments()[0],
+                KeyForType.class);
         Assertions.assertThat(keyForType).isNotNull();
         Assertions.assertThat(keyForType.value()).containsExactly("entries");
     }
@@ -74,22 +79,24 @@ class Checker_compat_qualTest {
         Field field = MemberFixture.class.getDeclaredField("entries");
         AnnotatedArrayType fieldType = (AnnotatedArrayType) field.getAnnotatedType();
 
-        Assertions.assertThat(fieldType.getAnnotation(NonNullType.class)).isNotNull();
-        Assertions.assertThat(fieldType.getAnnotatedGenericComponentType().getAnnotation(NullableType.class)).isNotNull();
+        Assertions.assertThat(getSingleAnnotation(fieldType, NonNullType.class)).isNotNull();
+        Assertions.assertThat(getSingleAnnotation(fieldType.getAnnotatedGenericComponentType(), NullableType.class))
+                .isNotNull();
 
         Method method = MemberFixture.class.getDeclaredMethod("transform", String[].class, List.class);
         AnnotatedArrayType returnType = (AnnotatedArrayType) method.getAnnotatedReturnType();
         AnnotatedArrayType arrayParameterType = (AnnotatedArrayType) method.getAnnotatedParameterTypes()[0];
         AnnotatedParameterizedType wildcardListType = (AnnotatedParameterizedType) method.getAnnotatedParameterTypes()[1];
 
-        Assertions.assertThat(returnType.getAnnotation(MonotonicNonNullType.class)).isNotNull();
-        Assertions.assertThat(returnType.getAnnotatedGenericComponentType().getAnnotation(PolyNullType.class)).isNotNull();
-        Assertions.assertThat(arrayParameterType.getAnnotation(NullableType.class)).isNotNull();
-        Assertions.assertThat(arrayParameterType.getAnnotatedGenericComponentType().getAnnotation(NonNullType.class))
+        Assertions.assertThat(getSingleAnnotation(returnType, MonotonicNonNullType.class)).isNotNull();
+        Assertions.assertThat(getSingleAnnotation(returnType.getAnnotatedGenericComponentType(), PolyNullType.class))
+                .isNotNull();
+        Assertions.assertThat(getSingleAnnotation(arrayParameterType, NullableType.class)).isNotNull();
+        Assertions.assertThat(getSingleAnnotation(arrayParameterType.getAnnotatedGenericComponentType(), NonNullType.class))
                 .isNotNull();
 
         AnnotatedWildcardType wildcardType = (AnnotatedWildcardType) wildcardListType.getAnnotatedActualTypeArguments()[0];
-        KeyForType keyForType = wildcardType.getAnnotatedUpperBounds()[0].getAnnotation(KeyForType.class);
+        KeyForType keyForType = getSingleAnnotation(wildcardType.getAnnotatedUpperBounds()[0], KeyForType.class);
         Assertions.assertThat(keyForType).isNotNull();
         Assertions.assertThat(keyForType.value()).containsExactly("entries");
     }
@@ -113,23 +120,36 @@ class Checker_compat_qualTest {
     }
 
     private static void assertDeclarationAnnotationContract(Class<? extends Annotation> annotationType) {
-        Retention retention = annotationType.getAnnotation(Retention.class);
+        Retention retention = getSingleAnnotation(annotationType, Retention.class);
 
-        Assertions.assertThat(annotationType.isAnnotationPresent(Documented.class)).isTrue();
+        Assertions.assertThat(hasAnnotation(annotationType, Documented.class)).isTrue();
         Assertions.assertThat(retention).isNotNull();
         Assertions.assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
-        Assertions.assertThat(annotationType.getAnnotation(Target.class)).isNull();
+        Assertions.assertThat(getSingleAnnotation(annotationType, Target.class)).isNull();
     }
 
     private static void assertTypeUseAnnotationContract(Class<? extends Annotation> annotationType) {
-        Retention retention = annotationType.getAnnotation(Retention.class);
-        Target target = annotationType.getAnnotation(Target.class);
+        Retention retention = getSingleAnnotation(annotationType, Retention.class);
+        Target target = getSingleAnnotation(annotationType, Target.class);
 
-        Assertions.assertThat(annotationType.isAnnotationPresent(Documented.class)).isTrue();
+        Assertions.assertThat(hasAnnotation(annotationType, Documented.class)).isTrue();
         Assertions.assertThat(retention).isNotNull();
         Assertions.assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
         Assertions.assertThat(target).isNotNull();
         Assertions.assertThat(target.value()).containsExactly(ElementType.TYPE_USE, ElementType.TYPE_PARAMETER);
+    }
+
+    private static <T extends Annotation> T getSingleAnnotation(
+            AnnotatedElement annotatedElement,
+            Class<T> annotationType) {
+        T[] annotations = annotatedElement.getAnnotationsByType(annotationType);
+        return annotations.length == 0 ? null : annotations[0];
+    }
+
+    private static boolean hasAnnotation(
+            AnnotatedElement annotatedElement,
+            Class<? extends Annotation> annotationType) {
+        return annotatedElement.getAnnotationsByType(annotationType).length > 0;
     }
 
     @NonNullDecl
