@@ -6,11 +6,55 @@
  */
 package org_lz4.lz4_java;
 
+import net.jpountz.lz4.LZ4Compressor;
+import net.jpountz.lz4.LZ4Factory;
 import org.junit.jupiter.api.Test;
 
-class Lz4_javaTest {
+import java.nio.charset.StandardCharsets;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class LZ4FactoryTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void shouldCreateSafeFactoryAndRoundTripData() {
+        LZ4Factory factory = LZ4Factory.safeInstance();
+        byte[] input = "lz4 factory safe instance round trip".getBytes(StandardCharsets.UTF_8);
+        byte[] compressed = new byte[factory.fastCompressor().maxCompressedLength(input.length)];
+
+        int compressedLength = factory.fastCompressor().compress(input, 0, input.length, compressed, 0, compressed.length);
+
+        byte[] restored = new byte[input.length];
+        int decompressedLength = factory.safeDecompressor().decompress(compressed, 0, compressedLength, restored, 0);
+
+        assertThat(decompressedLength).isEqualTo(input.length);
+        assertThat(restored).isEqualTo(input);
+        assertThat(factory.toString()).contains("JavaSafe");
+    }
+
+    @Test
+    void shouldSupportConstructedHighCompressionLevels() {
+        LZ4Factory factory = LZ4Factory.safeInstance();
+        byte[] input = ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                + "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                + "cccccccccccccccccccccccccccccccc"
+                + "lz4 factory high compression levels")
+                .getBytes(StandardCharsets.UTF_8);
+
+        assertThat(factory.highCompressor(-1)).isSameAs(factory.highCompressor());
+        assertThat(factory.highCompressor(99)).isSameAs(factory.highCompressor(17));
+
+        assertRoundTrip(factory.highCompressor(1), factory, input);
+        assertRoundTrip(factory.highCompressor(17), factory, input);
+    }
+
+    private static void assertRoundTrip(LZ4Compressor compressor, LZ4Factory factory, byte[] input) {
+        byte[] compressed = new byte[compressor.maxCompressedLength(input.length)];
+        int compressedLength = compressor.compress(input, 0, input.length, compressed, 0, compressed.length);
+        byte[] restored = new byte[input.length];
+
+        int decompressedLength = factory.safeDecompressor().decompress(compressed, 0, compressedLength, restored, 0);
+
+        assertThat(decompressedLength).isEqualTo(input.length);
+        assertThat(restored).isEqualTo(input);
     }
 }
