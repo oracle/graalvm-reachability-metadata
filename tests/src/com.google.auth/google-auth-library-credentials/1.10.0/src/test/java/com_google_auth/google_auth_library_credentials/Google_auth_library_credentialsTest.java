@@ -56,6 +56,28 @@ class Google_auth_library_credentialsTest {
     }
 
     @Test
+    void getRequestMetadataAsyncSendsRuntimeFailuresToCallbackAfterExecutorRuns() {
+        IllegalStateException failure = new IllegalStateException("boom");
+        RecordingCredentials credentials = new RecordingCredentials(failure);
+        RecordingExecutor executor = new RecordingExecutor();
+        RecordingCallback callback = new RecordingCallback();
+
+        credentials.getRequestMetadata(TEST_URI, executor, callback);
+
+        assertThat(executor.executeCount).isEqualTo(1);
+        assertThat(executor.lastTask).isNotNull();
+        assertThat(callback.successCount).isZero();
+        assertThat(callback.failureCount).isZero();
+
+        executor.lastTask.run();
+
+        assertThat(credentials.lastUri).isEqualTo(TEST_URI);
+        assertThat(callback.successCount).isZero();
+        assertThat(callback.failureCount).isEqualTo(1);
+        assertThat(callback.failure).isSameAs(failure);
+    }
+
+    @Test
     void blockingGetToCallbackSendsFailuresToCallback() {
         RetryableIOException failure = new RetryableIOException("temporary failure", true, 3);
         RecordingCredentials credentials = new RecordingCredentials(failure);
