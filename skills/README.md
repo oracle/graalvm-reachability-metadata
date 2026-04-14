@@ -16,10 +16,10 @@ It runs the target tests, identifies missing metadata entries from the error out
 Reviews automated pull requests with the `library-bulk-update` label.
 It encodes the historical approve/close/rerun logic for bulk tested-version updates, checks that the diff stays limited to `metadata/**/index.json`, requires `REQUEST_CHANGES` whenever the review leaves a blocking comment, and approves clean PRs without merging them yet.
 
-### `review-genai-pr`
+### `review-library-new-request`
 
-Reviews pull requests with the `GenAI` label.
-It encodes the review rules that have already emerged in this repository for AI-generated metadata PRs, especially rejecting scaffold-only tests, requiring test packages to stay separate from library packages, and questioning metadata coverage claims that are not supported by the diff.
+Reviews pull requests with the `library-new-request` label.
+It covers new-library metadata PRs, including titles like `[GenAI] Add support for com.fasterxml:classmate:1.5.1 using gpt-5.4`, and encodes the review rules already used in this repository: reject scaffold-only tests, keep test packages separate from library packages, and question metadata coverage claims that are not supported by the diff.
 
 ## Loading Locally
 
