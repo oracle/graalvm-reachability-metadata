@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class Checker_compat_qualTest {
 
@@ -97,6 +98,22 @@ class Checker_compat_qualTest {
         assertSame(KeyForType.class, annotation.annotationType());
     }
 
+    @Test
+    void typeAnnotationsCanBeUsedOnReceiversCastsThrowsAndArrayCreation() {
+        AdvancedTypeUsageFixture fixture = new AdvancedTypeUsageFixture();
+
+        fixture.capture("  primary  ");
+        fixture.captureAll("secondary", "backup");
+
+        assertEquals("primary", fixture.firstCaptured());
+        assertEquals("secondary", fixture.current());
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> fixture.capture(null));
+        assertEquals("rawValue", exception.getMessage());
+    }
+
     @NonNullDecl
     private static final class DeclarationFixture {
 
@@ -141,6 +158,44 @@ class Checker_compat_qualTest {
 
         private Map<String, String> getCache() {
             return cache;
+        }
+    }
+
+    private static final class AdvancedTypeUsageFixture {
+
+        private final List<String> captured = new ArrayList<>();
+        private String current = "unset";
+
+        private void capture(@NonNullType AdvancedTypeUsageFixture this, @NullableType Object rawValue)
+                throws @NonNullType IllegalArgumentException {
+            String normalized = requireString(rawValue);
+            captured.add(normalized);
+            current = normalized;
+        }
+
+        private void captureAll(Object first, Object second) {
+            @NonNullType String[] values = new @NonNullType String[] {
+                    requireString(first),
+                    requireString(second)
+            };
+            captured.add(values[0]);
+            current = values[0];
+        }
+
+        private static String requireString(@NullableType Object rawValue)
+                throws @NonNullType IllegalArgumentException {
+            if (rawValue == null) {
+                throw new IllegalArgumentException("rawValue");
+            }
+            return ((@NonNullType String) rawValue).strip();
+        }
+
+        private String firstCaptured() {
+            return captured.get(0);
+        }
+
+        private String current() {
+            return current;
         }
     }
 
