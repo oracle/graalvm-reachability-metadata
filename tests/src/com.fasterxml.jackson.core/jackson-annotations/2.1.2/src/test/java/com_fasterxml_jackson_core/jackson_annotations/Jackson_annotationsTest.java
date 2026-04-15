@@ -15,9 +15,12 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -213,6 +216,23 @@ class Jackson_annotationsTest {
     }
 
     @Test
+    void propertyAnnotationsExposeIgnoreOrderAndUnwrapConfiguration() {
+        JsonIgnoreProperties ignoreProperties = jsonIgnorePropertiesAnnotation(true, "internalId", "debugOnly");
+        JsonPropertyOrder propertyOrder = jsonPropertyOrderAnnotation(true, "id", "name", "createdAt");
+        JsonUnwrapped unwrapped = jsonUnwrappedAnnotation(true, "address.", ".value");
+
+        assertThat(ignoreProperties.value()).containsExactly("internalId", "debugOnly");
+        assertThat(ignoreProperties.ignoreUnknown()).isTrue();
+
+        assertThat(propertyOrder.value()).containsExactly("id", "name", "createdAt");
+        assertThat(propertyOrder.alphabetic()).isTrue();
+
+        assertThat(unwrapped.enabled()).isTrue();
+        assertThat(unwrapped.prefix()).isEqualTo("address.");
+        assertThat(unwrapped.suffix()).isEqualTo(".value");
+    }
+
+    @Test
     void visibilityRulesDependOnMemberModifiers() {
         Member publicMember = memberWithModifiers(Modifier.PUBLIC);
         Member protectedMember = memberWithModifiers(Modifier.PROTECTED);
@@ -383,6 +403,78 @@ class Jackson_annotationsTest {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return JsonSubTypes.Type.class;
+            }
+        };
+    }
+
+    private static JsonIgnoreProperties jsonIgnorePropertiesAnnotation(
+            final boolean ignoreUnknown,
+            final String... value
+    ) {
+        return new JsonIgnoreProperties() {
+            @Override
+            public String[] value() {
+                return value;
+            }
+
+            @Override
+            public boolean ignoreUnknown() {
+                return ignoreUnknown;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return JsonIgnoreProperties.class;
+            }
+        };
+    }
+
+    private static JsonPropertyOrder jsonPropertyOrderAnnotation(
+            final boolean alphabetic,
+            final String... value
+    ) {
+        return new JsonPropertyOrder() {
+            @Override
+            public String[] value() {
+                return value;
+            }
+
+            @Override
+            public boolean alphabetic() {
+                return alphabetic;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return JsonPropertyOrder.class;
+            }
+        };
+    }
+
+    private static JsonUnwrapped jsonUnwrappedAnnotation(
+            final boolean enabled,
+            final String prefix,
+            final String suffix
+    ) {
+        return new JsonUnwrapped() {
+            @Override
+            public boolean enabled() {
+                return enabled;
+            }
+
+            @Override
+            public String prefix() {
+                return prefix;
+            }
+
+            @Override
+            public String suffix() {
+                return suffix;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return JsonUnwrapped.class;
             }
         };
     }
