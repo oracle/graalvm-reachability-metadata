@@ -7,6 +7,7 @@
 package com_google_code_findbugs.findbugs_annotations;
 
 import edu.umd.cs.findbugs.annotations.Confidence;
+import edu.umd.cs.findbugs.annotations.Priority;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,5 +49,20 @@ class Findbugs_annotationsTest {
         assertThat(Confidence.getConfidence(4)).isSameAs(Confidence.IGNORE);
         assertThat(Confidence.getConfidence(5)).isSameAs(Confidence.IGNORE);
         assertThat(Confidence.getConfidence(Integer.MAX_VALUE)).isSameAs(Confidence.IGNORE);
+    }
+
+    @Test
+    void priorityConstantsExposeExpectedPriorityValues() {
+        assertThat(Priority.HIGH.getPriorityValue()).isEqualTo(1);
+        assertThat(Priority.MEDIUM.getPriorityValue()).isEqualTo(2);
+        assertThat(Priority.LOW.getPriorityValue()).isEqualTo(3);
+        assertThat(Priority.IGNORE.getPriorityValue()).isEqualTo(5);
+    }
+
+    @Test
+    void priorityValuesIncreaseAcrossSeverityLevels() {
+        assertThat(Priority.HIGH.getPriorityValue()).isLessThan(Priority.MEDIUM.getPriorityValue());
+        assertThat(Priority.MEDIUM.getPriorityValue()).isLessThan(Priority.LOW.getPriorityValue());
+        assertThat(Priority.LOW.getPriorityValue()).isLessThan(Priority.IGNORE.getPriorityValue());
     }
 }
