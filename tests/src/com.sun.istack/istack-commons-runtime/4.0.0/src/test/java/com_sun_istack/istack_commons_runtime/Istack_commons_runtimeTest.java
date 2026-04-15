@@ -289,6 +289,24 @@ class Istack_commons_runtimeTest {
     }
 
     @Test
+    void xmlStreamReaderToContentHandlerWrapsSaxHandlerFailures() throws Exception {
+        XMLStreamReader reader = newXmlStreamReader("<root><child/></root>");
+        SAXException saxFailure = new SAXException("child rejected");
+        DefaultHandler failingHandler = new DefaultHandler() {
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                if ("child".equals(localName)) {
+                    throw saxFailure;
+                }
+            }
+        };
+
+        assertThatThrownBy(() -> new XMLStreamReaderToContentHandler(reader, failingHandler, false, false).bridge())
+                .isInstanceOf(XMLStreamException2.class)
+                .hasCause(saxFailure);
+    }
+
+    @Test
     void loggerDelegatesToJulAndAssociatesCausesWithLoggedExceptions() {
         String loggerName = "com.sun.istack.tests." + System.nanoTime();
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger(loggerName);
