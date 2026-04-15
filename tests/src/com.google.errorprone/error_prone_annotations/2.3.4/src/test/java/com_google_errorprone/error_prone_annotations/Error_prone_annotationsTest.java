@@ -6,6 +6,7 @@
  */
 package com_google_errorprone.error_prone_annotations;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -17,8 +18,17 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 import javax.lang.model.element.Modifier;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.CheckReturnValue;
@@ -43,6 +53,7 @@ import com.google.errorprone.annotations.concurrent.LazyInit;
 import com.google.errorprone.annotations.concurrent.LockMethod;
 import com.google.errorprone.annotations.concurrent.UnlockMethod;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -126,6 +137,14 @@ class Error_prone_annotationsTest {
         assertThat(getSingleAnnotation(restrictedConstructor, RestrictedApi.class)).isNull();
         assertThat(getSingleAnnotation(PublicAbstractAnnotation.class, RequiredModifiers.class)).isNull();
         assertThat(getSingleAnnotation(NotFinalOrStaticAnnotation.class, IncompatibleModifiers.class)).isNull();
+    }
+
+    @Test
+    void packageTargetAnnotationsCompileSuccessfully(@TempDir Path tempDir) throws Exception {
+        Path outputDir = compilePackageFixture(tempDir);
+
+        assertThat(outputDir.resolve("samplepkg/package-info.class")).exists();
+        assertThat(outputDir.resolve("samplepkg/PackageScopedApi.class")).exists();
     }
 
     @Test
@@ -302,6 +321,48 @@ class Error_prone_annotationsTest {
         assertThat(hasAnnotation(annotationType, Inherited.class)).isEqualTo(expectedInherited);
         assertThat(target).isNotNull();
         assertThat(target.value()).containsExactly(expectedTargets);
+    }
+
+    private static Path compilePackageFixture(Path tempDir) throws IOException {
+        Path sourceDir = Files.createDirectories(tempDir.resolve("src").resolve("samplepkg"));
+        Path outputDir = Files.createDirectories(tempDir.resolve("classes"));
+        Path packageInfo = sourceDir.resolve("package-info.java");
+        Path packageScopedApi = sourceDir.resolve("PackageScopedApi.java");
+
+        Files.writeString(packageInfo, """
+                @CheckReturnValue
+                @SuppressPackageLocation
+                package samplepkg;
+
+                import com.google.errorprone.annotations.CheckReturnValue;
+                import com.google.errorprone.annotations.SuppressPackageLocation;
+                """);
+        Files.writeString(packageScopedApi, """
+                package samplepkg;
+
+                public final class PackageScopedApi {
+                    private PackageScopedApi() {
+                    }
+                }
+                """);
+
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        assertThat(compiler).isNotNull();
+
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
+            fileManager.setLocationFromPaths(StandardLocation.CLASS_OUTPUT, List.of(outputDir));
+            Iterable<? extends JavaFileObject> compilationUnits =
+                    fileManager.getJavaFileObjectsFromPaths(List.of(packageInfo, packageScopedApi));
+            List<String> options = List.of("-classpath", System.getProperty("java.class.path"));
+            boolean compiled = compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits).call();
+
+            assertThat(compiled)
+                    .as(diagnostics.getDiagnostics().toString())
+                    .isTrue();
+        }
+
+        return outputDir;
     }
 
     private static <T extends Annotation> T getSingleAnnotation(
