@@ -62,7 +62,7 @@ public class MailcapCommandMapTest {
     }
 
     public static class LoadableDataContentHandler implements DataContentHandler {
-        private static final DataFlavor[] DATA_FLAVORS = { new DataFlavor(String.class, "text") };
+        private static final DataFlavor[] DATA_FLAVORS = {new DataFlavor(String.class, "text") };
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
