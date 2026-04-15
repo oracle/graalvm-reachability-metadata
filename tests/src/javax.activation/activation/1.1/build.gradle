@@ -15,6 +15,10 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+}
+
 tasks.named("test") {
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = JavaLanguageVersion.of(17)
