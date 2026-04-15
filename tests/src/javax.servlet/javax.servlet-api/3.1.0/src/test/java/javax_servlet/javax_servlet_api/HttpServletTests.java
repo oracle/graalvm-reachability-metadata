@@ -24,12 +24,23 @@ class HttpServletTests {
     @Test
     void doGetReportsUnsupportedMethodWithLocalizedMessage() throws ServletException, IOException {
         final ExposedHttpServlet servlet = new ExposedHttpServlet();
-        final ErrorResponse response = new ErrorResponse();
+        final RecordedResponse response = new RecordedResponse();
 
         servlet.invokeDoGet(requestWithProtocol("HTTP/1.1"), response.asHttpServletResponse());
 
         assertThat(response.statusCode()).isEqualTo(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         assertThat(response.message()).isEqualTo("HTTP method GET is not supported by this URL");
+    }
+
+    @Test
+    void doOptionsIncludesSubclassHttpMethodsInAllowHeader() throws ServletException, IOException {
+        final ExposedHttpServlet servlet = new ExposedHttpServlet();
+        final RecordedResponse response = new RecordedResponse();
+
+        servlet.invokeDoOptions(requestWithProtocol("HTTP/1.1"), response.asHttpServletResponse());
+
+        assertThat(response.headerName()).isEqualTo("Allow");
+        assertThat(response.headerValue()).isEqualTo("POST, TRACE, OPTIONS");
     }
 
     private static HttpServletRequest requestWithProtocol(final String protocol) {
@@ -44,11 +55,22 @@ class HttpServletTests {
                 throws ServletException, IOException {
             super.doGet(request, response);
         }
+
+        void invokeDoOptions(final HttpServletRequest request, final HttpServletResponse response)
+                throws ServletException, IOException {
+            super.doOptions(request, response);
+        }
+
+        @Override
+        protected void doPost(final HttpServletRequest request, final HttpServletResponse response) {
+        }
     }
 
-    private static final class ErrorResponse {
+    private static final class RecordedResponse {
         private int statusCode;
         private String message;
+        private String headerName;
+        private String headerValue;
 
         HttpServletResponse asHttpServletResponse() {
             return (HttpServletResponse) Proxy.newProxyInstance(
@@ -65,6 +87,14 @@ class HttpServletTests {
             return message;
         }
 
+        String headerName() {
+            return headerName;
+        }
+
+        String headerValue() {
+            return headerValue;
+        }
+
         private Object handleInvocation(final Object proxy, final Method method, final Object[] arguments) {
             if (isObjectMethod(method)) {
                 return handleObjectMethod(proxy, method, arguments);
@@ -72,6 +102,11 @@ class HttpServletTests {
             if (method.getName().equals("sendError") && arguments.length == 2) {
                 statusCode = (Integer) arguments[0];
                 message = (String) arguments[1];
+                return null;
+            }
+            if (method.getName().equals("setHeader") && arguments.length == 2) {
+                headerName = (String) arguments[0];
+                headerValue = (String) arguments[1];
                 return null;
             }
             throw new UnsupportedOperationException(method.toGenericString());
