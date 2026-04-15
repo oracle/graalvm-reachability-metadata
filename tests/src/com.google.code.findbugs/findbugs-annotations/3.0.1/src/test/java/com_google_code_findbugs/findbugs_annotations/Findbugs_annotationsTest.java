@@ -65,4 +65,19 @@ class Findbugs_annotationsTest {
         assertThat(Priority.MEDIUM.getPriorityValue()).isLessThan(Priority.LOW.getPriorityValue());
         assertThat(Priority.LOW.getPriorityValue()).isLessThan(Priority.IGNORE.getPriorityValue());
     }
+
+    @Test
+    void confidenceConstantsExposeExpectedConfidenceValues() {
+        assertThat(Confidence.HIGH.getConfidenceValue()).isEqualTo(1);
+        assertThat(Confidence.MEDIUM.getConfidenceValue()).isEqualTo(2);
+        assertThat(Confidence.LOW.getConfidenceValue()).isEqualTo(3);
+        assertThat(Confidence.IGNORE.getConfidenceValue()).isEqualTo(5);
+    }
+
+    @Test
+    void confidenceLookupRoundTripsThroughPublishedConfidenceValues() {
+        for (Confidence confidence : Confidence.values()) {
+            assertThat(Confidence.getConfidence(confidence.getConfidenceValue())).isSameAs(confidence);
+        }
+    }
 }
