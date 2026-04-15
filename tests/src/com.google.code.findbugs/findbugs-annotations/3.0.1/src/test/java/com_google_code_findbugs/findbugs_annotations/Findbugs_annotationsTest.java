@@ -1,0 +1,83 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package com_google_code_findbugs.findbugs_annotations;
+
+import edu.umd.cs.findbugs.annotations.Confidence;
+import edu.umd.cs.findbugs.annotations.Priority;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class Findbugs_annotationsTest {
+    @Test
+    void test() throws Exception {
+        System.out.println("This is just a placeholder, implement your test");
+    }
+
+    @Test
+    void confidenceValuesReturnsDefensiveCopy() {
+        Confidence[] values = Confidence.values();
+        values[0] = Confidence.IGNORE;
+        values[1] = Confidence.IGNORE;
+
+        assertThat(Confidence.values())
+                .containsExactly(Confidence.HIGH, Confidence.MEDIUM, Confidence.LOW, Confidence.IGNORE);
+    }
+
+    @Test
+    void confidenceValueOfRejectsInvalidInput() {
+        assertThatThrownBy(() -> Confidence.valueOf("UNKNOWN"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("UNKNOWN");
+
+        assertThatThrownBy(() -> Confidence.valueOf(null))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void confidenceThresholdLookupHandlesExtremeAndBoundaryValues() {
+        assertThat(Confidence.getConfidence(Integer.MIN_VALUE)).isSameAs(Confidence.HIGH);
+        assertThat(Confidence.getConfidence(0)).isSameAs(Confidence.HIGH);
+        assertThat(Confidence.getConfidence(1)).isSameAs(Confidence.HIGH);
+        assertThat(Confidence.getConfidence(2)).isSameAs(Confidence.MEDIUM);
+        assertThat(Confidence.getConfidence(3)).isSameAs(Confidence.LOW);
+        assertThat(Confidence.getConfidence(4)).isSameAs(Confidence.IGNORE);
+        assertThat(Confidence.getConfidence(5)).isSameAs(Confidence.IGNORE);
+        assertThat(Confidence.getConfidence(Integer.MAX_VALUE)).isSameAs(Confidence.IGNORE);
+    }
+
+    @Test
+    void priorityConstantsExposeExpectedPriorityValues() {
+        assertThat(Priority.HIGH.getPriorityValue()).isEqualTo(1);
+        assertThat(Priority.MEDIUM.getPriorityValue()).isEqualTo(2);
+        assertThat(Priority.LOW.getPriorityValue()).isEqualTo(3);
+        assertThat(Priority.IGNORE.getPriorityValue()).isEqualTo(5);
+    }
+
+    @Test
+    void priorityValuesIncreaseAcrossSeverityLevels() {
+        assertThat(Priority.HIGH.getPriorityValue()).isLessThan(Priority.MEDIUM.getPriorityValue());
+        assertThat(Priority.MEDIUM.getPriorityValue()).isLessThan(Priority.LOW.getPriorityValue());
+        assertThat(Priority.LOW.getPriorityValue()).isLessThan(Priority.IGNORE.getPriorityValue());
+    }
+
+    @Test
+    void confidenceConstantsExposeExpectedConfidenceValues() {
+        assertThat(Confidence.HIGH.getConfidenceValue()).isEqualTo(1);
+        assertThat(Confidence.MEDIUM.getConfidenceValue()).isEqualTo(2);
+        assertThat(Confidence.LOW.getConfidenceValue()).isEqualTo(3);
+        assertThat(Confidence.IGNORE.getConfidenceValue()).isEqualTo(5);
+    }
+
+    @Test
+    void confidenceLookupRoundTripsThroughPublishedConfidenceValues() {
+        for (Confidence confidence : Confidence.values()) {
+            assertThat(Confidence.getConfidence(confidence.getConfidenceValue())).isSameAs(confidence);
+        }
+    }
+}
