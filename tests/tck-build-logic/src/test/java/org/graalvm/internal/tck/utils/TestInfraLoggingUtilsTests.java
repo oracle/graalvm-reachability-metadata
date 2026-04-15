@@ -35,15 +35,35 @@ class TestInfraLoggingUtilsTests {
     }
 
     @Test
-    void batchReproducerLinesWrapCommandInVisibleDelimiters() {
+    void batchReproducerLinesWrapTestInfraCommandInVisibleDelimiters() {
         assertThat(TestInfraLoggingUtils.batchReproducerLines(
+                "testInfra",
                 "future-defaults-all",
                 "com.example:demo:1.0.0",
                 4
         )).isEqualTo(List.of(
+                "COORDINATES: com.example:demo:1.0.0",
                 TestInfraLoggingUtils.DELIMITER,
-                "TESTINFRA REPRODUCER com.example:demo:1.0.0",
-                "GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew testInfra -Pcoordinates=com.example:demo:1.0.0 -Pparallelism=4 --stacktrace",
+                "Task: testInfra",
+                "Native image mode: future-defaults-all",
+                "Reproducer command: GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew testInfra -Pcoordinates=\"$COORDINATES\" -Pparallelism=4 --stacktrace",
+                TestInfraLoggingUtils.DELIMITER
+        ));
+    }
+
+    @Test
+    void batchReproducerLinesUseInvokedTaskName() {
+        assertThat(TestInfraLoggingUtils.batchReproducerLines(
+                "test",
+                "future-defaults-all",
+                "com.example:demo:1.0.0",
+                null
+        )).isEqualTo(List.of(
+                "COORDINATES: com.example:demo:1.0.0",
+                TestInfraLoggingUtils.DELIMITER,
+                "Task: test",
+                "Native image mode: future-defaults-all",
+                "Reproducer command: GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test -Pcoordinates=\"$COORDINATES\" --stacktrace",
                 TestInfraLoggingUtils.DELIMITER
         ));
     }
