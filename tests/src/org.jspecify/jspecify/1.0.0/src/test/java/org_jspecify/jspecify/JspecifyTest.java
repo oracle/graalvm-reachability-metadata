@@ -18,6 +18,7 @@ import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.util.List;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
@@ -120,6 +121,22 @@ class JspecifyTest {
         assertThat(retentionPolicy(NullUnmarked.class)).isEqualTo(RetentionPolicy.RUNTIME);
     }
 
+    @Test
+    void recordComponentAnnotationsAreRetainedOnComponentsAndGeneratedMembers() throws Exception {
+        RecordComponent aliasComponent = NullableRecordApi.class.getRecordComponents()[0];
+        RecordComponent namesComponent = NullableRecordApi.class.getRecordComponents()[1];
+        Method aliasAccessor = NullableRecordApi.class.getDeclaredMethod("alias");
+        Method namesAccessor = NullableRecordApi.class.getDeclaredMethod("names");
+        Constructor<NullableRecordApi> constructor = NullableRecordApi.class.getDeclaredConstructor(String.class, List.class);
+
+        assertThat(annotationTypes(aliasComponent.getAnnotatedType())).containsExactly(Nullable.class);
+        assertThat(annotationTypes(singleTypeArgument(namesComponent.getAnnotatedType()))).containsExactly(NonNull.class);
+        assertThat(annotationTypes(aliasAccessor.getAnnotatedReturnType())).containsExactly(Nullable.class);
+        assertThat(annotationTypes(singleTypeArgument(namesAccessor.getAnnotatedReturnType()))).containsExactly(NonNull.class);
+        assertThat(annotationTypes(constructor.getAnnotatedParameterTypes()[0])).containsExactly(Nullable.class);
+        assertThat(annotationTypes(singleTypeArgument(constructor.getAnnotatedParameterTypes()[1]))).containsExactly(NonNull.class);
+    }
+
     private static List<Class<? extends Annotation>> annotationTypes(AnnotatedElement annotatedElement) {
         return List.of(annotatedElement.getAnnotations()).stream()
                 .map(Annotation::annotationType)
@@ -188,5 +205,8 @@ class JspecifyTest {
         @NullUnmarked
         void nullUnmarkedOperation() {
         }
+    }
+
+    record NullableRecordApi(@Nullable String alias, List<@NonNull String> names) {
     }
 }
