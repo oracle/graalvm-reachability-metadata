@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,10 +41,21 @@ class ServletOutputStreamTests {
 
     static final class RecordingServletOutputStream extends ServletOutputStream {
         private final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        private WriteListener writeListener;
 
         @Override
         public void write(int value) {
             bytes.write(value);
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
+            this.writeListener = writeListener;
         }
 
         String content() {
