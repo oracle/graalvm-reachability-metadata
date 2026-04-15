@@ -36,7 +36,7 @@ class ServletOutputStreamTests {
 
         assertThatThrownBy(() -> outputStream.print('\u0100'))
                 .isInstanceOf(CharConversionException.class)
-                .hasMessage("Not an ISO 8859-1 character: Ā");
+                .hasMessage("Not an ISO 8859-1 character: \u0100");
     }
 
     static final class RecordingServletOutputStream extends ServletOutputStream {
