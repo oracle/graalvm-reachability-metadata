@@ -302,8 +302,7 @@ class J2objc_annotationsTest {
                 String value = input.get(index);
                 if (loopStyle == LoopTranslation.LoopStyle.JAVA_ITERATOR) {
                     collectedValues.add(value);
-                }
-                else {
+                } else {
                     collectedValues.add("[" + value + "]");
                 }
             }
