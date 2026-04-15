@@ -7,6 +7,11 @@
 package org_jspecify.jspecify;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
@@ -87,6 +92,34 @@ class JspecifyTest {
         assertThat(nullMarked.toString()).contains(NullMarked.class.getName());
     }
 
+    @Test
+    void annotationTypesDeclareTheirDocumentedTargetAndRetentionContract() {
+        assertThat(Nullable.class).hasAnnotation(Documented.class);
+        assertThat(targetTypes(Nullable.class)).containsExactly(ElementType.TYPE_USE);
+        assertThat(retentionPolicy(Nullable.class)).isEqualTo(RetentionPolicy.RUNTIME);
+
+        assertThat(NonNull.class).hasAnnotation(Documented.class);
+        assertThat(targetTypes(NonNull.class)).containsExactly(ElementType.TYPE_USE);
+        assertThat(retentionPolicy(NonNull.class)).isEqualTo(RetentionPolicy.RUNTIME);
+
+        assertThat(NullMarked.class).hasAnnotation(Documented.class);
+        assertThat(targetTypes(NullMarked.class)).containsExactly(
+                ElementType.MODULE,
+                ElementType.PACKAGE,
+                ElementType.TYPE,
+                ElementType.METHOD,
+                ElementType.CONSTRUCTOR);
+        assertThat(retentionPolicy(NullMarked.class)).isEqualTo(RetentionPolicy.RUNTIME);
+
+        assertThat(NullUnmarked.class).hasAnnotation(Documented.class);
+        assertThat(targetTypes(NullUnmarked.class)).containsExactly(
+                ElementType.PACKAGE,
+                ElementType.TYPE,
+                ElementType.METHOD,
+                ElementType.CONSTRUCTOR);
+        assertThat(retentionPolicy(NullUnmarked.class)).isEqualTo(RetentionPolicy.RUNTIME);
+    }
+
     private static List<Class<? extends Annotation>> annotationTypes(AnnotatedElement annotatedElement) {
         return List.of(annotatedElement.getAnnotations()).stream()
                 .map(Annotation::annotationType)
@@ -97,6 +130,14 @@ class JspecifyTest {
         return List.of(annotatedType.getAnnotations()).stream()
                 .map(Annotation::annotationType)
                 .toList();
+    }
+
+    private static List<ElementType> targetTypes(Class<? extends Annotation> annotationType) {
+        return List.of(annotationType.getAnnotation(Target.class).value());
+    }
+
+    private static RetentionPolicy retentionPolicy(Class<? extends Annotation> annotationType) {
+        return annotationType.getAnnotation(Retention.class).value();
     }
 
     private static AnnotatedType singleTypeArgument(AnnotatedType annotatedType) {
