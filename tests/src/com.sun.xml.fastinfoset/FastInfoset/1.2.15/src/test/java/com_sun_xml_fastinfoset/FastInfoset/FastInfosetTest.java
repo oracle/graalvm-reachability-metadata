@@ -6,6 +6,9 @@
  */
 package com_sun_xml_fastinfoset.FastInfoset;
 
+import com.sun.xml.fastinfoset.sax.Features;
+import com.sun.xml.fastinfoset.sax.SAXDocumentParser;
+import com.sun.xml.fastinfoset.sax.SAXDocumentSerializer;
 import com.sun.xml.fastinfoset.stax.StAXDocumentParser;
 import com.sun.xml.fastinfoset.stax.StAXDocumentSerializer;
 import org.jvnet.fastinfoset.FastInfosetResult;
@@ -16,6 +19,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.DefaultHandler2;
+import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,7 +36,9 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -133,6 +142,29 @@ class FastInfosetTest {
         assertThat(reader.next()).isEqualTo(XMLStreamConstants.END_DOCUMENT);
     }
 
+    @Test
+    void saxParserReportsNamespaceDeclarationAttributesAndLexicalEvents() throws Exception {
+        byte[] fastInfosetDocument = createSaxDocument();
+        SAXDocumentParser parser = new SAXDocumentParser();
+        CapturingSaxHandler handler = new CapturingSaxHandler();
+
+        parser.setFeature(Features.NAMESPACE_PREFIXES_FEATURE, true);
+        parser.setContentHandler(handler);
+        parser.setLexicalHandler(handler);
+        parser.parse(new ByteArrayInputStream(fastInfosetDocument));
+
+        assertThat(handler.comments).containsExactly("preface");
+        assertThat(handler.prefixMappings).containsExactly("=urn:default", "m=urn:meta");
+        assertThat(handler.endPrefixMappings).containsExactly("m", "");
+        assertThat(handler.rootNamespaceDeclarations)
+                .containsEntry("xmlns", "urn:default")
+                .containsEntry("xmlns:m", "urn:meta");
+        assertThat(handler.rootAttributes).containsEntry("m:flag", "true");
+        assertThat(handler.elementQNames).containsExactly("root", "m:entry");
+        assertThat(handler.processingInstructions).containsExactly("done=now");
+        assertThat(handler.textContent).containsExactly("value");
+    }
+
     private static byte[] toFastInfoset(String xml) throws TransformerException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -196,6 +228,29 @@ class FastInfosetTest {
         return outputStream.toByteArray();
     }
 
+    private static byte[] createSaxDocument() throws SAXException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        SAXDocumentSerializer writer = new SAXDocumentSerializer();
+        writer.setOutputStream(outputStream);
+
+        AttributesImpl rootAttributes = new AttributesImpl();
+        rootAttributes.addAttribute("urn:meta", "flag", "m:flag", "CDATA", "true");
+
+        writer.startDocument();
+        writer.comment("preface".toCharArray(), 0, "preface".length());
+        writer.startPrefixMapping("", "urn:default");
+        writer.startPrefixMapping("m", "urn:meta");
+        writer.startElement("urn:default", "root", "root", rootAttributes);
+        writer.startElement("urn:meta", "entry", "m:entry", new AttributesImpl());
+        writer.characters("value".toCharArray(), 0, "value".length());
+        writer.endElement("urn:meta", "entry", "m:entry");
+        writer.processingInstruction("done", "now");
+        writer.endElement("urn:default", "root", "root");
+        writer.endDocument();
+
+        return outputStream.toByteArray();
+    }
+
     private static Map<String, String> namespacesAtCurrentElement(StAXDocumentParser reader) {
         Map<String, String> namespaces = new LinkedHashMap<>();
         for (int index = 0; index < reader.getNamespaceCount(); index++) {
@@ -203,5 +258,57 @@ class FastInfosetTest {
             namespaces.put(prefix == null ? "" : prefix, reader.getNamespaceURI(index));
         }
         return namespaces;
+    }
+
+    private static final class CapturingSaxHandler extends DefaultHandler2 {
+        private final List<String> comments = new ArrayList<>();
+        private final List<String> prefixMappings = new ArrayList<>();
+        private final List<String> endPrefixMappings = new ArrayList<>();
+        private final Map<String, String> rootNamespaceDeclarations = new LinkedHashMap<>();
+        private final Map<String, String> rootAttributes = new LinkedHashMap<>();
+        private final List<String> elementQNames = new ArrayList<>();
+        private final List<String> processingInstructions = new ArrayList<>();
+        private final List<String> textContent = new ArrayList<>();
+
+        @Override
+        public void startPrefixMapping(String prefix, String uri) {
+            prefixMappings.add((prefix == null ? "" : prefix) + "=" + uri);
+        }
+
+        @Override
+        public void endPrefixMapping(String prefix) {
+            endPrefixMappings.add(prefix == null ? "" : prefix);
+        }
+
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attributes) {
+            elementQNames.add(qName);
+            if (elementQNames.size() == 1) {
+                for (int index = 0; index < attributes.getLength(); index++) {
+                    String attributeQName = attributes.getQName(index);
+                    if (attributeQName.startsWith("xmlns")) {
+                        rootNamespaceDeclarations.put(attributeQName, attributes.getValue(index));
+                    }
+                    else {
+                        rootAttributes.put(attributeQName, attributes.getValue(index));
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void characters(char[] ch, int start, int length) {
+            textContent.add(new String(ch, start, length));
+        }
+
+        @Override
+        public void processingInstruction(String target, String data) {
+            processingInstructions.add(target + "=" + data);
+        }
+
+        @Override
+        public void comment(char[] ch, int start, int length) {
+            comments.add(new String(ch, start, length));
+        }
     }
 }
