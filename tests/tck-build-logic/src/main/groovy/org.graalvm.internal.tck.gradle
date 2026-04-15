@@ -29,6 +29,21 @@ tasks.withType(JavaCompile).configureEach {
     options.release = 21
 }
 
+tasks.withType(org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask).configureEach { task ->
+    if (task.name == "nativeTestCompile") {
+        // Restrict cacheability to the dynamic-access reporting lane.
+        task.outputs.cacheIf("Enabled only when generating dynamic-access reports") {
+            boolean propertyEnabled = providers.gradleProperty('tck.generateDynamicAccessReport')
+                    .map { value -> value.toBoolean() }
+                    .getOrElse(false)
+            boolean taskRequested = gradle.startParameter.taskNames.any { taskName ->
+                taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport")
+            }
+            propertyEnabled || taskRequested
+        }
+    }
+}
+
 checkstyle {
     configFile tck.repoRoot.file("gradle/checkstyle.xml").get().asFile
 }
