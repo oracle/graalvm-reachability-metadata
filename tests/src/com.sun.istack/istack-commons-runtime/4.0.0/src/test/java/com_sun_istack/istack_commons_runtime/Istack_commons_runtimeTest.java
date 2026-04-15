@@ -35,7 +35,10 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -145,6 +148,26 @@ class Istack_commons_runtimeTest {
         assertThat(localizer.localize(new NullLocalizable("plain text"))).isEqualTo("plain text");
         assertThat(localizer.localize(missing)).isEqualTo("[failed to localize] missingKey(alpha, 7)");
         assertThatThrownBy(() -> new NullLocalizable(null)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void localizerLoadsBundlesFromThreadContextClassLoaderWhenDefaultLookupMisses() throws IOException {
+        Localizer localizer = new Localizer(Locale.US);
+        Path bundleRoot = Files.createTempDirectory("istack-context-bundle");
+        String bundleName = "dynamic.context.Messages" + System.nanoTime();
+        Path bundlePath = bundleRoot.resolve(bundleName.replace('.', '/') + ".properties");
+        Files.createDirectories(bundlePath.getParent());
+        Files.writeString(bundlePath, "greeting=Loaded {0} via context loader\n", StandardCharsets.UTF_8);
+        Localizable message = new LocalizableMessageFactory(bundleName).getMessage("greeting", "istack");
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try (URLClassLoader contextClassLoader = new URLClassLoader(new java.net.URL[]{bundleRoot.toUri().toURL()}, null)) {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+
+            assertThat(localizer.localize(message)).isEqualTo("Loaded istack via context loader");
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
     }
 
     @Test
