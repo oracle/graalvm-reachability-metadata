@@ -16,6 +16,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -197,6 +198,21 @@ class Jackson_annotationsTest {
     }
 
     @Test
+    void jsonSubTypesRetainsNamedSubtypeDefinitions() {
+        JsonSubTypes.Type firstSubtype = jsonSubTypeAnnotation(FirstSubtype.class, "first");
+        JsonSubTypes.Type secondSubtype = jsonSubTypeAnnotation(SecondSubtype.class, "second");
+        JsonSubTypes jsonSubTypes = jsonSubTypesAnnotation(firstSubtype, secondSubtype);
+
+        assertThat(jsonSubTypes.value()).containsExactly(firstSubtype, secondSubtype);
+        assertThat(jsonSubTypes.value())
+                .extracting(JsonSubTypes.Type::value)
+                .containsExactly(FirstSubtype.class, SecondSubtype.class);
+        assertThat(jsonSubTypes.value())
+                .extracting(JsonSubTypes.Type::name)
+                .containsExactly("first", "second");
+    }
+
+    @Test
     void visibilityRulesDependOnMemberModifiers() {
         Member publicMember = memberWithModifiers(Modifier.PUBLIC);
         Member protectedMember = memberWithModifiers(Modifier.PROTECTED);
@@ -338,6 +354,39 @@ class Jackson_annotationsTest {
         };
     }
 
+    private static JsonSubTypes jsonSubTypesAnnotation(final JsonSubTypes.Type... value) {
+        return new JsonSubTypes() {
+            @Override
+            public JsonSubTypes.Type[] value() {
+                return value;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return JsonSubTypes.class;
+            }
+        };
+    }
+
+    private static JsonSubTypes.Type jsonSubTypeAnnotation(final Class<?> value, final String name) {
+        return new JsonSubTypes.Type() {
+            @Override
+            public Class<?> value() {
+                return value;
+            }
+
+            @Override
+            public String name() {
+                return name;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return JsonSubTypes.Type.class;
+            }
+        };
+    }
+
     private static Member memberWithModifiers(final int modifiers) {
         return new Member() {
             @Override
@@ -360,5 +409,11 @@ class Jackson_annotationsTest {
                 return false;
             }
         };
+    }
+
+    private static final class FirstSubtype {
+    }
+
+    private static final class SecondSubtype {
     }
 }
