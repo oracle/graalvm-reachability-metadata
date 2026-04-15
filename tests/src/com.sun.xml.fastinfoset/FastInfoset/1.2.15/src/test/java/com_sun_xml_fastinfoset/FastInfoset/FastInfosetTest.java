@@ -343,8 +343,7 @@ class FastInfosetTest {
                     String attributeQName = attributes.getQName(index);
                     if (attributeQName.startsWith("xmlns")) {
                         rootNamespaceDeclarations.put(attributeQName, attributes.getValue(index));
-                    }
-                    else {
+                    } else {
                         rootAttributes.put(attributeQName, attributes.getValue(index));
                     }
                 }
