@@ -6,13 +6,17 @@
  */
 package javax.activation;
 
+import java.lang.reflect.Method;
+
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommandMapTest {
     @Test
-    void classDollarLoadsCommandMapByName() {
-        assertThat(CommandMap.class$("javax.activation.CommandMap")).isSameAs(CommandMap.class);
+    void classDollarLoadsCommandMapByName() throws Exception {
+        Method classLookupMethod = CommandMap.class.getDeclaredMethod("class$", String.class);
+
+        assertThat(classLookupMethod.invoke(null, "javax.activation.CommandMap")).isSameAs(CommandMap.class);
     }
 }
