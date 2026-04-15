@@ -42,6 +42,13 @@ class J2objc_annotationsTest {
     }
 
     @Test
+    void propertyAnnotationSupportsDefaultAttributeValue() {
+        DefaultPropertyHolder defaultPropertyHolder = new DefaultPropertyHolder("displayName");
+
+        assertThat(defaultPropertyHolder.displayName()).isEqualTo("displayName");
+    }
+
+    @Test
     void manualAnnotationImplementationsExposeConfiguredMembers() {
         ObjectiveCName objectiveCName = new ObjectiveCName() {
             @Override
@@ -214,6 +221,19 @@ class J2objc_annotationsTest {
 
         List<String> aliasHistory() {
             return aliasHistory.snapshot();
+        }
+    }
+
+    static final class DefaultPropertyHolder {
+        @Property
+        private final String displayName;
+
+        DefaultPropertyHolder(String displayName) {
+            this.displayName = displayName;
+        }
+
+        String displayName() {
+            return displayName;
         }
     }
 
