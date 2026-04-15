@@ -20,7 +20,6 @@ import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.jcache.ConfigSettings;
 import org.hibernate.cache.jcache.internal.JCacheRegionFactory;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,7 +27,7 @@ public class JCacheRegionFactoryTest {
     @Test
     void startInstantiatesExplicitCacheManagerClass() {
         JCacheRegionFactory factory = new JCacheRegionFactory();
-        SessionFactoryOptions sessionFactoryOptions = Mockito.mock(SessionFactoryOptions.class);
+        SessionFactoryOptions sessionFactoryOptions = null;
 
         factory.start(sessionFactoryOptions, Map.of(ConfigSettings.CACHE_MANAGER, ExplicitCacheManager.class));
 
