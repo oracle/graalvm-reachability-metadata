@@ -49,6 +49,16 @@ class J2objc_annotationsTest {
     }
 
     @Test
+    void weakOuterAnnotatedInnerTypesCanTransformOuterOwnedState() {
+        InnerRendererOwner innerRendererOwner = new InnerRendererOwner("ios");
+        InnerRendererOwner.InnerAliasRenderer innerAliasRenderer = innerRendererOwner.new InnerAliasRenderer();
+
+        assertThat(innerAliasRenderer.render(List.of(" view ", "controller", "adapter ")))
+                .isEqualTo("ios::VIEW|CONTROLLER|ADAPTER");
+        assertThat(innerRendererOwner.renderedAliases()).containsExactly("VIEW", "CONTROLLER", "ADAPTER");
+    }
+
+    @Test
     void manualAnnotationImplementationsExposeConfiguredMembers() {
         ObjectiveCName objectiveCName = new ObjectiveCName() {
             @Override
@@ -246,6 +256,37 @@ class J2objc_annotationsTest {
 
         List<String> snapshot() {
             return List.copyOf(values);
+        }
+    }
+
+    static final class InnerRendererOwner {
+        private final String namespace;
+        private final List<String> renderedAliases = new ArrayList<>();
+
+        InnerRendererOwner(String namespace) {
+            this.namespace = namespace;
+        }
+
+        List<String> renderedAliases() {
+            return List.copyOf(renderedAliases);
+        }
+
+        @WeakOuter
+        final class InnerAliasRenderer {
+            String render(List<String> aliases) {
+                @AutoreleasePool
+                StringBuilder renderedValue = new StringBuilder(namespace).append("::");
+
+                for (String alias : aliases) {
+                    String normalizedAlias = alias.trim().toUpperCase();
+                    renderedAliases.add(normalizedAlias);
+                    if (renderedValue.length() > namespace.length() + 2) {
+                        renderedValue.append('|');
+                    }
+                    renderedValue.append(normalizedAlias);
+                }
+                return renderedValue.toString();
+            }
         }
     }
 
