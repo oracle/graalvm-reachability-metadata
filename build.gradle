@@ -118,7 +118,7 @@ tasks.named("check").configure {
     dependsOn("validateLibraryStats")
 }
 
-static List<Map> testInfraCommands(String gradleCmd, String target) {
+static List<Map> testInfraCommands(String gradleCmd, String target, int parallelism) {
     def taskNames = [
             "validateIndexFiles",
             "checkstyle",
@@ -136,7 +136,7 @@ static List<Map> testInfraCommands(String gradleCmd, String target) {
             "splitTestOnlyMetadata"
     ]
     return taskNames.collect { name ->
-        [name: name, args: [gradleCmd, name, "-Pcoordinates=${target}"]]
+        [name: name, args: [gradleCmd, name, "-Pcoordinates=${target}", "-Pparallelism=${parallelism}"]]
     }
 }
 
@@ -176,7 +176,7 @@ void printTestInfraReproducer(String gradleCmd, String coordinate, int paralleli
 
 tasks.register('testInfra') { t ->
     t.group = "verification"
-    t.setDescription("""Runs clean and pullAllowedDockerImages, then runs (${testInfraCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs for a single coordinate.
+    t.setDescription("""Runs clean and pullAllowedDockerImages, then runs (${testInfraCommands('', '', 4).collect { it.name }.join(', ')}) concurrently with isolated logs for a single coordinate.
                         Options: -Pcoordinate or -Pcoordinates to specify the target; -Pparallelism to control the number of concurrent tasks.""")
 
     doLast {
@@ -236,7 +236,7 @@ tasks.register('testInfra') { t ->
             def pullLogFile = new File(logsDir, "pullAllowedDockerImages-${fileSuffix}.log")
             runGradleTaskAndCheck(pullArgs, "pullAllowedDockerImages (${coordinate})", pullLogFile)
 
-            def commands = testInfraCommands(gradleCmd, coordinate)
+            def commands = testInfraCommands(gradleCmd, coordinate, parallelism)
             int effectiveParallelism = Math.min(parallelism, commands.size())
             def pool = Executors.newFixedThreadPool(effectiveParallelism)
 

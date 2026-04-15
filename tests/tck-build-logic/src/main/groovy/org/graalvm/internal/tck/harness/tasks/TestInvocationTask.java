@@ -6,11 +6,15 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import org.graalvm.internal.tck.utils.CoordinateUtils;
+import org.graalvm.internal.tck.utils.NativeImageConfigUtils;
+import org.graalvm.internal.tck.utils.TestInfraLoggingUtils;
 import org.gradle.api.provider.ProviderFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Task that is used to start subproject tests for matching coordinates.
@@ -44,6 +48,19 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
 
     @Override
     protected void beforeEach(String coordinates, List<String> command) {
+        String coordinateFilter = Objects.toString(getProject().findProperty("coordinates"), "");
+        if (CoordinateUtils.isFractionalBatch(coordinateFilter)) {
+            String nativeImageMode = NativeImageConfigUtils.resolveSelectedMode(
+                    System.getenv("GVM_TCK_NATIVE_IMAGE_MODE"),
+                    Objects.toString(getProject().findProperty("tck.nativeImageMode"), null)
+            );
+            int parallelism = TestInfraLoggingUtils.parseParallelism(
+                    Objects.toString(getProject().findProperty("parallelism"), "")
+            );
+            for (String line : TestInfraLoggingUtils.batchReproducerLines(nativeImageMode, coordinates, parallelism)) {
+                getLogger().lifecycle(line);
+            }
+        }
         getLogger().lifecycle("====================");
         getLogger().lifecycle("Testing library: {}", coordinates);
         getLogger().lifecycle("Command: `{}`", String.join(" ", command));
