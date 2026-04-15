@@ -6,6 +6,8 @@
  */
 package com_sun_xml_fastinfoset.FastInfoset;
 
+import com.sun.xml.fastinfoset.dom.DOMDocumentParser;
+import com.sun.xml.fastinfoset.dom.DOMDocumentSerializer;
 import com.sun.xml.fastinfoset.sax.Features;
 import com.sun.xml.fastinfoset.sax.SAXDocumentParser;
 import com.sun.xml.fastinfoset.sax.SAXDocumentSerializer;
@@ -165,6 +167,44 @@ class FastInfosetTest {
         assertThat(handler.textContent).containsExactly("value");
     }
 
+    @Test
+    void domSerializerCanEncodeElementNodeAsStandaloneDocument() throws Exception {
+        Document sourceDocument = newDocument();
+        Element rootElement = sourceDocument.createElementNS("urn:default", "d:root");
+        rootElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:d", "urn:default");
+        rootElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:m", "urn:meta");
+        rootElement.setAttributeNS("urn:meta", "m:status", "ready");
+        rootElement.appendChild(sourceDocument.createComment("inside"));
+
+        Element childElement = sourceDocument.createElementNS("urn:meta", "m:entry");
+        childElement.appendChild(sourceDocument.createTextNode("value"));
+        rootElement.appendChild(childElement);
+
+        byte[] fastInfosetDocument = toFastInfoset(rootElement);
+        Document parsedDocument = fromFastInfosetWithDomParser(fastInfosetDocument);
+
+        assertThat(fastInfosetDocument).isNotEmpty();
+        assertThat(parsedDocument.getChildNodes().getLength()).isEqualTo(1);
+
+        Element parsedRoot = parsedDocument.getDocumentElement();
+        assertThat(parsedRoot.getNamespaceURI()).isEqualTo("urn:default");
+        assertThat(parsedRoot.getPrefix()).isEqualTo("d");
+        assertThat(parsedRoot.getLocalName()).isEqualTo("root");
+        assertThat(parsedRoot.getAttribute("xmlns:d")).isEqualTo("urn:default");
+        assertThat(parsedRoot.getAttribute("xmlns:m")).isEqualTo("urn:meta");
+        assertThat(parsedRoot.getAttributeNS("urn:meta", "status")).isEqualTo("ready");
+
+        Node commentNode = parsedRoot.getFirstChild();
+        assertThat(commentNode.getNodeType()).isEqualTo(Node.COMMENT_NODE);
+        assertThat(commentNode.getNodeValue()).isEqualTo("inside");
+
+        Element parsedChild = (Element) commentNode.getNextSibling();
+        assertThat(parsedChild.getNamespaceURI()).isEqualTo("urn:meta");
+        assertThat(parsedChild.getPrefix()).isEqualTo("m");
+        assertThat(parsedChild.getLocalName()).isEqualTo("entry");
+        assertThat(parsedChild.getTextContent()).isEqualTo("value");
+    }
+
     private static byte[] toFastInfoset(String xml) throws TransformerException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -249,6 +289,21 @@ class FastInfosetTest {
         writer.endDocument();
 
         return outputStream.toByteArray();
+    }
+
+    private static byte[] toFastInfoset(Node node) throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        DOMDocumentSerializer serializer = new DOMDocumentSerializer();
+        serializer.setOutputStream(outputStream);
+        serializer.serialize(node);
+        return outputStream.toByteArray();
+    }
+
+    private static Document fromFastInfosetWithDomParser(byte[] fastInfosetDocument) throws Exception {
+        Document document = newDocument();
+        DOMDocumentParser parser = new DOMDocumentParser();
+        parser.parse(document, new ByteArrayInputStream(fastInfosetDocument));
+        return document;
     }
 
     private static Map<String, String> namespacesAtCurrentElement(StAXDocumentParser reader) {
