@@ -18,6 +18,8 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -56,6 +58,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 class Error_prone_annotationsTest {
     @Test
@@ -141,10 +144,31 @@ class Error_prone_annotationsTest {
 
     @Test
     void packageTargetAnnotationsCompileSuccessfully(@TempDir Path tempDir) throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Package fixture compilation requires the JDK compiler file manager");
+
         Path outputDir = compilePackageFixture(tempDir);
 
         assertThat(outputDir.resolve("samplepkg/package-info.class")).exists();
         assertThat(outputDir.resolve("samplepkg/PackageScopedApi.class")).exists();
+    }
+
+    @Test
+    void runtimePackageAnnotationsRemainVisibleWhileClassRetainedPackageAnnotationsStayCompileTimeOnly(
+            @TempDir Path tempDir) throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Package fixture compilation requires the JDK compiler file manager");
+
+        Path outputDir = compilePackageFixture(tempDir);
+
+        try (URLClassLoader classLoader = new URLClassLoader(
+                new URL[] {outputDir.toUri().toURL()},
+                Error_prone_annotationsTest.class.getClassLoader())) {
+            Class<?> packageScopedApiClass = classLoader.loadClass("samplepkg.PackageScopedApi");
+            Package samplePackage = packageScopedApiClass.getPackage();
+
+            assertThat(samplePackage).isNotNull();
+            assertThat(getSingleAnnotation(samplePackage, CheckReturnValue.class)).isNotNull();
+            assertThat(getSingleAnnotation(samplePackage, SuppressPackageLocation.class)).isNull();
+        }
     }
 
     @Test
@@ -321,6 +345,10 @@ class Error_prone_annotationsTest {
         assertThat(hasAnnotation(annotationType, Inherited.class)).isEqualTo(expectedInherited);
         assertThat(target).isNotNull();
         assertThat(target.value()).containsExactly(expectedTargets);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return System.getProperty("org.graalvm.nativeimage.imagecode") != null;
     }
 
     private static Path compilePackageFixture(Path tempDir) throws IOException {
