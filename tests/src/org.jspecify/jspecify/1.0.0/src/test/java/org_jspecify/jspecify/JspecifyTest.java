@@ -68,17 +68,17 @@ class JspecifyTest {
     void runtimeAnnotationsExposeStandardAnnotationContract() throws Exception {
         Nullable nullable = NullMarkedApi.class.getDeclaredMethod("findAlias", boolean.class)
                 .getAnnotatedReturnType()
-                .getAnnotation(Nullable.class);
+                .getAnnotationsByType(Nullable.class)[0];
         NonNull nonNull = NullMarkedApi.class.getDeclaredField("requiredName")
                 .getAnnotatedType()
-                .getAnnotation(NonNull.class);
-        NullMarked nullMarked = NullMarkedApi.class.getAnnotation(NullMarked.class);
+                .getAnnotationsByType(NonNull.class)[0];
+        NullMarked nullMarked = NullMarkedApi.class.getAnnotationsByType(NullMarked.class)[0];
 
         assertThat(nullable).isNotNull();
         assertThat(nullable.annotationType()).isEqualTo(Nullable.class);
         assertThat(nullable).isEqualTo(NullMarkedApi.class.getDeclaredMethod("findAlias", boolean.class)
                 .getAnnotatedReturnType()
-                .getAnnotation(Nullable.class));
+                .getAnnotationsByType(Nullable.class)[0]);
         assertThat(nullable.hashCode()).isEqualTo(0);
         assertThat(nullable.toString()).contains(Nullable.class.getName());
 
@@ -137,12 +137,14 @@ class JspecifyTest {
         assertThat(annotationTypes(singleTypeArgument(constructor.getAnnotatedParameterTypes()[1]))).containsExactly(NonNull.class);
     }
 
+    @SuppressWarnings({"checkstyle:annotationAccess", "annotationAccess"})
     private static List<Class<? extends Annotation>> annotationTypes(AnnotatedElement annotatedElement) {
         return List.of(annotatedElement.getAnnotations()).stream()
                 .map(Annotation::annotationType)
                 .toList();
     }
 
+    @SuppressWarnings({"checkstyle:annotationAccess", "annotationAccess"})
     private static List<Class<? extends Annotation>> annotationTypes(AnnotatedType annotatedType) {
         return List.of(annotatedType.getAnnotations()).stream()
                 .map(Annotation::annotationType)
@@ -150,11 +152,11 @@ class JspecifyTest {
     }
 
     private static List<ElementType> targetTypes(Class<? extends Annotation> annotationType) {
-        return List.of(annotationType.getAnnotation(Target.class).value());
+        return List.of(annotationType.getAnnotationsByType(Target.class)[0].value());
     }
 
     private static RetentionPolicy retentionPolicy(Class<? extends Annotation> annotationType) {
-        return annotationType.getAnnotation(Retention.class).value();
+        return annotationType.getAnnotationsByType(Retention.class)[0].value();
     }
 
     private static AnnotatedType singleTypeArgument(AnnotatedType annotatedType) {
