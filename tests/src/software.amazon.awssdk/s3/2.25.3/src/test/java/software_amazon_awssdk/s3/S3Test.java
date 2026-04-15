@@ -17,6 +17,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -47,6 +48,7 @@ import software.amazon.awssdk.services.s3.model.ChecksumMode;
 import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
 import software.amazon.awssdk.services.s3.model.CompletedPart;
+import software.amazon.awssdk.services.s3.model.CopyObjectResponse;
 import software.amazon.awssdk.services.s3.model.CreateMultipartUploadResponse;
 import software.amazon.awssdk.services.s3.model.Delete;
 import software.amazon.awssdk.services.s3.model.DeleteObjectsResponse;
@@ -56,6 +58,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+import software.amazon.awssdk.services.s3.model.MetadataDirective;
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -341,6 +344,54 @@ class S3Test {
                 .contains("<VersionId>version-1</VersionId>")
                 .contains("<Key>docs/protected.txt</Key>")
                 .contains("<VersionId>version-2</VersionId>");
+        }
+    }
+
+    @Test
+    void copyObjectMarshalsCopySourceHeadersAndParsesXmlResult() {
+        RecordingHttpClient httpClient = new RecordingHttpClient()
+            .enqueue(MockHttpResponse.of(
+                200,
+                Map.of(
+                    "x-amz-copy-source-version-id", List.of("source-version"),
+                    "x-amz-version-id", List.of("destination-version")
+                ),
+                """
+                <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+                  <LastModified>2024-03-10T12:34:56.000Z</LastModified>
+                  <ETag>\"copied-etag\"</ETag>
+                </CopyObjectResult>
+                """.getBytes(StandardCharsets.UTF_8)
+            ));
+
+        try (S3Client client = createClient(httpClient, URI.create("https://example.com"), builder -> {
+        })) {
+            CopyObjectResponse copyResponse = client.copyObject(request -> request
+                .sourceBucket("source-bucket")
+                .sourceKey("reports/annual summary.txt")
+                .sourceVersionId("source-version")
+                .destinationBucket("archive-bucket")
+                .destinationKey("archive/annual-summary.txt")
+                .metadataDirective(MetadataDirective.REPLACE)
+                .metadata(Map.of("origin", "integration-test"))
+                .tagging("suite=s3&operation=copy"));
+
+            assertThat(copyResponse.copySourceVersionId()).isEqualTo("source-version");
+            assertThat(copyResponse.versionId()).isEqualTo("destination-version");
+            assertThat(copyResponse.copyObjectResult().eTag()).isEqualTo("\"copied-etag\"");
+            assertThat(copyResponse.copyObjectResult().lastModified()).isEqualTo(Instant.parse("2024-03-10T12:34:56Z"));
+
+            assertThat(httpClient.requests()).hasSize(1);
+
+            RecordedRequest copyRequest = httpClient.requests().get(0);
+            assertThat(copyRequest.method()).isEqualTo(SdkHttpMethod.PUT);
+            assertThat(copyRequest.encodedPath()).isEqualTo("/archive-bucket/archive/annual-summary.txt");
+            assertThat(copyRequest.headerValue("x-amz-copy-source"))
+                .hasValue("source-bucket/reports/annual%20summary.txt?versionId=source-version");
+            assertThat(copyRequest.headerValue("x-amz-metadata-directive")).hasValue("REPLACE");
+            assertThat(copyRequest.headerValue("x-amz-meta-origin")).hasValue("integration-test");
+            assertThat(copyRequest.headerValue("x-amz-tagging")).hasValue("suite=s3&operation=copy");
+            assertThat(copyRequest.body()).isEmpty();
         }
     }
 
