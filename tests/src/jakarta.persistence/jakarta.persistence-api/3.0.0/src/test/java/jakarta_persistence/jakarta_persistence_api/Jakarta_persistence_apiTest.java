@@ -105,6 +105,32 @@ class Jakarta_persistence_apiTest {
     }
 
     @Test
+    void createEntityManagerFactoryPropagatesProviderFailuresWithoutTryingLaterProviders() {
+        IllegalStateException failure = new IllegalStateException("bootstrap-failed");
+        ThrowingProvider failingProvider = new ThrowingProvider(
+                failure,
+                null,
+                new RecordingProviderUtil(LoadState.UNKNOWN, LoadState.UNKNOWN, LoadState.UNKNOWN)
+        );
+        RecordingProvider fallbackProvider = new RecordingProvider(
+                "fallback-provider",
+                new StubEntityManagerFactory(),
+                false,
+                new RecordingProviderUtil(LoadState.UNKNOWN, LoadState.UNKNOWN, LoadState.UNKNOWN)
+        );
+        FixedResolver resolver = new FixedResolver(List.of(failingProvider, fallbackProvider));
+        Map<String, Object> properties = Map.of("jakarta.persistence.provider", "test-provider");
+
+        try (ResolverScope ignored = useResolver(resolver)) {
+            assertThatThrownBy(() -> Persistence.createEntityManagerFactory("failing-unit", properties))
+                    .isSameAs(failure);
+            assertThat(failingProvider.createEntityManagerFactoryCalls)
+                    .containsExactly(new CreateEntityManagerFactoryCall("failing-unit", properties));
+            assertThat(fallbackProvider.createEntityManagerFactoryCalls).isEmpty();
+        }
+    }
+
+    @Test
     void generateSchemaStopsAfterFirstProviderThatSucceeds() {
         RecordingProvider firstProvider = new RecordingProvider(
                 "first-provider",
@@ -153,6 +179,32 @@ class Jakarta_persistence_apiTest {
             assertThatThrownBy(() -> Persistence.generateSchema("missing-schema-unit", Map.of()))
                     .isInstanceOf(PersistenceException.class)
                     .hasMessage("No Persistence provider to generate schema named missing-schema-unit");
+        }
+    }
+
+    @Test
+    void generateSchemaPropagatesProviderFailuresWithoutTryingLaterProviders() {
+        IllegalArgumentException failure = new IllegalArgumentException("schema-failed");
+        ThrowingProvider failingProvider = new ThrowingProvider(
+                null,
+                failure,
+                new RecordingProviderUtil(LoadState.UNKNOWN, LoadState.UNKNOWN, LoadState.UNKNOWN)
+        );
+        RecordingProvider fallbackProvider = new RecordingProvider(
+                "fallback-provider",
+                null,
+                true,
+                new RecordingProviderUtil(LoadState.UNKNOWN, LoadState.UNKNOWN, LoadState.UNKNOWN)
+        );
+        FixedResolver resolver = new FixedResolver(List.of(failingProvider, fallbackProvider));
+        Map<String, Object> properties = Map.of("jakarta.persistence.schema-generation.scripts.action", "create");
+
+        try (ResolverScope ignored = useResolver(resolver)) {
+            assertThatThrownBy(() -> Persistence.generateSchema("failing-schema-unit", properties))
+                    .isSameAs(failure);
+            assertThat(failingProvider.generateSchemaCalls)
+                    .containsExactly(new GenerateSchemaCall("failing-schema-unit", properties));
+            assertThat(fallbackProvider.generateSchemaCalls).isEmpty();
         }
     }
 
@@ -400,6 +452,53 @@ class Jakarta_persistence_apiTest {
         public boolean generateSchema(String persistenceUnitName, Map map) {
             generateSchemaCalls.add(new GenerateSchemaCall(persistenceUnitName, (Map<String, Object>) map));
             return generateSchemaResult;
+        }
+
+        @Override
+        public ProviderUtil getProviderUtil() {
+            return providerUtil;
+        }
+    }
+
+    private static final class ThrowingProvider implements PersistenceProvider {
+        private final RuntimeException createEntityManagerFactoryFailure;
+        private final RuntimeException generateSchemaFailure;
+        private final ProviderUtil providerUtil;
+        private final List<CreateEntityManagerFactoryCall> createEntityManagerFactoryCalls = new ArrayList<>();
+        private final List<GenerateSchemaCall> generateSchemaCalls = new ArrayList<>();
+
+        private ThrowingProvider(
+                RuntimeException createEntityManagerFactoryFailure,
+                RuntimeException generateSchemaFailure,
+                ProviderUtil providerUtil
+        ) {
+            this.createEntityManagerFactoryFailure = createEntityManagerFactoryFailure;
+            this.generateSchemaFailure = generateSchemaFailure;
+            this.providerUtil = providerUtil;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public EntityManagerFactory createEntityManagerFactory(String emName, Map map) {
+            createEntityManagerFactoryCalls.add(new CreateEntityManagerFactoryCall(emName, (Map<String, Object>) map));
+            throw createEntityManagerFactoryFailure;
+        }
+
+        @Override
+        public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map map) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void generateSchema(PersistenceUnitInfo info, Map map) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public boolean generateSchema(String persistenceUnitName, Map map) {
+            generateSchemaCalls.add(new GenerateSchemaCall(persistenceUnitName, (Map<String, Object>) map));
+            throw generateSchemaFailure;
         }
 
         @Override
