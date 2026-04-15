@@ -15,8 +15,11 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,13 +48,18 @@ import software.amazon.awssdk.services.s3.model.CommonPrefix;
 import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
 import software.amazon.awssdk.services.s3.model.CompletedPart;
 import software.amazon.awssdk.services.s3.model.CreateMultipartUploadResponse;
+import software.amazon.awssdk.services.s3.model.Delete;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsResponse;
+import software.amazon.awssdk.services.s3.model.DeletedObject;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.model.S3Error;
 import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.services.s3.model.UploadPartResponse;
 
@@ -265,6 +273,74 @@ class S3Test {
 
             RecordedRequest secondRequest = httpClient.requests().get(1);
             assertThat(secondRequest.queryValue("continuation-token")).hasValue("token-2");
+        }
+    }
+
+    @Test
+    void deleteObjectsMarshalsBatchDeleteRequestAndParsesMixedResults() {
+        RecordingHttpClient httpClient = new RecordingHttpClient()
+            .enqueue(MockHttpResponse.xml(200, """
+                <DeleteResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+                  <Deleted>
+                    <Key>docs/quarterly-report.txt</Key>
+                    <VersionId>version-1</VersionId>
+                    <DeleteMarker>true</DeleteMarker>
+                    <DeleteMarkerVersionId>marker-1</DeleteMarkerVersionId>
+                  </Deleted>
+                  <Error>
+                    <Key>docs/protected.txt</Key>
+                    <VersionId>version-2</VersionId>
+                    <Code>AccessDenied</Code>
+                    <Message>Access Denied</Message>
+                  </Error>
+                </DeleteResult>
+                """));
+
+        try (S3Client client = createClient(httpClient, URI.create("https://example.com"), builder -> {
+        })) {
+            DeleteObjectsResponse deleteResponse = client.deleteObjects(request -> request
+                .bucket("docs-bucket")
+                .delete(Delete.builder()
+                    .objects(List.of(
+                        ObjectIdentifier.builder()
+                            .key("docs/quarterly-report.txt")
+                            .versionId("version-1")
+                            .build(),
+                        ObjectIdentifier.builder()
+                            .key("docs/protected.txt")
+                            .versionId("version-2")
+                            .build()
+                    ))
+                    .quiet(true)
+                    .build()));
+
+            assertThat(deleteResponse.deleted()).hasSize(1);
+            DeletedObject deletedObject = deleteResponse.deleted().get(0);
+            assertThat(deletedObject.key()).isEqualTo("docs/quarterly-report.txt");
+            assertThat(deletedObject.versionId()).isEqualTo("version-1");
+            assertThat(deletedObject.deleteMarker()).isTrue();
+            assertThat(deletedObject.deleteMarkerVersionId()).isEqualTo("marker-1");
+
+            assertThat(deleteResponse.errors()).hasSize(1);
+            S3Error error = deleteResponse.errors().get(0);
+            assertThat(error.key()).isEqualTo("docs/protected.txt");
+            assertThat(error.versionId()).isEqualTo("version-2");
+            assertThat(error.code()).isEqualTo("AccessDenied");
+            assertThat(error.message()).isEqualTo("Access Denied");
+
+            assertThat(httpClient.requests()).hasSize(1);
+
+            RecordedRequest deleteRequest = httpClient.requests().get(0);
+            assertThat(deleteRequest.method()).isEqualTo(SdkHttpMethod.POST);
+            assertThat(deleteRequest.encodedPath()).isEqualTo("/docs-bucket");
+            assertThat(deleteRequest.queryParameters().containsKey("delete")).isTrue();
+            assertThat(deleteRequest.headerValue("Content-MD5")).hasValue(md5Base64(deleteRequest.body()));
+            assertThat(deleteRequest.bodyUtf8()).contains("<Delete xmlns=\"http://s3.amazonaws.com/doc/2006-03-01/\">")
+                .contains("<Quiet>true</Quiet>")
+                .contains("<Key>docs/quarterly-report.txt</Key>")
+                .contains("<VersionId>version-1</VersionId>")
+                .contains("<Key>docs/protected.txt</Key>")
+                .contains("<VersionId>version-2</VersionId>");
         }
     }
 
@@ -483,6 +559,14 @@ class S3Test {
             .filter(value -> value != null && !value.isEmpty())
             .map(value -> value.get(0))
             .findFirst();
+    }
+
+    private static String md5Base64(byte[] content) {
+        try {
+            return Base64.getEncoder().encodeToString(MessageDigest.getInstance("MD5").digest(content));
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("MD5 digest is unavailable", exception);
+        }
     }
 
     private static byte[] readAllBytes(InputStream inputStream) {
