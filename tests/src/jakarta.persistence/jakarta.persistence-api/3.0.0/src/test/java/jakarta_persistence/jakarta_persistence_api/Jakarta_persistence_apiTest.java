@@ -9,15 +9,23 @@ package jakarta_persistence.jakarta_persistence_api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.IOException;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import jakarta.persistence.Cache;
 import jakarta.persistence.EntityExistsException;
@@ -53,7 +61,7 @@ import jakarta.persistence.spi.PersistenceUnitInfo;
 import jakarta.persistence.spi.ProviderUtil;
 import org.junit.jupiter.api.Test;
 
-class Jakarta_persistence_apiTest {
+public class Jakarta_persistence_apiTest {
 
     @Test
     void createEntityManagerFactoryUsesConfiguredProvidersInOrder() {
@@ -365,6 +373,74 @@ class Jakarta_persistence_apiTest {
         }
     }
 
+    @Test
+    void defaultResolverDiscoversProvidersFromContextClassLoaderAndReloadsAfterCacheClear() throws Exception {
+        PersistenceProviderResolver originalResolver = PersistenceProviderResolverHolder.getPersistenceProviderResolver();
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Path providerConfigDirectory = createProviderConfigDirectory(DiscoverableProvider.class.getName());
+        DiscoverableProvider.reset();
+
+        PersistenceProviderResolverHolder.setPersistenceProviderResolver(null);
+        try (URLClassLoader providerClassLoader = new URLClassLoader(
+                new java.net.URL[] {providerConfigDirectory.toUri().toURL()},
+                Jakarta_persistence_apiTest.class.getClassLoader()
+        )) {
+            Thread.currentThread().setContextClassLoader(providerClassLoader);
+
+            PersistenceProviderResolver resolver = PersistenceProviderResolverHolder.getPersistenceProviderResolver();
+            List<PersistenceProvider> firstProviders = resolver.getPersistenceProviders();
+            List<PersistenceProvider> secondProviders = resolver.getPersistenceProviders();
+
+            assertThat(firstProviders)
+                    .anySatisfy(provider -> assertThat(provider).isInstanceOf(DiscoverableProvider.class));
+            assertThat(secondProviders).isSameAs(firstProviders);
+            assertThat(DiscoverableProvider.getInstanceCount()).isEqualTo(1);
+
+            resolver.clearCachedProviders();
+
+            List<PersistenceProvider> reloadedProviders = resolver.getPersistenceProviders();
+
+            assertThat(reloadedProviders)
+                    .isNotSameAs(firstProviders)
+                    .anySatisfy(provider -> assertThat(provider).isInstanceOf(DiscoverableProvider.class));
+            assertThat(DiscoverableProvider.getInstanceCount()).isEqualTo(2);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+            PersistenceProviderResolverHolder.setPersistenceProviderResolver(originalResolver);
+            deleteRecursively(providerConfigDirectory);
+        }
+    }
+
+    private static Path createProviderConfigDirectory(String... providerClassNames) throws IOException {
+        Path configDirectory = Files.createTempDirectory("jakarta-persistence-provider");
+        Path servicesDirectory = configDirectory.resolve("META-INF").resolve("services");
+        Files.createDirectories(servicesDirectory);
+        Files.writeString(
+                servicesDirectory.resolve(PersistenceProvider.class.getName()),
+                String.join(System.lineSeparator(), providerClassNames),
+                StandardCharsets.UTF_8
+        );
+        return configDirectory;
+    }
+
+    private static void deleteRecursively(Path path) throws IOException {
+        try (Stream<Path> paths = Files.walk(path)) {
+            paths.sorted(Comparator.reverseOrder())
+                    .forEach(currentPath -> {
+                        try {
+                            Files.deleteIfExists(currentPath);
+                        } catch (IOException exception) {
+                            throw new RuntimeException(exception);
+                        }
+                    });
+        } catch (RuntimeException exception) {
+            if (exception.getCause() instanceof IOException ioException) {
+                throw ioException;
+            }
+            throw exception;
+        }
+    }
+
     private static ResolverScope useResolver(PersistenceProviderResolver resolver) {
         PersistenceProviderResolver previousResolver =
                 PersistenceProviderResolverHolder.getPersistenceProviderResolver();
@@ -504,6 +580,47 @@ class Jakarta_persistence_apiTest {
         @Override
         public ProviderUtil getProviderUtil() {
             return providerUtil;
+        }
+    }
+
+    public static final class DiscoverableProvider implements PersistenceProvider {
+        private static final AtomicInteger INSTANCE_COUNT = new AtomicInteger();
+
+        public DiscoverableProvider() {
+            INSTANCE_COUNT.incrementAndGet();
+        }
+
+        static void reset() {
+            INSTANCE_COUNT.set(0);
+        }
+
+        static int getInstanceCount() {
+            return INSTANCE_COUNT.get();
+        }
+
+        @Override
+        public EntityManagerFactory createEntityManagerFactory(String emName, Map map) {
+            return null;
+        }
+
+        @Override
+        public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map map) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void generateSchema(PersistenceUnitInfo info, Map map) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean generateSchema(String persistenceUnitName, Map map) {
+            return false;
+        }
+
+        @Override
+        public ProviderUtil getProviderUtil() {
+            return new RecordingProviderUtil(LoadState.UNKNOWN, LoadState.UNKNOWN, LoadState.UNKNOWN);
         }
     }
 
