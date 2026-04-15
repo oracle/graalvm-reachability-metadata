@@ -54,10 +54,11 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
                     System.getenv("GVM_TCK_NATIVE_IMAGE_MODE"),
                     Objects.toString(getProject().findProperty("tck.nativeImageMode"), null)
             );
-            int parallelism = TestInfraLoggingUtils.parseParallelism(
-                    Objects.toString(getProject().findProperty("parallelism"), "")
-            );
-            for (String line : TestInfraLoggingUtils.batchReproducerLines(nativeImageMode, coordinates, parallelism)) {
+            String parallelismProperty = Objects.toString(getProject().findProperty("parallelism"), "");
+            Integer parallelism = parallelismProperty.isBlank()
+                    ? null
+                    : TestInfraLoggingUtils.parseParallelism(parallelismProperty);
+            for (String line : TestInfraLoggingUtils.batchReproducerLines("test", nativeImageMode, coordinates, parallelism)) {
                 getLogger().lifecycle(line);
             }
         }

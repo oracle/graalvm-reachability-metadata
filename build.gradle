@@ -8,6 +8,7 @@ import groovy.json.JsonSlurper
 
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
+import org.graalvm.internal.tck.utils.TestInfraLoggingUtils
 
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -161,17 +162,13 @@ String resolveSelectedNativeImageMode() {
 
 void printTestInfraReproducer(String gradleCmd, String coordinate, int parallelism) {
     String nativeImageMode = resolveSelectedNativeImageMode()
-    String command = "${gradleCmd} testInfra -Pcoordinates=${coordinate} -Pparallelism=${parallelism} --stacktrace"
-    if (nativeImageMode != null && !nativeImageMode.trim().isEmpty()
-            && nativeImageMode != NativeImageConfigUtils.DEFAULT_MODE) {
-        command = "GVM_TCK_NATIVE_IMAGE_MODE='${nativeImageMode}' ${command}"
-    }
-
-    String delimiter = "========================================================================"
-    println(delimiter)
-    println("REPRODUCER ${coordinate}")
-    println(command)
-    println(delimiter)
+    TestInfraLoggingUtils.batchReproducerLines(
+            "testInfra",
+            gradleCmd,
+            nativeImageMode,
+            coordinate,
+            parallelism
+    ).each { println(it) }
 }
 
 tasks.register('testInfra') { t ->
