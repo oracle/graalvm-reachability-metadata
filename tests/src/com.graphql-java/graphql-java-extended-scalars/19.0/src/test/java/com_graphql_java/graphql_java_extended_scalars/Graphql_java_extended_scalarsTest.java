@@ -312,9 +312,9 @@ class Graphql_java_extended_scalarsTest {
                         .getValue())
                 .isEqualByComparingTo(new BigDecimal("12.34"));
 
-        assertThat(ExtendedScalars.GraphQLChar.getCoercing().parseValue("ß")).isEqualTo('ß');
-        assertThat(((StringValue) ExtendedScalars.GraphQLChar.getCoercing().valueToLiteral('ß')).getValue())
-                .isEqualTo("ß");
+        assertThat(ExtendedScalars.GraphQLChar.getCoercing().parseValue("\u00DF")).isEqualTo('\u00DF');
+        assertThat(((StringValue) ExtendedScalars.GraphQLChar.getCoercing().valueToLiteral('\u00DF')).getValue())
+                .isEqualTo("\u00DF");
         assertThatThrownBy(() -> ExtendedScalars.GraphQLChar.getCoercing().parseLiteral(new StringValue("ab")))
                 .isInstanceOf(CoercingParseLiteralException.class);
     }
