@@ -36,7 +36,8 @@ import java.util.regex.Pattern;
 
 /**
  * Resolves strict coordinates and asks an external coding agent to fill
- * source-code, repository, test-code, and documentation URLs in metadata index files.
+ * source-code, repository, test-code, and documentation URLs plus a short library description
+ * in metadata index files.
  */
 @SuppressWarnings("unused")
 public class PopulateArtifactURLs extends DefaultTask {
@@ -92,7 +93,7 @@ public class PopulateArtifactURLs extends DefaultTask {
         return limit;
     }
 
-    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, and documentation-url when those fields already contain values.")
+    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, and description when those fields already contain values.")
     public void setOverwriteExistingOption(boolean overwriteExisting) {
         this.overwriteExisting = overwriteExisting;
     }
@@ -162,9 +163,9 @@ public class PopulateArtifactURLs extends DefaultTask {
                 getLogger().warn("Skipping {} because no matching entry was found in index.json.", coordinate);
                 continue;
             }
-            if (!overwriteExisting && hasAllUrlValues(target.entry)) {
+            if (!overwriteExisting && hasAllCollectedValues(target.entry)) {
                 skipped++;
-                getLogger().lifecycle("Skipping {} because source-code-url, repository-url, test-code-url, and documentation-url are already present.", coordinate);
+                getLogger().lifecycle("Skipping {} because source-code-url, repository-url, test-code-url, documentation-url, and description are already present.", coordinate);
                 continue;
             }
 
@@ -272,18 +273,20 @@ public class PopulateArtifactURLs extends DefaultTask {
         String sourceArtifactVerificationInstructions = sourceArtifactVerificationInstructions(verifyArtifactSources, target.version);
 
         return """
-                Find the repository URL, the sources URL, the test suite URL, and the documentation URL for the following library: %s:%s:%s
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s:%s:%s
                 The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "%s".
                 The source, test suite, and documentation URLs should point to the right tag of the library.
                 If we have these source of these artifacts on maven, that should be prefered.
                 If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
                 %s
 
                 Update this repository directly:
                 - File: %s
                 - Entry selector: "metadata-version" = "%s"
                 %s
-                - If any of these URLs cannot be found with confidence, set that field value to "N/A".
+                - Set the "description" field to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
                 - Do not use unversioned docs or "latest/current" docs.
                 - Keep all other fields unchanged.
                 - Keep JSON valid and consistently formatted.
@@ -293,6 +296,7 @@ public class PopulateArtifactURLs extends DefaultTask {
                 - repository-url: %s
                 - test-code-url: %s
                 - documentation-url: %s
+                - description: %s
 
                 Context:
                 - Coordinate version: %s
@@ -310,6 +314,7 @@ public class PopulateArtifactURLs extends DefaultTask {
                 currentValue(target.entry.repositoryUrl()),
                 currentValue(target.entry.testCodeUrl()),
                 currentValue(target.entry.documentationUrl()),
+                currentValue(target.entry.description()),
                 target.version,
                 testVersion
         ).strip();
@@ -338,17 +343,19 @@ public class PopulateArtifactURLs extends DefaultTask {
                     - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
                     - Set "test-code-url" to the selected test suite URL.
                     - Set "documentation-url" to the selected project documentation URL for version "%s".
+                    - Set "description" to a concise explanation of the library in exactly two sentences.
                     """.formatted(version).strip();
         }
         return """
-                - Fill only missing URL fields among "source-code-url", "repository-url", "test-code-url", and "documentation-url".
-                - A URL field is missing only when absent, null, or blank.
-                - Do not modify URL fields that already contain a non-blank value.
+                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", and "description".
+                - A field is missing only when absent, null, or blank.
+                - Do not modify fields that already contain a non-blank value.
                 - Set missing "source-code-url" to the selected source URL.
                 - Set missing "repository-url" to the selected repository URL.
                 - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
                 - Set missing "test-code-url" to the selected test suite URL.
                 - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+                - Set missing "description" to a concise explanation of the library in exactly two sentences.
                 """.formatted(version).strip();
     }
 
@@ -421,11 +428,12 @@ public class PopulateArtifactURLs extends DefaultTask {
         return value != null && !value.isBlank();
     }
 
-    private static boolean hasAllUrlValues(MetadataVersionsIndexEntry entry) {
+    private static boolean hasAllCollectedValues(MetadataVersionsIndexEntry entry) {
         return hasText(entry.sourceCodeUrl())
                 && hasText(entry.repositoryUrl())
                 && hasText(entry.testCodeUrl())
-                && hasText(entry.documentationUrl());
+                && hasText(entry.documentationUrl())
+                && hasText(entry.description());
     }
 
     private static boolean shouldPrintPromptOnly(List<String> commandTokens) {

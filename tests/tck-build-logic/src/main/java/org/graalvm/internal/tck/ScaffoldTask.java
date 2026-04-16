@@ -212,6 +212,7 @@ class ScaffoldTask extends DefaultTask {
                 null, // repository-url
                 null, // test-code-url
                 null, // documentation-url
+                null, // description
                 List.of(coordinates.version()), // tested-versions
                 null, // skipped-versions
                 List.of(coordinates.group()), // allowed-packages (default to group)
@@ -244,6 +245,7 @@ class ScaffoldTask extends DefaultTask {
                 oldEntry.repositoryUrl(),
                 oldEntry.testCodeUrl(),
                 oldEntry.documentationUrl(),
+                oldEntry.description(),
                 oldEntry.testedVersions(),
                 oldEntry.skippedVersions(),
                 oldEntry.allowedPackages(),

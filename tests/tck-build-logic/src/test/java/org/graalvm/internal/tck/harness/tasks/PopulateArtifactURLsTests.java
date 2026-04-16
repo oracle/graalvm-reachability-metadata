@@ -47,22 +47,25 @@ class PopulateArtifactURLsTests {
 
         String output = outputBuffer.toString(StandardCharsets.UTF_8);
         assertThat(output)
-                .contains("Find the repository URL, the sources URL, the test suite URL, and the documentation URL for the following library: ch.qos.logback:logback-classic:1.4.1")
+                .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ch.qos.logback:logback-classic:1.4.1")
                 .contains("The sources URL, the test suite URL, and the documentation URL must be for the EXACT version \"1.4.1\".")
-                .contains("Fill only missing URL fields among \"source-code-url\", \"repository-url\", \"test-code-url\", and \"documentation-url\".")
+                .contains("The \"description\" field must explain what the library does in exactly two sentences.")
+                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", and \"description\".")
                 .contains("Set missing \"repository-url\" to the selected repository URL.")
                 .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
                 .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
-                .contains("If any of these URLs cannot be found with confidence, set that field value to \"N/A\".")
+                .contains("Set missing \"description\" to a concise explanation of the library in exactly two sentences.")
+                .contains("If any of these URLs or the description cannot be found with confidence, set that field value to \"N/A\".")
                 .contains("Current URL values:")
                 .contains("- source-code-url: <missing>")
+                .contains("- description: <missing>")
                 .contains("Entry selector: \"metadata-version\" = \"1.4.1\"")
                 .doesNotContain("Source Artifact Verification (required):");
         assertThat(tempDir.resolve("build/agent-url-discovery-logs")).doesNotExist();
     }
 
     @Test
-    void runWithLimitSkipsPrePopulatedCoordinatesAndStillPrompts() throws IOException, InterruptedException {
+    void runWithLimitStillPromptsForEntriesMissingDescription() throws IOException, InterruptedException {
         Project project = createProjectWithMixedMetadata();
         PopulateArtifactURLs task = project.getTasks().create(
                 "populateArtifactURLs",
@@ -82,8 +85,8 @@ class PopulateArtifactURLsTests {
 
         String output = outputBuffer.toString(StandardCharsets.UTF_8);
         assertThat(output)
-                .contains("Find the repository URL, the sources URL, the test suite URL, and the documentation URL for the following library: b.group:bbb:2.0.0")
-                .doesNotContain("Find the repository URL, the sources URL, the test suite URL, and the documentation URL for the following library: a.group:aaa:1.0.0");
+                .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: a.group:aaa:1.0.0")
+                .doesNotContain("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: b.group:bbb:2.0.0");
     }
 
     @Test
@@ -108,9 +111,10 @@ class PopulateArtifactURLsTests {
 
         String output = outputBuffer.toString(StandardCharsets.UTF_8);
         assertThat(output)
-                .contains("Find the repository URL, the sources URL, the test suite URL, and the documentation URL for the following library: a.group:aaa:1.0.0")
+                .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: a.group:aaa:1.0.0")
                 .contains("- Overwrite existing URL values.")
-                .contains("- source-code-url: https://example.com/source-a");
+                .contains("- source-code-url: https://example.com/source-a")
+                .contains("- description: <missing>");
     }
 
     @Test

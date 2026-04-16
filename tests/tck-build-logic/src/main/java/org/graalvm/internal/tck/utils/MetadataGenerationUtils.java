@@ -179,6 +179,7 @@ public final class MetadataGenerationUtils {
                         entry.repositoryUrl(),
                         entry.testCodeUrl(),
                         entry.documentationUrl(),
+                        entry.description(),
                         entry.testedVersions(),
                         entry.skippedVersions(),
                         entry.allowedPackages(),
@@ -202,6 +203,7 @@ public final class MetadataGenerationUtils {
                 null, // repository-url
                 null, // test-code-url
                 null, // documentation-url
+                null, // description
                 testedVersions,
                 null, // skipped-versions
                 latestAllowedPackages, // allowed-packages
