@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import com.mchange.v2.log.MLevel;
 import org.junit.jupiter.api.Test;
@@ -46,13 +47,14 @@ public class ThreadPoolAsynchronousRunnerTest {
         ThreadPoolAsynchronousRunner runner = newRunner("deadlock-runner");
         BlockingTask blockingTask = new BlockingTask();
         RecordingHandler recordingHandler = new RecordingHandler();
-        MLevel originalLevel = ThreadPoolAsynchronousRunner.logger.getLevel();
+        Logger julLogger = Logger.getLogger(ThreadPoolAsynchronousRunner.class.getName());
+        Level originalLevel = julLogger.getLevel();
 
         runner.postRunnable(blockingTask);
         blockingTask.awaitStarted();
 
-        ThreadPoolAsynchronousRunner.logger.addHandler(recordingHandler);
-        ThreadPoolAsynchronousRunner.logger.setLevel(MLevel.FINEST);
+        julLogger.addHandler(recordingHandler);
+        julLogger.setLevel(Level.FINEST);
 
         try {
             runner.postRunnable(() -> {
@@ -69,10 +71,8 @@ public class ThreadPoolAsynchronousRunnerTest {
         } finally {
             blockingTask.release();
             runner.close(true);
-            ThreadPoolAsynchronousRunner.logger.removeHandler(recordingHandler);
-            if (originalLevel != null) {
-                ThreadPoolAsynchronousRunner.logger.setLevel(originalLevel);
-            }
+            julLogger.removeHandler(recordingHandler);
+            julLogger.setLevel(originalLevel);
         }
     }
 
