@@ -320,6 +320,18 @@ class Graphql_java_extended_scalarsTest {
     }
 
     @Test
+    void regexScalarsAcceptNonStringInputsByStringifyingThem() {
+        GraphQLScalarType zipCode = ExtendedScalars.newRegexScalar("ZipCode")
+                .description("Five digit zip code")
+                .addPattern(Pattern.compile("\\d{5}"))
+                .build();
+
+        assertThat(zipCode.getCoercing().parseValue(90210)).isEqualTo("90210");
+        assertThat(zipCode.getCoercing().serialize(90210)).isEqualTo("90210");
+        assertThat(((StringValue) zipCode.getCoercing().valueToLiteral(90210)).getValue()).isEqualTo("90210");
+    }
+
+    @Test
     void builderScalarsPreserveDescriptionsAndDelegateCoercion() {
         GraphQLScalarType postalCode = ExtendedScalars.newRegexScalar("PostalCode")
                 .description("Matches public and internal postal codes")
