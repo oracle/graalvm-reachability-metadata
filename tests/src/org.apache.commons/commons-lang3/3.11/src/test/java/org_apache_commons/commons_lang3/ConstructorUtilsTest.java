@@ -21,11 +21,15 @@ public class ConstructorUtilsTest {
                 ExactConstructorTarget.class,
                 String.class
         );
+        final Constructor<ExactConstructorTarget> exactMatchingConstructor = ConstructorUtils
+                .getMatchingAccessibleConstructor(ExactConstructorTarget.class, String.class);
         final Constructor<AssignableConstructorTarget> matchingConstructor = ConstructorUtils
                 .getMatchingAccessibleConstructor(AssignableConstructorTarget.class, StringBuilder.class);
 
         assertThat(exactConstructor).isNotNull();
         assertThat(exactConstructor.getDeclaringClass()).isEqualTo(ExactConstructorTarget.class);
+        assertThat(exactMatchingConstructor).isNotNull();
+        assertThat(exactMatchingConstructor.getParameterTypes()).containsExactly(String.class);
         assertThat(matchingConstructor).isNotNull();
         assertThat(matchingConstructor.getParameterTypes()).containsExactly(CharSequence.class);
     }
