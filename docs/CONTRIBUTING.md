@@ -108,6 +108,7 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
 * `repository-url`: URL to the canonical project repository for this index entry.
 * `test-code-url`: URL to the test source code location for this index entry.
 * `documentation-url`: URL to the project documentation for this index entry.
+* `description`: A concise explanation of the library in exactly two sentences.
 * `skipped-versions`: An array of objects (with `version` and `reason`) to explicitly exclude library versions known to be broken or incompatible.
 * `override`: Boolean. If `true`, excludes outdated builtin GraalVM metadata.
 
@@ -150,7 +151,7 @@ Each artifact directory **must** include an `index.json` file (at `metadata/<gro
 
 #### Populate Artifact URLs With an Agent
 
-To populate `source-code-url`, `repository-url`, `test-code-url`, and `documentation-url` fields in matching `index.json` entries:
+To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
 
 ```bash
 ./gradlew populateArtifactURLs \
@@ -158,7 +159,7 @@ To populate `source-code-url`, `repository-url`, `test-code-url`, and `documenta
   --agent-command='codex -a never exec -s danger-full-access'
 ```
 
-By default, this task skips entries where all four URL fields are already set and only fills missing URL fields in partially populated entries.
+By default, this task skips entries where all four URL fields and the `description` field are already set and only fills missing fields in partially populated entries.
 To overwrite existing URL values, add `--overwrite-existing`:
 
 ```bash
