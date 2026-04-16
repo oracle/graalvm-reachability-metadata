@@ -27,6 +27,13 @@ import org.checkerframework.checker.formatter.qual.ConversionCategory;
 import org.checkerframework.checker.formatter.qual.Format;
 import org.checkerframework.checker.i18nformatter.qual.I18nConversionCategory;
 import org.checkerframework.checker.i18nformatter.qual.I18nFormat;
+import org.checkerframework.checker.index.qual.IndexFor;
+import org.checkerframework.checker.index.qual.IndexOrHigh;
+import org.checkerframework.checker.index.qual.LengthOf;
+import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.index.qual.SameLen;
+import org.checkerframework.checker.index.qual.SearchIndexFor;
+import org.checkerframework.checker.index.qual.SubstringIndexFor;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
 import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
@@ -175,6 +182,23 @@ class Checker_qualTest {
     }
 
     @Test
+    void indexQualifiersDescribeCoordinateParsingBoundaries() {
+        CoordinateSegments coordinate = CoordinateSegments.parse("org.checkerframework:checker-qual:3.12.0");
+
+        Assertions.assertThat(coordinate.groupId()).isEqualTo("org.checkerframework");
+        Assertions.assertThat(coordinate.artifactId()).isEqualTo("checker-qual");
+        Assertions.assertThat(coordinate.version()).isEqualTo("3.12.0");
+        Assertions.assertThat(coordinate.firstCharacter()).isEqualTo('o');
+        Assertions.assertThat(coordinate.separatorBeforeVersion()).isEqualTo(':');
+        Assertions.assertThat(coordinate.length())
+                .isEqualTo("org.checkerframework:checker-qual:3.12.0".length());
+
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> CoordinateSegments.parse("checker-qual:3.12.0"))
+                .withMessage("coordinate must contain two ':' separators");
+    }
+
+    @Test
     void checkerQualTypesIntegrateWithOrdinaryCodeWithoutReflection() {
         QualifiedEndpointBuilder builder = new QualifiedEndpointBuilder();
 
@@ -283,6 +307,76 @@ class Checker_qualTest {
             } finally {
                 this.lock.unlock();
             }
+        }
+    }
+
+    private static final class CoordinateSegments {
+        private final String coordinate;
+        private final @SameLen("coordinate") char[] characters;
+        private final @IndexOrHigh("coordinate") int firstSeparator;
+        private final @IndexOrHigh("coordinate") int secondSeparator;
+
+        private CoordinateSegments(String coordinate) {
+            this.coordinate = coordinate;
+            this.characters = coordinate.toCharArray();
+            this.firstSeparator = searchOrHigh(':', 0);
+            int artifactStart = startAfter(separatorIndex(this.firstSeparator));
+            this.secondSeparator = searchOrHigh(':', artifactStart);
+            separatorIndex(this.secondSeparator);
+        }
+
+        private static CoordinateSegments parse(String coordinate) {
+            return new CoordinateSegments(coordinate);
+        }
+
+        private String groupId() {
+            return this.coordinate.substring(0, separatorIndex(this.firstSeparator));
+        }
+
+        private String artifactId() {
+            return this.coordinate.substring(
+                    startAfter(separatorIndex(this.firstSeparator)),
+                    separatorIndex(this.secondSeparator));
+        }
+
+        private String version() {
+            return this.coordinate.substring(startAfter(separatorIndex(this.secondSeparator)));
+        }
+
+        private @LengthOf("coordinate") int length() {
+            return this.coordinate.length();
+        }
+
+        private char firstCharacter() {
+            return characterAt(0);
+        }
+
+        private char separatorBeforeVersion() {
+            return characterAt(separatorIndex(this.secondSeparator));
+        }
+
+        private @SearchIndexFor("coordinate") int search(char separator, @NonNegative int fromIndex) {
+            return this.coordinate.indexOf(separator, fromIndex);
+        }
+
+        private @IndexOrHigh("coordinate") int searchOrHigh(char separator, @NonNegative int fromIndex) {
+            int index = search(separator, fromIndex);
+            return index >= 0 ? index : this.coordinate.length();
+        }
+
+        private @IndexFor("coordinate") int separatorIndex(@IndexOrHigh("coordinate") int index) {
+            if (index == this.coordinate.length()) {
+                throw new IllegalArgumentException("coordinate must contain two ':' separators");
+            }
+            return index;
+        }
+
+        private @SubstringIndexFor(value = "coordinate", offset = "1") int startAfter(@IndexFor("coordinate") int index) {
+            return index + 1;
+        }
+
+        private char characterAt(@IndexFor("coordinate") int index) {
+            return this.characters[index];
         }
     }
 
