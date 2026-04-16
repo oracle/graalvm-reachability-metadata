@@ -57,13 +57,13 @@ public class AnnotationUtilsTest {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
-    private @interface NestedAnnotation {
+    public @interface NestedAnnotation {
         String name();
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
-    private @interface SampleAnnotation {
+    public @interface SampleAnnotation {
         String text();
 
         int[] numbers();
