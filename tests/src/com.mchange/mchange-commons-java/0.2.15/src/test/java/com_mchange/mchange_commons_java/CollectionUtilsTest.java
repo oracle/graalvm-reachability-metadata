@@ -26,12 +26,12 @@ public class CollectionUtilsTest {
     void attemptCloneUsesPublicCloneMethodForCustomCollection() throws Exception {
         CloneableCollection original = new CloneableCollection(List.of("alpha", "beta"));
 
-        Collection<?> clone = CollectionUtils.attemptClone(original);
+        CloneableCollection clone = (CloneableCollection) CollectionUtils.attemptClone(original);
 
         assertThat(clone)
             .isInstanceOf(CloneableCollection.class)
             .isNotSameAs(original);
-        assertThat(new ArrayList<>(clone)).containsExactly("alpha", "beta");
+        assertThat(clone).containsExactly("alpha", "beta");
     }
 
     @Test
@@ -39,12 +39,13 @@ public class CollectionUtilsTest {
         CollectionCopyConstructorCollection original =
             new CollectionCopyConstructorCollection(List.of("alpha", "beta"));
 
-        Collection<?> clone = CollectionUtils.attemptClone(original);
+        CollectionCopyConstructorCollection clone =
+            (CollectionCopyConstructorCollection) CollectionUtils.attemptClone(original);
 
         assertThat(clone)
             .isInstanceOf(CollectionCopyConstructorCollection.class)
             .isNotSameAs(original);
-        assertThat(new ArrayList<>(clone)).containsExactly("alpha", "beta");
+        assertThat(clone).containsExactly("alpha", "beta");
     }
 
     @Test
@@ -54,24 +55,24 @@ public class CollectionUtilsTest {
         original.add("alpha");
         original.add("beta");
 
-        Collection<?> clone = CollectionUtils.attemptClone(original);
+        SelfCopyConstructorCollection clone =
+            (SelfCopyConstructorCollection) CollectionUtils.attemptClone(original);
 
         assertThat(clone)
             .isInstanceOf(SelfCopyConstructorCollection.class)
             .isNotSameAs(original);
-        assertThat(new ArrayList<>(clone)).containsExactly("alpha", "beta");
+        assertThat(clone).containsExactly("alpha", "beta");
     }
 
     @Test
     void attemptCloneUsesPublicCloneMethodForCustomMap() throws Exception {
         CloneableMap original = new CloneableMap(Map.of("alpha", 1, "beta", 2));
 
-        Map<?, ?> clone = CollectionUtils.attemptClone(original);
+        CloneableMap clone = (CloneableMap) CollectionUtils.attemptClone(original);
 
         assertThat(clone)
             .isInstanceOf(CloneableMap.class)
-            .isNotSameAs(original);
-        assertThat(new LinkedHashMap<>(clone))
+            .isNotSameAs(original)
             .containsEntry("alpha", 1)
             .containsEntry("beta", 2);
     }
@@ -80,12 +81,11 @@ public class CollectionUtilsTest {
     void attemptCloneUsesMapCopyConstructorWhenCloneIsUnavailable() throws Exception {
         MapCopyConstructorMap original = new MapCopyConstructorMap(Map.of("alpha", 1, "beta", 2));
 
-        Map<?, ?> clone = CollectionUtils.attemptClone(original);
+        MapCopyConstructorMap clone = (MapCopyConstructorMap) CollectionUtils.attemptClone(original);
 
         assertThat(clone)
             .isInstanceOf(MapCopyConstructorMap.class)
-            .isNotSameAs(original);
-        assertThat(new LinkedHashMap<>(clone))
+            .isNotSameAs(original)
             .containsEntry("alpha", 1)
             .containsEntry("beta", 2);
     }
@@ -97,12 +97,11 @@ public class CollectionUtilsTest {
         original.put("alpha", 1);
         original.put("beta", 2);
 
-        Map<?, ?> clone = CollectionUtils.attemptClone(original);
+        SelfCopyConstructorMap clone = (SelfCopyConstructorMap) CollectionUtils.attemptClone(original);
 
         assertThat(clone)
             .isInstanceOf(SelfCopyConstructorMap.class)
-            .isNotSameAs(original);
-        assertThat(new LinkedHashMap<>(clone))
+            .isNotSameAs(original)
             .containsEntry("alpha", 1)
             .containsEntry("beta", 2);
     }
