@@ -24,8 +24,8 @@ public class BeanELResolverTest {
                 newContext(),
                 new MethodTarget(),
                 "describeInput",
-                new Class<?>[] { String.class },
-                new Object[] { "typed" });
+                new Class<?>[] {String.class},
+                new Object[] {"typed"});
 
         assertThat(value).isEqualTo("input:typed");
     }
@@ -39,7 +39,7 @@ public class BeanELResolverTest {
                 new MethodTarget(),
                 "describeInput",
                 null,
-                new Object[] { "inferred" });
+                new Object[] {"inferred"});
 
         assertThat(value).isEqualTo("input:inferred");
     }

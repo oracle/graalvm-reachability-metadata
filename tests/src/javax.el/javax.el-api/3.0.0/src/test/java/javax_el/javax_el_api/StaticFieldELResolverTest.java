@@ -43,8 +43,8 @@ public class StaticFieldELResolverTest {
                 newContext(),
                 new ELClass(ConstructorTarget.class),
                 "<init>",
-                new Class<?>[] { String.class },
-                new Object[] { "typed" });
+                new Class<?>[] {String.class},
+                new Object[] {"typed"});
 
         assertThat(value).isInstanceOf(ConstructorTarget.class);
         assertThat(((ConstructorTarget) value).getLabel()).isEqualTo("ctor:typed");
@@ -59,7 +59,7 @@ public class StaticFieldELResolverTest {
                 new ELClass(ConstructorTarget.class),
                 "<init>",
                 null,
-                new Object[] { "inferred" });
+                new Object[] {"inferred"});
 
         assertThat(value).isInstanceOf(ConstructorTarget.class);
         assertThat(((ConstructorTarget) value).getLabel()).isEqualTo("ctor:inferred");
