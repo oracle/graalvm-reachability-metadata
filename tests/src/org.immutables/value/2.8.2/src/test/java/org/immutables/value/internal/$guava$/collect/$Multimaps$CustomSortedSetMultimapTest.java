@@ -25,7 +25,7 @@ class $Multimaps$CustomSortedSetMultimapTest {
     void serializesAndDeserializesCustomSortedSetMultimap() throws Exception {
         final $SortedSetMultimap<String, String> source = $Multimaps.newSortedSetMultimap(
                 new LinkedHashMap<>(),
-                new SerializableReverseOrderTreeSetSupplier<>());
+                new SerializableReverseOrderStringTreeSetSupplier());
         source.put("letters", "a");
         source.put("letters", "c");
         source.put("letters", "b");
@@ -58,13 +58,13 @@ class $Multimaps$CustomSortedSetMultimapTest {
         assertThat(restored.get("symbols")).containsExactly("#", "!");
     }
 
-    private static final class SerializableReverseOrderTreeSetSupplier<V extends Comparable<? super V>>
-            implements $Supplier<SortedSet<V>>, Serializable {
+    private static final class SerializableReverseOrderStringTreeSetSupplier
+            implements $Supplier<SortedSet<String>>, Serializable {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public SortedSet<V> get() {
-            return new TreeSet<>(Comparator.reverseOrder());
+        public SortedSet<String> get() {
+            return new TreeSet<String>(Comparator.reverseOrder());
         }
     }
 }
