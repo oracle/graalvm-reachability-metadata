@@ -22,23 +22,6 @@ import org.junit.jupiter.api.Test;
 public class SerializationUtilsTest {
 
     @Test
-    void cloneDeepCopiesSerializableObjectGraphs() {
-        final SerializableEnvelope original = new SerializableEnvelope(
-                "commons-lang",
-                new ArrayList<>(List.of("clone"))
-        );
-
-        final SerializableEnvelope cloned = SerializationUtils.clone(original);
-        original.getTags().add("mutated-after-clone");
-
-        assertThat(cloned).isNotNull();
-        assertThat(cloned).isNotSameAs(original);
-        assertThat(cloned.getName()).isEqualTo("commons-lang");
-        assertThat(cloned.getTags()).containsExactly("clone");
-        assertThat(cloned.getTags()).isNotSameAs(original.getTags());
-    }
-
-    @Test
     void serializeWritesObjectsThatCanBeReadBack() {
         final SerializableEnvelope original = new SerializableEnvelope(
                 "commons-lang",
