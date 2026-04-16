@@ -46,6 +46,11 @@ public class MethodUtilsTest {
         assertThat(MethodUtils.getMatchingAccessibleMethod(
                 InvocationTarget.class,
                 "describe",
+                CharSequence.class
+        )).isNotNull();
+        assertThat(MethodUtils.getMatchingAccessibleMethod(
+                InvocationTarget.class,
+                "describe",
                 StringBuilder.class
         )).isNotNull();
         assertThat(MethodUtils.invokeMethod(target, "describe", new StringBuilder("value")))
