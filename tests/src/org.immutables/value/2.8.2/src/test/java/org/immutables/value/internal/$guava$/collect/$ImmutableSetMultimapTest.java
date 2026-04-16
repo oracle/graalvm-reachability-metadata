@@ -39,7 +39,9 @@ class $ImmutableSetMultimapTest {
 
         assertThat(restoredObject.getClass()).isEqualTo(source.getClass());
 
-        final $ImmutableSetMultimap<?, ?> restored = ($ImmutableSetMultimap<?, ?>) restoredObject;
+        @SuppressWarnings("unchecked")
+        final $ImmutableSetMultimap<String, Integer> restored =
+                ($ImmutableSetMultimap<String, Integer>) restoredObject;
         assertThat(restored.size()).isEqualTo(4);
         assertThat(restored.keySet()).containsExactly("letters", "numbers");
         assertThat(restored.get("letters")).containsExactly(1, 2, 3);
