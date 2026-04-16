@@ -4,33 +4,32 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org.attoparser;
+package org_attoparser.attoparser;
 
 import java.io.InputStream;
-import java.util.Properties;
 
+import org.attoparser.AttoParser;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ClassLoaderUtilsTest {
 
     @Test
-    void findResourceAsStreamFallsBackToTheLibraryClassLoader() throws Exception {
-        String resourceName = "org/attoparser/attoparser.properties";
+    void attoParserVersionFallsBackToTheLibraryClassLoader() {
         Thread currentThread = Thread.currentThread();
         ClassLoader originalClassLoader = currentThread.getContextClassLoader();
         TrackingClassLoader trackingClassLoader = new TrackingClassLoader();
 
         currentThread.setContextClassLoader(trackingClassLoader);
-        try (InputStream inputStream = ClassLoaderUtils.findResourceAsStream(resourceName)) {
-            assertThat(inputStream).isNotNull();
-            assertThat(trackingClassLoader.requestCount).isEqualTo(1);
-            assertThat(trackingClassLoader.lastRequestedResourceName).isEqualTo(resourceName);
+        try {
+            assertEquals("2.0.5.RELEASE", AttoParser.VERSION);
+            assertEquals("RELEASE", AttoParser.VERSION_TYPE);
+            assertTrue(AttoParser.isVersionStableRelease());
 
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            assertThat(properties.getProperty("version")).isEqualTo("2.0.5.RELEASE");
+            assertEquals(1, trackingClassLoader.requestCount);
+            assertEquals("org/attoparser/attoparser.properties", trackingClassLoader.lastRequestedResourceName);
         } finally {
             currentThread.setContextClassLoader(originalClassLoader);
         }
