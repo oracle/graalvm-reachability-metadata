@@ -37,6 +37,8 @@ class $MapMakerInternalMap$AbstractSerializationProxyTest {
         assertThat(source.getClass().getName())
                 .isEqualTo("org.immutables.value.internal.$guava$.collect.$MapMakerInternalMap");
         assertThat(restored.getClass()).isEqualTo(source.getClass());
-        assertThat(restored).containsEntry("alpha", 1).containsEntry("beta", 2);
+        assertThat(restored).hasSize(2);
+        assertThat(restored.get("alpha")).isEqualTo(1);
+        assertThat(restored.get("beta")).isEqualTo(2);
     }
 }
