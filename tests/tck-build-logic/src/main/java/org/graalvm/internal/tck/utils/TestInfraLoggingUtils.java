@@ -6,12 +6,10 @@
  */
 package org.graalvm.internal.tck.utils;
 
-import org.gradle.api.GradleException;
-
 import java.util.List;
 
 /**
- * Utilities for printing visible `testInfra` reproducer commands in batch runs.
+ * Utilities for printing visible reproducer commands in batch runs.
  */
 public final class TestInfraLoggingUtils {
 
@@ -96,21 +94,4 @@ public final class TestInfraLoggingUtils {
         return List.copyOf(lines);
     }
 
-    /**
-     * Parses a positive parallelism value, falling back to the default used by `testInfra`.
-     */
-    public static int parseParallelism(String parallelismProperty) {
-        if (parallelismProperty == null || parallelismProperty.isBlank()) {
-            return 4;
-        }
-        try {
-            int parsed = Integer.parseInt(parallelismProperty);
-            if (parsed <= 0) {
-                throw new GradleException("Invalid parallelism '" + parallelismProperty + "': must be >= 1.");
-            }
-            return parsed;
-        } catch (NumberFormatException e) {
-            throw new GradleException("Invalid parallelism '" + parallelismProperty + "': must be a positive integer.", e);
-        }
-    }
 }
