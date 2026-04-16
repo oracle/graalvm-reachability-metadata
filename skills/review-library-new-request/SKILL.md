@@ -17,7 +17,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 - Do not accept PRs that push more than one library. A `library-new-request` PR must stay scoped to one target library version plus its supporting test files.
 - Do not accept scaffold-only tests. Generated tests must be changed into library-specific tests that exercise the behavior that requires the metadata.
 - Do not accept tests that reference the exact library version in test code or assertions unless the version check is itself the behavior under test. One test should remain valid across multiple supported library versions.
-- Investigate any inconsistency between metadata coverage numbers and the actual metadata present in the diff. If the PR claims covered entries but the metadata file is empty or nearly empty, the test likely does not justify the result. A `reachability-metadata.json` file containing `{}` is acceptable when the PR also shows no dynamic-access calls and no metadata entries are needed.
+- Treat dynamic-access coverage counts as incomplete evidence. They can miss metadata required through downstream libraries, so do not reject a PR only because `stats/stats.json` reports `0/0` dynamic-access calls while the PR adds metadata.
 
 ## Workflow
 
@@ -47,11 +47,12 @@ Treat the following as hard review rules unless the PR provides a strong reason 
    - Every metadata entry should be explainable from the exercised code path.
    - Be suspicious when the metadata is obviously smaller than what the PR claims to cover.
    - Treat `reachability-metadata.json` containing `{}` as valid when the PR shows no dynamic-access calls and the review confirms the test is not relying on metadata.
+   - Do not treat `0/0` dynamic-access counts as proof that metadata is unnecessary. Consider whether the exercised path can require metadata through downstream libraries.
    - Ask where a metadata requirement comes from if the test does not appear to trigger it.
    - Do not approve speculative metadata added “just in case”.
 
 5. Compare the metadata file, test, and reported coverage as one unit.
-   - If covered-entry counts and the actual metadata do not line up, ask for investigation.
+   - If the PR claims specific coverage numbers that do not line up with the diff, ask for investigation, but do not treat `stats/stats.json` dynamic-access counts as a complete measure of required metadata.
    - If the PR reports zero dynamic-access calls and `reachability-metadata.json` is `{}`, that is acceptable as long as the test is library-specific and the scope is otherwise correct.
    - If the metadata would be needed but the test does not assert the relevant behavior, the PR is incomplete.
 
@@ -83,6 +84,6 @@ Match the concise review style already used in this repository:
 - For scaffold-only tests: say that tests must differ from the scaffold and should not be accepted as-is.
 - For version-pinned tests: say that tests should not reference the exact library version because the same test should support multiple library versions.
 - For multiple-library PRs: say that `library-new-request` PRs must push only one library and ask for the unrelated library additions to be removed.
-- For metadata/coverage mismatch: ask where the metadata is and why the numbers do not match the diff. Do not use this comment when the PR reports zero dynamic-access calls and `reachability-metadata.json` is `{}`.
+- For metadata/coverage mismatch: ask for investigation only when the PR makes concrete coverage claims that are not supported by the diff. Do not use dynamic-access counts alone to argue that generated metadata is unjustified.
 
 Keep comments short, factual, and blocking. Focus on the concrete defect, not a long explanation.
