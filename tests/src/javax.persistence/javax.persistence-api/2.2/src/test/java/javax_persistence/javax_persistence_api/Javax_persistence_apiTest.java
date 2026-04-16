@@ -44,7 +44,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.InheritanceType;
 import javax.persistence.LockModeType;
 import javax.persistence.LockTimeoutException;
-import javax.persistence.NamedQuery;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.OptimisticLockException;
