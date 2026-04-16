@@ -186,6 +186,35 @@ class Graphql_java_extended_scalarsTest {
     }
 
     @Test
+    void objectScalarConvertsFloatingPointAndBigIntegerValuesToGraphQlLiterals() {
+        Map<String, Object> value = new LinkedHashMap<>();
+        value.put("floatValue", 1.25f);
+        value.put("doubleValue", 2.5d);
+        value.put("decimalValue", new BigDecimal("3.1415"));
+        value.put("bigIntegerValue", new BigInteger("12345678901234567890"));
+        value.put("items", List.of(new BigDecimal("4.5"), new BigInteger("6")));
+
+        Value<?> literal = ExtendedScalars.Object.getCoercing().valueToLiteral(value);
+
+        assertThat(literal).isInstanceOf(ObjectValue.class);
+        ObjectValue objectValue = (ObjectValue) literal;
+        assertThat(objectValue.getObjectFields()).extracting(ObjectField::getName)
+                .containsExactly("floatValue", "doubleValue", "decimalValue", "bigIntegerValue", "items");
+        assertThat(((FloatValue) objectValue.getObjectFields().get(0).getValue()).getValue())
+                .isEqualByComparingTo(new BigDecimal("1.25"));
+        assertThat(((FloatValue) objectValue.getObjectFields().get(1).getValue()).getValue())
+                .isEqualByComparingTo(new BigDecimal("2.5"));
+        assertThat(((FloatValue) objectValue.getObjectFields().get(2).getValue()).getValue())
+                .isEqualByComparingTo(new BigDecimal("3.1415"));
+        assertThat(((IntValue) objectValue.getObjectFields().get(3).getValue()).getValue())
+                .isEqualTo(new BigInteger("12345678901234567890"));
+        assertThat(((FloatValue) ((ArrayValue) objectValue.getObjectFields().get(4).getValue()).getValues().get(0)).getValue())
+                .isEqualByComparingTo(new BigDecimal("4.5"));
+        assertThat(((IntValue) ((ArrayValue) objectValue.getObjectFields().get(4).getValue()).getValues().get(1)).getValue())
+                .isEqualTo(new BigInteger("6"));
+    }
+
+    @Test
     void objectAndJsonScalarsConvertNestedStructures() {
         ObjectValue literal = new ObjectValue(List.of(
                 new ObjectField("message", new StringValue("ok")),
