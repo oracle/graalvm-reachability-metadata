@@ -134,6 +134,29 @@ function buildIssueBody(ga, version) {
 }
 
 /**
+ * Normalizes GitHub issue labels into a de-duplicated list of label names.
+ */
+function normalizeIssueLabelNames(labels) {
+  return uniqueStrings(
+    (Array.isArray(labels) ? labels : []).map((label) =>
+      typeof label === 'string' ? label : label?.name
+    )
+  );
+}
+
+/**
+ * Returns the labels to apply to newly created dependency issues.
+ */
+function buildCreatedIssueLabels(context) {
+  const createdIssueLabels = ['library-new-request'];
+  const sourceIssueLabelNames = normalizeIssueLabelNames(context?.payload?.issue?.labels);
+  if (sourceIssueLabelNames.includes('priority')) {
+    createdIssueLabels.push('priority');
+  }
+  return createdIssueLabels;
+}
+
+/**
  * Extracts the requested Maven coordinates from the standard issue body template.
  */
 function extractCoordinatesFromIssueBody(body) {
@@ -603,6 +626,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
   const repo = context.repo.repo;
   const sourceIssueNumber = context.issue.number;
   const workspaceDir = resolveWorkspaceDir();
+  const createdIssueLabels = buildCreatedIssueLabels(context);
 
   const rawDependencyGraph = loadRawDependencyGraph();
   if (isEmptyObject(rawDependencyGraph)) {
@@ -880,7 +904,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
         repo,
         title,
         body,
-        labels: ['library-new-request']
+        labels: createdIssueLabels
       });
       issueNumber = created.data.number;
       createdCount++;
