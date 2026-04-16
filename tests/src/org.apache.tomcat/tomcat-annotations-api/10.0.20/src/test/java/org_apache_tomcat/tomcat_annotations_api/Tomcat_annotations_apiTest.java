@@ -22,6 +22,9 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.annotation.security.RunAs;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.annotation.sql.DataSourceDefinitions;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
@@ -134,6 +137,29 @@ class Tomcat_annotations_apiTest {
     @Test
     void generatedAnnotationIsSourceRetained() {
         assertThat(GeneratedType.class.getAnnotation(Generated.class)).isNull();
+    }
+
+    @Test
+    void annotationTypesExposeTargetAndDocumentationContracts() {
+        assertThat(Resource.class.getAnnotation(Target.class).value())
+                .containsExactlyInAnyOrder(ElementType.TYPE, ElementType.METHOD, ElementType.FIELD);
+        assertThat(PostConstruct.class.getAnnotation(Target.class).value())
+                .containsExactly(ElementType.METHOD);
+        assertThat(PreDestroy.class.getAnnotation(Target.class).value())
+                .containsExactly(ElementType.METHOD);
+        assertThat(RolesAllowed.class.getAnnotation(Target.class).value())
+                .containsExactlyInAnyOrder(ElementType.TYPE, ElementType.METHOD);
+        assertThat(DataSourceDefinition.class.getAnnotation(Target.class).value())
+                .containsExactly(ElementType.TYPE);
+
+        assertThat(Resources.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(DeclareRoles.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(DenyAll.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(PermitAll.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(RolesAllowed.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(RunAs.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(PostConstruct.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(PreDestroy.class.isAnnotationPresent(Documented.class)).isTrue();
     }
 
     private static Field field(Class<?> type, String name) throws NoSuchFieldException {
