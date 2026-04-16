@@ -30,6 +30,8 @@ class ClientProxyTest {
     @Test
     @SuppressWarnings("removal")
     void defaultMethodInvocationUsesPrivilegedSpecialLookupWithSecurityManager() {
+        // ClientProxy only reaches the privileged default-method path when a SecurityManager is installed.
+        // That runtime mode is unavailable on JDK 24+ and in Substrate VM.
         assumeTrue(Runtime.version().feature() < 24, "Security Manager is not supported on this JDK");
         assumeFalse(System.getProperty("java.vm.name", "").contains("Substrate VM"),
                 "Security Manager is not supported in native image tests");
