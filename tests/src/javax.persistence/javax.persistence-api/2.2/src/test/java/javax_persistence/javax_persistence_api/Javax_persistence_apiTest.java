@@ -318,6 +318,33 @@ public class Javax_persistence_apiTest {
     }
 
     @Test
+    void defaultResolverClearCachedProvidersReloadsServicesForTheCurrentClassLoader() throws Exception {
+        Path servicesRoot = Files.createTempDirectory("jpa-services-refresh");
+        Path serviceFile = servicesRoot.resolve("META-INF/services/" + PersistenceProvider.class.getName());
+        Files.createDirectories(serviceFile.getParent());
+        Files.writeString(serviceFile, ServiceLoadedPersistenceProvider.class.getName() + System.lineSeparator(), StandardCharsets.UTF_8);
+
+        Thread.currentThread().setContextClassLoader(new URLClassLoader(new URL[]{servicesRoot.toUri().toURL()}, getClass().getClassLoader()));
+        PersistenceProviderResolverHolder.setPersistenceProviderResolver(null);
+
+        PersistenceProviderResolver resolver = PersistenceProviderResolverHolder.getPersistenceProviderResolver();
+        List<PersistenceProvider> initialLookup = resolver.getPersistenceProviders();
+
+        Files.writeString(serviceFile, AlternateServiceLoadedPersistenceProvider.class.getName() + System.lineSeparator(), StandardCharsets.UTF_8);
+
+        List<PersistenceProvider> cachedLookup = resolver.getPersistenceProviders();
+        resolver.clearCachedProviders();
+        List<PersistenceProvider> refreshedLookup = resolver.getPersistenceProviders();
+
+        assertThat(initialLookup).hasSize(1);
+        assertThat(initialLookup.get(0)).isInstanceOf(ServiceLoadedPersistenceProvider.class);
+        assertThat(cachedLookup).isSameAs(initialLookup);
+        assertThat(refreshedLookup).hasSize(1);
+        assertThat(refreshedLookup).isNotSameAs(initialLookup);
+        assertThat(refreshedLookup.get(0)).isInstanceOf(AlternateServiceLoadedPersistenceProvider.class);
+    }
+
+    @Test
     void publicEnumsExceptionsAndUtilityTypesExposeExpectedContracts() {
         Query query = new RecordingQuery(List.of("row"), "single-row");
         Object entity = new Object();
@@ -495,6 +522,12 @@ public class Javax_persistence_apiTest {
     public static final class ServiceLoadedPersistenceProvider extends RecordingProvider {
         public ServiceLoadedPersistenceProvider() {
             super(new SimpleEntityManagerFactory(Map.of("provider", "service-loader")), true, unknownProviderUtil());
+        }
+    }
+
+    public static final class AlternateServiceLoadedPersistenceProvider extends RecordingProvider {
+        public AlternateServiceLoadedPersistenceProvider() {
+            super(new SimpleEntityManagerFactory(Map.of("provider", "service-loader-alternate")), true, unknownProviderUtil());
         }
     }
 
