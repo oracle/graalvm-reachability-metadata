@@ -172,6 +172,30 @@ class Javax_annotation_apiTest {
     }
 
     @Test
+    void explicitContainerAnnotationsFlattenToRepeatableViews() {
+        Resources explicitResources = ExplicitContainerAnnotatedComponent.class.getAnnotation(Resources.class);
+        Resource[] flattenedResources = ExplicitContainerAnnotatedComponent.class.getAnnotationsByType(Resource.class);
+        DataSourceDefinitions explicitDataSources = ExplicitContainerAnnotatedComponent.class.getAnnotation(DataSourceDefinitions.class);
+        DataSourceDefinition[] flattenedDataSources = ExplicitContainerAnnotatedComponent.class.getAnnotationsByType(DataSourceDefinition.class);
+
+        assertThat(explicitResources).isNotNull();
+        assertThat(explicitResources.value()).hasSize(2);
+        assertThat(Arrays.stream(explicitResources.value()).map(Resource::name))
+                .containsExactly("mailSession", "billingQueue");
+        assertThat(flattenedResources).containsExactly(explicitResources.value());
+        assertThat(Arrays.stream(flattenedResources).map(Resource::lookup))
+                .containsExactly("java:comp/env/mail/default", "java:global/jms/billingQueue");
+
+        assertThat(explicitDataSources).isNotNull();
+        assertThat(explicitDataSources.value()).hasSize(2);
+        assertThat(Arrays.stream(explicitDataSources.value()).map(DataSourceDefinition::name))
+                .containsExactly("jdbc/audit", "jdbc/archive");
+        assertThat(flattenedDataSources).containsExactly(explicitDataSources.value());
+        assertThat(flattenedDataSources[0].loginTimeout()).isEqualTo(5);
+        assertThat(flattenedDataSources[1].properties()).containsExactly("readOnly=true");
+    }
+
+    @Test
     void annotationTypesAdvertiseRetentionTargetsAndEnumBehavior() {
         assertRetention(Generated.class, RetentionPolicy.SOURCE);
         assertRetention(ManagedBean.class, RetentionPolicy.RUNTIME);
@@ -316,6 +340,21 @@ class Javax_annotation_apiTest {
         @DenyAll
         void blockedOperation() {
         }
+    }
+
+    @Resources({
+            @Resource(name = "mailSession", lookup = "java:comp/env/mail/default", description = "Outbound notifications"),
+            @Resource(name = "billingQueue", lookup = "java:global/jms/billingQueue")
+    })
+    @DataSourceDefinitions({
+            @DataSourceDefinition(name = "jdbc/audit", className = "org.example.AuditDataSource", loginTimeout = 5),
+            @DataSourceDefinition(
+                    name = "jdbc/archive",
+                    className = "org.example.ArchiveDataSource",
+                    properties = { "readOnly=true" }
+            )
+    })
+    private static final class ExplicitContainerAnnotatedComponent {
     }
 
     @ManagedBean
