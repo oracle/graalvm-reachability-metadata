@@ -17,6 +17,13 @@ dependencies {
     testImplementation "io.jsonwebtoken:jjwt-impl:$libraryVersion"
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--add-exports=java.base/sun.security.util=ALL-UNNAMED",
+        "--add-opens=java.base/java.io=ALL-UNNAMED"
+    ]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -29,6 +36,14 @@ graalvmNative {
             mergeWithExisting = true
             inputTaskNames.add("test")
             outputDirectories.add("src/test/resources/META-INF/native-image/io.jsonwebtoken/jjwt-gson")
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll([
+                    '--add-exports=java.base/sun.security.util=ALL-UNNAMED',
+                    '--add-opens=java.base/java.io=ALL-UNNAMED'
+            ])
         }
     }
 }
