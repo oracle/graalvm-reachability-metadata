@@ -47,7 +47,7 @@ public class MailcapCommandMapTest {
     }
 
     private static String mailcapEntry(String mimeType, Class<? extends DataContentHandler> dataContentHandlerClass) {
-        return mimeType + "; x-java-content-handler=" + dataContentHandlerClass.getName();
+        return mimeType + "; ; x-java-content-handler=" + dataContentHandlerClass.getName();
     }
 
     public static final class ClassLoaderDataContentHandler implements DataContentHandler {
