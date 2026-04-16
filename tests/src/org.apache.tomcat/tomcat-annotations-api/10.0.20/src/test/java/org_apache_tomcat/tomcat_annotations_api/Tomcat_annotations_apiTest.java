@@ -24,6 +24,8 @@ import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.annotation.sql.DataSourceDefinitions;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -137,6 +139,24 @@ class Tomcat_annotations_apiTest {
     @Test
     void generatedAnnotationIsSourceRetained() {
         assertThat(GeneratedType.class.getAnnotation(Generated.class)).isNull();
+    }
+
+    @Test
+    void annotationTypesExposeRetentionPolicies() {
+        assertThat(ManagedBean.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(PostConstruct.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(PreDestroy.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(Priority.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(Resource.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(Resources.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(DeclareRoles.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(DenyAll.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(PermitAll.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(RolesAllowed.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(RunAs.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(DataSourceDefinition.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(DataSourceDefinitions.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(Generated.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.SOURCE);
     }
 
     @Test
