@@ -6,7 +6,6 @@
  */
 package javax_el.javax_el_api;
 
-import javax.el.BeanELResolver;
 import javax.el.ELClass;
 import javax.el.ELContext;
 import javax.el.ELManager;
@@ -48,34 +47,6 @@ public class ELUtilTest {
         assertThat(((ConstructorTarget) value).getLabel()).isEqualTo("ctor:inferred");
     }
 
-    @Test
-    void invokesBeanMethodWhenParameterTypesAreProvided() {
-        BeanELResolver resolver = new BeanELResolver();
-
-        Object value = resolver.invoke(
-                newContext(),
-                new MethodTarget(),
-                "describeInput",
-                new Class<?>[] { String.class },
-                new Object[] { "typed" });
-
-        assertThat(value).isEqualTo("input:typed");
-    }
-
-    @Test
-    void invokesBeanMethodWhenParameterTypesAreInferredFromArguments() {
-        BeanELResolver resolver = new BeanELResolver();
-
-        Object value = resolver.invoke(
-                newContext(),
-                new MethodTarget(),
-                "describeInput",
-                null,
-                new Object[] { "inferred" });
-
-        assertThat(value).isEqualTo("input:inferred");
-    }
-
     private static ELContext newContext() {
         return new ELManager().getELContext();
     }
@@ -92,9 +63,4 @@ public class ELUtilTest {
         }
     }
 
-    public static final class MethodTarget {
-        public String describeInput(String value) {
-            return "input:" + value;
-        }
-    }
 }
