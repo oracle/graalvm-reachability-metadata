@@ -300,6 +300,36 @@ class Jib_build_planTest {
     }
 
     @Test
+    void fileEntriesLayerAppliesDefaultPermissionsAndTimestampsForDirectEntries(@TempDir Path tempDir)
+            throws Exception {
+        Path configDirectory = Files.createDirectories(tempDir.resolve("config"));
+        Path applicationFile = Files.writeString(tempDir.resolve("application.properties"), "jib.enabled=true\n");
+        Instant customModificationTime = Instant.parse("2024-04-05T06:07:08Z");
+
+        FileEntriesLayer layer = FileEntriesLayer.builder()
+                .setName("defaults")
+                .addEntry(configDirectory, AbsoluteUnixPath.get("/app/config"))
+                .addEntry(applicationFile, AbsoluteUnixPath.get("/app/application.properties"), customModificationTime)
+                .build();
+
+        assertThat(layer.getEntries()).hasSize(2);
+
+        FileEntry directoryEntry = layer.getEntries().get(0);
+        assertThat(directoryEntry.getSourceFile()).isEqualTo(configDirectory);
+        assertThat(directoryEntry.getExtractionPath()).isEqualTo(AbsoluteUnixPath.get("/app/config"));
+        assertThat(directoryEntry.getPermissions()).isEqualTo(FilePermissions.DEFAULT_FOLDER_PERMISSIONS);
+        assertThat(directoryEntry.getModificationTime()).isEqualTo(FileEntriesLayer.DEFAULT_MODIFICATION_TIME);
+        assertThat(directoryEntry.getOwnership()).isEmpty();
+
+        FileEntry fileEntry = layer.getEntries().get(1);
+        assertThat(fileEntry.getSourceFile()).isEqualTo(applicationFile);
+        assertThat(fileEntry.getExtractionPath()).isEqualTo(AbsoluteUnixPath.get("/app/application.properties"));
+        assertThat(fileEntry.getPermissions()).isEqualTo(FilePermissions.DEFAULT_FILE_PERMISSIONS);
+        assertThat(fileEntry.getModificationTime()).isEqualTo(customModificationTime);
+        assertThat(fileEntry.getOwnership()).isEmpty();
+    }
+
+    @Test
     void fileEntriesLayerRecursivelyAddsDirectoryContentsWithCustomProviders(@TempDir Path tempDir) throws Exception {
         Path sourceRoot = Files.createDirectories(tempDir.resolve("input"));
         Path configDirectory = Files.createDirectories(sourceRoot.resolve("config"));
