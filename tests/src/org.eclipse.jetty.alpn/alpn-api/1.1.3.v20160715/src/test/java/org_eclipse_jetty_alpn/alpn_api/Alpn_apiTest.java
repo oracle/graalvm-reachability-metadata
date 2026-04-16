@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 class Alpn_apiTest {
 
@@ -165,6 +166,21 @@ class Alpn_apiTest {
     }
 
     @Test
+    void propagatesSslExceptionsDeclaredByProviderCallbacks() {
+        SSLException clientFailure = new SSLException("client callback failure");
+        SSLException serverFailure = new SSLException("server callback failure");
+        ThrowingClientProvider clientProvider = new ThrowingClientProvider(List.of("h2"), clientFailure);
+        ThrowingServerProvider serverProvider = new ThrowingServerProvider(serverFailure);
+
+        SSLException thrownByClient = catchThrowableOfType(() -> clientProvider.selected("h2"), SSLException.class);
+        SSLException thrownByServer = catchThrowableOfType(() -> serverProvider.select(List.of("h2", "http/1.1")), SSLException.class);
+
+        assertThat(clientProvider.protocols()).containsExactly("h2");
+        assertThat(thrownByClient).isSameAs(clientFailure);
+        assertThat(thrownByServer).isSameAs(serverFailure);
+    }
+
+    @Test
     void exposesDebugFlagAsMutableGlobalState() {
         boolean originalDebug = ALPN.debug;
 
@@ -249,6 +265,47 @@ class Alpn_apiTest {
 
         private boolean wasUnsupportedCalled() {
             return unsupportedCalled;
+        }
+    }
+
+    private static final class ThrowingClientProvider implements ALPN.ClientProvider {
+        private final List<String> protocols;
+        private final SSLException failure;
+
+        private ThrowingClientProvider(List<String> protocols, SSLException failure) {
+            this.protocols = protocols;
+            this.failure = failure;
+        }
+
+        @Override
+        public List<String> protocols() {
+            return protocols;
+        }
+
+        @Override
+        public void unsupported() {
+        }
+
+        @Override
+        public void selected(String protocol) throws SSLException {
+            throw failure;
+        }
+    }
+
+    private static final class ThrowingServerProvider implements ALPN.ServerProvider {
+        private final SSLException failure;
+
+        private ThrowingServerProvider(SSLException failure) {
+            this.failure = failure;
+        }
+
+        @Override
+        public void unsupported() {
+        }
+
+        @Override
+        public String select(List<String> protocols) throws SSLException {
+            throw failure;
         }
     }
 }
