@@ -115,6 +115,20 @@ class Jakarta_annotation_apiTest {
     }
 
     @Test
+    void minimalResourceUsesDocumentedDefaultSettings() {
+        Resource minimal = new ResourceLiteral("jdbc/default");
+
+        assertThat(minimal.name()).isEqualTo("jdbc/default");
+        assertThat(minimal.lookup()).isEmpty();
+        assertThat(minimal.type()).isSameAs(Object.class);
+        assertThat(minimal.authenticationType()).isSameAs(Resource.AuthenticationType.CONTAINER);
+        assertThat(minimal.shareable()).isTrue();
+        assertThat(minimal.mappedName()).isEmpty();
+        assertThat(minimal.description()).isEmpty();
+        assertThat(minimal.annotationType()).isSameAs(Resource.class);
+    }
+
+    @Test
     void securityAnnotationsExposeRoleConfiguration() {
         DeclareRoles declareRoles = new DeclareRolesLiteral("admin", "auditor");
         PermitAll permitAll = new PermitAllLiteral();
@@ -456,6 +470,10 @@ class Jakarta_annotation_apiTest {
         private final boolean shareable;
         private final String mappedName;
         private final String description;
+
+        private ResourceLiteral(String name) {
+            this(name, "", Object.class, AuthenticationType.CONTAINER, true, "", "");
+        }
 
         private ResourceLiteral(
                 String name,
