@@ -259,6 +259,25 @@ class Javax_annotation_apiTest {
         assertThat(GeneratedComponent.class.getAnnotation(Generated.class)).isNull();
     }
 
+    @Test
+    void resourceAnnotationSupportsMethodLevelInjectionMetadata() throws Exception {
+        Method setterMethod = SetterInjectedComponent.class.getDeclaredMethod("setService", CharSequence.class);
+        Resource setterResource = setterMethod.getAnnotation(Resource.class);
+        SetterInjectedComponent component = new SetterInjectedComponent();
+
+        component.setService("ready");
+
+        assertThat(component.service()).isEqualTo("ready");
+        assertThat(setterResource).isNotNull();
+        assertThat(setterResource.name()).isEqualTo("setterService");
+        assertThat(setterResource.lookup()).isEqualTo("java:app/env/setterService");
+        assertThat(setterResource.type()).isEqualTo(CharSequence.class);
+        assertThat(setterResource.authenticationType()).isEqualTo(Resource.AuthenticationType.CONTAINER);
+        assertThat(setterResource.shareable()).isTrue();
+        assertThat(setterResource.mappedName()).isEqualTo("mapped/setterService");
+        assertThat(setterResource.description()).isEqualTo("Setter-based resource injection");
+    }
+
     private static void assertRetention(
             Class<? extends Annotation> annotationType,
             RetentionPolicy expectedPolicy
@@ -363,6 +382,25 @@ class Javax_annotation_apiTest {
 
     @DataSourceDefinition(name = "jdbc/minimal", className = "org.example.MinimalDataSource")
     private static final class MinimalDataSourceComponent {
+    }
+
+    private static final class SetterInjectedComponent {
+        private CharSequence service;
+
+        @Resource(
+                name = "setterService",
+                lookup = "java:app/env/setterService",
+                type = CharSequence.class,
+                mappedName = "mapped/setterService",
+                description = "Setter-based resource injection"
+        )
+        void setService(CharSequence service) {
+            this.service = service;
+        }
+
+        CharSequence service() {
+            return service;
+        }
     }
 
     @Generated(value = { "codegen", "integration-test" }, date = "2026-04-16", comments = "compile-only marker")
