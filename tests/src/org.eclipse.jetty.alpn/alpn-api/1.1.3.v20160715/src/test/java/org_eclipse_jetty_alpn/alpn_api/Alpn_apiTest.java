@@ -8,7 +8,13 @@ package org_eclipse_jetty_alpn.alpn_api;
 
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -181,6 +187,76 @@ class Alpn_apiTest {
     }
 
     @Test
+    void registersBaseProvidersConcurrentlyAcrossSocketsAndEngines() throws Exception {
+        int registrationsPerType = 4;
+        int totalRegistrations = registrationsPerType * 2;
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch registeredLatch = new CountDownLatch(totalRegistrations);
+        ExecutorService executorService = Executors.newFixedThreadPool(totalRegistrations);
+        List<SSLSocket> sockets = new ArrayList<>();
+        List<SSLEngine> engines = new ArrayList<>();
+        List<ALPN.Provider> expectedProviders = new ArrayList<>();
+        List<Future<ALPN.Provider>> futures = new ArrayList<>();
+
+        try {
+            for (int index = 0; index < registrationsPerType; index++) {
+                SSLSocket socket = newSslSocket();
+                SSLEngine engine = newSslEngine();
+                MarkerProvider socketProvider = new MarkerProvider("socket-" + index);
+                MarkerProvider engineProvider = new MarkerProvider("engine-" + index);
+
+                sockets.add(socket);
+                engines.add(engine);
+                expectedProviders.add(socketProvider);
+                expectedProviders.add(engineProvider);
+
+                futures.add(executorService.submit(() -> {
+                    assertThat(startLatch.await(5, TimeUnit.SECONDS)).isTrue();
+                    ALPN.put(socket, socketProvider);
+                    registeredLatch.countDown();
+                    assertThat(registeredLatch.await(5, TimeUnit.SECONDS)).isTrue();
+                    assertThat(ALPN.get(socket)).isSameAs(socketProvider);
+                    return ALPN.remove(socket);
+                }));
+                futures.add(executorService.submit(() -> {
+                    assertThat(startLatch.await(5, TimeUnit.SECONDS)).isTrue();
+                    ALPN.put(engine, engineProvider);
+                    registeredLatch.countDown();
+                    assertThat(registeredLatch.await(5, TimeUnit.SECONDS)).isTrue();
+                    assertThat(ALPN.get(engine)).isSameAs(engineProvider);
+                    return ALPN.remove(engine);
+                }));
+            }
+
+            startLatch.countDown();
+
+            List<ALPN.Provider> removedProviders = new ArrayList<>();
+            for (Future<ALPN.Provider> future : futures) {
+                removedProviders.add(future.get(10, TimeUnit.SECONDS));
+            }
+
+            assertThat(removedProviders).containsExactlyInAnyOrderElementsOf(expectedProviders);
+            for (SSLSocket socket : sockets) {
+                assertThat(ALPN.get(socket)).isNull();
+            }
+            for (SSLEngine engine : engines) {
+                assertThat(ALPN.get(engine)).isNull();
+            }
+        } finally {
+            startLatch.countDown();
+            executorService.shutdownNow();
+            executorService.awaitTermination(10, TimeUnit.SECONDS);
+            for (SSLSocket socket : sockets) {
+                ALPN.remove(socket);
+                socket.close();
+            }
+            for (SSLEngine engine : engines) {
+                ALPN.remove(engine);
+            }
+        }
+    }
+
+    @Test
     void exposesDebugFlagAsMutableGlobalState() {
         boolean originalDebug = ALPN.debug;
 
@@ -306,6 +382,19 @@ class Alpn_apiTest {
         @Override
         public String select(List<String> protocols) throws SSLException {
             throw failure;
+        }
+    }
+
+    private static final class MarkerProvider implements ALPN.Provider {
+        private final String name;
+
+        private MarkerProvider(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 }
