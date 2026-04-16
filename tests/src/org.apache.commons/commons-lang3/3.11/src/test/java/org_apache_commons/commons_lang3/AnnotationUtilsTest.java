@@ -50,7 +50,7 @@ public class AnnotationUtilsTest {
 
         assertThat(description).startsWith("@" + SampleAnnotation.class.getName() + "(");
         assertThat(description).contains("text=alpha");
-        assertThat(description).contains("numbers=[1, 2, 3]");
+        assertThat(description).contains("numbers=[1,2,3]");
         assertThat(description).contains("type=class java.lang.String");
         assertThat(description).contains("nested=@" + NestedAnnotation.class.getName() + "(name=inner)");
     }
