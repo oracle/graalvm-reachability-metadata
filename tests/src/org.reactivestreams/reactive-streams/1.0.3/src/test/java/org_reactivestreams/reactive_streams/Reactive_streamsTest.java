@@ -206,6 +206,50 @@ class Reactive_streamsTest {
     }
 
     @Test
+    void publisherAndSubscriberAdaptersComposeEndToEndInBothDirections() {
+        ReactivePublisherProbe<String> reactivePublisher = new ReactivePublisherProbe<>();
+        RecordingReactiveSubscriber<String> reactiveSubscriber = new RecordingReactiveSubscriber<>();
+        RuntimeException reactiveFailure = new RuntimeException("reactive-end-to-end");
+
+        FlowAdapters.toFlowPublisher(reactivePublisher).subscribe(FlowAdapters.toFlowSubscriber(reactiveSubscriber));
+
+        RecordingReactiveSubscription reactiveSubscription = new RecordingReactiveSubscription();
+        reactivePublisher.emitSubscription(reactiveSubscription);
+        reactivePublisher.emitNext("alpha");
+        reactivePublisher.emitError(reactiveFailure);
+
+        assertThat(reactiveSubscriber.values).containsExactly("alpha");
+        assertThat(reactiveSubscriber.failure).isSameAs(reactiveFailure);
+        assertThat(reactiveSubscriber.subscription).isNotNull();
+
+        reactiveSubscriber.subscription.request(29);
+        reactiveSubscriber.subscription.cancel();
+
+        assertThat(reactiveSubscription.requested).containsExactly(29L);
+        assertThat(reactiveSubscription.cancelled).isTrue();
+
+        FlowPublisherProbe<String> flowPublisher = new FlowPublisherProbe<>();
+        RecordingFlowSubscriber<String> flowSubscriber = new RecordingFlowSubscriber<>();
+
+        FlowAdapters.toPublisher(flowPublisher).subscribe(FlowAdapters.toSubscriber(flowSubscriber));
+
+        RecordingFlowSubscription flowSubscription = new RecordingFlowSubscription();
+        flowPublisher.emitSubscription(flowSubscription);
+        flowPublisher.emitNext("beta");
+        flowPublisher.emitComplete();
+
+        assertThat(flowSubscriber.values).containsExactly("beta");
+        assertThat(flowSubscriber.completed).isTrue();
+        assertThat(flowSubscriber.subscription).isNotNull();
+
+        flowSubscriber.subscription.request(31);
+        flowSubscriber.subscription.cancel();
+
+        assertThat(flowSubscription.requested).containsExactly(31L);
+        assertThat(flowSubscription.cancelled).isTrue();
+    }
+
+    @Test
     void processorAdaptersBridgeSignalsAndSubscriptionsInBothDirections() {
         ReactiveProcessorProbe<Integer, String> reactiveProcessor = new ReactiveProcessorProbe<>();
         Flow.Processor<Integer, String> flowProcessor = FlowAdapters.toFlowProcessor(reactiveProcessor);
