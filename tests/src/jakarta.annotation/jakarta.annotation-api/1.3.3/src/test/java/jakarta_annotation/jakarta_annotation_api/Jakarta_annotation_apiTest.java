@@ -56,7 +56,7 @@ class Jakarta_annotation_apiTest {
 
     @Test
     void simpleAnnotationsExposeConfiguredMembers() {
-        Generated generated = new GeneratedLiteral(new String[] { "generator-a", "generator-b" }, "2026-04-16", "integration-test");
+        Generated generated = new GeneratedLiteral(new String[] {"generator-a", "generator-b"}, "2026-04-16", "integration-test");
         ManagedBean managedBean = new ManagedBeanLiteral("inventoryBean");
         Priority priority = new PriorityLiteral(25);
         PostConstruct postConstruct = new PostConstructLiteral();
@@ -168,7 +168,7 @@ class Jakarta_annotation_apiTest {
                 1,
                 30,
                 64,
-                new String[] { "schema=PUBLIC", "mode=PostgreSQL" },
+                new String[] {"schema=PUBLIC", "mode=PostgreSQL"},
                 15);
         DataSourceDefinition audit = new DataSourceDefinitionLiteral(
                 "java:app/jdbc/audit",
@@ -187,7 +187,7 @@ class Jakarta_annotation_apiTest {
                 2,
                 60,
                 32,
-                new String[] { "schema=AUDIT" },
+                new String[] {"schema=AUDIT"},
                 20);
         DataSourceDefinitions definitions = new DataSourceDefinitionsLiteral(primary, audit);
 
@@ -323,7 +323,7 @@ class Jakarta_annotation_apiTest {
     })
     static final class ContainerManagedResources {
         String[] resourceNames() {
-            return new String[] { "mail/session", "queue/orders" };
+            return new String[] {"mail/session", "queue/orders"};
         }
     }
 
@@ -355,7 +355,7 @@ class Jakarta_annotation_apiTest {
             properties = { "schema=AUDIT" })
     static final class RepeatedDataSourceComponent {
         String[] urls() {
-            return new String[] { "jdbc:h2:mem:primary", "jdbc:h2:mem:audit" };
+            return new String[] {"jdbc:h2:mem:primary", "jdbc:h2:mem:audit"};
         }
     }
 
