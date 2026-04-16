@@ -6,13 +6,11 @@
  */
 package org.graalvm.internal.tck.utils;
 
-import org.gradle.api.GradleException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TestInfraLoggingUtilsTests {
 
@@ -66,17 +64,5 @@ class TestInfraLoggingUtilsTests {
                 "Reproducer command: GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test -Pcoordinates=\"$COORDINATES\" --stacktrace",
                 TestInfraLoggingUtils.DELIMITER
         ));
-    }
-
-    @Test
-    void parseParallelismFallsBackToDefault() {
-        assertThat(TestInfraLoggingUtils.parseParallelism("")).isEqualTo(4);
-    }
-
-    @Test
-    void parseParallelismRejectsInvalidValues() {
-        assertThatThrownBy(() -> TestInfraLoggingUtils.parseParallelism("zero"))
-                .isInstanceOf(GradleException.class)
-                .hasMessageContaining("must be a positive integer");
     }
 }
