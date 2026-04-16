@@ -298,4 +298,79 @@ class Jib_build_planTest {
         assertThat(layer.getName()).isEqualTo("resources");
         assertThat(layer.getEntries()).hasSize(3);
     }
+
+    @Test
+    void fileEntriesLayerRecursivelyAddsDirectoryContentsWithCustomProviders(@TempDir Path tempDir) throws Exception {
+        Path sourceRoot = Files.createDirectories(tempDir.resolve("input"));
+        Path configDirectory = Files.createDirectories(sourceRoot.resolve("config"));
+        Path launcherScript = Files.writeString(sourceRoot.resolve("launcher.sh"), "#!/bin/sh\nexit 0\n");
+        Path configFile = Files.writeString(configDirectory.resolve("application.yaml"), "jib: true\n");
+        Instant rootModificationTime = Instant.parse("2024-03-01T00:00:00Z");
+        Instant directoryModificationTime = rootModificationTime.plusSeconds(10);
+        Instant fileModificationTime = rootModificationTime.plusSeconds(20);
+        FilePermissions configFilePermissions = FilePermissions.fromOctalString("640");
+        FilePermissions launcherPermissions = FilePermissions.fromOctalString("755");
+
+        FileEntriesLayer layer = FileEntriesLayer.builder()
+                .setName("recursive")
+                .addEntryRecursive(
+                        sourceRoot,
+                        AbsoluteUnixPath.get("/app"),
+                        (sourcePath, extractionPath) -> {
+                            if (Files.isDirectory(sourcePath)) {
+                                return FilePermissions.DEFAULT_FOLDER_PERMISSIONS;
+                            }
+                            return extractionPath.toString().endsWith(".sh")
+                                    ? launcherPermissions
+                                    : configFilePermissions;
+                        },
+                        (sourcePath, extractionPath) -> {
+                            if (sourcePath.equals(sourceRoot)) {
+                                return rootModificationTime;
+                            }
+                            return Files.isDirectory(sourcePath)
+                                    ? directoryModificationTime
+                                    : fileModificationTime;
+                        },
+                        (sourcePath, extractionPath) -> Files.isDirectory(sourcePath) ? "0:0" : "1000:1000")
+                .build();
+
+        Map<String, FileEntry> entriesByExtractionPath = new LinkedHashMap<>();
+        for (FileEntry entry : layer.getEntries()) {
+            entriesByExtractionPath.put(entry.getExtractionPath().toString(), entry);
+        }
+
+        assertThat(entriesByExtractionPath.keySet()).containsExactlyInAnyOrder(
+                "/app",
+                "/app/config",
+                "/app/config/application.yaml",
+                "/app/launcher.sh");
+
+        assertThat(entriesByExtractionPath.get("/app").getSourceFile()).isEqualTo(sourceRoot);
+        assertThat(entriesByExtractionPath.get("/app").getPermissions())
+                .isEqualTo(FilePermissions.DEFAULT_FOLDER_PERMISSIONS);
+        assertThat(entriesByExtractionPath.get("/app").getModificationTime()).isEqualTo(rootModificationTime);
+        assertThat(entriesByExtractionPath.get("/app").getOwnership()).isEqualTo("0:0");
+
+        assertThat(entriesByExtractionPath.get("/app/config").getSourceFile()).isEqualTo(configDirectory);
+        assertThat(entriesByExtractionPath.get("/app/config").getPermissions())
+                .isEqualTo(FilePermissions.DEFAULT_FOLDER_PERMISSIONS);
+        assertThat(entriesByExtractionPath.get("/app/config").getModificationTime())
+                .isEqualTo(directoryModificationTime);
+        assertThat(entriesByExtractionPath.get("/app/config").getOwnership()).isEqualTo("0:0");
+
+        assertThat(entriesByExtractionPath.get("/app/config/application.yaml").getSourceFile()).isEqualTo(configFile);
+        assertThat(entriesByExtractionPath.get("/app/config/application.yaml").getPermissions())
+                .isEqualTo(configFilePermissions);
+        assertThat(entriesByExtractionPath.get("/app/config/application.yaml").getModificationTime())
+                .isEqualTo(fileModificationTime);
+        assertThat(entriesByExtractionPath.get("/app/config/application.yaml").getOwnership())
+                .isEqualTo("1000:1000");
+
+        assertThat(entriesByExtractionPath.get("/app/launcher.sh").getSourceFile()).isEqualTo(launcherScript);
+        assertThat(entriesByExtractionPath.get("/app/launcher.sh").getPermissions()).isEqualTo(launcherPermissions);
+        assertThat(entriesByExtractionPath.get("/app/launcher.sh").getModificationTime())
+                .isEqualTo(fileModificationTime);
+        assertThat(entriesByExtractionPath.get("/app/launcher.sh").getOwnership()).isEqualTo("1000:1000");
+    }
 }
