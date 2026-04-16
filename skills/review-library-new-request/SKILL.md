@@ -6,7 +6,7 @@ argument-hint: "[pr-number-or-url]"
 
 # Review `library-new-request` PRs
 
-These PRs usually add reachability metadata and tests for one library version. Review them with extra scrutiny.
+These PRs usually add reachability metadata and tests for one target library coordinate. Review them with extra scrutiny.
 
 The PR number or URL can be passed as an optional argument (for example, `1234`, `https://github.com/oracle/graalvm-reachability-metadata/pull/1234`). If the user says "review this PR" without an argument, infer the PR from the surrounding conversation (for example, an open review tab, a PR URL mentioned earlier, or the current branch's PR from `gh pr status`); only ask the user when it cannot be inferred. Use `gh pr view <pr>`, `gh pr diff <pr>`, and `gh pr checks <pr>` against the resolved PR throughout the workflow below.
 
@@ -16,6 +16,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 
 - Do not accept PRs that push more than one library. A `library-new-request` PR must stay scoped to one target library version plus its supporting test files.
 - Do not accept scaffold-only tests. Generated tests must be changed into library-specific tests that exercise the behavior that requires the metadata.
+- Do not accept tests that reference the exact library version in test code or assertions unless the version check is itself the behavior under test. One test should remain valid across multiple supported library versions.
 - Investigate any inconsistency between metadata coverage numbers and the actual metadata present in the diff. If the PR claims covered entries but the metadata file is empty or nearly empty, the test likely does not justify the result. A `reachability-metadata.json` file containing `{}` is acceptable when the PR also shows no dynamic-access calls and no metadata entries are needed.
 
 ## Workflow
@@ -37,6 +38,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 
 3. Review the test source before reading the metadata.
    - The test must be library-specific, not a lightly edited scaffold.
+   - Reject tests that hardcode the exact library version in strings, assertions, or expected output unless the test is explicitly validating version-dependent behavior.
    - Keep test packages separate from library packages. Reject tests that live under the target library's package unless the PR clearly needs that package placement to exercise the library.
    - Separate packages matter because tests placed inside the library package can bypass visibility boundaries and produce false confidence about what user code can access.
    - Reject tests that only instantiate the obvious type, mirror the generated skeleton, or fail to exercise the code path that would need metadata.
@@ -62,12 +64,14 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 
 - Strong PR:
   - Test names and assertions are specific to the library behavior.
+  - The test logic is version-agnostic and can cover multiple supported versions of the same library.
   - The test would fail meaningfully without the submitted metadata.
   - `reachability-metadata.json` contains only entries justified by the test.
 
 - Weak PR:
   - PR pushes metadata or tests for more than one library.
   - Test class still looks like the scaffold.
+  - Test code hardcodes the target library version without a clear need.
   - Test sources are placed in the library package without a demonstrated need.
   - Metadata appears without a demonstrated trigger path.
   - Claimed coverage is not credible from the diff.
@@ -77,6 +81,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 Match the concise review style already used in this repository:
 
 - For scaffold-only tests: say that tests must differ from the scaffold and should not be accepted as-is.
+- For version-pinned tests: say that tests should not reference the exact library version because the same test should support multiple library versions.
 - For multiple-library PRs: say that `library-new-request` PRs must push only one library and ask for the unrelated library additions to be removed.
 - For metadata/coverage mismatch: ask where the metadata is and why the numbers do not match the diff. Do not use this comment when the PR reports zero dynamic-access calls and `reachability-metadata.json` is `{}`.
 
