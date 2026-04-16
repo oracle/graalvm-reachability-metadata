@@ -201,6 +201,33 @@ class Jakarta_annotation_apiTest {
         assertThat(definitions.annotationType()).isSameAs(DataSourceDefinitions.class);
     }
 
+    @Test
+    void minimalDataSourceDefinitionUsesDocumentedDefaultSettings() {
+        DataSourceDefinition minimal = new DataSourceDefinitionLiteral(
+                "java:app/jdbc/minimal",
+                "org.h2.jdbcx.JdbcDataSource");
+
+        assertThat(minimal.name()).isEqualTo("java:app/jdbc/minimal");
+        assertThat(minimal.className()).isEqualTo("org.h2.jdbcx.JdbcDataSource");
+        assertThat(minimal.description()).isEmpty();
+        assertThat(minimal.url()).isEmpty();
+        assertThat(minimal.user()).isEmpty();
+        assertThat(minimal.password()).isEmpty();
+        assertThat(minimal.databaseName()).isEmpty();
+        assertThat(minimal.portNumber()).isEqualTo(-1);
+        assertThat(minimal.serverName()).isEqualTo("localhost");
+        assertThat(minimal.isolationLevel()).isEqualTo(-1);
+        assertThat(minimal.transactional()).isTrue();
+        assertThat(minimal.initialPoolSize()).isEqualTo(-1);
+        assertThat(minimal.maxPoolSize()).isEqualTo(-1);
+        assertThat(minimal.minPoolSize()).isEqualTo(-1);
+        assertThat(minimal.maxIdleTime()).isEqualTo(-1);
+        assertThat(minimal.maxStatements()).isEqualTo(-1);
+        assertThat(minimal.properties()).isEmpty();
+        assertThat(minimal.loginTimeout()).isZero();
+        assertThat(minimal.annotationType()).isSameAs(DataSourceDefinition.class);
+    }
+
     @Generated(value = "metadata-forge", comments = "source-retained constructor and method usage")
     @ManagedBean("resourceDrivenComponent")
     @DeclareRoles({ "admin", "auditor" })
@@ -571,6 +598,10 @@ class Jakarta_annotation_apiTest {
         private final int maxStatements;
         private final String[] properties;
         private final int loginTimeout;
+
+        private DataSourceDefinitionLiteral(String name, String className) {
+            this(name, className, "", "", "", "", "", -1, "localhost", -1, true, -1, -1, -1, -1, -1, new String[0], 0);
+        }
 
         private DataSourceDefinitionLiteral(
                 String name,
