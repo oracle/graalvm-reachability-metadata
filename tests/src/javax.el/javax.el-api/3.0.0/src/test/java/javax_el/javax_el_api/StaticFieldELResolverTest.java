@@ -15,7 +15,25 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ELUtilTest {
+public class StaticFieldELResolverTest {
+
+    @Test
+    void readsPublicStaticFieldValue() {
+        StaticFieldELResolver resolver = new StaticFieldELResolver();
+
+        Object value = resolver.getValue(newContext(), new ELClass(StaticFieldTarget.class), "GREETING");
+
+        assertThat(value).isEqualTo("hello");
+    }
+
+    @Test
+    void resolvesPublicStaticFieldType() {
+        StaticFieldELResolver resolver = new StaticFieldELResolver();
+
+        Class<?> type = resolver.getType(newContext(), new ELClass(StaticFieldTarget.class), "GREETING");
+
+        assertThat(type).isEqualTo(String.class);
+    }
 
     @Test
     void invokesConstructorWhenParameterTypesAreProvided() {
@@ -51,6 +69,13 @@ public class ELUtilTest {
         return new ELManager().getELContext();
     }
 
+    public static final class StaticFieldTarget {
+        public static final String GREETING = "hello";
+
+        private StaticFieldTarget() {
+        }
+    }
+
     public static final class ConstructorTarget {
         private final String label;
 
@@ -62,5 +87,4 @@ public class ELUtilTest {
             return label;
         }
     }
-
 }
