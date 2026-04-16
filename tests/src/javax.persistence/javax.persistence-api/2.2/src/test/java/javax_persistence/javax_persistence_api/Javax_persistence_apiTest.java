@@ -345,6 +345,41 @@ public class Javax_persistence_apiTest {
     }
 
     @Test
+    void defaultResolverKeepsSeparateProviderCachesPerContextClassLoader() throws Exception {
+        Path firstServicesRoot = Files.createTempDirectory("jpa-services-first-loader");
+        Path firstServiceFile = firstServicesRoot.resolve("META-INF/services/" + PersistenceProvider.class.getName());
+        Files.createDirectories(firstServiceFile.getParent());
+        Files.writeString(firstServiceFile, ServiceLoadedPersistenceProvider.class.getName() + System.lineSeparator(), StandardCharsets.UTF_8);
+
+        Path secondServicesRoot = Files.createTempDirectory("jpa-services-second-loader");
+        Path secondServiceFile = secondServicesRoot.resolve("META-INF/services/" + PersistenceProvider.class.getName());
+        Files.createDirectories(secondServiceFile.getParent());
+        Files.writeString(secondServiceFile, AlternateServiceLoadedPersistenceProvider.class.getName() + System.lineSeparator(), StandardCharsets.UTF_8);
+
+        try (URLClassLoader firstClassLoader = new URLClassLoader(new URL[]{firstServicesRoot.toUri().toURL()}, getClass().getClassLoader());
+                URLClassLoader secondClassLoader = new URLClassLoader(new URL[]{secondServicesRoot.toUri().toURL()}, getClass().getClassLoader())) {
+            PersistenceProviderResolverHolder.setPersistenceProviderResolver(null);
+            PersistenceProviderResolver resolver = PersistenceProviderResolverHolder.getPersistenceProviderResolver();
+
+            Thread.currentThread().setContextClassLoader(firstClassLoader);
+            List<PersistenceProvider> firstLookup = resolver.getPersistenceProviders();
+
+            Thread.currentThread().setContextClassLoader(secondClassLoader);
+            List<PersistenceProvider> secondLookup = resolver.getPersistenceProviders();
+
+            Thread.currentThread().setContextClassLoader(firstClassLoader);
+            List<PersistenceProvider> repeatedFirstLookup = resolver.getPersistenceProviders();
+
+            assertThat(firstLookup).hasSize(1);
+            assertThat(firstLookup.get(0)).isInstanceOf(ServiceLoadedPersistenceProvider.class);
+            assertThat(secondLookup).hasSize(1);
+            assertThat(secondLookup.get(0)).isInstanceOf(AlternateServiceLoadedPersistenceProvider.class);
+            assertThat(secondLookup).isNotSameAs(firstLookup);
+            assertThat(repeatedFirstLookup).isSameAs(firstLookup);
+        }
+    }
+
+    @Test
     void publicEnumsExceptionsAndUtilityTypesExposeExpectedContracts() {
         Query query = new RecordingQuery(List.of("row"), "single-row");
         Object entity = new Object();
