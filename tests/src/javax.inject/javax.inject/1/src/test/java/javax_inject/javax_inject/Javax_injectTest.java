@@ -118,6 +118,21 @@ class Javax_injectTest {
         assertThat(getSingleAnnotation(SingletonComponent.class, Singleton.class)).isNotNull();
     }
 
+    @Test
+    void providerCanBeDecoratedToMemoizeASharedInstance() {
+        TokenProvider tokenProvider = new TokenProvider();
+        Provider<RequestToken> memoizedProvider = new MemoizingProvider<>(tokenProvider);
+        TokenConsumer consumer = new TokenConsumer(memoizedProvider);
+
+        RequestToken first = consumer.currentToken();
+        RequestToken second = consumer.currentToken();
+
+        assertThat(first.value()).isEqualTo("token-1");
+        assertThat(second).isSameAs(first);
+        assertThat(memoizedProvider.get()).isSameAs(first);
+        assertThat(tokenProvider.invocationCount()).isEqualTo(1);
+    }
+
     private static void assertDocumentedRuntimeAnnotation(Class<? extends Annotation> annotationType) {
         Retention retention = getSingleAnnotation(annotationType, Retention.class);
 
@@ -261,5 +276,52 @@ class Javax_injectTest {
 
     @Singleton
     private static final class SingletonComponent {
+    }
+
+    private static final class MemoizingProvider<T> implements Provider<T> {
+        private final Provider<T> delegate;
+        private T value;
+        private boolean initialized;
+
+        private MemoizingProvider(Provider<T> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public T get() {
+            if (!initialized) {
+                value = delegate.get();
+                initialized = true;
+            }
+            return value;
+        }
+    }
+
+    private static final class TokenProvider implements Provider<RequestToken> {
+        private final AtomicInteger counter = new AtomicInteger();
+
+        @Override
+        public RequestToken get() {
+            return new RequestToken("token-" + counter.incrementAndGet());
+        }
+
+        private int invocationCount() {
+            return counter.get();
+        }
+    }
+
+    private static final class TokenConsumer {
+        private final Provider<RequestToken> tokenProvider;
+
+        private TokenConsumer(Provider<RequestToken> tokenProvider) {
+            this.tokenProvider = tokenProvider;
+        }
+
+        private RequestToken currentToken() {
+            return tokenProvider.get();
+        }
+    }
+
+    private record RequestToken(String value) {
     }
 }
