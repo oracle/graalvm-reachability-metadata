@@ -43,6 +43,21 @@ class Javax_injectTest {
     }
 
     @Test
+    void providerCanBreakCircularDependenciesWithLazyResolution() {
+        DeferredProvider<CircularServiceA> serviceAProvider = new DeferredProvider<>();
+        DeferredProvider<CircularServiceB> serviceBProvider = new DeferredProvider<>();
+        CircularServiceA serviceA = new CircularServiceA(serviceBProvider);
+        CircularServiceB serviceB = new CircularServiceB(serviceAProvider);
+
+        serviceAProvider.set(serviceA);
+        serviceBProvider.set(serviceB);
+
+        assertThat(serviceA.describePeer()).isEqualTo("service-a -> service-b");
+        assertThat(serviceB.describePeer()).isEqualTo("service-b -> service-a");
+        assertThat(serviceA.describeRoundTrip()).isEqualTo("service-a -> service-b -> service-a");
+    }
+
+    @Test
     void injectAndNamedAnnotationsAreVisibleOnInjectionPoints() throws NoSuchFieldException, NoSuchMethodException {
         Constructor<InjectionFixture> constructor = InjectionFixture.class.getDeclaredConstructor(String.class);
         Field field = InjectionFixture.class.getDeclaredField("fieldProvider");
@@ -168,6 +183,55 @@ class Javax_injectTest {
 
         private String describe() {
             return constructorValue + "-" + suffix + "-" + fieldProvider.get();
+        }
+    }
+
+    private static final class DeferredProvider<T> implements Provider<T> {
+        private T value;
+
+        @Override
+        public T get() {
+            return value;
+        }
+
+        private void set(T value) {
+            this.value = value;
+        }
+    }
+
+    private static final class CircularServiceA {
+        private final Provider<CircularServiceB> serviceBProvider;
+
+        private CircularServiceA(Provider<CircularServiceB> serviceBProvider) {
+            this.serviceBProvider = serviceBProvider;
+        }
+
+        private String describePeer() {
+            return "service-a -> " + serviceBProvider.get().name();
+        }
+
+        private String describeRoundTrip() {
+            return "service-a -> " + serviceBProvider.get().describePeer();
+        }
+
+        private String name() {
+            return "service-a";
+        }
+    }
+
+    private static final class CircularServiceB {
+        private final Provider<CircularServiceA> serviceAProvider;
+
+        private CircularServiceB(Provider<CircularServiceA> serviceAProvider) {
+            this.serviceAProvider = serviceAProvider;
+        }
+
+        private String describePeer() {
+            return "service-b -> " + serviceAProvider.get().name();
+        }
+
+        private String name() {
+            return "service-b";
         }
     }
 
