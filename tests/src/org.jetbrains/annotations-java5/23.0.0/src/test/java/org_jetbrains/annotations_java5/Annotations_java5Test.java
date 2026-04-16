@@ -6,6 +6,7 @@
  */
 package org_jetbrains.annotations_java5;
 
+import java.awt.event.InputEvent;
 import java.lang.annotation.Annotation;
 import java.util.Calendar;
 import java.util.Locale;
@@ -390,6 +391,18 @@ class Annotations_java5Test {
         assertThat(examples.invalidExpressionMessage("[")).contains("Unclosed character class");
     }
 
+    @Test
+    void inputEventMaskAnnotatedCodePathsExecuteNormally() {
+        InputEventMaskExamples examples = new InputEventMaskExamples();
+        int shortcutMask = examples.shortcutMask();
+        int shortcutWithAlt = shortcutMask | InputEvent.ALT_DOWN_MASK;
+
+        assertThat(shortcutMask).isEqualTo(InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+        assertThat(examples.hasRequiredModifiers(shortcutWithAlt, shortcutMask)).isTrue();
+        assertThat(examples.hasRequiredModifiers(InputEvent.CTRL_DOWN_MASK, shortcutMask)).isFalse();
+        assertThat(examples.clearAltModifier(shortcutWithAlt)).isEqualTo(shortcutMask);
+    }
+
     @Language("JAVA")
     private @interface JavaExpression {
     }
@@ -526,6 +539,22 @@ class Annotations_java5Test {
             } catch (PatternSyntaxException exception) {
                 return exception.getDescription();
             }
+        }
+    }
+
+    private static final class InputEventMaskExamples {
+        private @JdkConstants.InputEventMask int shortcutMask() {
+            return InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
+        }
+
+        private boolean hasRequiredModifiers(
+                @JdkConstants.InputEventMask int eventMask,
+                @JdkConstants.InputEventMask int requiredMask) {
+            return (eventMask & requiredMask) == requiredMask;
+        }
+
+        private @JdkConstants.InputEventMask int clearAltModifier(@JdkConstants.InputEventMask int eventMask) {
+            return eventMask & ~InputEvent.ALT_DOWN_MASK;
         }
     }
 
