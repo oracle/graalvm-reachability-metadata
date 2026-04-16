@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ClassLoaderObjectInputStreamTest {
     @Test
@@ -54,10 +53,16 @@ class ClassLoaderObjectInputStreamTest {
     }
 
     @Test
-    void fallsBackToTheParentProxyResolutionWhenProxyCreationFails() throws Exception {
-        try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(getClass().getClassLoader())) {
-            assertThatThrownBy(() -> inputStream.resolveProxyClassFor(Runnable.class.getName(), Runnable.class.getName()))
-                    .isInstanceOf(ClassNotFoundException.class);
+    void fallsBackToTheParentProxyResolutionForNonPublicInterfacesFromAnotherLoader() throws Exception {
+        ClassLoader delegatingLoader = new ClassLoader(getClass().getClassLoader()) {
+        };
+
+        try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(delegatingLoader)) {
+            Class<?> proxyClass = inputStream.resolveProxyClassFor(PackagePrivateInterface.class.getName());
+
+            assertThat(Proxy.isProxyClass(proxyClass)).isTrue();
+            assertThat(proxyClass.getInterfaces()).containsExactly(PackagePrivateInterface.class);
+            assertThat(proxyClass.getClassLoader()).isEqualTo(getClass().getClassLoader());
         }
     }
 
@@ -81,6 +86,9 @@ class ClassLoaderObjectInputStreamTest {
         private Class<?> resolveProxyClassFor(String... interfaces) throws IOException, ClassNotFoundException {
             return super.resolveProxyClass(interfaces);
         }
+    }
+
+    interface PackagePrivateInterface {
     }
 
     private static final class SerializablePayload implements Serializable {
