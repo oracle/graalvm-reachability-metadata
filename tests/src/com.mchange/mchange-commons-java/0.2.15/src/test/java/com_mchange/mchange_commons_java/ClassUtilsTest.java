@@ -35,8 +35,8 @@ public class ClassUtilsTest {
     void overloadedForNameResolvesFullyQualifiedClassNamesBeforeCheckingImports() throws Exception {
         Class<?> resolved = ClassUtils.forName(
             "java.lang.String",
-            new String[] { "java.util" },
-            new String[] { ArrayList.class.getName() }
+            new String[] {"java.util"},
+            new String[] {ArrayList.class.getName()}
         );
 
         assertThat(resolved).isEqualTo(String.class);
@@ -47,12 +47,12 @@ public class ClassUtilsTest {
         Class<?> importedClass = ClassUtils.classForSimpleName(
             "ClassUtilsTest",
             null,
-            new String[] { ClassUtilsTest.class.getName() }
+            new String[] {ClassUtilsTest.class.getName()}
         );
         Class<?> javaLangClass = ClassUtils.classForSimpleName("String", null, null);
         Class<?> importedPackageClass = ClassUtils.classForSimpleName(
             "ArrayList",
-            new String[] { "java.util" },
+            new String[] {"java.util"},
             null
         );
 

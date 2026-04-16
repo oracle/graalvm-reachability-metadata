@@ -31,7 +31,7 @@ public class ForwardingInvocationHandlerTest {
     private static GreetingService createProxy(GreetingService inner) {
         return (GreetingService) Proxy.newProxyInstance(
             ForwardingInvocationHandlerTest.class.getClassLoader(),
-            new Class<?>[] { GreetingService.class },
+            new Class<?>[] {GreetingService.class},
             new ForwardingInvocationHandler(inner)
         );
     }

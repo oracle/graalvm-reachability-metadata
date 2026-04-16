@@ -16,7 +16,7 @@ public class LogUtilsTest {
 
     @Test
     void formatMessageLoadsMessagesFromResourceBundles() {
-        String formatted = LogUtils.formatMessage(BUNDLE_NAME, MESSAGE_KEY, new Object[] { "value" });
+        String formatted = LogUtils.formatMessage(BUNDLE_NAME, MESSAGE_KEY, new Object[] {"value"});
 
         assertThat(formatted).isEqualTo("Translated LogUtils message value");
     }

@@ -21,7 +21,7 @@ public class ReflectUtilsTest {
     void findProxyConstructorReturnsInvocationHandlerConstructorForProxyInterface() throws Exception {
         Constructor<?> proxyConstructor = ReflectUtils.findProxyConstructor(
             ReflectUtilsTest.class.getClassLoader(),
-            new Class<?>[] { ProxiedAction.class }
+            new Class<?>[] {ProxiedAction.class}
         );
         InvocationHandler invocationHandler = (proxy, method, args) -> "handled";
 
