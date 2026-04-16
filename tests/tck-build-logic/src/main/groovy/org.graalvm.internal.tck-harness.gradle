@@ -268,10 +268,15 @@ Map<String, Object> loadCi() {
     new JsonSlurper().parse(f) as Map<String, Object>
 }
 
-Map<String, List<String>> matrixDefaultsFor(String section) {
+Map<String, Object> matrixSectionFor(String section) {
     def ci = loadCi()
     def sec = ci[section]
     if (sec == null) throw new GradleException("Missing '${section}' in ci.json")
+    sec as Map<String, Object>
+}
+
+Map<String, List<String>> matrixDefaultsFor(String section) {
+    def sec = matrixSectionFor(section)
     [
             "version": (sec["java"] as List<String>),
             "os": (sec["os"] as List<String>)
@@ -280,6 +285,19 @@ Map<String, List<String>> matrixDefaultsFor(String section) {
 
 List<String> nativeImageModesForMatrix() {
     NativeImageConfigUtils.modeNames(loadCi())
+}
+
+int versionsPerJobFor(String section) {
+    def sec = matrixSectionFor(section)
+    Object versionsPerJob = sec["versions-per-job"]
+    if (versionsPerJob == null) {
+        return 30
+    }
+    int value = Integer.parseInt(versionsPerJob.toString())
+    if (value <= 0) {
+        throw new GradleException("'${section}.versions-per-job' must be greater than zero")
+    }
+    value
 }
 
 List<Map<String, Object>> expandMatrixEntries(List<Map<String, Object>> entries, String section) {
@@ -305,10 +323,13 @@ Map<String, Object> springAotMatrixConfig() {
 }
 
 List<Map<String, Object>> expandNewLibraryVersionCompatibilityMatrix(List<Map<String, Object>> libraries) {
+    int versionsPerJob = versionsPerJobFor("generateNewLibraryVersionCompatibilityMatrix")
     expandMatrixEntries(libraries.collect { Map<String, Object> library ->
         [
                 "name"    : library["name"],
-                "versions": library["versions"]
+                "versions": (library["versions"] as List<?>)
+                        .collect { it.toString() }
+                        .take(versionsPerJob)
         ]
     }, "generateNewLibraryVersionCompatibilityMatrix")
 }
@@ -407,6 +428,33 @@ Provider<Task> generateChangedTestedVersionsMatrix = tasks.register("generateCha
         def matrix = [include: include]
         if (noneFound) {
             println "No changed metadata index tested-version additions were found!"
+        }
+
+        writeGithubOutput("matrix", JsonOutput.toJson(matrix))
+        writeGithubOutput("none-found", noneFound.toString())
+    }
+}
+
+// gradle generateChangedMetadataTestMatrix -PbaseCommit=<base-commit> -PnewCommit=<new-commit>
+Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChangedMetadataTestMatrix", DefaultTask) { task ->
+    task.setDescription("Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files")
+    task.setGroup(METADATA_GROUP)
+    task.doFirst {
+        if (!project.hasProperty("baseCommit")) {
+            throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
+        }
+
+        int versionsPerJob = versionsPerJobFor("generateChangedMetadataTestMatrix")
+        boolean noneFound = diffCoordinates.isEmpty()
+        List<Map<String, Object>> include = noneFound
+                ? []
+                : expandMatrixEntries(
+                        diffCoordinates.collectMany { coordinate -> tck.testedVersionBatches(coordinate, versionsPerJob) },
+                        "generateChangedMetadataTestMatrix"
+                )
+        def matrix = [include: include]
+        if (noneFound) {
+            println "No changed coordinates were found!"
         }
 
         writeGithubOutput("matrix", JsonOutput.toJson(matrix))

@@ -425,6 +425,59 @@ public abstract class TckExtension {
     }
 
     /**
+     * Returns batched tested-version lists for the given metadata coordinates.
+     */
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> testedVersionBatches(String coordinates, int batchSize) {
+        if (batchSize <= 0) {
+            throw new IllegalArgumentException("Batch size must be greater than zero");
+        }
+
+        List<String> strings = splitCoordinates(coordinates);
+        String groupId = strings.get(0);
+        String artifactId = strings.get(1);
+        String metadataVersion = strings.get(2);
+        Objects.requireNonNull(groupId, "Group ID must be specified");
+        Objects.requireNonNull(artifactId, "Artifact ID must be specified");
+        Objects.requireNonNull(metadataVersion, "Version must be specified");
+
+        Path indexPath = metadataRoot().resolve(groupId).resolve(artifactId).resolve("index.json");
+        if (!Files.isRegularFile(indexPath)) {
+            throw new RuntimeException("Missing index.json for " + groupId + ":" + artifactId + " at " + indexPath);
+        }
+
+        List<Map<String, ?>> metadataIndex = (List<Map<String, ?>>) extractJsonFile(indexPath);
+        for (Map<String, ?> entry : metadataIndex) {
+            if (!metadataVersion.equals(entry.get("metadata-version"))) {
+                continue;
+            }
+
+            Object testedVersionsRaw = entry.get("tested-versions");
+            if (!(testedVersionsRaw instanceof List<?> testedVersions)) {
+                throw new RuntimeException("Missing tested-versions for " + coordinates);
+            }
+
+            List<String> versions = testedVersions.stream()
+                    .map(Object::toString)
+                    .toList();
+            int batchCount = Math.max(1, (versions.size() + batchSize - 1) / batchSize);
+            List<Map<String, Object>> batches = new ArrayList<>();
+            for (int batchIndex = 0; batchIndex < batchCount; batchIndex++) {
+                int fromIndex = batchIndex * batchSize;
+                int toIndex = Math.min(fromIndex + batchSize, versions.size());
+                Map<String, Object> batch = new LinkedHashMap<>();
+                batch.put("coordinates", coordinates);
+                batch.put("versions", new ArrayList<>(versions.subList(fromIndex, toIndex)));
+                batch.put("batch", (batchIndex + 1) + "/" + batchCount);
+                batches.add(batch);
+            }
+            return batches;
+        }
+
+        throw new RuntimeException("Missing metadata-version " + metadataVersion + " in " + indexPath);
+    }
+
+    /**
      * Returns all coordinates that match given coordinate filter.
      * Standard version: Uses 'metadata-version' pointer for shared config folders.
      *
