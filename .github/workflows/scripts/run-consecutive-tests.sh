@@ -7,6 +7,7 @@
 set -u
 
 TIMEOUT="5m"
+SOFT_DEADLINE="${GVM_TCK_SOFT_DEADLINE:-}"
 
 if [ $# -ne 2 ]; then
   echo "Usage: $0 <test-coordinates> <versions-json-array>"
@@ -24,6 +25,60 @@ VERSIONS_JSON="${VERSIONS_JSON%"${VERSIONS_JSON##*[!\']}"}"
 # Parse versions with jq
 readarray -t VERSIONS < <(echo "$VERSIONS_JSON" | jq -r '.[]')
 export DELIMITER="========================================================================================"
+
+parse_duration_to_seconds() {
+  local duration="$1"
+
+  if [[ "$duration" =~ ^([0-9]+)([smhd]?)$ ]]; then
+    local value="${BASH_REMATCH[1]}"
+    local unit="${BASH_REMATCH[2]}"
+    case "$unit" in
+      "" | "s")
+        echo "$value"
+        ;;
+      "m")
+        echo $((value * 60))
+        ;;
+      "h")
+        echo $((value * 3600))
+        ;;
+      "d")
+        echo $((value * 86400))
+        ;;
+      *)
+        echo "Unsupported duration unit in '$duration'." >&2
+        exit 1
+        ;;
+    esac
+    return
+  fi
+
+  echo "Unsupported duration format '$duration'. Use an integer with optional s/m/h/d suffix." >&2
+  exit 1
+}
+
+SOFT_DEADLINE_SECONDS=""
+SOFT_DEADLINE_AT=""
+if [ -n "$SOFT_DEADLINE" ]; then
+  SOFT_DEADLINE_SECONDS="$(parse_duration_to_seconds "$SOFT_DEADLINE")"
+  SOFT_DEADLINE_AT=$(($(date +%s) + SOFT_DEADLINE_SECONDS))
+  echo "Soft deadline enabled: stopping after approximately $SOFT_DEADLINE of wall-clock time."
+fi
+
+should_stop_for_soft_deadline() {
+  if [ -z "$SOFT_DEADLINE_AT" ]; then
+    return 1
+  fi
+
+  local now
+  now="$(date +%s)"
+  if [ "$now" -ge "$SOFT_DEADLINE_AT" ]; then
+    echo "SOFT-DEADLINE: Stopping after completed versions because $SOFT_DEADLINE has elapsed."
+    return 0
+  fi
+
+  return 1
+}
 
 run_multiple_attempts() {
   local stage="$1"
@@ -73,6 +128,10 @@ run_multiple_attempts() {
 }
 
 for VERSION in "${VERSIONS[@]}"; do
+  if should_stop_for_soft_deadline; then
+    break
+  fi
+
   echo "$DELIMITER"
   echo " Testing $TEST_COORDINATES:$VERSION"
   echo "$DELIMITER"
