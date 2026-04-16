@@ -10,10 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.Streams;
+import org.apache.commons.lang3.stream.Streams;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("deprecation")
 public class StreamsArrayCollectorTest {
 
     @Test
