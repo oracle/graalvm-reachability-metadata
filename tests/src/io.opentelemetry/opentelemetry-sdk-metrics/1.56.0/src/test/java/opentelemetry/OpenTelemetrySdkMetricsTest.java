@@ -6,42 +6,20 @@
  */
 package opentelemetry;
 
-import io.opentelemetry.api.common.Attributes;
-import io.opentelemetry.context.Context;
+import io.opentelemetry.sdk.metrics.ExemplarFilter;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.metrics.SdkMeterProviderBuilder;
-import io.opentelemetry.sdk.metrics.internal.exemplar.ExemplarFilter;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 
 public class OpenTelemetrySdkMetricsTest {
 
     @Test
-    public void sdkMetricsTest() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        SdkMeterProviderBuilder sdkMeterProvider = SdkMeterProvider.builder();
-
-        Method method =
-                SdkMeterProviderBuilder.class.getDeclaredMethod(
-                        "setExemplarFilter", ExemplarFilter.class);
-        method.setAccessible(true);
-        method.invoke(sdkMeterProvider, new ExemplarFilter() {
-            @Override
-            public boolean shouldSampleMeasurement(long value, Attributes attributes, Context context) {
-                return false;
-            }
-
-            @Override
-            public boolean shouldSampleMeasurement(double value, Attributes attributes, Context context) {
-                return false;
-            }
-        });
+    public void sdkMetricsTest() {
+        SdkMeterProviderBuilder sdkMeterProvider =
+                SdkMeterProvider.builder().setExemplarFilter(ExemplarFilter.alwaysOff());
 
         try (SdkMeterProvider provider = sdkMeterProvider.build()) {
             provider.meterBuilder("test");
         }
-
     }
 }
