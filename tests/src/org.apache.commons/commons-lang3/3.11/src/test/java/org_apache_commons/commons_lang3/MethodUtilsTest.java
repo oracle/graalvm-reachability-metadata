@@ -61,14 +61,14 @@ public class MethodUtilsTest {
         assertThat(MethodUtils.invokeExactMethod(
                 target,
                 "exactEcho",
-                new Object[] { "exact" },
-                new Class<?>[] { String.class }
+                new Object[] {"exact"},
+                new Class<?>[] {String.class}
         )).isEqualTo("exact");
         assertThat(MethodUtils.invokeExactStaticMethod(
                 InvocationTarget.class,
                 "exactStaticEcho",
-                new Object[] { "static" },
-                new Class<?>[] { String.class }
+                new Object[] {"static"},
+                new Class<?>[] {String.class}
         )).isEqualTo("static");
     }
 

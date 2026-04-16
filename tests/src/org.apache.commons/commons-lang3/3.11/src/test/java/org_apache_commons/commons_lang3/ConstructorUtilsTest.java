@@ -42,8 +42,8 @@ public class ConstructorUtilsTest {
         );
         final ExactConstructorTarget exactInstance = ConstructorUtils.invokeExactConstructor(
                 ExactConstructorTarget.class,
-                new Object[] { "exact" },
-                new Class<?>[] { String.class }
+                new Object[] {"exact"},
+                new Class<?>[] {String.class}
         );
 
         assertThat(matchingInstance.constructorKind).isEqualTo("char-sequence");

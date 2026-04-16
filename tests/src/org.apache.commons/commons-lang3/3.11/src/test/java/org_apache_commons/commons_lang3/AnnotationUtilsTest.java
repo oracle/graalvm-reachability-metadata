@@ -20,9 +20,9 @@ public class AnnotationUtilsTest {
 
     @Test
     void comparesRuntimeAnnotationsUsingTheirDeclaredMembers() {
-        final SampleAnnotation first = MatchingAnnotatedType.class.getAnnotation(SampleAnnotation.class);
-        final SampleAnnotation same = EquivalentAnnotatedType.class.getAnnotation(SampleAnnotation.class);
-        final SampleAnnotation different = DifferentAnnotatedType.class.getAnnotation(SampleAnnotation.class);
+        final SampleAnnotation first = MatchingAnnotatedType.class.getAnnotationsByType(SampleAnnotation.class)[0];
+        final SampleAnnotation same = EquivalentAnnotatedType.class.getAnnotationsByType(SampleAnnotation.class)[0];
+        final SampleAnnotation different = DifferentAnnotatedType.class.getAnnotationsByType(SampleAnnotation.class)[0];
 
         assertThat(AnnotationUtils.equals(first, first)).isTrue();
         assertThat(AnnotationUtils.equals(first, same)).isTrue();
@@ -32,9 +32,9 @@ public class AnnotationUtilsTest {
 
     @Test
     void calculatesTheSameHashCodeAsTheRuntimeAnnotationContract() {
-        final SampleAnnotation first = MatchingAnnotatedType.class.getAnnotation(SampleAnnotation.class);
-        final SampleAnnotation same = EquivalentAnnotatedType.class.getAnnotation(SampleAnnotation.class);
-        final SampleAnnotation different = DifferentAnnotatedType.class.getAnnotation(SampleAnnotation.class);
+        final SampleAnnotation first = MatchingAnnotatedType.class.getAnnotationsByType(SampleAnnotation.class)[0];
+        final SampleAnnotation same = EquivalentAnnotatedType.class.getAnnotationsByType(SampleAnnotation.class)[0];
+        final SampleAnnotation different = DifferentAnnotatedType.class.getAnnotationsByType(SampleAnnotation.class)[0];
 
         assertThat(AnnotationUtils.hashCode(first)).isEqualTo(first.hashCode());
         assertThat(AnnotationUtils.hashCode(same)).isEqualTo(same.hashCode());
@@ -44,7 +44,7 @@ public class AnnotationUtilsTest {
 
     @Test
     void rendersRuntimeAnnotationsIncludingNestedMembers() {
-        final SampleAnnotation annotation = MatchingAnnotatedType.class.getAnnotation(SampleAnnotation.class);
+        final SampleAnnotation annotation = MatchingAnnotatedType.class.getAnnotationsByType(SampleAnnotation.class)[0];
 
         final String description = AnnotationUtils.toString(annotation);
 

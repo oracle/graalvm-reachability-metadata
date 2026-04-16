@@ -15,7 +15,7 @@ public class ObjectUtilsTest {
 
     @Test
     void clonesPrimitiveArraysByCreatingATypedCopy() {
-        final int[] original = new int[] { 1, 2, 3 };
+        final int[] original = new int[] {1, 2, 3};
 
         final int[] cloned = ObjectUtils.clone(original);
 

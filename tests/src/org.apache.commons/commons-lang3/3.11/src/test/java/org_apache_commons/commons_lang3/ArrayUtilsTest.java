@@ -17,7 +17,7 @@ public class ArrayUtilsTest {
     @Test
     void addsElementsAtSpecificPositionsForNullAndExistingObjectArrays() {
         final String[] addedToNullArray = ArrayUtils.add((String[]) null, 0, "start");
-        final String[] addedIntoExistingArray = ArrayUtils.add(new String[] { "alpha", "gamma" }, 1, "beta");
+        final String[] addedIntoExistingArray = ArrayUtils.add(new String[] {"alpha", "gamma"}, 1, "beta");
 
         assertThat(addedToNullArray).containsExactly("start");
         assertThat(addedToNullArray.getClass().getComponentType()).isEqualTo(String.class);
@@ -28,7 +28,7 @@ public class ArrayUtilsTest {
     @Test
     void growsObjectArraysWhenAppendingElements() {
         final String[] grownFromNullArray = ArrayUtils.add((String[]) null, "first");
-        final String[] grownExistingArray = ArrayUtils.add(new String[] { "first" }, "second");
+        final String[] grownExistingArray = ArrayUtils.add(new String[] {"first"}, "second");
 
         assertThat(grownFromNullArray).containsExactly("first");
         assertThat(grownFromNullArray.getClass().getComponentType()).isEqualTo(String.class);
@@ -40,7 +40,7 @@ public class ArrayUtilsTest {
     void insertsValuesAndConvertsNullArraysToTypedEmptyArrays() {
         final String[] insertedValues = ArrayUtils.insert(
                 1,
-                new String[] { "alpha", "delta" },
+                new String[] {"alpha", "delta"},
                 "beta",
                 "gamma"
         );
@@ -54,14 +54,14 @@ public class ArrayUtilsTest {
 
     @Test
     void removesIndexedAndMatchingElementsFromObjectArrays() {
-        final String[] removedByIndex = ArrayUtils.remove(new String[] { "alpha", "beta", "gamma" }, 1);
+        final String[] removedByIndex = ArrayUtils.remove(new String[] {"alpha", "beta", "gamma"}, 1);
         final String[] removedByIndices = ArrayUtils.removeAll(
-                new String[] { "zero", "one", "two", "three" },
+                new String[] {"zero", "one", "two", "three"},
                 1,
                 3
         );
         final String[] removedByValue = ArrayUtils.removeElements(
-                new String[] { "keep", "drop", "keep", "drop" },
+                new String[] {"keep", "drop", "keep", "drop"},
                 "drop",
                 "drop"
         );
@@ -76,8 +76,8 @@ public class ArrayUtilsTest {
 
     @Test
     void createsTypedSubarraysForEmptyAndNonEmptyRanges() {
-        final String[] sliced = ArrayUtils.subarray(new String[] { "zero", "one", "two", "three" }, 1, 3);
-        final String[] emptySlice = ArrayUtils.subarray(new String[] { "zero", "one", "two" }, 2, 2);
+        final String[] sliced = ArrayUtils.subarray(new String[] {"zero", "one", "two", "three"}, 1, 3);
+        final String[] emptySlice = ArrayUtils.subarray(new String[] {"zero", "one", "two"}, 2, 2);
 
         assertThat(sliced).containsExactly("one", "two");
         assertThat(sliced.getClass().getComponentType()).isEqualTo(String.class);
