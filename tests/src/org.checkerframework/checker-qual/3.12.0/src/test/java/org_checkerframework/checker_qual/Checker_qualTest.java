@@ -15,8 +15,10 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -36,7 +38,9 @@ import org.checkerframework.checker.index.qual.SearchIndexFor;
 import org.checkerframework.checker.index.qual.SubstringIndexFor;
 import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.lock.qual.Holding;
+import org.checkerframework.checker.nullness.qual.EnsuresKeyForIf;
 import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
+import org.checkerframework.checker.nullness.qual.KeyFor;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.optional.qual.MaybePresent;
@@ -227,6 +231,23 @@ class Checker_qualTest {
         Assertions.assertThat(DEFAULT_SCHEME).isEqualTo("https");
     }
 
+    @Test
+    void keyForAnnotationsGuardConfigurationLookups() {
+        ConfigurationRegistry registry = new ConfigurationRegistry();
+
+        registry.put("cfg.host", "metadata.graalvm.org");
+        registry.put("cfg.port", "443");
+
+        Assertions.assertThat(registry.hasKey("cfg.host")).isTrue();
+        Assertions.assertThat(registry.hasKey("cfg.missing")).isFalse();
+        Assertions.assertThat(registry.findValue("cfg.port")).contains("443");
+        Assertions.assertThat(registry.findValue("cfg.missing")).isEmpty();
+        Assertions.assertThat(registry.requireValue("cfg.host")).isEqualTo("metadata.graalvm.org");
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> registry.requireValue("cfg.missing"))
+                .withMessage("Missing configuration key: cfg.missing");
+    }
+
     @AnnotatedFor({"nullness", "calledmethods", "formatter", "i18nformatter", "units"})
     private static final class QualifiedEndpointBuilder {
         private final List<String> segments = new ArrayList<>();
@@ -307,6 +328,38 @@ class Checker_qualTest {
             } finally {
                 this.lock.unlock();
             }
+        }
+    }
+
+    @AnnotatedFor({"nullness"})
+    private static final class ConfigurationRegistry {
+        private final Map<@ConfigKey String, @NonNull String> values = new LinkedHashMap<>();
+
+        private void put(@ConfigKey String key, @NonNull String value) {
+            this.values.put(key, value);
+        }
+
+        @EnsuresKeyForIf(expression = "#1", map = "values", result = true)
+        private boolean hasKey(@ConfigKey String key) {
+            return this.values.containsKey(key);
+        }
+
+        private Optional<@NonNull String> findValue(@ConfigKey String key) {
+            if (!hasKey(key)) {
+                return Optional.empty();
+            }
+            return Optional.of(valueForExistingKey(key));
+        }
+
+        private @NonNull String requireValue(@ConfigKey String key) {
+            if (!hasKey(key)) {
+                throw new IllegalArgumentException("Missing configuration key: " + key);
+            }
+            return valueForExistingKey(key);
+        }
+
+        private @NonNull String valueForExistingKey(@KeyFor("values") String key) {
+            return this.values.get(key);
         }
     }
 
