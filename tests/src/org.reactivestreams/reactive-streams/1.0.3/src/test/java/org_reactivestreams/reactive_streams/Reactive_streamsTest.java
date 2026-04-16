@@ -45,6 +45,53 @@ class Reactive_streamsTest {
     }
 
     @Test
+    void adaptersPassThroughNullSubscribersAndSubscriptions() {
+        ReactivePublisherProbe<String> reactivePublisher = new ReactivePublisherProbe<>();
+        FlowAdapters.toFlowPublisher(reactivePublisher).subscribe(null);
+
+        assertThat(reactivePublisher.subscribeCalled).isTrue();
+        assertThat(reactivePublisher.subscriber).isNull();
+
+        FlowPublisherProbe<String> flowPublisher = new FlowPublisherProbe<>();
+        FlowAdapters.toPublisher(flowPublisher).subscribe(null);
+
+        assertThat(flowPublisher.subscribeCalled).isTrue();
+        assertThat(flowPublisher.subscriber).isNull();
+
+        RecordingReactiveSubscriber<String> reactiveSubscriber = new RecordingReactiveSubscriber<>();
+        FlowAdapters.toFlowSubscriber(reactiveSubscriber).onSubscribe(null);
+
+        assertThat(reactiveSubscriber.onSubscribeCalled).isTrue();
+        assertThat(reactiveSubscriber.subscription).isNull();
+
+        RecordingFlowSubscriber<String> flowSubscriber = new RecordingFlowSubscriber<>();
+        FlowAdapters.toSubscriber(flowSubscriber).onSubscribe(null);
+
+        assertThat(flowSubscriber.onSubscribeCalled).isTrue();
+        assertThat(flowSubscriber.subscription).isNull();
+
+        ReactiveProcessorProbe<Integer, String> reactiveProcessor = new ReactiveProcessorProbe<>();
+        Flow.Processor<Integer, String> flowProcessor = FlowAdapters.toFlowProcessor(reactiveProcessor);
+        flowProcessor.subscribe(null);
+        flowProcessor.onSubscribe(null);
+
+        assertThat(reactiveProcessor.subscribeCalled).isTrue();
+        assertThat(reactiveProcessor.downstream).isNull();
+        assertThat(reactiveProcessor.onSubscribeCalled).isTrue();
+        assertThat(reactiveProcessor.upstream).isNull();
+
+        FlowProcessorProbe<Integer, String> flowProcessorProbe = new FlowProcessorProbe<>();
+        Processor<Integer, String> reactiveProcessorAdapter = FlowAdapters.toProcessor(flowProcessorProbe);
+        reactiveProcessorAdapter.subscribe(null);
+        reactiveProcessorAdapter.onSubscribe(null);
+
+        assertThat(flowProcessorProbe.subscribeCalled).isTrue();
+        assertThat(flowProcessorProbe.downstream).isNull();
+        assertThat(flowProcessorProbe.onSubscribeCalled).isTrue();
+        assertThat(flowProcessorProbe.upstream).isNull();
+    }
+
+    @Test
     void publisherAdaptersBridgeSignalsAndSubscriptionsInBothDirections() {
         ReactivePublisherProbe<String> reactivePublisher = new ReactivePublisherProbe<>();
         Flow.Publisher<String> flowPublisher = FlowAdapters.toFlowPublisher(reactivePublisher);
@@ -283,9 +330,11 @@ class Reactive_streamsTest {
 
     private static final class ReactivePublisherProbe<T> implements Publisher<T> {
         private Subscriber<? super T> subscriber;
+        private boolean subscribeCalled;
 
         @Override
         public void subscribe(Subscriber<? super T> subscriber) {
+            subscribeCalled = true;
             this.subscriber = subscriber;
         }
 
@@ -308,9 +357,11 @@ class Reactive_streamsTest {
 
     private static final class FlowPublisherProbe<T> implements Flow.Publisher<T> {
         private Flow.Subscriber<? super T> subscriber;
+        private boolean subscribeCalled;
 
         @Override
         public void subscribe(Flow.Subscriber<? super T> subscriber) {
+            subscribeCalled = true;
             this.subscriber = subscriber;
         }
 
@@ -336,9 +387,11 @@ class Reactive_streamsTest {
         private Subscription subscription;
         private Throwable failure;
         private boolean completed;
+        private boolean onSubscribeCalled;
 
         @Override
         public void onSubscribe(Subscription subscription) {
+            onSubscribeCalled = true;
             this.subscription = subscription;
         }
 
@@ -363,9 +416,11 @@ class Reactive_streamsTest {
         private Flow.Subscription subscription;
         private Throwable failure;
         private boolean completed;
+        private boolean onSubscribeCalled;
 
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
+            onSubscribeCalled = true;
             this.subscription = subscription;
         }
 
@@ -391,14 +446,18 @@ class Reactive_streamsTest {
         private Subscriber<? super U> downstream;
         private Throwable inputFailure;
         private boolean inputCompleted;
+        private boolean subscribeCalled;
+        private boolean onSubscribeCalled;
 
         @Override
         public void subscribe(Subscriber<? super U> subscriber) {
+            subscribeCalled = true;
             downstream = subscriber;
         }
 
         @Override
         public void onSubscribe(Subscription subscription) {
+            onSubscribeCalled = true;
             upstream = subscription;
         }
 
@@ -440,14 +499,18 @@ class Reactive_streamsTest {
         private Flow.Subscriber<? super U> downstream;
         private Throwable inputFailure;
         private boolean inputCompleted;
+        private boolean subscribeCalled;
+        private boolean onSubscribeCalled;
 
         @Override
         public void subscribe(Flow.Subscriber<? super U> subscriber) {
+            subscribeCalled = true;
             downstream = subscriber;
         }
 
         @Override
         public void onSubscribe(Flow.Subscription subscription) {
+            onSubscribeCalled = true;
             upstream = subscription;
         }
 
