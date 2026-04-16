@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-class $ObjectArraysTest {
+class ObjectArraysTest {
     @Test
     void createsTypedArrayFromComponentClass() {
         final String[] values = $ObjectArrays.newArray(String.class, 3);

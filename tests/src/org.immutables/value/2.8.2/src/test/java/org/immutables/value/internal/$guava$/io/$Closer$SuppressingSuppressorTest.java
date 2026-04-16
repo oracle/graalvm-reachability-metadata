@@ -12,7 +12,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-class $Closer$SuppressingSuppressorTest {
+class CloserSuppressingSuppressorTest {
     @Test
     void addsCloseFailureAsSuppressedExceptionOnPrimaryFailure() throws IOException {
         final IOException primaryFailure = new IOException("primary");

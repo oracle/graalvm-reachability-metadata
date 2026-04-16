@@ -19,7 +19,7 @@ import java.util.Set;
 import org.immutables.value.internal.$guava$.base.$Supplier;
 import org.junit.jupiter.api.Test;
 
-class $Multimaps$CustomSetMultimapTest {
+class MultimapsCustomSetMultimapTest {
     @Test
     void serializesAndDeserializesCustomSetMultimap() throws Exception {
         final $SetMultimap<String, String> source = $Multimaps.newSetMultimap(

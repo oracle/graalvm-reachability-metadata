@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.reflect.Field;
 import org.junit.jupiter.api.Test;
 
-class $EnumsTest {
+class EnumsTest {
     @Test
     void getsDeclaredFieldForEnumConstantWithSpecificClassBody() {
         final Field field = $Enums.getField(SampleEnum.SPECIAL);

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import org.junit.jupiter.api.Test;
 
-class $MapMakerInternalMap$AbstractSerializationProxyTest {
+class MapMakerInternalMapAbstractSerializationProxyTest {
     @Test
     void serializesAndDeserializesCustomMapEntries() throws Exception {
         final ConcurrentMap<String, Integer> source = new $MapMaker().maximumSize(10).makeMap();

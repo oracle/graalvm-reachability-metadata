@@ -14,7 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import sun.misc.Unsafe;
 
-class $ThrowablesTest {
+class ThrowablesTest {
     @Test
     void lazilyReadsStackTraceEntriesThroughInjectedJavaLangAccess() throws Exception {
         final FakeJavaLangAccess fakeJavaLangAccess = new FakeJavaLangAccess();

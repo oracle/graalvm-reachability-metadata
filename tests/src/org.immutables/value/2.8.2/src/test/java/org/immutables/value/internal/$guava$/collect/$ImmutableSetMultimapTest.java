@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
 import java.util.Comparator;
 import org.junit.jupiter.api.Test;
 
-class $ImmutableSetMultimapTest {
+class ImmutableSetMultimapTest {
     @Test
     void serializesAndDeserializesEntriesWithSortedValues() throws Exception {
         final $ImmutableSetMultimap<String, Integer> source = $ImmutableSetMultimap.<String, Integer>builder()

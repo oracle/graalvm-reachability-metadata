@@ -20,7 +20,7 @@ import java.util.TreeSet;
 import org.immutables.value.internal.$guava$.base.$Supplier;
 import org.junit.jupiter.api.Test;
 
-class $Multimaps$CustomSortedSetMultimapTest {
+class MultimapsCustomSortedSetMultimapTest {
     @Test
     void serializesAndDeserializesCustomSortedSetMultimap() throws Exception {
         final $SortedSetMultimap<String, String> source = $Multimaps.newSortedSetMultimap(

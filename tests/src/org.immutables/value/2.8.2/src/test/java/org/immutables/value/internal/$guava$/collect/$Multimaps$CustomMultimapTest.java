@@ -19,7 +19,7 @@ import java.util.LinkedHashMap;
 import org.immutables.value.internal.$guava$.base.$Supplier;
 import org.junit.jupiter.api.Test;
 
-class $Multimaps$CustomMultimapTest {
+class MultimapsCustomMultimapTest {
     @Test
     void serializesAndDeserializesCustomMultimap() throws Exception {
         final $Multimap<String, String> source = $Multimaps.newMultimap(

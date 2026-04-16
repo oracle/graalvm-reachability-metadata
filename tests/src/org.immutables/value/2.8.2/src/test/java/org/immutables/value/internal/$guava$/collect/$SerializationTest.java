@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-class $SerializationTest {
+class SerializationTest {
     @Test
     void writesAndPopulatesMapEntries() throws Exception {
         final Map<String, Integer> source = new LinkedHashMap<>();
