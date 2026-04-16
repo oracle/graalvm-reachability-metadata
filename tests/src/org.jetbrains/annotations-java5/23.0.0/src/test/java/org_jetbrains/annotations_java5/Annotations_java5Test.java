@@ -7,10 +7,13 @@
 package org_jetbrains.annotations_java5;
 
 import java.lang.annotation.Annotation;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.regex.PatternSyntaxException;
 
 import org.intellij.lang.annotations.Flow;
 import org.intellij.lang.annotations.Identifier;
+import org.intellij.lang.annotations.JdkConstants;
 import org.intellij.lang.annotations.Language;
 import org.intellij.lang.annotations.MagicConstant;
 import org.intellij.lang.annotations.Pattern;
@@ -375,6 +378,18 @@ class Annotations_java5Test {
         assertThat(normalizer.normalize("  annotated text  ")).isEqualTo("ANNOTATED TEXT");
     }
 
+    @Test
+    void jdkConstantsAnnotatedCodePathsExecuteNormally() {
+        JdkConstantExamples examples = new JdkConstantExamples();
+
+        assertThat(examples.nextMonth(Calendar.NOVEMBER)).isEqualTo(Calendar.DECEMBER);
+        assertThat(examples.nextMonth(Calendar.DECEMBER)).isEqualTo(Calendar.JANUARY);
+        assertThat(examples.containsRegexMatch("BUILD\nplan", "^build\\s+plan$", examples.multilineCaseInsensitiveFlags())).isTrue();
+        assertThat(examples.containsRegexMatch("BUILD PLAN", "^build\\s+plan$", 0)).isFalse();
+        assertThat(examples.containsRegexMatch("release-2026", "\\d{4}", examples.unixLinesFlag())).isTrue();
+        assertThat(examples.invalidExpressionMessage("[")).contains("Unclosed character class");
+    }
+
     @Language("JAVA")
     private @interface JavaExpression {
     }
@@ -484,6 +499,33 @@ class Annotations_java5Test {
         @ApiStatus.ScheduledForRemoval(inVersion = "99.0")
         private String legacyKey() {
             return bundleKey.toUpperCase(Locale.ROOT);
+        }
+    }
+
+    private static final class JdkConstantExamples {
+        private @JdkConstants.CalendarMonth int nextMonth(@JdkConstants.CalendarMonth int month) {
+            return month == Calendar.DECEMBER ? Calendar.JANUARY : month + 1;
+        }
+
+        private @JdkConstants.PatternFlags int multilineCaseInsensitiveFlags() {
+            return java.util.regex.Pattern.CASE_INSENSITIVE | java.util.regex.Pattern.MULTILINE;
+        }
+
+        private @JdkConstants.PatternFlags int unixLinesFlag() {
+            return java.util.regex.Pattern.UNIX_LINES;
+        }
+
+        private boolean containsRegexMatch(String text, String expression, @JdkConstants.PatternFlags int flags) {
+            return java.util.regex.Pattern.compile(expression, flags).matcher(text).find();
+        }
+
+        private String invalidExpressionMessage(String expression) {
+            try {
+                java.util.regex.Pattern.compile(expression, unixLinesFlag());
+                return "compiled";
+            } catch (PatternSyntaxException exception) {
+                return exception.getDescription();
+            }
         }
     }
 
