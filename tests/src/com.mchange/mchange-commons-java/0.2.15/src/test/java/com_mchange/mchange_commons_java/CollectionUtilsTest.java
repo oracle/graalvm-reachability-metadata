@@ -30,8 +30,8 @@ public class CollectionUtilsTest {
 
         assertThat(clone)
             .isInstanceOf(CloneableCollection.class)
-            .isNotSameAs(original)
-            .containsExactly("alpha", "beta");
+            .isNotSameAs(original);
+        assertThat(new ArrayList<>(clone)).containsExactly("alpha", "beta");
     }
 
     @Test
@@ -43,8 +43,8 @@ public class CollectionUtilsTest {
 
         assertThat(clone)
             .isInstanceOf(CollectionCopyConstructorCollection.class)
-            .isNotSameAs(original)
-            .containsExactly("alpha", "beta");
+            .isNotSameAs(original);
+        assertThat(new ArrayList<>(clone)).containsExactly("alpha", "beta");
     }
 
     @Test
@@ -58,8 +58,8 @@ public class CollectionUtilsTest {
 
         assertThat(clone)
             .isInstanceOf(SelfCopyConstructorCollection.class)
-            .isNotSameAs(original)
-            .containsExactly("alpha", "beta");
+            .isNotSameAs(original);
+        assertThat(new ArrayList<>(clone)).containsExactly("alpha", "beta");
     }
 
     @Test
@@ -70,7 +70,8 @@ public class CollectionUtilsTest {
 
         assertThat(clone)
             .isInstanceOf(CloneableMap.class)
-            .isNotSameAs(original)
+            .isNotSameAs(original);
+        assertThat(new LinkedHashMap<>(clone))
             .containsEntry("alpha", 1)
             .containsEntry("beta", 2);
     }
@@ -83,7 +84,8 @@ public class CollectionUtilsTest {
 
         assertThat(clone)
             .isInstanceOf(MapCopyConstructorMap.class)
-            .isNotSameAs(original)
+            .isNotSameAs(original);
+        assertThat(new LinkedHashMap<>(clone))
             .containsEntry("alpha", 1)
             .containsEntry("beta", 2);
     }
@@ -99,7 +101,8 @@ public class CollectionUtilsTest {
 
         assertThat(clone)
             .isInstanceOf(SelfCopyConstructorMap.class)
-            .isNotSameAs(original)
+            .isNotSameAs(original);
+        assertThat(new LinkedHashMap<>(clone))
             .containsEntry("alpha", 1)
             .containsEntry("beta", 2);
     }
