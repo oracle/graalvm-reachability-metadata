@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 class $MapMakerInternalMap$AbstractSerializationProxyTest {
     @Test
     void serializesAndDeserializesCustomMapEntries() throws Exception {
-        final ConcurrentMap<String, Integer> source = new $MapMaker().weakKeys().makeMap();
+        final ConcurrentMap<String, Integer> source = new $MapMaker().maximumSize(10).makeMap();
         source.put("alpha", 1);
         source.put("beta", 2);
 
