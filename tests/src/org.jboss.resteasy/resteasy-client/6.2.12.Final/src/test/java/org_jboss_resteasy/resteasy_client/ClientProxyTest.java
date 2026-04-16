@@ -7,13 +7,14 @@
 package org_jboss_resteasy.resteasy_client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.security.Permission;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 class ClientProxyTest {
 
@@ -27,9 +28,12 @@ class ClientProxyTest {
     }
 
     @Test
-    @DisabledIfSystemProperty(named = "java.vm.name", matches = ".*Substrate VM.*")
     @SuppressWarnings("removal")
     void defaultMethodInvocationUsesPrivilegedSpecialLookupWithSecurityManager() {
+        assumeTrue(Runtime.version().feature() < 24, "Security Manager is not supported on this JDK");
+        assumeFalse(System.getProperty("java.vm.name", "").contains("Substrate VM"),
+                "Security Manager is not supported in native image tests");
+
         final SecurityManager previousSecurityManager = System.getSecurityManager();
         System.setSecurityManager(new PermissiveSecurityManager());
 

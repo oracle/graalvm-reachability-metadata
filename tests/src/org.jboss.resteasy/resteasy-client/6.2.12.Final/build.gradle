@@ -27,5 +27,7 @@ graalvmNative {
 }
 
 tasks.named("test") {
-    jvmArgs += ["-Djava.security.manager=allow"]
+    if ((JavaVersion.current().majorVersion as int) < 24) {
+        jvmArgs += ["-Djava.security.manager=allow"]
+    }
 }
