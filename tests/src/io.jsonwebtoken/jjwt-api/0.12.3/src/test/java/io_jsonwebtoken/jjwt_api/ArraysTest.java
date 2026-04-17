@@ -28,19 +28,27 @@ public class ArraysTest {
     }
 
     @Test
-    void asListReturnsEmptyListForNullAndExposesElementsForNonEmptyArrays() {
+    void asListReturnsEmptyListForNullAndEmptyArrays() {
         List<String> emptyValues = Arrays.asList(null);
-        List<String> values = Arrays.asList(new String[]{"header", "payload"});
+        List<String> emptyArrayValues = Arrays.asList(new String[0]);
 
         assertThat(emptyValues).isEmpty();
+        assertThat(emptyArrayValues).isEmpty();
+    }
+
+    @Test
+    void asListExposesElementsForNonEmptyArrays() {
+        List<String> values = Arrays.asList(new String[]{"header", "payload"});
+
         assertThat(values).containsExactly("header", "payload");
     }
 
     @Test
-    void cleanReturnsNullForEmptyInputAndSameArrayForNonEmptyInput() {
+    void cleanReturnsNullForNullAndEmptyInputAndSameArrayForNonEmptyInput() {
         byte[] empty = new byte[0];
         byte[] value = new byte[]{1, 2, 3};
 
+        assertThat(Arrays.clean(null)).isNull();
         assertThat(Arrays.clean(empty)).isNull();
         assertThat(Arrays.clean(value)).isSameAs(value);
     }
@@ -54,6 +62,17 @@ public class ArraysTest {
 
         assertThat(copy).containsExactly("typ", "kid");
         assertThat(original).containsExactly("alg", "kid");
+    }
+
+    @Test
+    void copyPreservesRuntimeTypeForEmptyReferenceArrays() {
+        HeaderValue[] original = new HeaderValue[0];
+
+        HeaderValue[] copy = (HeaderValue[]) Arrays.copy(original);
+
+        assertThat(copy).isEmpty();
+        assertThat(copy).isNotSameAs(original);
+        assertThat(copy.getClass()).isEqualTo(original.getClass());
     }
 
     @Test
@@ -104,5 +123,8 @@ public class ArraysTest {
         assertThatThrownBy(() -> Arrays.copy("not-an-array"))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Argument must be an array.");
+    }
+
+    private static final class HeaderValue {
     }
 }
