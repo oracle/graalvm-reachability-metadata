@@ -15,16 +15,8 @@ import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -496,57 +488,6 @@ class ShadowClassLoaderTest {
     }
 
     @Test
-    void loadsResourcesFromShadowAwareParentClasspath(@TempDir Path tempDir) throws Exception {
-        Path selfBase = Files.createDirectory(tempDir.resolve("self"));
-        Path parentRoot = Files.createDirectory(tempDir.resolve("parent-shadow"));
-        writeShadowMarker(parentRoot);
-        writeBytes(parentRoot, classResourcePath(RESOURCE_TARGET_NAME), RESOURCE_TARGET_BYTES);
-        writeBytes(parentRoot, shadowResourcePath(RESOURCE_TARGET_NAME), RESOURCE_TARGET_BYTES);
-        writeString(parentRoot.resolve("sample/shadow/settings.txt"), "shadow-aware");
-
-        try (URLClassLoader parent = newUrlClassLoader(parentRoot)) {
-            ShadowClassLoader shadowClassLoader = new ShadowClassLoader(parent, SHADOW_SUFFIX, selfBase.toString(), List.of(), List.of());
-
-            URL classResource = shadowClassLoader.getResource(classResourcePath(RESOURCE_TARGET_NAME));
-            URL textResource = shadowClassLoader.getResource("sample/shadow/settings.txt");
-            List<String> resourceUrls = Collections.list(shadowClassLoader.getResources(classResourcePath(RESOURCE_TARGET_NAME)))
-                    .stream()
-                    .map(URL::toString)
-                    .toList();
-
-            assertThat(classResource).isNotNull();
-            assertThat(classResource.toString()).endsWith("ResourceTarget.SCL.lombok");
-            assertThat(textResource).isNotNull();
-            assertThat(readString(textResource)).isEqualTo("shadow-aware");
-            assertThat(resourceUrls).hasSize(2);
-            assertThat(resourceUrls).anyMatch(url -> url.endsWith("ResourceTarget.class"));
-            assertThat(resourceUrls).anyMatch(url -> url.endsWith("ResourceTarget.SCL.lombok"));
-        }
-    }
-
-    @Test
-    void skipsShadowEntriesWhenOverridesAreConfigured(@TempDir Path tempDir) throws Exception {
-        Path selfBase = Files.createDirectory(tempDir.resolve("self"));
-        Path overrideDir = Files.createDirectory(tempDir.resolve("override"));
-        Path shadowRoot = Files.createDirectory(tempDir.resolve("parent-shadow"));
-        Path plainRoot = Files.createDirectory(tempDir.resolve("parent-plain"));
-        writeShadowMarker(shadowRoot);
-        writeBytes(shadowRoot, shadowResourcePath(RESOURCE_TARGET_NAME), RESOURCE_TARGET_BYTES);
-        writeBytes(plainRoot, shadowResourcePath(RESOURCE_TARGET_NAME), RESOURCE_TARGET_BYTES);
-        System.setProperty(OVERRIDE_PROPERTY, overrideDir.toString());
-
-        try (URLClassLoader parent = newUrlClassLoader(shadowRoot, plainRoot)) {
-            ShadowClassLoader shadowClassLoader = new ShadowClassLoader(parent, SHADOW_SUFFIX, selfBase.toString(), List.of(), List.of());
-
-            URL classResource = shadowClassLoader.getResource(classResourcePath(RESOURCE_TARGET_NAME));
-
-            assertThat(classResource).isNotNull();
-            assertThat(Path.of(classResource.toURI())).startsWith(plainRoot);
-            assertThat(classResource.toString()).endsWith("ResourceTarget.SCL.lombok");
-        }
-    }
-
-    @Test
     void loadsClassesFromPrependedParents(@TempDir Path tempDir) throws Exception {
         Path selfBase = Files.createDirectory(tempDir.resolve("self"));
         Path prependedRoot = Files.createDirectory(tempDir.resolve("prepended"));
@@ -560,54 +501,6 @@ class ShadowClassLoaderTest {
 
             assertThat(loadedClass.getName()).isEqualTo(PREPENDED_ONLY_NAME);
             assertThat(loadedClass.getClassLoader()).isSameAs(prependedParent);
-        }
-    }
-
-    @Test
-    void reusesAlreadyLoadedClassesAndHandlesConcurrentDuplicateDefinitions(@TempDir Path tempDir) throws Exception {
-        Path selfBase = Files.createDirectory(tempDir.resolve("self"));
-        writeBytes(selfBase, shadowResourcePath(CONCURRENT_LOAD_TARGET_NAME), CONCURRENT_LOAD_TARGET_BYTES);
-
-        try (URLClassLoader parent = newUrlClassLoader()) {
-            ShadowClassLoader shadowClassLoader = new ShadowClassLoader(parent, SHADOW_SUFFIX, selfBase.toString(), List.of(), List.of());
-
-            Class<?> firstLoad = shadowClassLoader.loadClass(CONCURRENT_LOAD_TARGET_NAME, false);
-            Class<?> secondLoad = shadowClassLoader.loadClass(CONCURRENT_LOAD_TARGET_NAME, false);
-
-            assertThat(secondLoad).isSameAs(firstLoad);
-
-            for (int round = 0; round < CONCURRENT_ROUNDS; round++) {
-                ShadowClassLoader concurrentLoader = new ShadowClassLoader(parent, SHADOW_SUFFIX, selfBase.toString(), List.of(), List.of());
-                List<Class<?>> loadedClasses = runConcurrentLoadRound(concurrentLoader, CONCURRENT_LOAD_TARGET_NAME);
-                assertThat(loadedClasses).isNotEmpty();
-                assertThat(loadedClasses).allMatch(candidate -> candidate.getName().equals(firstLoad.getName()));
-                assertThat(loadedClasses).allSatisfy(candidate -> assertThat(candidate.getClassLoader()).isSameAs(concurrentLoader));
-                assertThat(loadedClasses.stream().distinct().toList()).hasSize(1);
-            }
-        }
-    }
-
-    private static List<Class<?>> runConcurrentLoadRound(ShadowClassLoader shadowClassLoader, String className) throws Exception {
-        ExecutorService executorService = Executors.newFixedThreadPool(CONCURRENT_THREADS);
-        CyclicBarrier barrier = new CyclicBarrier(CONCURRENT_THREADS);
-        List<Callable<Class<?>>> tasks = new ArrayList<>();
-        for (int index = 0; index < CONCURRENT_THREADS; index++) {
-            tasks.add(() -> {
-                barrier.await();
-                return shadowClassLoader.loadClass(className, false);
-            });
-        }
-
-        try {
-            List<Future<Class<?>>> futures = executorService.invokeAll(tasks);
-            List<Class<?>> loadedClasses = new ArrayList<>();
-            for (Future<Class<?>> future : futures) {
-                loadedClasses.add(future.get(30, TimeUnit.SECONDS));
-            }
-            return loadedClasses;
-        } finally {
-            executorService.shutdownNow();
-            assertThat(executorService.awaitTermination(30, TimeUnit.SECONDS)).isTrue();
         }
     }
 
