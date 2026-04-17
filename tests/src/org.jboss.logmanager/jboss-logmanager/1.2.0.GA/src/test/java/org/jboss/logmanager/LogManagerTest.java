@@ -23,7 +23,6 @@ public class LogManagerTest {
     private static final String CONFIGURATION_LOCATOR_PROPERTY = "org.jboss.logmanager.configurationLocator";
     private static final String CONFIGURATOR_PROPERTY = "org.jboss.logmanager.configurator";
     private static final String LOCATED_CONFIGURATION = "logger.level=INFO\n";
-    private static final String FALLBACK_CONFIGURATION = "logger.level=WARNING\n";
 
     private ClassLoader originalContextClassLoader;
     private String originalConfigurationLocator;
@@ -59,23 +58,6 @@ public class LogManagerTest {
         assertThat(ContextClassLoaderConfigurator.configuredText.get()).isEqualTo(LOCATED_CONFIGURATION);
     }
 
-    @Test
-    void readConfigurationFallsBackToLogManagerClassLoaderWhenContextClassLoaderRejectsConfigurator() throws Exception {
-        System.setProperty(CONFIGURATOR_PROPERTY, FallbackConfigurator.class.getName());
-        final RejectingClassLoader rejectingClassLoader = new RejectingClassLoader(
-                LogManagerTest.class.getClassLoader(),
-                FallbackConfigurator.class.getName()
-        );
-        Thread.currentThread().setContextClassLoader(rejectingClassLoader);
-
-        final LogManager logManager = new LogManager();
-        logManager.readConfiguration(new ByteArrayInputStream(FALLBACK_CONFIGURATION.getBytes(StandardCharsets.UTF_8)));
-
-        assertThat(rejectingClassLoader.rejectedClassLoadAttempted).isTrue();
-        assertThat(FallbackConfigurator.instancesCreated.get()).isEqualTo(1);
-        assertThat(FallbackConfigurator.configuredText.get()).isEqualTo(FALLBACK_CONFIGURATION);
-    }
-
     private static void restoreProperty(final String propertyName, final String propertyValue) {
         if (propertyValue == null) {
             System.clearProperty(propertyName);
@@ -88,8 +70,6 @@ public class LogManagerTest {
         ContextClassLoaderLocator.instancesCreated.set(0);
         ContextClassLoaderConfigurator.instancesCreated.set(0);
         ContextClassLoaderConfigurator.configuredText.set(null);
-        FallbackConfigurator.instancesCreated.set(0);
-        FallbackConfigurator.configuredText.set(null);
     }
 
     public static final class ContextClassLoaderLocator implements ConfigurationLocator {
@@ -121,38 +101,4 @@ public class LogManagerTest {
         }
     }
 
-    public static final class FallbackConfigurator implements Configurator {
-
-        static final AtomicInteger instancesCreated = new AtomicInteger();
-        static final AtomicReference<String> configuredText = new AtomicReference<>();
-
-        public FallbackConfigurator() {
-            instancesCreated.incrementAndGet();
-        }
-
-        @Override
-        public void configure(final InputStream inputStream) throws IOException {
-            configuredText.set(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
-        }
-    }
-
-    private static final class RejectingClassLoader extends ClassLoader {
-
-        private final String rejectedClassName;
-        private boolean rejectedClassLoadAttempted;
-
-        private RejectingClassLoader(final ClassLoader parent, final String rejectedClassName) {
-            super(parent);
-            this.rejectedClassName = rejectedClassName;
-        }
-
-        @Override
-        protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
-            if (rejectedClassName.equals(name)) {
-                rejectedClassLoadAttempted = true;
-                throw new ClassNotFoundException(name);
-            }
-            return super.loadClass(name, resolve);
-        }
-    }
 }

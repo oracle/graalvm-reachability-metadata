@@ -20,7 +20,7 @@ class AtomicArrayTest {
 
     @Test
     void managesTypedStringArrays() {
-        StringArrayHolder holder = new StringArrayHolder(new String[] { "initial" });
+        StringArrayHolder holder = new StringArrayHolder(new String[]{"initial"});
 
         STRING_ARRAY.clear(holder);
 
