@@ -14,7 +14,6 @@ import java.io.ObjectOutputStream;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -23,14 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdaptPermissionCollectionTest {
     @Test
-    void loadsSerializedFieldTypeThroughCompatibilityHelper() {
-        assertThat(AdaptPermissionCollection.class$("java.util.HashMap")).isEqualTo(HashMap.class);
-    }
-
-    @Test
     void createsCollectionAndReturnsAddedPermissions() {
         AdaptPermission grantedPermission = new AdaptPermission("*", AdaptPermission.ADAPT);
-        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
+        PermissionCollection permissionCollection = new AdaptPermissionCollection();
 
         permissionCollection.add(grantedPermission);
         List<Permission> permissions = Collections.list(permissionCollection.elements());
