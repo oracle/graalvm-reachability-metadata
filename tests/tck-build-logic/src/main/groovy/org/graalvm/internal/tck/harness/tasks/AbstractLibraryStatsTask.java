@@ -201,9 +201,28 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
     }
 
     protected LibraryStatsModels.VersionStats computeVersionStats(String coordinates) {
+        List<Path> libraryJars = listLibraryJars(coordinates);
+
+        // When library JARs contain no bytecode (no .class files), JaCoCo has nothing
+        // to instrument and produces no report. Return N/A for every stats category.
+        if (!LibraryStatsSupport.containsClassFiles(libraryJars)) {
+            getLogger().warn(
+                    "Library JARs for {} contain no bytecode. Writing all stats as N/A.",
+                    coordinates
+            );
+            return new LibraryStatsModels.VersionStats(
+                    LibraryStatsSupport.versionFromCoordinate(coordinates),
+                    LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
+                    new LibraryStatsModels.LibraryCoverage(
+                            LibraryStatsModels.CoverageMetricValue.notAvailable(),
+                            LibraryStatsModels.CoverageMetricValue.notAvailable(),
+                            LibraryStatsModels.CoverageMetricValue.notAvailable()
+                    )
+            );
+        }
+
         boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinates);
         if (dynamicAccessAvailable) {
-            List<Path> libraryJars = listLibraryJars(coordinates);
             return LibraryStatsSupport.buildVersionStats(
                     coordinates,
                     libraryJars,
