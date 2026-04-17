@@ -209,8 +209,8 @@ class Jsr305Test {
     @Test
     void runtimeVisibleAnnotationsRetainDefaultAndExplicitMembers() throws NoSuchMethodException {
         Method describeSlug = RuntimeAnnotatedApi.class.getDeclaredMethod("describeSlug");
-        CheckReturnValue checkReturnValue = describeSlug.getAnnotation(CheckReturnValue.class);
-        MatchesPattern matchesPattern = describeSlug.getAnnotation(MatchesPattern.class);
+        CheckReturnValue checkReturnValue = describeSlug.getAnnotationsByType(CheckReturnValue.class)[0];
+        MatchesPattern matchesPattern = describeSlug.getAnnotationsByType(MatchesPattern.class)[0];
 
         Method normalizeSlug = RuntimeAnnotatedApi.class.getDeclaredMethod("normalizeSlug", String.class);
         Nonnull nonnull = normalizeSlug.getParameters()[0].getAnnotation(Nonnull.class);
