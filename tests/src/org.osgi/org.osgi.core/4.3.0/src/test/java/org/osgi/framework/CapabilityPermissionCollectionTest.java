@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,11 @@ public class CapabilityPermissionCollectionTest {
                 .singleElement()
                 .isInstanceOfSatisfying(CapabilityPermission.class, permission ->
                         assertThat(permission.getActions()).isEqualTo("require,provide"));
+    }
+
+    @Test
+    void resolvesHashMapClassThroughCollectionHelper() throws ClassNotFoundException {
+        assertThat(CapabilityPermissionCollection.class$("java.util.HashMap")).isEqualTo(HashMap.class);
     }
 
     @Test
