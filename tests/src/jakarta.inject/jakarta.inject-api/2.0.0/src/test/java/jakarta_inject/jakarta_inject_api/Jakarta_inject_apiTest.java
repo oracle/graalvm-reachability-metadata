@@ -110,35 +110,35 @@ class Jakarta_inject_apiTest {
         Field defaultAudienceField = GreetingService.class.getDeclaredField("defaultAudience");
         Method configureMethod = GreetingService.class.getDeclaredMethod("configure", Provider.class, String.class);
 
-        assertThat(constructor.getAnnotation(Inject.class)).isNotNull();
-        assertThat(constructor.getParameters()[0].getAnnotation(Named.class).value()).isEqualTo("prefix");
-        assertThat(constructor.getParameters()[1].getAnnotation(Remote.class)).isNotNull();
+        assertThat(constructor.getAnnotationsByType(Inject.class)).isNotEmpty();
+        assertThat(constructor.getParameters()[0].getAnnotationsByType(Named.class)[0].value()).isEqualTo("prefix");
+        assertThat(constructor.getParameters()[1].getAnnotationsByType(Remote.class)).isNotEmpty();
 
-        assertThat(defaultAudienceField.getAnnotation(Inject.class)).isNotNull();
-        assertThat(defaultAudienceField.getAnnotation(Named.class).value()).isEmpty();
+        assertThat(defaultAudienceField.getAnnotationsByType(Inject.class)).isNotEmpty();
+        assertThat(defaultAudienceField.getAnnotationsByType(Named.class)[0].value()).isEmpty();
 
-        assertThat(configureMethod.getAnnotation(Inject.class)).isNotNull();
-        assertThat(configureMethod.getParameters()[0].getAnnotation(Named.class).value()).isEqualTo("suffix");
-        assertThat(configureMethod.getParameters()[1].getAnnotation(Named.class).value()).isEqualTo("separator");
+        assertThat(configureMethod.getAnnotationsByType(Inject.class)).isNotEmpty();
+        assertThat(configureMethod.getParameters()[0].getAnnotationsByType(Named.class)[0].value()).isEqualTo("suffix");
+        assertThat(configureMethod.getParameters()[1].getAnnotationsByType(Named.class)[0].value()).isEqualTo("separator");
 
-        assertThat(Remote.class.getAnnotation(Qualifier.class)).isNotNull();
-        assertThat(RequestScoped.class.getAnnotation(Scope.class)).isNotNull();
-        assertThat(MessageTemplate.class.getAnnotation(Singleton.class)).isNotNull();
+        assertThat(Remote.class.getAnnotationsByType(Qualifier.class)).isNotEmpty();
+        assertThat(RequestScoped.class.getAnnotationsByType(Scope.class)).isNotEmpty();
+        assertThat(MessageTemplate.class.getAnnotationsByType(Singleton.class)).isNotEmpty();
     }
 
     @Test
     void builtInAnnotationsExposeQualifierScopeDefaultsAndSupportedTargets() throws Exception {
         Method namedValueMethod = Named.class.getDeclaredMethod("value");
 
-        assertThat(Named.class.getAnnotation(Qualifier.class)).isNotNull();
+        assertThat(Named.class.getAnnotationsByType(Qualifier.class)).isNotEmpty();
         assertThat(namedValueMethod.getDefaultValue()).isEqualTo("");
 
-        assertThat(Singleton.class.getAnnotation(Scope.class)).isNotNull();
+        assertThat(Singleton.class.getAnnotationsByType(Scope.class)).isNotEmpty();
 
-        assertThat(Inject.class.getAnnotation(Target.class).value())
+        assertThat(Inject.class.getAnnotationsByType(Target.class)[0].value())
                 .containsExactlyInAnyOrder(CONSTRUCTOR, METHOD, FIELD);
-        assertThat(Qualifier.class.getAnnotation(Target.class).value()).containsExactly(ANNOTATION_TYPE);
-        assertThat(Scope.class.getAnnotation(Target.class).value()).containsExactly(ANNOTATION_TYPE);
+        assertThat(Qualifier.class.getAnnotationsByType(Target.class)[0].value()).containsExactly(ANNOTATION_TYPE);
+        assertThat(Scope.class.getAnnotationsByType(Target.class)[0].value()).containsExactly(ANNOTATION_TYPE);
     }
 
     @Test
