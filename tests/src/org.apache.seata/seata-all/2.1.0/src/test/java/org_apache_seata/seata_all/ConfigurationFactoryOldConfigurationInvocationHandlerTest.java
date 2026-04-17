@@ -35,13 +35,12 @@ public class ConfigurationFactoryOldConfigurationInvocationHandlerTest {
     @AfterEach
     void tearDown() {
         ConfigurationCache.clear();
+        EnhancedServiceLoader.unloadAll();
         if (previousConfigType == null) {
             System.clearProperty(CONFIG_TYPE_PROPERTY);
         } else {
             System.setProperty(CONFIG_TYPE_PROPERTY, previousConfigType);
         }
-        EnhancedServiceLoader.unloadAll();
-        ConfigurationFactory.reload();
     }
 
     @Test
