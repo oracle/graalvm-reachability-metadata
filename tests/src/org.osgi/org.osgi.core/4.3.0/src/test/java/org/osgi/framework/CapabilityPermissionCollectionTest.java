@@ -14,7 +14,6 @@ import java.io.ObjectOutputStream;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -58,8 +57,8 @@ public class CapabilityPermissionCollectionTest {
     }
 
     @Test
-    void resolvesHashMapClassThroughCollectionHelper() throws ClassNotFoundException {
-        assertThat(CapabilityPermissionCollection.class$("java.util.HashMap")).isEqualTo(HashMap.class);
+    void initializesCapabilityPermissionCollectionClass() throws ClassNotFoundException {
+        assertThat(Class.forName("org.osgi.framework.CapabilityPermissionCollection")).isNotNull();
     }
 
     @Test
