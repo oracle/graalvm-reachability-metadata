@@ -37,12 +37,15 @@ public class ReflectionUtilTest {
         SampleChild sample = new SampleChild();
         Field field = ReflectionUtil.getField(SampleChild.class, "secret");
 
+        String initialValue = ReflectionUtil.getFieldValue(sample, field);
+
         assertThat(field.getDeclaringClass()).isEqualTo(SampleParent.class);
-        assertThat(ReflectionUtil.getFieldValue(sample, field)).isEqualTo("initial");
+        assertThat(initialValue).isEqualTo("initial");
 
         ReflectionUtil.setFieldValue(sample, field, "updated");
 
-        assertThat(ReflectionUtil.getFieldValue(sample, "secret")).isEqualTo("updated");
+        String updatedValue = ReflectionUtil.getFieldValue(sample, "secret");
+        assertThat(updatedValue).isEqualTo("updated");
     }
 
     @Test
