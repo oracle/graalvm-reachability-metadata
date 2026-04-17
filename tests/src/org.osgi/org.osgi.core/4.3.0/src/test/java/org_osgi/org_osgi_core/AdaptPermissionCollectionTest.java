@@ -6,6 +6,11 @@
  */
 package org_osgi.org_osgi_core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Collections;
@@ -30,6 +35,19 @@ public class AdaptPermissionCollectionTest {
     }
 
     @Test
+    void serializesAndDeserializesCollectionWithGrantedPermission() throws IOException, ClassNotFoundException {
+        AdaptPermission grantedPermission = new AdaptPermission("*", AdaptPermission.ADAPT);
+        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
+        permissionCollection.add(grantedPermission);
+
+        PermissionCollection restoredPermissionCollection = serializeAndDeserialize(permissionCollection);
+
+        assertThat(Collections.list(restoredPermissionCollection.elements()))
+                .singleElement()
+                .isEqualTo(grantedPermission);
+    }
+
+    @Test
     void rejectsRequestedPermissionsCreatedFromFilterExpressions() {
         PermissionCollection permissionCollection = new AdaptPermission("*", AdaptPermission.ADAPT)
                 .newPermissionCollection();
@@ -39,5 +57,18 @@ public class AdaptPermissionCollectionTest {
                 new AdaptPermission("(adaptClass=java.lang.String)", AdaptPermission.ADAPT));
 
         assertThat(implied).isFalse();
+    }
+
+    private PermissionCollection serializeAndDeserialize(PermissionCollection permissionCollection)
+            throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+            objectOutputStream.writeObject(permissionCollection);
+        }
+
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(
+                new ByteArrayInputStream(byteArrayOutputStream.toByteArray()))) {
+            return (PermissionCollection) objectInputStream.readObject();
+        }
     }
 }
