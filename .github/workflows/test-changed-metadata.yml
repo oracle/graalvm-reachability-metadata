@@ -46,12 +46,12 @@ jobs:
         id: set-matrix
         if: steps.filter.outputs.changed == 'true'
         run: |
-          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+          ./gradlew generateChangedMetadataTestMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
           echo "Matrix:"
           echo "${{ steps.set-matrix.outputs.matrix }}"
 
   test-changed-metadata:
-    name: "🧪 ${{ matrix.coordinates }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    name: "🧪 ${{ matrix.coordinates }} [batch ${{ matrix.batch }}] [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
     if: needs.get-changed-metadata.outputs.relevant-files-changed == 'true' && needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 480
@@ -95,21 +95,12 @@ jobs:
         run: |
           ./gradlew checkMetadataFiles -Pcoordinates=${{ matrix.coordinates }}
 
-      - name: "🧪 Run '${{ matrix.coordinates }}' tests for all tested versions"
+      - name: "🧪 Run '${{ matrix.coordinates }}' tests for tested-version batch ${{ matrix.batch }}"
         run: |
           GAV_COORDINATES="${{ matrix.coordinates }}"
+          VERSIONS_JSON='${{ toJson(matrix.versions) }}'
 
-          # Extract tested versions for the metadata-version from index.json
-          GROUP_ID=$(echo "$GAV_COORDINATES" | cut -d: -f1)
-          ARTIFACT_ID=$(echo "$GAV_COORDINATES" | cut -d: -f2)
-          METADATA_VERSION=$(echo "$GAV_COORDINATES" | cut -d: -f3)
-
-          INDEX_FILE="metadata/$GROUP_ID/$ARTIFACT_ID/index.json"
-
-          # Build JSON array of tested-version for the metadata-version
-          VERSIONS_JSON=$(jq -r --arg mv "$METADATA_VERSION" '.[] | select(.["metadata-version"]==$mv) | ."tested-versions"' "$INDEX_FILE")
-
-          # Run tests for all previously tested versions
+          # Run tests for the tested-version batch assigned to this job.
           bash ./.github/workflows/scripts/run-consecutive-tests.sh "$GAV_COORDINATES" "$VERSIONS_JSON" 2>&1 | tee test_results.txt || true
 
           # Check if any version tested-version failed tests
