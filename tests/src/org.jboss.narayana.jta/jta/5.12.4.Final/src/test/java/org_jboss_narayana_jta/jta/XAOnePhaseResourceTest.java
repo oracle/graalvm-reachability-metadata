@@ -12,12 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import com.arjuna.ats.arjuna.common.Uid;
 import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAOnePhaseResource;
-import com.arjuna.ats.jta.xa.XidImple;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +27,7 @@ public class XAOnePhaseResourceTest {
 
         XAOnePhaseResource resource = new XAOnePhaseResource(
             new SerializableXaResource("pack-unpack"),
-            new XidImple(new Uid()),
+            new SerializableXid(41, new byte[]{1, 2, 3}, new byte[]{4, 5, 6}),
             null
         );
         OutputObjectState outputState = new OutputObjectState();
@@ -103,6 +101,35 @@ public class XAOnePhaseResourceTest {
         @Override
         public String toString() {
             return "SerializableXaResource[" + name + "]";
+        }
+    }
+
+    private static final class SerializableXid implements Xid, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final int formatId;
+        private final byte[] globalTransactionId;
+        private final byte[] branchQualifier;
+
+        private SerializableXid(int formatId, byte[] globalTransactionId, byte[] branchQualifier) {
+            this.formatId = formatId;
+            this.globalTransactionId = globalTransactionId;
+            this.branchQualifier = branchQualifier;
+        }
+
+        @Override
+        public int getFormatId() {
+            return formatId;
+        }
+
+        @Override
+        public byte[] getGlobalTransactionId() {
+            return globalTransactionId;
+        }
+
+        @Override
+        public byte[] getBranchQualifier() {
+            return branchQualifier;
         }
     }
 }
