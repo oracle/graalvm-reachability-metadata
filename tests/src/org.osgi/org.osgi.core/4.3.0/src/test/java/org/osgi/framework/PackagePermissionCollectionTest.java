@@ -16,15 +16,18 @@ import java.security.PermissionCollection;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class PackagePermissionCollectionTest {
     @Test
-    void createsCollectionAndReturnsAddedPermissions() {
+    void a_createsCollectionThroughPermissionFactoryAndReturnsAddedPermissions() {
         PackagePermission grantedPermission = new PackagePermission("org.example.api", PackagePermission.IMPORT);
-        PermissionCollection permissionCollection = new PackagePermissionCollection();
+        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
 
         permissionCollection.add(grantedPermission);
         List<Permission> permissions = Collections.list(permissionCollection.elements());
@@ -34,7 +37,8 @@ public class PackagePermissionCollectionTest {
 
     @Test
     void mergesActionsForDuplicateNamesAndImpliesRequestedPermissions() {
-        PermissionCollection permissionCollection = new PackagePermissionCollection();
+        PermissionCollection permissionCollection = new PackagePermission(
+                "org.example.api", PackagePermission.EXPORTONLY).newPermissionCollection();
         permissionCollection.add(new PackagePermission("org.example.api", PackagePermission.EXPORTONLY));
         permissionCollection.add(new PackagePermission("org.example.api", PackagePermission.IMPORT));
 
@@ -57,7 +61,8 @@ public class PackagePermissionCollectionTest {
     void keepsFilterPermissionsInCollectionElementsAndImpliesMatchingImports() {
         PackagePermission filterPermission = new PackagePermission(
                 "(package.name=org.example.api)", PackagePermission.IMPORT);
-        PermissionCollection permissionCollection = new PackagePermissionCollection();
+        PermissionCollection permissionCollection = new PackagePermission(
+                "org.example.api", PackagePermission.IMPORT).newPermissionCollection();
 
         permissionCollection.add(filterPermission);
         List<Permission> permissions = Collections.list(permissionCollection.elements());
@@ -74,7 +79,7 @@ public class PackagePermissionCollectionTest {
         PackagePermission grantedPermission = new PackagePermission("org.example.api", PackagePermission.EXPORTONLY);
         PackagePermission filterPermission = new PackagePermission(
                 "(package.name=org.example.api)", PackagePermission.IMPORT);
-        PermissionCollection permissionCollection = new PackagePermissionCollection();
+        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
         permissionCollection.add(grantedPermission);
         permissionCollection.add(filterPermission);
 
