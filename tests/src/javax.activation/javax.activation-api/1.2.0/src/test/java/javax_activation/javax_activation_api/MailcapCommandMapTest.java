@@ -21,9 +21,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MailcapCommandMapTest {
     @Test
-    void createDataContentHandlerFallsBackToClassForNameWhenContextClassLoaderCannotLoadHandler() {
+    void createDataContentHandlerLoadsHandlerThroughContextClassLoader() {
         MailcapCommandMap commandMap = new MailcapCommandMap();
         commandMap.addMailcap("text/x-mailcap-command-map; ; x-java-content-handler="
+                + RecordingDataContentHandler.class.getName());
+
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(RecordingDataContentHandler.class.getClassLoader());
+        try {
+            DataContentHandler handler = commandMap.createDataContentHandler("text/x-mailcap-command-map");
+
+            assertThat(handler).isInstanceOf(RecordingDataContentHandler.class);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
+    }
+
+    @Test
+    void createDataContentHandlerFallsBackToClassForNameWhenContextClassLoaderCannotLoadHandler() {
+        MailcapCommandMap commandMap = new MailcapCommandMap();
+        commandMap.addMailcap("text/x-mailcap-command-map-fallback; ; x-java-content-handler="
                 + RecordingDataContentHandler.class.getName());
 
         ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -31,7 +48,7 @@ class MailcapCommandMapTest {
                 originalContextClassLoader,
                 RecordingDataContentHandler.class.getName()));
         try {
-            DataContentHandler handler = commandMap.createDataContentHandler("text/x-mailcap-command-map");
+            DataContentHandler handler = commandMap.createDataContentHandler("text/x-mailcap-command-map-fallback");
 
             assertThat(handler).isInstanceOf(RecordingDataContentHandler.class);
         } finally {
