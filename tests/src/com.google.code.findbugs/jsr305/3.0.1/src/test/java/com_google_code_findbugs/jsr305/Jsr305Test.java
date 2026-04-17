@@ -11,6 +11,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -203,6 +204,28 @@ class Jsr305Test {
         assertThat(closer.isClosed()).isTrue();
         assertThat(closer.isSubclassClosed()).isTrue();
         assertThat(delegate.isClosed()).isTrue();
+    }
+
+    @Test
+    void runtimeVisibleAnnotationsRetainDefaultAndExplicitMembers() throws NoSuchMethodException {
+        Method describeSlug = RuntimeAnnotatedApi.class.getDeclaredMethod("describeSlug");
+        CheckReturnValue checkReturnValue = describeSlug.getAnnotation(CheckReturnValue.class);
+        MatchesPattern matchesPattern = describeSlug.getAnnotation(MatchesPattern.class);
+
+        Method normalizeSlug = RuntimeAnnotatedApi.class.getDeclaredMethod("normalizeSlug", String.class);
+        Nonnull nonnull = normalizeSlug.getParameters()[0].getAnnotation(Nonnull.class);
+        Syntax syntax = normalizeSlug.getParameters()[0].getAnnotation(Syntax.class);
+
+        assertThat(checkReturnValue.when()).isEqualTo(When.ALWAYS);
+        assertThat(checkReturnValue.annotationType()).isSameAs(CheckReturnValue.class);
+        assertThat(matchesPattern.value()).isEqualTo("[a-z]+(?:-[a-z]+)*");
+        assertThat(matchesPattern.flags()).isZero();
+        assertThat(matchesPattern.annotationType()).isSameAs(MatchesPattern.class);
+        assertThat(nonnull.when()).isEqualTo(When.ALWAYS);
+        assertThat(nonnull.annotationType()).isSameAs(Nonnull.class);
+        assertThat(syntax.value()).isEqualTo("Slug");
+        assertThat(syntax.when()).isEqualTo(When.MAYBE);
+        assertThat(syntax.annotationType()).isSameAs(Syntax.class);
     }
 
     private static Nonnull nonnull(When when) {
@@ -535,6 +558,18 @@ class Jsr305Test {
 
         private boolean isClosed() {
             return closed;
+        }
+    }
+
+    private static final class RuntimeAnnotatedApi {
+        @CheckReturnValue
+        @MatchesPattern("[a-z]+(?:-[a-z]+)*")
+        private static String describeSlug() {
+            return "metadata-forge";
+        }
+
+        private static String normalizeSlug(@Nonnull @Syntax(value = "Slug", when = When.MAYBE) String value) {
+            return value.trim();
         }
     }
 
