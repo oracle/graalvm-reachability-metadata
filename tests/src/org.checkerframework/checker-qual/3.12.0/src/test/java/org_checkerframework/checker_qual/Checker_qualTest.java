@@ -20,10 +20,14 @@ import java.lang.reflect.AnnotatedWildcardType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.checkerframework.checker.formatter.qual.ConversionCategory;
 import org.checkerframework.checker.index.qual.GTENegativeOne;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.index.qual.Positive;
@@ -292,6 +296,47 @@ class Checker_qualTest {
                 TypeKind.DECLARED,
                 TypeKind.INTERSECTION,
                 TypeKind.UNION);
+    }
+
+    @Test
+    void formatterConversionCategoriesResolveFormatterSemantics() {
+        Assertions.assertThat(ConversionCategory.fromConversionChar('s')).isSameAs(ConversionCategory.GENERAL);
+        Assertions.assertThat(ConversionCategory.fromConversionChar('d')).isSameAs(ConversionCategory.INT);
+        Assertions.assertThat(ConversionCategory.fromConversionChar('f')).isSameAs(ConversionCategory.FLOAT);
+        Assertions.assertThat(ConversionCategory.fromConversionChar('T')).isSameAs(ConversionCategory.TIME);
+        Assertions.assertThat(ConversionCategory.intersect(ConversionCategory.CHAR, ConversionCategory.INT))
+                .isSameAs(ConversionCategory.CHAR_AND_INT);
+        Assertions.assertThat(ConversionCategory.intersect(ConversionCategory.INT, ConversionCategory.TIME))
+                .isSameAs(ConversionCategory.INT_AND_TIME);
+        Assertions.assertThat(ConversionCategory.union(
+                ConversionCategory.CHAR_AND_INT,
+                ConversionCategory.INT_AND_TIME))
+                .isSameAs(ConversionCategory.INT);
+        Assertions.assertThat(ConversionCategory.union(ConversionCategory.INT, ConversionCategory.FLOAT))
+                .isSameAs(ConversionCategory.GENERAL);
+        Assertions.assertThat(ConversionCategory.isSubsetOf(
+                ConversionCategory.INT_AND_TIME,
+                ConversionCategory.INT))
+                .isTrue();
+        Assertions.assertThat(ConversionCategory.isSubsetOf(ConversionCategory.CHAR, ConversionCategory.INT))
+                .isFalse();
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConversionCategory.fromConversionChar('z'));
+    }
+
+    @Test
+    void formatterConversionCategoriesAcceptMatchingJavaTypes() {
+        Assertions.assertThat(ConversionCategory.GENERAL.isAssignableFrom(Object.class)).isTrue();
+        Assertions.assertThat(ConversionCategory.INT.isAssignableFrom(BigInteger.class)).isTrue();
+        Assertions.assertThat(ConversionCategory.FLOAT.isAssignableFrom(BigDecimal.class)).isTrue();
+        Assertions.assertThat(ConversionCategory.TIME.isAssignableFrom(Date.class)).isTrue();
+        Assertions.assertThat(ConversionCategory.CHAR.isAssignableFrom(Long.class)).isFalse();
+        Assertions.assertThat(ConversionCategory.NULL.isAssignableFrom(String.class)).isFalse();
+        Assertions.assertThat(ConversionCategory.NULL.isAssignableFrom(Void.TYPE)).isTrue();
+        Assertions.assertThat(ConversionCategory.INT.toString())
+                .contains("INT conversion category")
+                .contains("Long")
+                .contains("BigInteger");
     }
 
     @Test
