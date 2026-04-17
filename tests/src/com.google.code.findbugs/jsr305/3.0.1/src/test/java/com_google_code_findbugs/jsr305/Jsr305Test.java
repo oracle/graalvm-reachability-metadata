@@ -81,6 +81,17 @@ class Jsr305Test {
     }
 
     @Test
+    void nonnegativeCheckerTreatsFloatingPointNegativeZeroAsNonnegative() {
+        TypeQualifierValidator<Nonnegative> nonnegativeChecker = new Nonnegative.Checker();
+        Nonnegative annotation = nonnegative(When.ALWAYS);
+
+        assertThat(nonnegativeChecker.forConstantValue(annotation, -0.0D))
+                .isEqualTo(When.ALWAYS);
+        assertThat(nonnegativeChecker.forConstantValue(annotation, -0.0F))
+                .isEqualTo(When.ALWAYS);
+    }
+
+    @Test
     void regexRelatedCheckersRespectPatternFlagsAndInvalidExpressions() {
         TypeQualifierValidator<MatchesPattern> matchesPatternChecker = new MatchesPattern.Checker();
         TypeQualifierValidator<RegEx> regExChecker = new RegEx.Checker();
