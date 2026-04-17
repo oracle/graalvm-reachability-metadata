@@ -4,7 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org_osgi.org_osgi_core;
+package org.osgi.framework;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,15 +14,19 @@ import java.io.ObjectOutputStream;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import org.osgi.framework.AdaptPermission;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdaptPermissionCollectionTest {
+    @Test
+    void loadsSerializedFieldTypeThroughCompatibilityHelper() {
+        assertThat(AdaptPermissionCollection.class$("java.util.HashMap")).isEqualTo(HashMap.class);
+    }
+
     @Test
     void createsCollectionAndReturnsAddedPermissions() {
         AdaptPermission grantedPermission = new AdaptPermission("*", AdaptPermission.ADAPT);
