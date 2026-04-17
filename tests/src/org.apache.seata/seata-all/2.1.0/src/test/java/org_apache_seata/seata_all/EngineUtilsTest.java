@@ -37,6 +37,20 @@ public class EngineUtilsTest {
     }
 
     @Test
+    void handleExceptionUsesTheScriptTaskStateHandlerClassLoaderFirst() {
+        ProcessContextImpl context = new ProcessContextImpl();
+        ScriptTaskStateImpl state = stateWithCatch(PrimaryLoadedException.class.getName(), "primary-route");
+
+        EngineUtils.handleException(context, state, new PrimaryLoadedException("boom"));
+
+        TaskState.ExceptionMatch exceptionMatch = state.getCatches().get(0);
+        assertThat(exceptionMatch.getExceptionClasses()).containsExactly(PrimaryLoadedException.class);
+        assertThat(context.getVariableLocally(DomainConstants.VAR_NAME_CURRENT_EXCEPTION_ROUTE))
+                .isEqualTo("primary-route");
+        assertThat(context.hasVariableLocal(DomainConstants.VAR_NAME_IS_EXCEPTION_NOT_CATCH)).isFalse();
+    }
+
+    @Test
     void handleExceptionUsesTheContextClassLoaderAsAFallback() {
         Thread.currentThread().setContextClassLoader(new ContextRouteClassLoader());
         ProcessContextImpl context = new ProcessContextImpl();
@@ -89,6 +103,12 @@ public class EngineUtilsTest {
                 return FallbackLoadedException.class;
             }
             return super.loadClass(name);
+        }
+    }
+
+    private static final class PrimaryLoadedException extends Exception {
+        private PrimaryLoadedException(String message) {
+            super(message);
         }
     }
 
