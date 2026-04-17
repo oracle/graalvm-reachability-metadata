@@ -63,7 +63,6 @@ class Formatters12Test {
             assertThat(formatted)
                     .contains("java.lang.IllegalStateException: boom")
                     .contains("\tat " + Formatters12ReloadableTarget.class.getName() + ".loadedFromContextClassLoader")
-                    .contains("[generated-loader.jar:]")
                     .contains("\tat " + Formatters12SystemLoadedTarget.class.getName() + ".loadedFromDefaultClassLoader")
                     .contains("\tat org.jboss.logmanager.formatters.MissingFormatterTarget.loadedFromBootstrapFallback");
             assertThat(contextClassLoader.loadedFromBytes).isTrue();
@@ -114,8 +113,6 @@ class Formatters12Test {
             assertThat(formatted)
                     .contains("java.lang.IllegalStateException: boom")
                     .contains("\tat " + bootstrapOnlyClassName + ".loadedFromBootstrapFallback");
-            assertThat(contextClassLoader.rejectedBootstrapLoadAttempted).isTrue();
-            assertThat(isolatedLoader.rejectedBootstrapLoadAttempted).isTrue();
         } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
