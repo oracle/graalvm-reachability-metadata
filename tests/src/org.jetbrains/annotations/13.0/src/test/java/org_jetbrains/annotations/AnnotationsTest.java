@@ -401,6 +401,22 @@ class AnnotationsTest {
         assertThat(catalog.render("native image", loudMode, catalog.options(false, false))).isEqualTo("NATIVE IMAGE");
     }
 
+    @Test
+    void magicConstantStringValuesDriveFormattingChoices() {
+        StringStyleCatalog catalog = new StringStyleCatalog();
+
+        String boldStyle = catalog.canonicalStyle("  strong emphasis  ");
+        String italicStyle = catalog.canonicalStyle("light emphasis");
+        String plainStyle = catalog.canonicalStyle("plain text");
+
+        assertThat(boldStyle).isEqualTo("bold");
+        assertThat(italicStyle).isEqualTo("italic");
+        assertThat(plainStyle).isEqualTo("plain");
+        assertThat(catalog.render("build plan", boldStyle)).isEqualTo("**build plan**");
+        assertThat(catalog.render("native image", italicStyle)).isEqualTo("*native image*");
+        assertThat(catalog.render("metadata", plainStyle)).isEqualTo("metadata");
+    }
+
     @Language("JAVA")
     private @interface JavaExpression {
     }
@@ -567,6 +583,31 @@ class AnnotationsTest {
 
         private @JdkConstants.TreeSelectionMode int discontiguousSelection() {
             return TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION;
+        }
+    }
+
+    private static final class StringStyleCatalog {
+        private @MagicConstant(stringValues = {"plain", "bold", "italic"}) String canonicalStyle(String description) {
+            String normalizedDescription = description.trim().toLowerCase(Locale.ROOT);
+            if (normalizedDescription.contains("strong")) {
+                return "bold";
+            }
+            if (normalizedDescription.contains("emphasis")) {
+                return "italic";
+            }
+            return "plain";
+        }
+
+        private String render(
+                String text,
+                @MagicConstant(stringValues = {"plain", "bold", "italic"}) String style) {
+            if ("bold".equals(style)) {
+                return "**" + text + "**";
+            }
+            if ("italic".equals(style)) {
+                return "*" + text + "*";
+            }
+            return text;
         }
     }
 
