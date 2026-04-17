@@ -541,7 +541,7 @@ class ShadowClassLoaderTest {
             URL classResource = shadowClassLoader.getResource(classResourcePath(RESOURCE_TARGET_NAME));
 
             assertThat(classResource).isNotNull();
-            assertThat(classResource.toString()).startsWith(plainRoot.toUri().toString());
+            assertThat(Path.of(classResource.toURI())).startsWith(plainRoot);
             assertThat(classResource.toString()).endsWith("ResourceTarget.SCL.lombok");
         }
     }
