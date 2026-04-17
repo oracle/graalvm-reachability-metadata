@@ -26,3 +26,10 @@ graalvmNative {
         }
     }
 }
+
+tasks.named("jar") {
+    from(sourceSets.test.output) {
+        include "META-INF/mime.types"
+        include "META-INF/mimetypes.default"
+    }
+}
