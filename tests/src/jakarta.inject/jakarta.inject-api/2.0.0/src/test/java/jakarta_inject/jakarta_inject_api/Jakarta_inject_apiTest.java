@@ -24,7 +24,10 @@ import jakarta.inject.Scope;
 import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -121,6 +124,21 @@ class Jakarta_inject_apiTest {
         assertThat(Remote.class.getAnnotation(Qualifier.class)).isNotNull();
         assertThat(RequestScoped.class.getAnnotation(Scope.class)).isNotNull();
         assertThat(MessageTemplate.class.getAnnotation(Singleton.class)).isNotNull();
+    }
+
+    @Test
+    void builtInAnnotationsExposeQualifierScopeDefaultsAndSupportedTargets() throws Exception {
+        Method namedValueMethod = Named.class.getDeclaredMethod("value");
+
+        assertThat(Named.class.getAnnotation(Qualifier.class)).isNotNull();
+        assertThat(namedValueMethod.getDefaultValue()).isEqualTo("");
+
+        assertThat(Singleton.class.getAnnotation(Scope.class)).isNotNull();
+
+        assertThat(Inject.class.getAnnotation(Target.class).value())
+                .containsExactlyInAnyOrder(CONSTRUCTOR, METHOD, FIELD);
+        assertThat(Qualifier.class.getAnnotation(Target.class).value()).containsExactly(ANNOTATION_TYPE);
+        assertThat(Scope.class.getAnnotation(Target.class).value()).containsExactly(ANNOTATION_TYPE);
     }
 
     @Qualifier
