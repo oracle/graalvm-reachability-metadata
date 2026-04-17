@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,11 @@ public class BundlePermissionCollectionTest {
                 new BundlePermission("org.example.bundle", BundlePermission.REQUIRE));
 
         assertThat(implied).isTrue();
+    }
+
+    @Test
+    void resolvesHashtableClassThroughSyntheticClassLookup() {
+        assertThat(BundlePermissionCollection.class$("java.util.Hashtable")).isEqualTo(Hashtable.class);
     }
 
     @Test
