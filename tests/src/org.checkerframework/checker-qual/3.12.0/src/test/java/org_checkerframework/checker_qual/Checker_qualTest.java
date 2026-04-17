@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.checkerframework.checker.formatter.qual.ConversionCategory;
+import org.checkerframework.checker.i18nformatter.qual.I18nConversionCategory;
 import org.checkerframework.checker.index.qual.GTENegativeOne;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.index.qual.Positive;
@@ -337,6 +338,49 @@ class Checker_qualTest {
                 .contains("INT conversion category")
                 .contains("Long")
                 .contains("BigInteger");
+    }
+
+    @Test
+    void i18nConversionCategoriesMapMessageFormatSpecifiersAndTypes() {
+        Assertions.assertThat(I18nConversionCategory.stringToI18nConversionCategory("date"))
+                .isSameAs(I18nConversionCategory.DATE);
+        Assertions.assertThat(I18nConversionCategory.stringToI18nConversionCategory("time"))
+                .isSameAs(I18nConversionCategory.DATE);
+        Assertions.assertThat(I18nConversionCategory.stringToI18nConversionCategory("number"))
+                .isSameAs(I18nConversionCategory.NUMBER);
+        Assertions.assertThat(I18nConversionCategory.stringToI18nConversionCategory("choice"))
+                .isSameAs(I18nConversionCategory.NUMBER);
+        Assertions.assertThat(I18nConversionCategory.intersect(
+                I18nConversionCategory.DATE,
+                I18nConversionCategory.NUMBER))
+                .isSameAs(I18nConversionCategory.NUMBER);
+        Assertions.assertThat(I18nConversionCategory.union(
+                I18nConversionCategory.DATE,
+                I18nConversionCategory.NUMBER))
+                .isSameAs(I18nConversionCategory.DATE);
+        Assertions.assertThat(I18nConversionCategory.isSubsetOf(
+                I18nConversionCategory.NUMBER,
+                I18nConversionCategory.DATE))
+                .isTrue();
+        Assertions.assertThat(I18nConversionCategory.isSubsetOf(
+                I18nConversionCategory.DATE,
+                I18nConversionCategory.NUMBER))
+                .isFalse();
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> I18nConversionCategory.stringToI18nConversionCategory("currency"));
+    }
+
+    @Test
+    void i18nConversionCategoriesAcceptSupportedJavaTypes() {
+        Assertions.assertThat(I18nConversionCategory.DATE.isAssignableFrom(Date.class)).isTrue();
+        Assertions.assertThat(I18nConversionCategory.DATE.isAssignableFrom(Long.class)).isTrue();
+        Assertions.assertThat(I18nConversionCategory.NUMBER.isAssignableFrom(Integer.class)).isTrue();
+        Assertions.assertThat(I18nConversionCategory.NUMBER.isAssignableFrom(Date.class)).isFalse();
+        Assertions.assertThat(I18nConversionCategory.GENERAL.isAssignableFrom(String.class)).isTrue();
+        Assertions.assertThat(I18nConversionCategory.DATE.toString())
+                .contains("DATE conversion category")
+                .contains("java.util.Date")
+                .contains("java.lang.Number");
     }
 
     @Test
