@@ -6,10 +6,14 @@
  */
 package org.osgi.framework;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -29,10 +33,16 @@ public class AdminPermissionCollectionTest {
     }
 
     @Test
-    void resolvesHashtableClassViaCompilerGeneratedHelper() {
-        Class<?> resolvedClass = AdminPermissionCollection.class$("java.util.Hashtable");
+    void serializesAndDeserializesCollectionWithGrantedPermission() throws IOException, ClassNotFoundException {
+        AdminPermission grantedPermission = new AdminPermission("*", "class");
+        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
+        permissionCollection.add(grantedPermission);
 
-        assertThat(resolvedClass).isEqualTo(Hashtable.class);
+        PermissionCollection restoredPermissionCollection = serializeAndDeserialize(permissionCollection);
+
+        assertThat(Collections.list(restoredPermissionCollection.elements()))
+                .singleElement()
+                .isEqualTo(grantedPermission);
     }
 
     @Test
@@ -45,5 +55,18 @@ public class AdminPermissionCollectionTest {
                 new AdminPermission("(name=org.example.bundle)", "class"));
 
         assertThat(implied).isFalse();
+    }
+
+    private PermissionCollection serializeAndDeserialize(PermissionCollection permissionCollection)
+            throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+            objectOutputStream.writeObject(permissionCollection);
+        }
+
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(
+                new ByteArrayInputStream(byteArrayOutputStream.toByteArray()))) {
+            return (PermissionCollection) objectInputStream.readObject();
+        }
     }
 }
