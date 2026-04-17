@@ -22,8 +22,7 @@ class UtilsTest {
             Class<?> loadedClass = Utils.loadClass("java.lang.String");
 
             assertThat(loadedClass).isEqualTo(String.class);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
     }
@@ -42,8 +41,7 @@ class UtilsTest {
             Class<?> loadedClass = Utils.loadClass("java.lang.String");
 
             assertThat(loadedClass).isEqualTo(String.class);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
     }
