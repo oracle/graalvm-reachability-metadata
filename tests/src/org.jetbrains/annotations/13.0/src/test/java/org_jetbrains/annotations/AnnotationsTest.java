@@ -386,6 +386,21 @@ class AnnotationsTest {
         assertThat(examples.invalidExpressionMessage("[")).contains("Unclosed character class");
     }
 
+    @Test
+    void magicConstantClassBackedValuesAndFlagsDriveOperations() {
+        MagicConstantCatalog catalog = new MagicConstantCatalog();
+
+        int titledMode = catalog.preferredMode(true, false);
+        int loudMode = catalog.preferredMode(false, true);
+        int decoratedOptions = catalog.options(true, true);
+
+        assertThat(titledMode).isEqualTo(RenderModes.TITLED);
+        assertThat(loudMode).isEqualTo(RenderModes.LOUD);
+        assertThat(decoratedOptions).isEqualTo(RenderOptions.TRIM | RenderOptions.BRACKETS);
+        assertThat(catalog.render("  build plan  ", titledMode, decoratedOptions)).isEqualTo("[Build Plan]");
+        assertThat(catalog.render("native image", loudMode, catalog.options(false, false))).isEqualTo("NATIVE IMAGE");
+    }
+
     @Language("JAVA")
     private @interface JavaExpression {
     }
@@ -552,6 +567,75 @@ class AnnotationsTest {
 
         private @JdkConstants.TreeSelectionMode int discontiguousSelection() {
             return TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION;
+        }
+    }
+
+    private static final class RenderModes {
+        private static final int PLAIN = 0;
+        private static final int TITLED = 1;
+        private static final int LOUD = 2;
+
+        private RenderModes() {
+        }
+    }
+
+    private static final class RenderOptions {
+        private static final int TRIM = 1;
+        private static final int BRACKETS = 2;
+
+        private RenderOptions() {
+        }
+    }
+
+    private static final class MagicConstantCatalog {
+        private @MagicConstant(valuesFromClass = RenderModes.class) int preferredMode(boolean titleCase, boolean loud) {
+            if (loud) {
+                return RenderModes.LOUD;
+            }
+            return titleCase ? RenderModes.TITLED : RenderModes.PLAIN;
+        }
+
+        private @MagicConstant(flagsFromClass = RenderOptions.class) int options(boolean trim, boolean brackets) {
+            int value = 0;
+            if (trim) {
+                value |= RenderOptions.TRIM;
+            }
+            if (brackets) {
+                value |= RenderOptions.BRACKETS;
+            }
+            return value;
+        }
+
+        private String render(
+                String text,
+                @MagicConstant(valuesFromClass = RenderModes.class) int mode,
+                @MagicConstant(flagsFromClass = RenderOptions.class) int options) {
+            String rendered = (options & RenderOptions.TRIM) != 0 ? text.trim() : text;
+            if (mode == RenderModes.TITLED) {
+                rendered = titleCase(rendered);
+            } else if (mode == RenderModes.LOUD) {
+                rendered = rendered.toUpperCase(Locale.ROOT);
+            }
+            if ((options & RenderOptions.BRACKETS) != 0) {
+                rendered = '[' + rendered + ']';
+            }
+            return rendered;
+        }
+
+        private String titleCase(String text) {
+            String[] words = text.split("\\s+");
+            StringBuilder builder = new StringBuilder();
+            for (int index = 0; index < words.length; index++) {
+                String word = words[index];
+                if (builder.length() > 0) {
+                    builder.append(' ');
+                }
+                builder.append(Character.toUpperCase(word.charAt(0)));
+                if (word.length() > 1) {
+                    builder.append(word.substring(1).toLowerCase(Locale.ROOT));
+                }
+            }
+            return builder.toString();
         }
     }
 }
