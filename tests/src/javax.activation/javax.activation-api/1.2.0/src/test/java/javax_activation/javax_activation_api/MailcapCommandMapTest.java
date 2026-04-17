@@ -57,7 +57,7 @@ class MailcapCommandMapTest {
     }
 
     public static final class RecordingDataContentHandler implements DataContentHandler {
-        public RecordingDataContentHandler() {
+        RecordingDataContentHandler() {
         }
 
         @Override

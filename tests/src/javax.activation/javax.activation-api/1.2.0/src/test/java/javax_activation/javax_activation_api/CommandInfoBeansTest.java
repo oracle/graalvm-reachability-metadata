@@ -34,7 +34,7 @@ class CommandInfoBeansTest {
         private String verb;
         private DataHandler dataHandler;
 
-        public RecordingCommandObject() {
+        RecordingCommandObject() {
         }
 
         @Override
