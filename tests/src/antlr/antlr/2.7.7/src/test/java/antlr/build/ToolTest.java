@@ -16,7 +16,7 @@ class ToolTest {
         BuildToolAction.invoked = false;
         RecordingTool tool = new RecordingTool();
 
-        tool.perform("antlr.build.BuildToolAction", "build");
+        tool.perform(BuildToolAction.class.getName(), "build");
 
         assertThat(BuildToolAction.invoked).isFalse();
         assertThat(tool.lastErrorMessage).isNull();
@@ -27,10 +27,10 @@ class ToolTest {
         BuildToolAction.invoked = false;
         RecordingTool tool = new RecordingTool();
 
-        tool.perform("BuildToolAction", "build");
+        tool.perform("ToolTest$BuildToolAction", "build");
 
         assertThat(BuildToolAction.invoked).isFalse();
-        assertThat(tool.lastErrorMessage).isEqualTo("no such application BuildToolAction");
+        assertThat(tool.lastErrorMessage).isEqualTo("no such application ToolTest$BuildToolAction");
     }
 
     @Test
@@ -41,21 +41,21 @@ class ToolTest {
 
         assertThat(tool.lastErrorMessage).isEqualTo("no such application MissingBuildToolAction");
     }
-}
 
-class BuildToolAction {
-    static boolean invoked;
+    public static class BuildToolAction {
+        static boolean invoked;
 
-    public void build(Tool tool) {
-        invoked = true;
+        public void build(Tool tool) {
+            invoked = true;
+        }
     }
-}
 
-class RecordingTool extends Tool {
-    String lastErrorMessage;
+    static class RecordingTool extends Tool {
+        String lastErrorMessage;
 
-    @Override
-    public void error(String msg, Exception e) {
-        lastErrorMessage = msg;
+        @Override
+        public void error(String msg, Exception e) {
+            lastErrorMessage = msg;
+        }
     }
 }
