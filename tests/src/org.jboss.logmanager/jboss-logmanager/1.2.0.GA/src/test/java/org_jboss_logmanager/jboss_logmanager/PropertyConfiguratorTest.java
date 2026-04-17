@@ -150,7 +150,7 @@ class PropertyConfiguratorTest {
         assertThat(handler.nestedFilter).isSameAs(handlerFilter);
         assertThat(handler.nestedFormatter).isSameAs(formatter);
 
-        rootLogger.info("Hello from PropertyConfigurator");
+        rootLogger.warning("Hello from PropertyConfigurator");
         assertThat(handler.publishedMessages).containsExactly("formatted-Hello from PropertyConfigurator");
     }
 
