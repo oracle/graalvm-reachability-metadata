@@ -41,6 +41,7 @@ public class ConfigurationFactoryOldConfigurationInvocationHandlerTest {
         } else {
             System.setProperty(CONFIG_TYPE_PROPERTY, previousConfigType);
         }
+        ConfigurationFactory.reload();
     }
 
     @Test
