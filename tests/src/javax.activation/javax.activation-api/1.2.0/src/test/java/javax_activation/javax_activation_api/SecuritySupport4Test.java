@@ -6,12 +6,15 @@
  */
 package javax_activation.javax_activation_api;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.Locale;
+import java.util.jar.JarFile;
 
 import javax.activation.MimetypesFileTypeMap;
 
@@ -31,16 +34,18 @@ public class SecuritySupport4Test {
             StandardCharsets.UTF_8
         );
 
-        Path testClassesPath = codeSourcePath(BootstrapActivationProbe.class);
-        Path activationJarPath = codeSourcePath(MimetypesFileTypeMap.class);
+        Path testClassesPath = codeSourcePath(SecuritySupport4Test.class);
+        Path activationApiJarPath = codeSourcePath(MimetypesFileTypeMap.class);
+        Path activationImplJarPath = findClasspathEntryContaining("com/sun/activation/registries/LogSupport.class");
         Path javaExecutablePath = resolveJavaExecutable();
+        String bootClassPath = activationApiJarPath + File.pathSeparator + activationImplJarPath;
 
         Process process = new ProcessBuilder(
             javaExecutablePath.toString(),
-            "-Xbootclasspath/a:" + activationJarPath,
+            "-Xbootclasspath/a:" + bootClassPath,
             "-cp",
-            testClassesPath + java.io.File.pathSeparator + resourceRoot,
-            BootstrapActivationProbe.class.getName()
+            testClassesPath + File.pathSeparator + resourceRoot,
+            SecuritySupport4Test.BootstrapActivationProbe.class.getName()
         ).redirectErrorStream(true).start();
 
         String output;
@@ -58,26 +63,42 @@ public class SecuritySupport4Test {
         return Paths.get(codeSource.getLocation().toURI());
     }
 
+    private static Path findClasspathEntryContaining(String resourceName) throws IOException {
+        String[] classPathEntries = System.getProperty("java.class.path").split(File.pathSeparator);
+        for (String classPathEntry : classPathEntries) {
+            Path path = Paths.get(classPathEntry);
+            if (!Files.isRegularFile(path)) {
+                continue;
+            }
+            try (JarFile jarFile = new JarFile(path.toFile())) {
+                if (jarFile.getJarEntry(resourceName) != null) {
+                    return path;
+                }
+            }
+        }
+        throw new IllegalStateException("Could not find classpath entry containing " + resourceName);
+    }
+
     private static Path resolveJavaExecutable() {
         String javaExecutableName = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("win")
             ? "java.exe"
             : "java";
         return Paths.get(System.getProperty("java.home"), "bin", javaExecutableName);
     }
-}
 
-final class BootstrapActivationProbe {
-    private BootstrapActivationProbe() {
-    }
+    public static final class BootstrapActivationProbe {
+        private BootstrapActivationProbe() {
+        }
 
-    public static void main(String[] args) {
-        Thread.currentThread().setContextClassLoader(null);
+        public static void main(String[] args) {
+            Thread.currentThread().setContextClassLoader(null);
 
-        MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
-        String contentType = fileTypeMap.getContentType("sample.securitysupport4");
-        if (!"application/x-security-support-4".equals(contentType)) {
-            System.err.println("Expected application/x-security-support-4 but was " + contentType);
-            System.exit(1);
+            MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
+            String contentType = fileTypeMap.getContentType("sample.securitysupport4");
+            if (!"application/x-security-support-4".equals(contentType)) {
+                System.err.println("Expected application/x-security-support-4 but was " + contentType);
+                System.exit(1);
+            }
         }
     }
 }
