@@ -6,8 +6,7 @@
  */
 package org_apache_seata.seata_all;
 
-import java.lang.reflect.Field;
-
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.seata.rm.tcc.api.BusinessActionContext;
 import org.apache.seata.rm.tcc.api.TwoPhaseBusinessAction;
 import org.apache.seata.spring.tcc.TccAnnotationProcessor;
@@ -17,15 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TccAnnotationProcessorTest {
     @Test
-    void addTccAdviseReassignsTheAnnotatedReferenceField() throws Exception {
+    void postProcessBeforeInitializationLoadsReferenceAnnotationAndReassignsTheField() {
         TccAnnotationProcessor processor = new TccAnnotationProcessor();
         TccClientBean bean = new TccClientBean();
-        Field referenceField = TccClientBean.class.getField("reference");
 
         assertThat(bean.reference).isNotSameAs(bean);
 
-        processor.addTccAdvise(bean, "tccClientBean", referenceField, AnnotatedReferenceService.class);
-
+        assertThat(processor.postProcessBeforeInitialization(bean, "tccClientBean")).isSameAs(bean);
         assertThat(bean.reference).isSameAs(bean);
     }
 
@@ -39,6 +36,7 @@ public class TccAnnotationProcessorTest {
     }
 
     public static final class TccClientBean extends AnnotatedReferenceService {
+        @Reference
         public AnnotatedReferenceService reference = new StandaloneReferenceService();
 
         @Override
