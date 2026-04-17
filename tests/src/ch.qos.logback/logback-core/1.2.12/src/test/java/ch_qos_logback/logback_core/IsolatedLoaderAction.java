@@ -6,11 +6,7 @@
  */
 package ch_qos_logback.logback_core;
 
-import org.junit.jupiter.api.Test;
+public interface IsolatedLoaderAction {
 
-class Logback_coreTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
-    }
+    String loadClass(String className) throws ClassNotFoundException;
 }
