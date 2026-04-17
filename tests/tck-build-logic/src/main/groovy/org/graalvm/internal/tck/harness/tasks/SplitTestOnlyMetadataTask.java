@@ -238,13 +238,16 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
             if (!(proxyNode instanceof ArrayNode proxyArray) || proxyArray.isEmpty()) {
                 return false;
             }
+            boolean referencesAnyTestPackage = false;
             for (JsonNode proxyType : proxyArray) {
-                if (!proxyType.isTextual()
-                        || testPackages.stream().noneMatch(testPackage -> referencesTestPackage(proxyType.asText(), testPackage))) {
+                if (!proxyType.isTextual()) {
                     return false;
                 }
+                if (testPackages.stream().anyMatch(testPackage -> referencesTestPackage(proxyType.asText(), testPackage))) {
+                    referencesAnyTestPackage = true;
+                }
             }
-            return true;
+            return referencesAnyTestPackage;
         }
         return false;
     }
