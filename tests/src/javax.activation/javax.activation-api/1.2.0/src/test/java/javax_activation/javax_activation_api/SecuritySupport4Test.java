@@ -8,13 +8,15 @@ package javax_activation.javax_activation_api;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.CodeSource;
+import java.util.Enumeration;
 import java.util.Locale;
-import java.util.jar.JarFile;
 
 import javax.activation.MimetypesFileTypeMap;
 
@@ -63,20 +65,28 @@ public class SecuritySupport4Test {
         return Paths.get(codeSource.getLocation().toURI());
     }
 
-    private static Path findClasspathEntryContaining(String resourceName) throws IOException {
-        String[] classPathEntries = System.getProperty("java.class.path").split(File.pathSeparator);
-        for (String classPathEntry : classPathEntries) {
-            Path path = Paths.get(classPathEntry);
-            if (!Files.isRegularFile(path)) {
-                continue;
-            }
-            try (JarFile jarFile = new JarFile(path.toFile())) {
-                if (jarFile.getJarEntry(resourceName) != null) {
-                    return path;
-                }
-            }
+    private static Path findClasspathEntryContaining(String resourceName) throws Exception {
+        Enumeration<URL> resources = SecuritySupport4Test.class.getClassLoader().getResources(resourceName);
+        if (resources.hasMoreElements()) {
+            return classpathEntryForResource(resources.nextElement(), resourceName);
         }
         throw new IllegalStateException("Could not find classpath entry containing " + resourceName);
+    }
+
+    private static Path classpathEntryForResource(URL resourceUrl, String resourceName) throws Exception {
+        if ("jar".equals(resourceUrl.getProtocol())) {
+            JarURLConnection jarConnection = (JarURLConnection) resourceUrl.openConnection();
+            return Paths.get(jarConnection.getJarFileURL().toURI());
+        }
+        if ("file".equals(resourceUrl.getProtocol())) {
+            Path classFilePath = Paths.get(resourceUrl.toURI());
+            Path classpathEntry = classFilePath;
+            for (String ignored : resourceName.split("/")) {
+                classpathEntry = classpathEntry.getParent();
+            }
+            return classpathEntry;
+        }
+        throw new IllegalStateException("Unsupported resource URL: " + resourceUrl);
     }
 
     private static Path resolveJavaExecutable() {
