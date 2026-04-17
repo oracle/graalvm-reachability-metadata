@@ -12,16 +12,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ToolTest {
     @Test
-    void performReturnsBeforeLookingUpActionWhenApplicationInstanceDoesNotPopulateClassReference() {
+    void performReturnsBeforeActionLookupWhenCreateInstanceOfSucceeds() {
         BuildToolAction.invoked = false;
+        RecordingTool tool = new RecordingTool();
 
-        new Tool().perform("antlr.build.BuildToolAction", "build");
+        tool.perform("antlr.build.BuildToolAction", "build");
 
         assertThat(BuildToolAction.invoked).isFalse();
+        assertThat(tool.lastErrorMessage).isNull();
     }
 
     @Test
-    void performReturnsAfterFallbackClassLoadWhenApplicationInstanceWasNotCreated() {
+    void performLoadsFallbackClassForShortNameButStillReturnsWithoutInvokingAction() {
         BuildToolAction.invoked = false;
         RecordingTool tool = new RecordingTool();
 
@@ -29,6 +31,15 @@ class ToolTest {
 
         assertThat(BuildToolAction.invoked).isFalse();
         assertThat(tool.lastErrorMessage).isEqualTo("no such application BuildToolAction");
+    }
+
+    @Test
+    void performReportsMissingApplicationWhenFallbackClassLoadAlsoFails() {
+        RecordingTool tool = new RecordingTool();
+
+        tool.perform("MissingBuildToolAction", "build");
+
+        assertThat(tool.lastErrorMessage).isEqualTo("no such application MissingBuildToolAction");
     }
 }
 
