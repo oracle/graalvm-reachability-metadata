@@ -16,6 +16,7 @@ import java.security.PermissionCollection;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,6 +35,8 @@ public class AdminPermissionCollectionTest {
 
     @Test
     void serializesAndDeserializesCollectionWithGrantedPermission() throws IOException, ClassNotFoundException {
+        Assumptions.assumeFalse(isNativeImageRuntime());
+
         AdminPermission grantedPermission = new AdminPermission("*", "class");
         PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
         permissionCollection.add(grantedPermission);
@@ -43,6 +46,24 @@ public class AdminPermissionCollectionTest {
         assertThat(Collections.list(restoredPermissionCollection.elements()))
                 .singleElement()
                 .isEqualTo(grantedPermission);
+    }
+
+    @Test
+    void mergesActionsForDuplicateNamesAndImpliesRequestedPermission() {
+        PermissionCollection permissionCollection = new AdminPermission("*", "class")
+                .newPermissionCollection();
+        permissionCollection.add(new AdminPermission("*", "class"));
+        permissionCollection.add(new AdminPermission("*", "execute"));
+
+        boolean implied = permissionCollection.implies(new AdminPermission("*", "execute"));
+
+        List<Permission> permissions = Collections.list(permissionCollection.elements());
+
+        assertThat(implied).isTrue();
+        assertThat(permissions)
+                .singleElement()
+                .isInstanceOfSatisfying(AdminPermission.class, permission ->
+                        assertThat(permission.getActions()).isEqualTo("class,execute,resolve"));
     }
 
     @Test
@@ -68,5 +89,9 @@ public class AdminPermissionCollectionTest {
                 new ByteArrayInputStream(byteArrayOutputStream.toByteArray()))) {
             return (PermissionCollection) objectInputStream.readObject();
         }
+    }
+
+    private boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
