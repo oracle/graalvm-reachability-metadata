@@ -141,6 +141,26 @@ class Jakarta_inject_apiTest {
         assertThat(Scope.class.getAnnotation(Target.class).value()).containsExactly(ANNOTATION_TYPE);
     }
 
+    @Test
+    void nestedProvidersCanSwitchLookupStrategiesWithoutRecreatingConsumers() {
+        AtomicInteger greetingStyle = new AtomicInteger();
+        Provider<String> formalGreetingProvider = () -> "Good day";
+        Provider<String> casualGreetingProvider = () -> "Hi";
+        Provider<Provider<String>> greetingProvider = () -> greetingStyle.get() == 0
+                ? formalGreetingProvider
+                : casualGreetingProvider;
+
+        DeferredGreeter deferredGreeter = new DeferredGreeter(greetingProvider);
+
+        assertThat(deferredGreeter.greet("team")).isEqualTo("Good day, team");
+
+        greetingStyle.set(1);
+        assertThat(deferredGreeter.greet("native image")).isEqualTo("Hi, native image");
+
+        greetingStyle.set(0);
+        assertThat(deferredGreeter.greet("metadata")).isEqualTo("Good day, metadata");
+    }
+
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     @Target({FIELD, PARAMETER, TYPE})
@@ -195,6 +215,18 @@ class Jakarta_inject_apiTest {
         private String greet(String audience) {
             String resolvedAudience = audience == null || audience.isBlank() ? defaultAudience : audience.trim();
             return prefixProvider.get() + separator + templateProvider.get().render(resolvedAudience) + suffixProvider.get();
+        }
+    }
+
+    private static final class DeferredGreeter {
+        private final Provider<Provider<String>> greetingProvider;
+
+        private DeferredGreeter(Provider<Provider<String>> greetingProvider) {
+            this.greetingProvider = greetingProvider;
+        }
+
+        private String greet(String audience) {
+            return greetingProvider.get().get() + ", " + audience;
         }
     }
 }
