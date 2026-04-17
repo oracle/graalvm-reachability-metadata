@@ -11,9 +11,11 @@ import com.googlecode.javaewah.EWAHCompressedBitmap;
 import com.googlecode.javaewah.FastAggregation;
 import com.googlecode.javaewah.IntIterator;
 import com.googlecode.javaewah.datastructure.BitSet;
+import com.googlecode.javaewah.datastructure.ImmutableBitSet;
 import com.googlecode.javaewah32.EWAHCompressedBitmap32;
 import org.junit.jupiter.api.Test;
 
+import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -202,6 +204,37 @@ class JavaEWAHTest {
         assertThat(readAll(clone.intIterator())).containsExactly(4, 8);
         clone.clear();
         assertThat(clone.empty()).isTrue();
+    }
+
+    @Test
+    void immutableBitSetSupportsBufferedConstructionAndMutableCopies() {
+        ImmutableBitSet bitSet = new ImmutableBitSet(LongBuffer.wrap(new long[]{
+                2,
+                (1L << 1) | (1L << 3) | (1L << 63),
+                (1L << 0) | (1L << 5)
+        }));
+
+        assertThat(bitSet.cardinality()).isEqualTo(5);
+        assertThat(bitSet.size()).isEqualTo(128);
+        assertThat(bitSet.empty()).isFalse();
+        assertThat(bitSet.get(3)).isTrue();
+        assertThat(bitSet.get(2)).isFalse();
+        assertThat(bitSet.nextSetBit(0)).isEqualTo(1);
+        assertThat(bitSet.nextSetBit(4)).isEqualTo(63);
+        assertThat(bitSet.nextUnsetBit(0)).isEqualTo(0);
+        assertThat(readAll(bitSet.iterator())).containsExactly(1, 3, 63, 64, 69);
+        assertThat(readAll(bitSet.intIterator())).containsExactly(1, 3, 63, 64, 69);
+        assertThat(readFirst(bitSet.unsetIntIterator(), 8)).containsExactly(0, 2, 4, 5, 6, 7, 8, 9);
+        assertThat(bitSet.intersects(BitSet.bitmapOf(69, 90))).isTrue();
+        assertThat(bitSet.intersects(BitSet.bitmapOf(10, 11))).isFalse();
+
+        BitSet mutableCopy = bitSet.asBitSet();
+        assertThat(readAll(mutableCopy.intIterator())).containsExactly(1, 3, 63, 64, 69);
+
+        mutableCopy.set(10);
+        mutableCopy.clear(64);
+        assertThat(readAll(mutableCopy.intIterator())).containsExactly(1, 3, 10, 63, 69);
+        assertThat(readAll(bitSet.intIterator())).containsExactly(1, 3, 63, 64, 69);
     }
 
     private static List<Integer> readAll(IntIterator iterator) {
