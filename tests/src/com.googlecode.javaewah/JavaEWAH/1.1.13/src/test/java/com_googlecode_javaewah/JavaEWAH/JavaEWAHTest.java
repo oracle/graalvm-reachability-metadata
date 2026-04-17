@@ -114,6 +114,20 @@ class JavaEWAHTest {
     }
 
     @Test
+    void ewahCompressedBitmapSupportsCompositionOfSelectedSetBits() {
+        EWAHCompressedBitmap bitmap = EWAHCompressedBitmap.bitmapOf(0, 63, 64, 130, 131);
+        EWAHCompressedBitmap selector = EWAHCompressedBitmap.bitmapOf(1, 4);
+
+        EWAHCompressedBitmap composed = bitmap.compose(selector);
+
+        assertThat(composed.toArray()).containsExactly(63, 131);
+        assertThat(composed.cardinality()).isEqualTo(2);
+        assertThat(composed.sizeInBits()).isEqualTo(bitmap.sizeInBits());
+        assertThat(bitmap.toArray()).containsExactly(0, 63, 64, 130, 131);
+        assertThat(selector.toArray()).containsExactly(1, 4);
+    }
+
+    @Test
     void ewahCompressedBitmap32SupportsCoreBitmapOperations() throws CloneNotSupportedException {
         EWAHCompressedBitmap32 first = EWAHCompressedBitmap32.bitmapOf(1, 31, 32, 100);
         EWAHCompressedBitmap32 second = EWAHCompressedBitmap32.bitmapOf(0, 31, 40, 100);
