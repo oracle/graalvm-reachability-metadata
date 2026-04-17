@@ -417,6 +417,25 @@ public final class LibraryStatsSupport {
         return normalized;
     }
 
+    /// Returns true if at least one of the given JARs contains a `.class` file
+    /// (excluding `module-info.class`).
+    public static boolean containsClassFiles(List<Path> libraryJars) {
+        for (Path jarPath : libraryJars) {
+            try (JarFile jarFile = new JarFile(jarPath.toFile())) {
+                boolean found = jarFile.stream()
+                        .map(JarEntry::getName)
+                        .filter(name -> name.endsWith(".class"))
+                        .anyMatch(name -> !name.equals("module-info.class"));
+                if (found) {
+                    return true;
+                }
+            } catch (IOException e) {
+                throw new GradleException("Failed to read library JAR " + jarPath, e);
+            }
+        }
+        return false;
+    }
+
     private static Set<String> loadLibraryClasses(List<Path> libraryJars) {
         Set<String> classes = new LinkedHashSet<>();
         for (Path jarPath : libraryJars) {
