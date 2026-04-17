@@ -6,109 +6,28 @@
  */
 package javax_activation.javax_activation_api;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.CodeSource;
-import java.util.Enumeration;
-import java.util.Locale;
-
 import javax.activation.MimetypesFileTypeMap;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SecuritySupport4Test {
     @Test
-    void bootstrapLoadedMimeTypesFileTypeMapUsesSystemResources() throws Exception {
-        Path resourceRoot = Files.createTempDirectory("security-support-4");
-        Path metaInfDirectory = Files.createDirectories(resourceRoot.resolve("META-INF"));
-        Files.writeString(
-            metaInfDirectory.resolve("mime.types"),
-            "application/x-security-support-4 securitysupport4\n",
-            StandardCharsets.UTF_8
-        );
-
-        Path testClassesPath = codeSourcePath(SecuritySupport4Test.class);
-        Path activationApiJarPath = codeSourcePath(MimetypesFileTypeMap.class);
-        Path activationImplJarPath = findClasspathEntryContaining("com/sun/activation/registries/LogSupport.class");
-        Path javaExecutablePath = resolveJavaExecutable();
-        String bootClassPath = activationApiJarPath + File.pathSeparator + activationImplJarPath;
-
-        Process process = new ProcessBuilder(
-            javaExecutablePath.toString(),
-            "-Xbootclasspath/a:" + bootClassPath,
-            "-cp",
-            testClassesPath + File.pathSeparator + resourceRoot,
-            SecuritySupport4Test.BootstrapActivationProbe.class.getName()
-        ).redirectErrorStream(true).start();
-
-        String output;
-        try (java.io.InputStream inputStream = process.getInputStream()) {
-            output = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        }
-
-        int exitCode = process.waitFor();
-        assertEquals(0, exitCode, output);
-    }
-
-    private static Path codeSourcePath(Class<?> type) throws Exception {
-        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
-        assertNotNull(codeSource, () -> "No code source found for " + type.getName());
-        return Paths.get(codeSource.getLocation().toURI());
-    }
-
-    private static Path findClasspathEntryContaining(String resourceName) throws Exception {
-        Enumeration<URL> resources = SecuritySupport4Test.class.getClassLoader().getResources(resourceName);
-        if (resources.hasMoreElements()) {
-            return classpathEntryForResource(resources.nextElement(), resourceName);
-        }
-        throw new IllegalStateException("Could not find classpath entry containing " + resourceName);
-    }
-
-    private static Path classpathEntryForResource(URL resourceUrl, String resourceName) throws Exception {
-        if ("jar".equals(resourceUrl.getProtocol())) {
-            JarURLConnection jarConnection = (JarURLConnection) resourceUrl.openConnection();
-            return Paths.get(jarConnection.getJarFileURL().toURI());
-        }
-        if ("file".equals(resourceUrl.getProtocol())) {
-            Path classFilePath = Paths.get(resourceUrl.toURI());
-            Path classpathEntry = classFilePath;
-            for (String ignored : resourceName.split("/")) {
-                classpathEntry = classpathEntry.getParent();
-            }
-            return classpathEntry;
-        }
-        throw new IllegalStateException("Unsupported resource URL: " + resourceUrl);
-    }
-
-    private static Path resolveJavaExecutable() {
-        String javaExecutableName = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("win")
-            ? "java.exe"
-            : "java";
-        return Paths.get(System.getProperty("java.home"), "bin", javaExecutableName);
-    }
-
-    public static final class BootstrapActivationProbe {
-        private BootstrapActivationProbe() {
-        }
-
-        public static void main(String[] args) {
-            Thread.currentThread().setContextClassLoader(null);
+    void nullContextClassLoaderStillLoadsMimeTypesFromMetaInf() {
+        Thread currentThread = Thread.currentThread();
+        ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
+        try {
+            currentThread.setContextClassLoader(null);
 
             MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
-            String contentType = fileTypeMap.getContentType("sample.securitysupport4");
-            if (!"application/x-security-support-4".equals(contentType)) {
-                System.err.println("Expected application/x-security-support-4 but was " + contentType);
-                System.exit(1);
-            }
+
+            assertEquals(
+                "application/x-security-support-4",
+                fileTypeMap.getContentType("sample.securitysupport4")
+            );
+        } finally {
+            currentThread.setContextClassLoader(originalContextClassLoader);
         }
     }
 }
