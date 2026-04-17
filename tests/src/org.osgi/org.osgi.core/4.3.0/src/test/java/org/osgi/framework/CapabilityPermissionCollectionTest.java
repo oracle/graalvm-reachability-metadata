@@ -57,8 +57,15 @@ public class CapabilityPermissionCollectionTest {
     }
 
     @Test
-    void initializesCapabilityPermissionCollectionClass() throws ClassNotFoundException {
-        assertThat(Class.forName("org.osgi.framework.CapabilityPermissionCollection")).isNotNull();
+    void keepsFilterPermissionsInCollectionElements() {
+        CapabilityPermission filterPermission = new CapabilityPermission(
+                "(capability.namespace=org.example.capability)", CapabilityPermission.REQUIRE);
+        PermissionCollection permissionCollection = new CapabilityPermissionCollection();
+
+        permissionCollection.add(filterPermission);
+        List<Permission> permissions = Collections.list(permissionCollection.elements());
+
+        assertThat(permissions).containsExactly(filterPermission);
     }
 
     @Test
