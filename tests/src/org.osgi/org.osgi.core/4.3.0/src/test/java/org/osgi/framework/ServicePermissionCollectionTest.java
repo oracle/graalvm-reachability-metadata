@@ -28,7 +28,7 @@ public class ServicePermissionCollectionTest {
     void a_createsCollectionAndReturnsAddedPermissions() {
         ServicePermission grantedPermission = new ServicePermission(
                 "org.example.service.ExampleService", ServicePermission.GET);
-        PermissionCollection permissionCollection = new ServicePermissionCollection();
+        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
 
         permissionCollection.add(grantedPermission);
         List<Permission> permissions = Collections.list(permissionCollection.elements());
@@ -38,7 +38,8 @@ public class ServicePermissionCollectionTest {
 
     @Test
     void mergesActionsForDuplicateNamesAndImpliesRequestedPermissions() {
-        PermissionCollection permissionCollection = new ServicePermissionCollection();
+        PermissionCollection permissionCollection = new ServicePermission(
+                "org.example.service.ExampleService", ServicePermission.GET).newPermissionCollection();
         permissionCollection.add(new ServicePermission(
                 "org.example.service.ExampleService", ServicePermission.GET));
         permissionCollection.add(new ServicePermission(
@@ -63,7 +64,8 @@ public class ServicePermissionCollectionTest {
         ServicePermission filterPermission = new ServicePermission(
                 "(" + Constants.OBJECTCLASS + "=org.example.service.ExampleService)",
                 ServicePermission.GET);
-        PermissionCollection permissionCollection = new ServicePermissionCollection();
+        PermissionCollection permissionCollection = new ServicePermission(
+                "org.example.service.ExampleService", ServicePermission.GET).newPermissionCollection();
 
         permissionCollection.add(filterPermission);
         List<Permission> permissions = Collections.list(permissionCollection.elements());
@@ -82,7 +84,7 @@ public class ServicePermissionCollectionTest {
         ServicePermission filterPermission = new ServicePermission(
                 "(" + Constants.OBJECTCLASS + "=org.example.service.ExampleService)",
                 ServicePermission.GET);
-        PermissionCollection permissionCollection = new ServicePermissionCollection();
+        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
         permissionCollection.add(grantedPermission);
         permissionCollection.add(filterPermission);
 
