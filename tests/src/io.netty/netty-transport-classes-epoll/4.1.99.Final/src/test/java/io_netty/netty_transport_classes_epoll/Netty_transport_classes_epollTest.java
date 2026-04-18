@@ -6,10 +6,12 @@
  */
 package io_netty.netty_transport_classes_epoll;
 
+import java.net.InetSocketAddress;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Supplier;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -21,6 +23,7 @@ import io.netty.channel.epoll.EpollMode;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.epoll.EpollTcpInfo;
+import io.netty.channel.epoll.SegmentedDatagramPacket;
 import io.netty.channel.epoll.VSockAddress;
 import io.netty.channel.socket.InternetProtocolFamily;
 import org.junit.jupiter.api.Test;
@@ -150,6 +153,67 @@ class Netty_transport_classes_epollTest {
         assertThat(address).isEqualTo(sameAddress).hasSameHashCodeAs(sameAddress);
         assertThat(address).isNotEqualTo(differentAddress);
         assertThat(address).hasToString("VSockAddress{cid=3, port=7}");
+    }
+
+    @Test
+    void segmentedDatagramPacketBufferOperationsPreserveSegmentMetadata() {
+        InetSocketAddress recipient = new InetSocketAddress("127.0.0.1", 8080);
+        InetSocketAddress sender = new InetSocketAddress("127.0.0.1", 8081);
+
+        if (!SegmentedDatagramPacket.isSupported()) {
+            assertThatThrownBy(() -> new SegmentedDatagramPacket(
+                    Unpooled.wrappedBuffer(new byte[] {1, 2, 3, 4}),
+                    2,
+                    recipient,
+                    sender
+            )).isInstanceOf(IllegalStateException.class);
+            return;
+        }
+
+        SegmentedDatagramPacket packet = new SegmentedDatagramPacket(
+                Unpooled.wrappedBuffer(new byte[] {1, 2, 3, 4}),
+                2,
+                recipient,
+                sender
+        );
+        SegmentedDatagramPacket copied = packet.copy();
+        SegmentedDatagramPacket retainedDuplicate = packet.retainedDuplicate();
+        SegmentedDatagramPacket replaced = packet.replace(Unpooled.wrappedBuffer(new byte[] {9, 8}));
+
+        try {
+            assertThat(packet.segmentSize()).isEqualTo(2);
+            assertThat(packet.recipient()).isEqualTo(recipient);
+            assertThat(packet.sender()).isEqualTo(sender);
+            assertThat(packet.content().getByte(0)).isEqualTo((byte) 1);
+
+            assertThat(copied.segmentSize()).isEqualTo(2);
+            assertThat(copied.recipient()).isEqualTo(recipient);
+            assertThat(copied.sender()).isEqualTo(sender);
+            assertThat(copied.content()).isNotSameAs(packet.content());
+
+            packet.content().setByte(0, 7);
+            assertThat(copied.content().getByte(0)).isEqualTo((byte) 1);
+
+            assertThat(retainedDuplicate.segmentSize()).isEqualTo(2);
+            assertThat(retainedDuplicate.recipient()).isEqualTo(recipient);
+            assertThat(retainedDuplicate.sender()).isEqualTo(sender);
+            assertThat(retainedDuplicate.content()).isNotSameAs(packet.content());
+            assertThat(retainedDuplicate.content().getByte(0)).isEqualTo((byte) 7);
+
+            packet.content().setByte(1, 6);
+            assertThat(retainedDuplicate.content().getByte(1)).isEqualTo((byte) 6);
+
+            assertThat(replaced.segmentSize()).isEqualTo(2);
+            assertThat(replaced.recipient()).isEqualTo(recipient);
+            assertThat(replaced.sender()).isEqualTo(sender);
+            assertThat(replaced.content().getByte(0)).isEqualTo((byte) 9);
+            assertThat(replaced.content()).isNotSameAs(packet.content());
+        } finally {
+            replaced.release();
+            retainedDuplicate.release();
+            copied.release();
+            packet.release();
+        }
     }
 
     private static void assertChannelConstructorMatchesAvailability(Supplier<? extends Channel> constructor) {
