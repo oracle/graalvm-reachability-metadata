@@ -14,7 +14,9 @@ import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.interceptor.AroundConstruct;
@@ -160,6 +162,31 @@ class Javax_interceptor_apiTest {
     }
 
     @Test
+    void aroundInvokeInterceptorsCanMutateParametersAndWrapResultsAcrossProceedChain() throws Exception {
+        ReceiptService target = new ReceiptService("receipt:");
+        Map<String, Object> contextData = new LinkedHashMap<>();
+        List<String> events = new ArrayList<>();
+        contextData.put("events", events);
+
+        SanitizingInterceptor sanitizingInterceptor = new SanitizingInterceptor();
+        ResultAppendingInterceptor resultAppendingInterceptor = new ResultAppendingInterceptor();
+        ChainedInvocationContext invocationContext = ChainedInvocationContext.forMethod(
+                target,
+                new Object[] {"  order-22  "},
+                contextData,
+                sanitizingInterceptor::aroundInvoke,
+                resultAppendingInterceptor::aroundInvoke,
+                currentContext -> target.issueReceipt((String) currentContext.getParameters()[0]));
+
+        assertThat(invocationContext.proceed()).isEqualTo("receipt:order-22:tracked");
+        assertThat(invocationContext.getParameters()).containsExactly("order-22");
+        assertThat(invocationContext.getContextData())
+                .containsEntry("observedArgument", "order-22")
+                .containsEntry("baseResult", "receipt:order-22");
+        assertThat(events).containsExactly("sanitize-before", "append-before", "append-after", "sanitize-after");
+    }
+
+    @Test
     void interceptorPriorityConstantsDefineOrderedBands() {
         assertThat(Interceptor.Priority.class).isNotNull();
         assertThat(Interceptor.Priority.PLATFORM_BEFORE).isZero();
@@ -233,6 +260,124 @@ class Javax_interceptor_apiTest {
         @ExcludeDefaultInterceptors
         String pay(String invoiceId) {
             return prefix + invoiceId;
+        }
+    }
+
+    private static final class SanitizingInterceptor {
+        @AroundInvoke
+        Object aroundInvoke(InvocationContext invocationContext) throws Exception {
+            @SuppressWarnings("unchecked")
+            List<String> events = (List<String>) invocationContext.getContextData().get("events");
+            events.add("sanitize-before");
+
+            String orderId = ((String) invocationContext.getParameters()[0]).trim();
+            invocationContext.setParameters(new Object[] {orderId});
+            Object result = invocationContext.proceed();
+
+            events.add("sanitize-after");
+            return result;
+        }
+    }
+
+    private static final class ResultAppendingInterceptor {
+        @AroundInvoke
+        Object aroundInvoke(InvocationContext invocationContext) throws Exception {
+            @SuppressWarnings("unchecked")
+            List<String> events = (List<String>) invocationContext.getContextData().get("events");
+            events.add("append-before");
+
+            invocationContext.getContextData().put("observedArgument", invocationContext.getParameters()[0]);
+            Object result = invocationContext.proceed();
+            invocationContext.getContextData().put("baseResult", result);
+
+            events.add("append-after");
+            return result + ":tracked";
+        }
+    }
+
+    private static final class ReceiptService {
+        private final String prefix;
+
+        private ReceiptService(String prefix) {
+            this.prefix = prefix;
+        }
+
+        String issueReceipt(String orderId) {
+            return prefix + orderId;
+        }
+    }
+
+    private interface InvocationChainStep {
+        Object proceed(InvocationContext invocationContext) throws Exception;
+    }
+
+    private static final class ChainedInvocationContext implements InvocationContext {
+        private final Object target;
+        private final Map<String, Object> contextData;
+        private final InvocationChainStep[] chain;
+        private Object[] parameters;
+        private int index;
+
+        private ChainedInvocationContext(
+                Object target,
+                Object[] parameters,
+                Map<String, Object> contextData,
+                InvocationChainStep[] chain) {
+            this.target = target;
+            this.parameters = parameters;
+            this.contextData = contextData;
+            this.chain = chain;
+        }
+
+        private static ChainedInvocationContext forMethod(
+                Object target,
+                Object[] parameters,
+                Map<String, Object> contextData,
+                InvocationChainStep... chain) {
+            return new ChainedInvocationContext(target, parameters, contextData, chain);
+        }
+
+        @Override
+        public Object getTarget() {
+            return target;
+        }
+
+        @Override
+        public Object getTimer() {
+            return null;
+        }
+
+        @Override
+        public Method getMethod() {
+            return null;
+        }
+
+        @Override
+        public Constructor<?> getConstructor() {
+            return null;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return parameters;
+        }
+
+        @Override
+        public void setParameters(Object[] parameters) {
+            this.parameters = parameters;
+        }
+
+        @Override
+        public Map<String, Object> getContextData() {
+            return contextData;
+        }
+
+        @Override
+        public Object proceed() throws Exception {
+            if (index >= chain.length) {
+                throw new IllegalStateException("No invocation step remaining");
+            }
+            return chain[index++].proceed(this);
         }
     }
 
