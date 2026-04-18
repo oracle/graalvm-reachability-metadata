@@ -11,8 +11,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
@@ -75,6 +77,23 @@ class ListenablefutureTest {
                 .contains("An empty artifact")
                 .contains("signal that it is providing ListenableFuture")
                 .contains("conflict with the copy of ListenableFuture in guava itself");
+    }
+
+    @Test
+    void placeholderArtifactContainsOnlyMetadataFiles() throws IOException {
+        List<String> fileEntries;
+        try (JarFile jarFile = new JarFile(placeholderArtifactJarPath().toFile())) {
+            fileEntries = jarFile.stream()
+                    .filter(entry -> !entry.isDirectory())
+                    .map(JarEntry::getName)
+                    .toList();
+        }
+
+        assertThat(fileEntries)
+                .containsExactly(
+                        "META-INF/MANIFEST.MF",
+                        "META-INF/maven/com.google.guava/listenablefuture/pom.xml",
+                        "META-INF/maven/com.google.guava/listenablefuture/pom.properties");
     }
 
     private java.net.URL classResource(final String resourcePath) {
