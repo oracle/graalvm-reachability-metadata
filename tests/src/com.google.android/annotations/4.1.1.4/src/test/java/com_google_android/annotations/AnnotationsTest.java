@@ -7,6 +7,10 @@
 package com_google_android.annotations;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +54,31 @@ class AnnotationsTest {
         assertThat(suppressLint.annotationType()).isSameAs(SuppressLint.class);
         assertThat(targetApi.value()).isEqualTo(34);
         assertThat(targetApi.annotationType()).isSameAs(TargetApi.class);
+    }
+
+    @Test
+    void suppressLintAndTargetApiExposeTheirAnnotationContracts() {
+        Target suppressLintTarget = SuppressLint.class.getAnnotation(Target.class);
+        Retention suppressLintRetention = SuppressLint.class.getAnnotation(Retention.class);
+        Target targetApiTarget = TargetApi.class.getAnnotation(Target.class);
+        Retention targetApiRetention = TargetApi.class.getAnnotation(Retention.class);
+
+        assertThat(suppressLintTarget).isNotNull();
+        assertThat(suppressLintTarget.value())
+                .containsExactly(
+                        ElementType.TYPE,
+                        ElementType.FIELD,
+                        ElementType.METHOD,
+                        ElementType.PARAMETER,
+                        ElementType.CONSTRUCTOR,
+                        ElementType.LOCAL_VARIABLE);
+        assertThat(suppressLintRetention).isNotNull();
+        assertThat(suppressLintRetention.value()).isEqualTo(RetentionPolicy.CLASS);
+        assertThat(targetApiTarget).isNotNull();
+        assertThat(targetApiTarget.value())
+                .containsExactly(ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR);
+        assertThat(targetApiRetention).isNotNull();
+        assertThat(targetApiRetention.value()).isEqualTo(RetentionPolicy.CLASS);
     }
 
     @Test
