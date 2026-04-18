@@ -96,6 +96,23 @@ class Netty_transport_classes_epollTest {
     }
 
     @Test
+    void epollFastOpenOptionsReuseTheSharedChannelOptionInstances() {
+        assertThat(EpollChannelOption.TCP_FASTOPEN).isSameAs(ChannelOption.TCP_FASTOPEN);
+        assertThat(EpollChannelOption.TCP_FASTOPEN.name())
+                .isEqualTo(ChannelOption.TCP_FASTOPEN.name())
+                .contains("TCP_FASTOPEN");
+
+        assertThat(EpollChannelOption.TCP_FASTOPEN_CONNECT).isSameAs(ChannelOption.TCP_FASTOPEN_CONNECT);
+        assertThat(EpollChannelOption.TCP_FASTOPEN_CONNECT.name())
+                .isEqualTo(ChannelOption.TCP_FASTOPEN_CONNECT.name())
+                .contains("TCP_FASTOPEN_CONNECT");
+
+        assertThat(ChannelOption.valueOf(EpollChannelOption.TCP_FASTOPEN.name())).isSameAs(EpollChannelOption.TCP_FASTOPEN);
+        assertThat(ChannelOption.valueOf(EpollChannelOption.TCP_FASTOPEN_CONNECT.name()))
+                .isSameAs(EpollChannelOption.TCP_FASTOPEN_CONNECT);
+    }
+
+    @Test
     void epollProtocolFamilyConstructorsRespectTransportAvailability() {
         assertChannelConstructorMatchesAvailability(() -> new EpollSocketChannel(InternetProtocolFamily.IPv4));
         assertChannelConstructorMatchesAvailability(() -> new EpollServerSocketChannel(InternetProtocolFamily.IPv4));
