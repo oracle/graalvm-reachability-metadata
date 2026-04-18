@@ -195,6 +195,39 @@ class Javax_interceptor_apiTest {
     }
 
     @Test
+    void aroundTimeoutInterceptorCanAccessTimerAndDecorateProceedResult() throws Exception {
+        TimedComponent target = new TimedComponent("scheduler");
+        Method method = TimedComponent.class.getDeclaredMethod("timeoutCallback", String.class);
+        Map<String, Object> contextData = new LinkedHashMap<>();
+        Object timer = "nightly-job";
+        AtomicInteger proceeds = new AtomicInteger();
+        AtomicReference<RecordingInvocationContext> invocationContextRef = new AtomicReference<>();
+        RecordingInvocationContext invocationContext = new RecordingInvocationContext(
+                target,
+                timer,
+                method,
+                null,
+                new Object[] { "cleanup" },
+                contextData,
+                () -> {
+                    proceeds.incrementAndGet();
+                    return target.timeoutCallback((String) invocationContextRef.get().getParameters()[0]);
+                });
+
+        invocationContextRef.set(invocationContext);
+
+        TimeoutDecoratingInterceptor interceptor = new TimeoutDecoratingInterceptor();
+        Object result = interceptor.aroundTimeout(invocationContext);
+
+        assertThat(result).isEqualTo("timeout[scheduler]:handled:cleanup");
+        assertThat(invocationContext.getContextData())
+                .containsEntry("timer", timer)
+                .containsEntry("methodName", "timeoutCallback")
+                .containsEntry("targetName", "scheduler");
+        assertThat(proceeds).hasValue(1);
+    }
+
+    @Test
     void interceptorPriorityConstantsAreOrdered() {
         assertThat(Interceptor.Priority.PLATFORM_BEFORE).isEqualTo(0);
         assertThat(Interceptor.Priority.LIBRARY_BEFORE).isEqualTo(1000);
@@ -277,6 +310,18 @@ class Javax_interceptor_apiTest {
         }
     }
 
+    @Interceptor
+    private static final class TimeoutDecoratingInterceptor {
+        @AroundTimeout
+        public Object aroundTimeout(InvocationContext invocationContext) throws Exception {
+            TimedComponent target = (TimedComponent) invocationContext.getTarget();
+            invocationContext.getContextData().put("timer", invocationContext.getTimer());
+            invocationContext.getContextData().put("methodName", invocationContext.getMethod().getName());
+            invocationContext.getContextData().put("targetName", target.name);
+            return "timeout[" + target.name + "]:" + invocationContext.proceed();
+        }
+    }
+
     @Logged("component")
     @Interceptors({ ExampleInterceptor.class, SecondaryInterceptor.class })
     @ExcludeDefaultInterceptors
@@ -304,6 +349,18 @@ class Javax_interceptor_apiTest {
         private ConstructedComponent(String name, Integer version) {
             this.name = name;
             this.version = version;
+        }
+    }
+
+    private static final class TimedComponent {
+        private final String name;
+
+        private TimedComponent(String name) {
+            this.name = name;
+        }
+
+        private String timeoutCallback(String taskName) {
+            return "handled:" + taskName;
         }
     }
 
