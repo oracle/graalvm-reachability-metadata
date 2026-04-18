@@ -53,6 +53,28 @@ public class HikariConfigTest {
     }
 
     @Test
+    void setDriverClassNameLoadsDriverFromThreadContextClassLoader() {
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader delegatingClassLoader = new ClassLoader(originalContextClassLoader) {
+        };
+
+        TestDriver.reset();
+
+        try {
+            Thread.currentThread().setContextClassLoader(delegatingClassLoader);
+
+            HikariConfig config = new HikariConfig();
+            config.setDriverClassName(TestDriver.class.getName());
+
+            assertThat(config.getDriverClassName()).isEqualTo(TestDriver.class.getName());
+            assertThat(TestDriver.instantiationCount()).isEqualTo(1);
+        }
+        finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
+    }
+
+    @Test
     void copyStateToCopiesConfigFields() {
         HikariConfig source = new HikariConfig();
         source.setPoolName("copied-pool");
