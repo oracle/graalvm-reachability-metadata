@@ -110,8 +110,8 @@ public class PropertyElfTest {
             return URL;
         }
 
-        public void setURL(String URL) {
-            this.URL = URL;
+        public void setURL(String url) {
+            this.URL = url;
         }
 
         public Object getInstantiatedDependency() {

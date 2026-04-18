@@ -9,7 +9,6 @@ package com_zaxxer.HikariCP;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverPropertyInfo;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -36,8 +35,7 @@ public class HikariConfigTest {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
             config.setDriverClassName(TestDriver.class.getName());
             config.setExceptionOverrideClassName(TestExceptionOverride.class.getName());
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
 
@@ -60,8 +58,7 @@ public class HikariConfigTest {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
             config.setDriverClassName(TestDriver.class.getName());
             config.setExceptionOverrideClassName(TestExceptionOverride.class.getName());
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
 

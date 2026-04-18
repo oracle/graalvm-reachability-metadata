@@ -42,8 +42,7 @@ public class DriverDataSourceTest {
             );
 
             assertThat(dataSource.getConnection()).isNull();
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
 
@@ -70,8 +69,7 @@ public class DriverDataSourceTest {
             );
 
             assertThat(dataSource.getConnection()).isNull();
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
 
