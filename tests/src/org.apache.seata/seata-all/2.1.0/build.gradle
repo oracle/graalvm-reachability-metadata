@@ -16,6 +16,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--initialize-at-run-time=org.apache.seata.core.store.db.AbstractDataSourceProvider,org.apache.seata.sqlparser.druid.DefaultDruidLoader')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

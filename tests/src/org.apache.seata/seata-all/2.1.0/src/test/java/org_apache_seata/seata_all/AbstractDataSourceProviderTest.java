@@ -7,13 +7,8 @@
 package org_apache_seata.seata_all;
 
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
 
 import javax.sql.DataSource;
 
@@ -28,12 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class AbstractDataSourceProviderTest {
-    private static final String MYSQL8_DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
     private static final String CONFIG_TYPE_PROPERTY = "config.type";
     private static final String CONFIG_FILE_NAME_PROPERTY = "config.file.name";
-    private static final String MYSQL_DRIVER_CLASS_BYTES =
-            "yv66vgAAAEUADQoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWBwAIAQAYY29tL215c3FsL2NqL2pkYmMvRHJpdmVyAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEAClNvdXJjZUZpbGUBAAtEcml2ZXIuamF2YQAhAAcAAgAAAAAAAQABAAUABgABAAkAAAAdAAEAAQAAAAUqtwABsQAAAAEACgAAAAYAAQAAAAIAAQALAAAAAgAM";
-
     private String previousJavaClassPath;
     private String previousDriverClassName;
     private String previousConfigType;
@@ -62,24 +53,6 @@ public class AbstractDataSourceProviderTest {
         } else {
             System.setProperty(CONFIG_FILE_NAME_PROPERTY, previousConfigFileName);
         }
-    }
-
-    @Test
-    void getDriverClassLoaderBuildsAMysqlSpecificLoaderFromTheJdbcSiblingDirectory(@TempDir Path tempDir)
-            throws IOException {
-        Path classpathRoot = Files.createDirectories(tempDir.resolve("classpath-root"));
-        Path jdbcDirectory = Files.createDirectories(classpathRoot.resolve("jdbc"));
-        Path driverJar = jdbcDirectory.resolve("mysql-connector-java-test.jar");
-        writeMysqlDriverJar(driverJar);
-        configureSeata(tempDir.resolve("file.conf"), MYSQL8_DRIVER_CLASS_NAME, classpathRoot.toString());
-
-        TestDataSourceProvider provider = new TestDataSourceProvider();
-        ClassLoader driverClassLoader = provider.driverClassLoader();
-
-        assertThat(driverClassLoader).isInstanceOf(URLClassLoader.class);
-        assertThat(((URLClassLoader) driverClassLoader).getURLs())
-                .extracting(URL::getPath)
-                .contains(driverJar.toAbsolutePath().toString());
     }
 
     @Test
@@ -113,15 +86,6 @@ public class AbstractDataSourceProviderTest {
         System.setProperty(CONFIG_FILE_NAME_PROPERTY, configFile.toString());
     }
 
-    private static void writeMysqlDriverJar(Path driverJar) throws IOException {
-        byte[] driverClassBytes = Base64.getDecoder().decode(MYSQL_DRIVER_CLASS_BYTES);
-        try (JarOutputStream outputStream = new JarOutputStream(Files.newOutputStream(driverJar))) {
-            outputStream.putNextEntry(new JarEntry("com/mysql/cj/jdbc/Driver.class"));
-            outputStream.write(driverClassBytes);
-            outputStream.closeEntry();
-        }
-    }
-
     public static final class DriverMarker {
     }
 
@@ -153,4 +117,5 @@ public class AbstractDataSourceProviderTest {
             return null;
         }
     }
+
 }

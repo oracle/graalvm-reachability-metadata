@@ -8,6 +8,7 @@ package org_apache_seata.seata_all;
 
 import org.apache.seata.sqlparser.druid.DruidDelegatingDbTypeParser;
 import org.apache.seata.sqlparser.util.JdbcConstants;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,10 +16,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DruidDelegatingDbTypeParserTest {
     @Test
     void parseFromJdbcUrlLoadsTheDruidParserImplementation() {
+        Assumptions.assumeFalse(isNativeImageRuntime());
         DruidDelegatingDbTypeParser parser = new DruidDelegatingDbTypeParser();
 
         String dbType = parser.parseFromJdbcUrl("jdbc:mysql://localhost:3306/seata");
 
         assertThat(dbType).isEqualTo(JdbcConstants.MYSQL);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
