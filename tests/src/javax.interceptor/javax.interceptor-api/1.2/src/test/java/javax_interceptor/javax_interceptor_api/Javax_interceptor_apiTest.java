@@ -160,6 +160,41 @@ class Javax_interceptor_apiTest {
     }
 
     @Test
+    void aroundConstructInterceptorCanRewriteConstructorParametersBeforeProceed() throws Exception {
+        Constructor<ConstructedComponent> constructor = ConstructedComponent.class.getDeclaredConstructor(String.class, Integer.class);
+        Map<String, Object> contextData = new LinkedHashMap<>();
+        AtomicInteger proceeds = new AtomicInteger();
+        AtomicReference<RecordingInvocationContext> invocationContextRef = new AtomicReference<>();
+        RecordingInvocationContext invocationContext = new RecordingInvocationContext(
+                null,
+                null,
+                null,
+                constructor,
+                new Object[] { "component", 2 },
+                contextData,
+                () -> {
+                    proceeds.incrementAndGet();
+                    Object[] parameters = invocationContextRef.get().getParameters();
+                    return new ConstructedComponent((String) parameters[0], (Integer) parameters[1]);
+                });
+
+        invocationContextRef.set(invocationContext);
+
+        ParameterAdjustingConstructInterceptor interceptor = new ParameterAdjustingConstructInterceptor();
+        ConstructedComponent created = (ConstructedComponent) interceptor.aroundConstruct(invocationContext);
+
+        assertThat(invocationContext.getParameters()).containsExactly("component-created", 3);
+        assertThat(invocationContext.getContextData())
+                .containsEntry("constructorName", constructor.getName())
+                .containsEntry("parameterCount", 2)
+                .containsEntry("createdName", "component-created")
+                .containsEntry("createdVersion", 3);
+        assertThat(created.name).isEqualTo("component-created");
+        assertThat(created.version).isEqualTo(3);
+        assertThat(proceeds).hasValue(1);
+    }
+
+    @Test
     void interceptorPriorityConstantsAreOrdered() {
         assertThat(Interceptor.Priority.PLATFORM_BEFORE).isEqualTo(0);
         assertThat(Interceptor.Priority.LIBRARY_BEFORE).isEqualTo(1000);
@@ -225,6 +260,23 @@ class Javax_interceptor_apiTest {
     private static final class SecondaryInterceptor {
     }
 
+    @Interceptor
+    private static final class ParameterAdjustingConstructInterceptor {
+        @AroundConstruct
+        public Object aroundConstruct(InvocationContext invocationContext) throws Exception {
+            Object[] parameters = invocationContext.getParameters();
+            String updatedName = parameters[0] + "-created";
+            Integer updatedVersion = ((Integer) parameters[1]) + 1;
+            invocationContext.setParameters(new Object[] { updatedName, updatedVersion });
+            invocationContext.getContextData().put("constructorName", invocationContext.getConstructor().getName());
+            invocationContext.getContextData().put("parameterCount", invocationContext.getParameters().length);
+            Object created = invocationContext.proceed();
+            invocationContext.getContextData().put("createdName", updatedName);
+            invocationContext.getContextData().put("createdVersion", updatedVersion);
+            return created;
+        }
+    }
+
     @Logged("component")
     @Interceptors({ ExampleInterceptor.class, SecondaryInterceptor.class })
     @ExcludeDefaultInterceptors
@@ -242,6 +294,16 @@ class Javax_interceptor_apiTest {
         @Interceptors(ExampleInterceptor.class)
         public String businessMethod(String prefix, Integer count) {
             return prefix + count + name;
+        }
+    }
+
+    private static final class ConstructedComponent {
+        private final String name;
+        private final Integer version;
+
+        private ConstructedComponent(String name, Integer version) {
+            this.name = name;
+            this.version = version;
         }
     }
 
