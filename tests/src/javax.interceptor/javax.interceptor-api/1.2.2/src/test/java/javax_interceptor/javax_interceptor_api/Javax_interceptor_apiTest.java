@@ -239,7 +239,8 @@ class Javax_interceptor_apiTest {
     }
 
     private static <A extends Annotation> A getAnnotation(AnnotatedElement element, Class<A> annotationType) {
-        return element.getAnnotation(annotationType);
+        A[] annotations = element.getAnnotationsByType(annotationType);
+        return annotations.length == 0 ? null : annotations[0];
     }
 
     @InterceptorBinding
