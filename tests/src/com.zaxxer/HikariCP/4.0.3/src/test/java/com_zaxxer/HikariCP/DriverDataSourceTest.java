@@ -42,8 +42,7 @@ public class DriverDataSourceTest {
 
             assertThat(dataSource).isNotNull();
             assertThat(TrackingDriver.instantiationCount()).isEqualTo(1);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
     }
@@ -71,8 +70,7 @@ public class DriverDataSourceTest {
 
             assertThat(dataSource).isNotNull();
             assertThat(TrackingDriver.instantiationCount()).isEqualTo(1);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
     }

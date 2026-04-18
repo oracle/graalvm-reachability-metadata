@@ -46,8 +46,7 @@ public class HikariConfigTest {
             assertThat(config.getExceptionOverrideClassName()).isEqualTo(TestExceptionOverride.class.getName());
             assertThat(TestDriver.instantiationCount()).isEqualTo(1);
             assertThat(TestExceptionOverride.instantiationCount()).isEqualTo(1);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
     }
@@ -68,8 +67,7 @@ public class HikariConfigTest {
 
             assertThat(config.getDriverClassName()).isEqualTo(TestDriver.class.getName());
             assertThat(TestDriver.instantiationCount()).isEqualTo(1);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
     }
