@@ -144,7 +144,7 @@ class Netty_transport_classes_epollTest {
         SegmentedDatagramPacket replacedPacket = null;
         try {
             packet = new SegmentedDatagramPacket(
-                    Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }),
+                    Unpooled.wrappedBuffer(new byte[] {1, 2, 3, 4}),
                     2,
                     recipient,
                     sender);
@@ -165,7 +165,7 @@ class Netty_transport_classes_epollTest {
             assertThat(packet.content().getByte(0)).isEqualTo((byte) 9);
             assertThat(copiedPacket.content().getByte(0)).isEqualTo((byte) 1);
 
-            replacedPacket = packet.replace(Unpooled.wrappedBuffer(new byte[] { 7, 8, 9 }));
+            replacedPacket = packet.replace(Unpooled.wrappedBuffer(new byte[] {7, 8, 9}));
             assertThat(replacedPacket).isNotSameAs(packet);
             assertThat(replacedPacket.segmentSize()).isEqualTo(packet.segmentSize());
             assertThat(replacedPacket.recipient()).isEqualTo(recipient);
