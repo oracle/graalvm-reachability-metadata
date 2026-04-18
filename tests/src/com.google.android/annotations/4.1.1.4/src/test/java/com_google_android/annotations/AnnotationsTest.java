@@ -72,6 +72,24 @@ class AnnotationsTest {
         assertThat(planner.describe(33)).isEqualTo("predictive-back/scoped-storage/supported");
     }
 
+    @Test
+    void classRetainedAnnotationsStayInvisibleAtRuntime() throws NoSuchFieldException, NoSuchMethodException {
+        assertThat(CompatibilityFormatter.class.getDeclaredAnnotations()).isEmpty();
+        assertThat(FeaturePlanner.class.getDeclaredAnnotations()).isEmpty();
+        assertThat(CompatibilityFormatter.class.getDeclaredField("componentName").getDeclaredAnnotations())
+                .isEmpty();
+        assertThat(CompatibilityFormatter.class.getDeclaredConstructor(String.class).getDeclaredAnnotations())
+                .isEmpty();
+        assertThat(CompatibilityFormatter.class.getDeclaredMethod("render", String.class).getDeclaredAnnotations())
+                .isEmpty();
+        assertThat(
+                CompatibilityFormatter.class
+                        .getDeclaredMethod("render", String.class)
+                        .getParameters()[0]
+                        .getDeclaredAnnotations())
+                .isEmpty();
+    }
+
     @SuppressLint({"NewApi", "RtlHardcoded"})
     @TargetApi(21)
     private static final class CompatibilityFormatter {
