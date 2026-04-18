@@ -96,6 +96,36 @@ class Netty_transport_classes_epollTest {
     }
 
     @Test
+    void vSockWildcardAddressesExposeSpecialEndpointConstants() {
+        VSockAddress wildcardAddress = new VSockAddress(
+                VSockAddress.VMADDR_CID_ANY,
+                VSockAddress.VMADDR_PORT_ANY);
+        VSockAddress sameWildcardAddress = new VSockAddress(
+                VSockAddress.VMADDR_CID_ANY,
+                VSockAddress.VMADDR_PORT_ANY);
+        VSockAddress hostWildcardPortAddress = new VSockAddress(
+                VSockAddress.VMADDR_CID_HOST,
+                VSockAddress.VMADDR_PORT_ANY);
+        VSockAddress wildcardCidConcretePortAddress = new VSockAddress(VSockAddress.VMADDR_CID_ANY, 9000);
+
+        assertThat(wildcardAddress).isEqualTo(sameWildcardAddress).hasSameHashCodeAs(sameWildcardAddress);
+        assertThat(wildcardAddress)
+                .isNotEqualTo(hostWildcardPortAddress)
+                .isNotEqualTo(wildcardCidConcretePortAddress)
+                .isNotEqualTo("not-an-address");
+        assertThat(wildcardAddress.getCid()).isEqualTo(VSockAddress.VMADDR_CID_ANY);
+        assertThat(wildcardAddress.getPort()).isEqualTo(VSockAddress.VMADDR_PORT_ANY);
+        assertThat(wildcardAddress.toString())
+                .contains("cid=" + VSockAddress.VMADDR_CID_ANY, "port=" + VSockAddress.VMADDR_PORT_ANY);
+        assertThat(List.of(
+                VSockAddress.VMADDR_CID_ANY,
+                VSockAddress.VMADDR_CID_HYPERVISOR,
+                VSockAddress.VMADDR_CID_LOCAL,
+                VSockAddress.VMADDR_CID_HOST))
+                .doesNotHaveDuplicates();
+    }
+
+    @Test
     void segmentedDatagramPacketSupportAndCopiesBehaveConsistently() {
         assertThat(SegmentedDatagramPacket.isSupported())
                 .isEqualTo(EpollDatagramChannel.isSegmentedDatagramPacketSupported());
