@@ -46,44 +46,44 @@ class Javax_interceptor_apiTest {
 
     @Test
     void interceptorAnnotationsCanBeReadFromAnnotatedTypesMembersAndConstructors() throws Exception {
-        Logged logged = InterceptedComponent.class.getAnnotation(Logged.class);
+        Logged logged = InterceptedComponent.class.getAnnotationsByType(Logged.class)[0];
         assertThat(logged).isNotNull();
         assertThat(logged.value()).isEqualTo("component");
         assertThat(logged.annotationType()).isSameAs(Logged.class);
-        assertThat(Logged.class.getAnnotation(InterceptorBinding.class)).isNotNull();
+        assertThat(Logged.class.getAnnotationsByType(InterceptorBinding.class)).isNotEmpty();
 
-        Interceptor interceptor = ExampleInterceptor.class.getAnnotation(Interceptor.class);
+        Interceptor interceptor = ExampleInterceptor.class.getAnnotationsByType(Interceptor.class)[0];
         assertThat(interceptor).isNotNull();
         assertThat(interceptor.annotationType()).isSameAs(Interceptor.class);
 
         assertThat(ExampleInterceptor.class.getDeclaredMethod("aroundInvoke", InvocationContext.class)
-                .getAnnotation(AroundInvoke.class))
-                .isNotNull();
+                .getAnnotationsByType(AroundInvoke.class))
+                .isNotEmpty();
         assertThat(ExampleInterceptor.class.getDeclaredMethod("aroundTimeout", InvocationContext.class)
-                .getAnnotation(AroundTimeout.class))
-                .isNotNull();
+                .getAnnotationsByType(AroundTimeout.class))
+                .isNotEmpty();
         assertThat(ExampleInterceptor.class.getDeclaredMethod("aroundConstruct", InvocationContext.class)
-                .getAnnotation(AroundConstruct.class))
-                .isNotNull();
+                .getAnnotationsByType(AroundConstruct.class))
+                .isNotEmpty();
 
-        Interceptors typeInterceptors = InterceptedComponent.class.getAnnotation(Interceptors.class);
+        Interceptors typeInterceptors = InterceptedComponent.class.getAnnotationsByType(Interceptors.class)[0];
         assertThat(typeInterceptors).isNotNull();
         assertThat(typeInterceptors.value()).containsExactly(ExampleInterceptor.class, SecondaryInterceptor.class);
         assertThat(typeInterceptors.annotationType()).isSameAs(Interceptors.class);
-        assertThat(InterceptedComponent.class.getAnnotation(ExcludeDefaultInterceptors.class)).isNotNull();
+        assertThat(InterceptedComponent.class.getAnnotationsByType(ExcludeDefaultInterceptors.class)).isNotEmpty();
 
         Constructor<InterceptedComponent> constructor = InterceptedComponent.class.getDeclaredConstructor(String.class);
-        Interceptors constructorInterceptors = constructor.getAnnotation(Interceptors.class);
+        Interceptors constructorInterceptors = constructor.getAnnotationsByType(Interceptors.class)[0];
         assertThat(constructorInterceptors).isNotNull();
         assertThat(constructorInterceptors.value()).containsExactly(SecondaryInterceptor.class);
-        assertThat(constructor.getAnnotation(ExcludeClassInterceptors.class)).isNotNull();
+        assertThat(constructor.getAnnotationsByType(ExcludeClassInterceptors.class)).isNotEmpty();
 
         Method method = InterceptedComponent.class.getDeclaredMethod("businessMethod", String.class, Integer.class);
-        Interceptors methodInterceptors = method.getAnnotation(Interceptors.class);
+        Interceptors methodInterceptors = method.getAnnotationsByType(Interceptors.class)[0];
         assertThat(methodInterceptors).isNotNull();
         assertThat(methodInterceptors.value()).containsExactly(ExampleInterceptor.class);
-        assertThat(method.getAnnotation(ExcludeClassInterceptors.class)).isNotNull();
-        assertThat(method.getAnnotation(ExcludeDefaultInterceptors.class)).isNotNull();
+        assertThat(method.getAnnotationsByType(ExcludeClassInterceptors.class)).isNotEmpty();
+        assertThat(method.getAnnotationsByType(ExcludeDefaultInterceptors.class)).isNotEmpty();
     }
 
     @Test
@@ -99,7 +99,7 @@ class Javax_interceptor_apiTest {
                 timer,
                 method,
                 null,
-                new Object[] { "initial", 1 },
+                new Object[]{"initial", 1},
                 contextData,
                 () -> {
                     proceeds.incrementAndGet();
@@ -115,7 +115,7 @@ class Javax_interceptor_apiTest {
         assertThat(invocationContext.getConstructor()).isNull();
         assertThat(invocationContext.getParameters()).containsExactly("initial", 1);
 
-        invocationContext.setParameters(new Object[] { "updated", 2 });
+        invocationContext.setParameters(new Object[]{"updated", 2});
         invocationContext.getContextData().put("step", "method");
 
         assertThat(invocationContext.getParameters()).containsExactly("updated", 2);
@@ -135,7 +135,7 @@ class Javax_interceptor_apiTest {
                 null,
                 null,
                 constructor,
-                new Object[] { "constructed" },
+                new Object[]{"constructed"},
                 contextData,
                 () -> {
                     proceeds.incrementAndGet();
@@ -170,7 +170,7 @@ class Javax_interceptor_apiTest {
                 null,
                 null,
                 constructor,
-                new Object[] { "component", 2 },
+                new Object[]{"component", 2},
                 contextData,
                 () -> {
                     proceeds.incrementAndGet();
@@ -207,7 +207,7 @@ class Javax_interceptor_apiTest {
                 timer,
                 method,
                 null,
-                new Object[] { "cleanup" },
+                new Object[]{"cleanup"},
                 contextData,
                 () -> {
                     proceeds.incrementAndGet();
@@ -247,25 +247,24 @@ class Javax_interceptor_apiTest {
             Class<? extends Annotation> annotationType,
             boolean documented,
             ElementType... expectedTargets) {
-        Retention retention = annotationType.getAnnotation(Retention.class);
-        Target target = annotationType.getAnnotation(Target.class);
+        Retention retention = annotationType.getAnnotationsByType(Retention.class)[0];
+        Target target = annotationType.getAnnotationsByType(Target.class)[0];
 
         assertThat(retention).isNotNull();
         assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(target).isNotNull();
         assertThat(target.value()).containsExactly(expectedTargets);
         if (documented) {
-            assertThat(annotationType.getAnnotation(Documented.class)).isNotNull();
-        }
-        else {
-            assertThat(annotationType.getAnnotation(Documented.class)).isNull();
+            assertThat(annotationType.getAnnotationsByType(Documented.class)).isNotEmpty();
+        } else {
+            assertThat(annotationType.getAnnotationsByType(Documented.class)).isEmpty();
         }
     }
 
 
     @InterceptorBinding
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE, ElementType.METHOD })
+    @Target({ElementType.TYPE, ElementType.METHOD})
     private @interface Logged {
         String value();
     }
@@ -300,7 +299,7 @@ class Javax_interceptor_apiTest {
             Object[] parameters = invocationContext.getParameters();
             String updatedName = parameters[0] + "-created";
             Integer updatedVersion = ((Integer) parameters[1]) + 1;
-            invocationContext.setParameters(new Object[] { updatedName, updatedVersion });
+            invocationContext.setParameters(new Object[]{updatedName, updatedVersion});
             invocationContext.getContextData().put("constructorName", invocationContext.getConstructor().getName());
             invocationContext.getContextData().put("parameterCount", invocationContext.getParameters().length);
             Object created = invocationContext.proceed();
@@ -323,7 +322,7 @@ class Javax_interceptor_apiTest {
     }
 
     @Logged("component")
-    @Interceptors({ ExampleInterceptor.class, SecondaryInterceptor.class })
+    @Interceptors({ExampleInterceptor.class, SecondaryInterceptor.class})
     @ExcludeDefaultInterceptors
     private static final class InterceptedComponent {
         private final String name;
