@@ -17,7 +17,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
@@ -72,6 +74,25 @@ class ListenablefutureTest {
     }
 
     @Test
+    void manifestKeepsTheArtifactRuntimeInert() throws IOException {
+        Assumptions.assumeFalse(isNativeImageRuntime());
+
+        Attributes mainAttributes = loadManifest().getMainAttributes();
+
+        assertThat(mainAttributes.getValue("Manifest-Version")).isEqualTo("1.0");
+        assertThat(mainAttributes.getValue("Created-By")).isNotBlank();
+        assertThat(mainAttributes.getValue("Built-By")).isNotBlank();
+        assertThat(mainAttributes.getValue("Build-Jdk")).isNotBlank();
+        assertThat(mainAttributes.getValue("Main-Class")).isNull();
+        assertThat(mainAttributes.getValue("Class-Path")).isNull();
+        assertThat(mainAttributes.getValue("Automatic-Module-Name")).isNull();
+        assertThat(mainAttributes.getValue("Premain-Class")).isNull();
+        assertThat(mainAttributes.getValue("Agent-Class")).isNull();
+        assertThat(mainAttributes.getValue("Launcher-Agent-Class")).isNull();
+        assertThat(mainAttributes.getValue("Multi-Release")).isNull();
+    }
+
+    @Test
     void doesNotProvideTheStandaloneListenableFutureType() {
         ClassLoader classLoader = getClass().getClassLoader();
 
@@ -113,6 +134,14 @@ class ListenablefutureTest {
 
         try (JarFile jarFile = connection.getJarFile()) {
             return jarFile.stream().map(entry -> entry.getName()).toList();
+        }
+    }
+
+    private static Manifest loadManifest() throws IOException {
+        JarURLConnection connection = (JarURLConnection) findUniqueResource(POM_XML_RESOURCE).openConnection();
+
+        try (JarFile jarFile = connection.getJarFile()) {
+            return jarFile.getManifest();
         }
     }
 
