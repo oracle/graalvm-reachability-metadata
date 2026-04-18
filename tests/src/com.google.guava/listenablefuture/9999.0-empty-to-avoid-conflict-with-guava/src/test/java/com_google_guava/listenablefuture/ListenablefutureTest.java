@@ -11,11 +11,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.jar.JarFile;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +59,19 @@ class ListenablefutureTest {
     }
 
     @Test
+    void jarContainsOnlyMetadataResources() throws IOException {
+        Assumptions.assumeFalse(isNativeImageRuntime());
+
+        List<String> jarEntryNames = loadJarEntryNames(POM_XML_RESOURCE);
+
+        assertThat(jarEntryNames)
+                .contains("META-INF/MANIFEST.MF", POM_XML_RESOURCE, POM_PROPERTIES_RESOURCE)
+                .allMatch(entryName -> entryName.equals("META-INF") || entryName.startsWith("META-INF/"))
+                .noneMatch(entryName -> entryName.endsWith(".class"))
+                .noneMatch(entryName -> entryName.startsWith("META-INF/services/"));
+    }
+
+    @Test
     void doesNotProvideTheStandaloneListenableFutureType() {
         ClassLoader classLoader = getClass().getClassLoader();
 
@@ -81,12 +96,24 @@ class ListenablefutureTest {
     }
 
     private static InputStream openUniqueResource(String resourcePath) throws IOException {
+        return findUniqueResource(resourcePath).openStream();
+    }
+
+    private static URL findUniqueResource(String resourcePath) throws IOException {
         ClassLoader classLoader = ListenablefutureTest.class.getClassLoader();
         List<URL> resourceUrls = Collections.list(classLoader.getResources(resourcePath));
 
         assertThat(resourceUrls).hasSize(1);
 
-        return resourceUrls.get(0).openStream();
+        return resourceUrls.get(0);
+    }
+
+    private static List<String> loadJarEntryNames(String resourcePath) throws IOException {
+        JarURLConnection connection = (JarURLConnection) findUniqueResource(resourcePath).openConnection();
+
+        try (JarFile jarFile = connection.getJarFile()) {
+            return jarFile.stream().map(entry -> entry.getName()).toList();
+        }
     }
 
     private static String normalizeWhitespace(String text) {
