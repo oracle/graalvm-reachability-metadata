@@ -49,10 +49,10 @@ class Auto_value_annotationsTest {
         assertThat(excludeMethod.getReturnType()).isEqualTo(Class[].class);
         assertThat((Class<?>[]) excludeMethod.getDefaultValue()).isEmpty();
 
-        assertThat(SampleValue.class.getAnnotation(AutoValue.class)).isNull();
-        assertThat(SampleValue.class.getAnnotation(AutoValue.CopyAnnotations.class)).isNull();
-        assertThat(SampleValue.Builder.class.getAnnotation(AutoValue.Builder.class)).isNull();
-        assertThat(method(SampleValue.class, "name").getAnnotation(AutoValue.CopyAnnotations.class)).isNull();
+        assertThat(SampleValue.class.getAnnotationsByType(AutoValue.class)).isEmpty();
+        assertThat(SampleValue.class.getAnnotationsByType(AutoValue.CopyAnnotations.class)).isEmpty();
+        assertThat(SampleValue.Builder.class.getAnnotationsByType(AutoValue.Builder.class)).isEmpty();
+        assertThat(method(SampleValue.class, "name").getAnnotationsByType(AutoValue.CopyAnnotations.class)).isEmpty();
     }
 
     @Test
@@ -74,8 +74,8 @@ class Auto_value_annotationsTest {
         assertThat(autoOneOfValue.getReturnType()).isEqualTo(Class.class);
         assertThat(autoOneOfValue.getDefaultValue()).isNull();
 
-        assertThat(SampleFactoryBuilder.class.getAnnotation(AutoBuilder.class)).isNull();
-        assertThat(SampleChoice.class.getAnnotation(AutoOneOf.class)).isNull();
+        assertThat(SampleFactoryBuilder.class.getAnnotationsByType(AutoBuilder.class)).isEmpty();
+        assertThat(SampleChoice.class.getAnnotationsByType(AutoOneOf.class)).isEmpty();
     }
 
     @Test
@@ -86,23 +86,23 @@ class Auto_value_annotationsTest {
         assertTargets(SerializableAutoValue.class, ElementType.TYPE);
 
         assertThat(method(AutoAnnotationSamples.class, "generatedMarker", String.class)
-                .getAnnotation(AutoAnnotation.class))
-                .isNull();
-        assertThat(SerializableSample.class.getAnnotation(SerializableAutoValue.class)).isNull();
+                .getAnnotationsByType(AutoAnnotation.class))
+                .isEmpty();
+        assertThat(SerializableSample.class.getAnnotationsByType(SerializableAutoValue.class)).isEmpty();
     }
 
     @Test
     void extensionAnnotationsPublishMethodLevelContracts() throws NoSuchMethodException {
-        assertThat(Memoized.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(ToPrettyString.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(Memoized.class.getAnnotationsByType(Documented.class)).hasSize(1);
+        assertThat(ToPrettyString.class.getAnnotationsByType(Documented.class)).hasSize(1);
 
         assertRetention(Memoized.class, RetentionPolicy.CLASS);
-        assertThat(ToPrettyString.class.getAnnotation(Retention.class)).isNull();
+        assertThat(ToPrettyString.class.getAnnotationsByType(Retention.class)).isEmpty();
         assertTargets(Memoized.class, ElementType.METHOD);
         assertTargets(ToPrettyString.class, ElementType.METHOD);
 
-        assertThat(method(ExtensionSamples.class, "memoizedValue").getAnnotation(Memoized.class)).isNull();
-        assertThat(method(ExtensionSamples.class, "prettyString").getAnnotation(ToPrettyString.class)).isNull();
+        assertThat(method(ExtensionSamples.class, "memoizedValue").getAnnotationsByType(Memoized.class)).isEmpty();
+        assertThat(method(ExtensionSamples.class, "prettyString").getAnnotationsByType(ToPrettyString.class)).isEmpty();
     }
 
     @Test
@@ -173,15 +173,15 @@ class Auto_value_annotationsTest {
     }
 
     private static void assertRetention(Class<? extends Annotation> annotationType, RetentionPolicy expectedPolicy) {
-        Retention retention = annotationType.getAnnotation(Retention.class);
-        assertThat(retention).isNotNull();
-        assertThat(retention.value()).isEqualTo(expectedPolicy);
+        Retention[] retentions = annotationType.getAnnotationsByType(Retention.class);
+        assertThat(retentions).hasSize(1);
+        assertThat(retentions[0].value()).isEqualTo(expectedPolicy);
     }
 
     private static void assertTargets(Class<? extends Annotation> annotationType, ElementType... expectedTargets) {
-        Target target = annotationType.getAnnotation(Target.class);
-        assertThat(target).isNotNull();
-        assertThat(target.value()).containsExactly(expectedTargets);
+        Target[] targets = annotationType.getAnnotationsByType(Target.class);
+        assertThat(targets).hasSize(1);
+        assertThat(targets[0].value()).containsExactly(expectedTargets);
     }
 
     @AutoValue
