@@ -6,11 +6,4 @@
  */
 package org_cache2k.cache2k_core;
 
-import org.junit.jupiter.api.Test;
-
-class Cache2k_coreTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
-    }
-}
+// Dedicated coverage for this library lives in CacheManagerImplTest.
