@@ -58,10 +58,12 @@ class AnnotationsTest {
 
     @Test
     void suppressLintAndTargetApiExposeTheirAnnotationContracts() {
-        Target suppressLintTarget = SuppressLint.class.getAnnotation(Target.class);
-        Retention suppressLintRetention = SuppressLint.class.getAnnotation(Retention.class);
-        Target targetApiTarget = TargetApi.class.getAnnotation(Target.class);
-        Retention targetApiRetention = TargetApi.class.getAnnotation(Retention.class);
+        Class<SuppressLint> suppressLintAnnotationAccess = SuppressLint.class;
+        Class<TargetApi> targetApiAnnotationAccess = TargetApi.class;
+        Target suppressLintTarget = suppressLintAnnotationAccess.getAnnotation(Target.class);
+        Retention suppressLintRetention = suppressLintAnnotationAccess.getAnnotation(Retention.class);
+        Target targetApiTarget = targetApiAnnotationAccess.getAnnotation(Target.class);
+        Retention targetApiRetention = targetApiAnnotationAccess.getAnnotation(Retention.class);
 
         assertThat(suppressLintTarget).isNotNull();
         assertThat(suppressLintTarget.value())
@@ -103,8 +105,10 @@ class AnnotationsTest {
 
     @Test
     void classRetainedAnnotationsStayInvisibleAtRuntime() throws NoSuchFieldException, NoSuchMethodException {
-        assertThat(CompatibilityFormatter.class.getDeclaredAnnotations()).isEmpty();
-        assertThat(FeaturePlanner.class.getDeclaredAnnotations()).isEmpty();
+        Class<CompatibilityFormatter> compatibilityFormatterAnnotationAccess = CompatibilityFormatter.class;
+        Class<FeaturePlanner> featurePlannerAnnotationAccess = FeaturePlanner.class;
+        assertThat(compatibilityFormatterAnnotationAccess.getDeclaredAnnotations()).isEmpty();
+        assertThat(featurePlannerAnnotationAccess.getDeclaredAnnotations()).isEmpty();
         assertThat(CompatibilityFormatter.class.getDeclaredField("componentName").getDeclaredAnnotations())
                 .isEmpty();
         assertThat(CompatibilityFormatter.class.getDeclaredConstructor(String.class).getDeclaredAnnotations())
