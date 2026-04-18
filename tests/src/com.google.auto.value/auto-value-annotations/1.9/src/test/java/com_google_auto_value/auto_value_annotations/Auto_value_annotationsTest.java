@@ -130,6 +130,25 @@ class Auto_value_annotationsTest {
         assertThat(excludeWildcard.getLowerBounds()).isEmpty();
     }
 
+    @Test
+    void nestedAnnotationTypesExposeStableBinaryAndCanonicalNames() {
+        assertThat(AutoValue.class.getCanonicalName()).isEqualTo("com.google.auto.value.AutoValue");
+        assertThat(AutoValue.class.getSimpleName()).isEqualTo("AutoValue");
+        assertThat(AutoValue.class.getEnclosingClass()).isNull();
+
+        assertThat(AutoValue.Builder.class.getName()).isEqualTo("com.google.auto.value.AutoValue$Builder");
+        assertThat(AutoValue.Builder.class.getCanonicalName()).isEqualTo("com.google.auto.value.AutoValue.Builder");
+        assertThat(AutoValue.Builder.class.getSimpleName()).isEqualTo("Builder");
+        assertThat(AutoValue.Builder.class.getEnclosingClass()).isEqualTo(AutoValue.class);
+
+        assertThat(AutoValue.CopyAnnotations.class.getName())
+                .isEqualTo("com.google.auto.value.AutoValue$CopyAnnotations");
+        assertThat(AutoValue.CopyAnnotations.class.getCanonicalName())
+                .isEqualTo("com.google.auto.value.AutoValue.CopyAnnotations");
+        assertThat(AutoValue.CopyAnnotations.class.getSimpleName()).isEqualTo("CopyAnnotations");
+        assertThat(AutoValue.CopyAnnotations.class.getEnclosingClass()).isEqualTo(AutoValue.class);
+    }
+
     private static Method method(Class<?> type, String name, Class<?>... parameterTypes) throws NoSuchMethodException {
         return type.getDeclaredMethod(name, parameterTypes);
     }
