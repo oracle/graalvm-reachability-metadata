@@ -19,7 +19,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -101,8 +105,52 @@ class Auto_value_annotationsTest {
         assertThat(method(ExtensionSamples.class, "prettyString").getAnnotation(ToPrettyString.class)).isNull();
     }
 
+    @Test
+    void annotationMembersExposeTypeSafeGenericSignatures() throws NoSuchMethodException {
+        WildcardType autoBuilderWildcard = wildcardArgument(
+                classReturnType(method(AutoBuilder.class, "ofClass").getGenericReturnType()));
+        assertThat(autoBuilderWildcard.getUpperBounds()).containsExactly(Object.class);
+        assertThat(autoBuilderWildcard.getLowerBounds()).isEmpty();
+
+        WildcardType autoOneOfWildcard = wildcardArgument(
+                classReturnType(method(AutoOneOf.class, "value").getGenericReturnType()));
+        Type autoOneOfUpperBound = singleUpperBound(autoOneOfWildcard);
+        assertThat(autoOneOfUpperBound).isInstanceOf(ParameterizedType.class);
+        ParameterizedType enumType = (ParameterizedType) autoOneOfUpperBound;
+        assertThat(enumType.getRawType()).isEqualTo(Enum.class);
+        WildcardType enumArgumentWildcard = wildcardArgument(enumType);
+        assertThat(enumArgumentWildcard.getUpperBounds()).containsExactly(Object.class);
+        assertThat(enumArgumentWildcard.getLowerBounds()).isEmpty();
+
+        Type excludeReturnType = method(AutoValue.CopyAnnotations.class, "exclude").getGenericReturnType();
+        assertThat(excludeReturnType).isInstanceOf(GenericArrayType.class);
+        GenericArrayType excludeArrayType = (GenericArrayType) excludeReturnType;
+        WildcardType excludeWildcard = wildcardArgument(classReturnType(excludeArrayType.getGenericComponentType()));
+        assertThat(excludeWildcard.getUpperBounds()).containsExactly(Annotation.class);
+        assertThat(excludeWildcard.getLowerBounds()).isEmpty();
+    }
+
     private static Method method(Class<?> type, String name, Class<?>... parameterTypes) throws NoSuchMethodException {
         return type.getDeclaredMethod(name, parameterTypes);
+    }
+
+    private static ParameterizedType classReturnType(Type type) {
+        assertThat(type).isInstanceOf(ParameterizedType.class);
+        ParameterizedType parameterizedType = (ParameterizedType) type;
+        assertThat(parameterizedType.getRawType()).isEqualTo(Class.class);
+        assertThat(parameterizedType.getActualTypeArguments()).hasSize(1);
+        return parameterizedType;
+    }
+
+    private static WildcardType wildcardArgument(ParameterizedType type) {
+        Type actualTypeArgument = type.getActualTypeArguments()[0];
+        assertThat(actualTypeArgument).isInstanceOf(WildcardType.class);
+        return (WildcardType) actualTypeArgument;
+    }
+
+    private static Type singleUpperBound(WildcardType type) {
+        assertThat(type.getUpperBounds()).hasSize(1);
+        return type.getUpperBounds()[0];
     }
 
     private static void assertRetention(Class<? extends Annotation> annotationType, RetentionPolicy expectedPolicy) {
