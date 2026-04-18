@@ -187,6 +187,33 @@ class Javax_interceptor_apiTest {
     }
 
     @Test
+    void aroundTimeoutInterceptorCanReadTimerMetadataAndWrapTimeoutResult() throws Exception {
+        TimeoutService target = new TimeoutService("timed:");
+        Method method = TimeoutService.class.getDeclaredMethod("expireReservation", String.class);
+        Map<String, Object> contextData = new LinkedHashMap<>();
+        List<String> events = new ArrayList<>();
+        contextData.put("events", events);
+
+        TimeoutTrackingInterceptor timeoutTrackingInterceptor = new TimeoutTrackingInterceptor();
+        ChainedInvocationContext invocationContext = ChainedInvocationContext.forTimedMethod(
+                target,
+                method,
+                new Object[] {"hold-7"},
+                "timer-9000",
+                contextData,
+                timeoutTrackingInterceptor::aroundTimeout,
+                currentContext -> target.expireReservation((String) currentContext.getParameters()[0]));
+
+        assertThat(invocationContext.proceed()).isEqualTo("timed:hold-7:after-timeout");
+        assertThat(invocationContext.getMethod()).isSameAs(method);
+        assertThat(invocationContext.getTimer()).isEqualTo("timer-9000");
+        assertThat(invocationContext.getContextData())
+                .containsEntry("timeoutMethod", "expireReservation")
+                .containsEntry("timeoutTimer", "timer-9000");
+        assertThat(events).containsExactly("timeout-before", "timeout-after");
+    }
+
+    @Test
     void interceptorPriorityConstantsDefineOrderedBands() {
         assertThat(Interceptor.Priority.class).isNotNull();
         assertThat(Interceptor.Priority.PLATFORM_BEFORE).isZero();
@@ -295,6 +322,22 @@ class Javax_interceptor_apiTest {
         }
     }
 
+    private static final class TimeoutTrackingInterceptor {
+        @AroundTimeout
+        Object aroundTimeout(InvocationContext invocationContext) throws Exception {
+            @SuppressWarnings("unchecked")
+            List<String> events = (List<String>) invocationContext.getContextData().get("events");
+            events.add("timeout-before");
+
+            invocationContext.getContextData().put("timeoutMethod", invocationContext.getMethod().getName());
+            invocationContext.getContextData().put("timeoutTimer", invocationContext.getTimer());
+            Object result = invocationContext.proceed();
+
+            events.add("timeout-after");
+            return result + ":after-timeout";
+        }
+    }
+
     private static final class ReceiptService {
         private final String prefix;
 
@@ -307,12 +350,27 @@ class Javax_interceptor_apiTest {
         }
     }
 
+    private static final class TimeoutService {
+        private final String prefix;
+
+        private TimeoutService(String prefix) {
+            this.prefix = prefix;
+        }
+
+        String expireReservation(String reservationId) {
+            return prefix + reservationId;
+        }
+    }
+
     private interface InvocationChainStep {
         Object proceed(InvocationContext invocationContext) throws Exception;
     }
 
     private static final class ChainedInvocationContext implements InvocationContext {
         private final Object target;
+        private final Object timer;
+        private final Method method;
+        private final Constructor<?> constructor;
         private final Map<String, Object> contextData;
         private final InvocationChainStep[] chain;
         private Object[] parameters;
@@ -320,10 +378,16 @@ class Javax_interceptor_apiTest {
 
         private ChainedInvocationContext(
                 Object target,
+                Object timer,
+                Method method,
+                Constructor<?> constructor,
                 Object[] parameters,
                 Map<String, Object> contextData,
                 InvocationChainStep[] chain) {
             this.target = target;
+            this.timer = timer;
+            this.method = method;
+            this.constructor = constructor;
             this.parameters = parameters;
             this.contextData = contextData;
             this.chain = chain;
@@ -334,7 +398,17 @@ class Javax_interceptor_apiTest {
                 Object[] parameters,
                 Map<String, Object> contextData,
                 InvocationChainStep... chain) {
-            return new ChainedInvocationContext(target, parameters, contextData, chain);
+            return new ChainedInvocationContext(target, null, null, null, parameters, contextData, chain);
+        }
+
+        private static ChainedInvocationContext forTimedMethod(
+                Object target,
+                Method method,
+                Object[] parameters,
+                Object timer,
+                Map<String, Object> contextData,
+                InvocationChainStep... chain) {
+            return new ChainedInvocationContext(target, timer, method, null, parameters, contextData, chain);
         }
 
         @Override
@@ -344,17 +418,17 @@ class Javax_interceptor_apiTest {
 
         @Override
         public Object getTimer() {
-            return null;
+            return timer;
         }
 
         @Override
         public Method getMethod() {
-            return null;
+            return method;
         }
 
         @Override
         public Constructor<?> getConstructor() {
-            return null;
+            return constructor;
         }
 
         @Override
