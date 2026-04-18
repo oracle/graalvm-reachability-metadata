@@ -48,6 +48,30 @@ public class HikariConfigTest {
     }
 
     @Test
+    public void settersLoadConfiguredClassesFromContextClassLoader() {
+        HikariConfig config = new HikariConfig();
+        DelegatingClassLoader contextClassLoader = new DelegatingClassLoader(
+                HikariConfigTest.class.getClassLoader(),
+                Set.of(TestDriver.class.getName(), TestExceptionOverride.class.getName())
+        );
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+            config.setDriverClassName(TestDriver.class.getName());
+            config.setExceptionOverrideClassName(TestExceptionOverride.class.getName());
+        }
+        finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+
+        assertThat(config.getDriverClassName()).isEqualTo(TestDriver.class.getName());
+        assertThat(config.getExceptionOverrideClassName()).isEqualTo(TestExceptionOverride.class.getName());
+        assertThat(contextClassLoader.getDelegatedLoads())
+                .contains(TestDriver.class.getName(), TestExceptionOverride.class.getName());
+    }
+
+    @Test
     public void copyStateToCopiesConfigurationFields() {
         HikariConfig source = new HikariConfig();
         source.setCatalog("test-catalog");
@@ -147,6 +171,29 @@ public class HikariConfigTest {
 
         private List<String> getRejectedLoads() {
             return rejectedLoads;
+        }
+    }
+
+    private static final class DelegatingClassLoader extends ClassLoader {
+        private final Set<String> delegatedNames;
+        private final List<String> delegatedLoads;
+
+        private DelegatingClassLoader(ClassLoader parent, Set<String> delegatedNames) {
+            super(parent);
+            this.delegatedNames = delegatedNames;
+            this.delegatedLoads = new ArrayList<>();
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (delegatedNames.contains(name)) {
+                delegatedLoads.add(name);
+            }
+            return super.loadClass(name);
+        }
+
+        private List<String> getDelegatedLoads() {
+            return delegatedLoads;
         }
     }
 }
