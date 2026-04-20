@@ -23,9 +23,12 @@ import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.VocabularyImpl;
 import org.antlr.v4.runtime.atn.ATN;
 import org.antlr.v4.runtime.misc.IntervalSet;
+import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.Trees;
 import org.antlr.v4.runtime.tree.xpath.XPath;
@@ -185,6 +188,29 @@ class Antlr4_runtimeTest {
         tokenStream.release(marker);
     }
 
+    @Test
+    void parseTreeVisitorsCanShortCircuitAndStoreRuleAnnotations() {
+        CommonTokenStream tokenStream = new CommonTokenStream(
+                new AssignmentLexer(CharStreams.fromString("result = alpha + 42 + 99", "visitor-fixture")));
+        AssignmentParser parser = new AssignmentParser(tokenStream);
+        AssignmentParser.DocumentContext document = parser.document();
+        AssignmentParser.AssignmentContext assignment = document.getRuleContext(AssignmentParser.AssignmentContext.class, 0);
+        AssignmentParser.ValueContext firstValue = assignment.getRuleContext(AssignmentParser.ValueContext.class, 0);
+        AssignmentParser.ValueContext secondValue = assignment.getRuleContext(AssignmentParser.ValueContext.class, 1);
+        AssignmentParser.ValueContext thirdValue = assignment.getRuleContext(AssignmentParser.ValueContext.class, 2);
+        FirstNumericValueVisitor visitor = new FirstNumericValueVisitor();
+
+        String firstNumericLiteral = visitor.visit(document);
+
+        assertThat(firstNumericLiteral).isEqualTo("42");
+        assertThat(visitor.getVisitedTerminals()).containsExactly("result", "=", "alpha", "+", "42");
+        assertThat(visitor.getVisitedValueTexts().get(firstValue)).isEqualTo("alpha");
+        assertThat(visitor.getVisitedValueTexts().get(secondValue)).isEqualTo("42");
+        assertThat(visitor.getVisitedValueTexts().get(thirdValue)).isNull();
+        assertThat(visitor.getVisitedValueTexts().removeFrom(secondValue)).isEqualTo("42");
+        assertThat(visitor.getVisitedValueTexts().get(secondValue)).isNull();
+    }
+
     private static final class RecordingParseTreeListener implements ParseTreeListener {
 
         private final Parser parser;
@@ -212,6 +238,51 @@ class Antlr4_runtimeTest {
 
         @Override
         public void exitEveryRule(ParserRuleContext context) {
+        }
+    }
+
+    private static final class FirstNumericValueVisitor extends AbstractParseTreeVisitor<String> {
+
+        private final ParseTreeProperty<String> visitedValueTexts = new ParseTreeProperty<>();
+        private final List<String> visitedTerminals = new ArrayList<>();
+
+        private ParseTreeProperty<String> getVisitedValueTexts() {
+            return visitedValueTexts;
+        }
+
+        private List<String> getVisitedTerminals() {
+            return visitedTerminals;
+        }
+
+        @Override
+        public String visitChildren(RuleNode node) {
+            String result = super.visitChildren(node);
+            if (node instanceof AssignmentParser.ValueContext valueContext) {
+                visitedValueTexts.put(valueContext, valueContext.getText());
+                if (result == null && valueContext.getStart().getType() == AssignmentLexer.NUMBER) {
+                    return valueContext.getText();
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public String visitTerminal(TerminalNode node) {
+            visitedTerminals.add(node.getText());
+            if (node.getSymbol().getType() == AssignmentLexer.NUMBER) {
+                return node.getText();
+            }
+            return null;
+        }
+
+        @Override
+        protected String aggregateResult(String aggregate, String nextResult) {
+            return aggregate != null ? aggregate : nextResult;
+        }
+
+        @Override
+        protected boolean shouldVisitNextChild(RuleNode node, String currentResult) {
+            return currentResult == null;
         }
     }
 
