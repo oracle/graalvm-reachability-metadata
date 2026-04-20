@@ -92,6 +92,22 @@ class Jboss_interceptors_api_1_1_specTest {
     }
 
     @Test
+    void interceptorBindingMembersAndMethodLevelDefaultExclusionAreRetainedAtRuntime() throws Exception {
+        Method method = MethodBoundService.class.getDeclaredMethod("work");
+
+        ConfigurableBinding classBinding = MethodBoundService.class.getAnnotation(ConfigurableBinding.class);
+        ConfigurableBinding methodBinding = method.getAnnotation(ConfigurableBinding.class);
+
+        assertThat(classBinding).isNotNull();
+        assertThat(classBinding.stage()).isEqualTo("default");
+        assertThat(classBinding.enabled()).isTrue();
+        assertThat(methodBinding).isNotNull();
+        assertThat(methodBinding.stage()).isEqualTo("method");
+        assertThat(methodBinding.enabled()).isFalse();
+        assertThat(method.getAnnotation(ExcludeDefaultInterceptors.class)).isNotNull();
+    }
+
+    @Test
     void interceptorApiAnnotationsDeclareExpectedRuntimeContracts() {
         assertAnnotationContract(AroundInvoke.class, RetentionPolicy.RUNTIME, false, ElementType.METHOD);
         assertAnnotationContract(AroundTimeout.class, RetentionPolicy.RUNTIME, false, ElementType.METHOD);
@@ -124,6 +140,16 @@ class Jboss_interceptors_api_1_1_specTest {
     private @interface SampleBinding {
     }
 
+    @InterceptorBinding
+    @Target({ElementType.TYPE, ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    private @interface ConfigurableBinding {
+
+        String stage() default "default";
+
+        boolean enabled() default true;
+    }
+
     @Interceptor
     @SampleBinding
     private static final class SampleInterceptor {
@@ -148,6 +174,15 @@ class Jboss_interceptors_api_1_1_specTest {
 
         @ExcludeClassInterceptors
         @Interceptors({SecondaryInterceptor.class})
+        void work() {
+        }
+    }
+
+    @ConfigurableBinding
+    private static final class MethodBoundService {
+
+        @ConfigurableBinding(stage = "method", enabled = false)
+        @ExcludeDefaultInterceptors
         void work() {
         }
     }
