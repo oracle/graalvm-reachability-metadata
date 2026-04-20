@@ -31,6 +31,7 @@ public class TerminalFactoryTest {
     void setUp() {
         originalTerminalType = System.getProperty(TerminalFactory.JLINE_TERMINAL);
         originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        NonPublicStringConstructorTerminal.noArgConstructorCalls = 0;
         TerminalFactory.reset();
         restoreDefaultFlavors();
     }
@@ -81,11 +82,14 @@ public class TerminalFactoryTest {
     }
 
     @Test
-    void getFlavorRequiresAPublicTtyDeviceConstructorWhenATtyDeviceIsProvided() {
-        TerminalFactory.registerFlavor(TerminalFactory.Flavor.WINDOWS, NoStringConstructorTerminal.class);
+    void getFlavorDoesNotFallBackToTheNoArgConstructorWhenTheTtyDeviceConstructorIsNotPublic() {
+        TerminalFactory.registerFlavor(TerminalFactory.Flavor.WINDOWS, NonPublicStringConstructorTerminal.class);
 
+        // `Class#getConstructor` throws when the public `String` constructor is absent,
+        // so this path never falls back to the no-arg constructor.
         assertThatThrownBy(() -> TerminalFactory.getFlavor(TerminalFactory.Flavor.WINDOWS, "/dev/tty-test"))
                 .isInstanceOf(NoSuchMethodException.class);
+        assertThat(NonPublicStringConstructorTerminal.noArgConstructorCalls).isZero();
     }
 
     private static void restoreDefaultFlavors() {
@@ -143,9 +147,16 @@ public class TerminalFactoryTest {
         }
     }
 
-    public static final class NoStringConstructorTerminal extends TerminalSupport {
+    public static final class NonPublicStringConstructorTerminal extends TerminalSupport {
 
-        public NoStringConstructorTerminal() {
+        private static int noArgConstructorCalls;
+
+        public NonPublicStringConstructorTerminal() {
+            super(true);
+            noArgConstructorCalls++;
+        }
+
+        private NonPublicStringConstructorTerminal(final String ttyDevice) {
             super(true);
         }
     }
