@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Strongly-typed models for artifact-indexed library stats JSON payloads.
+ * Strongly-typed models for repository-aggregated and metadata-version-local library stats JSON payloads.
  */
 public final class LibraryStatsModels {
 

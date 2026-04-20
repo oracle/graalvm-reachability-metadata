@@ -17,7 +17,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 - Do not accept PRs that push more than one library. A `library-new-request` PR must stay scoped to one target library version plus its supporting test files.
 - Do not accept scaffold-only tests. Generated tests must be changed into library-specific tests that exercise the behavior that requires the metadata.
 - Do not accept tests that reference the exact library version in test code or assertions unless the version check is itself the behavior under test. One test should remain valid across multiple supported library versions.
-- Treat dynamic-access coverage counts as incomplete evidence. They can miss metadata required through downstream libraries, so do not reject a PR only because `stats/stats.json` reports `0/0` dynamic-access calls while the PR adds metadata.
+- Treat dynamic-access coverage counts as incomplete evidence. They can miss metadata required through downstream libraries, so do not reject a PR only because the exploded stats files under `stats/<group>/<artifact>/<metadata-version>/stats.json` report `0/0` dynamic-access calls while the PR adds metadata.
 
 ## Workflow
 
@@ -47,7 +47,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
    - Confirm the expected metadata files exist for the single target coordinate.
    - Do not block the PR based on the internal contents of `reachability-metadata.json`.
    - Treat `reachability-metadata.json` containing `{}` as acceptable when the rest of the PR is coherent and validation passes.
-   - Do not use `stats/stats.json` dynamic-access counts alone to argue that the submitted metadata is unnecessary.
+   - Do not use the exploded stats files under `stats/<group>/<artifact>/<metadata-version>/stats.json` alone to argue that the submitted metadata is unnecessary.
 
 5. Compare the PR claims, test, and reported coverage as one unit.
    - If the PR claims specific coverage numbers that do not line up with the diff, ask for investigation.

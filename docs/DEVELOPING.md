@@ -162,10 +162,10 @@ Select the future lane locally with `GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-a
 
 ### Library stats
 
-`generateLibraryStats` writes a single artifact-indexed stats file:
-- `stats/stats.json`
-- One entry per `groupId:artifactId`
-- Each artifact entry can contain multiple `metadata-version` buckets
+`generateLibraryStats` writes exploded local stats files:
+- `stats/<groupId>/<artifactId>/<metadata-version>/stats.json`
+- One file per metadata-version directory
+- Each local file contains the `versions` array for that metadata-version only
 
 Schema:
 - `stats/schemas/library-stats-schema-v1.0.2.json`
@@ -175,7 +175,7 @@ Schema:
 ./gradlew validateLibraryStats
 ```
 
-- `generateLibraryStats`: recomputes selected coordinates and updates `stats/stats.json`.
+- `generateLibraryStats`: recomputes selected coordinates and updates matching exploded stats files under `stats/`.
 - `validateLibraryStats`: validates mirrored committed stats files, schema compliance, and normalized sorting without recomputing metrics.
 
 For new-library issue triage, the repository also exposes:

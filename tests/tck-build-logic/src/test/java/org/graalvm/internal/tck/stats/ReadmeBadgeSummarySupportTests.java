@@ -26,93 +26,87 @@ class ReadmeBadgeSummarySupportTests {
 
     @Test
     void buildSummaryAggregatesStatsLibraryListAndArtifactIndexes() throws IOException {
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
-        Files.createDirectories(statsFile.getParent());
-        Files.writeString(
-                statsFile,
+        writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": {
-                                "breakdown": {
-                                  "reflection": {
-                                    "coveredCalls": 1,
-                                    "coverageRatio": 0.5,
-                                    "totalCalls": 2
-                                  }
-                                },
-                                "coveredCalls": 1,
-                                "coverageRatio": 0.5,
-                                "totalCalls": 2
-                              },
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 2,
-                                  "missed": 1,
-                                  "ratio": 0.666667,
-                                  "total": 3
-                                },
-                                "line": {
-                                  "covered": 1,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 1
-                                },
-                                "method": {
-                                  "covered": 1,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 1
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
+                  "versions": [
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                          "reflection": {
+                            "coveredCalls": 1,
+                            "coverageRatio": 0.5,
+                            "totalCalls": 2
+                          }
+                        },
+                        "coveredCalls": 1,
+                        "coverageRatio": 0.5,
+                        "totalCalls": 2
+                      },
+                      "libraryCoverage": {
+                        "instruction": {
+                          "covered": 2,
+                          "missed": 1,
+                          "ratio": 0.666667,
+                          "total": 3
+                        },
+                        "line": {
+                          "covered": 1,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 1
+                        },
+                        "method": {
+                          "covered": 1,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 1
                         }
-                      }
-                    },
-                    "com.example:other": {
-                      "metadataVersions": {
-                        "2.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": {
-                                "breakdown": {
-                                },
-                                "coveredCalls": 0,
-                                "coverageRatio": 1.0,
-                                "totalCalls": 0
-                              },
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 1,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 1
-                                },
-                                "line": "N/A",
-                                "method": {
-                                  "covered": 1,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 1
-                                }
-                              },
-                              "version": "2.0.0"
-                            }
-                          ]
-                        }
-                      }
+                      },
+                      "version": "1.0.0"
                     }
-                  }
+	                  ]
+	                }
+	                """
+	        );
+        writeStatsFile(
+                "com.example",
+                "other",
+                "2.0.0",
+                """
+                {
+                  "versions": [
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                        },
+                        "coveredCalls": 0,
+                        "coverageRatio": 1.0,
+                        "totalCalls": 0
+                      },
+                      "libraryCoverage": {
+                        "instruction": {
+                          "covered": 1,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 1
+                        },
+                        "line": "N/A",
+                        "method": {
+                          "covered": 1,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 1
+                        }
+                      },
+                      "version": "2.0.0"
+                    }
+                  ]
                 }
-                """,
-                StandardCharsets.UTF_8
+                """
         );
 
         writeIndexFile(
@@ -184,7 +178,7 @@ class ReadmeBadgeSummarySupportTests {
         );
 
         ReadmeBadgeSummarySupport.ReadmeBadgeSummary summary = ReadmeBadgeSummarySupport.buildSummary(
-                statsFile,
+                tempDir.resolve("stats"),
                 tempDir.resolve("metadata"),
                 LocalDate.of(2026, 4, 7)
         );
@@ -297,5 +291,11 @@ class ReadmeBadgeSummarySupportTests {
         Path indexFile = tempDir.resolve("metadata").resolve(groupId).resolve(artifactId).resolve("index.json");
         Files.createDirectories(indexFile.getParent());
         Files.writeString(indexFile, content, StandardCharsets.UTF_8);
+    }
+
+    private void writeStatsFile(String groupId, String artifactId, String metadataVersion, String content) throws IOException {
+        Path statsFile = tempDir.resolve("stats").resolve(groupId).resolve(artifactId).resolve(metadataVersion).resolve("stats.json");
+        Files.createDirectories(statsFile.getParent());
+        Files.writeString(statsFile, content, StandardCharsets.UTF_8);
     }
 }

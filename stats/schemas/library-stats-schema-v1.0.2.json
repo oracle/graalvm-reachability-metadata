@@ -1,168 +1,108 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Artifact-indexed library stats",
+  "title": "Metadata-version-local library stats",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "entries"
+    "versions"
   ],
   "properties": {
-    "entries": {
-      "type": "object",
-      "propertyNames": {
-        "pattern": "^[^:\\s]+:[^:\\s]+$"
-      },
-      "additionalProperties": {
-        "$ref": "#/definitions/artifactStats"
+    "versions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/versionStats"
       }
     }
   },
   "examples": [
     {
-      "entries": {
-        "org.example:demo-lib": {
-          "metadataVersions": {
-            "1.0.0": {
-              "versions": [
-                {
-                  "dynamicAccess": {
-                    "breakdown": {
-                      "foreign": {
-                        "coveredCalls": 2,
-                        "coverageRatio": 1.0,
-                        "totalCalls": 2
-                      },
-                      "reflection": {
-                        "coveredCalls": 5,
-                        "coverageRatio": 0.625,
-                        "totalCalls": 8
-                      }
-                    },
-                    "coveredCalls": 7,
-                    "coverageRatio": 0.7,
-                    "totalCalls": 10
-                  },
-                  "libraryCoverage": {
-                    "instruction": {
-                      "covered": 140,
-                      "missed": 35,
-                      "ratio": 0.8,
-                      "total": 175
-                    },
-                    "line": {
-                      "covered": 60,
-                      "missed": 20,
-                      "ratio": 0.75,
-                      "total": 80
-                    },
-                    "method": {
-                      "covered": 32,
-                      "missed": 8,
-                      "ratio": 0.8,
-                      "total": 40
-                    }
-                  },
-                  "version": "1.2.3"
-                },
-                {
-                  "dynamicAccess": {
-                    "breakdown": {
-                      "foreign": {
-                        "coveredCalls": 3,
-                        "coverageRatio": 1.0,
-                        "totalCalls": 3
-                      },
-                      "resources": {
-                        "coveredCalls": 4,
-                        "coverageRatio": 0.666667,
-                        "totalCalls": 6
-                      },
-                      "reflection": {
-                        "coveredCalls": 6,
-                        "coverageRatio": 0.75,
-                        "totalCalls": 8
-                      }
-                    },
-                    "coveredCalls": 13,
-                    "coverageRatio": 0.764706,
-                    "totalCalls": 17
-                  },
-                  "libraryCoverage": {
-                    "instruction": {
-                      "covered": 155,
-                      "missed": 20,
-                      "ratio": 0.885714,
-                      "total": 175
-                    },
-                    "line": {
-                      "covered": 67,
-                      "missed": 13,
-                      "ratio": 0.8375,
-                      "total": 80
-                    },
-                    "method": {
-                      "covered": 34,
-                      "missed": 6,
-                      "ratio": 0.85,
-                      "total": 40
-                    }
-                  },
-                  "version": "1.2.4"
-                }
-              ]
+      "versions": [
+        {
+          "dynamicAccess": {
+            "breakdown": {
+              "foreign": {
+                "coveredCalls": 2,
+                "coverageRatio": 1.0,
+                "totalCalls": 2
+              },
+              "reflection": {
+                "coveredCalls": 5,
+                "coverageRatio": 0.625,
+                "totalCalls": 8
+              }
             },
-            "2.0.0": {
-              "versions": [
-                {
-                  "dynamicAccess": {
-                    "breakdown": {
-                      "foreign": {
-                        "coveredCalls": 4,
-                        "coverageRatio": 0.8,
-                        "totalCalls": 5
-                      },
-                      "resources": {
-                        "coveredCalls": 2,
-                        "coverageRatio": 0.4,
-                        "totalCalls": 5
-                      },
-                      "reflection": {
-                        "coveredCalls": 10,
-                        "coverageRatio": 0.909091,
-                        "totalCalls": 11
-                      }
-                    },
-                    "coveredCalls": 16,
-                    "coverageRatio": 0.761905,
-                    "totalCalls": 21
-                  },
-                  "libraryCoverage": {
-                    "instruction": {
-                      "covered": 210,
-                      "missed": 30,
-                      "ratio": 0.875,
-                      "total": 240
-                    },
-                    "line": {
-                      "covered": 95,
-                      "missed": 15,
-                      "ratio": 0.863636,
-                      "total": 110
-                    },
-                    "method": {
-                      "covered": 50,
-                      "missed": 10,
-                      "ratio": 0.833333,
-                      "total": 60
-                    }
-                  },
-                  "version": "2.0.1"
-                }
-              ]
+            "coveredCalls": 7,
+            "coverageRatio": 0.7,
+            "totalCalls": 10
+          },
+          "libraryCoverage": {
+            "instruction": {
+              "covered": 140,
+              "missed": 35,
+              "ratio": 0.8,
+              "total": 175
+            },
+            "line": {
+              "covered": 60,
+              "missed": 20,
+              "ratio": 0.75,
+              "total": 80
+            },
+            "method": {
+              "covered": 32,
+              "missed": 8,
+              "ratio": 0.8,
+              "total": 40
             }
-          }
+          },
+          "version": "1.2.3"
+        },
+        {
+          "dynamicAccess": {
+            "breakdown": {
+              "foreign": {
+                "coveredCalls": 3,
+                "coverageRatio": 1.0,
+                "totalCalls": 3
+              },
+              "resources": {
+                "coveredCalls": 4,
+                "coverageRatio": 0.666667,
+                "totalCalls": 6
+              },
+              "reflection": {
+                "coveredCalls": 6,
+                "coverageRatio": 0.75,
+                "totalCalls": 8
+              }
+            },
+            "coveredCalls": 13,
+            "coverageRatio": 0.764706,
+            "totalCalls": 17
+          },
+          "libraryCoverage": {
+            "instruction": {
+              "covered": 155,
+              "missed": 20,
+              "ratio": 0.885714,
+              "total": 175
+            },
+            "line": {
+              "covered": 67,
+              "missed": 13,
+              "ratio": 0.8375,
+              "total": 80
+            },
+            "method": {
+              "covered": 34,
+              "missed": 6,
+              "ratio": 0.85,
+              "total": 40
+            }
+          },
+          "version": "1.2.4"
         }
-      }
+      ]
     }
   ],
   "definitions": {
@@ -320,40 +260,6 @@
         "version": {
           "type": "string",
           "minLength": 1
-        }
-      }
-    },
-    "metadataVersionStats": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "versions"
-      ],
-      "properties": {
-        "versions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/versionStats"
-          }
-        }
-      }
-    },
-    "artifactStats": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "metadataVersions"
-      ],
-      "properties": {
-        "metadataVersions": {
-          "type": "object",
-          "propertyNames": {
-            "type": "string",
-            "minLength": 1
-          },
-          "additionalProperties": {
-            "$ref": "#/definitions/metadataVersionStats"
-          }
         }
       }
     }

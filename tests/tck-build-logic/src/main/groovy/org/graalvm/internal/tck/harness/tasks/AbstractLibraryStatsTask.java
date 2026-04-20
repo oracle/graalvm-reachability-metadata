@@ -163,8 +163,13 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
     }
 
     @Internal
-    protected Path getStatsFile() {
-        return getStatsRoot().resolve("stats.json");
+    protected Path getStatsFile(StatsLocation location) {
+        return LibraryStatsSupport.repositoryStatsFile(
+                getStatsRoot(),
+                location.groupId(),
+                location.artifactId(),
+                location.metadataVersion()
+        );
     }
 
     protected StatsLocation resolveStatsLocation(String coordinate) {
