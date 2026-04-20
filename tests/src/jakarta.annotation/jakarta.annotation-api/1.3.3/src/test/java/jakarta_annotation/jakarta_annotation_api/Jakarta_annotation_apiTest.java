@@ -8,12 +8,14 @@ package jakarta_annotation.jakarta_annotation_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -37,22 +39,21 @@ class Jakarta_annotation_apiTest {
 
     @Test
     void runtimeAnnotationsExposeConfiguredValuesAcrossSupportedTargets() throws Exception {
-        ManagedBean managedBean = AnnotatedComponent.class.getAnnotation(ManagedBean.class);
-        Priority priority = AnnotatedComponent.class.getAnnotation(Priority.class);
-        DeclareRoles declareRoles = AnnotatedComponent.class.getAnnotation(DeclareRoles.class);
-        RunAs runAs = AnnotatedComponent.class.getAnnotation(RunAs.class);
-        Resource fieldResource = field(AnnotatedComponent.class, "queueName").getAnnotation(Resource.class);
-        Resource methodResource = method(AnnotatedComponent.class, "loadConfig").getAnnotation(Resource.class);
-        RolesAllowed rolesAllowed = method(AnnotatedComponent.class, "adminOnly").getAnnotation(RolesAllowed.class);
-        Priority parameterPriority = constructor(ParameterizedComponent.class, String.class)
-                .getParameters()[0]
-                .getAnnotation(Priority.class);
+        ManagedBean managedBean = annotation(AnnotatedComponent.class, ManagedBean.class);
+        Priority priority = annotation(AnnotatedComponent.class, Priority.class);
+        DeclareRoles declareRoles = annotation(AnnotatedComponent.class, DeclareRoles.class);
+        RunAs runAs = annotation(AnnotatedComponent.class, RunAs.class);
+        Resource fieldResource = annotation(field(AnnotatedComponent.class, "queueName"), Resource.class);
+        Resource methodResource = annotation(method(AnnotatedComponent.class, "loadConfig"), Resource.class);
+        RolesAllowed rolesAllowed = annotation(method(AnnotatedComponent.class, "adminOnly"), RolesAllowed.class);
+        Priority parameterPriority = annotation(
+                constructor(ParameterizedComponent.class, String.class).getParameters()[0], Priority.class);
 
         assertThat(managedBean.value()).isEqualTo("inventoryBean");
         assertThat(priority.value()).isEqualTo(10);
         assertThat(declareRoles.value()).containsExactly("admin", "auditor");
         assertThat(runAs.value()).isEqualTo("system");
-        assertThat(AnnotatedComponent.class.isAnnotationPresent(DenyAll.class)).isTrue();
+        assertThat(hasAnnotation(AnnotatedComponent.class, DenyAll.class)).isTrue();
 
         assertThat(fieldResource.name()).isEqualTo("queue/orders");
         assertThat(fieldResource.type()).isEqualTo(String.class);
@@ -61,20 +62,19 @@ class Jakarta_annotation_apiTest {
         assertThat(methodResource.name()).isEqualTo("service/config");
         assertThat(methodResource.type()).isEqualTo(Integer.class);
         assertThat(methodResource.mappedName()).isEqualTo("mapped/config");
-        assertThat(method(AnnotatedComponent.class, "loadConfig").isAnnotationPresent(PermitAll.class)).isTrue();
+        assertThat(hasAnnotation(method(AnnotatedComponent.class, "loadConfig"), PermitAll.class)).isTrue();
 
         assertThat(rolesAllowed.value()).containsExactly("admin", "operator");
-        assertThat(method(LifecycleComponent.class, "init").isAnnotationPresent(PostConstruct.class)).isTrue();
-        assertThat(method(LifecycleComponent.class, "destroy").isAnnotationPresent(PreDestroy.class)).isTrue();
+        assertThat(hasAnnotation(method(LifecycleComponent.class, "init"), PostConstruct.class)).isTrue();
+        assertThat(hasAnnotation(method(LifecycleComponent.class, "destroy"), PreDestroy.class)).isTrue();
         assertThat(parameterPriority.value()).isEqualTo(7);
     }
 
     @Test
     void defaultAnnotationValuesMatchThePublishedApi() throws Exception {
-        ManagedBean managedBean = DefaultManagedBean.class.getAnnotation(ManagedBean.class);
-        Resource resource = field(DefaultManagedBean.class, "defaultResource").getAnnotation(Resource.class);
-        DataSourceDefinition dataSourceDefinition = DefaultDataSourceHolder.class
-                .getAnnotation(DataSourceDefinition.class);
+        ManagedBean managedBean = annotation(DefaultManagedBean.class, ManagedBean.class);
+        Resource resource = annotation(field(DefaultManagedBean.class, "defaultResource"), Resource.class);
+        DataSourceDefinition dataSourceDefinition = annotation(DefaultDataSourceHolder.class, DataSourceDefinition.class);
 
         assertThat(managedBean.value()).isEmpty();
 
@@ -109,11 +109,10 @@ class Jakarta_annotation_apiTest {
     @Test
     void repeatableAnnotationsExposeBothDirectAndContainerViews() {
         Resource[] resources = RepeatableResourceComponent.class.getAnnotationsByType(Resource.class);
-        Resources resourceContainer = RepeatableResourceComponent.class.getAnnotation(Resources.class);
+        Resources resourceContainer = annotation(RepeatableResourceComponent.class, Resources.class);
         DataSourceDefinition[] dataSourceDefinitions = RepeatableDataSourceComponent.class
                 .getAnnotationsByType(DataSourceDefinition.class);
-        DataSourceDefinitions dataSourceContainer = RepeatableDataSourceComponent.class
-                .getAnnotation(DataSourceDefinitions.class);
+        DataSourceDefinitions dataSourceContainer = annotation(RepeatableDataSourceComponent.class, DataSourceDefinitions.class);
 
         assertThat(resources)
                 .extracting(Resource::name)
@@ -132,7 +131,7 @@ class Jakarta_annotation_apiTest {
 
     @Test
     void explicitResourceContainerFlattensToRepeatableViewAndPreservesConfiguredAttributes() {
-        Resources resourceContainer = ExplicitResourceContainerComponent.class.getAnnotation(Resources.class);
+        Resources resourceContainer = annotation(ExplicitResourceContainerComponent.class, Resources.class);
         Resource[] resources = ExplicitResourceContainerComponent.class.getAnnotationsByType(Resource.class);
 
         assertThat(resourceContainer.value()).hasSize(2);
@@ -166,8 +165,7 @@ class Jakarta_annotation_apiTest {
 
     @Test
     void explicitDataSourceContainerFlattensToRepeatableViewAndPreservesConfiguredAttributes() {
-        DataSourceDefinitions dataSourceContainer = ExplicitDataSourceContainerComponent.class
-                .getAnnotation(DataSourceDefinitions.class);
+        DataSourceDefinitions dataSourceContainer = annotation(ExplicitDataSourceContainerComponent.class, DataSourceDefinitions.class);
         DataSourceDefinition[] dataSourceDefinitions = ExplicitDataSourceContainerComponent.class
                 .getAnnotationsByType(DataSourceDefinition.class);
 
@@ -222,7 +220,7 @@ class Jakarta_annotation_apiTest {
 
     @Test
     void generatedIsAvailableAtCompileTimeButNotRetainedAtRuntime() {
-        assertThat(GeneratedMarker.class.getAnnotation(Generated.class)).isNull();
+        assertThat(annotation(GeneratedMarker.class, Generated.class)).isNull();
     }
 
     @Test
@@ -265,19 +263,19 @@ class Jakarta_annotation_apiTest {
                 ElementType.LOCAL_VARIABLE,
                 ElementType.PARAMETER);
 
-        assertThat(Priority.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(Resources.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(PostConstruct.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(PreDestroy.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(DeclareRoles.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(DenyAll.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(PermitAll.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(RolesAllowed.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(RunAs.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(Generated.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(hasAnnotation(Priority.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(Resources.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(PostConstruct.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(PreDestroy.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(DeclareRoles.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(DenyAll.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(PermitAll.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(RolesAllowed.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(RunAs.class, Documented.class)).isTrue();
+        assertThat(hasAnnotation(Generated.class, Documented.class)).isTrue();
 
-        assertThat(Resource.class.getAnnotation(Repeatable.class).value()).isEqualTo(Resources.class);
-        assertThat(DataSourceDefinition.class.getAnnotation(Repeatable.class).value())
+        assertThat(annotation(Resource.class, Repeatable.class).value()).isEqualTo(Resources.class);
+        assertThat(annotation(DataSourceDefinition.class, Repeatable.class).value())
                 .isEqualTo(DataSourceDefinitions.class);
     }
 
@@ -293,12 +291,21 @@ class Jakarta_annotation_apiTest {
         return type.getDeclaredMethod(name);
     }
 
+    private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
+        A[] annotations = element.getAnnotationsByType(annotationType);
+        return annotations.length == 0 ? null : annotations[0];
+    }
+
+    private static boolean hasAnnotation(AnnotatedElement element, Class<? extends Annotation> annotationType) {
+        return annotation(element, annotationType) != null;
+    }
+
     private static RetentionPolicy retention(Class<?> annotationType) {
-        return annotationType.getAnnotation(Retention.class).value();
+        return annotation(annotationType, Retention.class).value();
     }
 
     private static ElementType[] target(Class<?> annotationType) {
-        return annotationType.getAnnotation(Target.class).value();
+        return annotation(annotationType, Target.class).value();
     }
 
     @ManagedBean
