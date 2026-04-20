@@ -18,6 +18,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LogManagerTest {
 
     @Test
+    void readConfigurationLoadsLocatorFromThreadContextClassLoader() throws Exception {
+        String locatorPropertyName = "org.jboss.logmanager.configurationLocator";
+        String originalLocatorProperty = System.getProperty(locatorPropertyName);
+        ClassLoader originalTccl = Thread.currentThread().getContextClassLoader();
+        TcclConfigurationLocator.reset();
+        try {
+            System.setProperty(locatorPropertyName, TcclConfigurationLocator.class.getName());
+            Thread.currentThread().setContextClassLoader(TcclConfigurationLocator.class.getClassLoader());
+
+            new LogManager().readConfiguration();
+
+            assertThat(TcclConfigurationLocator.CONSTRUCTED).isTrue();
+            assertThat(TcclConfigurationLocator.FIND_CONFIGURATION_CALLED).isTrue();
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalTccl);
+            if (originalLocatorProperty == null) {
+                System.clearProperty(locatorPropertyName);
+            } else {
+                System.setProperty(locatorPropertyName, originalLocatorProperty);
+            }
+            TcclConfigurationLocator.reset();
+        }
+    }
+
+    @Test
     void readConfigurationFallsBackToLogManagerClassLoaderWhenTcclCannotLoadLocator() throws Exception {
         String locatorPropertyName = "org.jboss.logmanager.configurationLocator";
         String originalLocatorProperty = System.getProperty(locatorPropertyName);
@@ -41,6 +66,26 @@ public class LogManagerTest {
                 System.setProperty(locatorPropertyName, originalLocatorProperty);
             }
             FallbackConfigurationLocator.reset();
+        }
+    }
+
+    public static final class TcclConfigurationLocator implements ConfigurationLocator {
+        private static final AtomicBoolean CONSTRUCTED = new AtomicBoolean();
+        private static final AtomicBoolean FIND_CONFIGURATION_CALLED = new AtomicBoolean();
+
+        public TcclConfigurationLocator() {
+            CONSTRUCTED.set(true);
+        }
+
+        @Override
+        public InputStream findConfiguration() {
+            FIND_CONFIGURATION_CALLED.set(true);
+            return null;
+        }
+
+        private static void reset() {
+            CONSTRUCTED.set(false);
+            FIND_CONFIGURATION_CALLED.set(false);
         }
     }
 
