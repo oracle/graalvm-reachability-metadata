@@ -282,6 +282,9 @@ class KafkaClientsTest {
         consumerProperties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
         consumerProperties.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
         consumerProperties.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=admin password=admin-pass;");
+        // Short timeouts to fail fast since broker doesn't support SASL
+        consumerProperties.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, 5000);
+        consumerProperties.put(ConsumerConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, 5000);
         try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
             // Attempt to perform an operation requiring authentication
             assertThatThrownBy(() -> consumer.partitionsFor("non-existent-topic"))
@@ -298,6 +301,9 @@ class KafkaClientsTest {
         consumerProperties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
         consumerProperties.put(SaslConfigs.SASL_MECHANISM, "SCRAM-SHA-512");
         consumerProperties.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.scram.ScramLoginModule required username=admin password=admin-pass;");
+        // Short timeouts to fail fast since broker doesn't support SASL
+        consumerProperties.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, 5000);
+        consumerProperties.put(ConsumerConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, 5000);
         try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
             // Attempt to perform an operation requiring authentication
             assertThatThrownBy(() -> consumer.partitionsFor("non-existent-topic"))
