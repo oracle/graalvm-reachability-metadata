@@ -108,6 +108,35 @@ class Jboss_interceptors_api_1_1_specTest {
     }
 
     @Test
+    void aroundTimeoutInterceptorCanReadTimerAndShareContextDataWithProceed() throws Exception {
+        Map<String, Object> contextData = new LinkedHashMap<>();
+        contextData.put("attempt", 2);
+        AtomicInteger proceedCalls = new AtomicInteger();
+        TimeoutAwareInterceptor interceptor = new TimeoutAwareInterceptor();
+
+        TestInvocationContext invocationContext = new TestInvocationContext(
+                null,
+                null,
+                new Object[0],
+                contextData,
+                "heartbeat",
+                currentInvocationContext -> {
+                    proceedCalls.incrementAndGet();
+                    assertThat(currentInvocationContext.getContextData())
+                            .containsEntry("attempt", 2)
+                            .containsEntry("timerLabel", "heartbeat");
+                    return "completed";
+                }
+        );
+
+        Object result = interceptor.aroundTimeout(invocationContext);
+
+        assertThat(result).isEqualTo("heartbeat:completed");
+        assertThat(contextData).containsEntry("timerLabel", "heartbeat");
+        assertThat(proceedCalls).hasValue(1);
+    }
+
+    @Test
     void interceptorApiAnnotationsDeclareExpectedRuntimeContracts() {
         assertAnnotationContract(AroundInvoke.class, RetentionPolicy.RUNTIME, false, ElementType.METHOD);
         assertAnnotationContract(AroundTimeout.class, RetentionPolicy.RUNTIME, false, ElementType.METHOD);
@@ -166,6 +195,15 @@ class Jboss_interceptors_api_1_1_specTest {
     }
 
     private static final class SecondaryInterceptor {
+    }
+
+    private static final class TimeoutAwareInterceptor {
+
+        @AroundTimeout
+        Object aroundTimeout(InvocationContext invocationContext) throws Exception {
+            invocationContext.getContextData().put("timerLabel", invocationContext.getTimer());
+            return invocationContext.getTimer() + ":" + invocationContext.proceed();
+        }
     }
 
     @ExcludeDefaultInterceptors
