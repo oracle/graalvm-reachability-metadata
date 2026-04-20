@@ -51,6 +51,13 @@ class Findbugs_annotationsTest {
     }
 
     @Test
+    void enumUtilitiesIncludeLowerOverflowAndHighestInclusiveBoundaryMappings() {
+        assertThat(Confidence.getConfidence(Integer.MIN_VALUE)).isSameAs(Confidence.HIGH);
+        assertThat(Confidence.getConfidence(-1)).isSameAs(Confidence.HIGH);
+        assertThat(Confidence.getConfidence(5)).isSameAs(Confidence.IGNORE);
+    }
+
+    @Test
     void classRetainedWarningAnnotationsExposeMembersAndDefaults() throws NoSuchMethodException {
         DesireWarning desireWarning = new DesireWarning() {
             @Override
