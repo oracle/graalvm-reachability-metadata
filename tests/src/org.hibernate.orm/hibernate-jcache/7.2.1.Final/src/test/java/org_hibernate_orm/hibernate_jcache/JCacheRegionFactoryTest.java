@@ -37,8 +37,7 @@ public class JCacheRegionFactoryTest {
             assertThat(regionFactory.getCacheManager()).isInstanceOf(InstantiableCacheManager.class);
             assertThat(InstantiableCacheManager.INSTANTIATION_COUNT.get()).isEqualTo(1);
             assertThat(InstantiableCacheManager.CLOSED.get()).isFalse();
-        }
-        finally {
+        } finally {
             regionFactory.stop();
         }
 
