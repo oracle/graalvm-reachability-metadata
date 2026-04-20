@@ -165,8 +165,8 @@ class Kotlin_script_runtimeTest {
 
     @Test
     void scriptTemplateDefinitionAnnotationsExposeDefaultsAndOverrides() {
-        ScriptTemplateDefinition defaultDefinition = DefaultAnnotatedTemplate.class.getAnnotation(ScriptTemplateDefinition.class);
-        ScriptTemplateDefinition customDefinition = CustomAnnotatedTemplate.class.getAnnotation(ScriptTemplateDefinition.class);
+        ScriptTemplateDefinition defaultDefinition = DefaultAnnotatedTemplate.class.getAnnotationsByType(ScriptTemplateDefinition.class)[0];
+        ScriptTemplateDefinition customDefinition = CustomAnnotatedTemplate.class.getAnnotationsByType(ScriptTemplateDefinition.class)[0];
 
         assertThat(defaultDefinition).isNotNull();
         assertThat(defaultDefinition.resolver()).isEqualTo(DependenciesResolver.NoDependencies.class);
@@ -180,12 +180,12 @@ class Kotlin_script_runtimeTest {
     @Test
     void scriptTemplateRuntimeAnnotationsRemainAccessible() throws NoSuchMethodException {
         AcceptedAnnotations classAcceptedAnnotations =
-                CustomAnnotatedTemplate.class.getAnnotation(AcceptedAnnotations.class);
+                CustomAnnotatedTemplate.class.getAnnotationsByType(AcceptedAnnotations.class)[0];
         SamWithReceiverAnnotations samWithReceiverAnnotations =
-                CustomAnnotatedTemplate.class.getAnnotation(SamWithReceiverAnnotations.class);
+                CustomAnnotatedTemplate.class.getAnnotationsByType(SamWithReceiverAnnotations.class)[0];
         AcceptedAnnotations methodAcceptedAnnotations = CustomAnnotatedTemplate.class
                 .getDeclaredMethod("acceptsSupportedMarkers")
-                .getAnnotation(AcceptedAnnotations.class);
+                .getAnnotationsByType(AcceptedAnnotations.class)[0];
 
         assertThat(classAcceptedAnnotations).isNotNull();
         assertThat(classAcceptedAnnotations.supportedAnnotationClasses()).containsExactly(SupportedMarker.class);
