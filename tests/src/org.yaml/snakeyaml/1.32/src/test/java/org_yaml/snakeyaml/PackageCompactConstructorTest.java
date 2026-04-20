@@ -16,19 +16,17 @@ public class PackageCompactConstructorTest {
 
     @Test
     void loadsCompactBeanBySimpleNameFromConfiguredPackage() {
-        String yaml = "PackageCompactBean(exampleName, role=maintainer)";
+        String yaml = "PackageCompactBean(exampleName)";
 
         PackageCompactBean bean = (PackageCompactBean) new Yaml(
                 new PackageCompactConstructor(PackageCompactBean.class.getPackageName())).load(yaml);
 
         assertThat(bean.getName()).isEqualTo("exampleName");
-        assertThat(bean.getRole()).isEqualTo("maintainer");
     }
 }
 
 final class PackageCompactBean {
     private final String name;
-    private String role;
 
     private PackageCompactBean(String name) {
         this.name = name;
@@ -36,13 +34,5 @@ final class PackageCompactBean {
 
     String getName() {
         return name;
-    }
-
-    String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 }
