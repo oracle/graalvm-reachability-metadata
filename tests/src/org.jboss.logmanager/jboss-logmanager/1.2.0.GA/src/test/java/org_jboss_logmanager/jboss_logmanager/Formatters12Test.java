@@ -8,6 +8,8 @@ package org_jboss_logmanager.jboss_logmanager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
@@ -49,17 +51,15 @@ public class Formatters12Test {
     }
 
     @Test
-    void extendedExceptionFormattingAttemptsTheBootstrapFallbackForUnknownClasses() {
-        String className = "missing.coverage.Type";
-        RejectingClassLoader rejectingClassLoader = new RejectingClassLoader(
-                Formatters12Test.class.getClassLoader(),
-                className
-        );
+    void extendedExceptionFormattingUsesBootstrapFallbackWhenTheLibraryLoaderRejectsTheClass() throws Throwable {
+        String className = "java.util.HexFormat";
+        BootstrapFallbackClassLoader bootstrapFallbackClassLoader = new BootstrapFallbackClassLoader(className);
+        BootstrapFormattingAction formattingAction = bootstrapFallbackClassLoader.loadFormattingAction();
 
-        String formatted = formatWithTccl(rejectingClassLoader, newFailure(className));
+        String formatted = formattingAction.format(newFailure(className));
 
         assertThat(formatted).contains("\tat " + className + ".invoke");
-        assertThat(rejectingClassLoader.wasRejected()).isTrue();
+        assertThat(bootstrapFallbackClassLoader.wasRejected()).isTrue();
     }
 
     private static String formatWithTccl(final ClassLoader contextClassLoader, final Throwable thrown) {
@@ -139,6 +139,25 @@ public class Formatters12Test {
         }
     }
 
+    public interface BootstrapFormattingAction {
+        String format(Throwable thrown);
+    }
+
+    public static final class BootstrapFormattingInvoker implements BootstrapFormattingAction {
+        public static final BootstrapFormattingAction INSTANCE = new BootstrapFormattingInvoker();
+
+        private BootstrapFormattingInvoker() {
+        }
+
+        @Override
+        public String format(final Throwable thrown) {
+            PatternFormatter formatter = new PatternFormatter("%E");
+            java.util.logging.LogRecord record = new java.util.logging.LogRecord(Level.SEVERE, "coverage");
+            record.setThrown(thrown);
+            return formatter.format(record);
+        }
+    }
+
     private static final class RejectingClassLoader extends ClassLoader {
         private final String rejectedClassName;
         private boolean rejected;
@@ -159,6 +178,68 @@ public class Formatters12Test {
                 throw new ClassNotFoundException(name);
             }
             return super.loadClass(name, resolve);
+        }
+    }
+
+    private static final class BootstrapFallbackClassLoader extends ClassLoader {
+        private final String rejectedClassName;
+        private boolean rejected;
+
+        private BootstrapFallbackClassLoader(final String rejectedClassName) {
+            super(Formatters12Test.class.getClassLoader());
+            this.rejectedClassName = rejectedClassName;
+        }
+
+        BootstrapFormattingAction loadFormattingAction() throws Throwable {
+            Class<?> actionClass = Class.forName(BootstrapFormattingInvoker.class.getName(), true, this);
+            VarHandle instanceHandle = MethodHandles.publicLookup().findStaticVarHandle(
+                    actionClass,
+                    "INSTANCE",
+                    BootstrapFormattingAction.class
+            );
+            return BootstrapFormattingAction.class.cast(instanceHandle.get());
+        }
+
+        boolean wasRejected() {
+            return rejected;
+        }
+
+        @Override
+        protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> alreadyLoaded = findLoadedClass(name);
+                if (alreadyLoaded != null) {
+                    return alreadyLoaded;
+                }
+                if (rejectedClassName.equals(name)) {
+                    rejected = true;
+                    throw new ClassNotFoundException(name);
+                }
+                if (shouldDefineLocally(name)) {
+                    Class<?> localClass = findClass(name);
+                    if (resolve) {
+                        resolveClass(localClass);
+                    }
+                    return localClass;
+                }
+                return super.loadClass(name, resolve);
+            }
+        }
+
+        @Override
+        protected Class<?> findClass(final String name) throws ClassNotFoundException {
+            String resourceName = name.replace('.', '/') + ".class";
+            try (InputStream inputStream = Formatters12Test.class.getClassLoader().getResourceAsStream(resourceName)) {
+                byte[] classBytes = Objects.requireNonNull(inputStream, resourceName).readAllBytes();
+                return defineClass(name, classBytes, 0, classBytes.length);
+            } catch (IOException e) {
+                throw new ClassNotFoundException(name, e);
+            }
+        }
+
+        private boolean shouldDefineLocally(final String name) {
+            return name.startsWith("org.jboss.logmanager.")
+                    || BootstrapFormattingInvoker.class.getName().equals(name);
         }
     }
 }
