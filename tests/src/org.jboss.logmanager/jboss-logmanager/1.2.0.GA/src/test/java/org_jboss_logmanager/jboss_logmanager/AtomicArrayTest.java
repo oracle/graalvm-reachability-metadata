@@ -23,21 +23,21 @@ public class AtomicArrayTest {
                 AtomicReferenceFieldUpdater.newUpdater(Holder.class, String[].class, "values");
         Object atomicArray = newAtomicArray(updater, String.class);
 
-        invokeMethod(atomicArray, "add", new Class<?>[] { Object.class, Object.class }, holder, "console");
-        invokeMethod(atomicArray, "add", new Class<?>[] { Object.class, Object.class }, holder, "file");
+        invokeMethod(atomicArray, "add", new Class<?>[] {Object.class, Object.class }, holder, "console");
+        invokeMethod(atomicArray, "add", new Class<?>[] {Object.class, Object.class }, holder, "file");
 
         assertThat(holder.values).containsExactly("console", "file");
         assertThat(invokeMethod(
                 atomicArray,
                 "remove",
-                new Class<?>[] { Object.class, Object.class, boolean.class },
+                new Class<?>[] {Object.class, Object.class, boolean.class },
                 holder,
                 "console",
                 false
         )).isEqualTo(Boolean.TRUE);
         assertThat(holder.values).containsExactly("file");
 
-        invokeMethod(atomicArray, "clear", new Class<?>[] { Object.class }, holder);
+        invokeMethod(atomicArray, "clear", new Class<?>[] {Object.class }, holder);
         assertThat(holder.values).isEmpty();
     }
 

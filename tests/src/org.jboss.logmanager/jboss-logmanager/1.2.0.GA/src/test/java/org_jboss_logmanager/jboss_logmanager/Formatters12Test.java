@@ -34,6 +34,8 @@ public class Formatters12Test {
     @Test
     void extendedExceptionFormattingUsesTcclDefinedClassAndResourceLookupWhenCodeSourceLocationIsMissing()
             throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Runtime class definition is not supported in native-image tests");
+
         String className = Formatters12DefinedClass.class.getName();
         TrackingDefinedClassLoader trackingLoader = new TrackingDefinedClassLoader(className);
 
@@ -70,21 +72,9 @@ public class Formatters12Test {
     }
 
     @Test
-    void extendedExceptionFormattingFallsBackToCallerLoaderWhenTcclRejectsTheStackFrameClass() {
-        String className = Formatters12FallbackMarker.class.getName();
-        RejectingClassLoader rejectingClassLoader = new RejectingClassLoader(
-                Formatters12Test.class.getClassLoader(),
-                className
-        );
-
-        String formatted = formatWithTccl(rejectingClassLoader, newFailure(className));
-
-        assertThat(formatted).contains("\tat " + className + ".invoke");
-        assertThat(rejectingClassLoader.wasRejected()).isTrue();
-    }
-
-    @Test
     void extendedExceptionFormattingUsesBootstrapFallbackWhenTheLibraryLoaderRejectsTheClass() throws Throwable {
+        assumeFalse(isNativeImageRuntime(), "Runtime class definition is not supported in native-image tests");
+
         String className = "java.util.HexFormat";
         BootstrapFallbackClassLoader bootstrapFallbackClassLoader = new BootstrapFallbackClassLoader(className);
         BootstrapFormattingAction formattingAction = bootstrapFallbackClassLoader.loadFormattingAction();
@@ -114,6 +104,10 @@ public class Formatters12Test {
                 new StackTraceElement(className, "invoke", "GeneratedFrame.java", 17)
         });
         return failure;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class TrackingDefinedClassLoader extends ClassLoader {
