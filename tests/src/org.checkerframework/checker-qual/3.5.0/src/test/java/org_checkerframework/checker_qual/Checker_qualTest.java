@@ -53,6 +53,7 @@ import org.checkerframework.checker.regex.RegexUtil;
 import org.checkerframework.checker.regex.qual.Regex;
 import org.checkerframework.checker.regex.qual.UnknownRegex;
 import org.checkerframework.checker.signedness.SignednessUtil;
+import org.checkerframework.checker.units.UnitsTools;
 import org.checkerframework.common.value.qual.IntRange;
 import org.checkerframework.common.value.qual.UnknownVal;
 import org.checkerframework.framework.qual.ConditionalPostconditionAnnotation;
@@ -477,6 +478,32 @@ class Checker_qualTest {
         Assertions.assertThat(SignednessUtil.toUnsignedLong((char) 0x00FF)).isEqualTo(255L);
         Assertions.assertThat(SignednessUtil.byteFromDouble(255.0d)).isEqualTo((byte) -1);
         Assertions.assertThat(SignednessUtil.intFromFloat(123456789.0f)).isEqualTo(123456792);
+    }
+
+    @Test
+    void unitsToolsConvertsBetweenCommonUnits() {
+        Assertions.assertThat(UnitsTools.toRadians(180.0d))
+                .isCloseTo(Math.PI, Assertions.within(1.0e-12));
+        Assertions.assertThat(UnitsTools.toDegrees(Math.PI / 2.0d))
+                .isCloseTo(90.0d, Assertions.within(1.0e-12));
+
+        Assertions.assertThat(UnitsTools.fromMilliMeterToMeter(1999)).isEqualTo(1);
+        Assertions.assertThat(UnitsTools.fromMeterToMilliMeter(7)).isEqualTo(7000);
+        Assertions.assertThat(UnitsTools.fromMeterToKiloMeter(2500)).isEqualTo(2);
+        Assertions.assertThat(UnitsTools.fromKiloMeterToMeter(3)).isEqualTo(3000);
+        Assertions.assertThat(UnitsTools.fromGramToKiloGram(2500)).isEqualTo(2);
+        Assertions.assertThat(UnitsTools.fromKiloGramToGram(4)).isEqualTo(4000);
+
+        Assertions.assertThat(UnitsTools.fromMeterPerSecondToKiloMeterPerHour(12.5d))
+                .isEqualTo(45.0d);
+        Assertions.assertThat(UnitsTools.fromKiloMeterPerHourToMeterPerSecond(72.0d))
+                .isEqualTo(20.0d);
+        Assertions.assertThat(UnitsTools.fromKelvinToCelsius(300)).isEqualTo(27);
+        Assertions.assertThat(UnitsTools.fromCelsiusToKelvin(27)).isEqualTo(300);
+        Assertions.assertThat(UnitsTools.fromSecondToMinute(125)).isEqualTo(2);
+        Assertions.assertThat(UnitsTools.fromMinuteToSecond(3)).isEqualTo(180);
+        Assertions.assertThat(UnitsTools.fromMinuteToHour(125)).isEqualTo(2);
+        Assertions.assertThat(UnitsTools.fromHourToMinute(2)).isEqualTo(120);
     }
 
     @Test
