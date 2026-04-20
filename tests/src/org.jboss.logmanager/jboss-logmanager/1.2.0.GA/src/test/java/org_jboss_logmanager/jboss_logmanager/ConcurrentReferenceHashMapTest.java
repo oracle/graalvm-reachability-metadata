@@ -42,7 +42,9 @@ public class ConcurrentReferenceHashMapTest {
         }
 
         assertThat(restored.getClass().getName()).isEqualTo("org.jboss.logmanager.ConcurrentReferenceHashMap");
-        assertThat((Map<?, ?>) restored)
+        @SuppressWarnings("unchecked")
+        Map<String, String> restoredMap = (Map<String, String>) restored;
+        assertThat(restoredMap)
                 .hasSize(expectedEntries.size())
                 .containsAllEntriesOf(expectedEntries);
     }
