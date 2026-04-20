@@ -189,6 +189,20 @@ public class Slf4j_apiTest {
         assertThat(primitiveArrayArgument).isEqualTo("Array [1, 2]");
     }
 
+    @Test
+    void messageFormatterRecursivelyFormatsNestedAndSelfReferentialObjectArrays() {
+        Object[] selfReferentialArray = new Object[1];
+        Object[] nestedArray = new Object[]{new Object[]{"alpha", new int[]{1, 2}}, "omega"};
+
+        selfReferentialArray[0] = selfReferentialArray;
+
+        String nestedArrayMessage = MessageFormatter.arrayFormat("Nested {}", new Object[]{nestedArray});
+        String selfReferentialArrayMessage = MessageFormatter.arrayFormat("Self {}", new Object[]{selfReferentialArray});
+
+        assertThat(nestedArrayMessage).isEqualTo("Nested [[alpha, [1, 2]], omega]");
+        assertThat(selfReferentialArrayMessage).isEqualTo("Self [[...]]");
+    }
+
     private static final class RecordingLogger extends MarkerIgnoringBase {
 
         private final List<LogEntry> entries = new ArrayList<>();
