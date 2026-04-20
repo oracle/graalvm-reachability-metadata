@@ -102,7 +102,7 @@ public class Slf4j_apiTest {
         managedMarker.add(childMarker);
 
         List<String> childNames = new ArrayList<>();
-        for (Iterator<?> iterator = managedMarker.iterator(); iterator.hasNext(); ) {
+        for (Iterator<?> iterator = managedMarker.iterator(); iterator.hasNext();) {
             Marker nextMarker = (Marker) iterator.next();
             childNames.add(nextMarker.getName());
         }
@@ -133,7 +133,7 @@ public class Slf4j_apiTest {
         grandchildMarker.add(parentMarker);
 
         List<String> directChildNames = new ArrayList<>();
-        for (Iterator<?> iterator = parentMarker.iterator(); iterator.hasNext(); ) {
+        for (Iterator<?> iterator = parentMarker.iterator(); iterator.hasNext();) {
             Marker nextMarker = (Marker) iterator.next();
             directChildNames.add(nextMarker.getName());
         }
