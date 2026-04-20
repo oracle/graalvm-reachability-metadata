@@ -8,22 +8,26 @@ package org_jboss_logmanager.jboss_logmanager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
+import java.net.URL;
+import java.security.AccessController;
 import java.security.CodeSource;
-import java.security.Permission;
+import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
 import java.util.Objects;
 import java.util.logging.Level;
 
 import org.jboss.logmanager.ExtLogRecord;
+import org.jboss.logmanager.formatters.Formatters;
 import org.jboss.logmanager.formatters.PatternFormatter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class Formatters12Test {
 
@@ -40,25 +44,29 @@ public class Formatters12Test {
     }
 
     @Test
-    @SuppressWarnings("removal")
-    void extendedExceptionFormattingUsesPrivilegedResourceLookupWhenSecurityManagerIsInstalled() throws Exception {
-        assumeTrue(Runtime.version().feature() < 24, "Security Manager is not supported on this JDK");
+    void privilegedExtendedExceptionResourceLookupMatchesDirectClassLoaderLookup() throws Throwable {
         assumeFalse(System.getProperty("java.vm.name", "").contains("Substrate VM"),
-                "Security Manager is not supported in native image tests");
+                "Anonymous privileged-action construction is only needed for JVM dynamic-access coverage");
 
-        String className = Formatters12DefinedClass.class.getName();
-        TrackingDefinedClassLoader trackingLoader = new TrackingDefinedClassLoader(className);
-        SecurityManager previousSecurityManager = System.getSecurityManager();
-        System.setSecurityManager(new PermissiveSecurityManager());
+        Object exceptionFormatStep = Formatters.exceptionFormatStep(true, 0, 0, true);
+        Class<?> privilegedActionClass = exceptionFormatStep.getClass().getClassLoader()
+                .loadClass(exceptionFormatStep.getClass().getName() + "$2");
+        MethodHandles.Lookup actionLookup = MethodHandles.privateLookupIn(privilegedActionClass, MethodHandles.lookup());
+        MethodHandle constructor = actionLookup.findConstructor(
+                privilegedActionClass,
+                MethodType.methodType(void.class, exceptionFormatStep.getClass(), Class.class, String.class)
+        );
+        String classResourceName = Formatters12Test.class.getName().replace('.', '/') + ".class";
+        URL expectedResource = Formatters12Test.class.getClassLoader().getResource(classResourceName);
 
-        try {
-            String formatted = formatWithTccl(trackingLoader, newFailure(className));
+        @SuppressWarnings("unchecked")
+        PrivilegedAction<URL> privilegedAction = (PrivilegedAction<URL>) constructor.invoke(
+                exceptionFormatStep,
+                Formatters12Test.class,
+                classResourceName
+        );
 
-            assertThat(formatted).contains("\tat " + className + ".invoke");
-            assertThat(trackingLoader.wasResourceRequested()).isTrue();
-        } finally {
-            System.setSecurityManager(previousSecurityManager);
-        }
+        assertThat(AccessController.doPrivileged(privilegedAction)).isEqualTo(expectedResource);
     }
 
     @Test
@@ -186,14 +194,6 @@ public class Formatters12Test {
             } finally {
                 Thread.currentThread().setContextClassLoader(originalTccl);
             }
-        }
-    }
-
-    @SuppressWarnings("removal")
-    private static final class PermissiveSecurityManager extends SecurityManager {
-
-        @Override
-        public void checkPermission(final Permission permission) {
         }
     }
 
