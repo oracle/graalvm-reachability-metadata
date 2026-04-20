@@ -12,6 +12,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.file.Path;
+import java.util.Objects;
 
 import org.jvnet.animal_sniffer.IgnoreJRERequirement;
 import org.junit.jupiter.api.Test;
@@ -65,6 +67,22 @@ class Animal_sniffer_annotationTest {
                 .getDeclaredAnnotation(IgnoreJRERequirement.class)).isNull();
         assertThat(legacyApiFacadeType.getDeclaredMethod("describeSupport", String.class)
                 .getDeclaredAnnotation(IgnoreJRERequirement.class)).isNull();
+    }
+
+    @Test
+    void ignoreJreRequirementAllowsCodeToUseNewerJdkApisWithoutChangingBehavior() {
+        NewerJreApiFacade newerJreApiFacade = new NewerJreApiFacade();
+
+        assertThat(newerJreApiFacade.describeRequiredApi(null)).isEqualTo("requires: java.nio.file.Path");
+        assertThat(newerJreApiFacade.describeRequiredApi("java.util.Optional"))
+                .isEqualTo("requires: java.util.Optional");
+    }
+
+    private static final class NewerJreApiFacade {
+        @IgnoreJRERequirement
+        private String describeRequiredApi(String apiName) {
+            return "requires: " + Objects.requireNonNullElse(apiName, Path.class.getName());
+        }
     }
 
     @IgnoreJRERequirement
