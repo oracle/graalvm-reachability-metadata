@@ -7,10 +7,13 @@
 package org_jetbrains_kotlin.kotlin_script_runtime;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.script.dependencies.ScriptContents;
 import kotlin.script.experimental.dependencies.DependenciesResolver;
+import kotlin.script.experimental.dependencies.DependenciesResolverKt;
 import kotlin.script.experimental.dependencies.ScriptDependencies;
 import kotlin.script.experimental.dependencies.ScriptReport;
 import kotlin.script.templates.standard.ScriptTemplateWithArgs;
@@ -134,6 +137,29 @@ class Kotlin_script_runtimeTest {
         assertThat(ScriptDependencies.Companion.getEmpty()).isEqualTo(new ScriptDependencies());
     }
 
+    @Test
+    void builtInDependencyResolversProduceSuccessfulResultsWithoutReports() {
+        ScriptContents scriptContents = new TestScriptContents(
+                new File("scripts/sample.main.kts"),
+                "println(\"hello\")"
+        );
+        DependenciesResolver.ResolveResult.Success noDependenciesResult =
+                DependenciesResolver.NoDependencies.INSTANCE.resolve(scriptContents, Map.of());
+        ScriptDependencies dependencies = new ScriptDependencies(
+                new File("java-home"),
+                List.of(new File("libs/runtime.jar")),
+                List.of("sample.runtime.*"),
+                List.of(new File("src/main/kotlin/App.main.kts")),
+                List.of(new File("scripts/bootstrap.main.kts"))
+        );
+        DependenciesResolver.ResolveResult.Success helperResult = DependenciesResolverKt.asSuccess(dependencies);
+
+        assertThat(noDependenciesResult.getDependencies()).isEqualTo(ScriptDependencies.Companion.getEmpty());
+        assertThat(noDependenciesResult.getReports()).isEmpty();
+        assertThat(helperResult.getDependencies()).isSameAs(dependencies);
+        assertThat(helperResult.getReports()).isEmpty();
+    }
+
     private static final class ArgsTemplate extends ScriptTemplateWithArgs {
 
         private ArgsTemplate(String[] args) {
@@ -149,6 +175,32 @@ class Kotlin_script_runtimeTest {
     }
 
     private static final class PlainTemplate extends SimpleScriptTemplate {
+    }
+
+    private static final class TestScriptContents implements ScriptContents {
+
+        private final File file;
+        private final String text;
+
+        private TestScriptContents(File file, String text) {
+            this.file = file;
+            this.text = text;
+        }
+
+        @Override
+        public File getFile() {
+            return file;
+        }
+
+        @Override
+        public Iterable<Annotation> getAnnotations() {
+            return List.of();
+        }
+
+        @Override
+        public CharSequence getText() {
+            return text;
+        }
     }
 
 }
