@@ -103,8 +103,7 @@ public class Android10InstantiatorTest {
                     objectOutputStream.writeObject(value);
                 }
                 return outputStream.toByteArray();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new IllegalStateException(e);
             }
         }
@@ -113,8 +112,7 @@ public class Android10InstantiatorTest {
             try (ObjectInputStream objectInputStream =
                 new ObjectInputStream(new ByteArrayInputStream(serializedValue))) {
                 return objectInputStream.readObject();
-            }
-            catch (IOException | ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 throw new IllegalStateException(e);
             }
         }

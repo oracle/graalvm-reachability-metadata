@@ -45,8 +45,7 @@ public class PlatformDescriptionTest {
             Assertions.assertThat(description).contains("API level=3");
             Assertions.assertThat(description).contains("JVM name=\"Dalvik\"");
             Assertions.assertThat(androidOpenJdk).isFalse();
-        }
-        finally {
+        } finally {
             restoreSystemProperty("java.vm.name", originalVmName);
         }
     }
@@ -66,8 +65,7 @@ public class PlatformDescriptionTest {
             }
             try {
                 urls.add(Path.of(entry).toUri().toURL());
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new IllegalStateException(e);
             }
         }
@@ -95,12 +93,10 @@ public class PlatformDescriptionTest {
                 if (loadedClass == null && usesChildFirstLoading(name)) {
                     try {
                         loadedClass = findClass(name);
-                    }
-                    catch (ClassNotFoundException ignored) {
+                    } catch (ClassNotFoundException ignored) {
                         loadedClass = super.loadClass(name, false);
                     }
-                }
-                else if (loadedClass == null) {
+                } else if (loadedClass == null) {
                     loadedClass = super.loadClass(name, false);
                 }
                 if (resolve) {

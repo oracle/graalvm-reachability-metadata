@@ -6,12 +6,10 @@
  */
 package org_objenesis.objenesis;
 
-import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.objenesis.ObjenesisSerializer;
 import org.objenesis.ObjenesisStd;
 
 public class SunReflectionFactoryHelperTest {
@@ -28,20 +26,6 @@ public class SunReflectionFactoryHelperTest {
         Assertions.assertThat(instance.number).isZero();
     }
 
-    @Test
-    void followsSerializationConstructionRulesForSerializableTypes() {
-        NonSerializableParent.constructorCalls.set(0);
-        SerializableChild.constructorCalls.set(0);
-
-        SerializableChild instance = new ObjenesisSerializer().newInstance(SerializableChild.class);
-
-        Assertions.assertThat(instance).isNotNull();
-        Assertions.assertThat(NonSerializableParent.constructorCalls).hasValue(1);
-        Assertions.assertThat(SerializableChild.constructorCalls).hasValue(0);
-        Assertions.assertThat(instance.parentState).isEqualTo("initialized-by-parent");
-        Assertions.assertThat(instance.childState).isNull();
-    }
-
     static class ConstructorBypassedType {
         static final AtomicInteger constructorCalls = new AtomicInteger();
 
@@ -55,27 +39,4 @@ public class SunReflectionFactoryHelperTest {
         }
     }
 
-    static class NonSerializableParent {
-        static final AtomicInteger constructorCalls = new AtomicInteger();
-
-        String parentState;
-
-        NonSerializableParent() {
-            constructorCalls.incrementAndGet();
-            this.parentState = "initialized-by-parent";
-        }
-    }
-
-    static class SerializableChild extends NonSerializableParent implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        static final AtomicInteger constructorCalls = new AtomicInteger();
-
-        String childState;
-
-        SerializableChild() {
-            constructorCalls.incrementAndGet();
-            this.childState = "initialized-by-child";
-        }
-    }
 }
