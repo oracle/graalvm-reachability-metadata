@@ -78,10 +78,43 @@ class Animal_sniffer_annotationTest {
                 .isEqualTo("requires: java.util.Optional");
     }
 
+    @Test
+    void ignoreJreRequirementSupportsAnnotatedInterfacesAndDefaultMethods() {
+        CompatibilityContract compatibilityContract = new CompatibilityContractImpl("animal-sniffer");
+
+        assertThat(compatibilityContract.describeCompatibility("java.util.Optional"))
+                .isEqualTo("animal-sniffer supports java.util.Optional");
+        assertThat(compatibilityContract.describeCompatibility("java.time.Instant"))
+                .isEqualTo("animal-sniffer supports java.time.Instant");
+    }
+
     private static final class NewerJreApiFacade {
         @IgnoreJRERequirement
         private String describeRequiredApi(String apiName) {
             return "requires: " + Objects.requireNonNullElse(apiName, Path.class.getName());
+        }
+    }
+
+    @IgnoreJRERequirement
+    private interface CompatibilityContract {
+        String libraryName();
+
+        @IgnoreJRERequirement
+        default String describeCompatibility(String apiName) {
+            return libraryName() + " supports " + apiName;
+        }
+    }
+
+    private static final class CompatibilityContractImpl implements CompatibilityContract {
+        private final String libraryName;
+
+        private CompatibilityContractImpl(String libraryName) {
+            this.libraryName = libraryName;
+        }
+
+        @Override
+        public String libraryName() {
+            return libraryName;
         }
     }
 
