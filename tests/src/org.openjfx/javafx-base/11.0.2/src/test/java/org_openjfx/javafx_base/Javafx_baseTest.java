@@ -16,6 +16,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ArrayChangeListener;
@@ -200,6 +201,37 @@ public class Javafx_baseTest {
 
         assertThat(order).containsExactly("first:PROFILE_UPDATED_EVENT", "second:PROFILE_UPDATED_EVENT");
         assertThat(copied.isConsumed()).isTrue();
+    }
+
+    @Test
+    void listPropertyTracksContentSizeAndAssignedLists() {
+        SimpleListProperty<String> names = new SimpleListProperty<>(FXCollections.observableArrayList("Ada"));
+        List<String> sizeChanges = new ArrayList<>();
+        List<List<String>> snapshots = new ArrayList<>();
+        List<Boolean> emptyStates = new ArrayList<>();
+
+        names.sizeProperty().addListener((observable, oldValue, newValue) -> sizeChanges.add(oldValue + "->" + newValue));
+        names.addListener((ListChangeListener<String>) change -> {
+            while (change.next()) {
+                // exhaust change details so the property state is fully applied
+            }
+            snapshots.add(List.copyOf(names));
+        });
+        names.emptyProperty().addListener((observable, oldValue, newValue) -> emptyStates.add(newValue));
+
+        names.addAll("Grace", "Barbara");
+        names.set(FXCollections.observableArrayList("Diana", "Evelyn"));
+        names.remove("Diana");
+        names.clear();
+
+        assertThat(names).isEmpty();
+        assertThat(sizeChanges).containsExactly("1->3", "3->2", "2->1", "1->0");
+        assertThat(snapshots).containsExactly(
+                List.of("Ada", "Grace", "Barbara"),
+                List.of("Diana", "Evelyn"),
+                List.of("Evelyn"),
+                List.of());
+        assertThat(emptyStates).containsExactly(true);
     }
 
     private static List<String> taskNames(List<TaskItem> tasks) {
