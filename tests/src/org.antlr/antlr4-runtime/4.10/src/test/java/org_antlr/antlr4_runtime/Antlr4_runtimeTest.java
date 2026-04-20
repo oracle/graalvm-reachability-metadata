@@ -47,7 +47,7 @@ class Antlr4_runtimeTest {
 
     @Test
     void lexerHandlesUnicodeCommentsAndVocabulary() throws IOException {
-        CharStream input = CharStreams.fromReader(new StringReader("name = \"héllo\" + beta42#tail"), "assignment-fixture");
+        CharStream input = CharStreams.fromReader(new StringReader("name = \"h\u00E9llo\" + beta42#tail"), "assignment-fixture");
         AssignmentLexer lexer = new AssignmentLexer(input);
 
         Vocabulary vocabularyFromTokenNames = VocabularyImpl.fromTokenNames(AssignmentLexer.TOKEN_NAMES);
@@ -65,7 +65,7 @@ class Antlr4_runtimeTest {
         assertThat(AssignmentLexer.VOCABULARY.getDisplayName(AssignmentLexer.EQUALS)).isEqualTo("'='");
         assertThat(defaultChannelTokens)
                 .extracting(Token::getText)
-                .containsExactly("name", "=", "\"héllo\"", "+", "beta42");
+                .containsExactly("name", "=", "\"h\u00E9llo\"", "+", "beta42");
         assertThat(defaultChannelTokens)
                 .extracting(Token::getType)
                 .containsExactly(
@@ -84,7 +84,7 @@ class Antlr4_runtimeTest {
 
     @Test
     void parserBuildsTreeThatCanBeWalkedAndQueried() {
-        String input = "total = \"héllo\" + count + 42";
+        String input = "total = \"h\u00E9llo\" + count + 42";
         CommonTokenStream tokenStream = new CommonTokenStream(new AssignmentLexer(CharStreams.fromString(input, "tree-fixture")));
         AssignmentParser parser = new AssignmentParser(tokenStream);
 
@@ -102,10 +102,10 @@ class Antlr4_runtimeTest {
                 secondValue.getStop().getTokenIndex());
 
         assertThat(Trees.toStringTree(document, parser))
-                .isEqualTo("(document (assignment total = (value \"héllo\") + (value count) + (value 42)) )");
+                .isEqualTo("(document (assignment total = (value \"h\u00E9llo\") + (value count) + (value 42)) )");
         assertThat(listener.enteredRules).containsExactly("document", "assignment", "value", "value", "value");
         assertThat(listener.visitedTerminals)
-                .containsExactly("total", "=", "\"héllo\"", "+", "count", "+", "42", "");
+                .containsExactly("total", "=", "\"h\u00E9llo\"", "+", "count", "+", "42", "");
         assertThat(valueNodes).hasSize(3);
         assertThat(identifierNodes)
                 .extracting(ParseTree::getText)
