@@ -35,6 +35,7 @@ import javafx.event.EventDispatchChain;
 import javafx.event.EventDispatcher;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
+import javafx.util.Duration;
 import org.junit.jupiter.api.Test;
 
 public class Javafx_baseTest {
@@ -232,6 +233,32 @@ public class Javafx_baseTest {
                 List.of("Evelyn"),
                 List.of());
         assertThat(emptyStates).containsExactly(true);
+    }
+
+    @Test
+    void durationFactoriesParsingAndArithmeticRemainConsistent() {
+        Duration parsedMilliseconds = Duration.valueOf("1500ms");
+        Duration parsedSeconds = Duration.valueOf("2.5s");
+        Duration scaledMinute = Duration.minutes(1).divide(4);
+        Duration combined = parsedMilliseconds.add(parsedSeconds).subtract(Duration.seconds(1));
+
+        assertThat(parsedMilliseconds).isEqualTo(Duration.millis(1500));
+        assertThat(parsedSeconds).isEqualTo(Duration.millis(2500));
+        assertThat(scaledMinute).isEqualTo(Duration.seconds(15));
+        assertThat(combined).isEqualTo(Duration.seconds(3));
+        assertThat(combined.greaterThan(Duration.seconds(2))).isTrue();
+        assertThat(combined.lessThan(Duration.seconds(4))).isTrue();
+    }
+
+    @Test
+    void durationSentinelValuesPreserveSpecialStateAcrossOperations() {
+        Duration indefinite = Duration.INDEFINITE.add(Duration.seconds(5)).divide(3);
+        Duration unknown = Duration.UNKNOWN.multiply(2).negate();
+
+        assertThat(indefinite.isIndefinite()).isTrue();
+        assertThat(indefinite.greaterThan(Duration.hours(1))).isTrue();
+        assertThat(unknown.isUnknown()).isTrue();
+        assertThat(unknown.compareTo(Duration.ZERO)).isEqualTo(1);
     }
 
     private static List<String> taskNames(List<TaskItem> tasks) {
