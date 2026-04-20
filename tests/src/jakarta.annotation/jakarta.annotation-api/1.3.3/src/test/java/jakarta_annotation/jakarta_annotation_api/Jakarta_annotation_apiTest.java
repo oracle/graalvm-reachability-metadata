@@ -165,6 +165,62 @@ class Jakarta_annotation_apiTest {
     }
 
     @Test
+    void explicitDataSourceContainerFlattensToRepeatableViewAndPreservesConfiguredAttributes() {
+        DataSourceDefinitions dataSourceContainer = ExplicitDataSourceContainerComponent.class
+                .getAnnotation(DataSourceDefinitions.class);
+        DataSourceDefinition[] dataSourceDefinitions = ExplicitDataSourceContainerComponent.class
+                .getAnnotationsByType(DataSourceDefinition.class);
+
+        assertThat(dataSourceContainer.value()).hasSize(2);
+        assertThat(dataSourceContainer.value()[0].name()).isEqualTo("jdbc/inventory");
+        assertThat(dataSourceContainer.value()[0].className()).isEqualTo("org.postgresql.ds.PGSimpleDataSource");
+        assertThat(dataSourceContainer.value()[0].description()).isEqualTo("Inventory data source");
+        assertThat(dataSourceContainer.value()[0].url()).isEqualTo("jdbc:postgresql://db.example.test:5432/inventory");
+        assertThat(dataSourceContainer.value()[0].user()).isEqualTo("inventory_user");
+        assertThat(dataSourceContainer.value()[0].password()).isEqualTo("inventory_secret");
+        assertThat(dataSourceContainer.value()[0].databaseName()).isEqualTo("inventory");
+        assertThat(dataSourceContainer.value()[0].portNumber()).isEqualTo(5432);
+        assertThat(dataSourceContainer.value()[0].serverName()).isEqualTo("db.example.test");
+        assertThat(dataSourceContainer.value()[0].isolationLevel()).isEqualTo(2);
+        assertThat(dataSourceContainer.value()[0].transactional()).isFalse();
+        assertThat(dataSourceContainer.value()[0].initialPoolSize()).isEqualTo(2);
+        assertThat(dataSourceContainer.value()[0].maxPoolSize()).isEqualTo(8);
+        assertThat(dataSourceContainer.value()[0].minPoolSize()).isEqualTo(1);
+        assertThat(dataSourceContainer.value()[0].maxIdleTime()).isEqualTo(30);
+        assertThat(dataSourceContainer.value()[0].maxStatements()).isEqualTo(16);
+        assertThat(dataSourceContainer.value()[0].properties()).containsExactly("ssl=true", "schema=inventory");
+        assertThat(dataSourceContainer.value()[0].loginTimeout()).isEqualTo(5);
+
+        assertThat(dataSourceContainer.value()[1].name()).isEqualTo("jdbc/reporting");
+        assertThat(dataSourceContainer.value()[1].className()).isEqualTo("org.h2.jdbcx.JdbcDataSource");
+        assertThat(dataSourceContainer.value()[1].description()).isEqualTo("Reporting data source");
+        assertThat(dataSourceContainer.value()[1].url()).isEqualTo("jdbc:h2:mem:reporting");
+        assertThat(dataSourceContainer.value()[1].user()).isEqualTo("report_user");
+        assertThat(dataSourceContainer.value()[1].password()).isEqualTo("report_secret");
+        assertThat(dataSourceContainer.value()[1].databaseName()).isEqualTo("reporting");
+        assertThat(dataSourceContainer.value()[1].portNumber()).isEqualTo(9092);
+        assertThat(dataSourceContainer.value()[1].serverName()).isEqualTo("reporting-host");
+        assertThat(dataSourceContainer.value()[1].isolationLevel()).isEqualTo(8);
+        assertThat(dataSourceContainer.value()[1].transactional()).isTrue();
+        assertThat(dataSourceContainer.value()[1].initialPoolSize()).isEqualTo(1);
+        assertThat(dataSourceContainer.value()[1].maxPoolSize()).isEqualTo(4);
+        assertThat(dataSourceContainer.value()[1].minPoolSize()).isEqualTo(1);
+        assertThat(dataSourceContainer.value()[1].maxIdleTime()).isEqualTo(45);
+        assertThat(dataSourceContainer.value()[1].maxStatements()).isEqualTo(32);
+        assertThat(dataSourceContainer.value()[1].properties()).containsExactly("MODE=PostgreSQL", "TRACE_LEVEL_FILE=0");
+        assertThat(dataSourceContainer.value()[1].loginTimeout()).isEqualTo(10);
+
+        assertThat(dataSourceDefinitions)
+                .extracting(DataSourceDefinition::name)
+                .containsExactly("jdbc/inventory", "jdbc/reporting");
+        assertThat(dataSourceDefinitions)
+                .extracting(DataSourceDefinition::serverName)
+                .containsExactly("db.example.test", "reporting-host");
+        assertThat(dataSourceDefinitions[0].properties()).containsExactly("ssl=true", "schema=inventory");
+        assertThat(dataSourceDefinitions[1].properties()).containsExactly("MODE=PostgreSQL", "TRACE_LEVEL_FILE=0");
+    }
+
+    @Test
     void generatedIsAvailableAtCompileTimeButNotRetainedAtRuntime() {
         assertThat(GeneratedMarker.class.getAnnotation(Generated.class)).isNull();
     }
@@ -316,6 +372,49 @@ class Jakarta_annotation_apiTest {
     @DataSourceDefinition(className = "org.h2.Driver", name = "jdbc/primary")
     @DataSourceDefinition(className = "org.h2.Driver", name = "jdbc/reporting")
     private static final class RepeatableDataSourceComponent {
+    }
+
+    @DataSourceDefinitions({
+            @DataSourceDefinition(
+                    name = "jdbc/inventory",
+                    className = "org.postgresql.ds.PGSimpleDataSource",
+                    description = "Inventory data source",
+                    url = "jdbc:postgresql://db.example.test:5432/inventory",
+                    user = "inventory_user",
+                    password = "inventory_secret",
+                    databaseName = "inventory",
+                    portNumber = 5432,
+                    serverName = "db.example.test",
+                    isolationLevel = 2,
+                    transactional = false,
+                    initialPoolSize = 2,
+                    maxPoolSize = 8,
+                    minPoolSize = 1,
+                    maxIdleTime = 30,
+                    maxStatements = 16,
+                    properties = {"ssl=true", "schema=inventory"},
+                    loginTimeout = 5),
+            @DataSourceDefinition(
+                    name = "jdbc/reporting",
+                    className = "org.h2.jdbcx.JdbcDataSource",
+                    description = "Reporting data source",
+                    url = "jdbc:h2:mem:reporting",
+                    user = "report_user",
+                    password = "report_secret",
+                    databaseName = "reporting",
+                    portNumber = 9092,
+                    serverName = "reporting-host",
+                    isolationLevel = 8,
+                    transactional = true,
+                    initialPoolSize = 1,
+                    maxPoolSize = 4,
+                    minPoolSize = 1,
+                    maxIdleTime = 45,
+                    maxStatements = 32,
+                    properties = {"MODE=PostgreSQL", "TRACE_LEVEL_FILE=0"},
+                    loginTimeout = 10)
+    })
+    private static final class ExplicitDataSourceContainerComponent {
     }
 
     @Generated(value = {"metadata-forge", "generator"}, date = "2026-04-20", comments = "compile-time only")
