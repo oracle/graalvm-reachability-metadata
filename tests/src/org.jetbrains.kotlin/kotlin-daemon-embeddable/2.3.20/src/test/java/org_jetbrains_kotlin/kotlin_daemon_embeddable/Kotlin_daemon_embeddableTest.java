@@ -6,6 +6,7 @@
  */
 package org_jetbrains_kotlin.kotlin_daemon_embeddable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -13,6 +14,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,8 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import kotlin.sequences.SequencesKt;
 import org.jetbrains.kotlin.cli.common.CompilerSystemProperties;
+import org.jetbrains.kotlin.daemon.RemoteInputStreamClient;
+import org.jetbrains.kotlin.daemon.RemoteOutputStreamClient;
 import org.jetbrains.kotlin.daemon.RunningCompilations;
 import org.jetbrains.kotlin.daemon.common.ClientUtilsKt;
 import org.jetbrains.kotlin.daemon.common.CompilerId;
@@ -33,7 +37,10 @@ import org.jetbrains.kotlin.daemon.common.DaemonOptions;
 import org.jetbrains.kotlin.daemon.common.DaemonParamsKt;
 import org.jetbrains.kotlin.daemon.common.DaemonReportCategory;
 import org.jetbrains.kotlin.daemon.common.DaemonWithMetadata;
+import org.jetbrains.kotlin.daemon.common.DummyProfiler;
 import org.jetbrains.kotlin.daemon.common.LoopbackNetworkInterface;
+import org.jetbrains.kotlin.daemon.common.RemoteInputStream;
+import org.jetbrains.kotlin.daemon.common.RemoteOutputStream;
 import org.jetbrains.kotlin.progress.CompilationCanceledException;
 import org.jetbrains.kotlin.progress.CompilationCanceledStatus;
 import org.junit.jupiter.api.Test;
@@ -244,6 +251,35 @@ class Kotlin_daemon_embeddableTest {
         assertThatThrownBy(secondStatus::checkCanceled).isInstanceOf(CompilationCanceledException.class);
     }
 
+    @Test
+    void remoteOutputStreamClientForwardsWholePartialAndSingleByteWrites() throws Exception {
+        RecordingRemoteOutputStream remoteOutputStream = new RecordingRemoteOutputStream();
+        RemoteOutputStreamClient client = new RemoteOutputStreamClient(remoteOutputStream, new DummyProfiler());
+
+        client.write(new byte[]{10, 20});
+        client.write(new byte[]{30, 40, 50}, 1, 2);
+        client.write(60);
+
+        assertThat(remoteOutputStream.toByteArray()).containsExactly(10, 20, 40, 50, 60);
+    }
+
+    @Test
+    void remoteInputStreamClientReadsRequestedRangesWithoutTouchingOtherBytes() throws Exception {
+        RemoteInputStreamClient client = new RemoteInputStreamClient(
+                new ChunkedRemoteInputStream(new byte[]{10, 20, 30, 40}),
+                new DummyProfiler()
+        );
+
+        assertThat(client.read()).isEqualTo(10);
+
+        byte[] destination = new byte[]{99, 99, 99, 99, 99};
+        int bytesRead = client.read(destination, 1, 2);
+
+        assertThat(bytesRead).isEqualTo(2);
+        assertThat(destination).containsExactly(99, 20, 30, 99, 99);
+        assertThat(client.read()).isEqualTo(40);
+    }
+
     private static Map<CompilerSystemProperties, String> snapshotProperties(CompilerSystemProperties... properties) {
         Map<CompilerSystemProperties, String> previousValues = new EnumMap<>(CompilerSystemProperties.class);
         for (CompilerSystemProperties property : properties) {
@@ -259,6 +295,60 @@ class Kotlin_daemon_embeddableTest {
             } else {
                 entry.getKey().setValue(entry.getValue());
             }
+        }
+    }
+
+    private static final class RecordingRemoteOutputStream implements RemoteOutputStream {
+
+        private final ByteArrayOutputStream writtenBytes = new ByteArrayOutputStream();
+
+        @Override
+        public void close() {
+        }
+
+        @Override
+        public void write(byte[] data, int offset, int length) {
+            writtenBytes.write(data, offset, length);
+        }
+
+        @Override
+        public void write(int value) {
+            writtenBytes.write(value);
+        }
+
+        byte[] toByteArray() {
+            return writtenBytes.toByteArray();
+        }
+    }
+
+    private static final class ChunkedRemoteInputStream implements RemoteInputStream {
+
+        private final byte[] source;
+        private int nextIndex;
+
+        private ChunkedRemoteInputStream(byte[] source) {
+            this.source = Arrays.copyOf(source, source.length);
+        }
+
+        @Override
+        public void close() {
+        }
+
+        @Override
+        public byte[] read(int length) {
+            int remaining = source.length - nextIndex;
+            int bytesToRead = Math.min(length, remaining);
+            byte[] chunk = Arrays.copyOfRange(source, nextIndex, nextIndex + bytesToRead);
+            nextIndex += bytesToRead;
+            return chunk;
+        }
+
+        @Override
+        public int read() {
+            if (nextIndex >= source.length) {
+                return -1;
+            }
+            return source[nextIndex++] & 0xFF;
         }
     }
 
