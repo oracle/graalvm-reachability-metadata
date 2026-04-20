@@ -7,12 +7,15 @@
 package net_i2p_crypto.eddsa;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.SignatureException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import net.i2p.crypto.eddsa.EdDSAEngine;
@@ -130,5 +133,48 @@ class EddsaTest {
         assertThat(groupElementBackedPublicKey).isEqualTo(byteBackedPublicKey);
         assertThat(groupElementBackedPublicKey.getAbyte()).isEqualTo(RFC_8032_PUBLIC_KEY);
         assertThat(groupElementBackedPublicKey.getParams()).isEqualTo(curveSpec);
+    }
+
+    @Test
+    void supportsOneShotModeThroughTheSignatureApi() throws Exception {
+        EdDSANamedCurveSpec curveSpec = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
+        EdDSAPrivateKey privateKey = new EdDSAPrivateKey(new EdDSAPrivateKeySpec(RFC_8032_SEED, curveSpec));
+        EdDSAPublicKey publicKey = new EdDSAPublicKey(new EdDSAPublicKeySpec(RFC_8032_PUBLIC_KEY, curveSpec));
+        byte[] message = "one shot mode signs the requested byte range".getBytes(StandardCharsets.UTF_8);
+        byte[] paddedMessage = "__one shot mode signs the requested byte range__".getBytes(StandardCharsets.UTF_8);
+
+        EdDSAEngine signer = new EdDSAEngine(MessageDigest.getInstance(curveSpec.getHashAlgorithm()));
+        signer.initSign(privateKey);
+        signer.setParameter(EdDSAEngine.ONE_SHOT_MODE);
+        signer.update(paddedMessage, 2, message.length);
+        byte[] signature = signer.sign();
+
+        EdDSAEngine verifier = new EdDSAEngine(MessageDigest.getInstance(curveSpec.getHashAlgorithm()));
+        verifier.initVerify(publicKey);
+        verifier.setParameter(EdDSAEngine.ONE_SHOT_MODE);
+        verifier.update(paddedMessage, 2, message.length);
+        assertThat(verifier.verify(signature)).isTrue();
+
+        byte[] tamperedMessage = paddedMessage.clone();
+        tamperedMessage[2] ^= 0x01;
+        verifier.initVerify(publicKey);
+        verifier.setParameter(EdDSAEngine.ONE_SHOT_MODE);
+        verifier.update(tamperedMessage, 2, message.length);
+        assertThat(verifier.verify(signature)).isFalse();
+
+        EdDSAEngine splitUpdateSigner = new EdDSAEngine();
+        splitUpdateSigner.initSign(privateKey);
+        splitUpdateSigner.setParameter(EdDSAEngine.ONE_SHOT_MODE);
+        splitUpdateSigner.update(message, 0, 8);
+        assertThatThrownBy(() -> splitUpdateSigner.update(message, 8, message.length - 8))
+                .isInstanceOf(SignatureException.class)
+                .hasMessage("update() already called");
+
+        EdDSAEngine lateOneShotModeSigner = new EdDSAEngine();
+        lateOneShotModeSigner.initSign(privateKey);
+        lateOneShotModeSigner.update(message, 0, 8);
+        assertThatThrownBy(() -> lateOneShotModeSigner.setParameter(EdDSAEngine.ONE_SHOT_MODE))
+                .isInstanceOf(InvalidAlgorithmParameterException.class)
+                .hasMessage("update() already called");
     }
 }
