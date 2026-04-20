@@ -74,16 +74,21 @@ class Jboss_interceptors_api_1_1_specTest {
         Method aroundInvokeMethod = SampleInterceptor.class.getDeclaredMethod("aroundInvoke", InvocationContext.class);
         Method aroundTimeoutMethod = SampleInterceptor.class.getDeclaredMethod("aroundTimeout", InvocationContext.class);
         Method interceptedMethod = InterceptedService.class.getDeclaredMethod("work");
+        Class<SampleInterceptor> sampleInterceptorAnnotationAccess = SampleInterceptor.class;
+        Class<InterceptedService> interceptedServiceAnnotationAccess = InterceptedService.class;
+        Method interceptedMethodAnnotationAccess = interceptedMethod;
+        Method aroundInvokeMethodAnnotationAccess = aroundInvokeMethod;
+        Method aroundTimeoutMethodAnnotationAccess = aroundTimeoutMethod;
 
-        assertThat(SampleInterceptor.class.getAnnotation(Interceptor.class)).isNotNull();
-        assertThat(SampleInterceptor.class.getAnnotation(SampleBinding.class)).isNotNull();
-        assertThat(InterceptedService.class.getAnnotation(ExcludeDefaultInterceptors.class)).isNotNull();
-        assertThat(interceptedMethod.getAnnotation(ExcludeClassInterceptors.class)).isNotNull();
-        assertThat(aroundInvokeMethod.getAnnotation(AroundInvoke.class)).isNotNull();
-        assertThat(aroundTimeoutMethod.getAnnotation(AroundTimeout.class)).isNotNull();
+        assertThat(sampleInterceptorAnnotationAccess.getAnnotation(Interceptor.class)).isNotNull();
+        assertThat(sampleInterceptorAnnotationAccess.getAnnotation(SampleBinding.class)).isNotNull();
+        assertThat(interceptedServiceAnnotationAccess.getAnnotation(ExcludeDefaultInterceptors.class)).isNotNull();
+        assertThat(interceptedMethodAnnotationAccess.getAnnotation(ExcludeClassInterceptors.class)).isNotNull();
+        assertThat(aroundInvokeMethodAnnotationAccess.getAnnotation(AroundInvoke.class)).isNotNull();
+        assertThat(aroundTimeoutMethodAnnotationAccess.getAnnotation(AroundTimeout.class)).isNotNull();
 
-        Interceptors classLevelInterceptors = InterceptedService.class.getAnnotation(Interceptors.class);
-        Interceptors methodLevelInterceptors = interceptedMethod.getAnnotation(Interceptors.class);
+        Interceptors classLevelInterceptors = interceptedServiceAnnotationAccess.getAnnotation(Interceptors.class);
+        Interceptors methodLevelInterceptors = interceptedMethodAnnotationAccess.getAnnotation(Interceptors.class);
 
         assertThat(classLevelInterceptors).isNotNull();
         assertThat(classLevelInterceptors.value()).containsExactly(SampleInterceptor.class, SecondaryInterceptor.class);
@@ -94,9 +99,11 @@ class Jboss_interceptors_api_1_1_specTest {
     @Test
     void interceptorBindingMembersAndMethodLevelDefaultExclusionAreRetainedAtRuntime() throws Exception {
         Method method = MethodBoundService.class.getDeclaredMethod("work");
+        Class<MethodBoundService> methodBoundServiceAnnotationAccess = MethodBoundService.class;
+        Method methodAnnotationAccess = method;
 
-        ConfigurableBinding classBinding = MethodBoundService.class.getAnnotation(ConfigurableBinding.class);
-        ConfigurableBinding methodBinding = method.getAnnotation(ConfigurableBinding.class);
+        ConfigurableBinding classBinding = methodBoundServiceAnnotationAccess.getAnnotation(ConfigurableBinding.class);
+        ConfigurableBinding methodBinding = methodAnnotationAccess.getAnnotation(ConfigurableBinding.class);
 
         assertThat(classBinding).isNotNull();
         assertThat(classBinding.stage()).isEqualTo("default");
@@ -104,7 +111,7 @@ class Jboss_interceptors_api_1_1_specTest {
         assertThat(methodBinding).isNotNull();
         assertThat(methodBinding.stage()).isEqualTo("method");
         assertThat(methodBinding.enabled()).isFalse();
-        assertThat(method.getAnnotation(ExcludeDefaultInterceptors.class)).isNotNull();
+        assertThat(methodAnnotationAccess.getAnnotation(ExcludeDefaultInterceptors.class)).isNotNull();
     }
 
     @Test
@@ -153,14 +160,15 @@ class Jboss_interceptors_api_1_1_specTest {
             boolean documented,
             ElementType... expectedTargets
     ) {
-        Retention retention = annotationType.getAnnotation(Retention.class);
-        Target target = annotationType.getAnnotation(Target.class);
+        Class<? extends Annotation> annotationTypeAnnotationAccess = annotationType;
+        Retention retention = annotationTypeAnnotationAccess.getAnnotation(Retention.class);
+        Target target = annotationTypeAnnotationAccess.getAnnotation(Target.class);
 
         assertThat(retention).isNotNull();
         assertThat(retention.value()).isEqualTo(retentionPolicy);
         assertThat(target).isNotNull();
         assertThat(target.value()).containsExactly(expectedTargets);
-        assertThat(annotationType.isAnnotationPresent(Documented.class)).isEqualTo(documented);
+        assertThat(annotationTypeAnnotationAccess.isAnnotationPresent(Documented.class)).isEqualTo(documented);
     }
 
     @InterceptorBinding
