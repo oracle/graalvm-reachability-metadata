@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class NativeLibraryLoaderTest {
+    private static final String ROCKSDB_PACKAGE = "org.rocksdb.";
     private static final String ROCKSDB_LIBRARY_NAME = "rocksdb";
     private static final String SIMULATED_MAC_OS = "mac os x";
     private static final String SIMULATED_MAC_ARCH = "x86_64";
@@ -46,6 +47,8 @@ public class NativeLibraryLoaderTest {
 
     @Test
     void loadLibraryFromJarToTempAttemptsFallbackLookupWhenPrimaryResourceIsMissing() throws Throwable {
+        org.junit.jupiter.api.Assumptions.assumeFalse(isNativeImageRuntime());
+
         URL rocksDbJar = NativeLibraryLoader.class.getProtectionDomain().getCodeSource().getLocation();
 
         try (ResourceHidingClassLoader classLoader = new ResourceHidingClassLoader(
@@ -86,6 +89,10 @@ public class NativeLibraryLoaderTest {
         field.set(null, value);
     }
 
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
+    }
+
     private static final class ResourceHidingClassLoader extends URLClassLoader {
         private final String hiddenResourceName;
 
@@ -100,6 +107,28 @@ public class NativeLibraryLoaderTest {
                 return null;
             }
             return super.getResourceAsStream(name);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass == null) {
+                    if (name.startsWith(ROCKSDB_PACKAGE)) {
+                        try {
+                            loadedClass = findClass(name);
+                        } catch (ClassNotFoundException ignored) {
+                            loadedClass = super.loadClass(name, false);
+                        }
+                    } else {
+                        loadedClass = super.loadClass(name, false);
+                    }
+                }
+                if (resolve) {
+                    resolveClass(loadedClass);
+                }
+                return loadedClass;
+            }
         }
     }
 }
