@@ -16,6 +16,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -130,6 +131,31 @@ class Jsr250_apiTest {
     }
 
     @Test
+    void resourceDefaultsCanBeDerivedFromFieldAndSetterInjectionPoints() throws Exception {
+        Field field = field(ImplicitResourceComponent.class, "inventoryQueue");
+        Method retryLimitSetter = method(ImplicitResourceComponent.class, "setRetryLimit", Integer.class);
+        Method urlSetter = method(ImplicitResourceComponent.class, "setURL", String.class);
+        Resource fieldResource = annotation(field, Resource.class);
+        Resource retryLimitResource = annotation(retryLimitSetter, Resource.class);
+        Resource urlResource = annotation(urlSetter, Resource.class);
+
+        assertThat(fieldResource.name()).isEmpty();
+        assertThat(fieldResource.type()).isEqualTo(Object.class);
+        assertThat(effectiveResourceName(field, fieldResource)).isEqualTo("inventoryQueue");
+        assertThat(effectiveResourceType(field, fieldResource)).isEqualTo(CharSequence.class);
+
+        assertThat(retryLimitResource.name()).isEmpty();
+        assertThat(retryLimitResource.type()).isEqualTo(Object.class);
+        assertThat(effectiveResourceName(retryLimitSetter, retryLimitResource)).isEqualTo("retryLimit");
+        assertThat(effectiveResourceType(retryLimitSetter, retryLimitResource)).isEqualTo(Integer.class);
+
+        assertThat(urlResource.name()).isEmpty();
+        assertThat(urlResource.type()).isEqualTo(Object.class);
+        assertThat(effectiveResourceName(urlSetter, urlResource)).isEqualTo("URL");
+        assertThat(effectiveResourceType(urlSetter, urlResource)).isEqualTo(String.class);
+    }
+
+    @Test
     void typeLevelSecurityAnnotationsAreRetainedOnClasses() {
         RolesAllowed rolesAllowed = annotation(TypeRestrictedComponent.class, RolesAllowed.class);
 
@@ -204,6 +230,38 @@ class Jsr250_apiTest {
         return type.getDeclaredMethod(name);
     }
 
+    private static Method method(Class<?> type, String name, Class<?>... parameterTypes) throws NoSuchMethodException {
+        return type.getDeclaredMethod(name, parameterTypes);
+    }
+
+    private static String effectiveResourceName(Field field, Resource resource) {
+        if (!resource.name().isEmpty()) {
+            return resource.name();
+        }
+        return field.getName();
+    }
+
+    private static Class<?> effectiveResourceType(Field field, Resource resource) {
+        if (resource.type() != Object.class) {
+            return resource.type();
+        }
+        return field.getType();
+    }
+
+    private static String effectiveResourceName(Method method, Resource resource) {
+        if (!resource.name().isEmpty()) {
+            return resource.name();
+        }
+        return Introspector.decapitalize(method.getName().substring(3));
+    }
+
+    private static Class<?> effectiveResourceType(Method method, Resource resource) {
+        if (resource.type() != Object.class) {
+            return resource.type();
+        }
+        return method.getParameterTypes()[0];
+    }
+
     private static final class DefaultLifecycleComponent {
 
         @Resource
@@ -245,6 +303,20 @@ class Jsr250_apiTest {
                 description = "Method resource")
         Integer loadConfig() {
             return 42;
+        }
+    }
+
+    private static final class ImplicitResourceComponent {
+
+        @Resource
+        private CharSequence inventoryQueue;
+
+        @Resource
+        void setRetryLimit(Integer retryLimit) {
+        }
+
+        @Resource
+        void setURL(String url) {
         }
     }
 
