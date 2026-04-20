@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TerminalFactoryTest {
 
@@ -79,6 +80,14 @@ public class TerminalFactoryTest {
         assertThat(((NoArgTerminal) terminal).constructed).isTrue();
     }
 
+    @Test
+    void getFlavorRequiresAPublicTtyDeviceConstructorWhenATtyDeviceIsProvided() {
+        TerminalFactory.registerFlavor(TerminalFactory.Flavor.WINDOWS, NoStringConstructorTerminal.class);
+
+        assertThatThrownBy(() -> TerminalFactory.getFlavor(TerminalFactory.Flavor.WINDOWS, "/dev/tty-test"))
+                .isInstanceOf(NoSuchMethodException.class);
+    }
+
     private static void restoreDefaultFlavors() {
         TerminalFactory.registerFlavor(TerminalFactory.Flavor.WINDOWS, AnsiWindowsTerminal.class);
         TerminalFactory.registerFlavor(TerminalFactory.Flavor.UNIX, UnixTerminal.class);
@@ -131,6 +140,13 @@ public class TerminalFactoryTest {
         public NoArgTerminal() {
             super(true);
             constructed = true;
+        }
+    }
+
+    public static final class NoStringConstructorTerminal extends TerminalSupport {
+
+        public NoStringConstructorTerminal() {
+            super(true);
         }
     }
 }
