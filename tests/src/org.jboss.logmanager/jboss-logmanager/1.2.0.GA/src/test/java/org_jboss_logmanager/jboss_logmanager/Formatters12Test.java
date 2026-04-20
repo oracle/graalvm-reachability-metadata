@@ -151,10 +151,16 @@ public class Formatters12Test {
 
         @Override
         public String format(final Throwable thrown) {
-            PatternFormatter formatter = new PatternFormatter("%E");
-            java.util.logging.LogRecord record = new java.util.logging.LogRecord(Level.SEVERE, "coverage");
-            record.setThrown(thrown);
-            return formatter.format(record);
+            ClassLoader originalTccl = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+                PatternFormatter formatter = new PatternFormatter("%E");
+                java.util.logging.LogRecord record = new java.util.logging.LogRecord(Level.SEVERE, "coverage");
+                record.setThrown(thrown);
+                return formatter.format(record);
+            } finally {
+                Thread.currentThread().setContextClassLoader(originalTccl);
+            }
         }
     }
 
