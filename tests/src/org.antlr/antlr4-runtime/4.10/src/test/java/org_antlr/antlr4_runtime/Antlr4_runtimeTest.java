@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.TokenStreamRewriter;
+import org.antlr.v4.runtime.UnbufferedTokenStream;
 import org.antlr.v4.runtime.Vocabulary;
 import org.antlr.v4.runtime.VocabularyImpl;
 import org.antlr.v4.runtime.atn.ATN;
@@ -154,6 +155,34 @@ class Antlr4_runtimeTest {
                 .contains("STRING")
                 .contains("'='")
                 .contains("'+'");
+    }
+
+    @Test
+    void unbufferedTokenStreamsSupportMarksLookaheadAndTextExtraction() {
+        AssignmentLexer lexer = new AssignmentLexer(CharStreams.fromString("delta = 7 + 9", "stream-fixture"));
+        UnbufferedTokenStream<Token> tokenStream = new UnbufferedTokenStream<>(lexer, 2);
+
+        int marker = tokenStream.mark();
+        Token identifier = tokenStream.LT(1);
+
+        tokenStream.consume();
+        Token whitespace = tokenStream.LT(1);
+        tokenStream.consume();
+        Token equals = tokenStream.LT(1);
+
+        assertThat(tokenStream.getSourceName()).isEqualTo("stream-fixture");
+        assertThat(identifier.getText()).isEqualTo("delta");
+        assertThat(whitespace.getText()).isEqualTo(" ");
+        assertThat(whitespace.getChannel()).isEqualTo(Token.HIDDEN_CHANNEL);
+        assertThat(equals.getType()).isEqualTo(AssignmentLexer.EQUALS);
+        assertThat(tokenStream.getText(identifier, equals)).isEqualTo("delta =");
+
+        tokenStream.seek(0);
+
+        assertThat(tokenStream.LT(1).getText()).isEqualTo("delta");
+        assertThat(tokenStream.LA(3)).isEqualTo(AssignmentLexer.EQUALS);
+
+        tokenStream.release(marker);
     }
 
     private static final class RecordingParseTreeListener implements ParseTreeListener {
