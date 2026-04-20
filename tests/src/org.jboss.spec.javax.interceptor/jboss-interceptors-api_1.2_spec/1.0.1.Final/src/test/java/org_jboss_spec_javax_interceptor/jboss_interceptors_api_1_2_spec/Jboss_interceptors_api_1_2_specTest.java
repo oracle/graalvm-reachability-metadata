@@ -180,6 +180,38 @@ class Jboss_interceptors_api_1_2_specTest {
     }
 
     @Test
+    void aroundTimeoutInterceptorsCanUseTimerMetadataAndUpdatedParametersAcrossAChain() throws Exception {
+        TimeoutService service = new TimeoutService("native");
+        TimeoutMetadata timeoutMetadata = new TimeoutMetadata("retry-window", 1500L);
+        TimeoutMetadataCapturingInterceptor timeoutMetadataCapturingInterceptor =
+                new TimeoutMetadataCapturingInterceptor();
+        TimeoutAttemptAdjustingInterceptor timeoutAttemptAdjustingInterceptor =
+                new TimeoutAttemptAdjustingInterceptor();
+        SimpleInvocationContext invocationContext = new SimpleInvocationContext(
+                service,
+                null,
+                null,
+                new Object[]{"cleanup", 2},
+                new LinkedHashMap<>(),
+                timeoutMetadata,
+                new InterceptorChain(
+                        context -> timeoutMetadataCapturingInterceptor.aroundTimeout(context),
+                        context -> timeoutAttemptAdjustingInterceptor.aroundTimeout(context),
+                        context -> service.handleTimeout(
+                                ((TimeoutMetadata) context.getTimer()).getScheduleName(),
+                                (String) context.getParameters()[0],
+                                (Integer) context.getParameters()[1])));
+
+        assertThat(invocationContext.proceed()).isEqualTo("native:retry-window:cleanup#3");
+        assertThat(invocationContext.getContextData())
+                .containsEntry("timerName", "retry-window")
+                .containsEntry("timerDelayMillis", 1500L)
+                .containsEntry("originalAttempt", 2)
+                .containsEntry("adjustedAttempt", 3);
+        assertThat(invocationContext.getParameters()).containsExactly("cleanup", 3);
+    }
+
+    @Test
     void interceptorPriorityConstantsDefineAscendingPriorityBands() {
         assertThat(List.of(
                 Interceptor.Priority.PLATFORM_BEFORE,
@@ -249,6 +281,30 @@ class Jboss_interceptors_api_1_2_specTest {
         }
     }
 
+    private static final class TimeoutMetadataCapturingInterceptor {
+
+        @AroundTimeout
+        Object aroundTimeout(InvocationContext context) throws Exception {
+            TimeoutMetadata timeoutMetadata = (TimeoutMetadata) context.getTimer();
+            context.getContextData().put("timerName", timeoutMetadata.getScheduleName());
+            context.getContextData().put("timerDelayMillis", timeoutMetadata.getDelayMillis());
+            context.getContextData().put("originalAttempt", context.getParameters()[1]);
+            return context.proceed();
+        }
+    }
+
+    private static final class TimeoutAttemptAdjustingInterceptor {
+
+        @AroundTimeout
+        Object aroundTimeout(InvocationContext context) throws Exception {
+            Object[] parameters = context.getParameters();
+            int adjustedAttempt = ((Integer) parameters[1]) + 1;
+            context.setParameters(new Object[]{parameters[0], adjustedAttempt});
+            context.getContextData().put("adjustedAttempt", adjustedAttempt);
+            return context.proceed();
+        }
+    }
+
     @ExcludeDefaultInterceptors
     @Interceptors({AuditingInterceptor.class, MetricsInterceptor.class})
     private static final class InterceptedComponent {
@@ -278,6 +334,36 @@ class Jboss_interceptors_api_1_2_specTest {
 
         private String join(String token, int repeatCount) {
             return prefix + ":" + token.repeat(repeatCount);
+        }
+    }
+
+    private static final class TimeoutService {
+        private final String prefix;
+
+        private TimeoutService(String prefix) {
+            this.prefix = prefix;
+        }
+
+        private String handleTimeout(String scheduleName, String operationName, int attempt) {
+            return prefix + ":" + scheduleName + ":" + operationName + "#" + attempt;
+        }
+    }
+
+    private static final class TimeoutMetadata {
+        private final String scheduleName;
+        private final long delayMillis;
+
+        private TimeoutMetadata(String scheduleName, long delayMillis) {
+            this.scheduleName = scheduleName;
+            this.delayMillis = delayMillis;
+        }
+
+        private String getScheduleName() {
+            return scheduleName;
+        }
+
+        private long getDelayMillis() {
+            return delayMillis;
         }
     }
 
