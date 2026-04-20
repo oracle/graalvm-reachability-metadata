@@ -19,6 +19,7 @@ import java.util.Locale;
 import edu.umd.cs.findbugs.annotations.CleanupObligation;
 import edu.umd.cs.findbugs.annotations.Confidence;
 import edu.umd.cs.findbugs.annotations.CreatesObligation;
+import edu.umd.cs.findbugs.annotations.DesireNoWarning;
 import edu.umd.cs.findbugs.annotations.DesireWarning;
 import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import edu.umd.cs.findbugs.annotations.ExpectWarning;
@@ -206,6 +207,15 @@ class Findbugs_annotationsTest {
     }
 
     @Test
+    void desireNoWarningAnnotatedCodeRemainsUsableForWarningFreePaths() {
+        DesireNoWarningFixture fixture = new DesireNoWarningFixture("  healthy  ");
+
+        assertThat(fixture.canonicalName()).isEqualTo("healthy");
+        assertThat(fixture.createStableCopy()).isEqualTo("healthy");
+        assertThat(fixture.combine("  PATH  ")).isEqualTo("healthy:path");
+    }
+
+    @Test
     void runtimeObligationAnnotationsRemainVisibleAndSupportNormalUsage() throws NoSuchMethodException {
         ManagedResource parent = new ManagedResource("parent");
         ManagedResource child = parent.openChild("child");
@@ -261,6 +271,41 @@ class Findbugs_annotationsTest {
         private String normalize(@SuppressFBWarnings("DM_DEFAULT_ENCODING") String value) {
             @ExpectWarning("DLS")
             String normalized = value.trim().toUpperCase(Locale.ROOT);
+            return normalized;
+        }
+    }
+
+    @DesireNoWarning("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
+    private static final class DesireNoWarningFixture {
+        @DesireNoWarning("UUF_UNUSED_FIELD")
+        private final String normalizedName;
+
+        @DesireNoWarning("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
+        private DesireNoWarningFixture(String rawName) {
+            normalizedName = sanitize(rawName);
+        }
+
+        @DesireNoWarning("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
+        private String canonicalName() {
+            return normalizedName;
+        }
+
+        @DesireNoWarning("DLS_DEAD_LOCAL_STORE")
+        private String createStableCopy() {
+            @DesireNoWarning("DLS_DEAD_LOCAL_STORE")
+            String stableCopy = normalizedName;
+            return stableCopy;
+        }
+
+        private String combine(@DesireNoWarning("NP") String rawSuffix) {
+            return normalizedName + ":" + sanitize(rawSuffix);
+        }
+
+        private static String sanitize(String value) {
+            String normalized = value.trim().toLowerCase(Locale.ROOT);
+            if (normalized.isBlank()) {
+                throw new IllegalArgumentException("value must not be blank");
+            }
             return normalized;
         }
     }
