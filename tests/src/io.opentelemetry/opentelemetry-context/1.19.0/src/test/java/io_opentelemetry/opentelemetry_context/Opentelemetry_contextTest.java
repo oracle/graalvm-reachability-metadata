@@ -18,17 +18,21 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -212,6 +216,55 @@ class Opentelemetry_contextTest {
                     TimeUnit.MILLISECONDS
             );
             assertThat(scheduledResult.get(5, TimeUnit.SECONDS)).isEqualTo("tenant-g");
+        }
+    }
+
+    @Test
+    void repeatingScheduledTasksUseCapturedContext() throws Exception {
+        Context repeatingContext = Context.root().with(TENANT_KEY, "tenant-h").with(REQUEST_KEY, "request-11");
+
+        try (ScheduledExecutorService delegate = Executors.newSingleThreadScheduledExecutor()) {
+            ScheduledExecutorService wrappedScheduler = repeatingContext.wrap(delegate);
+
+            List<String> fixedRateValues = Collections.synchronizedList(new ArrayList<>());
+            AtomicInteger fixedRateExecutions = new AtomicInteger();
+            CountDownLatch fixedRateLatch = new CountDownLatch(2);
+
+            try (Scope scope = Context.root().with(TENANT_KEY, "outer-tenant").with(REQUEST_KEY, "outer-request").makeCurrent()) {
+                ScheduledFuture<?> fixedRateFuture = wrappedScheduler.scheduleAtFixedRate(() -> {
+                    fixedRateValues.add(Context.current().get(TENANT_KEY) + ":" + Context.current().get(REQUEST_KEY));
+                    fixedRateExecutions.incrementAndGet();
+                    fixedRateLatch.countDown();
+                }, 0, 10, TimeUnit.MILLISECONDS);
+
+                assertThat(fixedRateLatch.await(5, TimeUnit.SECONDS)).isTrue();
+                fixedRateFuture.cancel(true);
+                assertThat(Context.current().get(TENANT_KEY)).isEqualTo("outer-tenant");
+                assertThat(Context.current().get(REQUEST_KEY)).isEqualTo("outer-request");
+            }
+
+            assertThat(fixedRateExecutions.get()).isGreaterThanOrEqualTo(2);
+            assertThat(fixedRateValues)
+                    .isNotEmpty()
+                    .allSatisfy(value -> assertThat(value).isEqualTo("tenant-h:request-11"));
+
+            List<String> fixedDelayValues = Collections.synchronizedList(new ArrayList<>());
+            AtomicInteger fixedDelayExecutions = new AtomicInteger();
+            CountDownLatch fixedDelayLatch = new CountDownLatch(2);
+
+            ScheduledFuture<?> fixedDelayFuture = wrappedScheduler.scheduleWithFixedDelay(() -> {
+                fixedDelayValues.add(Context.current().get(TENANT_KEY) + ":" + Context.current().get(REQUEST_KEY));
+                fixedDelayExecutions.incrementAndGet();
+                fixedDelayLatch.countDown();
+            }, 0, 10, TimeUnit.MILLISECONDS);
+
+            assertThat(fixedDelayLatch.await(5, TimeUnit.SECONDS)).isTrue();
+            fixedDelayFuture.cancel(true);
+
+            assertThat(fixedDelayExecutions.get()).isGreaterThanOrEqualTo(2);
+            assertThat(fixedDelayValues)
+                    .isNotEmpty()
+                    .allSatisfy(value -> assertThat(value).isEqualTo("tenant-h:request-11"));
         }
     }
 
