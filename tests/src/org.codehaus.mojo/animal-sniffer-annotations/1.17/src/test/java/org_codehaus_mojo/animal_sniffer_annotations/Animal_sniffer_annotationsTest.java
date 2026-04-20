@@ -6,12 +6,17 @@
  */
 package org_codehaus_mojo.animal_sniffer_annotations;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.assertj.core.api.Assertions;
 import org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement;
@@ -66,6 +71,19 @@ class Animal_sniffer_annotationsTest {
     }
 
     @Test
+    void classRetentionStoresIgnoreJreRequirementInCompiledClassFiles() {
+        String compatibilityLayerClassFile = readClassFile(AnnotatedCompatibilityLayer.class);
+        String compatibilityContractClassFile = readClassFile(CompatibilityContract.class);
+
+        Assertions.assertThat(compatibilityLayerClassFile)
+                .contains("RuntimeInvisibleAnnotations")
+                .contains("org/codehaus/mojo/animal_sniffer/IgnoreJRERequirement");
+        Assertions.assertThat(compatibilityContractClassFile)
+                .contains("RuntimeInvisibleAnnotations")
+                .contains("org/codehaus/mojo/animal_sniffer/IgnoreJRERequirement");
+    }
+
+    @Test
     void ignoreJreRequirementAnnotatedInterfaceDefaultMethodExecutesNormally() {
         CompatibilityContract compatibilityContract = () -> "nio";
 
@@ -114,6 +132,18 @@ class Animal_sniffer_annotationsTest {
         @IgnoreJRERequirement
         private String describeFeature(String feature) {
             return profile + "-" + feature + "-ready";
+        }
+    }
+
+    private static String readClassFile(Class<?> type) {
+        Path classFilePath = Path.of("build", "classes", "java", "test")
+                .resolve(type.getName().replace('.', '/') + ".class");
+
+        Assertions.assertThat(classFilePath).exists();
+        try {
+            return Files.readString(classFilePath, StandardCharsets.ISO_8859_1);
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
         }
     }
 }
