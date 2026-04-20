@@ -17,6 +17,12 @@ dependencies {
     testImplementation 'net.bytebuddy:byte-buddy-agent:1.14.19'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--add-opens=java.base/java.io=ALL-UNNAMED"
+    ]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -24,6 +30,13 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll([
+                '--add-opens=java.base/java.io=ALL-UNNAMED'
+            ])
         }
     }
 }
