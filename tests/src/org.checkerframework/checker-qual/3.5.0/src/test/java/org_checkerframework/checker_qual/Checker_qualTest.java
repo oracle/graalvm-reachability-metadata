@@ -34,6 +34,7 @@ import java.util.UnknownFormatConversionException;
 import org.assertj.core.api.Assertions;
 import org.checkerframework.checker.formatter.FormatUtil;
 import org.checkerframework.checker.formatter.qual.ConversionCategory;
+import org.checkerframework.checker.i18nformatter.I18nFormatUtil;
 import org.checkerframework.checker.i18nformatter.qual.I18nConversionCategory;
 import org.checkerframework.checker.index.qual.GTENegativeOne;
 import org.checkerframework.checker.index.qual.NonNegative;
@@ -383,6 +384,34 @@ class Checker_qualTest {
                 .contains("java.util.Date")
                 .contains("java.lang.Number");
         Assertions.assertThatThrownBy(() -> I18nConversionCategory.stringToI18nConversionCategory("currency"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void i18nFormatUtilParsesAndValidatesMessageFormatPatterns() {
+        String messagePattern =
+                "{0,choice,0#no files|1#one file|1<{0,number,integer} files} processed at {1,time,short}";
+        String invalidPattern = "{0,number,#.#.#}";
+
+        I18nConversionCategory[] parameterCategories = I18nFormatUtil.formatParameterCategories(messagePattern);
+
+        Assertions.assertThat(parameterCategories)
+                .containsExactly(I18nConversionCategory.NUMBER, I18nConversionCategory.DATE);
+        Assertions.assertThat(I18nFormatUtil.isFormat(messagePattern)).isTrue();
+        Assertions.assertThat(I18nFormatUtil.hasFormat(
+                messagePattern,
+                I18nConversionCategory.NUMBER,
+                I18nConversionCategory.DATE)).isTrue();
+        Assertions.assertThat(I18nFormatUtil.hasFormat(
+                messagePattern,
+                I18nConversionCategory.DATE,
+                I18nConversionCategory.DATE)).isFalse();
+        Assertions.assertThatCode(() -> I18nFormatUtil.tryFormatSatisfiability(messagePattern))
+                .doesNotThrowAnyException();
+        Assertions.assertThat(I18nFormatUtil.isFormat(invalidPattern)).isFalse();
+        Assertions.assertThatThrownBy(() -> I18nFormatUtil.formatParameterCategories(invalidPattern))
+                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> I18nFormatUtil.tryFormatSatisfiability(invalidPattern))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
