@@ -39,11 +39,11 @@ public class FieldPropertyTest {
     private static class FieldBackedBase {
         private String value;
 
-        private String readValue() {
+        String readValue() {
             return value;
         }
 
-        private void writeValue(String value) {
+        void writeValue(String value) {
             this.value = value;
         }
     }
