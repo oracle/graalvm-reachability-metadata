@@ -40,10 +40,13 @@ class Animal_sniffer_annotationsTest {
 
     @Test
     void ignoreJreRequirementDeclaresItsSupportedTargetsAndRetention() {
-        Target target = IgnoreJRERequirement.class.getAnnotation(Target.class);
-        Retention retention = IgnoreJRERequirement.class.getAnnotation(Retention.class);
+        Target target = IgnoreJRERequirement.class.
+                getAnnotation(Target.class);
+        Retention retention = IgnoreJRERequirement.class.
+                getAnnotation(Retention.class);
 
-        Assertions.assertThat(IgnoreJRERequirement.class.isAnnotationPresent(Documented.class)).isTrue();
+        Assertions.assertThat(IgnoreJRERequirement.class.
+                isAnnotationPresent(Documented.class)).isTrue();
         Assertions.assertThat(target).isNotNull();
         Assertions.assertThat(target.value())
                 .containsExactlyInAnyOrder(ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.METHOD);
@@ -63,11 +66,12 @@ class Animal_sniffer_annotationsTest {
     void classRetentionKeepsIgnoreJreRequirementInvisibleAtRuntime() throws NoSuchMethodException {
         Class<AnnotatedCompatibilityLayer> compatibilityLayerClass = AnnotatedCompatibilityLayer.class;
 
-        Assertions.assertThat(compatibilityLayerClass.getDeclaredAnnotations()).isEmpty();
-        Assertions.assertThat(compatibilityLayerClass.getDeclaredConstructor(String.class).getDeclaredAnnotations())
-                .isEmpty();
-        Assertions.assertThat(compatibilityLayerClass.getDeclaredMethod("describeFeature", String.class)
-                .getDeclaredAnnotations()).isEmpty();
+        Assertions.assertThat(compatibilityLayerClass.
+                getDeclaredAnnotations()).isEmpty();
+        Assertions.assertThat(compatibilityLayerClass.getDeclaredConstructor(String.class).
+                getDeclaredAnnotations()).isEmpty();
+        Assertions.assertThat(compatibilityLayerClass.getDeclaredMethod("describeFeature", String.class).
+                getDeclaredAnnotations()).isEmpty();
     }
 
     @Test
