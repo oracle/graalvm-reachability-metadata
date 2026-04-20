@@ -162,6 +162,22 @@ class Javax_annotation_apiTest {
     }
 
     @Test
+    void runtimeAnnotationsAreNotInheritedBySubclassesOrOverrides() throws Exception {
+        assertThat(DerivedManagedComponent.class.getAnnotation(ManagedBean.class)).isNull();
+        assertThat(DerivedManagedComponent.class.getAnnotation(Priority.class)).isNull();
+        assertThat(DerivedManagedComponent.class.getAnnotation(RunAs.class)).isNull();
+        assertThat(DerivedManagedComponent.class.getAnnotation(DataSourceDefinition.class)).isNull();
+        assertThat(DerivedManagedComponent.class.isAnnotationPresent(DenyAll.class)).isFalse();
+
+        Method adminOperation = method(DerivedManagedComponent.class, "adminOperation");
+        Method loadConfig = method(DerivedManagedComponent.class, "loadConfig");
+
+        assertThat(adminOperation.getAnnotation(RolesAllowed.class)).isNull();
+        assertThat(loadConfig.isAnnotationPresent(PermitAll.class)).isFalse();
+        assertThat(loadConfig.getAnnotation(Resource.class)).isNull();
+    }
+
+    @Test
     void annotationTypesExposeRetentionPolicies() {
         assertThat(ManagedBean.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(PostConstruct.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
@@ -290,6 +306,36 @@ class Javax_annotation_apiTest {
             @DataSourceDefinition(className = "org.h2.Driver", name = "jdbc/second", properties = {"cache=true"})
     })
     private static final class MultipleDataSources {
+    }
+
+    @ManagedBean("parentBean")
+    @Priority(7)
+    @RunAs("system-parent")
+    @DenyAll
+    @DataSourceDefinition(className = "org.h2.Driver", name = "jdbc/parent")
+    private static class BaseManagedComponent {
+
+        @RolesAllowed("admin")
+        void adminOperation() {
+        }
+
+        @PermitAll
+        @Resource(name = "service/parent", type = Integer.class)
+        Integer loadConfig() {
+            return 1;
+        }
+    }
+
+    private static final class DerivedManagedComponent extends BaseManagedComponent {
+
+        @Override
+        void adminOperation() {
+        }
+
+        @Override
+        Integer loadConfig() {
+            return 2;
+        }
     }
 
     @Generated(value = {"metadata-forge", "generator"}, date = "2026-04-20", comments = "compile-time only")
