@@ -93,6 +93,21 @@ class Opentelemetry_contextTest {
     }
 
     @Test
+    void contextKeysWithTheSameNameRemainDistinct() {
+        ContextKey<String> firstDuplicateKey = ContextKey.named("duplicate-name");
+        ContextKey<String> secondDuplicateKey = ContextKey.named("duplicate-name");
+
+        Context context = Context.root()
+                .with(firstDuplicateKey, "first-value")
+                .with(secondDuplicateKey, "second-value");
+
+        assertThat(firstDuplicateKey).isNotSameAs(secondDuplicateKey);
+        assertThat(context.get(firstDuplicateKey)).isEqualTo("first-value");
+        assertThat(context.get(secondDuplicateKey)).isEqualTo("second-value");
+        assertThat(Context.root().with(firstDuplicateKey, "first-value").get(secondDuplicateKey)).isNull();
+    }
+
+    @Test
     void implicitContextKeyedValuesCanBeStoredAndMadeCurrent() {
         Context baseContext = Context.root().with(TENANT_KEY, "tenant-b");
         TestImplicitContextValue implicitValue = new TestImplicitContextValue("session-7");
