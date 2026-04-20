@@ -111,4 +111,24 @@ class EddsaTest {
         verifier.update(tamperedMessage);
         assertThat(verifier.verify(signature)).isFalse();
     }
+
+    @Test
+    void rebuildsKeysFromExpandedPrivateStateAndGroupElements() {
+        EdDSANamedCurveSpec curveSpec = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
+        EdDSAPrivateKey seedBackedPrivateKey = new EdDSAPrivateKey(new EdDSAPrivateKeySpec(RFC_8032_SEED, curveSpec));
+        EdDSAPublicKey byteBackedPublicKey = new EdDSAPublicKey(new EdDSAPublicKeySpec(RFC_8032_PUBLIC_KEY, curveSpec));
+        byte[] expandedHash = seedBackedPrivateKey.getH().clone();
+
+        EdDSAPrivateKey hashBackedPrivateKey = new EdDSAPrivateKey(new EdDSAPrivateKeySpec(curveSpec, expandedHash));
+        EdDSAPublicKey groupElementBackedPublicKey = new EdDSAPublicKey(new EdDSAPublicKeySpec(byteBackedPublicKey.getA(), curveSpec));
+
+        assertThat(hashBackedPrivateKey.getSeed()).isNull();
+        assertThat(hashBackedPrivateKey.getH()).isEqualTo(seedBackedPrivateKey.getH());
+        assertThat(hashBackedPrivateKey.geta()).isEqualTo(seedBackedPrivateKey.geta());
+        assertThat(hashBackedPrivateKey.getAbyte()).isEqualTo(seedBackedPrivateKey.getAbyte());
+        assertThat(hashBackedPrivateKey.getParams()).isEqualTo(curveSpec);
+        assertThat(groupElementBackedPublicKey).isEqualTo(byteBackedPublicKey);
+        assertThat(groupElementBackedPublicKey.getAbyte()).isEqualTo(RFC_8032_PUBLIC_KEY);
+        assertThat(groupElementBackedPublicKey.getParams()).isEqualTo(curveSpec);
+    }
 }
