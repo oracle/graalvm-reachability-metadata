@@ -36,8 +36,8 @@ public abstract class AbstractReadmeBadgeSummaryTask extends DefaultTask {
     }
 
     @Internal
-    protected Path getStatsFile() {
-        return getRepoRoot().resolve("stats").resolve("stats.json");
+    protected Path getStatsRoot() {
+        return getRepoRoot().resolve("stats");
     }
 
     @Internal

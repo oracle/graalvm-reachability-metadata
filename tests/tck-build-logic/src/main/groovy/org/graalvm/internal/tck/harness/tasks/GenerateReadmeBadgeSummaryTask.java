@@ -18,7 +18,7 @@ public abstract class GenerateReadmeBadgeSummaryTask extends AbstractReadmeBadge
     @TaskAction
     public void generate() {
         ReadmeBadgeSummarySupport.ReadmeBadgeSummary summary = ReadmeBadgeSummarySupport.buildSummary(
-                getStatsFile(),
+                getStatsRoot(),
                 getMetadataRoot()
         );
         ReadmeBadgeSummarySupport.writeSummary(getLatestBadgesFile(), summary);

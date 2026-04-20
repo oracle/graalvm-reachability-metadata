@@ -51,6 +51,8 @@ public final class LibraryStatsSupport {
 
     private static final TypeReference<LibraryStatsModels.LibraryStats> LIBRARY_STATS_TYPE = new TypeReference<>() {
     };
+    private static final TypeReference<LibraryStatsModels.MetadataVersionStats> METADATA_VERSION_STATS_TYPE = new TypeReference<>() {
+    };
 
     private static final Pattern DYNAMIC_ACCESS_REPORT = Pattern.compile("(.+)-calls\\.json");
 
@@ -85,6 +87,53 @@ public final class LibraryStatsSupport {
 
     public static void writeStats(Path statsFile, LibraryStatsModels.LibraryStats libraryStats) {
         writeJsonWithTrailingNewline(statsFile, normalizeLibraryStats(libraryStats), "Failed to write library stats to ");
+    }
+
+    public static LibraryStatsModels.MetadataVersionStats loadMetadataVersionStats(Path statsFile) {
+        if (!Files.exists(statsFile)) {
+            return emptyMetadataVersionStats();
+        }
+        try {
+            return normalizeMetadataVersionStats(OBJECT_MAPPER.readValue(statsFile.toFile(), METADATA_VERSION_STATS_TYPE));
+        } catch (IOException e) {
+            throw new GradleException("Failed to read metadata-version stats from " + statsFile, e);
+        }
+    }
+
+    public static void writeMetadataVersionStats(Path statsFile, LibraryStatsModels.MetadataVersionStats metadataVersionStats) {
+        writeJsonWithTrailingNewline(
+                statsFile,
+                normalizeMetadataVersionStats(metadataVersionStats),
+                "Failed to write metadata-version stats to "
+        );
+    }
+
+    public static LibraryStatsModels.LibraryStats loadRepositoryStats(Path statsRoot) {
+        LibraryStatsModels.LibraryStats libraryStats = emptyLibraryStats();
+        if (!Files.isDirectory(statsRoot)) {
+            return libraryStats;
+        }
+
+        try (Stream<Path> files = Files.walk(statsRoot)) {
+            for (Path file : files.filter(Files::isRegularFile)
+                    .filter(path -> isExplodedStatsFile(statsRoot, path))
+                    .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
+                    .toList()) {
+                Path relative = statsRoot.relativize(file);
+                String groupId = relative.getName(0).toString();
+                String artifactId = relative.getName(1).toString();
+                String metadataVersion = relative.getName(2).toString();
+                libraryStats = withMetadataVersionStats(
+                        libraryStats,
+                        groupId + ":" + artifactId,
+                        metadataVersion,
+                        loadMetadataVersionStats(file)
+                );
+            }
+        } catch (IOException e) {
+            throw new GradleException("Failed to traverse repository stats root " + statsRoot, e);
+        }
+        return libraryStats;
     }
 
     private static void writeJsonWithTrailingNewline(Path targetFile, Object value, String errorPrefix) {
@@ -275,15 +324,28 @@ public final class LibraryStatsSupport {
         }
     }
 
+    public static String toNormalizedPrettyJsonWithTrailingNewline(LibraryStatsModels.MetadataVersionStats metadataVersionStats) {
+        try {
+            String json = OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(normalizeMetadataVersionStats(metadataVersionStats));
+            return json.endsWith(System.lineSeparator()) ? json : json + System.lineSeparator();
+        } catch (IOException e) {
+            throw new GradleException("Failed to serialize normalized metadata-version stats JSON", e);
+        }
+    }
+
     public static void writeJson(Path targetFile, Object value) {
         writeJsonWithTrailingNewline(targetFile, value, "Failed to write JSON to ");
+    }
+
+    public static Path repositoryStatsFile(Path statsRoot, String groupId, String artifactId, String metadataVersion) {
+        return statsRoot.resolve(groupId).resolve(artifactId).resolve(metadataVersion).resolve("stats.json");
     }
 
     private static LibraryStatsModels.LibraryStats emptyLibraryStats() {
         return new LibraryStatsModels.LibraryStats(new TreeMap<>());
     }
 
-    private static LibraryStatsModels.MetadataVersionStats emptyMetadataVersionStats() {
+    public static LibraryStatsModels.MetadataVersionStats emptyMetadataVersionStats() {
         return new LibraryStatsModels.MetadataVersionStats(List.of());
     }
 
@@ -316,7 +378,7 @@ public final class LibraryStatsSupport {
         return new LibraryStatsModels.LibraryStats(entries);
     }
 
-    private static LibraryStatsModels.MetadataVersionStats normalizeMetadataVersionStats(
+    public static LibraryStatsModels.MetadataVersionStats normalizeMetadataVersionStats(
             LibraryStatsModels.MetadataVersionStats metadataVersionStats
     ) {
         if (metadataVersionStats == null || metadataVersionStats.versions() == null) {
@@ -327,6 +389,14 @@ public final class LibraryStatsSupport {
             byVersion.put(versionStats.version(), normalizeVersionStats(versionStats));
         }
         return new LibraryStatsModels.MetadataVersionStats(new ArrayList<>(byVersion.values()));
+    }
+
+    private static boolean isExplodedStatsFile(Path statsRoot, Path file) {
+        if (!"stats.json".equals(file.getFileName().toString())) {
+            return false;
+        }
+        Path relative = statsRoot.relativize(file);
+        return relative.getNameCount() == 4 && "stats.json".equals(relative.getName(3).toString());
     }
 
     private static LibraryStatsModels.VersionStats normalizeVersionStats(LibraryStatsModels.VersionStats versionStats) {

@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Validates {@code stats/stats.json} against a versioned schema and repository metadata layout.
+ * Validates exploded local stats files against a versioned schema and repository metadata layout.
  */
 public final class LibraryStatsSchemaValidator {
 
@@ -76,23 +75,22 @@ public final class LibraryStatsSchemaValidator {
             throw new GradleException("Failed to load library stats schema from " + schemaFile, e);
         }
 
-        Map<String, Set<String>> expectedArtifacts = collectExpectedArtifacts(metadataRoot);
+        Map<StatsLocation, Path> expectedStatsFiles = collectExpectedStatsFiles(metadataRoot, statsRoot);
+        Map<StatsLocation, Path> actualStatsFiles = new TreeMap<>(Comparator.comparing(StatsLocation::sortKey));
         List<String> failures = new ArrayList<>();
-        final Path[] statsFileHolder = new Path[1];
 
         if (Files.exists(statsRoot)) {
             try (Stream<Path> files = Files.walk(statsRoot)) {
                 files.filter(Files::isRegularFile)
                         .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
                         .forEach(file -> {
-                            Path candidate = validateStatsPath(file, statsRoot, failures);
-                            if (candidate == null) {
+                            StatsLocation location = validateStatsPath(file, statsRoot, failures);
+                            if (location == null) {
                                 return;
                             }
-                            if (statsFileHolder[0] != null) {
-                                failures.add("Duplicate stats file: " + statsFileHolder[0] + " and " + candidate);
-                            } else {
-                                statsFileHolder[0] = candidate;
+                            Path previous = actualStatsFiles.put(location, file);
+                            if (previous != null) {
+                                failures.add("Duplicate stats file: " + previous + " and " + file);
                             }
                         });
             } catch (IOException e) {
@@ -100,16 +98,24 @@ public final class LibraryStatsSchemaValidator {
             }
         }
 
-        Path statsFile = statsFileHolder[0];
-        if (!expectedArtifacts.isEmpty() && statsFile == null) {
-            failures.add("Missing stats file: " + statsRoot.resolve("stats.json"));
+        for (Map.Entry<StatsLocation, Path> entry : expectedStatsFiles.entrySet()) {
+            if (!actualStatsFiles.containsKey(entry.getKey())) {
+                failures.add("Missing metadata-version entry for " + entry.getKey().coordinate() + " in " + entry.getValue());
+            }
         }
 
-        if (statsFile != null) {
-            validateAgainstSchema(statsFile, schema, failures);
-            validateEntriesAlignment(statsFile, expectedArtifacts, failures);
-            validateRatioConsistency(statsFile, failures);
-            validateNormalizedContent(statsFile, failures);
+        for (Map.Entry<StatsLocation, Path> entry : actualStatsFiles.entrySet()) {
+            StatsLocation location = entry.getKey();
+            Path file = entry.getValue();
+            if (!expectedStatsFiles.containsKey(location)) {
+                failures.add("Orphan stats file without matching metadata directory: " + location.coordinate());
+                continue;
+            }
+
+            validateAgainstSchema(file, schema, failures);
+            validateMetadataVersionEntry(file, location, failures);
+            validateRatioConsistency(file, location, failures);
+            validateNormalizedContent(file, failures);
         }
 
         if (!failures.isEmpty()) {
@@ -138,7 +144,7 @@ public final class LibraryStatsSchemaValidator {
                 .collect(Collectors.joining(System.lineSeparator()));
     }
 
-    private static Path validateStatsPath(
+    private static StatsLocation validateStatsPath(
             Path file,
             Path statsRoot,
             List<String> failures
@@ -152,11 +158,16 @@ public final class LibraryStatsSchemaValidator {
             return null;
         }
 
-        if (relative.getNameCount() == 1 && "stats.json".equals(relative.getName(0).toString())) {
-            return file;
+        if (relative.getNameCount() == 4 && "stats.json".equals(relative.getName(3).toString())) {
+            return new StatsLocation(
+                    relative.getName(0).toString(),
+                    relative.getName(1).toString(),
+                    relative.getName(2).toString()
+            );
         }
 
-        failures.add("Unexpected JSON file under stats root: " + file + " (expected stats/stats.json or stats/schemas/*.json)");
+        failures.add("Unexpected JSON file under stats root: " + file
+                + " (expected stats/<groupId>/<artifactId>/<metadataVersion>/stats.json or stats/schemas/*.json)");
         return null;
     }
 
@@ -164,8 +175,8 @@ public final class LibraryStatsSchemaValidator {
         return relativePath.getNameCount() >= 2 && "schemas".equals(relativePath.getName(0).toString());
     }
 
-    private static Map<String, Set<String>> collectExpectedArtifacts(Path metadataRoot) {
-        Map<String, Set<String>> expected = new TreeMap<>();
+    private static Map<StatsLocation, Path> collectExpectedStatsFiles(Path metadataRoot, Path statsRoot) {
+        Map<StatsLocation, Path> expected = new TreeMap<>(Comparator.comparing(StatsLocation::sortKey));
         if (!Files.isDirectory(metadataRoot)) {
             return expected;
         }
@@ -179,17 +190,26 @@ public final class LibraryStatsSchemaValidator {
                             return;
                         }
                         String artifactId = artifactDir.getFileName().toString();
-                        String artifact = groupId + ":" + artifactId;
-                        Set<String> metadataVersions = new TreeSet<>();
                         try (Stream<Path> metadataVersionDirs = Files.list(artifactDir)) {
                             metadataVersionDirs
                                     .filter(Files::isDirectory)
                                     .sorted(Comparator.comparing(path -> path.getFileName().toString()))
-                                    .forEach(metadataVersionDir -> metadataVersions.add(metadataVersionDir.getFileName().toString()));
+                                    .forEach(metadataVersionDir -> {
+                                        String metadataVersion = metadataVersionDir.getFileName().toString();
+                                        StatsLocation location = new StatsLocation(groupId, artifactId, metadataVersion);
+                                        expected.put(
+                                                location,
+                                                LibraryStatsSupport.repositoryStatsFile(
+                                                        statsRoot,
+                                                        groupId,
+                                                        artifactId,
+                                                        metadataVersion
+                                                )
+                                        );
+                                    });
                         } catch (IOException e) {
                             throw new GradleException("Failed to list metadata versions under " + artifactDir, e);
                         }
-                        expected.put(artifact, metadataVersions);
                     });
                 } catch (IOException e) {
                     throw new GradleException("Failed to list metadata artifacts under " + groupDir, e);
@@ -202,100 +222,21 @@ public final class LibraryStatsSchemaValidator {
         return expected;
     }
 
-    private static void validateEntriesAlignment(
+    private static void validateMetadataVersionEntry(
             Path statsFile,
-            Map<String, Set<String>> expectedArtifacts,
+            StatsLocation location,
             List<String> failures
     ) {
-        JsonNode json;
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats;
         try {
-            json = OBJECT_MAPPER.readTree(statsFile.toFile());
-        } catch (IOException e) {
+            metadataVersionStats = LibraryStatsSupport.loadMetadataVersionStats(statsFile);
+        } catch (Exception e) {
             failures.add("Failed to parse stats JSON file " + statsFile + ": " + e.getMessage());
             return;
         }
 
-        JsonNode entries = json.get("entries");
-        if (entries == null || !entries.isObject()) {
-            failures.add("Stats file is missing object field 'entries': " + statsFile);
-            return;
-        }
-
-        Map<String, JsonNode> actualArtifacts = new LinkedHashMap<>();
-        entries.fields().forEachRemaining(entry -> actualArtifacts.put(entry.getKey(), entry.getValue()));
-
-        for (String expectedArtifact : expectedArtifacts.keySet()) {
-            if (!actualArtifacts.containsKey(expectedArtifact)) {
-                Set<String> expectedArtifactMetadataVersions = expectedArtifacts.get(expectedArtifact);
-                for (String expectedMetadataVersion : expectedArtifactMetadataVersions) {
-                    failures.add("Missing metadata-version entry for " + expectedArtifact + ":" + expectedMetadataVersion + " in " + statsFile);
-                }
-            }
-        }
-
-        for (Map.Entry<String, JsonNode> entry : actualArtifacts.entrySet()) {
-            String artifact = entry.getKey();
-            Set<String> expectedArtifactMetadataVersions = expectedArtifacts.get(artifact);
-            if (expectedArtifactMetadataVersions == null) {
-                failures.add("Orphan artifact entry in stats file without matching metadata directory: " + artifact);
-                continue;
-            }
-            validateArtifactEntry(statsFile, artifact, entry.getValue(), expectedArtifactMetadataVersions, failures);
-        }
-    }
-
-    private static void validateArtifactEntry(
-            Path statsFile,
-            String artifact,
-            JsonNode artifactEntry,
-            Set<String> expectedMetadataVersionsForArtifact,
-            List<String> failures
-    ) {
-        JsonNode metadataVersions = artifactEntry.get("metadataVersions");
-        if (metadataVersions == null || !metadataVersions.isObject()) {
-            failures.add("Stats file is missing object field 'metadataVersions' for " + artifact + " in " + statsFile);
-            return;
-        }
-
-        Set<String> actualMetadataVersions = new TreeSet<>();
-        metadataVersions.fieldNames().forEachRemaining(actualMetadataVersions::add);
-
-        for (String expectedMetadataVersion : expectedMetadataVersionsForArtifact) {
-            if (!actualMetadataVersions.contains(expectedMetadataVersion)) {
-                failures.add("Missing metadata-version entry for " + artifact + ":" + expectedMetadataVersion + " in " + statsFile);
-                continue;
-            }
-            JsonNode metadataVersionEntry = metadataVersions.get(expectedMetadataVersion);
-            validateMetadataVersionEntry(statsFile, artifact, expectedMetadataVersion, metadataVersionEntry, failures);
-        }
-
-        for (String actualMetadataVersion : actualMetadataVersions) {
-            if (!expectedMetadataVersionsForArtifact.contains(actualMetadataVersion)) {
-                failures.add("Orphan metadata-version entry in stats file for " + artifact + ":" + actualMetadataVersion);
-            }
-        }
-    }
-
-    private static void validateMetadataVersionEntry(
-            Path statsFile,
-            String artifact,
-            String metadataVersion,
-            JsonNode metadataVersionEntry,
-            List<String> failures
-    ) {
-        if (metadataVersionEntry == null || !metadataVersionEntry.isObject()) {
-            failures.add("Stats file is missing object entry for " + artifact + ":" + metadataVersion + " in " + statsFile);
-            return;
-        }
-
-        JsonNode versions = metadataVersionEntry.get("versions");
-        if (versions == null || !versions.isArray()) {
-            failures.add("Stats file is missing array field 'versions' for " + artifact + ":" + metadataVersion + " in " + statsFile);
-            return;
-        }
-
-        if (versions.isEmpty()) {
-            failures.add("Missing version report entries in stats file for " + artifact + ":" + metadataVersion + " in " + statsFile);
+        if (metadataVersionStats.versions() == null || metadataVersionStats.versions().isEmpty()) {
+            failures.add("Missing version report entries in stats file for " + location.coordinate() + " in " + statsFile);
         }
     }
 
@@ -317,8 +258,8 @@ public final class LibraryStatsSchemaValidator {
 
     private static void validateNormalizedContent(Path statsFile, List<String> failures) {
         try {
-            LibraryStatsModels.LibraryStats libraryStats = LibraryStatsSupport.loadStats(statsFile);
-            String normalized = LibraryStatsSupport.toNormalizedPrettyJsonWithTrailingNewline(libraryStats);
+            LibraryStatsModels.MetadataVersionStats metadataVersionStats = LibraryStatsSupport.loadMetadataVersionStats(statsFile);
+            String normalized = LibraryStatsSupport.toNormalizedPrettyJsonWithTrailingNewline(metadataVersionStats);
             String actual = Files.readString(statsFile, StandardCharsets.UTF_8);
             if (!actual.equals(normalized)) {
                 failures.add("Stats file is not normalized and sorted: " + statsFile
@@ -329,31 +270,26 @@ public final class LibraryStatsSchemaValidator {
         }
     }
 
-    private static void validateRatioConsistency(Path statsFile, List<String> failures) {
-        LibraryStatsModels.LibraryStats libraryStats;
+    private static void validateRatioConsistency(Path statsFile, StatsLocation location, List<String> failures) {
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats;
         try {
-            libraryStats = LibraryStatsSupport.loadStats(statsFile);
+            metadataVersionStats = LibraryStatsSupport.loadMetadataVersionStats(statsFile);
         } catch (Exception e) {
             failures.add("Failed to validate ratio consistency for " + statsFile + ": " + e.getMessage());
             return;
         }
 
-        libraryStats.entries().forEach((artifact, artifactStats) ->
-                artifactStats.metadataVersions().forEach((metadataVersion, metadataVersionStats) ->
-                        metadataVersionStats.versions().forEach(versionStats ->
-                                validateVersionRatios(artifact, metadataVersion, versionStats, failures)
-                        )
-                )
-        );
+        for (LibraryStatsModels.VersionStats versionStats : metadataVersionStats.versions()) {
+            validateVersionRatios(location, versionStats, failures);
+        }
     }
 
     private static void validateVersionRatios(
-            String artifact,
-            String metadataVersion,
+            StatsLocation location,
             LibraryStatsModels.VersionStats versionStats,
             List<String> failures
     ) {
-        String locationPrefix = artifact + ":" + metadataVersion + ":" + versionStats.version();
+        String locationPrefix = location.coordinate() + ":" + versionStats.version();
 
         LibraryStatsModels.DynamicAccessStatsValue dynamicAccess = versionStats.dynamicAccess();
         if (dynamicAccess != null && dynamicAccess.isAvailable()) {
@@ -433,4 +369,17 @@ public final class LibraryStatsSchemaValidator {
                 .divide(BigDecimal.valueOf(total), EXPECTED_RATIO_SCALE, RoundingMode.HALF_UP);
     }
 
+    private record StatsLocation(
+            String groupId,
+            String artifactId,
+            String metadataVersion
+    ) {
+        private String coordinate() {
+            return groupId + ":" + artifactId + ":" + metadataVersion;
+        }
+
+        private String sortKey() {
+            return coordinate();
+        }
+    }
 }

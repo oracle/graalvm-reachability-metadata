@@ -68,23 +68,25 @@ public final class ReadmeBadgeSummarySupport {
     }
 
     public static ReadmeBadgeSummary buildSummary(
-            Path statsFile,
+            Path statsRoot,
             Path metadataRoot
     ) {
-        return buildSummary(statsFile, metadataRoot, LocalDate.now(ZoneOffset.UTC));
+        return buildSummary(statsRoot, metadataRoot, LocalDate.now(ZoneOffset.UTC));
     }
 
     public static ReadmeBadgeSummary buildSummary(
-            Path statsFile,
+            Path statsRoot,
             Path metadataRoot,
             LocalDate snapshotDate
     ) {
-        requireRegularFile(statsFile, "Missing stats file: ");
+        if (!Files.isDirectory(statsRoot)) {
+            throw new GradleException("Missing stats root: " + statsRoot);
+        }
         if (!Files.isDirectory(metadataRoot)) {
             throw new GradleException("Missing metadata root: " + metadataRoot);
         }
 
-        LibraryStatsModels.LibraryStats libraryStats = LibraryStatsSupport.loadStats(statsFile);
+        LibraryStatsModels.LibraryStats libraryStats = LibraryStatsSupport.loadRepositoryStats(statsRoot);
 
         StatsMetrics statsMetrics = buildStatsMetrics(libraryStats);
         MetadataIndexMetrics metadataIndexMetrics = buildMetadataIndexMetrics(metadataRoot);

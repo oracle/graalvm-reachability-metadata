@@ -32,58 +32,53 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": {
-                                "breakdown": {
-                                  "reflection": {
-                                    "coveredCalls": 1,
-                                    "coverageRatio": 0.5,
-                                    "totalCalls": 2
-                                  }
-                                },
-                                "coveredCalls": 1,
-                                "coverageRatio": 0.5,
-                                "totalCalls": 2
-                              },
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 2,
-                                  "missed": 1,
-                                  "ratio": 0.666667,
-                                  "total": 3
-                                },
-                                "line": {
-                                  "covered": 1,
-                                  "missed": 1,
-                                  "ratio": 0.5,
-                                  "total": 2
-                                },
-                                "method": {
-                                  "covered": 3,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 3
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
+                  "versions": [
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                          "reflection": {
+                            "coveredCalls": 1,
+                            "coverageRatio": 0.5,
+                            "totalCalls": 2
+                          }
+                        },
+                        "coveredCalls": 1,
+                        "coverageRatio": 0.5,
+                        "totalCalls": 2
+                      },
+                      "libraryCoverage": {
+                        "instruction": {
+                          "covered": 2,
+                          "missed": 1,
+                          "ratio": 0.666667,
+                          "total": 3
+                        },
+                        "line": {
+                          "covered": 1,
+                          "missed": 1,
+                          "ratio": 0.5,
+                          "total": 2
+                        },
+                        "method": {
+                          "covered": 3,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 3
                         }
-                      }
+                      },
+                      "version": "1.0.0"
                     }
-                  }
+                  ]
                 }
                 """
         );
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
-        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
 
         TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatCode(task::validate).doesNotThrowAnyException();
@@ -96,22 +91,14 @@ class ValidateLibraryStatsTaskTests {
 
         TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
-                .hasMessageContaining("Missing stats file");
+                .hasMessageContaining("Missing metadata-version entry for com.example:demo:1.0.0");
     }
 
     @Test
-    void validateListsEachMissingMetadataVersionWhenArtifactEntryIsAbsent() throws IOException {
+    void validateListsEachMissingMetadataVersionWhenStatsFilesAreAbsent() throws IOException {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         createMetadataVersion("com.example", "demo", "1.1.0");
-        writeStatsFile(
-                """
-                {
-                  "entries": {
-                  }
-                }
-                """
-        );
 
         TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
         assertThatThrownBy(task::validate)
@@ -126,156 +113,51 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": {
-                                "breakdown": {
-                                  "reflection": {
-                                    "coveredCalls": 0,
-                                    "coverageRatio": 0.0,
-                                    "totalCalls": 2
-                                  }
-                                },
-                                "coveredCalls": 0,
-                                "coverageRatio": 0.0,
-                                "totalCalls": 2
-                              },
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 2,
-                                  "missed": 1,
-                                  "ratio": 0.666667,
-                                  "total": 3
-                                },
-                                "line": "N/A",
-                                "method": {
-                                  "covered": 3,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 3
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
+                  "versions": [
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                          "reflection": {
+                            "coveredCalls": 0,
+                            "coverageRatio": 0.0,
+                            "totalCalls": 2
+                          }
+                        },
+                        "coveredCalls": 0,
+                        "coverageRatio": 0.0,
+                        "totalCalls": 2
+                      },
+                      "libraryCoverage": {
+                        "instruction": {
+                          "covered": 2,
+                          "missed": 1,
+                          "ratio": 0.666667,
+                          "total": 3
+                        },
+                        "line": "N/A",
+                        "method": {
+                          "covered": 3,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 3
                         }
-                      }
+                      },
+                      "version": "1.0.0"
                     }
-                  }
+                  ]
                 }
                 """
         );
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
-        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
 
         TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
         assertThatCode(task::validate).doesNotThrowAnyException();
-    }
-
-    @Test
-    void validateAcceptsZeroTotalLibraryCoverageAsFullCoverage() throws IOException {
-        Project project = createProjectSkeleton();
-        createMetadataVersion("com.example", "demo", "1.0.0");
-        writeStatsFile(
-                """
-                {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": "N/A",
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 0,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 0
-                                },
-                                "line": {
-                                  "covered": 0,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 0
-                                },
-                                "method": {
-                                  "covered": 0,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 0
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  }
-                }
-                """
-        );
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
-        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
-
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
-        assertThatCode(task::validate).doesNotThrowAnyException();
-    }
-
-    @Test
-    void validateRejectsZeroTotalLibraryCoverageWhenRatioIsNotFullCoverage() throws IOException {
-        Project project = createProjectSkeleton();
-        createMetadataVersion("com.example", "demo", "1.0.0");
-        writeStatsFile(
-                """
-                {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": "N/A",
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 0,
-                                  "missed": 0,
-                                  "ratio": 0.0,
-                                  "total": 0
-                                },
-                                "line": {
-                                  "covered": 0,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 0
-                                },
-                                "method": {
-                                  "covered": 0,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 0
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  }
-                }
-                """
-        );
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
-        assertThatThrownBy(task::validate)
-                .hasMessageContaining("not normalized and sorted");
     }
 
     @Test
@@ -283,132 +165,75 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": "N/A",
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 2,
-                                  "missed": 1,
-                                  "ratio": 0.666667,
-                                  "total": 3
-                                },
-                                "line": {
-                                  "covered": 1,
-                                  "missed": 1,
-                                  "ratio": 0.5,
-                                  "total": 2
-                                },
-                                "method": {
-                                  "covered": 3,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 3
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
+                  "versions": [
+                    {
+                      "dynamicAccess": "N/A",
+                      "libraryCoverage": {
+                        "instruction": {
+                          "covered": 2,
+                          "missed": 1,
+                          "ratio": 0.666667,
+                          "total": 3
+                        },
+                        "line": {
+                          "covered": 1,
+                          "missed": 1,
+                          "ratio": 0.5,
+                          "total": 2
+                        },
+                        "method": {
+                          "covered": 3,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 3
                         }
-                      }
+                      },
+                      "version": "1.0.0"
                     }
-                  }
+                  ]
                 }
                 """
         );
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
-        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
 
         TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
         assertThatCode(task::validate).doesNotThrowAnyException();
     }
 
     @Test
-    void validateAcceptsEmptyDynamicAccessAsFullCoverage() throws IOException {
+    void validateRejectsOrphanStatsFile() throws IOException {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "other",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": {
-                                "breakdown": {
-                                },
-                                "coveredCalls": 0,
-                                "coverageRatio": 1.0,
-                                "totalCalls": 0
-                              },
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 2,
-                                  "missed": 1,
-                                  "ratio": 0.666667,
-                                  "total": 3
-                                },
-                                "line": {
-                                  "covered": 1,
-                                  "missed": 1,
-                                  "ratio": 0.5,
-                                  "total": 2
-                                },
-                                "method": {
-                                  "covered": 3,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 3
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
-                        }
-                      }
+                  "versions": [
+                    {
+                      "dynamicAccess": "N/A",
+                      "libraryCoverage": {
+                        "instruction": "N/A",
+                        "line": "N/A",
+                        "method": "N/A"
+                      },
+                      "version": "1.0.0"
                     }
-                  }
-                }
-                """
-        );
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
-        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
-
-        TestValidateLibraryStatsTask task = project.getTasks().create("validateLibraryStats", TestValidateLibraryStatsTask.class);
-        assertThatCode(task::validate).doesNotThrowAnyException();
-    }
-
-    @Test
-    void validateRejectsOrphanArtifactEntry() throws IOException {
-        Project project = createProjectSkeleton();
-        createMetadataVersion("com.example", "demo", "1.0.0");
-        writeStatsFile(
-                """
-                {
-                  "entries": {
-                    "com.example:other": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": []
-                        }
-                      }
-                    }
-                  }
+                  ]
                 }
                 """
         );
 
         TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
-                .hasMessageContaining("Orphan artifact entry");
+                .hasMessageContaining("Orphan stats file");
     }
 
     @Test
@@ -416,17 +241,12 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": []
-                        }
-                      }
-                    }
-                  }
+                  "versions": []
                 }
                 """
         );
@@ -441,17 +261,22 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": []
-                        }
-                      }
+                  "versions": [
+                    {
+                      "dynamicAccess": "N/A",
+                      "libraryCoverage": {
+                        "instruction": "N/A",
+                        "line": "N/A",
+                        "method": "N/A"
+                      },
+                      "version": "1.0.0"
                     }
-                  }
+                  ]
                 }
                 """
         );
@@ -459,7 +284,7 @@ class ValidateLibraryStatsTaskTests {
                 tempDir.resolve("stats").resolve("coverage-stats.json"),
                 """
                 {
-                  "entries": []
+                  "versions": []
                 }
                 """,
                 StandardCharsets.UTF_8
@@ -475,53 +300,48 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "version": "1.0.0",
-                              "libraryCoverage": {
-                                "method": {
-                                  "covered": 3,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 3
-                                },
-                                "line": {
-                                  "covered": 1,
-                                  "missed": 1,
-                                  "ratio": 0.5,
-                                  "total": 2
-                                },
-                                "instruction": {
-                                  "covered": 2,
-                                  "missed": 1,
-                                  "ratio": 0.666667,
-                                  "total": 3
-                                }
-                              },
-                              "dynamicAccess": {
-                                "totalCalls": 2,
-                                "coverageRatio": 0.5,
-                                "coveredCalls": 1,
-                                "breakdown": {
-                                  "reflection": {
-                                    "totalCalls": 2,
-                                    "coverageRatio": 0.5,
-                                    "coveredCalls": 1
-                                  }
-                                }
-                              }
-                            }
-                          ]
+                  "versions": [
+                    {
+                      "version": "1.0.0",
+                      "libraryCoverage": {
+                        "method": {
+                          "covered": 3,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 3
+                        },
+                        "line": {
+                          "covered": 1,
+                          "missed": 1,
+                          "ratio": 0.5,
+                          "total": 2
+                        },
+                        "instruction": {
+                          "covered": 2,
+                          "missed": 1,
+                          "ratio": 0.666667,
+                          "total": 3
+                        }
+                      },
+                      "dynamicAccess": {
+                        "totalCalls": 2,
+                        "coverageRatio": 0.5,
+                        "coveredCalls": 1,
+                        "breakdown": {
+                          "reflection": {
+                            "totalCalls": 2,
+                            "coverageRatio": 0.5,
+                            "coveredCalls": 1
+                          }
                         }
                       }
                     }
-                  }
+                  ]
                 }
                 """
         );
@@ -536,58 +356,53 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": {
-                                "breakdown": {
-                                  "reflection": {
-                                    "coveredCalls": 1,
-                                    "coverageRatio": 0.5,
-                                    "totalCalls": 2
-                                  }
-                                },
-                                "coveredCalls": 1,
-                                "coverageRatio": 0.25,
-                                "totalCalls": 2
-                              },
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 2,
-                                  "missed": 1,
-                                  "ratio": 0.666667,
-                                  "total": 3
-                                },
-                                "line": {
-                                  "covered": 1,
-                                  "missed": 1,
-                                  "ratio": 0.5,
-                                  "total": 2
-                                },
-                                "method": {
-                                  "covered": 3,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 3
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
+                  "versions": [
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                          "reflection": {
+                            "coveredCalls": 1,
+                            "coverageRatio": 0.5,
+                            "totalCalls": 2
+                          }
+                        },
+                        "coveredCalls": 1,
+                        "coverageRatio": 0.25,
+                        "totalCalls": 2
+                      },
+                      "libraryCoverage": {
+                        "instruction": {
+                          "covered": 2,
+                          "missed": 1,
+                          "ratio": 0.666667,
+                          "total": 3
+                        },
+                        "line": {
+                          "covered": 1,
+                          "missed": 1,
+                          "ratio": 0.5,
+                          "total": 2
+                        },
+                        "method": {
+                          "covered": 3,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 3
                         }
-                      }
+                      },
+                      "version": "1.0.0"
                     }
-                  }
+                  ]
                 }
                 """
         );
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
-        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
 
         TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatThrownBy(task::validate)
@@ -599,58 +414,53 @@ class ValidateLibraryStatsTaskTests {
         Project project = createProjectSkeleton();
         createMetadataVersion("com.example", "demo", "1.0.0");
         writeStatsFile(
+                "com.example",
+                "demo",
+                "1.0.0",
                 """
                 {
-                  "entries": {
-                    "com.example:demo": {
-                      "metadataVersions": {
-                        "1.0.0": {
-                          "versions": [
-                            {
-                              "dynamicAccess": {
-                                "breakdown": {
-                                  "reflection": {
-                                    "coveredCalls": 1,
-                                    "coverageRatio": 0.5000009,
-                                    "totalCalls": 2
-                                  }
-                                },
-                                "coveredCalls": 1,
-                                "coverageRatio": 0.5000009,
-                                "totalCalls": 2
-                              },
-                              "libraryCoverage": {
-                                "instruction": {
-                                  "covered": 2,
-                                  "missed": 1,
-                                  "ratio": 0.6666673,
-                                  "total": 3
-                                },
-                                "line": {
-                                  "covered": 1,
-                                  "missed": 1,
-                                  "ratio": 0.5000009,
-                                  "total": 2
-                                },
-                                "method": {
-                                  "covered": 3,
-                                  "missed": 0,
-                                  "ratio": 1.0,
-                                  "total": 3
-                                }
-                              },
-                              "version": "1.0.0"
-                            }
-                          ]
+                  "versions": [
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                          "reflection": {
+                            "coveredCalls": 1,
+                            "coverageRatio": 0.5000009,
+                            "totalCalls": 2
+                          }
+                        },
+                        "coveredCalls": 1,
+                        "coverageRatio": 0.5000009,
+                        "totalCalls": 2
+                      },
+                      "libraryCoverage": {
+                        "instruction": {
+                          "covered": 2,
+                          "missed": 1,
+                          "ratio": 0.6666673,
+                          "total": 3
+                        },
+                        "line": {
+                          "covered": 1,
+                          "missed": 1,
+                          "ratio": 0.5000009,
+                          "total": 2
+                        },
+                        "method": {
+                          "covered": 3,
+                          "missed": 0,
+                          "ratio": 1.0,
+                          "total": 3
                         }
-                      }
+                      },
+                      "version": "1.0.0"
                     }
-                  }
+                  ]
                 }
                 """
         );
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
-        LibraryStatsSupport.writeStats(statsFile, LibraryStatsSupport.loadStats(statsFile));
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, LibraryStatsSupport.loadMetadataVersionStats(statsFile));
 
         TestValidateLibraryStatsTask task = project.getTasks().register("validateLibraryStats", TestValidateLibraryStatsTask.class).get();
         assertThatCode(task::validate).doesNotThrowAnyException();
@@ -700,8 +510,8 @@ class ValidateLibraryStatsTaskTests {
         );
     }
 
-    private void writeStatsFile(String statsJson) throws IOException {
-        Path statsFile = tempDir.resolve("stats").resolve("stats.json");
+    private void writeStatsFile(String groupId, String artifactId, String metadataVersion, String statsJson) throws IOException {
+        Path statsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), groupId, artifactId, metadataVersion);
         Files.createDirectories(statsFile.getParent());
         Files.writeString(statsFile, statsJson, StandardCharsets.UTF_8);
     }

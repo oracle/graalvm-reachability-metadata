@@ -506,26 +506,18 @@ class LibraryStatsSupportTests {
     }
 
     @Test
-    void writeStatsProducesPayloadValidAgainstSchema() throws IOException {
+    void writeMetadataVersionStatsProducesPayloadValidAgainstSchema() throws IOException {
         Path schemaFile = tempDir.resolve("library-stats-schema-v1.0.2.json");
         Files.copy(
                 locateRepoFile("stats/schemas/library-stats-schema-v1.0.2.json"),
                 schemaFile
         );
 
-        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
-                "com.example:demo",
-                new LibraryStatsModels.ArtifactStats(
-                        Map.of(
-                                "1.0.0",
-                                new LibraryStatsModels.MetadataVersionStats(
-                                        List.of(createVersionStats("1.0.0", 1, 1))
-                                )
-                        )
-                )
-        ));
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats = new LibraryStatsModels.MetadataVersionStats(
+                List.of(createVersionStats("1.0.0", 1, 1))
+        );
         Path statsFile = tempDir.resolve("stats.json");
-        LibraryStatsSupport.writeStats(statsFile, libraryStats);
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, metadataVersionStats);
 
         assertThatCode(() -> LibraryStatsSchemaValidator.validateOrThrow(
                 statsFile,
@@ -534,21 +526,13 @@ class LibraryStatsSupportTests {
     }
 
     @Test
-    void writeStatsSerializesVersionBeforeOtherVersionFields() throws IOException {
-        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
-                "com.example:demo",
-                new LibraryStatsModels.ArtifactStats(
-                        Map.of(
-                                "1.0.0",
-                                new LibraryStatsModels.MetadataVersionStats(
-                                        List.of(createVersionStats("1.0.0", 1, 1))
-                                )
-                        )
-                )
-        ));
+    void writeMetadataVersionStatsSerializesVersionBeforeOtherVersionFields() throws IOException {
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats = new LibraryStatsModels.MetadataVersionStats(
+                List.of(createVersionStats("1.0.0", 1, 1))
+        );
         Path statsFile = tempDir.resolve("stats.json");
 
-        LibraryStatsSupport.writeStats(statsFile, libraryStats);
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, metadataVersionStats);
 
         String content = Files.readString(statsFile, StandardCharsets.UTF_8);
         int versionIndex = content.indexOf("\"version\"");
@@ -563,125 +547,98 @@ class LibraryStatsSupportTests {
     }
 
     @Test
-    void writeStatsSerializesUnavailableCoverageMetricAsNa() throws IOException {
-        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
-                "com.example:demo",
-                new LibraryStatsModels.ArtifactStats(
-                        Map.of(
-                                "1.0.0",
-                                new LibraryStatsModels.MetadataVersionStats(
-                                        List.of(new LibraryStatsModels.VersionStats(
-                                                "1.0.0",
-                                                new LibraryStatsModels.DynamicAccessStats(
-                                                        1,
-                                                        0,
-                                                        java.math.BigDecimal.ZERO,
-                                                        Map.of()
-                                                ),
-                                                new LibraryStatsModels.LibraryCoverage(
-                                                        LibraryStatsModels.CoverageMetricValue.notAvailable(),
-                                                        LibraryStatsModels.CoverageMetricValue.available(
-                                                                new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667"))
-                                                        ),
-                                                        LibraryStatsModels.CoverageMetricValue.available(
-                                                                new LibraryStatsModels.CoverageMetric(3, 0, 3, java.math.BigDecimal.ONE)
-                                                        )
-                                                )
-                                        ))
+    void writeMetadataVersionStatsSerializesUnavailableCoverageMetricAsNa() throws IOException {
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats = new LibraryStatsModels.MetadataVersionStats(
+                List.of(new LibraryStatsModels.VersionStats(
+                        "1.0.0",
+                        new LibraryStatsModels.DynamicAccessStats(
+                                1,
+                                0,
+                                java.math.BigDecimal.ZERO,
+                                Map.of()
+                        ),
+                        new LibraryStatsModels.LibraryCoverage(
+                                LibraryStatsModels.CoverageMetricValue.notAvailable(),
+                                LibraryStatsModels.CoverageMetricValue.available(
+                                        new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667"))
+                                ),
+                                LibraryStatsModels.CoverageMetricValue.available(
+                                        new LibraryStatsModels.CoverageMetric(3, 0, 3, java.math.BigDecimal.ONE)
                                 )
                         )
-                )
-        ));
+                ))
+        );
         Path statsFile = tempDir.resolve("stats.json");
 
-        LibraryStatsSupport.writeStats(statsFile, libraryStats);
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, metadataVersionStats);
 
         String content = Files.readString(statsFile, StandardCharsets.UTF_8);
         assertThat(content).contains("\"line\" : \"N/A\"");
     }
 
     @Test
-    void writeStatsSerializesUnavailableDynamicAccessAsNa() throws IOException {
-        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
-                "com.example:demo",
-                new LibraryStatsModels.ArtifactStats(
-                        Map.of(
-                                "1.0.0",
-                                new LibraryStatsModels.MetadataVersionStats(
-                                        List.of(new LibraryStatsModels.VersionStats(
-                                                "1.0.0",
-                                                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
-                                                new LibraryStatsModels.LibraryCoverage(
-                                                        LibraryStatsModels.CoverageMetricValue.available(
-                                                                new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667"))
-                                                        ),
-                                                        LibraryStatsModels.CoverageMetricValue.available(
-                                                                new LibraryStatsModels.CoverageMetric(3, 0, 3, java.math.BigDecimal.ONE)
-                                                        ),
-                                                        LibraryStatsModels.CoverageMetricValue.available(
-                                                                new LibraryStatsModels.CoverageMetric(4, 0, 4, java.math.BigDecimal.ONE)
-                                                        )
-                                                )
-                                        ))
+    void writeMetadataVersionStatsSerializesUnavailableDynamicAccessAsNa() throws IOException {
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats = new LibraryStatsModels.MetadataVersionStats(
+                List.of(new LibraryStatsModels.VersionStats(
+                        "1.0.0",
+                        LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
+                        new LibraryStatsModels.LibraryCoverage(
+                                LibraryStatsModels.CoverageMetricValue.available(
+                                        new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667"))
+                                ),
+                                LibraryStatsModels.CoverageMetricValue.available(
+                                        new LibraryStatsModels.CoverageMetric(3, 0, 3, java.math.BigDecimal.ONE)
+                                ),
+                                LibraryStatsModels.CoverageMetricValue.available(
+                                        new LibraryStatsModels.CoverageMetric(4, 0, 4, java.math.BigDecimal.ONE)
                                 )
                         )
-                )
-        ));
+                ))
+        );
         Path statsFile = tempDir.resolve("stats.json");
 
-        LibraryStatsSupport.writeStats(statsFile, libraryStats);
-        LibraryStatsModels.LibraryStats loadedStats = LibraryStatsSupport.loadStats(statsFile);
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, metadataVersionStats);
+        LibraryStatsModels.MetadataVersionStats loadedStats = LibraryStatsSupport.loadMetadataVersionStats(statsFile);
 
         String content = Files.readString(statsFile, StandardCharsets.UTF_8);
         assertThat(content).contains("\"dynamicAccess\" : \"N/A\"");
-        assertThat(LibraryStatsSupport.requireVersionStats(
-                LibraryStatsSupport.metadataVersionStats(loadedStats, "com.example:demo", "1.0.0"),
-                "com.example:demo:1.0.0"
-        ).dynamicAccess().isAvailable()).isFalse();
+        assertThat(LibraryStatsSupport.requireVersionStats(loadedStats, "com.example:demo:1.0.0").dynamicAccess().isAvailable()).isFalse();
     }
 
     @Test
-    void writeStatsCanonicalizesTrailingZeroRatios() throws IOException {
-        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
-                "com.example:demo",
-                new LibraryStatsModels.ArtifactStats(
-                        Map.of(
-                                "1.0.0",
-                                new LibraryStatsModels.MetadataVersionStats(
-                                        List.of(new LibraryStatsModels.VersionStats(
-                                                "1.0.0",
-                                                new LibraryStatsModels.DynamicAccessStats(
-                                                        13,
-                                                        13,
-                                                        new java.math.BigDecimal("1.000000"),
-                                                        Map.of(
-                                                                "reflection",
-                                                                new LibraryStatsModels.DynamicAccessBreakdown(
-                                                                        9,
-                                                                        9,
-                                                                        new java.math.BigDecimal("1.000000")
-                                                                ),
-                                                                "resources",
-                                                                new LibraryStatsModels.DynamicAccessBreakdown(
-                                                                        4,
-                                                                        4,
-                                                                        new java.math.BigDecimal("0.500000")
-                                                                )
-                                                        )
-                                                ),
-                                                new LibraryStatsModels.LibraryCoverage(
-                                                        new LibraryStatsModels.CoverageMetric(1, 1, 2, new java.math.BigDecimal("0.500000")),
-                                                        new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667")),
-                                                        new LibraryStatsModels.CoverageMetric(3, 0, 3, new java.math.BigDecimal("1.000000"))
-                                                )
-                                        ))
+    void writeMetadataVersionStatsCanonicalizesTrailingZeroRatios() throws IOException {
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats = new LibraryStatsModels.MetadataVersionStats(
+                List.of(new LibraryStatsModels.VersionStats(
+                        "1.0.0",
+                        new LibraryStatsModels.DynamicAccessStats(
+                                13,
+                                13,
+                                new java.math.BigDecimal("1.000000"),
+                                Map.of(
+                                        "reflection",
+                                        new LibraryStatsModels.DynamicAccessBreakdown(
+                                                9,
+                                                9,
+                                                new java.math.BigDecimal("1.000000")
+                                        ),
+                                        "resources",
+                                        new LibraryStatsModels.DynamicAccessBreakdown(
+                                                4,
+                                                4,
+                                                new java.math.BigDecimal("0.500000")
+                                        )
                                 )
+                        ),
+                        new LibraryStatsModels.LibraryCoverage(
+                                new LibraryStatsModels.CoverageMetric(1, 1, 2, new java.math.BigDecimal("0.500000")),
+                                new LibraryStatsModels.CoverageMetric(2, 1, 3, new java.math.BigDecimal("0.666667")),
+                                new LibraryStatsModels.CoverageMetric(3, 0, 3, new java.math.BigDecimal("1.000000"))
                         )
-                )
-        ));
+                ))
+        );
         Path statsFile = tempDir.resolve("stats.json");
 
-        LibraryStatsSupport.writeStats(statsFile, libraryStats);
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, metadataVersionStats);
 
         String content = Files.readString(statsFile, StandardCharsets.UTF_8);
         assertThat(content).contains("\"coverageRatio\" : 1.0");
@@ -691,40 +648,29 @@ class LibraryStatsSupportTests {
     }
 
     @Test
-    void writeStatsNormalizesZeroTotalCoverageMetricRatioToFullCoverage() throws IOException {
-        LibraryStatsModels.LibraryStats libraryStats = new LibraryStatsModels.LibraryStats(Map.of(
-                "com.example:demo",
-                new LibraryStatsModels.ArtifactStats(
-                        Map.of(
-                                "1.0.0",
-                                new LibraryStatsModels.MetadataVersionStats(
-                                        List.of(new LibraryStatsModels.VersionStats(
-                                                "1.0.0",
-                                                LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
-                                                new LibraryStatsModels.LibraryCoverage(
-                                                        LibraryStatsModels.CoverageMetricValue.available(
-                                                                new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
-                                                        ),
-                                                        LibraryStatsModels.CoverageMetricValue.available(
-                                                                new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
-                                                        ),
-                                                        LibraryStatsModels.CoverageMetricValue.available(
-                                                                new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
-                                                        )
-                                                )
-                                        ))
+    void writeMetadataVersionStatsNormalizesZeroTotalCoverageMetricRatioToFullCoverage() throws IOException {
+        LibraryStatsModels.MetadataVersionStats metadataVersionStats = new LibraryStatsModels.MetadataVersionStats(
+                List.of(new LibraryStatsModels.VersionStats(
+                        "1.0.0",
+                        LibraryStatsModels.DynamicAccessStatsValue.notAvailable(),
+                        new LibraryStatsModels.LibraryCoverage(
+                                LibraryStatsModels.CoverageMetricValue.available(
+                                        new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
+                                ),
+                                LibraryStatsModels.CoverageMetricValue.available(
+                                        new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
+                                ),
+                                LibraryStatsModels.CoverageMetricValue.available(
+                                        new LibraryStatsModels.CoverageMetric(0, 0, 0, java.math.BigDecimal.ZERO)
                                 )
                         )
-                )
-        ));
+                ))
+        );
         Path statsFile = tempDir.resolve("stats.json");
 
-        LibraryStatsSupport.writeStats(statsFile, libraryStats);
-        LibraryStatsModels.LibraryStats loadedStats = LibraryStatsSupport.loadStats(statsFile);
-        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.requireVersionStats(
-                LibraryStatsSupport.metadataVersionStats(loadedStats, "com.example:demo", "1.0.0"),
-                "com.example:demo:1.0.0"
-        );
+        LibraryStatsSupport.writeMetadataVersionStats(statsFile, metadataVersionStats);
+        LibraryStatsModels.MetadataVersionStats loadedStats = LibraryStatsSupport.loadMetadataVersionStats(statsFile);
+        LibraryStatsModels.VersionStats versionStats = LibraryStatsSupport.requireVersionStats(loadedStats, "com.example:demo:1.0.0");
 
         String content = Files.readString(statsFile, StandardCharsets.UTF_8);
         assertThat(content).contains("\"ratio\" : 1.0");
@@ -732,6 +678,30 @@ class LibraryStatsSupportTests {
         assertThat(versionStats.libraryCoverage().line().ratio()).isEqualByComparingTo("1.0");
         assertThat(versionStats.libraryCoverage().instruction().ratio()).isEqualByComparingTo("1.0");
         assertThat(versionStats.libraryCoverage().method().ratio()).isEqualByComparingTo("1.0");
+    }
+
+    @Test
+    void loadRepositoryStatsAggregatesExplodedStatsTree() throws IOException {
+        Path firstStatsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "com.example", "demo", "1.0.0");
+        Path secondStatsFile = LibraryStatsSupport.repositoryStatsFile(tempDir.resolve("stats"), "org.demo", "alpha", "2.0.0");
+        LibraryStatsSupport.writeMetadataVersionStats(
+                firstStatsFile,
+                new LibraryStatsModels.MetadataVersionStats(List.of(createVersionStats("1.0.0", 1, 1)))
+        );
+        LibraryStatsSupport.writeMetadataVersionStats(
+                secondStatsFile,
+                new LibraryStatsModels.MetadataVersionStats(List.of(createVersionStats("2.0.1", 2, 1)))
+        );
+
+        LibraryStatsModels.LibraryStats libraryStats = LibraryStatsSupport.loadRepositoryStats(tempDir.resolve("stats"));
+
+        assertThat(libraryStats.entries().keySet()).containsExactly("com.example:demo", "org.demo:alpha");
+        assertThat(LibraryStatsSupport.metadataVersionStats(libraryStats, "com.example:demo", "1.0.0").versions())
+                .extracting(LibraryStatsModels.VersionStats::version)
+                .containsExactly("1.0.0");
+        assertThat(LibraryStatsSupport.metadataVersionStats(libraryStats, "org.demo:alpha", "2.0.0").versions())
+                .extracting(LibraryStatsModels.VersionStats::version)
+                .containsExactly("2.0.1");
     }
 
     private LibraryStatsModels.VersionStats createVersionStats(
