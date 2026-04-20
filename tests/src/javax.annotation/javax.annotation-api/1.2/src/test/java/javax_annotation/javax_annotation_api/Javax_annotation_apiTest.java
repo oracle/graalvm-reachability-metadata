@@ -148,6 +148,20 @@ class Javax_annotation_apiTest {
     }
 
     @Test
+    void generatedAnnotationExposesRequiredAndOptionalMembers() throws Exception {
+        Method value = method(Generated.class, "value");
+        Method date = method(Generated.class, "date");
+        Method comments = method(Generated.class, "comments");
+
+        assertThat(value.getReturnType()).isEqualTo(String[].class);
+        assertThat(value.getDefaultValue()).isNull();
+        assertThat(date.getReturnType()).isEqualTo(String.class);
+        assertThat(date.getDefaultValue()).isEqualTo("");
+        assertThat(comments.getReturnType()).isEqualTo(String.class);
+        assertThat(comments.getDefaultValue()).isEqualTo("");
+    }
+
+    @Test
     void annotationTypesExposeRetentionPolicies() {
         assertThat(ManagedBean.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(PostConstruct.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
