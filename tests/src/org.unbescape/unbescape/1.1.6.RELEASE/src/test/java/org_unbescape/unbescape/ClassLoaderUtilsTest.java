@@ -7,6 +7,7 @@
 package org_unbescape.unbescape;
 
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 import org.unbescape.Unbescape;
 
 import java.io.InputStream;
@@ -65,7 +66,18 @@ public class ClassLoaderUtilsTest {
                 assertThat(isolatedResourceStream).isNull();
             }
 
-            Class<?> isolatedUnbescape = Class.forName("org.unbescape.Unbescape", true, isolatedLibraryClassLoader);
+            Class<?> isolatedUnbescape;
+            try {
+                isolatedUnbescape = Class.forName("org.unbescape.Unbescape", true, isolatedLibraryClassLoader);
+            } catch (ClassNotFoundException exception) {
+                if (isNativeImageRuntime()) {
+                    throw new TestAbortedException(
+                            "Native image runtime does not support reloading application classes via isolated URLClassLoader",
+                            exception
+                    );
+                }
+                throw exception;
+            }
 
             assertThat(isolatedUnbescape.getField("VERSION").get(null)).isInstanceOf(String.class).isNotNull();
             assertThat(isolatedUnbescape.getField("BUILD_TIMESTAMP").get(null)).isInstanceOf(String.class).isNotNull();
@@ -77,5 +89,9 @@ public class ClassLoaderUtilsTest {
         } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
