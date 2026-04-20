@@ -177,6 +177,26 @@ class Javax_interceptor_apiTest {
         assertThat(constructed.process("metadata", 2)).isEqualTo("seed-constructed:metadatametadata");
     }
 
+    @Test
+    void aroundConstructInterceptorsCanObserveConstructedTargetAfterProceed() throws Exception {
+        Constructor<TargetAwareService> constructor = declaredConstructor(TargetAwareService.class, String.class);
+        RecordingInvocationContext constructContext = RecordingInvocationContext.forConstructorUpdatingTarget(
+                constructor,
+                new Object[]{"visible-target"},
+                parameters -> new TargetAwareService((String) parameters[0]));
+
+        TargetCapturingConstructInterceptor constructInterceptor = new TargetCapturingConstructInterceptor();
+        TargetAwareService constructed = (TargetAwareService) constructInterceptor.aroundConstruct(constructContext);
+
+        assertThat(constructContext.getConstructor()).isEqualTo(constructor);
+        assertThat(constructContext.getTarget()).isSameAs(constructed);
+        assertThat(constructInterceptor.observedTarget()).isSameAs(constructed);
+        assertThat(constructContext.getContextData())
+                .containsEntry("phase", "construct-target")
+                .containsEntry("observedTargetType", TargetAwareService.class.getName());
+        assertThat(constructed.describe()).isEqualTo("visible-target");
+    }
+
     private static RetentionPolicy retentionOf(Class<? extends Annotation> annotationType) {
         Retention retention = annotationType.getAnnotation(Retention.class);
 
@@ -229,6 +249,18 @@ class Javax_interceptor_apiTest {
         }
     }
 
+    private static final class TargetAwareService {
+        private final String value;
+
+        private TargetAwareService(String value) {
+            this.value = value;
+        }
+
+        private String describe() {
+            return value;
+        }
+    }
+
     @Interceptor
     @AuditedBinding
     private static final class AuditInterceptor {
@@ -268,13 +300,31 @@ class Javax_interceptor_apiTest {
         }
     }
 
+    @Interceptor
+    private static final class TargetCapturingConstructInterceptor {
+        private Object observedTarget;
+
+        @AroundConstruct
+        private Object aroundConstruct(InvocationContext context) throws Exception {
+            context.getContextData().put("phase", "construct-target");
+            Object constructed = context.proceed();
+            observedTarget = context.getTarget();
+            context.getContextData().put("observedTargetType", observedTarget.getClass().getName());
+            return constructed;
+        }
+
+        private Object observedTarget() {
+            return observedTarget;
+        }
+    }
+
     @FunctionalInterface
     private interface ProceedHandler {
         Object proceed(Object[] parameters) throws Exception;
     }
 
     private static final class RecordingInvocationContext implements InvocationContext {
-        private final Object target;
+        private Object target;
         private final Object timer;
         private final Method method;
         private final Constructor<?> constructor;
@@ -312,6 +362,25 @@ class Javax_interceptor_apiTest {
                 Object[] parameters,
                 ProceedHandler proceedHandler) {
             return new RecordingInvocationContext(null, null, null, constructor, parameters, proceedHandler);
+        }
+
+        private static RecordingInvocationContext forConstructorUpdatingTarget(
+                Constructor<?> constructor,
+                Object[] parameters,
+                ProceedHandler proceedHandler) {
+            RecordingInvocationContext[] contextHolder = new RecordingInvocationContext[1];
+            contextHolder[0] = new RecordingInvocationContext(
+                    null,
+                    null,
+                    null,
+                    constructor,
+                    parameters,
+                    currentParameters -> {
+                        Object constructed = proceedHandler.proceed(currentParameters);
+                        contextHolder[0].target = constructed;
+                        return constructed;
+                    });
+            return contextHolder[0];
         }
 
         @Override
