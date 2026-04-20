@@ -25,6 +25,7 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 import kotlin.sequences.SequencesKt;
 import org.jetbrains.kotlin.cli.common.CompilerSystemProperties;
+import org.jetbrains.kotlin.daemon.RunningCompilations;
 import org.jetbrains.kotlin.daemon.common.ClientUtilsKt;
 import org.jetbrains.kotlin.daemon.common.CompilerId;
 import org.jetbrains.kotlin.daemon.common.DaemonJVMOptions;
@@ -33,10 +34,14 @@ import org.jetbrains.kotlin.daemon.common.DaemonParamsKt;
 import org.jetbrains.kotlin.daemon.common.DaemonReportCategory;
 import org.jetbrains.kotlin.daemon.common.DaemonWithMetadata;
 import org.jetbrains.kotlin.daemon.common.LoopbackNetworkInterface;
+import org.jetbrains.kotlin.progress.CompilationCanceledException;
+import org.jetbrains.kotlin.progress.CompilationCanceledStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class Kotlin_daemon_embeddableTest {
 
@@ -204,6 +209,39 @@ class Kotlin_daemon_embeddableTest {
         assertThat(daemons).isEmpty();
         assertThat(Files.exists(runFile)).isFalse();
         assertThat(reports).anySatisfy(report -> assertThat(report).contains("seemingly orphaned run file"));
+    }
+
+    @Test
+    void runningCompilationStatusStaysActiveUntilCompilationIsRemoved() {
+        RunningCompilations runningCompilations = new RunningCompilations();
+        int compilationId = 101;
+        runningCompilations.add(compilationId);
+
+        CompilationCanceledStatus status = runningCompilations.getCompilationCanceledStatus(compilationId);
+
+        assertThatCode(status::checkCanceled).doesNotThrowAnyException();
+
+        runningCompilations.remove(compilationId);
+
+        assertThatThrownBy(status::checkCanceled).isInstanceOf(CompilationCanceledException.class);
+    }
+
+    @Test
+    void cancelAllCancelsEveryTrackedCompilationStatus() {
+        RunningCompilations runningCompilations = new RunningCompilations();
+        runningCompilations.add(7);
+        runningCompilations.add(9);
+
+        CompilationCanceledStatus firstStatus = runningCompilations.getCompilationCanceledStatus(7);
+        CompilationCanceledStatus secondStatus = runningCompilations.getCompilationCanceledStatus(9);
+
+        assertThatCode(firstStatus::checkCanceled).doesNotThrowAnyException();
+        assertThatCode(secondStatus::checkCanceled).doesNotThrowAnyException();
+
+        runningCompilations.cancelAll();
+
+        assertThatThrownBy(firstStatus::checkCanceled).isInstanceOf(CompilationCanceledException.class);
+        assertThatThrownBy(secondStatus::checkCanceled).isInstanceOf(CompilationCanceledException.class);
     }
 
     private static Map<CompilerSystemProperties, String> snapshotProperties(CompilerSystemProperties... properties) {
