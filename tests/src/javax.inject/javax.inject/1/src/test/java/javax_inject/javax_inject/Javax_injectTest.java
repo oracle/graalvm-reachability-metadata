@@ -6,17 +6,41 @@
  */
 package javax_inject.javax_inject;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
+import javax.inject.Qualifier;
+import javax.inject.Scope;
+import javax.inject.Singleton;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class Javax_injectTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void injectAndNamedAnnotationsSupportCommonInjectionPointShapes() {
+        NamedGreetingComponent component = new NamedGreetingComponent("Hello");
+
+        component.punctuation = "!";
+        component.setRecipient("world");
+
+        assertThat(component.composeGreeting()).isEqualTo("Hello, world!");
+    }
+
+    @Test
+    void customQualifierScopeAndSingletonAnnotationsCanBeAppliedToTypes() {
+        RemoteGreetingFacade facade = new RemoteGreetingFacade(new GreetingTemplates(), new RemoteFormatter());
+
+        assertThat(facade.greet("team")).isEqualTo("remote hello, team");
     }
 
     @Test
@@ -42,6 +66,77 @@ class Javax_injectTest {
 
         assertThat(initialGreeting).isEqualTo("hello, world");
         assertThat(updatedGreeting).isEqualTo("hi, world");
+    }
+
+    private static final class NamedGreetingComponent {
+        private final String greeting;
+
+        @Inject
+        @Named("punctuation")
+        private String punctuation;
+
+        private String recipient;
+
+        @Inject
+        private NamedGreetingComponent(@Named("greeting") String greeting) {
+            this.greeting = greeting;
+        }
+
+        @Inject
+        private void setRecipient(@Named("recipient") String recipient) {
+            this.recipient = recipient;
+        }
+
+        private String composeGreeting() {
+            return this.greeting + ", " + this.recipient + this.punctuation;
+        }
+    }
+
+    @Qualifier
+    @Retention(RUNTIME)
+    @Target({TYPE, FIELD, PARAMETER, METHOD})
+    private @interface Remote {
+    }
+
+    @Scope
+    @Retention(RUNTIME)
+    @Target(TYPE)
+    private @interface SessionScoped {
+    }
+
+    @Singleton
+    private static final class GreetingTemplates {
+        private String greetingFor(String name) {
+            return "hello, " + name;
+        }
+    }
+
+    private interface GreetingFormatter {
+        String format(String message);
+    }
+
+    @Remote
+    private static final class RemoteFormatter implements GreetingFormatter {
+        @Override
+        public String format(String message) {
+            return "remote " + message;
+        }
+    }
+
+    @SessionScoped
+    private static final class RemoteGreetingFacade {
+        private final GreetingTemplates templates;
+        private final GreetingFormatter formatter;
+
+        @Inject
+        private RemoteGreetingFacade(GreetingTemplates templates, @Remote GreetingFormatter formatter) {
+            this.templates = templates;
+            this.formatter = formatter;
+        }
+
+        private String greet(String name) {
+            return this.formatter.format(this.templates.greetingFor(name));
+        }
     }
 
     private static final class SequencedMessageProvider implements Provider<MessageHolder> {
