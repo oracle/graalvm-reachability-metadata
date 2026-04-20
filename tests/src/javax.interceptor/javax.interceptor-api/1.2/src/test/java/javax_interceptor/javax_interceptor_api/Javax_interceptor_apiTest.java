@@ -14,7 +14,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.interceptor.AroundConstruct;
@@ -75,6 +77,7 @@ class Javax_interceptor_apiTest {
                 .isLessThan(Interceptor.Priority.PLATFORM_AFTER);
     }
 
+    @SuppressWarnings("checkstyle:annotationAccess")
     @Test
     void runtimeVisibleAnnotationsDescribeInterceptorBindingsAcrossTypesMethodsAndConstructors() throws Exception {
         Interceptors typeInterceptors = InterceptedService.class.getAnnotation(Interceptors.class);
@@ -158,6 +161,34 @@ class Javax_interceptor_apiTest {
     }
 
     @Test
+    void aroundInvokeInterceptorsCanShareMutableContextDataAcrossChain() throws Exception {
+        ChainedService target = new ChainedService();
+        Method combineMethod = declaredMethod(ChainedService.class, "combine", String.class);
+        ChainedInvocationContext invocationContext = ChainedInvocationContext.forMethod(
+                target,
+                combineMethod,
+                new Object[]{"  native-image  "},
+                parameters -> target.combine((String) parameters[0]),
+                new TrimmingInvokeInterceptor()::aroundInvoke,
+                new UppercasingInvokeInterceptor()::aroundInvoke);
+
+        Object result = invocationContext.proceed();
+
+        assertThat(result).isEqualTo("chain[value=NATIVE-IMAGE|combine]");
+        assertThat(invocationContext.getTarget()).isSameAs(target);
+        assertThat(invocationContext.getMethod()).isEqualTo(combineMethod);
+        assertThat(invocationContext.getConstructor()).isNull();
+        assertThat(invocationContext.getTimer()).isNull();
+        assertThat(invocationContext.getParameters()).containsExactly("NATIVE-IMAGE");
+        assertThat(invocationContext.getContextData())
+                .containsEntry("normalizedToken", "native-image")
+                .containsEntry("uppercasedToken", "NATIVE-IMAGE")
+                .containsEntry("observedMethod", "combine");
+        assertThat(stepsOf(invocationContext))
+                .containsExactly("trim-before", "uppercase-before", "uppercase-after", "trim-after");
+    }
+
+    @Test
     void aroundConstructInterceptorCanBuildObjectsViaInvocationContext() throws Exception {
         Constructor<InterceptedService> constructor = declaredConstructor(InterceptedService.class, String.class);
         RecordingInvocationContext constructContext = RecordingInvocationContext.forConstructor(
@@ -197,6 +228,7 @@ class Javax_interceptor_apiTest {
         assertThat(constructed.describe()).isEqualTo("visible-target");
     }
 
+    @SuppressWarnings("checkstyle:annotationAccess")
     private static RetentionPolicy retentionOf(Class<? extends Annotation> annotationType) {
         Retention retention = annotationType.getAnnotation(Retention.class);
 
@@ -204,6 +236,12 @@ class Javax_interceptor_apiTest {
         return retention.value();
     }
 
+    @SuppressWarnings("unchecked")
+    private static List<String> stepsOf(InvocationContext context) {
+        return (List<String>) context.getContextData().computeIfAbsent("steps", key -> new ArrayList<String>());
+    }
+
+    @SuppressWarnings("checkstyle:annotationAccess")
     private static ElementType[] targetOf(Class<? extends Annotation> annotationType) {
         Target target = annotationType.getAnnotation(Target.class);
 
@@ -261,6 +299,12 @@ class Javax_interceptor_apiTest {
         }
     }
 
+    private static final class ChainedService {
+        private String combine(String token) {
+            return "value=" + token;
+        }
+    }
+
     @Interceptor
     @AuditedBinding
     private static final class AuditInterceptor {
@@ -301,6 +345,41 @@ class Javax_interceptor_apiTest {
     }
 
     @Interceptor
+    private static final class TrimmingInvokeInterceptor {
+        @AroundInvoke
+        private Object aroundInvoke(InvocationContext context) throws Exception {
+            List<String> steps = stepsOf(context);
+            steps.add("trim-before");
+
+            String normalizedToken = ((String) context.getParameters()[0]).trim();
+            context.setParameters(new Object[]{normalizedToken});
+            context.getContextData().put("normalizedToken", normalizedToken);
+
+            Object result = context.proceed();
+            steps.add("trim-after");
+            return "chain[" + result + "]";
+        }
+    }
+
+    @Interceptor
+    private static final class UppercasingInvokeInterceptor {
+        @AroundInvoke
+        private Object aroundInvoke(InvocationContext context) throws Exception {
+            List<String> steps = stepsOf(context);
+            steps.add("uppercase-before");
+
+            String uppercasedToken = ((String) context.getContextData().get("normalizedToken")).toUpperCase();
+            context.setParameters(new Object[]{uppercasedToken});
+            context.getContextData().put("uppercasedToken", uppercasedToken);
+            context.getContextData().put("observedMethod", context.getMethod().getName());
+
+            Object result = context.proceed();
+            steps.add("uppercase-after");
+            return result + "|" + context.getMethod().getName();
+        }
+    }
+
+    @Interceptor
     private static final class TargetCapturingConstructInterceptor {
         private Object observedTarget;
 
@@ -321,6 +400,88 @@ class Javax_interceptor_apiTest {
     @FunctionalInterface
     private interface ProceedHandler {
         Object proceed(Object[] parameters) throws Exception;
+    }
+
+    @FunctionalInterface
+    private interface AroundInvokeHandler {
+        Object invoke(InvocationContext context) throws Exception;
+    }
+
+    private static final class ChainedInvocationContext implements InvocationContext {
+        private final Object target;
+        private final Method method;
+        private final Map<String, Object> contextData;
+        private final ProceedHandler terminalHandler;
+        private final AroundInvokeHandler[] aroundInvokeHandlers;
+        private Object[] parameters;
+        private int nextHandlerIndex;
+
+        private ChainedInvocationContext(
+                Object target,
+                Method method,
+                Object[] parameters,
+                ProceedHandler terminalHandler,
+                AroundInvokeHandler... aroundInvokeHandlers) {
+            this.target = target;
+            this.method = method;
+            this.parameters = parameters;
+            this.terminalHandler = terminalHandler;
+            this.aroundInvokeHandlers = aroundInvokeHandlers;
+            this.contextData = new LinkedHashMap<>();
+        }
+
+        private static ChainedInvocationContext forMethod(
+                Object target,
+                Method method,
+                Object[] parameters,
+                ProceedHandler terminalHandler,
+                AroundInvokeHandler... aroundInvokeHandlers) {
+            return new ChainedInvocationContext(target, method, parameters, terminalHandler, aroundInvokeHandlers);
+        }
+
+        @Override
+        public Object getTarget() {
+            return target;
+        }
+
+        @Override
+        public Object getTimer() {
+            return null;
+        }
+
+        @Override
+        public Method getMethod() {
+            return method;
+        }
+
+        @Override
+        public Constructor<?> getConstructor() {
+            return null;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return parameters;
+        }
+
+        @Override
+        public void setParameters(Object[] params) {
+            this.parameters = params;
+        }
+
+        @Override
+        public Map<String, Object> getContextData() {
+            return contextData;
+        }
+
+        @Override
+        public Object proceed() throws Exception {
+            if (nextHandlerIndex < aroundInvokeHandlers.length) {
+                AroundInvokeHandler currentHandler = aroundInvokeHandlers[nextHandlerIndex++];
+                return currentHandler.invoke(this);
+            }
+            return terminalHandler.proceed(parameters);
+        }
     }
 
     private static final class RecordingInvocationContext implements InvocationContext {
