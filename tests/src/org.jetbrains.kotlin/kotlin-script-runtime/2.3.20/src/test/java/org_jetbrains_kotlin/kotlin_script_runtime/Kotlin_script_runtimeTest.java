@@ -16,6 +16,9 @@ import kotlin.script.experimental.dependencies.DependenciesResolver;
 import kotlin.script.experimental.dependencies.DependenciesResolverKt;
 import kotlin.script.experimental.dependencies.ScriptDependencies;
 import kotlin.script.experimental.dependencies.ScriptReport;
+import kotlin.script.extensions.SamWithReceiverAnnotations;
+import kotlin.script.templates.AcceptedAnnotations;
+import kotlin.script.templates.ScriptTemplateDefinition;
 import kotlin.script.templates.standard.ScriptTemplateWithArgs;
 import kotlin.script.templates.standard.ScriptTemplateWithBindings;
 import kotlin.script.templates.standard.SimpleScriptTemplate;
@@ -160,6 +163,42 @@ class Kotlin_script_runtimeTest {
         assertThat(helperResult.getReports()).isEmpty();
     }
 
+    @Test
+    void scriptTemplateDefinitionAnnotationsExposeDefaultsAndOverrides() {
+        ScriptTemplateDefinition defaultDefinition = DefaultAnnotatedTemplate.class.getAnnotation(ScriptTemplateDefinition.class);
+        ScriptTemplateDefinition customDefinition = CustomAnnotatedTemplate.class.getAnnotation(ScriptTemplateDefinition.class);
+
+        assertThat(defaultDefinition).isNotNull();
+        assertThat(defaultDefinition.resolver()).isEqualTo(DependenciesResolver.NoDependencies.class);
+        assertThat(defaultDefinition.scriptFilePattern()).isEqualTo(".*\\.kts");
+
+        assertThat(customDefinition).isNotNull();
+        assertThat(customDefinition.resolver()).isEqualTo(TestDependenciesResolver.class);
+        assertThat(customDefinition.scriptFilePattern()).isEqualTo(".*\\.main\\.kts");
+    }
+
+    @Test
+    void scriptTemplateRuntimeAnnotationsRemainAccessible() throws NoSuchMethodException {
+        AcceptedAnnotations classAcceptedAnnotations =
+                CustomAnnotatedTemplate.class.getAnnotation(AcceptedAnnotations.class);
+        SamWithReceiverAnnotations samWithReceiverAnnotations =
+                CustomAnnotatedTemplate.class.getAnnotation(SamWithReceiverAnnotations.class);
+        AcceptedAnnotations methodAcceptedAnnotations = CustomAnnotatedTemplate.class
+                .getDeclaredMethod("acceptsSupportedMarkers")
+                .getAnnotation(AcceptedAnnotations.class);
+
+        assertThat(classAcceptedAnnotations).isNotNull();
+        assertThat(classAcceptedAnnotations.supportedAnnotationClasses()).containsExactly(SupportedMarker.class);
+
+        assertThat(samWithReceiverAnnotations).isNotNull();
+        assertThat(samWithReceiverAnnotations.annotations())
+                .containsExactly("sample.FirstReceiver", "sample.SecondReceiver");
+
+        assertThat(methodAcceptedAnnotations).isNotNull();
+        assertThat(methodAcceptedAnnotations.supportedAnnotationClasses())
+                .containsExactly(SupportedMarker.class, AnotherSupportedMarker.class);
+    }
+
     private static final class ArgsTemplate extends ScriptTemplateWithArgs {
 
         private ArgsTemplate(String[] args) {
@@ -175,6 +214,34 @@ class Kotlin_script_runtimeTest {
     }
 
     private static final class PlainTemplate extends SimpleScriptTemplate {
+    }
+
+    @ScriptTemplateDefinition
+    private static final class DefaultAnnotatedTemplate {
+    }
+
+    @ScriptTemplateDefinition(resolver = TestDependenciesResolver.class, scriptFilePattern = ".*\\.main\\.kts")
+    @AcceptedAnnotations(supportedAnnotationClasses = SupportedMarker.class)
+    @SamWithReceiverAnnotations(annotations = {"sample.FirstReceiver", "sample.SecondReceiver"})
+    private static final class CustomAnnotatedTemplate {
+
+        @AcceptedAnnotations(supportedAnnotationClasses = {SupportedMarker.class, AnotherSupportedMarker.class})
+        private void acceptsSupportedMarkers() {
+        }
+    }
+
+    private @interface SupportedMarker {
+    }
+
+    private @interface AnotherSupportedMarker {
+    }
+
+    private static final class TestDependenciesResolver implements DependenciesResolver {
+
+        @Override
+        public ResolveResult resolve(ScriptContents scriptContents, Map<String, ? extends Object> environment) {
+            return DependenciesResolver.NoDependencies.INSTANCE.resolve(scriptContents, environment);
+        }
     }
 
     private static final class TestScriptContents implements ScriptContents {
