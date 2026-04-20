@@ -130,6 +130,14 @@ class Jsr250_apiTest {
     }
 
     @Test
+    void typeLevelSecurityAnnotationsAreRetainedOnClasses() {
+        RolesAllowed rolesAllowed = annotation(TypeRestrictedComponent.class, RolesAllowed.class);
+
+        assertThat(rolesAllowed.value()).containsExactly("auditor", "operator");
+        assertThat(annotationPresent(OpenAccessComponent.class, PermitAll.class)).isTrue();
+    }
+
+    @Test
     void annotationTypesExposeExpectedRetentionTargetsAndDocumentation() {
         assertThat(annotation(Resource.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(annotation(Resources.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
@@ -301,5 +309,13 @@ class Jsr250_apiTest {
 
     @Generated(value = {"metadata-forge", "generator"}, date = "2026-04-20", comments = "compile-time only")
     private static final class GeneratedComponent {
+    }
+
+    @RolesAllowed({"auditor", "operator"})
+    private static final class TypeRestrictedComponent {
+    }
+
+    @PermitAll
+    private static final class OpenAccessComponent {
     }
 }
