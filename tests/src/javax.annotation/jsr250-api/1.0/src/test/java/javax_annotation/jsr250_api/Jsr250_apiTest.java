@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -214,13 +213,16 @@ class Jsr250_apiTest {
         assertThat(annotationPresent(health, PermitAll.class)).isFalse();
     }
 
+    // Checkstyle: allow direct annotation access
     private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
-        return element.getAnnotation(annotationType);
+        A[] annotations = element.getAnnotationsByType(annotationType);
+        return annotations.length == 0 ? null : annotations[0];
     }
 
     private static boolean annotationPresent(AnnotatedElement element, Class<? extends Annotation> annotationType) {
-        return element.isAnnotationPresent(annotationType);
+        return element.getAnnotationsByType(annotationType).length > 0;
     }
+    // Checkstyle: disallow direct annotation access
 
     private static Field field(Class<?> type, String name) throws NoSuchFieldException {
         return type.getDeclaredField(name);
