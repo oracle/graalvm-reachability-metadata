@@ -131,6 +131,40 @@ class Jakarta_annotation_apiTest {
     }
 
     @Test
+    void explicitResourceContainerFlattensToRepeatableViewAndPreservesConfiguredAttributes() {
+        Resources resourceContainer = ExplicitResourceContainerComponent.class.getAnnotation(Resources.class);
+        Resource[] resources = ExplicitResourceContainerComponent.class.getAnnotationsByType(Resource.class);
+
+        assertThat(resourceContainer.value()).hasSize(2);
+        assertThat(resourceContainer.value()[0].name()).isEqualTo("jdbc/primary");
+        assertThat(resourceContainer.value()[0].type()).isEqualTo(CharSequence.class);
+        assertThat(resourceContainer.value()[0].authenticationType())
+                .isEqualTo(Resource.AuthenticationType.APPLICATION);
+        assertThat(resourceContainer.value()[0].shareable()).isFalse();
+        assertThat(resourceContainer.value()[0].description()).isEqualTo("Primary resource");
+        assertThat(resourceContainer.value()[0].mappedName()).isEqualTo("mapped/primary");
+        assertThat(resourceContainer.value()[0].lookup()).isEqualTo("java:comp/env/jdbc/primary");
+
+        assertThat(resourceContainer.value()[1].name()).isEqualTo("mail/session");
+        assertThat(resourceContainer.value()[1].type()).isEqualTo(Object.class);
+        assertThat(resourceContainer.value()[1].authenticationType())
+                .isEqualTo(Resource.AuthenticationType.CONTAINER);
+        assertThat(resourceContainer.value()[1].shareable()).isTrue();
+        assertThat(resourceContainer.value()[1].description()).isEqualTo("Mail session");
+
+        assertThat(resources)
+                .extracting(Resource::name)
+                .containsExactly("jdbc/primary", "mail/session");
+        assertThat(resources)
+                .extracting(Resource::authenticationType)
+                .containsExactly(Resource.AuthenticationType.APPLICATION, Resource.AuthenticationType.CONTAINER);
+        assertThat(Resource.AuthenticationType.values())
+                .containsExactly(Resource.AuthenticationType.CONTAINER, Resource.AuthenticationType.APPLICATION);
+        assertThat(Resource.AuthenticationType.valueOf("APPLICATION"))
+                .isEqualTo(Resource.AuthenticationType.APPLICATION);
+    }
+
+    @Test
     void generatedIsAvailableAtCompileTimeButNotRetainedAtRuntime() {
         assertThat(GeneratedMarker.class.getAnnotation(Generated.class)).isNull();
     }
@@ -263,6 +297,20 @@ class Jakarta_annotation_apiTest {
     @Resource(name = "jdbc/primary", lookup = "java:comp/env/jdbc/primary")
     @Resource(name = "mail/session", lookup = "java:comp/env/mail/session")
     private static final class RepeatableResourceComponent {
+    }
+
+    @Resources({
+            @Resource(
+                    name = "jdbc/primary",
+                    type = CharSequence.class,
+                    authenticationType = Resource.AuthenticationType.APPLICATION,
+                    shareable = false,
+                    description = "Primary resource",
+                    mappedName = "mapped/primary",
+                    lookup = "java:comp/env/jdbc/primary"),
+            @Resource(name = "mail/session", description = "Mail session")
+    })
+    private static final class ExplicitResourceContainerComponent {
     }
 
     @DataSourceDefinition(className = "org.h2.Driver", name = "jdbc/primary")
