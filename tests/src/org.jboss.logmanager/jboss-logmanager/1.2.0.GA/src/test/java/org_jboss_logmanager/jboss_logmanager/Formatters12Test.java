@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.security.CodeSource;
+import java.security.Permission;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
 import java.util.Objects;
@@ -21,6 +22,8 @@ import org.jboss.logmanager.formatters.PatternFormatter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class Formatters12Test {
 
@@ -34,6 +37,28 @@ public class Formatters12Test {
 
         assertThat(formatted).contains("\tat " + className + ".invoke");
         assertThat(trackingLoader.wasResourceRequested()).isTrue();
+    }
+
+    @Test
+    @SuppressWarnings("removal")
+    void extendedExceptionFormattingUsesPrivilegedResourceLookupWhenSecurityManagerIsInstalled() throws Exception {
+        assumeTrue(Runtime.version().feature() < 24, "Security Manager is not supported on this JDK");
+        assumeFalse(System.getProperty("java.vm.name", "").contains("Substrate VM"),
+                "Security Manager is not supported in native image tests");
+
+        String className = Formatters12DefinedClass.class.getName();
+        TrackingDefinedClassLoader trackingLoader = new TrackingDefinedClassLoader(className);
+        SecurityManager previousSecurityManager = System.getSecurityManager();
+        System.setSecurityManager(new PermissiveSecurityManager());
+
+        try {
+            String formatted = formatWithTccl(trackingLoader, newFailure(className));
+
+            assertThat(formatted).contains("\tat " + className + ".invoke");
+            assertThat(trackingLoader.wasResourceRequested()).isTrue();
+        } finally {
+            System.setSecurityManager(previousSecurityManager);
+        }
     }
 
     @Test
@@ -161,6 +186,14 @@ public class Formatters12Test {
             } finally {
                 Thread.currentThread().setContextClassLoader(originalTccl);
             }
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static final class PermissiveSecurityManager extends SecurityManager {
+
+        @Override
+        public void checkPermission(final Permission permission) {
         }
     }
 
