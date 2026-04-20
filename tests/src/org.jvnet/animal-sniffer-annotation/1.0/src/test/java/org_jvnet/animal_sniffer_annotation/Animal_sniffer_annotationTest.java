@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class Animal_sniffer_annotationTest {
     @Test
+    @SuppressWarnings("annotationAccess")
     void ignoreJreRequirementExposesItsAnnotationContract() {
         Class<IgnoreJRERequirement> annotationType = IgnoreJRERequirement.class;
         Retention retention = annotationType.getAnnotation(Retention.class);
@@ -59,6 +60,7 @@ class Animal_sniffer_annotationTest {
     }
 
     @Test
+    @SuppressWarnings("annotationAccess")
     void classRetainedAnnotationStaysInvisibleAtRuntime() throws NoSuchMethodException {
         Class<LegacyApiFacade> legacyApiFacadeType = LegacyApiFacade.class;
 
