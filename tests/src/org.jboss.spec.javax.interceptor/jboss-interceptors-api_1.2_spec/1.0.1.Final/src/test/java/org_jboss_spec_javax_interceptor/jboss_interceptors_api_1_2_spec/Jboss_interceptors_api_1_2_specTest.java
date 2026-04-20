@@ -155,6 +155,31 @@ class Jboss_interceptors_api_1_2_specTest {
     }
 
     @Test
+    void aroundInvokeInterceptorsCanShareContextDataAndUpdatedParametersAcrossAChain() throws Exception {
+        SampleService service = new SampleService("native");
+        ContextCapturingInterceptor contextCapturingInterceptor = new ContextCapturingInterceptor();
+        RepeatAdjustingInterceptor repeatAdjustingInterceptor = new RepeatAdjustingInterceptor();
+        SimpleInvocationContext invocationContext = new SimpleInvocationContext(
+                service,
+                null,
+                null,
+                new Object[]{"image", 1},
+                new LinkedHashMap<>(),
+                null,
+                new InterceptorChain(
+                        context -> contextCapturingInterceptor.aroundInvoke(context),
+                        context -> repeatAdjustingInterceptor.aroundInvoke(context),
+                        context -> service.join((String) context.getParameters()[0], (Integer) context.getParameters()[1])));
+
+        assertThat(invocationContext.proceed()).isEqualTo("native:imageimage");
+        assertThat(invocationContext.getContextData())
+                .containsEntry("targetType", SampleService.class.getSimpleName())
+                .containsEntry("originalRepeatCount", 1)
+                .containsEntry("adjustedRepeatCount", 2);
+        assertThat(invocationContext.getParameters()).containsExactly("image", 2);
+    }
+
+    @Test
     void interceptorPriorityConstantsDefineAscendingPriorityBands() {
         assertThat(List.of(
                 Interceptor.Priority.PLATFORM_BEFORE,
@@ -200,6 +225,28 @@ class Jboss_interceptors_api_1_2_specTest {
     }
 
     private static final class MetricsInterceptor {
+    }
+
+    private static final class ContextCapturingInterceptor {
+
+        @AroundInvoke
+        Object aroundInvoke(InvocationContext context) throws Exception {
+            context.getContextData().put("targetType", context.getTarget().getClass().getSimpleName());
+            context.getContextData().put("originalRepeatCount", context.getParameters()[1]);
+            return context.proceed();
+        }
+    }
+
+    private static final class RepeatAdjustingInterceptor {
+
+        @AroundInvoke
+        Object aroundInvoke(InvocationContext context) throws Exception {
+            Object[] parameters = context.getParameters();
+            int adjustedRepeatCount = ((Integer) parameters[1]) + 1;
+            context.setParameters(new Object[]{parameters[0], adjustedRepeatCount});
+            context.getContextData().put("adjustedRepeatCount", adjustedRepeatCount);
+            return context.proceed();
+        }
     }
 
     @ExcludeDefaultInterceptors
@@ -307,6 +354,20 @@ class Jboss_interceptors_api_1_2_specTest {
         @Override
         public Object proceed() throws Exception {
             return proceedAction.proceed(this);
+        }
+    }
+
+    private static final class InterceptorChain implements ProceedAction {
+        private final ProceedAction[] steps;
+        private int index;
+
+        private InterceptorChain(ProceedAction... steps) {
+            this.steps = steps;
+        }
+
+        @Override
+        public Object proceed(SimpleInvocationContext context) throws Exception {
+            return steps[index++].proceed(context);
         }
     }
 
