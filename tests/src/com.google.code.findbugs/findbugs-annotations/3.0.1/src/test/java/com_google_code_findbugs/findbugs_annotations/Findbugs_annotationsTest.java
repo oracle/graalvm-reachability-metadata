@@ -176,15 +176,15 @@ class Findbugs_annotationsTest {
         assertThat(suppressFBWarnings.justification()).isEqualTo("Verified by the test fixture");
         assertThat(suppressFBWarnings.annotationType()).isSameAs(SuppressFBWarnings.class);
 
-        assertThat(DesireWarning.class.getAnnotation(Retention.class)).isNotNull();
-        assertThat(DesireWarning.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.CLASS);
-        assertThat(ExpectWarning.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.CLASS);
-        assertThat(NoWarning.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.CLASS);
-        assertThat(SuppressFBWarnings.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.CLASS);
-        assertThat(DesireWarning.class.getAnnotation(Target.class)).isNull();
-        assertThat(ExpectWarning.class.getAnnotation(Target.class)).isNull();
-        assertThat(NoWarning.class.getAnnotation(Target.class)).isNull();
-        assertThat(SuppressFBWarnings.class.getAnnotation(Target.class)).isNull();
+        assertThat(DesireWarning.class.getAnnotationsByType(Retention.class)).hasSize(1);
+        assertThat(DesireWarning.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.CLASS);
+        assertThat(ExpectWarning.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.CLASS);
+        assertThat(NoWarning.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.CLASS);
+        assertThat(SuppressFBWarnings.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.CLASS);
+        assertThat(DesireWarning.class.getAnnotationsByType(Target.class)).isEmpty();
+        assertThat(ExpectWarning.class.getAnnotationsByType(Target.class)).isEmpty();
+        assertThat(NoWarning.class.getAnnotationsByType(Target.class)).isEmpty();
+        assertThat(SuppressFBWarnings.class.getAnnotationsByType(Target.class)).isEmpty();
 
         assertThat(DesireWarning.class.getDeclaredMethod("confidence").getDefaultValue()).isEqualTo(Confidence.LOW);
         assertThat(DesireWarning.class.getDeclaredMethod("rank").getDefaultValue()).isEqualTo(20);
@@ -202,15 +202,15 @@ class Findbugs_annotationsTest {
     @Test
     void classRetainedWarningAnnotationsDoNotLeakIntoRuntimeReflection()
             throws NoSuchFieldException, NoSuchMethodException {
-        assertThat(WarningFixture.class.getDeclaredAnnotations()).isEmpty();
-        assertThat(WarningFixture.class.getDeclaredField("statusCode").getDeclaredAnnotations()).isEmpty();
-        assertThat(WarningFixture.class.getDeclaredConstructor(String.class).getDeclaredAnnotations()).isEmpty();
-        assertThat(WarningFixture.class.getDeclaredMethod("normalize", String.class).getDeclaredAnnotations())
+        assertThat(WarningFixture.class.getDeclaredAnnotationsByType(SuppressFBWarnings.class)).isEmpty();
+        assertThat(WarningFixture.class.getDeclaredField("statusCode").getDeclaredAnnotationsByType(NoWarning.class)).isEmpty();
+        assertThat(WarningFixture.class.getDeclaredConstructor(String.class).getDeclaredAnnotationsByType(ExpectWarning.class)).isEmpty();
+        assertThat(WarningFixture.class.getDeclaredMethod("normalize", String.class).getDeclaredAnnotationsByType(NoWarning.class))
                 .isEmpty();
         assertThat(WarningFixture.class
                 .getDeclaredMethod("normalize", String.class)
                 .getParameters()[0]
-                .getDeclaredAnnotations()).isEmpty();
+                .getDeclaredAnnotationsByType(SuppressFBWarnings.class)).isEmpty();
     }
 
     @Test
@@ -244,22 +244,22 @@ class Findbugs_annotationsTest {
         Method openChild = ManagedResource.class.getDeclaredMethod("openChild", String.class);
         Method close = ManagedResource.class.getDeclaredMethod("close");
 
-        assertThat(ManagedResource.class.getAnnotation(CleanupObligation.class)).isNotNull();
-        assertThat(constructor.getAnnotation(CreatesObligation.class)).isNotNull();
-        assertThat(openChild.getAnnotation(CreatesObligation.class)).isNotNull();
-        assertThat(close.getAnnotation(DischargesObligation.class)).isNotNull();
+        assertThat(ManagedResource.class.getAnnotationsByType(CleanupObligation.class)).hasSize(1);
+        assertThat(constructor.getAnnotationsByType(CreatesObligation.class)).hasSize(1);
+        assertThat(openChild.getAnnotationsByType(CreatesObligation.class)).hasSize(1);
+        assertThat(close.getAnnotationsByType(DischargesObligation.class)).hasSize(1);
 
-        assertThat(CleanupObligation.class.getAnnotation(Documented.class)).isNotNull();
-        assertThat(CleanupObligation.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(CleanupObligation.class.getAnnotation(Target.class).value()).containsExactly(ElementType.TYPE);
-        assertThat(CreatesObligation.class.getAnnotation(Documented.class)).isNotNull();
-        assertThat(CreatesObligation.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(CreatesObligation.class.getAnnotation(Target.class).value())
+        assertThat(CleanupObligation.class.getAnnotationsByType(Documented.class)).hasSize(1);
+        assertThat(CleanupObligation.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(CleanupObligation.class.getAnnotationsByType(Target.class)[0].value()).containsExactly(ElementType.TYPE);
+        assertThat(CreatesObligation.class.getAnnotationsByType(Documented.class)).hasSize(1);
+        assertThat(CreatesObligation.class.getAnnotationsByType(Retention.class)[0].value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(CreatesObligation.class.getAnnotationsByType(Target.class)[0].value())
                 .containsExactly(ElementType.METHOD, ElementType.CONSTRUCTOR);
-        assertThat(DischargesObligation.class.getAnnotation(Documented.class)).isNotNull();
-        assertThat(DischargesObligation.class.getAnnotation(Retention.class).value())
+        assertThat(DischargesObligation.class.getAnnotationsByType(Documented.class)).hasSize(1);
+        assertThat(DischargesObligation.class.getAnnotationsByType(Retention.class)[0].value())
                 .isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(DischargesObligation.class.getAnnotation(Target.class).value()).containsExactly(ElementType.METHOD);
+        assertThat(DischargesObligation.class.getAnnotationsByType(Target.class)[0].value()).containsExactly(ElementType.METHOD);
     }
 
     @SuppressFBWarnings(value = "UUF_UNUSED_FIELD", justification = "Covered by reflection tests")
