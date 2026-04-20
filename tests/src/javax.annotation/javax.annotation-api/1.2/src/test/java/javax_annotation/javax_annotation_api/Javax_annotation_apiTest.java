@@ -11,11 +11,13 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import javax.annotation.Generated;
@@ -38,8 +40,8 @@ class Javax_annotation_apiTest {
 
     @Test
     void defaultAnnotationsExposeExpectedDefaults() throws Exception {
-        ManagedBean managedBean = DefaultManagedBean.class.getAnnotation(ManagedBean.class);
-        Resource resource = field(DefaultManagedBean.class, "defaultResource").getAnnotation(Resource.class);
+        ManagedBean managedBean = annotation(DefaultManagedBean.class, ManagedBean.class);
+        Resource resource = annotation(field(DefaultManagedBean.class, "defaultResource"), Resource.class);
 
         assertThat(managedBean.value()).isEmpty();
         assertThat(resource.name()).isEmpty();
@@ -49,34 +51,33 @@ class Javax_annotation_apiTest {
         assertThat(resource.shareable()).isTrue();
         assertThat(resource.mappedName()).isEmpty();
         assertThat(resource.description()).isEmpty();
-        assertThat(method(DefaultManagedBean.class, "init").isAnnotationPresent(PostConstruct.class)).isTrue();
-        assertThat(method(DefaultManagedBean.class, "destroy").isAnnotationPresent(PreDestroy.class)).isTrue();
+        assertThat(annotationPresent(method(DefaultManagedBean.class, "init"), PostConstruct.class)).isTrue();
+        assertThat(annotationPresent(method(DefaultManagedBean.class, "destroy"), PreDestroy.class)).isTrue();
     }
 
     @Test
     void securityAndResourceAnnotationsRetainConfiguredValues() throws Exception {
-        ManagedBean managedBean = FullyAnnotatedComponent.class.getAnnotation(ManagedBean.class);
-        Priority priority = FullyAnnotatedComponent.class.getAnnotation(Priority.class);
-        DeclareRoles declareRoles = FullyAnnotatedComponent.class.getAnnotation(DeclareRoles.class);
-        RunAs runAs = FullyAnnotatedComponent.class.getAnnotation(RunAs.class);
-        Resource fieldResource = field(FullyAnnotatedComponent.class, "queueName").getAnnotation(Resource.class);
-        RolesAllowed rolesAllowed = method(FullyAnnotatedComponent.class, "adminOperation")
-                .getAnnotation(RolesAllowed.class);
+        ManagedBean managedBean = annotation(FullyAnnotatedComponent.class, ManagedBean.class);
+        Priority priority = annotation(FullyAnnotatedComponent.class, Priority.class);
+        DeclareRoles declareRoles = annotation(FullyAnnotatedComponent.class, DeclareRoles.class);
+        RunAs runAs = annotation(FullyAnnotatedComponent.class, RunAs.class);
+        Resource fieldResource = annotation(field(FullyAnnotatedComponent.class, "queueName"), Resource.class);
+        RolesAllowed rolesAllowed = annotation(method(FullyAnnotatedComponent.class, "adminOperation"), RolesAllowed.class);
         Method loadConfig = method(FullyAnnotatedComponent.class, "loadConfig");
-        Resource methodResource = loadConfig.getAnnotation(Resource.class);
+        Resource methodResource = annotation(loadConfig, Resource.class);
 
         assertThat(managedBean.value()).isEqualTo("inventoryBean");
         assertThat(priority.value()).isEqualTo(10);
         assertThat(declareRoles.value()).containsExactly("admin", "auditor");
         assertThat(runAs.value()).isEqualTo("system");
-        assertThat(FullyAnnotatedComponent.class.isAnnotationPresent(DenyAll.class)).isTrue();
+        assertThat(annotationPresent(FullyAnnotatedComponent.class, DenyAll.class)).isTrue();
 
         assertThat(fieldResource.name()).isEqualTo("queue/orders");
         assertThat(fieldResource.type()).isEqualTo(String.class);
         assertThat(fieldResource.lookup()).isEqualTo("java:comp/env/queue/orders");
 
         assertThat(rolesAllowed.value()).containsExactly("admin", "operator");
-        assertThat(loadConfig.isAnnotationPresent(PermitAll.class)).isTrue();
+        assertThat(annotationPresent(loadConfig, PermitAll.class)).isTrue();
         assertThat(methodResource.name()).isEqualTo("service/config");
         assertThat(methodResource.type()).isEqualTo(Integer.class);
         assertThat(methodResource.mappedName()).isEqualTo("mapped/config");
@@ -84,7 +85,7 @@ class Javax_annotation_apiTest {
 
     @Test
     void resourceContainersAndEnumExposePublicApi() {
-        Resources resources = FullyAnnotatedComponent.class.getAnnotation(Resources.class);
+        Resources resources = annotation(FullyAnnotatedComponent.class, Resources.class);
 
         assertThat(resources.value()).hasSize(2);
         assertThat(resources.value()[0].name()).isEqualTo("jdbc/primary");
@@ -109,10 +110,8 @@ class Javax_annotation_apiTest {
 
     @Test
     void dataSourceAnnotationsExposeConfiguredValuesAndDefaults() {
-        DataSourceDefinition dataSourceDefinition = FullyAnnotatedComponent.class
-                .getAnnotation(DataSourceDefinition.class);
-        DataSourceDefinitions dataSourceDefinitions = MultipleDataSources.class
-                .getAnnotation(DataSourceDefinitions.class);
+        DataSourceDefinition dataSourceDefinition = annotation(FullyAnnotatedComponent.class, DataSourceDefinition.class);
+        DataSourceDefinitions dataSourceDefinitions = annotation(MultipleDataSources.class, DataSourceDefinitions.class);
 
         assertThat(dataSourceDefinition.className()).isEqualTo("org.h2.Driver");
         assertThat(dataSourceDefinition.name()).isEqualTo("jdbc/main");
@@ -144,7 +143,7 @@ class Javax_annotation_apiTest {
 
     @Test
     void generatedAnnotationIsSourceRetained() {
-        assertThat(GeneratedType.class.getAnnotation(Generated.class)).isNull();
+        assertThat(annotation(GeneratedType.class, Generated.class)).isNull();
     }
 
     @Test
@@ -163,48 +162,48 @@ class Javax_annotation_apiTest {
 
     @Test
     void runtimeAnnotationsAreNotInheritedBySubclassesOrOverrides() throws Exception {
-        assertThat(DerivedManagedComponent.class.getAnnotation(ManagedBean.class)).isNull();
-        assertThat(DerivedManagedComponent.class.getAnnotation(Priority.class)).isNull();
-        assertThat(DerivedManagedComponent.class.getAnnotation(RunAs.class)).isNull();
-        assertThat(DerivedManagedComponent.class.getAnnotation(DataSourceDefinition.class)).isNull();
-        assertThat(DerivedManagedComponent.class.isAnnotationPresent(DenyAll.class)).isFalse();
+        assertThat(annotation(DerivedManagedComponent.class, ManagedBean.class)).isNull();
+        assertThat(annotation(DerivedManagedComponent.class, Priority.class)).isNull();
+        assertThat(annotation(DerivedManagedComponent.class, RunAs.class)).isNull();
+        assertThat(annotation(DerivedManagedComponent.class, DataSourceDefinition.class)).isNull();
+        assertThat(annotationPresent(DerivedManagedComponent.class, DenyAll.class)).isFalse();
 
         Method adminOperation = method(DerivedManagedComponent.class, "adminOperation");
         Method loadConfig = method(DerivedManagedComponent.class, "loadConfig");
 
-        assertThat(adminOperation.getAnnotation(RolesAllowed.class)).isNull();
-        assertThat(loadConfig.isAnnotationPresent(PermitAll.class)).isFalse();
-        assertThat(loadConfig.getAnnotation(Resource.class)).isNull();
+        assertThat(annotation(adminOperation, RolesAllowed.class)).isNull();
+        assertThat(annotationPresent(loadConfig, PermitAll.class)).isFalse();
+        assertThat(annotation(loadConfig, Resource.class)).isNull();
     }
 
     @Test
     void annotationTypesExposeRetentionPolicies() {
-        assertThat(ManagedBean.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(PostConstruct.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(PreDestroy.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(Priority.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(Resource.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(Resources.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(DeclareRoles.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(DenyAll.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(PermitAll.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(RolesAllowed.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(RunAs.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(DataSourceDefinition.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(DataSourceDefinitions.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
-        assertThat(Generated.class.getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.SOURCE);
+        assertThat(annotation(ManagedBean.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(PostConstruct.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(PreDestroy.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(Priority.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(Resource.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(Resources.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(DeclareRoles.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(DenyAll.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(PermitAll.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(RolesAllowed.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(RunAs.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(DataSourceDefinition.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(DataSourceDefinitions.class, Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(annotation(Generated.class, Retention.class).value()).isEqualTo(RetentionPolicy.SOURCE);
     }
 
     @Test
     void annotationTypesExposeTargetAndDocumentationContracts() {
-        assertThat(Resource.class.getAnnotation(Target.class).value())
+        assertThat(annotation(Resource.class, Target.class).value())
                 .containsExactlyInAnyOrder(TYPE, METHOD, FIELD);
-        assertThat(PostConstruct.class.getAnnotation(Target.class).value()).containsExactly(METHOD);
-        assertThat(PreDestroy.class.getAnnotation(Target.class).value()).containsExactly(METHOD);
-        assertThat(RolesAllowed.class.getAnnotation(Target.class).value())
+        assertThat(annotation(PostConstruct.class, Target.class).value()).containsExactly(METHOD);
+        assertThat(annotation(PreDestroy.class, Target.class).value()).containsExactly(METHOD);
+        assertThat(annotation(RolesAllowed.class, Target.class).value())
                 .containsExactlyInAnyOrder(TYPE, METHOD);
-        assertThat(DataSourceDefinition.class.getAnnotation(Target.class).value()).containsExactly(TYPE);
-        assertThat(Generated.class.getAnnotation(Target.class).value())
+        assertThat(annotation(DataSourceDefinition.class, Target.class).value()).containsExactly(TYPE);
+        assertThat(annotation(Generated.class, Target.class).value())
                 .containsExactly(
                         ElementType.PACKAGE,
                         TYPE,
@@ -215,16 +214,26 @@ class Javax_annotation_apiTest {
                         ElementType.LOCAL_VARIABLE,
                         ElementType.PARAMETER);
 
-        assertThat(Priority.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(Resources.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(DeclareRoles.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(DenyAll.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(PermitAll.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(RolesAllowed.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(RunAs.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(PostConstruct.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(PreDestroy.class.isAnnotationPresent(Documented.class)).isTrue();
-        assertThat(Generated.class.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(annotationPresent(Priority.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(Resources.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(DeclareRoles.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(DenyAll.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(PermitAll.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(RolesAllowed.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(RunAs.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(PostConstruct.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(PreDestroy.class, Documented.class)).isTrue();
+        assertThat(annotationPresent(Generated.class, Documented.class)).isTrue();
+    }
+
+    private static <A extends Annotation> A annotation(
+            AnnotatedElement annotatedElementAnnotationAccess, Class<A> annotationType) {
+        return annotatedElementAnnotationAccess.getAnnotation(annotationType);
+    }
+
+    private static boolean annotationPresent(
+            AnnotatedElement annotatedElementAnnotationAccess, Class<? extends Annotation> annotationType) {
+        return annotatedElementAnnotationAccess.isAnnotationPresent(annotationType);
     }
 
     private static Field field(Class<?> type, String name) throws NoSuchFieldException {
