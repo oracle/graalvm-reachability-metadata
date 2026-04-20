@@ -65,6 +65,43 @@ class Animal_sniffer_annotationsTest {
                 .getDeclaredAnnotations()).isEmpty();
     }
 
+    @Test
+    void ignoreJreRequirementAnnotatedInterfaceDefaultMethodExecutesNormally() {
+        CompatibilityContract compatibilityContract = () -> "nio";
+
+        Assertions.assertThat(compatibilityContract.describeFeature("paths")).isEqualTo("nio-paths-supported");
+        Assertions.assertThat(compatibilityContract.describeFeature("channels")).isEqualTo("nio-channels-supported");
+    }
+
+    @Test
+    void ignoreJreRequirementAnnotatedInterfaceStaticFactoryCreatesAWorkingImplementation() {
+        CompatibilityContract compatibilityContract = CompatibilityContract.create("legacy");
+
+        Assertions.assertThat(compatibilityContract.profile()).isEqualTo("legacy");
+        Assertions.assertThat(CompatibilityContract.describeProfile("legacy")).isEqualTo("legacy-bridge");
+    }
+
+    @IgnoreJRERequirement
+    private interface CompatibilityContract {
+        @IgnoreJRERequirement
+        String profile();
+
+        @IgnoreJRERequirement
+        default String describeFeature(String feature) {
+            return profile() + "-" + feature + "-supported";
+        }
+
+        @IgnoreJRERequirement
+        static CompatibilityContract create(String profile) {
+            return () -> profile;
+        }
+
+        @IgnoreJRERequirement
+        static String describeProfile(String profile) {
+            return profile + "-bridge";
+        }
+    }
+
     @IgnoreJRERequirement
     private static final class AnnotatedCompatibilityLayer {
         private final String profile;
