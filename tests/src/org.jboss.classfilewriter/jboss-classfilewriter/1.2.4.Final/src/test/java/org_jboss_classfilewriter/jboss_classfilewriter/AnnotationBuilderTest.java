@@ -7,6 +7,7 @@
 package org_jboss_classfilewriter.jboss_classfilewriter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,6 +29,8 @@ public class AnnotationBuilderTest {
 
     @Test
     void copiesMethodAndParameterAnnotationsWhenAddingAMethod() throws Exception {
+        assumeRuntimeClassDefinitionSupport();
+
         final Method sourceMethod = AnnotationSource.class.getDeclaredMethod("annotatedMethod", String.class);
         final ClassFile classFile = new ClassFile(
             generatedClassName(),
@@ -41,7 +44,7 @@ public class AnnotationBuilderTest {
         classFile.addMethod(sourceMethod).getCodeAttribute().returnInstruction();
 
         final Method generatedMethod = classFile.define().getDeclaredMethod("annotatedMethod", String.class);
-        final SampleAnnotation methodAnnotation = generatedMethod.getDeclaredAnnotation(SampleAnnotation.class);
+        final SampleAnnotation methodAnnotation = generatedMethod.getAnnotationsByType(SampleAnnotation.class)[0];
         final SampleAnnotation parameterAnnotation = (SampleAnnotation) generatedMethod.getParameterAnnotations()[0][0];
 
         assertThat(methodAnnotation).isNotNull();
@@ -55,6 +58,14 @@ public class AnnotationBuilderTest {
         return AnnotationBuilderTest.class.getPackageName()
             + ".AnnotationBuilderGenerated"
             + GENERATED_CLASS_COUNTER.incrementAndGet();
+    }
+
+    private static void assumeRuntimeClassDefinitionSupport() {
+        assumeFalse(isNativeImageRuntime(), "Runtime class definition is not supported in native image tests");
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     @Retention(RetentionPolicy.RUNTIME)

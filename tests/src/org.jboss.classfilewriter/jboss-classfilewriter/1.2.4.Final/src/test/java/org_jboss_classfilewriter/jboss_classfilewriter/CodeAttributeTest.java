@@ -7,6 +7,7 @@
 package org_jboss_classfilewriter.jboss_classfilewriter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -30,6 +31,8 @@ public class CodeAttributeTest {
 
     @Test
     void mergesStackTypesByResolvingTheirCommonSupertype() throws Throwable {
+        assumeRuntimeClassDefinitionSupport();
+
         final StringSelector selector = createSelectorUsingStackMerge();
 
         assertThat(selector.apply(1)).isEqualTo("first");
@@ -38,6 +41,8 @@ public class CodeAttributeTest {
 
     @Test
     void mergesLocalVariableTypesByResolvingTheirCommonSupertype() throws Throwable {
+        assumeRuntimeClassDefinitionSupport();
+
         final StringSelector selector = createSelectorUsingLocalVariableMerge();
 
         assertThat(selector.apply(1)).isEqualTo("first");
@@ -117,6 +122,14 @@ public class CodeAttributeTest {
             LOOKUP_CLASS_FACTORY,
             StringSelector.class.getName()
         );
+    }
+
+    private static void assumeRuntimeClassDefinitionSupport() {
+        assumeFalse(isNativeImageRuntime(), "Runtime class definition is not supported in native image tests");
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static void addDefaultConstructor(final ClassFile classFile) throws NoSuchMethodException {

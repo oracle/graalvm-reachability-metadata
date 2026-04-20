@@ -7,6 +7,7 @@
 package org_jboss_classfilewriter.jboss_classfilewriter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.Serializable;
 import java.lang.reflect.AccessibleObject;
@@ -25,6 +26,8 @@ public class DefaultClassFactoryTest {
 
     @Test
     void defineUsesTheDefaultClassFactoryWithoutAnExplicitProtectionDomain() {
+        assumeRuntimeClassDefinitionSupport();
+
         enableDefaultClassFactoryOnCurrentJdk();
 
         final Class<?> generatedClass = newClassFile("ImplicitDomain", Serializable.class).define();
@@ -35,6 +38,8 @@ public class DefaultClassFactoryTest {
 
     @Test
     void defineUsesTheDefaultClassFactoryWithAnExplicitProtectionDomain() {
+        assumeRuntimeClassDefinitionSupport();
+
         enableDefaultClassFactoryOnCurrentJdk();
 
         final ProtectionDomain protectionDomain = DefaultClassFactoryTest.class.getProtectionDomain();
@@ -92,5 +97,13 @@ public class DefaultClassFactoryTest {
 
     private static String generatedClassPrefix(final String suffix) {
         return DefaultClassFactoryTest.class.getPackageName() + ".DefaultClassFactory" + suffix;
+    }
+
+    private static void assumeRuntimeClassDefinitionSupport() {
+        assumeFalse(isNativeImageRuntime(), "Runtime class definition is not supported in native image tests");
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
