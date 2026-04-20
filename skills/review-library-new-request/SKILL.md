@@ -1,6 +1,6 @@
 ---
 name: review-library-new-request
-description: Review pull requests with the `library-new-request` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that adds metadata and tests for a new library, including PRs titled like `[GenAI] Add support for com.fasterxml:classmate:1.5.1 using gpt-5.4`. Focus on catching scaffold-only tests, metadata that is not justified by the exercised code path, and PRs that push more than one library.
+description: Review pull requests with the `library-new-request` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that adds metadata and tests for a new library, including PRs titled like `[GenAI] Add support for com.fasterxml:classmate:1.5.1 using gpt-5.4`. Focus on catching scaffold-only tests, version-pinned or package-bypassing tests, and PRs that push more than one library.
 argument-hint: "[pr-number-or-url]"
 ---
 
@@ -36,25 +36,23 @@ Treat the following as hard review rules unless the PR provides a strong reason 
    - Be suspicious of changes to build logic, workflows, unrelated libraries, generated sources outside the target test directory, or wide refactors.
    - Treat extra `metadata/**` or `tests/src/**` trees for other coordinates as a blocking scope violation, not as a minor cleanup issue.
 
-3. Review the test source before reading the metadata.
+3. Review the test source.
    - The test must be library-specific, not a lightly edited scaffold.
    - Reject tests that hardcode the exact library version in strings, assertions, or expected output unless the test is explicitly validating version-dependent behavior.
    - Keep test packages separate from library packages. Reject tests that live under the target library's package unless the PR clearly needs that package placement to exercise the library.
    - Separate packages matter because tests placed inside the library package can bypass visibility boundaries and produce false confidence about what user code can access.
    - Reject tests that only instantiate the obvious type, mirror the generated skeleton, or fail to exercise the code path that would need metadata.
 
-4. Review the metadata with the test in mind.
-   - Every metadata entry should be explainable from the exercised code path.
-   - Be suspicious when the metadata is obviously smaller than what the PR claims to cover.
-   - Treat `reachability-metadata.json` containing `{}` as valid when the PR shows no dynamic-access calls and the review confirms the test is not relying on metadata.
-   - Do not treat `0/0` dynamic-access counts as proof that metadata is unnecessary. Consider whether the exercised path can require metadata through downstream libraries.
-   - Ask where a metadata requirement comes from if the test does not appear to trigger it.
-   - Do not approve speculative metadata added “just in case”.
+4. Review the metadata files only for presence and scope.
+   - Confirm the expected metadata files exist for the single target coordinate.
+   - Do not block the PR based on the internal contents of `reachability-metadata.json`.
+   - Treat `reachability-metadata.json` containing `{}` as acceptable when the rest of the PR is coherent and validation passes.
+   - Do not use `stats/stats.json` dynamic-access counts alone to argue that the submitted metadata is unnecessary.
 
-5. Compare the metadata file, test, and reported coverage as one unit.
-   - If the PR claims specific coverage numbers that do not line up with the diff, ask for investigation, but do not treat `stats/stats.json` dynamic-access counts as a complete measure of required metadata.
+5. Compare the PR claims, test, and reported coverage as one unit.
+   - If the PR claims specific coverage numbers that do not line up with the diff, ask for investigation.
    - If the PR reports zero dynamic-access calls and `reachability-metadata.json` is `{}`, that is acceptable as long as the test is library-specific and the scope is otherwise correct.
-   - If the metadata would be needed but the test does not assert the relevant behavior, the PR is incomplete.
+   - Prefer concrete test quality issues over speculation about whether specific metadata entries are needed.
 
 6. Check validation status.
    - Expected minimum: metadata validation and library test jobs for the target coordinates are green.
@@ -66,15 +64,14 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 - Strong PR:
   - Test names and assertions are specific to the library behavior.
   - The test logic is version-agnostic and can cover multiple supported versions of the same library.
-  - The test would fail meaningfully without the submitted metadata.
-  - `reachability-metadata.json` contains only entries justified by the test.
+  - The PR stays scoped to one coordinate and its expected files.
+  - Validation is green for the target coordinate.
 
 - Weak PR:
   - PR pushes metadata or tests for more than one library.
   - Test class still looks like the scaffold.
   - Test code hardcodes the target library version without a clear need.
   - Test sources are placed in the library package without a demonstrated need.
-  - Metadata appears without a demonstrated trigger path.
   - Claimed coverage is not credible from the diff.
 
 ## Output Style
@@ -84,6 +81,6 @@ Match the concise review style already used in this repository:
 - For scaffold-only tests: say that tests must differ from the scaffold and should not be accepted as-is.
 - For version-pinned tests: say that tests should not reference the exact library version because the same test should support multiple library versions.
 - For multiple-library PRs: say that `library-new-request` PRs must push only one library and ask for the unrelated library additions to be removed.
-- For metadata/coverage mismatch: ask for investigation only when the PR makes concrete coverage claims that are not supported by the diff. Do not use dynamic-access counts alone to argue that generated metadata is unjustified.
+- For metadata/coverage mismatch: ask for investigation only when the PR makes concrete coverage claims that are not supported by the diff. Do not argue from metadata contents alone.
 
 Keep comments short, factual, and blocking. Focus on the concrete defect, not a long explanation.
