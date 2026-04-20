@@ -95,16 +95,25 @@ public class GCJInstantiatorTest {
         }
 
         public Object newObject(Class<?> type, Class<?> parentType) {
-            if (type != ConstructorBypassedType.class) {
-                throw new IllegalArgumentException("Unexpected type: " + type.getName());
+            if (type == ConstructorBypassedType.class && parentType == Object.class) {
+                ConstructorBypassedType template = new ConstructorBypassedType();
+                ConstructorBypassedType.constructorCalls.set(0);
+                return deserialize(serialize(template));
             }
-            if (parentType != Object.class) {
-                throw new IllegalArgumentException("Unexpected parent type: " + parentType.getName());
+            if (
+                type == GCJSerializationInstantiatorTest.SerializableChild.class
+                    && parentType == GCJSerializationInstantiatorTest.NonSerializableParent.class
+            ) {
+                GCJSerializationInstantiatorTest.SerializableChild template =
+                    new GCJSerializationInstantiatorTest.SerializableChild();
+                GCJSerializationInstantiatorTest.NonSerializableParent.constructorCalls.set(0);
+                GCJSerializationInstantiatorTest.SerializableChild.constructorCalls.set(0);
+                return deserialize(serialize(template));
             }
 
-            ConstructorBypassedType template = new ConstructorBypassedType();
-            ConstructorBypassedType.constructorCalls.set(0);
-            return deserialize(serialize(template));
+            throw new IllegalArgumentException(
+                "Unexpected instantiation request: " + type.getName() + " / " + parentType.getName()
+            );
         }
 
         private static byte[] serialize(Serializable value) {
