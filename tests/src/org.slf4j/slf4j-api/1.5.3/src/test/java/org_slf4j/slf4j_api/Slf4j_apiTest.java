@@ -121,6 +121,34 @@ public class Slf4j_apiTest {
     }
 
     @Test
+    void markersSupportRecursiveContainmentEqualityAndCyclePrevention() {
+        Marker parentMarker = MarkerFactory.getDetachedMarker("PARENT");
+        Marker childMarker = MarkerFactory.getDetachedMarker("CHILD");
+        Marker sameNamedChildMarker = MarkerFactory.getDetachedMarker("CHILD");
+        Marker grandchildMarker = MarkerFactory.getDetachedMarker("GRANDCHILD");
+
+        childMarker.add(grandchildMarker);
+        parentMarker.add(childMarker);
+        parentMarker.add(sameNamedChildMarker);
+        grandchildMarker.add(parentMarker);
+
+        List<String> directChildNames = new ArrayList<>();
+        for (Iterator<?> iterator = parentMarker.iterator(); iterator.hasNext(); ) {
+            Marker nextMarker = (Marker) iterator.next();
+            directChildNames.add(nextMarker.getName());
+        }
+
+        assertThat(parentMarker.hasChildren()).isTrue();
+        assertThat(childMarker.hasChildren()).isTrue();
+        assertThat(parentMarker.contains(grandchildMarker)).isTrue();
+        assertThat(parentMarker.contains("GRANDCHILD")).isTrue();
+        assertThat(childMarker).isEqualTo(sameNamedChildMarker);
+        assertThat(childMarker.hashCode()).isEqualTo(sameNamedChildMarker.hashCode());
+        assertThat(directChildNames).containsExactly("CHILD");
+        assertThat(grandchildMarker.contains(parentMarker)).isFalse();
+    }
+
+    @Test
     void mdcAcceptsContextOperationsAndRejectsNullKeys() {
         Map<String, String> replacementContext = new LinkedHashMap<>();
 
