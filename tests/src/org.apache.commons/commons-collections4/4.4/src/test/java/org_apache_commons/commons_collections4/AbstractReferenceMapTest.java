@@ -26,7 +26,7 @@ public class AbstractReferenceMapTest {
         original.put("alpha", "one");
 
         byte[] serialized = serialize(original);
-        ReferenceMap<?, ?> restored = deserializeReferenceMap(serialized);
+        ReferenceMap<String, String> restored = deserializeReferenceMap(serialized);
 
         assertThat(restored)
                 .hasSize(1)
@@ -48,11 +48,12 @@ public class AbstractReferenceMapTest {
         return outputStream.toByteArray();
     }
 
-    private static ReferenceMap<?, ?> deserializeReferenceMap(byte[] serialized) throws IOException, ClassNotFoundException {
+    @SuppressWarnings("unchecked")
+    private static ReferenceMap<String, String> deserializeReferenceMap(byte[] serialized) throws IOException, ClassNotFoundException {
         try (ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(serialized))) {
             Object restored = objectInputStream.readObject();
             assertThat(restored).isInstanceOf(ReferenceMap.class);
-            return (ReferenceMap<?, ?>) restored;
+            return (ReferenceMap<String, String>) restored;
         }
     }
 }
