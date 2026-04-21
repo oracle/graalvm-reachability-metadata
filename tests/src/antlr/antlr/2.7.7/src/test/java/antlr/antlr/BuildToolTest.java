@@ -18,17 +18,44 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BuildToolTest {
 
     @Test
-    void reportsMissingAppOrActionWithoutThrowing() {
+    void reportsUsageWhenMainReceivesUnexpectedArgumentCount() throws Exception {
+        String err = captureErr(() -> Tool.main(new String[0]));
+
+        assertThat(err).contains("usage: java antlr.build.Tool action");
+    }
+
+    @Test
+    void reportsMissingAppOrActionWithoutThrowing() throws Exception {
         Tool tool = new Tool();
+
+        String err = captureErr(() -> tool.perform(null, "build"));
+
+        assertThat(err).contains("missing app or action");
+    }
+
+    @Test
+    void reportsMissingApplicationForShortBuildClassName() throws Exception {
+        Tool tool = new Tool();
+
+        String err = captureErr(() -> tool.perform("ANTLR", "build"));
+
+        assertThat(err).contains("no such application ANTLR");
+    }
+
+    private static String captureErr(CheckedRunnable action) throws Exception {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err, true, StandardCharsets.UTF_8));
         try {
-            tool.perform(null, "build");
+            action.run();
         } finally {
             System.setErr(originalErr);
         }
+        return err.toString(StandardCharsets.UTF_8);
+    }
 
-        assertThat(err.toString(StandardCharsets.UTF_8)).contains("missing app or action");
+    @FunctionalInterface
+    private interface CheckedRunnable {
+        void run() throws Exception;
     }
 }
