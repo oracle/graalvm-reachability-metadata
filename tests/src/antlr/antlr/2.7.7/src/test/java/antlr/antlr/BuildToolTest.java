@@ -49,6 +49,24 @@ public class BuildToolTest {
         assertThat(err).contains("no such application ANTLR");
     }
 
+    @Test
+    void reportsMissingApplicationForFullyQualifiedBuildClassName() throws Exception {
+        Tool tool = new Tool();
+
+        String err = captureErr(() -> tool.perform("antlr.build.DoesNotExist", "build"));
+
+        assertThat(err).contains("no such application antlr.build.DoesNotExist");
+    }
+
+    @Test
+    void performWithFullyQualifiedBuildClassReturnsWithoutLoggingUsageOrErrors() throws Exception {
+        Tool tool = new Tool();
+
+        String err = captureErr(() -> tool.perform("antlr.build.ANTLR", "build"));
+
+        assertThat(err).isEmpty();
+    }
+
     private static String captureErr(CheckedRunnable action) throws Exception {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
