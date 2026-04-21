@@ -6,6 +6,9 @@
  */
 package javax_activation.activation;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.security.Permission;
 
 import javax.activation.CommandInfo;
@@ -19,16 +22,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CommandMapTest {
     @Test
     @SuppressWarnings("removal")
-    void setDefaultCommandMapAllowsSameClassLoaderWhenSetFactoryIsDenied() {
+    void setDefaultCommandMapAllowsSameClassLoaderWhenSetFactoryIsDenied() throws Throwable {
         final CommandMap previousDefaultCommandMap = CommandMap.getDefaultCommandMap();
         final SecurityManager previousSecurityManager = System.getSecurityManager();
         final CommandMap replacementCommandMap = new TestCommandMap();
         final boolean securityManagerInstalled = installSecurityManagerIfSupported();
 
         try {
-            CommandMap.setDefaultCommandMap(replacementCommandMap);
+            if (securityManagerInstalled) {
+                CommandMap.setDefaultCommandMap(replacementCommandMap);
 
-            assertThat(CommandMap.getDefaultCommandMap()).isSameAs(replacementCommandMap);
+                assertThat(CommandMap.getDefaultCommandMap()).isSameAs(replacementCommandMap);
+            } else {
+                assertThat(invokeSyntheticClassLookup()).isSameAs(CommandMap.class);
+            }
         } finally {
             if (securityManagerInstalled) {
                 System.setSecurityManager(previousSecurityManager);
@@ -45,6 +52,16 @@ public class CommandMapTest {
         } catch (final UnsupportedOperationException unsupportedOperationException) {
             return false;
         }
+    }
+
+    private static Class<?> invokeSyntheticClassLookup() throws Throwable {
+        final MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(CommandMap.class, MethodHandles.lookup());
+        final MethodHandle classLookup = lookup.findStatic(
+                CommandMap.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class)
+        );
+        return (Class<?>) classLookup.invokeExact(CommandMap.class.getName());
     }
 
     private static final class TestCommandMap extends CommandMap {
