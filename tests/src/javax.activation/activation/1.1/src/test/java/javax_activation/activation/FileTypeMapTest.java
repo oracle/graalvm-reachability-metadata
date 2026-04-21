@@ -7,6 +7,9 @@
 package javax_activation.activation;
 
 import java.io.File;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.security.Permission;
 
 import javax.activation.FileTypeMap;
@@ -20,7 +23,7 @@ public class FileTypeMapTest {
 
     @Test
     @SuppressWarnings("removal")
-    void setDefaultFileTypeMapAllowsSameClassLoaderWhenSetFactoryIsDenied() {
+    void setDefaultFileTypeMapAllowsSameClassLoaderWhenSetFactoryIsDenied() throws Throwable {
         final FileTypeMap previousDefaultFileTypeMap = FileTypeMap.getDefaultFileTypeMap();
         final SecurityManager previousSecurityManager = System.getSecurityManager();
         final TestFileTypeMap replacementFileTypeMap = new TestFileTypeMap();
@@ -31,6 +34,7 @@ public class FileTypeMapTest {
             FileTypeMap.setDefaultFileTypeMap(replacementFileTypeMap);
 
             assertThat(FileTypeMap.getDefaultFileTypeMap()).isSameAs(replacementFileTypeMap);
+            assertThat(invokeSyntheticClassLookup()).isSameAs(FileTypeMap.class);
             if (securityManagerInstalled) {
                 assertThat(securityManager.wasCheckSetFactoryCalled()).isTrue();
             }
@@ -50,6 +54,16 @@ public class FileTypeMapTest {
         } catch (final UnsupportedOperationException unsupportedOperationException) {
             return false;
         }
+    }
+
+    private static Class<?> invokeSyntheticClassLookup() throws Throwable {
+        final MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(FileTypeMap.class, MethodHandles.lookup());
+        final MethodHandle classLookup = lookup.findStatic(
+                FileTypeMap.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class)
+        );
+        return (Class<?>) classLookup.invokeExact(FileTypeMap.class.getName());
     }
 
     private static final class TestFileTypeMap extends FileTypeMap {
