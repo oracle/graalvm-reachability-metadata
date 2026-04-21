@@ -15,9 +15,11 @@ import java.util.Collections;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ListenablefutureTest {
     private static final String LISTENABLE_FUTURE_PACKAGE_RESOURCE = "com/google/common/util/concurrent/";
+    private static final String LISTENABLE_FUTURE_CLASS_NAME = "com.google.common.util.concurrent.ListenableFuture";
     private static final String LISTENABLE_FUTURE_CLASS_RESOURCE =
             "com/google/common/util/concurrent/ListenableFuture.class";
     private static final String POM_PROPERTIES_RESOURCE =
@@ -49,6 +51,13 @@ class ListenablefutureTest {
     }
 
     @Test
+    void placeholderCannotLoadTheStandaloneListenableFutureType() {
+        assertThatThrownBy(() -> classLoader().loadClass(LISTENABLE_FUTURE_CLASS_NAME))
+                .isInstanceOf(ClassNotFoundException.class)
+                .hasMessageContaining(LISTENABLE_FUTURE_CLASS_NAME);
+    }
+
+    @Test
     void placeholderPublishesMavenMetadataThatIdentifiesTheArtifact() throws IOException {
         Properties pomProperties = loadPomProperties();
         String pomXml = loadUtf8Resource(POM_XML_RESOURCE);
@@ -62,6 +71,17 @@ class ListenablefutureTest {
                 .contains("<artifactId>listenablefuture</artifactId>")
                 .contains("<version>" + publishedVersion + "</version>")
                 .contains("empty artifact");
+    }
+
+    @Test
+    void placeholderPomDocumentsItsConflictAvoidanceRole() throws IOException {
+        String pomXml = loadUtf8Resource(POM_XML_RESOURCE);
+
+        assertThat(pomXml)
+                .contains("<name>Guava ListenableFuture only</name>")
+                .contains("If users want all of Guava")
+                .contains("that empty artifact over the \"real\" listenablefuture")
+                .contains("conflict with the copy of ListenableFuture in guava itself");
     }
 
     private static ClassLoader classLoader() {
