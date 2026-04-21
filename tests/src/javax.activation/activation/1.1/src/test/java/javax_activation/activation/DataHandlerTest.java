@@ -10,9 +10,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.Permission;
 
@@ -66,14 +65,11 @@ public class DataHandlerTest {
         }
     }
 
-    private static Class<?> invokeSyntheticClassLookup() throws Throwable {
-        final MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(DataHandler.class, MethodHandles.lookup());
-        final MethodHandle classLookup = lookup.findStatic(
-                DataHandler.class,
-                "class$",
-                MethodType.methodType(Class.class, String.class)
-        );
-        return (Class<?>) classLookup.invokeExact(DataHandler.class.getName());
+    private static Class<?> invokeSyntheticClassLookup()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        final Method classLookup = DataHandler.class.getDeclaredMethod("class$", String.class);
+        classLookup.setAccessible(true);
+        return (Class<?>) classLookup.invoke(null, DataHandler.class.getName());
     }
 
     private static final class TestDataContentHandlerFactory implements DataContentHandlerFactory {
