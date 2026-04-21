@@ -270,6 +270,72 @@ class Kotlin_stdlib_commonTest {
                 );
     }
 
+    @Test
+    void metadataCompilerAcceptsArrayDequeApi(@TempDir Path tempDir) throws Exception {
+        assumeFalse(isNativeImageRuntime());
+
+        Path stdlibCommonJar = findClasspathEntry("kotlin-stdlib-common");
+        Path sourceFile = writeKotlinSource(tempDir.resolve("array-deque"), "TaskBuffer.kt", """
+                package sample.arraydeque
+
+                import kotlin.collections.ArrayDeque
+
+                data class ProcessedBatch(
+                    val immediate: List<String>,
+                    val deferred: List<String>
+                )
+
+                class TaskBuffer {
+                    private val queue = ArrayDeque<String>()
+
+                    fun enqueue(messages: Iterable<String>) {
+                        messages
+                            .map { it.trim() }
+                            .filter { it.isNotEmpty() }
+                            .forEach(queue::addLast)
+                    }
+
+                    fun prioritize(message: String) {
+                        queue.remove(message)
+                        queue.addFirst(message)
+                    }
+
+                    fun drain(batchSize: Int): ProcessedBatch {
+                        val immediate = mutableListOf<String>()
+                        repeat(batchSize.coerceAtMost(queue.size)) {
+                            immediate += queue.removeFirst()
+                        }
+                        return ProcessedBatch(immediate, queue.toList())
+                    }
+                }
+
+                fun processTasks(tasks: List<String>, urgent: String): ProcessedBatch {
+                    val buffer = TaskBuffer()
+                    buffer.enqueue(tasks)
+                    buffer.prioritize(urgent)
+                    return buffer.drain(2)
+                }
+                """);
+        Path outputDirectory = tempDir.resolve("array-deque-output");
+
+        CompilationResult result = compileCommonModule(
+                tempDir,
+                "sample_array_deque",
+                outputDirectory,
+                List.of(sourceFile),
+                List.of(stdlibCommonJar)
+        );
+
+        assertSuccessfulCompilation(result, outputDirectory);
+        assertThat(readOutputEntries(outputDirectory))
+                .contains(
+                        "META-INF/sample_array_deque.kotlin_module",
+                        "sample/arraydeque/ProcessedBatch.kotlin_metadata",
+                        "sample/arraydeque/TaskBuffer.kotlin_metadata",
+                        "sample/arraydeque/TaskBufferKt.kotlin_metadata"
+                );
+    }
+
     private static CompilationResult compileCommonModule(
             Path workingDirectory,
             String moduleName,
