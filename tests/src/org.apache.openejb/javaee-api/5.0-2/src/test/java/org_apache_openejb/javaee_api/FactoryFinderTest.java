@@ -68,12 +68,12 @@ public class FactoryFinderTest {
         }
 
         @Override
-        public Service loadService(Class<?> serviceInterface) {
+        public Service loadService(Class serviceInterface) {
             throw new UnsupportedOperationException("Not used in tests");
         }
 
         @Override
-        public Service loadService(URL wsdlDocumentLocation, Class<?> serviceInterface, Properties properties) {
+        public Service loadService(URL wsdlDocumentLocation, Class serviceInterface, Properties properties) {
             throw new UnsupportedOperationException("Not used in tests");
         }
 
