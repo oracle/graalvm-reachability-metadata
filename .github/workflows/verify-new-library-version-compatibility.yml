@@ -378,7 +378,7 @@ jobs:
             git restore --source=HEAD --staged --worktree gradle/libs.versions.toml || true
 
             if git status --porcelain | grep -q .; then
-              git add -u
+              git add -A -- metadata tests/src
               COMMIT_BODY_FILE="$(mktemp)"
               {
                 printf 'Update tested library versions\n\n'
@@ -667,7 +667,7 @@ jobs:
             gh pr create \
               --title "${{ env.ISSUE_TITLE_PREFIX }}Update supported library versions $(date '+%Y-%m-%dT%H:%M')" \
               --body-file "$PR_BODY_FILE" \
-              --reviewer "kimeta,vjovanov" \
+              --reviewer "kimeta,vjovanov,jormundur00" \
               --assignee "vjovanov" \
               --label "library-bulk-update"
             rm "$PR_BODY_FILE"
