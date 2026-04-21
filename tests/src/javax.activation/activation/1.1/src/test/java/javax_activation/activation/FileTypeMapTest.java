@@ -7,9 +7,8 @@
 package javax_activation.activation;
 
 import java.io.File;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.Permission;
 
 import javax.activation.FileTypeMap;
@@ -56,14 +55,11 @@ public class FileTypeMapTest {
         }
     }
 
-    private static Class<?> invokeSyntheticClassLookup() throws Throwable {
-        final MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(FileTypeMap.class, MethodHandles.lookup());
-        final MethodHandle classLookup = lookup.findStatic(
-                FileTypeMap.class,
-                "class$",
-                MethodType.methodType(Class.class, String.class)
-        );
-        return (Class<?>) classLookup.invokeExact(FileTypeMap.class.getName());
+    private static Class<?> invokeSyntheticClassLookup()
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        final Method classLookup = FileTypeMap.class.getDeclaredMethod("class$", String.class);
+        classLookup.setAccessible(true);
+        return (Class<?>) classLookup.invoke(null, "javax.activation.FileTypeMap");
     }
 
     private static final class TestFileTypeMap extends FileTypeMap {
