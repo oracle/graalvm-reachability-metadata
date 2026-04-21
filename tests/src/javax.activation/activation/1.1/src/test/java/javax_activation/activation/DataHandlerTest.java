@@ -35,17 +35,18 @@ public class DataHandlerTest {
     void setDataContentHandlerFactoryAllowsSameClassLoaderWhenSetFactoryIsDenied() throws Throwable {
         final SecurityManager previousSecurityManager = System.getSecurityManager();
         final DataContentHandlerFactory factory = new TestDataContentHandlerFactory();
-        final boolean securityManagerInstalled = installSecurityManagerIfSupported();
+        final DenySetFactorySecurityManager securityManager = new DenySetFactorySecurityManager();
+        final boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
 
         try {
-            if (securityManagerInstalled) {
-                DataHandler.setDataContentHandlerFactory(factory);
+            DataHandler.setDataContentHandlerFactory(factory);
 
-                final DataHandler dataHandler = new DataHandler(TEST_PAYLOAD, TEST_MIME_TYPE);
+            final DataHandler dataHandler = new DataHandler(TEST_PAYLOAD, TEST_MIME_TYPE);
 
-                assertThat(dataHandler.getTransferDataFlavors()).containsExactly(TEST_DATA_FLAVOR);
-                assertThat(dataHandler.getTransferData(TEST_DATA_FLAVOR)).isEqualTo("factory-" + TEST_PAYLOAD);
-            } else {
+            assertThat(dataHandler.getTransferDataFlavors()).containsExactly(TEST_DATA_FLAVOR);
+            assertThat(dataHandler.getTransferData(TEST_DATA_FLAVOR)).isEqualTo("factory-" + TEST_PAYLOAD);
+
+            if (!securityManagerInstalled || !securityManager.wasCheckSetFactoryCalled()) {
                 assertThat(invokeSyntheticClassLookup()).isSameAs(DataHandler.class);
             }
         } finally {
@@ -56,10 +57,10 @@ public class DataHandlerTest {
     }
 
     @SuppressWarnings("removal")
-    private static boolean installSecurityManagerIfSupported() {
+    private static boolean installSecurityManagerIfSupported(final SecurityManager securityManager) {
         try {
-            System.setSecurityManager(new DenySetFactorySecurityManager());
-            return true;
+            System.setSecurityManager(securityManager);
+            return System.getSecurityManager() == securityManager;
         } catch (final UnsupportedOperationException unsupportedOperationException) {
             return false;
         }
@@ -114,13 +115,20 @@ public class DataHandlerTest {
 
     @SuppressWarnings("removal")
     private static final class DenySetFactorySecurityManager extends SecurityManager {
+        private boolean checkSetFactoryCalled;
+
         @Override
         public void checkPermission(final Permission permission) {
         }
 
         @Override
         public void checkSetFactory() {
+            checkSetFactoryCalled = true;
             throw new SecurityException("setFactory denied for coverage test");
+        }
+
+        private boolean wasCheckSetFactoryCalled() {
+            return checkSetFactoryCalled;
         }
     }
 }
