@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class Javaee_apiTest {
+public class Javaee_apiTest {
     @Test
     void parsesAndFormatsInternetAddresses() throws Exception {
         InternetAddress[] addresses = InternetAddress.parse("Alice Example <alice@example.com>, bob@example.com");
