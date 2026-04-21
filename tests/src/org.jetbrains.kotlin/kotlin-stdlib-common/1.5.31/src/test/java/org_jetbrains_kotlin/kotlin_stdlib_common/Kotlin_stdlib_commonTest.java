@@ -216,6 +216,60 @@ class Kotlin_stdlib_commonTest {
                 );
     }
 
+    @Test
+    void metadataCompilerAcceptsPropertyDelegationApi(@TempDir Path tempDir) throws Exception {
+        assumeFalse(isNativeImageRuntime());
+
+        Path stdlibCommonJar = findClasspathEntry("kotlin-stdlib-common");
+        Path sourceFile = writeKotlinSource(tempDir.resolve("delegates"), "DelegatedState.kt", """
+                package sample.delegates
+
+                import kotlin.properties.Delegates
+
+                class PipelineState {
+                    private val transitions = mutableListOf<String>()
+
+                    var stage: String by Delegates.observable("created") { _, old, new ->
+                        if (old != new) {
+                            transitions += "$old->$new"
+                        }
+                    }
+
+                    var retryCount: Int by Delegates.vetoable(0) { _, current, next ->
+                        next >= current && next <= 3
+                    }
+
+                    fun history(): List<String> = transitions.toList()
+                }
+
+                fun transitionSummary(stages: List<String>): String {
+                    val state = PipelineState()
+                    stages.forEach { state.stage = it }
+                    state.retryCount = 1
+                    state.retryCount = 3
+                    state.retryCount = 2
+                    return state.history().joinToString("|") + "#" + state.retryCount
+                }
+                """);
+        Path outputDirectory = tempDir.resolve("delegates-output");
+
+        CompilationResult result = compileCommonModule(
+                tempDir,
+                "sample_delegates",
+                outputDirectory,
+                List.of(sourceFile),
+                List.of(stdlibCommonJar)
+        );
+
+        assertSuccessfulCompilation(result, outputDirectory);
+        assertThat(readOutputEntries(outputDirectory))
+                .contains(
+                        "META-INF/sample_delegates.kotlin_module",
+                        "sample/delegates/PipelineState.kotlin_metadata",
+                        "sample/delegates/DelegatedStateKt.kotlin_metadata"
+                );
+    }
+
     private static CompilationResult compileCommonModule(
             Path workingDirectory,
             String moduleName,
