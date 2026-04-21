@@ -6,7 +6,7 @@
  */
 package opentelemetry;
 
-import io.opentelemetry.internal.shaded.jctools.queues.MpscArrayQueue;
+import io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +15,11 @@ public class OpenTelemetrySdkTraceTest {
 
     @Test
     public void sdkTracingTest() {
-        Assertions.assertTrue(isFieldAccessible("io.opentelemetry.internal.shaded.jctools.queues.MpscArrayQueueConsumerIndexField", "consumerIndex"));
-        Assertions.assertTrue(isFieldAccessible("io.opentelemetry.internal.shaded.jctools.queues.MpscArrayQueueProducerIndexField", "producerIndex"));
-        Assertions.assertTrue(isFieldAccessible("io.opentelemetry.internal.shaded.jctools.queues.MpscArrayQueueProducerLimitField", "producerLimit"));
+        Assertions.assertTrue(isFieldAccessible("io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueConsumerIndexField", "consumerIndex"));
+        Assertions.assertTrue(isFieldAccessible("io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueProducerIndexField", "producerIndex"));
+        Assertions.assertTrue(isFieldAccessible("io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueProducerLimitField", "producerLimit"));
 
-        MpscArrayQueue<String> q = new MpscArrayQueue<>(10);
+        MpscAtomicArrayQueue<String> q = new MpscAtomicArrayQueue<>(10);
         q.offer("test");
         Assertions.assertEquals(q.lvProducerIndex(), 1);
         Assertions.assertEquals(q.lvConsumerIndex(), 0);
