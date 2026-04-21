@@ -9,10 +9,13 @@ package org_jetbrains_kotlin.kotlin_stdlib_common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -65,6 +68,31 @@ class Kotlin_stdlib_commonTest {
     }
 
     @Test
+    void publishesContractsDslBuilderOperationsInMetadata() throws IOException {
+        Set<String> symbols = extractReadableSymbols(readRequiredResource("kotlin/contracts/ContractBuilder.kotlin_metadata"));
+
+        assertThat(symbols)
+                .as("the contracts DSL builder metadata should expose the core contract operations")
+                .contains(
+                        "ContractBuilder",
+                        "callsInPlace",
+                        "returns",
+                        "returnsNotNull",
+                        "InvocationKind",
+                        "ExperimentalContracts"
+                );
+    }
+
+    @Test
+    void publishesContractDslEntryPointMetadata() throws IOException {
+        Set<String> symbols = extractReadableSymbols(readRequiredResource("kotlin/contracts/ContractBuilderKt.kotlin_metadata"));
+
+        assertThat(symbols)
+                .as("the top-level contract entry point should keep its builder receiver and opt-in contract metadata")
+                .contains("contract", "ContractBuilder", "ExperimentalContracts", "Unit");
+    }
+
+    @Test
     void providesArtifactManifestWithoutVersionPinnedAssertions() throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Enumeration<URL> manifests = classLoader.getResources("META-INF/MANIFEST.MF");
@@ -99,5 +127,30 @@ class Kotlin_stdlib_commonTest {
                     .isNotNull();
             return inputStream.readAllBytes();
         }
+    }
+
+    private static Set<String> extractReadableSymbols(byte[] resourceBytes) {
+        String metadata = new String(resourceBytes, StandardCharsets.ISO_8859_1);
+        Set<String> symbols = new LinkedHashSet<>();
+        StringBuilder currentSymbol = new StringBuilder();
+
+        for (int index = 0; index < metadata.length(); index++) {
+            char currentChar = metadata.charAt(index);
+            if (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
+                currentSymbol.append(currentChar);
+                continue;
+            }
+            addSymbol(symbols, currentSymbol);
+        }
+        addSymbol(symbols, currentSymbol);
+
+        return symbols;
+    }
+
+    private static void addSymbol(Set<String> symbols, StringBuilder currentSymbol) {
+        if (currentSymbol.length() >= 3) {
+            symbols.add(currentSymbol.toString());
+        }
+        currentSymbol.setLength(0);
     }
 }
