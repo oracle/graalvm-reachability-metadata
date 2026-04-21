@@ -9,7 +9,10 @@ package com_google_guava.listenablefuture;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,6 +20,10 @@ class ListenablefutureTest {
     private static final String LISTENABLE_FUTURE_PACKAGE_RESOURCE = "com/google/common/util/concurrent/";
     private static final String LISTENABLE_FUTURE_CLASS_RESOURCE =
             "com/google/common/util/concurrent/ListenableFuture.class";
+    private static final String POM_PROPERTIES_RESOURCE =
+            "META-INF/maven/com.google.guava/listenablefuture/pom.properties";
+    private static final String POM_XML_RESOURCE =
+            "META-INF/maven/com.google.guava/listenablefuture/pom.xml";
 
     @Test
     void placeholderDoesNotExposeTheStandaloneListenableFuturePackageLayout() {
@@ -41,7 +48,41 @@ class ListenablefutureTest {
         assertThat(Collections.list(contextClassLoader.getResources(LISTENABLE_FUTURE_CLASS_RESOURCE))).isEmpty();
     }
 
+    @Test
+    void placeholderPublishesMavenMetadataThatIdentifiesTheArtifact() throws IOException {
+        Properties pomProperties = loadPomProperties();
+        String pomXml = loadUtf8Resource(POM_XML_RESOURCE);
+        String publishedVersion = pomProperties.getProperty("version");
+
+        assertThat(pomProperties)
+                .containsEntry("groupId", "com.google.guava")
+                .containsEntry("artifactId", "listenablefuture");
+        assertThat(publishedVersion).isNotBlank();
+        assertThat(pomXml)
+                .contains("<artifactId>listenablefuture</artifactId>")
+                .contains("<version>" + publishedVersion + "</version>")
+                .contains("empty artifact");
+    }
+
     private static ClassLoader classLoader() {
         return ListenablefutureTest.class.getClassLoader();
+    }
+
+    private static Properties loadPomProperties() throws IOException {
+        Properties properties = new Properties();
+
+        try (InputStream inputStream = classLoader().getResourceAsStream(POM_PROPERTIES_RESOURCE)) {
+            assertThat(inputStream).isNotNull();
+            properties.load(inputStream);
+        }
+
+        return properties;
+    }
+
+    private static String loadUtf8Resource(String resourceName) throws IOException {
+        try (InputStream inputStream = classLoader().getResourceAsStream(resourceName)) {
+            assertThat(inputStream).isNotNull();
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 }

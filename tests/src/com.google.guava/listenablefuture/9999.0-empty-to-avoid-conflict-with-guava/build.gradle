@@ -16,6 +16,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('-H:IncludeResources=META-INF/maven/com.google.guava/listenablefuture/(pom\\.properties|pom\\.xml)')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
