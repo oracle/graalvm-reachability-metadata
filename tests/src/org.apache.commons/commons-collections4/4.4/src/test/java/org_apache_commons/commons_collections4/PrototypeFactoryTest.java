@@ -6,6 +6,8 @@
  */
 package org_apache_commons.commons_collections4;
 
+import java.lang.reflect.Field;
+
 import org.apache.commons.collections4.Factory;
 import org.apache.commons.collections4.functors.PrototypeFactory;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,18 @@ public class PrototypeFactoryTest {
     }
 
     @Test
+    void recreatesTransientCloneMethodBeforeCreatingCopies() throws ReflectiveOperationException {
+        PublicCloneableValue prototype = new PublicCloneableValue("metadata", 4);
+
+        Factory<PublicCloneableValue> factory = PrototypeFactory.prototypeFactory(prototype);
+        clearCachedCloneMethod(factory);
+        PublicCloneableValue created = factory.create();
+
+        assertThat(created).isNotSameAs(prototype);
+        assertThat(created.describe()).isEqualTo(prototype.describe());
+    }
+
+    @Test
     void createsCopiesThroughPublicCopyConstructorWhenCloneIsUnavailable() {
         CopyConstructedValue prototype = new CopyConstructedValue("metadata", 4);
 
@@ -34,6 +48,12 @@ public class PrototypeFactoryTest {
 
         assertThat(created).isNotSameAs(prototype);
         assertThat(created.describe()).isEqualTo(prototype.describe());
+    }
+
+    private static void clearCachedCloneMethod(Factory<?> factory) throws ReflectiveOperationException {
+        Field cloneMethodField = factory.getClass().getDeclaredField("iCloneMethod");
+        cloneMethodField.setAccessible(true);
+        cloneMethodField.set(factory, null);
     }
 
     public static final class PublicCloneableValue {
