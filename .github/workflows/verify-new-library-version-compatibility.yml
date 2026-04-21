@@ -580,15 +580,15 @@ jobs:
           PRE_RELEASE_SUFFIX: "(alpha[0-9]*|beta[0-9]*|rc[0-9]*|cr[0-9]*|m[0-9]+|ea[0-9]*|b[0-9]+|[0-9]+|preview)"
         run: |
           set -euo pipefail
-          VERSIONS_FILE="$(mktemp)"
+          LIBRARY_VERSIONS_FILE="$(mktemp)"
 
-          jq -r '.successes[]?.successfulVersions[]?' aggregate-results.json >> "$VERSIONS_FILE"
-          jq -r '.failures[]?.failures[]?.failedVersion' aggregate-results.json >> "$VERSIONS_FILE"
+          jq -r '.successes[]? | .name as $name | .successfulVersions[]? | "\($name)|\(.)"' aggregate-results.json >> "$LIBRARY_VERSIONS_FILE"
+          jq -r '.failures[]? | .name as $name | .failures[]?.failedVersion | "\($name)|\(.)"' aggregate-results.json >> "$LIBRARY_VERSIONS_FILE"
 
-          sort -u "$VERSIONS_FILE" -o "$VERSIONS_FILE"
+          sort -u "$LIBRARY_VERSIONS_FILE" -o "$LIBRARY_VERSIONS_FILE"
 
-          while read -r VERSION; do
-            if [[ -z "$VERSION" ]]; then
+          while IFS='|' read -r LIBRARY_NAME VERSION; do
+            if [[ -z "$LIBRARY_NAME" || -z "$VERSION" ]]; then
               continue
             fi
 
@@ -607,36 +607,32 @@ jobs:
             fi
 
             PRE_RELEASE_REGEX="$BASE_VERSION[-.]$PRE_RELEASE_SUFFIX"
+            GROUP_ID="$(echo "$LIBRARY_NAME" | cut -d: -f1)"
+            ARTIFACT_ID="$(echo "$LIBRARY_NAME" | cut -d: -f2)"
+            GAV_COORDINATES_VERSIONLESS="$GROUP_ID:$ARTIFACT_ID"
+            TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES_VERSIONLESS"
 
-            jq -r '.successes[]?.name, .failures[]?.name' aggregate-results.json | sort -u | while read -r LIBRARY_NAME; do
-              [[ -z "$LIBRARY_NAME" ]] && continue
-              GROUP_ID="$(echo "$LIBRARY_NAME" | cut -d: -f1)"
-              ARTIFACT_ID="$(echo "$LIBRARY_NAME" | cut -d: -f2)"
-              GAV_COORDINATES_VERSIONLESS="$GROUP_ID:$ARTIFACT_ID"
-              TITLE_END_VERSIONLESS="${{ env.ISSUE_TITLE_MIDDLE }}$GAV_COORDINATES_VERSIONLESS"
+            PRE_RELEASE_ISSUES=$(gh issue list \
+              --repo "$REPO" \
+              --state open \
+              --search "\"$TITLE_END_VERSIONLESS\" in:title" \
+              --json number,title \
+              --jq ".[] | select(.title | startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and test(\"$TITLE_END_VERSIONLESS:$PRE_RELEASE_REGEX\"; \"i\")) | .number")
 
-              PRE_RELEASE_ISSUES=$(gh issue list \
-                --repo "$REPO" \
-                --state open \
-                --search "\"$TITLE_END_VERSIONLESS\" in:title" \
-                --json number,title \
-                --jq ".[] | select(.title | startswith(\"${{ env.ISSUE_TITLE_PREFIX }}\") and test(\"$TITLE_END_VERSIONLESS:$PRE_RELEASE_REGEX\"; \"i\")) | .number")
+            if [[ -n "$PRE_RELEASE_ISSUES" ]]; then
+              echo "Closing pre-release issues for $LIBRARY_NAME version $BASE_VERSION:"
+              for ISSUE in $PRE_RELEASE_ISSUES; do
+                echo "Closing issue #$ISSUE"
+                gh issue close "$ISSUE" --repo "$REPO" \
+                  -c "Closing this pre-release issue because a full release is now available and/or builds successfully." \
+                  -r "not planned"
+              done
+            else
+              echo "No pre-release issues found for $LIBRARY_NAME version $BASE_VERSION"
+            fi
+          done < "$LIBRARY_VERSIONS_FILE"
 
-              if [[ -n "$PRE_RELEASE_ISSUES" ]]; then
-                echo "Closing pre-release issues for $LIBRARY_NAME version $BASE_VERSION:"
-                for ISSUE in $PRE_RELEASE_ISSUES; do
-                  echo "Closing issue #$ISSUE"
-                  gh issue close "$ISSUE" --repo "$REPO" \
-                    -c "Closing this pre-release issue because a full release is now available and/or builds successfully." \
-                    -r "not planned"
-                done
-              else
-                echo "No pre-release issues found for $LIBRARY_NAME version $BASE_VERSION"
-              fi
-            done
-          done < "$VERSIONS_FILE"
-
-          rm "$VERSIONS_FILE"
+          rm "$LIBRARY_VERSIONS_FILE"
 
       - name: "✏️ PR for supported versions"
         if: steps.aggregate.outputs.has-successful-updates == 'true'
