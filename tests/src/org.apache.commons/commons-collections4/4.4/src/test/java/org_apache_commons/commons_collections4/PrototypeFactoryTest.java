@@ -15,6 +15,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PrototypeFactoryTest {
 
     @Test
+    void createsCopiesThroughPublicCloneMethodWhenAvailable() {
+        PublicCloneableValue prototype = new PublicCloneableValue("metadata", 4);
+
+        Factory<PublicCloneableValue> factory = PrototypeFactory.prototypeFactory(prototype);
+        PublicCloneableValue created = factory.create();
+
+        assertThat(created).isNotSameAs(prototype);
+        assertThat(created.describe()).isEqualTo(prototype.describe());
+    }
+
+    @Test
     void createsCopiesThroughPublicCopyConstructorWhenCloneIsUnavailable() {
         CopyConstructedValue prototype = new CopyConstructedValue("metadata", 4);
 
@@ -23,6 +34,25 @@ public class PrototypeFactoryTest {
 
         assertThat(created).isNotSameAs(prototype);
         assertThat(created.describe()).isEqualTo(prototype.describe());
+    }
+
+    public static final class PublicCloneableValue {
+
+        private final String text;
+        private final int count;
+
+        public PublicCloneableValue(String text, int count) {
+            this.text = text;
+            this.count = count;
+        }
+
+        public PublicCloneableValue clone() {
+            return new PublicCloneableValue(text, count);
+        }
+
+        public String describe() {
+            return text + "-" + count;
+        }
     }
 
     public static final class CopyConstructedValue {
