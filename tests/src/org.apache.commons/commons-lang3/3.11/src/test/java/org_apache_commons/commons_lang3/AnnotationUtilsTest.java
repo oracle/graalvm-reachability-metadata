@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 public class AnnotationUtilsTest {
 
+    @SuppressWarnings("checkstyle:annotationAccess")
     @Test
     public void equalsUsesAnnotationMembersFromMatchingRuntimeAnnotations() {
         Composite sameLeft = MatchingAnnotationLeft.class.getAnnotation(Composite.class);
@@ -26,6 +27,7 @@ public class AnnotationUtilsTest {
         assertThat(AnnotationUtils.equals(sameLeft, different)).isFalse();
     }
 
+    @SuppressWarnings("checkstyle:annotationAccess")
     @Test
     public void hashCodeAndToStringUseAnnotationMembersFromRuntimeAnnotation() {
         Composite annotation = MatchingAnnotationLeft.class.getAnnotation(Composite.class);
