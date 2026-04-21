@@ -34,7 +34,7 @@ public class AnnotationUtilsTest {
         assertThat(AnnotationUtils.toString(annotation))
                 .contains("@" + Composite.class.getName())
                 .contains("value=alpha")
-                .contains("numbers=[1, 2, 3]")
+                .contains("numbers=[1,2,3]")
                 .contains("nested=@" + Nested.class.getName())
                 .contains("name=inner");
     }
