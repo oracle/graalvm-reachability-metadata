@@ -93,6 +93,43 @@ class Kotlin_stdlib_commonTest {
     }
 
     @Test
+    void publishesResultCoreTypeMetadata() throws IOException {
+        Set<String> symbols = extractReadableSymbols(readRequiredResource("kotlin/Result.kotlin_metadata"));
+
+        assertThat(symbols)
+                .as("the Result value type metadata should expose its success and failure state accessors")
+                .contains(
+                        "Result",
+                        "Companion",
+                        "isSuccess",
+                        "isFailure",
+                        "getOrNull",
+                        "exceptionOrNull",
+                        "Throwable",
+                        "JvmInline"
+                );
+    }
+
+    @Test
+    void publishesResultTransformationOperationsInMetadata() throws IOException {
+        Set<String> symbols = extractReadableSymbols(readRequiredResource("kotlin/ResultKt.kotlin_metadata"));
+
+        assertThat(symbols)
+                .as("the Result helpers should publish the transformation and recovery operations used by callers")
+                .contains(
+                        "runCatching",
+                        "fold",
+                        "map",
+                        "mapCatching",
+                        "recover",
+                        "recoverCatching",
+                        "getOrThrow",
+                        "onSuccess",
+                        "onFailure"
+                );
+    }
+
+    @Test
     void providesArtifactManifestWithoutVersionPinnedAssertions() throws IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Enumeration<URL> manifests = classLoader.getResources("META-INF/MANIFEST.MF");
