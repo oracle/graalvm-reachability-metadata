@@ -25,6 +25,13 @@ public class BuildToolTest {
     }
 
     @Test
+    void mainAcceptsSingleActionArgumentWithoutPrintingUsage() throws Exception {
+        String err = captureErr(() -> Tool.main(new String[] {"build"}));
+
+        assertThat(err).doesNotContain("usage: java antlr.build.Tool action");
+    }
+
+    @Test
     void reportsMissingAppOrActionWithoutThrowing() throws Exception {
         Tool tool = new Tool();
 
