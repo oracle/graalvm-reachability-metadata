@@ -88,7 +88,7 @@ public class SdkMeterProviderUtilTest {
     }
 
     @Test
-    public void setMeterConfiguratorOnProviderAndResetForTestAffectExistingMeters() {
+    public void setMeterConfiguratorOnProviderAndResetForTestDisableExistingMeters() {
         CapturingMetricReader reader = new CapturingMetricReader();
 
         try (SdkMeterProvider provider =
@@ -101,7 +101,8 @@ public class SdkMeterProviderUtilTest {
             SdkMeterProviderUtil.setMeterConfigurator(provider, disableMeterNamed("runtime-meter"));
             counter.add(8);
 
-            assertThat(sumValue(reader.collectAllMetrics(), "runtime.counter")).isEqualTo(5);
+            assertThat(reader.collectAllMetrics()).extracting(MetricData::getName)
+                    .doesNotContain("runtime.counter");
 
             SdkMeterProviderUtil.resetForTest(provider);
 
