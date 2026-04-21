@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SecuritySupport$4Test {
+public class SecuritySupport4Test {
     @Test
     void getSystemResourcesReturnsActivationDefaultResources() throws Exception {
         final URL[] urls = invokeGetSystemResources("META-INF/mailcap.default");

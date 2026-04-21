@@ -85,7 +85,7 @@ public class DataHandlerTest {
     private static final class TestDataContentHandler implements DataContentHandler {
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[] { TEST_DATA_FLAVOR };
+            return new DataFlavor[] {TEST_DATA_FLAVOR};
         }
 
         @Override
