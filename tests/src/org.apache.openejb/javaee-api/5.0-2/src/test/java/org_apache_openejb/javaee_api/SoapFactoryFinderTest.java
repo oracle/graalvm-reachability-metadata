@@ -63,6 +63,19 @@ public class SoapFactoryFinderTest {
     }
 
     @Test
+    void loadsMessageFactoryFromSystemPropertyUsingContextClassLoader() throws SOAPException {
+        ClassLoader testClassLoader = SoapFactoryFinderTest.class.getClassLoader();
+        currentThread.setContextClassLoader(testClassLoader);
+        System.setProperty(MESSAGE_FACTORY_PROPERTY, RecordingMessageFactory.class.getName());
+
+        MessageFactory messageFactory = MessageFactory.newInstance();
+
+        assertThat(messageFactory).isInstanceOf(RecordingMessageFactory.class);
+        RecordingMessageFactory recordingMessageFactory = (RecordingMessageFactory) messageFactory;
+        assertThat(recordingMessageFactory.getConstructorContextClassLoader()).isSameAs(testClassLoader);
+    }
+
+    @Test
     void loadsMessageFactoryFromSystemPropertyWhenContextClassLoaderIsNull() throws SOAPException {
         currentThread.setContextClassLoader(null);
         System.setProperty(MESSAGE_FACTORY_PROPERTY, RecordingMessageFactory.class.getName());
