@@ -60,6 +60,16 @@ public class MethodUtilsTest {
     }
 
     @Test
+    public void getMatchingAccessibleMethodUsesDirectPublicLookupWhenSignatureMatches() {
+        Method method = MethodUtils.getMatchingAccessibleMethod(ExactTarget.class, "echo", String.class);
+
+        assertThat(method).isNotNull();
+        assertThat(method.getDeclaringClass()).isEqualTo(ExactTarget.class);
+        assertThat(method.getName()).isEqualTo("echo");
+        assertThat(method.getParameterTypes()).containsExactly(String.class);
+    }
+
+    @Test
     public void getMatchingMethodSearchesDeclaredMethodsInClassHierarchy() {
         Method method = MethodUtils.getMatchingMethod(OverloadedChild.class, "describe", Integer.class);
 
