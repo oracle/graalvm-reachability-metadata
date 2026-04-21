@@ -42,7 +42,7 @@ public class ConsoleReaderTest {
 
         System.setProperty("jline.sigcont", Boolean.TRUE.toString());
         System.setProperty("jline.sh", shellScript.toString());
-        System.setProperty("jline.stty", "mock-stty");
+        System.setProperty("jline.stty", shellScript.toString());
         System.setProperty("user.home", temporaryDirectory.toString());
         Configuration.reset();
     }
@@ -73,12 +73,15 @@ public class ConsoleReaderTest {
 
     private Path writeFakeShell(final Path shellScript) throws Exception {
         Files.writeString(shellScript, "#!/bin/sh\n"
-                + "command=\"$2\"\n"
+                + "command=\"$1\"\n"
+                + "if [ \"$1\" = \"-c\" ]; then\n"
+                + "  command=\"$2\"\n"
+                + "fi\n"
                 + "case \"$command\" in\n"
-                + "  *\"-g\"*)\n"
+                + "  -g|*\"-g\"*)\n"
                 + "    printf 'mock-terminal-state\\n'\n"
                 + "    ;;\n"
-                + "  *\"-a\"*)\n"
+                + "  -a|*\"-a\"*)\n"
                 + "    printf 'speed 9600 baud; 24 rows; 80 columns;\\nintr = ^C; lnext = ^V;\\n'\n"
                 + "    ;;\n"
                 + "  *)\n"
