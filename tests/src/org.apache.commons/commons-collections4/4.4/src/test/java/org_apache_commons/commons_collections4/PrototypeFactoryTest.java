@@ -1,0 +1,46 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_apache_commons.commons_collections4;
+
+import org.apache.commons.collections4.Factory;
+import org.apache.commons.collections4.functors.PrototypeFactory;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class PrototypeFactoryTest {
+
+    @Test
+    void createsCopiesThroughPublicCopyConstructorWhenCloneIsUnavailable() {
+        CopyConstructedValue prototype = new CopyConstructedValue("metadata", 4);
+
+        Factory<CopyConstructedValue> factory = PrototypeFactory.prototypeFactory(prototype);
+        CopyConstructedValue created = factory.create();
+
+        assertThat(created).isNotSameAs(prototype);
+        assertThat(created.describe()).isEqualTo(prototype.describe());
+    }
+
+    public static final class CopyConstructedValue {
+
+        private final String text;
+        private final int count;
+
+        public CopyConstructedValue(String text, int count) {
+            this.text = text;
+            this.count = count;
+        }
+
+        public CopyConstructedValue(CopyConstructedValue source) {
+            this(source.text, source.count);
+        }
+
+        public String describe() {
+            return text + "-" + count;
+        }
+    }
+}
