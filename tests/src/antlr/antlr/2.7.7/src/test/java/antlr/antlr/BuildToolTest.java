@@ -50,6 +50,15 @@ public class BuildToolTest {
     }
 
     @Test
+    void reportsMissingApplicationWhenShortNameAndFallbackClassLoadingBothFail() throws Exception {
+        Tool tool = new Tool();
+
+        String err = captureErr(() -> tool.perform("DoesNotExist", "build"));
+
+        assertThat(err).contains("no such application DoesNotExist");
+    }
+
+    @Test
     void reportsMissingApplicationForFullyQualifiedBuildClassName() throws Exception {
         Tool tool = new Tool();
 
