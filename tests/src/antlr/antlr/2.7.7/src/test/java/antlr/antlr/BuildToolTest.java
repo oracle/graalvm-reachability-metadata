@@ -7,15 +7,28 @@
 package antlr.antlr;
 
 import antlr.build.Tool;
-import antlr.build.ToolCoverageAccess;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BuildToolTest {
 
     @Test
-    void loadsTheToolClassThroughItsSyntheticClassLiteralHelper() {
-        assertThat(ToolCoverageAccess.loadToolClassLiteralBackingMethod()).isEqualTo(Tool.class);
+    void reportsMissingAppOrActionWithoutThrowing() {
+        Tool tool = new Tool();
+        PrintStream originalErr = System.err;
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(err, true, StandardCharsets.UTF_8));
+        try {
+            tool.perform(null, "build");
+        } finally {
+            System.setErr(originalErr);
+        }
+
+        assertThat(err.toString(StandardCharsets.UTF_8)).contains("missing app or action");
     }
 }
