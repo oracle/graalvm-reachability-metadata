@@ -35,14 +35,52 @@
           "parameterTypes" : [ ]
         }
       ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ContextFinder"
+      },
+      "type" : "org.apache.openejb.javaee.api.support.ServiceContextFactory",
+      "methods" : [
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.Class[]",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ContextFinder"
+      },
+      "type" : "org.apache.openejb.javaee.api.support.ThreeArgumentContextFactory",
+      "methods" : [
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.lang.ClassLoader",
+            "java.util.Map"
+          ]
+        }
+      ]
     }
   ],
   "resources" : [
     {
       "condition" : {
-        "typeReached" : "javax.activation.MailcapCommandMap"
+        "typeReached" : "javax.xml.bind.ContextFinder"
       },
-      "glob" : "META-INF/mailcap.default"
+      "glob" : "org_apache_openejb/javaee_api/propertiespath/jaxb.properties"
     }
   ]
 }

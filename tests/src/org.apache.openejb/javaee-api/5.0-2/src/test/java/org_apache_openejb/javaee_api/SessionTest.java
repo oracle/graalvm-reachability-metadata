@@ -38,7 +38,7 @@ public class SessionTest {
         writeResource(tempDir, "META-INF/javamail.default.address.map", "session-address=session-default\n");
         writeResource(tempDir, "META-INF/javamail.address.map", "session-address=session-override\n");
 
-        try (URLClassLoader classLoader = new URLClassLoader(new URL[] { tempDir.toUri().toURL() }, getClass().getClassLoader())) {
+        try (URLClassLoader classLoader = new URLClassLoader(new URL[] {tempDir.toUri().toURL() }, getClass().getClassLoader())) {
             Session session = withContextClassLoader(classLoader, () -> Session.getInstance(new Properties()));
 
             Provider[] providers = withContextClassLoader(classLoader, session::getProviders);
