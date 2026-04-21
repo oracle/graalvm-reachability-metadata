@@ -9,7 +9,6 @@ package org_apache_tomcat.tomcat_annotations_api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.annotation.Generated;
-import jakarta.annotation.ManagedBean;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
@@ -35,19 +34,20 @@ class Tomcat_annotations_apiTest {
 
     @Test
     void defaultAnnotationsExposeExpectedDefaults() throws Exception {
-        ManagedBean managedBean = DefaultManagedBean.class.
-                getAnnotation(ManagedBean.class);
-        Resource resource = field(DefaultManagedBean.class, "defaultResource").
+        Resource typeResource = DefaultManagedBean.class.
+                getAnnotation(Resource.class);
+        Resource fieldResource = field(DefaultManagedBean.class, "defaultResource").
                 getAnnotation(Resource.class);
 
-        assertThat(managedBean.value()).isEmpty();
-        assertThat(resource.name()).isEmpty();
-        assertThat(resource.type()).isEqualTo(Object.class);
-        assertThat(resource.authenticationType()).isEqualTo(Resource.AuthenticationType.CONTAINER);
-        assertThat(resource.shareable()).isTrue();
-        assertThat(resource.description()).isEmpty();
-        assertThat(resource.mappedName()).isEmpty();
-        assertThat(resource.lookup()).isEmpty();
+        assertThat(typeResource.name()).isEmpty();
+        assertThat(typeResource.type()).isEqualTo(Object.class);
+        assertThat(typeResource.authenticationType()).isEqualTo(Resource.AuthenticationType.CONTAINER);
+        assertThat(typeResource.shareable()).isTrue();
+        assertThat(typeResource.description()).isEmpty();
+        assertThat(typeResource.mappedName()).isEmpty();
+        assertThat(typeResource.lookup()).isEmpty();
+        assertThat(fieldResource.name()).isEmpty();
+        assertThat(fieldResource.type()).isEqualTo(Object.class);
         assertThat(method(DefaultManagedBean.class, "init").
                 isAnnotationPresent(PostConstruct.class)).isTrue();
         assertThat(method(DefaultManagedBean.class, "destroy").
@@ -56,8 +56,6 @@ class Tomcat_annotations_apiTest {
 
     @Test
     void securityAndResourceAnnotationsRetainConfiguredValues() throws Exception {
-        ManagedBean managedBean = FullyAnnotatedComponent.class.
-                getAnnotation(ManagedBean.class);
         Priority priority = FullyAnnotatedComponent.class.
                 getAnnotation(Priority.class);
         DeclareRoles declareRoles = FullyAnnotatedComponent.class.
@@ -72,7 +70,6 @@ class Tomcat_annotations_apiTest {
         Resource methodResource = loadConfig.
                 getAnnotation(Resource.class);
 
-        assertThat(managedBean.value()).isEqualTo("inventoryBean");
         assertThat(priority.value()).isEqualTo(10);
         assertThat(declareRoles.value()).containsExactly("admin", "auditor");
         assertThat(runAs.value()).isEqualTo("system");
@@ -160,8 +157,6 @@ class Tomcat_annotations_apiTest {
 
     @Test
     void annotationTypesExposeRetentionPolicies() {
-        assertThat(ManagedBean.class.
-                getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(PostConstruct.class.
                 getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(PreDestroy.class.
@@ -234,7 +229,7 @@ class Tomcat_annotations_apiTest {
         return type.getDeclaredMethod(name);
     }
 
-    @ManagedBean
+    @Resource
     private static final class DefaultManagedBean {
 
         @Resource
@@ -249,7 +244,6 @@ class Tomcat_annotations_apiTest {
         }
     }
 
-    @ManagedBean("inventoryBean")
     @Priority(10)
     @DeclareRoles({"admin", "auditor"})
     @RunAs("system")
