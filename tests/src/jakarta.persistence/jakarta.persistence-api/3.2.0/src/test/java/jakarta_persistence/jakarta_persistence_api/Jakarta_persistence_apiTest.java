@@ -14,6 +14,8 @@ import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -25,9 +27,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import jakarta.persistence.Cache;
+import jakarta.persistence.CacheRetrieveMode;
+import jakarta.persistence.CacheStoreMode;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
@@ -41,16 +47,20 @@ import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.Parameter;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceConfiguration;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.PersistenceUnitTransactionType;
 import jakarta.persistence.PersistenceUnitUtil;
 import jakarta.persistence.PessimisticLockException;
 import jakarta.persistence.Query;
 import jakarta.persistence.QueryTimeoutException;
 import jakarta.persistence.RollbackException;
+import jakarta.persistence.SchemaManager;
 import jakarta.persistence.SynchronizationType;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.TransactionRequiredException;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.metamodel.Metamodel;
 import jakarta.persistence.spi.LoadState;
@@ -80,33 +90,45 @@ public class Jakarta_persistence_apiTest {
         );
         FixedResolver resolver = new FixedResolver(List.of(nullProvider, successProvider));
         Map<String, Object> properties = Map.of("jakarta.persistence.jdbc.url", "jdbc:test");
+        PersistenceConfiguration configuration = new PersistenceConfiguration("configured-unit")
+                .property("jakarta.persistence.jdbc.url", "jdbc:configured");
 
         try (ResolverScope ignored = useResolver(resolver)) {
             EntityManagerFactory factoryWithoutProperties = Persistence.createEntityManagerFactory("default-unit");
             EntityManagerFactory factoryWithProperties = Persistence.createEntityManagerFactory("custom-unit", properties);
+            EntityManagerFactory factoryWithConfiguration = Persistence.createEntityManagerFactory(configuration);
 
             assertThat(factoryWithoutProperties).isSameAs(entityManagerFactory);
             assertThat(factoryWithProperties).isSameAs(entityManagerFactory);
-            assertThat(resolver.getPersistenceProvidersCalls).isEqualTo(2);
+            assertThat(factoryWithConfiguration).isSameAs(entityManagerFactory);
+            assertThat(resolver.getPersistenceProvidersCalls).isEqualTo(3);
             assertThat(nullProvider.createEntityManagerFactoryCalls)
                     .containsExactly(
                             new CreateEntityManagerFactoryCall("default-unit", null),
                             new CreateEntityManagerFactoryCall("custom-unit", properties)
                     );
+            assertThat(nullProvider.createEntityManagerFactoryConfigurationCalls)
+                    .containsExactly(new CreateEntityManagerFactoryConfigurationCall(configuration));
             assertThat(successProvider.createEntityManagerFactoryCalls)
                     .containsExactly(
                             new CreateEntityManagerFactoryCall("default-unit", null),
                             new CreateEntityManagerFactoryCall("custom-unit", properties)
                     );
+            assertThat(successProvider.createEntityManagerFactoryConfigurationCalls)
+                    .containsExactly(new CreateEntityManagerFactoryConfigurationCall(configuration));
         }
     }
 
     @Test
     void createEntityManagerFactoryThrowsHelpfulMessageWhenNoProviderMatches() {
         FixedResolver emptyResolver = new FixedResolver(List.of());
+        PersistenceConfiguration configuration = new PersistenceConfiguration("missing-unit");
 
         try (ResolverScope ignored = useResolver(emptyResolver)) {
             assertThatThrownBy(() -> Persistence.createEntityManagerFactory("missing-unit"))
+                    .isInstanceOf(PersistenceException.class)
+                    .hasMessage("No Persistence provider for EntityManager named missing-unit");
+            assertThatThrownBy(() -> Persistence.createEntityManagerFactory(configuration))
                     .isInstanceOf(PersistenceException.class)
                     .hasMessage("No Persistence provider for EntityManager named missing-unit");
         }
@@ -128,13 +150,20 @@ public class Jakarta_persistence_apiTest {
         );
         FixedResolver resolver = new FixedResolver(List.of(failingProvider, fallbackProvider));
         Map<String, Object> properties = Map.of("jakarta.persistence.provider", "test-provider");
+        PersistenceConfiguration configuration = new PersistenceConfiguration("failing-unit")
+                .provider("test-provider");
 
         try (ResolverScope ignored = useResolver(resolver)) {
             assertThatThrownBy(() -> Persistence.createEntityManagerFactory("failing-unit", properties))
                     .isSameAs(failure);
+            assertThatThrownBy(() -> Persistence.createEntityManagerFactory(configuration))
+                    .isSameAs(failure);
             assertThat(failingProvider.createEntityManagerFactoryCalls)
                     .containsExactly(new CreateEntityManagerFactoryCall("failing-unit", properties));
+            assertThat(failingProvider.createEntityManagerFactoryConfigurationCalls)
+                    .containsExactly(new CreateEntityManagerFactoryConfigurationCall(configuration));
             assertThat(fallbackProvider.createEntityManagerFactoryCalls).isEmpty();
+            assertThat(fallbackProvider.createEntityManagerFactoryConfigurationCalls).isEmpty();
         }
     }
 
@@ -288,35 +317,41 @@ public class Jakarta_persistence_apiTest {
         RecordingTypedQuery<String> typedQuery = new RecordingTypedQuery<>(List.of("one", "two"), "one");
         Query rawTypedQuery = typedQuery;
         SimpleParameter<String> titleParameter = new SimpleParameter<>("title", null, String.class);
-        Calendar calendar = Calendar.getInstance();
-        Date date = new Date(1234L);
+        LocalDateTime createdAt = LocalDateTime.of(2024, 4, 21, 11, 30);
+        LocalDate publishedOn = LocalDate.of(2024, 4, 22);
 
         assertThat(query.getResultStream().toList()).containsExactly("alpha", "beta");
+        assertThat(query.getSingleResultOrNull()).isEqualTo("alpha");
         assertThat(typedQuery.getResultStream().toList()).containsExactly("one", "two");
+        assertThat(typedQuery.getSingleResultOrNull()).isEqualTo("one");
 
         assertThat(rawTypedQuery.setMaxResults(25)).isSameAs(typedQuery);
         assertThat(rawTypedQuery.setFirstResult(5)).isSameAs(typedQuery);
         assertThat(rawTypedQuery.setHint("graph", "books")).isSameAs(typedQuery);
         assertThat(rawTypedQuery.setParameter(titleParameter, "Jakarta Persistence")).isSameAs(typedQuery);
         assertThat(rawTypedQuery.setParameter("createdBy", "test")).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setParameter("createdAt", calendar, TemporalType.TIMESTAMP)).isSameAs(typedQuery);
+        assertThat(rawTypedQuery.setParameter("createdAt", createdAt)).isSameAs(typedQuery);
         assertThat(rawTypedQuery.setParameter(1, 42)).isSameAs(typedQuery);
-        assertThat(rawTypedQuery.setParameter(2, date, TemporalType.DATE)).isSameAs(typedQuery);
+        assertThat(rawTypedQuery.setParameter(2, publishedOn)).isSameAs(typedQuery);
         assertThat(rawTypedQuery.setFlushMode(FlushModeType.COMMIT)).isSameAs(typedQuery);
         assertThat(rawTypedQuery.setLockMode(LockModeType.PESSIMISTIC_READ)).isSameAs(typedQuery);
+        assertThat(rawTypedQuery.setCacheRetrieveMode(CacheRetrieveMode.BYPASS)).isSameAs(typedQuery);
+        assertThat(rawTypedQuery.setCacheStoreMode(CacheStoreMode.BYPASS)).isSameAs(typedQuery);
+        assertThat(rawTypedQuery.setTimeout(1500)).isSameAs(typedQuery);
 
         assertThat(typedQuery.getMaxResults()).isEqualTo(25);
         assertThat(typedQuery.getFirstResult()).isEqualTo(5);
         assertThat(typedQuery.getHints()).containsEntry("graph", "books");
         assertThat(typedQuery.getParameterValue("createdBy")).isEqualTo("test");
+        assertThat(typedQuery.getParameterValue("createdAt")).isEqualTo(createdAt);
         assertThat(typedQuery.getParameterValue(1)).isEqualTo(42);
-        assertThat(((RecordingQuery) typedQuery).getNamedTemporalType("createdAt"))
-                .isEqualTo(TemporalType.TIMESTAMP);
-        assertThat(((RecordingQuery) typedQuery).getIndexedTemporalType(2))
-                .isEqualTo(TemporalType.DATE);
+        assertThat(typedQuery.getParameterValue(2)).isEqualTo(publishedOn);
         assertThat(typedQuery.getParameterValue(titleParameter)).isEqualTo("Jakarta Persistence");
         assertThat(typedQuery.getFlushMode()).isEqualTo(FlushModeType.COMMIT);
         assertThat(typedQuery.getLockMode()).isEqualTo(LockModeType.PESSIMISTIC_READ);
+        assertThat(typedQuery.getCacheRetrieveMode()).isEqualTo(CacheRetrieveMode.BYPASS);
+        assertThat(typedQuery.getCacheStoreMode()).isEqualTo(CacheStoreMode.BYPASS);
+        assertThat(typedQuery.getTimeout()).isEqualTo(1500);
     }
 
     @Test
@@ -451,6 +486,9 @@ public class Jakarta_persistence_apiTest {
     private record CreateEntityManagerFactoryCall(String unitName, Map<String, Object> properties) {
     }
 
+    private record CreateEntityManagerFactoryConfigurationCall(PersistenceConfiguration configuration) {
+    }
+
     private record GenerateSchemaCall(String unitName, Map<String, Object> properties) {
     }
 
@@ -492,6 +530,8 @@ public class Jakarta_persistence_apiTest {
         private final boolean generateSchemaResult;
         private final ProviderUtil providerUtil;
         private final List<CreateEntityManagerFactoryCall> createEntityManagerFactoryCalls = new ArrayList<>();
+        private final List<CreateEntityManagerFactoryConfigurationCall> createEntityManagerFactoryConfigurationCalls =
+                new ArrayList<>();
         private final List<GenerateSchemaCall> generateSchemaCalls = new ArrayList<>();
 
         private RecordingProvider(
@@ -510,6 +550,13 @@ public class Jakarta_persistence_apiTest {
         @SuppressWarnings("unchecked")
         public EntityManagerFactory createEntityManagerFactory(String emName, Map map) {
             createEntityManagerFactoryCalls.add(new CreateEntityManagerFactoryCall(emName, (Map<String, Object>) map));
+            return entityManagerFactory;
+        }
+
+        @Override
+        public EntityManagerFactory createEntityManagerFactory(PersistenceConfiguration configuration) {
+            createEntityManagerFactoryConfigurationCalls
+                    .add(new CreateEntityManagerFactoryConfigurationCall(configuration));
             return entityManagerFactory;
         }
 
@@ -541,6 +588,8 @@ public class Jakarta_persistence_apiTest {
         private final RuntimeException generateSchemaFailure;
         private final ProviderUtil providerUtil;
         private final List<CreateEntityManagerFactoryCall> createEntityManagerFactoryCalls = new ArrayList<>();
+        private final List<CreateEntityManagerFactoryConfigurationCall> createEntityManagerFactoryConfigurationCalls =
+                new ArrayList<>();
         private final List<GenerateSchemaCall> generateSchemaCalls = new ArrayList<>();
 
         private ThrowingProvider(
@@ -557,6 +606,13 @@ public class Jakarta_persistence_apiTest {
         @SuppressWarnings("unchecked")
         public EntityManagerFactory createEntityManagerFactory(String emName, Map map) {
             createEntityManagerFactoryCalls.add(new CreateEntityManagerFactoryCall(emName, (Map<String, Object>) map));
+            throw createEntityManagerFactoryFailure;
+        }
+
+        @Override
+        public EntityManagerFactory createEntityManagerFactory(PersistenceConfiguration configuration) {
+            createEntityManagerFactoryConfigurationCalls
+                    .add(new CreateEntityManagerFactoryConfigurationCall(configuration));
             throw createEntityManagerFactoryFailure;
         }
 
@@ -600,6 +656,11 @@ public class Jakarta_persistence_apiTest {
 
         @Override
         public EntityManagerFactory createEntityManagerFactory(String emName, Map map) {
+            return null;
+        }
+
+        @Override
+        public EntityManagerFactory createEntityManagerFactory(PersistenceConfiguration configuration) {
             return null;
         }
 
@@ -694,6 +755,7 @@ public class Jakarta_persistence_apiTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static class RecordingQuery implements Query {
         private final List<Object> results;
         private final Object singleResult;
@@ -707,6 +769,9 @@ public class Jakarta_persistence_apiTest {
         private int firstResult;
         private FlushModeType flushMode = FlushModeType.AUTO;
         private LockModeType lockMode = LockModeType.NONE;
+        private CacheRetrieveMode cacheRetrieveMode = CacheRetrieveMode.USE;
+        private CacheStoreMode cacheStoreMode = CacheStoreMode.USE;
+        private Integer timeout;
 
         private RecordingQuery(List<?> results) {
             this(results, results.isEmpty() ? null : results.get(0));
@@ -725,6 +790,11 @@ public class Jakarta_persistence_apiTest {
 
         @Override
         public Object getSingleResult() {
+            return singleResult;
+        }
+
+        @Override
+        public Object getSingleResultOrNull() {
             return singleResult;
         }
 
@@ -893,6 +963,39 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public Query setCacheRetrieveMode(CacheRetrieveMode cacheRetrieveMode) {
+            this.cacheRetrieveMode = cacheRetrieveMode;
+            return this;
+        }
+
+        @Override
+        public Query setCacheStoreMode(CacheStoreMode cacheStoreMode) {
+            this.cacheStoreMode = cacheStoreMode;
+            return this;
+        }
+
+        @Override
+        public CacheRetrieveMode getCacheRetrieveMode() {
+            return cacheRetrieveMode;
+        }
+
+        @Override
+        public CacheStoreMode getCacheStoreMode() {
+            return cacheStoreMode;
+        }
+
+        @Override
+        public Query setTimeout(Integer timeout) {
+            this.timeout = timeout;
+            return this;
+        }
+
+        @Override
+        public Integer getTimeout() {
+            return timeout;
+        }
+
+        @Override
         public <T> T unwrap(Class<T> cls) {
             if (cls.isInstance(this)) {
                 return cls.cast(this);
@@ -909,6 +1012,7 @@ public class Jakarta_persistence_apiTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static final class RecordingTypedQuery<T> extends RecordingQuery implements TypedQuery<T> {
         private final List<T> typedResults;
         private final T typedSingleResult;
@@ -926,6 +1030,11 @@ public class Jakarta_persistence_apiTest {
 
         @Override
         public T getSingleResult() {
+            return typedSingleResult;
+        }
+
+        @Override
+        public T getSingleResultOrNull() {
             return typedSingleResult;
         }
 
@@ -1012,6 +1121,24 @@ public class Jakarta_persistence_apiTest {
             super.setLockMode(lockMode);
             return this;
         }
+
+        @Override
+        public TypedQuery<T> setCacheRetrieveMode(CacheRetrieveMode cacheRetrieveMode) {
+            super.setCacheRetrieveMode(cacheRetrieveMode);
+            return this;
+        }
+
+        @Override
+        public TypedQuery<T> setCacheStoreMode(CacheStoreMode cacheStoreMode) {
+            super.setCacheStoreMode(cacheStoreMode);
+            return this;
+        }
+
+        @Override
+        public TypedQuery<T> setTimeout(Integer timeout) {
+            super.setTimeout(timeout);
+            return this;
+        }
     }
 
     private static final class StubEntityManagerFactory implements EntityManagerFactory {
@@ -1055,6 +1182,11 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public String getName() {
+            return "stub";
+        }
+
+        @Override
         public Map<String, Object> getProperties() {
             return Map.of();
         }
@@ -1066,6 +1198,16 @@ public class Jakarta_persistence_apiTest {
 
         @Override
         public PersistenceUnitUtil getPersistenceUnitUtil() {
+            return null;
+        }
+
+        @Override
+        public PersistenceUnitTransactionType getTransactionType() {
+            return PersistenceUnitTransactionType.RESOURCE_LOCAL;
+        }
+
+        @Override
+        public SchemaManager getSchemaManager() {
             return null;
         }
 
@@ -1082,6 +1224,26 @@ public class Jakarta_persistence_apiTest {
         @Override
         public <T> void addNamedEntityGraph(String graphName, EntityGraph<T> entityGraph) {
             throw new UnsupportedOperationException(graphName);
+        }
+
+        @Override
+        public <R> Map<String, TypedQueryReference<R>> getNamedQueries(Class<R> resultType) {
+            return Map.of();
+        }
+
+        @Override
+        public <E> Map<String, EntityGraph<? extends E>> getNamedEntityGraphs(Class<E> entityType) {
+            return Map.of();
+        }
+
+        @Override
+        public void runInTransaction(Consumer<EntityManager> work) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public <R> R callInTransaction(Function<EntityManager, R> work) {
+            throw new UnsupportedOperationException();
         }
     }
 }
