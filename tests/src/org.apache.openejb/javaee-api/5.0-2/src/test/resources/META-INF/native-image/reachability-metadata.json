@@ -23,6 +23,118 @@
           "parameterTypes" : [ ]
         }
       ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ContextFinder"
+      },
+      "type" : "org_apache_openejb.javaee_api.ContextFinderTest$MultiContextFactory",
+      "methods" : [
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.Class[]",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.JAXBContext"
+      },
+      "type" : "org_apache_openejb.javaee_api.ContextFinderTest$TwoArgOnlyContextFactory",
+      "methods" : [
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.lang.ClassLoader"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ContextFinder"
+      },
+      "type" : "org_apache_openejb.javaee_api.ContextFinderTest$BadCastContextFactory",
+      "methods" : [
+        {
+          "name" : "createContext",
+          "parameterTypes" : [
+            "java.lang.String",
+            "java.lang.ClassLoader",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.rpc.FactoryFinder"
+      },
+      "type" : "org_apache_openejb.javaee_api.FactoryFinderTest$RecordingServiceFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.mail.Session"
+      },
+      "type" : "org_apache_openejb.javaee_api.SessionTest$RecordingStore",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "javax.mail.Session",
+            "javax.mail.URLName"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.mail.Session"
+      },
+      "type" : "org_apache_openejb.javaee_api.SessionTest$RecordingTransport",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "javax.mail.Session",
+            "javax.mail.URLName"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.soap.FactoryFinder"
+      },
+      "type" : "org_apache_openejb.javaee_api.SoapFactoryFinderTest$RecordingMessageFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.ws.spi.FactoryFinder$2"
+      },
+      "type" : "org_apache_openejb.javaee_api.WsSpiFactoryFinderTest$RecordingProvider",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
     }
   ],
   "resources" : [
@@ -31,6 +143,66 @@
         "typeReached" : "javax.activation.MailcapCommandMap"
       },
       "glob" : "META-INF/mailcap"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.mail.Session"
+      },
+      "glob" : "META-INF/javamail.address.map"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.mail.Session"
+      },
+      "glob" : "META-INF/javamail.default.address.map"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.mail.Session"
+      },
+      "glob" : "META-INF/javamail.default.providers"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.mail.Session"
+      },
+      "glob" : "META-INF/javamail.providers"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.ContextFinder"
+      },
+      "glob" : "META-INF/services/javax.xml.bind.JAXBContext"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.rpc.FactoryFinder"
+      },
+      "glob" : "META-INF/services/javax.xml.rpc.ServiceFactory"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.soap.FactoryFinder"
+      },
+      "glob" : "META-INF/services/javax.xml.soap.MessageFactory"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.JAXBContext"
+      },
+      "glob" : "org_apache_openejb/javaee_api/contextpath/badcast/jaxb.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.JAXBContext"
+      },
+      "glob" : "org_apache_openejb/javaee_api/contextpath/loader/jaxb.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "javax.xml.bind.JAXBContext"
+      },
+      "glob" : "org_apache_openejb/javaee_api/contextpath/system/jaxb.properties"
     }
   ]
 }
