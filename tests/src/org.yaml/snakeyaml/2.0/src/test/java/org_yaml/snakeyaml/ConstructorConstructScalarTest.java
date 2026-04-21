@@ -13,12 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.inspector.TrustedTagInspector;
 
 public class ConstructorConstructScalarTest {
 
     @Test
     void constructsRootBeanWhenRootTypeIsProvidedAsClassName() throws ClassNotFoundException {
-        Yaml yaml = new Yaml(new Constructor(RootBean.class.getName()));
+        Yaml yaml = new Yaml(new Constructor(RootBean.class.getName(), new LoaderOptions()));
 
         RootBean bean = yaml.load(
                 """
@@ -59,9 +60,12 @@ public class ConstructorConstructScalarTest {
             }
         };
 
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setTagInspector(new TrustedTagInspector());
+
         Thread.currentThread().setContextClassLoader(rejectingLoader);
         try {
-            FallbackTaggedBean bean = new Yaml().load(
+            FallbackTaggedBean bean = new Yaml(loaderOptions).load(
                     """
                     !!%s
                     name: tagged
