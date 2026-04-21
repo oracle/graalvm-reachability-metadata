@@ -6,9 +6,16 @@
  */
 package org_apache_openejb.javaee_api;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 import javax.mail.Flags;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.junit.jupiter.api.Test;
 
@@ -71,5 +78,41 @@ class Javaee_apiTest {
         assertThat(flags.contains("custom")).isFalse();
         assertThat(flags.getSystemFlags()).containsExactly(Flags.Flag.ANSWERED);
         assertThat(flags.getUserFlags()).isEmpty();
+    }
+
+    @Test
+    void parsesMultipartBodyParts() throws Exception {
+        String boundary = "demo-boundary";
+        String contentType = "multipart/alternative; boundary=\"" + boundary + "\"";
+        String rawMultipart = "Generated message body\r\n"
+                + "--" + boundary + "\r\n"
+                + "Content-Type: text/plain; charset=UTF-8\r\n"
+                + "Content-ID: <plain-text>\r\n"
+                + "\r\n"
+                + "Hello native image\r\n"
+                + "--" + boundary + "\r\n"
+                + "Content-Type: text/plain; charset=UTF-8\r\n"
+                + "Content-ID: <fallback>\r\n"
+                + "\r\n"
+                + "Hello JVM\r\n"
+                + "--" + boundary + "--\r\n";
+
+        MimeMultipart parsedMultipart = new MimeMultipart(
+                new ByteArrayDataSource(rawMultipart.getBytes(StandardCharsets.UTF_8), contentType));
+        MimeBodyPart parsedPlainTextPart = (MimeBodyPart) parsedMultipart.getBodyPart(0);
+        MimeBodyPart parsedFallbackPart = (MimeBodyPart) parsedMultipart.getBodyPart(1);
+
+        assertThat(parsedMultipart.getPreamble()).contains("Generated message body");
+        assertThat(parsedMultipart.getCount()).isEqualTo(2);
+        assertThat(parsedPlainTextPart.getContentID()).isEqualTo("<plain-text>");
+        assertThat(parsedFallbackPart.getContentID()).isEqualTo("<fallback>");
+        assertThat(parsedPlainTextPart.getContentType()).isEqualTo("text/plain; charset=UTF-8");
+        assertThat(parsedFallbackPart.getContentType()).isEqualTo("text/plain; charset=UTF-8");
+        assertThat(readUtf8(parsedPlainTextPart.getInputStream())).isEqualTo("Hello native image");
+        assertThat(readUtf8(parsedFallbackPart.getInputStream())).isEqualTo("Hello JVM");
+    }
+
+    private static String readUtf8(InputStream inputStream) throws IOException {
+        return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
     }
 }
