@@ -114,7 +114,7 @@ public class TerminalLineSettingsTest {
         }
 
         private static String className(final ClassDescriptor descriptor) {
-            return descriptor.getTestClass().map(Class::getName).orElse(descriptor.getDisplayName());
+            return descriptor.getTestClass().getName();
         }
     }
 }
