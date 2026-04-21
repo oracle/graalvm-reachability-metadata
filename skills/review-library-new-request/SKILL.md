@@ -16,6 +16,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 
 - Do not accept PRs that push more than one library. A `library-new-request` PR must stay scoped to one target library version plus its supporting test files.
 - Do not accept scaffold-only tests. Generated tests must be changed into library-specific tests that exercise the behavior that requires the metadata.
+- Do not accept tests that disable themselves under native image. If the added library behavior is guarded by checks such as `assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, `if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, or a similar native-only skip, then the PR does not provide native runtime coverage.
 - Do not accept tests that reference the exact library version in test code or assertions unless the version check is itself the behavior under test. One test should remain valid across multiple supported library versions.
 - Treat dynamic-access coverage counts as incomplete evidence. They can miss metadata required through downstream libraries, so do not reject a PR only because the exploded stats files under `stats/<group>/<artifact>/<metadata-version>/stats.json` report `0/0` dynamic-access calls while the PR adds metadata.
 
@@ -38,6 +39,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 
 3. Review the test source.
    - The test must be library-specific, not a lightly edited scaffold.
+   - Confirm the library behavior actually runs under native image. Reject tests that skip or short-circuit the relevant assertions in native mode through checks on `System.getProperty("org.graalvm.nativeimage.imagecode")`, early returns, or equivalent guards.
    - Reject tests that hardcode the exact library version in strings, assertions, or expected output unless the test is explicitly validating version-dependent behavior.
    - Keep test packages separate from library packages. Reject tests that live under the target library's package unless the PR clearly needs that package placement to exercise the library.
    - Separate packages matter because tests placed inside the library package can bypass visibility boundaries and produce false confidence about what user code can access.
@@ -70,6 +72,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 - Weak PR:
   - PR pushes metadata or tests for more than one library.
   - Test class still looks like the scaffold.
+  - Test logic disables or bypasses the library behavior under native image.
   - Test code hardcodes the target library version without a clear need.
   - Test sources are placed in the library package without a demonstrated need.
   - Claimed coverage is not credible from the diff.
@@ -79,6 +82,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 Match the concise review style already used in this repository:
 
 - For scaffold-only tests: say that tests must differ from the scaffold and should not be accepted as-is.
+- For missing native runtime coverage: say that the added tests disable themselves under native image, so the library behavior never runs there and the PR does not provide native-image coverage.
 - For version-pinned tests: say that tests should not reference the exact library version because the same test should support multiple library versions.
 - For multiple-library PRs: say that `library-new-request` PRs must push only one library and ask for the unrelated library additions to be removed.
 - For metadata/coverage mismatch: ask for investigation only when the PR makes concrete coverage claims that are not supported by the diff. Do not argue from metadata contents alone.
