@@ -2,6 +2,12 @@
   "reflection": [
     {
       "condition": {
+        "typeReached": "io.opentelemetry.sdk.trace.SdkTracer"
+      },
+      "type": "io.opentelemetry.api.incubator.trace.ExtendedDefaultTracerProvider"
+    },
+    {
+      "condition": {
         "typeReached": "io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueConsumerIndexField"
       },
       "type": "io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueConsumerIndexField"
@@ -17,6 +23,47 @@
         "typeReached": "io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueProducerLimitField"
       },
       "type": "io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueProducerLimitField"
+    },
+    {
+      "condition": {
+        "typeReached": "io.opentelemetry.sdk.trace.internal.SdkTracerProviderUtil"
+      },
+      "type": "io.opentelemetry.sdk.trace.SdkTracerProvider",
+      "methods": [
+        {
+          "name": "setTracerConfigurator",
+          "parameterTypes": [
+            "io.opentelemetry.sdk.internal.ScopeConfigurator"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "io.opentelemetry.sdk.trace.internal.SdkTracerProviderUtil"
+      },
+      "type": "io.opentelemetry.sdk.trace.SdkTracerProviderBuilder",
+      "methods": [
+        {
+          "name": "addTracerConfiguratorCondition",
+          "parameterTypes": [
+            "java.util.function.Predicate",
+            "io.opentelemetry.sdk.trace.internal.TracerConfig"
+          ]
+        },
+        {
+          "name": "setExceptionAttributeResolver",
+          "parameterTypes": [
+            "io.opentelemetry.sdk.internal.ExceptionAttributeResolver"
+          ]
+        },
+        {
+          "name": "setTracerConfigurator",
+          "parameterTypes": [
+            "io.opentelemetry.sdk.internal.ScopeConfigurator"
+          ]
+        }
+      ]
     }
   ]
 }
