@@ -96,6 +96,6 @@ public class ContextFinderTest {
         Class<?> contextFinderClass = Class.forName("javax.xml.bind.ContextFinder");
         Method getResourceUrl = contextFinderClass.getDeclaredMethod("getResourceUrl", ClassLoader.class, String.class);
         getResourceUrl.setAccessible(true);
-        return (URL) getResourceUrl.invoke(null, new Object[] { null, resourceName });
+        return (URL) getResourceUrl.invoke(null, new Object[]{null, resourceName});
     }
 }
