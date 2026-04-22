@@ -8,6 +8,8 @@ package io_zipkin_zipkin2.zipkin;
 
 import org.junit.jupiter.api.Test;
 import zipkin2.Annotation;
+import zipkin2.Call;
+import zipkin2.Callback;
 import zipkin2.DependencyLink;
 import zipkin2.Endpoint;
 import zipkin2.Span;
@@ -20,10 +22,12 @@ import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.storage.InMemoryStorage;
 import zipkin2.storage.QueryRequest;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -224,6 +228,59 @@ class ZipkinTest {
         assertThat(decodedDependencyLinks).containsExactly(dependencyLink);
     }
 
+    @Test
+    void callCombinatorsSupportCloningCallbacksAndFallbacks() throws Exception {
+        Call<Integer> mappedCall = Call.create("zipkin").map(String::length);
+        Call<Integer> flatMappedCall = Call.create(List.of("frontend", "backend"))
+                .flatMap(values -> Call.create(values.size()));
+        Call<String> recoveredCall = new FailingCall("boom")
+                .handleError((throwable, callback) -> callback.onSuccess(throwable.getMessage()));
+        RecordingCallback<Integer> mappedCallback = new RecordingCallback<>();
+        RecordingCallback<String> recoveredCallback = new RecordingCallback<>();
+
+        assertThat(mappedCall.execute()).isEqualTo(6);
+        mappedCall.clone().enqueue(mappedCallback);
+        assertThat(flatMappedCall.execute()).isEqualTo(2);
+        assertThat(Call.<String>emptyList().execute()).isEmpty();
+        assertThat(recoveredCall.execute()).isEqualTo("boom");
+        recoveredCall.clone().enqueue(recoveredCallback);
+
+        assertThat(mappedCallback.value()).isEqualTo(6);
+        assertThat(mappedCallback.error()).isNull();
+        assertThat(recoveredCallback.value()).isEqualTo("boom");
+        assertThat(recoveredCallback.error()).isNull();
+    }
+
+    @Test
+    void callsAreSingleUseAndRespectCancellation() throws Exception {
+        Call<Integer> singleUseCall = Call.create("zipkin").map(String::length);
+        Call<Integer> canceledExecuteCall = Call.create("zipkin").map(String::length);
+        Call<Integer> canceledEnqueueCall = Call.create("zipkin").map(String::length);
+        RecordingCallback<Integer> canceledCallback = new RecordingCallback<>();
+
+        assertThat(singleUseCall.execute()).isEqualTo(6);
+        assertThatThrownBy(singleUseCall::execute)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Already Executed");
+        assertThatThrownBy(() -> singleUseCall.enqueue(new RecordingCallback<>()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Already Executed");
+
+        canceledExecuteCall.cancel();
+        canceledEnqueueCall.cancel();
+        canceledEnqueueCall.enqueue(canceledCallback);
+
+        assertThat(canceledExecuteCall.isCanceled()).isTrue();
+        assertThat(canceledEnqueueCall.isCanceled()).isTrue();
+        assertThatThrownBy(canceledExecuteCall::execute)
+                .isInstanceOf(IOException.class)
+                .hasMessage("Canceled");
+        assertThat(canceledCallback.value()).isNull();
+        assertThat(canceledCallback.error())
+                .isInstanceOf(IOException.class)
+                .hasMessage("Canceled");
+    }
+
     private static Span newClientSpan() {
         return Span.newBuilder()
                 .traceId(TRACE_ID)
@@ -240,5 +297,69 @@ class ZipkinTest {
                 .putTag("http.path", "/orders")
                 .debug(true)
                 .build();
+    }
+
+    private static final class RecordingCallback<V> implements Callback<V> {
+        private final AtomicReference<V> value = new AtomicReference<>();
+        private final AtomicReference<Throwable> error = new AtomicReference<>();
+
+        @Override
+        public void onSuccess(V value) {
+            this.value.set(value);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            error.set(throwable);
+        }
+
+        private V value() {
+            return value.get();
+        }
+
+        private Throwable error() {
+            return error.get();
+        }
+    }
+
+    private static final class FailingCall extends Call<String> {
+        private final String message;
+        private boolean canceled;
+
+        private FailingCall(String message) {
+            this.message = message;
+        }
+
+        @Override
+        public String execute() throws IOException {
+            if (canceled) {
+                throw new IOException("Canceled");
+            }
+            throw new IOException(message);
+        }
+
+        @Override
+        public void enqueue(Callback<String> callback) {
+            if (canceled) {
+                callback.onError(new IOException("Canceled"));
+                return;
+            }
+            callback.onError(new IOException(message));
+        }
+
+        @Override
+        public void cancel() {
+            canceled = true;
+        }
+
+        @Override
+        public boolean isCanceled() {
+            return canceled;
+        }
+
+        @Override
+        public Call<String> clone() {
+            return new FailingCall(message);
+        }
     }
 }
