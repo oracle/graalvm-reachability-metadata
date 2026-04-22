@@ -68,7 +68,7 @@ import org.junit.jupiter.api.Test;
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
 
-class PoiTest {
+public class PoiTest {
     @Test
     void binaryWorkbookRoundTripsAcrossWorkbookAndExtractorApis() throws Exception {
         byte[] workbookBytes = createWorkbookBytes();
