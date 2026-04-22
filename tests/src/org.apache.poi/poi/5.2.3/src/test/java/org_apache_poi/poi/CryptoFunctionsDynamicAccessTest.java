@@ -6,15 +6,14 @@
  */
 package org_apache_poi.poi;
 
-import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.poifs.crypt.CryptoFunctions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.security.Provider;
 import java.security.Security;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CryptoFunctionsDynamicAccessTest {
 
@@ -24,19 +23,16 @@ public class CryptoFunctionsDynamicAccessTest {
     }
 
     @Test
-    void registersBouncyCastleWhenAvailableOrReportsThatItIsMissing() {
-        boolean providerClassPresent = CryptoFunctionsDynamicAccessTest.class.getClassLoader()
-                .getResource("org/bouncycastle/jce/provider/BouncyCastleProvider.class") != null;
+    void registersBouncyCastleWhenItIsOnTheClasspath() {
+        assertThat(CryptoFunctionsDynamicAccessTest.class.getClassLoader()
+                .getResource("org/bouncycastle/jce/provider/BouncyCastleProvider.class")).isNotNull();
 
         Security.removeProvider("BC");
 
-        if (providerClassPresent) {
-            CryptoFunctions.registerBouncyCastle();
-            assertThat(Security.getProvider("BC")).isNotNull();
-        } else {
-            assertThatThrownBy(CryptoFunctions::registerBouncyCastle)
-                    .isInstanceOf(EncryptedDocumentException.class)
-                    .hasMessageContaining("BouncyCastle");
-        }
+        CryptoFunctions.registerBouncyCastle();
+
+        Provider provider = Security.getProvider("BC");
+        assertThat(provider).isNotNull();
+        assertThat(provider.getName()).isEqualTo("BC");
     }
 }

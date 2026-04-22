@@ -13,6 +13,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,8 @@ public class XMLHelperDynamicAccessTest {
 
     @Test
     void createsSecuredXmlBuildersAndReaders() throws Exception {
-        Document document = XMLHelper.newDocumentBuilder()
+        DocumentBuilderFactory documentBuilderFactory = XMLHelper.getDocumentBuilderFactory();
+        Document document = documentBuilderFactory.newDocumentBuilder()
                 .parse(new InputSource(new StringReader("<root><child>value</child></root>")));
 
         List<String> elementNames = new ArrayList<>();
