@@ -6,9 +6,12 @@
  */
 package com_graphql_java.graphql_java_extended_scalars;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -152,6 +155,17 @@ class Graphql_java_extended_scalarsTest {
     }
 
     @Test
+    void urlScalarAcceptsUriAndFileInputs() throws Exception {
+        Path schemaPath = Path.of("build", "tmp", "graphql", "schema.graphql");
+
+        URI uri = schemaPath.toUri();
+        assertUrlLikeInputRoundTrip(uri, uri.toURL().toExternalForm());
+
+        File file = schemaPath.toFile();
+        assertUrlLikeInputRoundTrip(file, file.toURI().toURL().toExternalForm());
+    }
+
+    @Test
     void regexAndAliasedScalarsIntegrateWithGraphQlSchemas() {
         GraphQLScalarType regexScalar = ExtendedScalars.newRegexScalar("HexColor")
             .description("Matches 6 digit hexadecimal colors")
@@ -185,6 +199,21 @@ class Graphql_java_extended_scalarsTest {
         assertSuccessful(aliasedLiteral);
         assertThat(aliasedLiteral.inputValue()).isEqualTo(42L);
         assertThat(outputValue(aliasedLiteral.executionResult())).isEqualTo(42L);
+    }
+
+    private void assertUrlLikeInputRoundTrip(Object input, String expectedExternalForm) {
+        URL parsedValue = (URL) ExtendedScalars.Url.getCoercing().parseValue(input);
+        assertThat(parsedValue.toExternalForm()).isEqualTo(expectedExternalForm);
+
+        StringValue literal = (StringValue) ExtendedScalars.Url.getCoercing().valueToLiteral(input);
+        assertThat(literal.getValue()).isEqualTo(expectedExternalForm);
+
+        EchoResult variableResult = executeVariableEcho(ExtendedScalars.Url, input);
+        assertSuccessful(variableResult);
+        assertThat(variableResult.inputValue()).isInstanceOf(URL.class);
+        assertThat(((URL) variableResult.inputValue()).toExternalForm()).isEqualTo(expectedExternalForm);
+        assertThat(outputValue(variableResult.executionResult())).isInstanceOf(URL.class);
+        assertThat(((URL) outputValue(variableResult.executionResult())).toExternalForm()).isEqualTo(expectedExternalForm);
     }
 
     private void assertStructuredScalarRoundTrip(GraphQLScalarType scalarType, Map<String, Object> variableInput) {
