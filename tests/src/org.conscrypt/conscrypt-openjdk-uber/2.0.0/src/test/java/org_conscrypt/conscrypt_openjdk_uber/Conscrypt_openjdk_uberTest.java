@@ -150,6 +150,28 @@ class Conscrypt_openjdk_uberTest {
     }
 
     @Test
+    void completesMutualTlsHandshakeOverEngines() throws Exception {
+        Provider provider = Conscrypt.newProvider();
+        TlsContexts tlsContexts = createMutualTlsContexts(provider);
+
+        SSLEngine clientEngine = tlsContexts.clientContext().createSSLEngine("localhost", 443);
+        SSLEngine serverEngine = tlsContexts.serverContext().createSSLEngine();
+        clientEngine.setUseClientMode(true);
+        serverEngine.setUseClientMode(false);
+        serverEngine.setNeedClientAuth(true);
+
+        Conscrypt.setHostname(clientEngine, "localhost");
+
+        completeHandshake(clientEngine, serverEngine);
+
+        assertThat(serverEngine.getSession().getPeerCertificates()).isNotEmpty();
+        assertThat(clientEngine.getSession().getPeerCertificates()).isNotEmpty();
+
+        clientEngine.closeOutbound();
+        serverEngine.closeOutbound();
+    }
+
+    @Test
     void negotiatesTlsOverEnginesAndExchangesApplicationData() throws Exception {
         Provider provider = Conscrypt.newProvider();
         TlsContexts tlsContexts = createTlsContexts(provider);
@@ -254,6 +276,33 @@ class Conscrypt_openjdk_uberTest {
 
         SSLContext clientContext = SSLContext.getInstance("TLS", provider);
         clientContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
+
+        return new TlsContexts(serverContext, clientContext);
+    }
+
+    private static TlsContexts createMutualTlsContexts(Provider provider) throws Exception {
+        X509Certificate certificate = parseCertificate(CERTIFICATE_PEM);
+        PrivateKey privateKey = parsePrivateKey(PRIVATE_KEY_PEM);
+
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keyStore.load(null, null);
+        keyStore.setKeyEntry("shared", privateKey, KEY_PASSWORD, new X509Certificate[] {certificate});
+
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, KEY_PASSWORD);
+
+        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        trustStore.load(null, null);
+        trustStore.setCertificateEntry("shared", certificate);
+
+        TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(trustStore);
+
+        SSLContext serverContext = SSLContext.getInstance("TLS", provider);
+        serverContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
+
+        SSLContext clientContext = SSLContext.getInstance("TLS", provider);
+        clientContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
 
         return new TlsContexts(serverContext, clientContext);
     }
