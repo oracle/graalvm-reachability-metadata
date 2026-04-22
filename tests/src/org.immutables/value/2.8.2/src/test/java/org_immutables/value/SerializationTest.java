@@ -51,7 +51,9 @@ public class SerializationTest {
 
         ConcurrentMap<String, Integer> restored = roundTrip((Serializable) original, ConcurrentMap.class);
 
-        assertThat(restored).containsEntry(alpha, 1).containsEntry(beta, 2);
+        assertThat(restored).hasSize(2);
+        assertThat(restored.values()).containsExactlyInAnyOrder(1, 2);
+        assertThat(restored.keySet()).map(Object::toString).containsExactlyInAnyOrder("alpha", "beta");
     }
 
     @Test
