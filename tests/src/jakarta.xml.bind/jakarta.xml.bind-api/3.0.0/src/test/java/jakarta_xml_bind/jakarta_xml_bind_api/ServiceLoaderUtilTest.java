@@ -12,7 +12,9 @@ import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.ServiceLoaderUtilInvoker;
 import jakarta_xml_bind.jakarta_xml_bind_api.classproperties.PropertiesBoundType;
+import jakarta_xml_bind.jakarta_xml_bind_api.support.FactoryBackedContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +42,15 @@ public class ServiceLoaderUtilTest {
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
         assertThat(((StubJaxbContext) context).getSource()).isEqualTo("properties-classes-factory");
+    }
+
+    @Test
+    public void instantiatesProviderClassByName() throws Exception {
+        Object provider = withContextClassLoader(
+                null,
+                ServiceLoaderUtilInvoker::instantiateFactoryBackedContextFactory);
+
+        assertThat(provider).isInstanceOf(FactoryBackedContextFactory.class);
     }
 
     @Test
