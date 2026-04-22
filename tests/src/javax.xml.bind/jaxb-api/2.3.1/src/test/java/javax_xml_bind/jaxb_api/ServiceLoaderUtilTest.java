@@ -8,6 +8,7 @@ package javax_xml_bind.jaxb_api;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -17,6 +18,7 @@ import javax.xml.bind.JAXBContextFactory;
 import javax.xml.bind.JAXBException;
 import javax_xml_bind.jaxb_api.classproperties.PropertiesBoundType;
 import javax_xml_bind.jaxb_api.noprovider.NoProviderBoundType;
+import javax_xml_bind.jaxb_api.support.InterfaceContextFactory;
 import javax_xml_bind.jaxb_api.support.StubJaxbContext;
 
 import org.junit.jupiter.api.Test;
@@ -45,11 +47,30 @@ public class ServiceLoaderUtilTest {
     }
 
     @Test
+    public void instantiatesProviderClassesViaLegacyNewInstanceHelper() throws Exception {
+        Object provider = invokeLegacyNewInstance(InterfaceContextFactory.class.getName());
+
+        assertThat(provider).isInstanceOf(InterfaceContextFactory.class);
+    }
+
+    @Test
     public void attemptsOsgiLookupWhenNoOtherProviderIsAvailable() {
         ResourceHidingClassLoader classLoader = new ResourceHidingClassLoader(getClass().getClassLoader());
 
         assertThatThrownBy(() -> withContextClassLoader(classLoader, () -> JAXBContext.newInstance(NoProviderBoundType.class)))
                 .isInstanceOf(JAXBException.class);
+    }
+
+    private static Object invokeLegacyNewInstance(String className) throws Exception {
+        Class<?> serviceLoaderUtilClass = Class.forName("javax.xml.bind.ServiceLoaderUtil");
+        Class<?> exceptionHandlerClass = Class.forName("javax.xml.bind.ServiceLoaderUtil$ExceptionHandler");
+        Method newInstanceMethod = serviceLoaderUtilClass.getDeclaredMethod(
+                "newInstance",
+                String.class,
+                String.class,
+                exceptionHandlerClass);
+        newInstanceMethod.setAccessible(true);
+        return newInstanceMethod.invoke(null, className, className, null);
     }
 
     private static <T> T withContextClassLoader(ClassLoader classLoader, ThrowingSupplier<T> supplier) throws Exception {
