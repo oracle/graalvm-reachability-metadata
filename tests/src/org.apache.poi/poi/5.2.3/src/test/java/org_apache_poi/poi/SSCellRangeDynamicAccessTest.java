@@ -27,7 +27,7 @@ public class SSCellRangeDynamicAccessTest {
 
             assertThat(cells.getReferenceText()).isEqualTo("A1:B2");
             assertThat(cells.getFlattenedCells()).hasSize(4);
-            assertThat(matrix).hasSize(2);
+            assertThat(matrix.length).isEqualTo(2);
         }
     }
 }
