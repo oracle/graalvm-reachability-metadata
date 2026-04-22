@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
@@ -40,7 +41,7 @@ public class SerializationTest {
     }
 
     @Test
-    void mapMakerMapPreservesEntriesAcrossRoundTrip() throws Exception {
+    void mapMakerWeakKeyMapPreservesEntriesAcrossRoundTripWhenKeysRemainStronglyReachable() throws Exception {
         String alpha = new String("alpha");
         String beta = new String("beta");
         ConcurrentMap<String, Integer> original = new $MapMaker()
@@ -49,11 +50,15 @@ public class SerializationTest {
         original.put(alpha, 1);
         original.put(beta, 2);
 
-        ConcurrentMap<String, Integer> restored = roundTrip((Serializable) original, ConcurrentMap.class);
+        SerializableWeakKeyMapHolder restored = roundTrip(
+                new SerializableWeakKeyMapHolder(original, List.of(alpha, beta)),
+                SerializableWeakKeyMapHolder.class
+        );
 
-        assertThat(restored).hasSize(2);
-        assertThat(restored.values()).containsExactlyInAnyOrder(1, 2);
-        assertThat(restored.keySet()).map(Object::toString).containsExactlyInAnyOrder("alpha", "beta");
+        assertThat(restored.keys).containsExactlyInAnyOrder("alpha", "beta");
+        assertThat(restored.map).hasSize(2);
+        assertThat(restored.map.values()).containsExactlyInAnyOrder(1, 2);
+        assertThat(restored.map.keySet()).containsExactlyInAnyOrderElementsOf(restored.keys);
     }
 
     @Test
@@ -114,6 +119,18 @@ public class SerializationTest {
             objectOutputStream.writeObject(value);
         }
         return outputStream.toByteArray();
+    }
+
+    private static final class SerializableWeakKeyMapHolder implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        final ConcurrentMap<String, Integer> map;
+        final List<String> keys;
+
+        private SerializableWeakKeyMapHolder(ConcurrentMap<String, Integer> map, List<String> keys) {
+            this.map = map;
+            this.keys = keys;
+        }
     }
 }
 
