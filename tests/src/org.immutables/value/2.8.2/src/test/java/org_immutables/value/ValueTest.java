@@ -136,6 +136,28 @@ class ValueTest {
     }
 
     @Test
+    void internedImmutableCanonicalizesEqualInstancesAcrossSeparateBuilds() {
+        ImmutableInternedPoint first = ImmutableInternedPoint.builder()
+                .x(3)
+                .y(5)
+                .build();
+        ImmutableInternedPoint same = ImmutableInternedPoint.builder()
+                .x(3)
+                .y(5)
+                .build();
+
+        ImmutableInternedPoint changed = first.withY(8);
+        ImmutableInternedPoint rebuiltChanged = ImmutableInternedPoint.builder()
+                .x(3)
+                .y(8)
+                .build();
+
+        assertThat(same).isSameAs(first);
+        assertThat(changed).isNotSameAs(first);
+        assertThat(rebuiltChanged).isSameAs(changed);
+    }
+
+    @Test
     void modifiableObjectsTrackInitializationAndMergeStateIncrementally() {
         ModifiableEditableProfile profile = ModifiableEditableProfile.create();
         ModifiableEditableProfile incoming = ModifiableEditableProfile.create();
@@ -218,6 +240,13 @@ interface EditableProfile {
     Optional<String> title();
 
     List<String> tags();
+}
+
+@Value.Immutable(intern = true)
+interface InternedPoint {
+    int x();
+
+    int y();
 }
 
 @Value.Immutable
