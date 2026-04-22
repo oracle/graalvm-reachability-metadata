@@ -296,6 +296,52 @@ class Spotbugs_annotationsTest {
         assertThat(CheckReturnValue.class.getDeclaredMethod("explanation").getDefaultValue()).isEqualTo("");
     }
 
+    @Test
+    void runtimeObligationAnnotationsMustBeRedeclaredForSubclassesAndOverrides() throws NoSuchMethodException {
+        ImplicitObligationResource inherited = new ImplicitObligationResource("inherited");
+        ExplicitObligationResource explicit = new ExplicitObligationResource("explicit");
+
+        assertThat(inherited.status()).isEqualTo("inherited:open");
+        assertThat(explicit.status()).isEqualTo("explicit:open");
+
+        inherited.release();
+        explicit.release();
+
+        assertThat(inherited.status()).isEqualTo("inherited:closed");
+        assertThat(explicit.status()).isEqualTo("explicit:closed");
+
+        CleanupObligation baseCleanup = BaseObligationResource.class.getAnnotation(CleanupObligation.class);
+        CleanupObligation explicitCleanup = ExplicitObligationResource.class.getAnnotation(CleanupObligation.class);
+        ReturnValuesAreNonnullByDefault baseDefault =
+                BaseObligationResource.class.getAnnotation(ReturnValuesAreNonnullByDefault.class);
+        ReturnValuesAreNonnullByDefault explicitDefault =
+                ExplicitObligationResource.class.getAnnotation(ReturnValuesAreNonnullByDefault.class);
+
+        assertThat(baseCleanup).isNotNull();
+        assertThat(explicitCleanup).isNotNull();
+        assertThat(baseCleanup).isEqualTo(explicitCleanup);
+        assertThat(baseCleanup.hashCode()).isEqualTo(explicitCleanup.hashCode());
+        assertThat(baseDefault).isNotNull();
+        assertThat(explicitDefault).isNotNull();
+        assertThat(baseDefault).isEqualTo(explicitDefault);
+        assertThat(baseDefault.hashCode()).isEqualTo(explicitDefault.hashCode());
+
+        assertThat(ImplicitObligationResource.class.getAnnotation(CleanupObligation.class)).isNull();
+        assertThat(ImplicitObligationResource.class.getAnnotation(ReturnValuesAreNonnullByDefault.class)).isNull();
+
+        Constructor<ImplicitObligationResource> inheritedConstructor =
+                ImplicitObligationResource.class.getDeclaredConstructor(String.class);
+        Constructor<ExplicitObligationResource> explicitConstructor =
+                ExplicitObligationResource.class.getDeclaredConstructor(String.class);
+        Method inheritedRelease = ImplicitObligationResource.class.getDeclaredMethod("release");
+        Method explicitRelease = ExplicitObligationResource.class.getDeclaredMethod("release");
+
+        assertThat(inheritedConstructor.getAnnotation(CreatesObligation.class)).isNull();
+        assertThat(explicitConstructor.getAnnotation(CreatesObligation.class)).isNotNull();
+        assertThat(inheritedRelease.getAnnotation(DischargesObligation.class)).isNull();
+        assertThat(explicitRelease.getAnnotation(DischargesObligation.class)).isNotNull();
+    }
+
     @ReturnValuesAreNonnullByDefault
     private static final class NullnessFixture {
         @NonNull
@@ -409,6 +455,53 @@ class Spotbugs_annotationsTest {
 
         private static String normalizeSegment(String value) {
             return value.trim().toLowerCase(Locale.ROOT);
+        }
+    }
+
+    @CleanupObligation
+    @ReturnValuesAreNonnullByDefault
+    private static class BaseObligationResource {
+        private final String name;
+        private boolean released;
+
+        @CreatesObligation
+        private BaseObligationResource(String name) {
+            this.name = name;
+        }
+
+        String status() {
+            return name + ":" + (released ? "closed" : "open");
+        }
+
+        @DischargesObligation
+        void release() {
+            released = true;
+        }
+    }
+
+    private static final class ImplicitObligationResource extends BaseObligationResource {
+        private ImplicitObligationResource(String name) {
+            super(name);
+        }
+
+        @Override
+        void release() {
+            super.release();
+        }
+    }
+
+    @CleanupObligation
+    @ReturnValuesAreNonnullByDefault
+    private static final class ExplicitObligationResource extends BaseObligationResource {
+        @CreatesObligation
+        private ExplicitObligationResource(String name) {
+            super(name);
+        }
+
+        @Override
+        @DischargesObligation
+        void release() {
+            super.release();
         }
     }
 
