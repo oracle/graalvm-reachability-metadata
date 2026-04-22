@@ -32,7 +32,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class Jna_platformTest {
+public class Jna_platformTest {
     @Test
     void enumConvertersRoundTripOrdinalsAndFlags() {
         EnumConverter<ServiceState> converter = new EnumConverter<>(ServiceState.class);
