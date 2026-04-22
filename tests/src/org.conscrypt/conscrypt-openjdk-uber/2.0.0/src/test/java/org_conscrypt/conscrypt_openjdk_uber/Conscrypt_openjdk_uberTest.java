@@ -205,6 +205,32 @@ class Conscrypt_openjdk_uberTest {
         serverEngine.closeOutbound();
     }
 
+    @Test
+    void exposesTlsUniqueAfterTls12EngineHandshake() throws Exception {
+        Provider provider = Conscrypt.newProvider();
+        TlsContexts tlsContexts = createTlsContexts(provider);
+
+        SSLEngine clientEngine = tlsContexts.clientContext().createSSLEngine("localhost", 443);
+        SSLEngine serverEngine = tlsContexts.serverContext().createSSLEngine();
+        clientEngine.setUseClientMode(true);
+        serverEngine.setUseClientMode(false);
+        clientEngine.setEnabledProtocols(new String[] {"TLSv1.2"});
+        serverEngine.setEnabledProtocols(new String[] {"TLSv1.2"});
+
+        Conscrypt.setHostname(clientEngine, "localhost");
+
+        completeHandshake(clientEngine, serverEngine);
+
+        byte[] clientTlsUnique = Conscrypt.getTlsUnique(clientEngine);
+        byte[] serverTlsUnique = Conscrypt.getTlsUnique(serverEngine);
+
+        assertThat(clientTlsUnique).isNotNull().isNotEmpty();
+        assertThat(serverTlsUnique).containsExactly(clientTlsUnique);
+
+        clientEngine.closeOutbound();
+        serverEngine.closeOutbound();
+    }
+
     private static TlsContexts createTlsContexts(Provider provider) throws Exception {
         X509Certificate certificate = parseCertificate(CERTIFICATE_PEM);
         PrivateKey privateKey = parsePrivateKey(PRIVATE_KEY_PEM);
