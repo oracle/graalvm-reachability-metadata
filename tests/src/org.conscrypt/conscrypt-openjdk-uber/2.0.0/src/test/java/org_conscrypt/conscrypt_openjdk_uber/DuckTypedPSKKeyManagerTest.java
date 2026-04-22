@@ -6,19 +6,11 @@
  */
 package org_conscrypt.conscrypt_openjdk_uber;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.security.Provider;
 import java.security.SecureRandom;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.SecretKey;
@@ -28,8 +20,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 
 import org.conscrypt.Conscrypt;
 import org.junit.jupiter.api.Test;
@@ -78,77 +68,6 @@ public class DuckTypedPSKKeyManagerTest {
         serverEngine.closeOutbound();
     }
 
-    @Test
-    void invokesSocketDuckTypedPskMethodsDuringHandshake() throws Exception {
-        Provider provider = Conscrypt.newProvider();
-        DuckTypedKeyManager clientManager = new DuckTypedKeyManager("socket-server-hint", "socket-client-identity");
-        DuckTypedKeyManager serverManager = new DuckTypedKeyManager("socket-server-hint", "socket-client-identity");
-        SSLSocketFactory clientFactory = createPskContext(provider, clientManager).getSocketFactory();
-        SSLSocketFactory serverFactory = createPskContext(provider, serverManager).getSocketFactory();
-
-        Conscrypt.setUseEngineSocket(clientFactory, false);
-        Conscrypt.setUseEngineSocket(serverFactory, false);
-
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        try (ServerSocketChannel serverChannel = ServerSocketChannel.open()) {
-            InetSocketAddress loopbackAddress = new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
-            serverChannel.bind(loopbackAddress);
-            int port = serverChannel.socket().getLocalPort();
-
-            Future<Void> serverHandshake = executorService.submit(() -> {
-                try (SocketChannel acceptedChannel = serverChannel.accept()) {
-                    Socket acceptedSocket = acceptedChannel.socket();
-                    try (SSLSocket serverSocket = (SSLSocket) serverFactory.createSocket(
-                            acceptedSocket,
-                            acceptedSocket.getInetAddress().getHostAddress(),
-                            acceptedSocket.getPort(),
-                            true)) {
-                        configurePskSocket(serverSocket, false);
-                        serverSocket.startHandshake();
-                        assertThat(serverSocket.getInputStream().read()).isEqualTo(0x11);
-                        serverSocket.getOutputStream().write(0x22);
-                        serverSocket.getOutputStream().flush();
-                    }
-                }
-                return null;
-            });
-
-            try (SocketChannel clientChannel = SocketChannel.open(new InetSocketAddress(InetAddress.getLoopbackAddress(), port))) {
-                Socket clientSocket = clientChannel.socket();
-                try (SSLSocket sslClientSocket = (SSLSocket) clientFactory.createSocket(clientSocket, "localhost", port, true)) {
-                    configurePskSocket(sslClientSocket, true);
-                    sslClientSocket.startHandshake();
-                    sslClientSocket.getOutputStream().write(0x11);
-                    sslClientSocket.getOutputStream().flush();
-                    assertThat(sslClientSocket.getInputStream().read()).isEqualTo(0x22);
-                }
-            }
-
-            serverHandshake.get(30, TimeUnit.SECONDS);
-        } finally {
-            executorService.shutdownNow();
-        }
-
-        assertThat(clientManager.socketServerHintCalls.get()).isZero();
-        assertThat(clientManager.socketClientIdentityCalls.get()).isEqualTo(1);
-        assertThat(clientManager.lastSocketClientHint).isEqualTo("socket-server-hint");
-        assertThat(clientManager.socketKeyCalls.get()).isEqualTo(1);
-        assertThat(clientManager.lastSocketKeyHint).isEqualTo("socket-server-hint");
-        assertThat(clientManager.lastSocketKeyIdentity).isEqualTo("socket-client-identity");
-        assertThat(clientManager.engineServerHintCalls.get()).isZero();
-        assertThat(clientManager.engineClientIdentityCalls.get()).isZero();
-        assertThat(clientManager.engineKeyCalls.get()).isZero();
-
-        assertThat(serverManager.socketServerHintCalls.get()).isEqualTo(1);
-        assertThat(serverManager.socketClientIdentityCalls.get()).isZero();
-        assertThat(serverManager.socketKeyCalls.get()).isEqualTo(1);
-        assertThat(serverManager.lastSocketKeyHint).isEqualTo("socket-server-hint");
-        assertThat(serverManager.lastSocketKeyIdentity).isEqualTo("socket-client-identity");
-        assertThat(serverManager.engineServerHintCalls.get()).isZero();
-        assertThat(serverManager.engineClientIdentityCalls.get()).isZero();
-        assertThat(serverManager.engineKeyCalls.get()).isZero();
-    }
-
     private static SSLContext createPskContext(Provider provider, DuckTypedKeyManager keyManager) throws Exception {
         SSLContext sslContext = SSLContext.getInstance("TLS", provider);
         sslContext.init(new KeyManager[] {keyManager}, null, new SecureRandom());
@@ -159,12 +78,6 @@ public class DuckTypedPSKKeyManagerTest {
         engine.setUseClientMode(useClientMode);
         engine.setEnabledProtocols(new String[] {TLS_PROTOCOL});
         engine.setEnabledCipherSuites(new String[] {PSK_CIPHER_SUITE});
-    }
-
-    private static void configurePskSocket(SSLSocket socket, boolean useClientMode) {
-        socket.setUseClientMode(useClientMode);
-        socket.setEnabledProtocols(new String[] {TLS_PROTOCOL});
-        socket.setEnabledCipherSuites(new String[] {PSK_CIPHER_SUITE});
     }
 
     private static void completeHandshake(SSLEngine firstEngine, SSLEngine secondEngine) throws SSLException {

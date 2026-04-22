@@ -531,9 +531,64 @@
           ]
         }
       ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.NativeLibraryLoader"
+      },
+      "type": "org.conscrypt.NativeLibraryUtil"
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.NativeLibraryLoader$1"
+      },
+      "type": "org.conscrypt.NativeLibraryUtil",
+      "methods": [
+        {
+          "name": "loadLibrary",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.OpenSSLProvider"
+      },
+      "type": "org.conscrypt.OpenSSLECKeyFactory",
+      "allDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.OpenSSLProvider"
+      },
+      "type": "org.conscrypt.OpenSSLSignature$SHA256ECDSA",
+      "allDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.OpenSSLCipher$EVP_AEAD"
+      },
+      "type": "javax.crypto.AEADBadTagException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     }
   ],
   "resources": [
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.NativeLibraryLoader"
+      },
+      "glob": "META-INF/native/libconscrypt_openjdk_jni.so"
+    },
     {
       "condition": {
         "typeReached": "org.conscrypt.NativeLibraryLoader"
@@ -550,6 +605,18 @@
       "condition": {
         "typeReached": "org.conscrypt.NativeLibraryLoader"
       },
+      "glob": "META-INF/native/libconscrypt_openjdk_jni.jnilib"
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.NativeLibraryLoader"
+      },
+      "glob": "META-INF/native/libconscrypt_openjdk_jni.dynlib"
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.NativeLibraryLoader"
+      },
       "glob": "META-INF/native/conscrypt_openjdk_jni-windows-x86.dll"
     },
     {
@@ -557,6 +624,32 @@
         "typeReached": "org.conscrypt.NativeLibraryLoader"
       },
       "glob": "META-INF/native/conscrypt_openjdk_jni-windows-x86_64.dll"
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.NativeLibraryLoader"
+      },
+      "glob": "org/conscrypt/NativeLibraryLoader.class"
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.NativeLibraryLoader"
+      },
+      "glob": "org/conscrypt/NativeLibraryUtil.class"
+    }
+  ],
+  "serialization": [
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.OpenSSLECPrivateKey"
+      },
+      "type": "org.conscrypt.OpenSSLECPrivateKey"
+    },
+    {
+      "condition": {
+        "typeReached": "org.conscrypt.OpenSSLECPublicKey"
+      },
+      "type": "org.conscrypt.OpenSSLECPublicKey"
     }
   ]
 }
