@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LoggerLogCoverageTest {
     public static class RecordingLogger {
         private final String name;
-        private boolean debugEnabled;
+        private boolean debugEnabled = true;
 
         public RecordingLogger(String name) {
             this.name = name;
@@ -74,6 +74,7 @@ public class LoggerLogCoverageTest {
         logger.debug("unused", "debug {}", new Object[]{"value"});
         logger.debug("debug", new IllegalStateException("debug"));
         logger.debug("debug-long", 7L);
+        logger.debug("debug-long", Long.MAX_VALUE);
 
         Logger child = logger.getLogger("child");
         assertThat(child.getName()).isEqualTo("logger-log-coverage.child");

@@ -27,6 +27,8 @@ public class IntrospectionUtilCoverageTest {
     }
 
     public static class ChildMethods extends ParentMethods {
+        private String directField = "direct";
+
         public void directMethod(String value) {
         }
     }
@@ -47,6 +49,9 @@ public class IntrospectionUtilCoverageTest {
 
         Method inheritedMethod = IntrospectionUtil.findMethod(ChildMethods.class, "inheritedMethod", new Class<?>[]{Number.class}, true, true);
         assertThat(inheritedMethod.getName()).isEqualTo("inheritedMethod");
+
+        Field directField = IntrospectionUtil.findField(ChildMethods.class, "directField", String.class, false, true);
+        assertThat(directField.getName()).isEqualTo("directField");
 
         Field inheritedField = IntrospectionUtil.findField(ChildMethods.class, "inheritedField", String.class, true, true);
         assertThat(inheritedField.getName()).isEqualTo("inheritedField");

@@ -16,12 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LogCoverageTest {
     @Test
     void logInitializesAndCanAttemptParentDelegation() {
+        Log.initialized();
         Logger original = Log.getRootLogger();
         Logger logger = Log.getLogger(LogCoverageTest.class);
+
+        assertThat(original).isInstanceOf(StdErrLog.class);
         assertThat(logger).isNotNull();
 
         try {
-            Log.setLog(new StdErrLog("log-coverage"));
             Log.setLogToParent("log-coverage-parent");
 
             assertThat(Log.getRootLogger()).isNotNull();
