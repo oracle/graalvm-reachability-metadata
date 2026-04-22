@@ -69,6 +69,17 @@ public class LoggerLogCoverageTest {
         }
     }
 
+    public static class StrictLongLoggerLog extends LoggerLog {
+        public StrictLongLoggerLog(Object logger) {
+            super(logger);
+        }
+
+        @Override
+        public void debug(String msg, Object... args) {
+            throw new AssertionError("Expected Logger.debug(String, long) overload");
+        }
+    }
+
     @Test
     void loggerLogDelegatesThroughReflectedMethods() {
         RecordingLogger recordingLogger = new RecordingLogger("logger-log-coverage");
@@ -88,12 +99,6 @@ public class LoggerLogCoverageTest {
         logger.debug("unused", "debug {}", new Object[]{"value"});
         logger.debug("debug", new IllegalStateException("debug"));
 
-        String stderr = captureStandardError(() -> {
-            logger.debug("debug-long", 7L);
-            logger.debug("debug-long", Long.MAX_VALUE);
-        });
-
-        assertThat(stderr).contains("IllegalArgumentException");
         assertThat(recordingLogger.events)
             .contains("warn-varargs:warn {}:1")
             .contains("warn-throwable:warn:warn")
@@ -104,6 +109,17 @@ public class LoggerLogCoverageTest {
 
         Logger child = logger.getLogger("child");
         assertThat(child.getName()).isEqualTo("logger-log-coverage.child");
+    }
+
+    @Test
+    void loggerLogLongDebugOverloadAttemptsReflectiveVarargsInvocation() {
+        RecordingLogger recordingLogger = new RecordingLogger("logger-log-long");
+        Logger logger = new StrictLongLoggerLog(recordingLogger);
+
+        String stderr = captureStandardError(() -> logger.debug("debug-long", 7L));
+
+        assertThat(stderr).contains("IllegalArgumentException");
+        assertThat(recordingLogger.events).isEmpty();
     }
 
     private static String captureStandardError(Runnable action) {
