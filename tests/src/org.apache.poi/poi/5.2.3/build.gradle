@@ -18,6 +18,14 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.addAll([
+                    '--add-opens=java.base/java.nio=ALL-UNNAMED',
+                    '--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED'
+            ])
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
@@ -26,4 +34,9 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs '--add-opens', 'java.base/java.nio=ALL-UNNAMED',
+            '--add-exports', 'java.base/jdk.internal.ref=ALL-UNNAMED'
 }

@@ -10,9 +10,12 @@ import org.apache.poi.poifs.nio.CleanerUtil;
 import org.apache.poi.poifs.nio.FileBackedDataSource;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,6 +41,66 @@ public class CleanerUtilDynamicAccessTest {
             }
         } finally {
             Files.deleteIfExists(file);
+        }
+    }
+
+    @Test
+    void loadsDirectByteBufferCleanerFallbackWhenUnsafeIsUnavailable() throws Exception {
+        ClassLoader loader = new CleanerUtilIsolationClassLoader(CleanerUtilDynamicAccessTest.class.getClassLoader());
+
+        Class<?> isolatedCleanerUtilClass = Class.forName(CleanerUtil.class.getName(), true, loader);
+        boolean unmapSupported = isolatedCleanerUtilClass.getField("UNMAP_SUPPORTED").getBoolean(null);
+        Object cleaner = isolatedCleanerUtilClass.getMethod("getCleaner").invoke(null);
+        Object reason = isolatedCleanerUtilClass.getField("UNMAP_NOT_SUPPORTED_REASON").get(null);
+
+        assertThat(unmapSupported).isTrue();
+        assertThat(cleaner).isNotNull();
+        assertThat(reason).isNull();
+    }
+
+    private static final class CleanerUtilIsolationClassLoader extends ClassLoader {
+
+        private static final Set<String> ISOLATED_CLASSES = Set.of(
+                CleanerUtil.class.getName(),
+                CleanerUtil.class.getName() + "$BufferCleaner"
+        );
+
+        private CleanerUtilIsolationClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass != null) {
+                    return loadedClass;
+                }
+                if ("sun.misc.Unsafe".equals(name)) {
+                    throw new ClassNotFoundException(name);
+                }
+                if (ISOLATED_CLASSES.contains(name)) {
+                    Class<?> definedClass = defineIsolatedClass(name);
+                    if (resolve) {
+                        resolveClass(definedClass);
+                    }
+                    return definedClass;
+                }
+                return super.loadClass(name, resolve);
+            }
+        }
+
+        private Class<?> defineIsolatedClass(String name) throws ClassNotFoundException {
+            String resourceName = name.replace('.', '/') + ".class";
+            try (InputStream inputStream = getParent().getResourceAsStream(resourceName)) {
+                if (inputStream == null) {
+                    throw new ClassNotFoundException(name);
+                }
+                byte[] classBytes = inputStream.readAllBytes();
+                return defineClass(name, classBytes, 0, classBytes.length);
+            } catch (IOException exception) {
+                throw new ClassNotFoundException(name, exception);
+            }
         }
     }
 }
