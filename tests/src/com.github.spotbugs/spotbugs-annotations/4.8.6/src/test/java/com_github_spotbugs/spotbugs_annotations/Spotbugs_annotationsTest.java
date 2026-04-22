@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.meta.TypeQualifierDefault;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import edu.umd.cs.findbugs.annotations.CleanupObligation;
 import edu.umd.cs.findbugs.annotations.Confidence;
 import edu.umd.cs.findbugs.annotations.CreatesObligation;
@@ -259,6 +260,42 @@ class Spotbugs_annotationsTest {
                 .isEqualTo(RetentionPolicy.RUNTIME);
     }
 
+    @Test
+    void checkReturnValueAnnotationsExposeDefaultsAndAnnotatedResultsCanBeComposed()
+            throws NoSuchMethodException {
+        CoordinateSummary summary = new CoordinateSummary(" com.github.spotbugs ", " spotbugs-annotations ");
+        CoordinateSummary documentedSummary = summary.withCapability(" Nullness ");
+        CoordinateSummary nativeSummary = documentedSummary.withCapability(" Native Image ");
+
+        assertThat(summary.coordinate()).isEqualTo("com.github.spotbugs:spotbugs-annotations");
+        assertThat(documentedSummary.coordinate()).isEqualTo("com.github.spotbugs:spotbugs-annotations#nullness");
+        assertThat(nativeSummary.coordinate()).isEqualTo("com.github.spotbugs:spotbugs-annotations#nullness,native image");
+        assertThat(summary.hasCapability("nullness")).isFalse();
+        assertThat(nativeSummary.hasCapability(" NULLNESS ")).isTrue();
+        assertThat(nativeSummary.hasCapability("native-image")).isTrue();
+        assertThat(nativeSummary.capabilityCount()).isEqualTo(2);
+
+        Constructor<CoordinateSummary> constructor = CoordinateSummary.class.getDeclaredConstructor(String.class, String.class);
+        Method withCapability = CoordinateSummary.class.getDeclaredMethod("withCapability", String.class);
+        Method coordinate = CoordinateSummary.class.getDeclaredMethod("coordinate");
+        Method hasCapability = CoordinateSummary.class.getDeclaredMethod("hasCapability", String.class);
+
+        assertThat(constructor.getDeclaredAnnotationsByType(CheckReturnValue.class)).isEmpty();
+        assertThat(withCapability.getDeclaredAnnotationsByType(CheckReturnValue.class)).isEmpty();
+        assertThat(coordinate.getDeclaredAnnotationsByType(CheckReturnValue.class)).isEmpty();
+        assertThat(hasCapability.getDeclaredAnnotationsByType(CheckReturnValue.class)).isEmpty();
+
+        assertThat(CheckReturnValue.class.getAnnotationsByType(Documented.class)).hasSize(1);
+        assertThat(CheckReturnValue.class.getAnnotationsByType(Target.class)[0].value())
+                .containsExactly(ElementType.METHOD, ElementType.CONSTRUCTOR);
+        assertThat(CheckReturnValue.class.getAnnotationsByType(Retention.class)[0].value())
+                .isEqualTo(RetentionPolicy.CLASS);
+        assertThat(CheckReturnValue.class.getDeclaredMethod("confidence").getReturnType()).isSameAs(Confidence.class);
+        assertThat(CheckReturnValue.class.getDeclaredMethod("confidence").getDefaultValue())
+                .isSameAs(Confidence.MEDIUM);
+        assertThat(CheckReturnValue.class.getDeclaredMethod("explanation").getDefaultValue()).isEqualTo("");
+    }
+
     @ReturnValuesAreNonnullByDefault
     private static final class NullnessFixture {
         @NonNull
@@ -315,6 +352,63 @@ class Spotbugs_annotationsTest {
             }
             String normalized = value.trim().toLowerCase(Locale.ROOT);
             return normalized.isEmpty() ? null : normalized;
+        }
+    }
+
+    private static final class CoordinateSummary {
+        private final String groupId;
+        private final String artifactId;
+        private final String capabilities;
+
+        @CheckReturnValue(explanation = "Use the constructed summary to inspect the normalized coordinate")
+        private CoordinateSummary(String groupId, String artifactId) {
+            this(normalizeSegment(groupId), normalizeSegment(artifactId), "");
+        }
+
+        private CoordinateSummary(String groupId, String artifactId, String capabilities) {
+            this.groupId = groupId;
+            this.artifactId = artifactId;
+            this.capabilities = capabilities;
+        }
+
+        @CheckReturnValue(confidence = Confidence.HIGH,
+                explanation = "Use the returned summary to retain the appended capability")
+        private CoordinateSummary withCapability(String capability) {
+            String normalizedCapability = normalizeSegment(capability).replace('-', ' ');
+            String updatedCapabilities = capabilities.isEmpty()
+                    ? normalizedCapability
+                    : capabilities + "," + normalizedCapability;
+            return new CoordinateSummary(groupId, artifactId, updatedCapabilities);
+        }
+
+        @CheckReturnValue(confidence = Confidence.HIGH, explanation = "Use the rendered coordinate string")
+        private String coordinate() {
+            if (capabilities.isEmpty()) {
+                return groupId + ":" + artifactId;
+            }
+            return groupId + ":" + artifactId + "#" + capabilities;
+        }
+
+        @CheckReturnValue(explanation = "Use the membership result")
+        private boolean hasCapability(String capability) {
+            if (capabilities.isEmpty()) {
+                return false;
+            }
+            String normalizedCapability = normalizeSegment(capability).replace('-', ' ');
+            for (String existingCapability : capabilities.split(",")) {
+                if (existingCapability.equals(normalizedCapability)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private int capabilityCount() {
+            return capabilities.isEmpty() ? 0 : capabilities.split(",").length;
+        }
+
+        private static String normalizeSegment(String value) {
+            return value.trim().toLowerCase(Locale.ROOT);
         }
     }
 
