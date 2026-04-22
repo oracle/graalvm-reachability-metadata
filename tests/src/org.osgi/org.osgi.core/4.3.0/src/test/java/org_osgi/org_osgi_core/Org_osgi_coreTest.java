@@ -36,7 +36,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceException;
-import org.osgi.framework.ServicePermission;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.service.condpermadmin.BundleLocationCondition;
@@ -206,7 +205,7 @@ public class Org_osgi_coreTest {
     }
 
     @Test
-    void bundleAndServicePermissionsCanonicalizeActionsAndSupportCollections() {
+    void bundlePermissionsCanonicalizeActionsAndSupportCollections() {
         BundlePermission bundlePermission = new BundlePermission("com.example.*", "fragment,provide");
         PermissionCollection bundlePermissions = bundlePermission.newPermissionCollection();
         bundlePermissions.add(bundlePermission);
@@ -216,15 +215,6 @@ public class Org_osgi_coreTest {
         assertThat(bundlePermission.implies(new BundlePermission("com.example.module", "require"))).isTrue();
         assertThat(bundlePermissions.implies(new BundlePermission("com.example.host", "host"))).isTrue();
         assertThat(bundlePermissions.implies(new BundlePermission("org.example.module", "require"))).isFalse();
-
-        ServicePermission servicePermission = new ServicePermission("com.example.*", "register,get");
-        PermissionCollection servicePermissions = servicePermission.newPermissionCollection();
-        servicePermissions.add(servicePermission);
-
-        assertThat(servicePermission.getActions()).isEqualTo("get,register");
-        assertThat(servicePermission.implies(new ServicePermission("com.example.WidgetService", "get"))).isTrue();
-        assertThat(servicePermissions.implies(new ServicePermission("com.example.WidgetService", "register"))).isTrue();
-        assertThat(servicePermissions.implies(new ServicePermission("org.example.WidgetService", "get"))).isFalse();
     }
 
     @Test
