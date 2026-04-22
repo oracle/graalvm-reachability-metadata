@@ -32,6 +32,17 @@ public class ContextFinderTest {
     }
 
     @Test
+    public void loadsContextPathFactoryFromJaxbPropertiesWithNullClassLoader() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(
+                "javax_xml_bind.jaxb_api.objectfactorypath",
+                null,
+                Collections.singletonMap("path", "objectfactory"));
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("three-argument-context-factory");
+    }
+
+    @Test
     public void loadsDeprecatedServiceFactoryWithExplicitClassLoader() throws Exception {
         JAXBContext context = JAXBContext.newInstance(
                 "javax_xml_bind.jaxb_api.noprovider",
