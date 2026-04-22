@@ -19,7 +19,6 @@ import com.zaxxer.hikari.util.DriverDataSource;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class DriverDataSourceTest {
     @Test
@@ -36,27 +35,32 @@ public class DriverDataSourceTest {
     }
 
     @Test
-    public void constructorFallsBackToThreadContextClassLoaderAfterPrimaryMiss() {
-        TrackingClassLoader contextClassLoader = new TrackingClassLoader(DriverDataSourceTest.class.getClassLoader());
+    public void constructorLoadsDriverFromThreadContextClassLoaderAfterPrimaryMiss() throws SQLException {
+        String contextOnlyDriverClassName = "com.example.ContextOnlyDriver";
+        TrackingClassLoader contextClassLoader = new TrackingClassLoader(
+                DriverDataSourceTest.class.getClassLoader(),
+                contextOnlyDriverClassName,
+                TestDriver.class
+        );
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        String missingDriverClassName = "com.example.MissingDriver";
 
         try {
             Thread.currentThread().setContextClassLoader(contextClassLoader);
 
-            assertThatThrownBy(() -> new DriverDataSource(
-                    "jdbc:test-driver-data-source:missing",
-                    missingDriverClassName,
+            DriverDataSource dataSource = new DriverDataSource(
+                    "jdbc:test-driver-data-source:context",
+                    contextOnlyDriverClassName,
                     new Properties(),
                     "duke",
                     "secret"
-            )).isInstanceOf(RuntimeException.class)
-                    .hasMessageContaining("Failed to get driver instance");
+            );
+
+            assertThat(dataSource.getConnection()).isNull();
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
 
-        assertThat(contextClassLoader.getAttemptedLoads()).contains(missingDriverClassName);
+        assertThat(contextClassLoader.getAttemptedLoads()).contains(contextOnlyDriverClassName);
     }
 
     public static final class TestDriver implements Driver {
@@ -101,15 +105,22 @@ public class DriverDataSourceTest {
 
     private static final class TrackingClassLoader extends ClassLoader {
         private final List<String> attemptedLoads;
+        private final String remappedClassName;
+        private final Class<?> remappedClass;
 
-        private TrackingClassLoader(ClassLoader parent) {
+        private TrackingClassLoader(ClassLoader parent, String remappedClassName, Class<?> remappedClass) {
             super(parent);
             this.attemptedLoads = new ArrayList<>();
+            this.remappedClassName = remappedClassName;
+            this.remappedClass = remappedClass;
         }
 
         @Override
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             attemptedLoads.add(name);
+            if (remappedClassName.equals(name)) {
+                return remappedClass;
+            }
             return super.loadClass(name);
         }
 
