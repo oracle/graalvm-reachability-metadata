@@ -7,15 +7,14 @@
 package org.eclipse.fake;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.immutables.processor.ProxyProcessor;
 
-public final class ProxyProcessorCaller {
+public final class ProxyProcessorCaller implements Supplier<Set<String>> {
 
-    private ProxyProcessorCaller() {
-    }
-
-    public static Set<String> loadSupportedAnnotationTypes() {
+    @Override
+    public Set<String> get() {
         return new ProxyProcessor().getSupportedAnnotationTypes();
     }
 }
