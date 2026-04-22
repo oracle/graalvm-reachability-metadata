@@ -8,6 +8,7 @@ package net_java_dev_jna.jna_platform;
 
 import com.sun.jna.platform.EnumConverter;
 import com.sun.jna.platform.EnumUtils;
+import com.sun.jna.platform.FileMonitor;
 import com.sun.jna.platform.FileUtils;
 import com.sun.jna.platform.RasterRangesUtils;
 import com.sun.jna.platform.win32.FlagEnum;
@@ -16,12 +17,15 @@ import com.sun.jna.platform.win32.WinNT;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -164,8 +168,52 @@ class Jna_platformTest {
         assertThat(Files.readString(trashedFile)).isEqualTo("jna-platform");
     }
 
+    @Test
+    void fileMonitorInfersDefaultRecursionFromWatchedPathType(@TempDir Path tempDir) throws IOException {
+        RecordingFileMonitor monitor = new RecordingFileMonitor();
+        File watchedFile = Files.writeString(tempDir.resolve("payload.txt"), "jna-platform").toFile();
+        File watchedDirectory = Files.createDirectory(tempDir.resolve("watched-dir")).toFile();
+
+        monitor.addWatch(watchedFile);
+        monitor.addWatch(watchedDirectory, FileMonitor.FILE_CREATED);
+
+        assertThat(monitor.watchRequests())
+                .containsEntry(watchedFile, new WatchRequest(FileMonitor.FILE_ANY, false))
+                .containsEntry(watchedDirectory, new WatchRequest(FileMonitor.FILE_CREATED, true));
+    }
+
+    @Test
+    void fileMonitorDispatchesEventsToRegisteredListenersOnly(@TempDir Path tempDir) throws IOException {
+        RecordingFileMonitor monitor = new RecordingFileMonitor();
+        File watchedDirectory = Files.createDirectory(tempDir.resolve("watched-dir")).toFile();
+        File changedFile = Files.writeString(tempDir.resolve("changed.txt"), "jna-platform").toFile();
+        File unwatchedFile = tempDir.resolve("unwatched.txt").toFile();
+        List<String> observedEvents = new ArrayList<>();
+        FileMonitor.FileListener listener = event -> observedEvents.add(eventKey(event.getFile(), event.getType()));
+
+        monitor.addFileListener(listener);
+        monitor.addWatch(watchedDirectory, FileMonitor.FILE_MODIFIED, false);
+        monitor.emit(changedFile, FileMonitor.FILE_MODIFIED);
+        monitor.removeFileListener(listener);
+        monitor.emit(changedFile, FileMonitor.FILE_DELETED);
+        monitor.removeWatch(unwatchedFile);
+        monitor.removeWatch(watchedDirectory);
+        monitor.removeWatch(watchedDirectory);
+        monitor.dispose();
+
+        assertThat(monitor.watchRequests())
+                .containsEntry(watchedDirectory, new WatchRequest(FileMonitor.FILE_MODIFIED, false));
+        assertThat(observedEvents).containsExactly(eventKey(changedFile, FileMonitor.FILE_MODIFIED));
+        assertThat(monitor.unwatchedFiles()).containsExactly(watchedDirectory);
+        assertThat(monitor.isDisposed()).isTrue();
+    }
+
     private static String rangeKey(int x, int y, int width, int height) {
         return x + ":" + y + ":" + width + ":" + height;
+    }
+
+    private static String eventKey(File file, int type) {
+        return file.getName() + ":" + type;
     }
 
     private static boolean isMac() {
@@ -182,6 +230,46 @@ class Jna_platformTest {
         } else {
             System.setProperty(key, previousValue);
         }
+    }
+
+    private static final class RecordingFileMonitor extends FileMonitor {
+        private final Map<File, WatchRequest> watchRequests = new LinkedHashMap<>();
+        private final List<File> unwatchedFiles = new ArrayList<>();
+        private boolean disposed;
+
+        @Override
+        protected void watch(File file, int eventMask, boolean recursive) {
+            watchRequests.put(file, new WatchRequest(eventMask, recursive));
+        }
+
+        @Override
+        protected void unwatch(File file) {
+            unwatchedFiles.add(file);
+        }
+
+        @Override
+        public void dispose() {
+            disposed = true;
+        }
+
+        private void emit(File file, int type) {
+            notify(new FileEvent(file, type));
+        }
+
+        private Map<File, WatchRequest> watchRequests() {
+            return watchRequests;
+        }
+
+        private List<File> unwatchedFiles() {
+            return unwatchedFiles;
+        }
+
+        private boolean isDisposed() {
+            return disposed;
+        }
+    }
+
+    private record WatchRequest(int eventMask, boolean recursive) {
     }
 
     private enum ServiceState {
