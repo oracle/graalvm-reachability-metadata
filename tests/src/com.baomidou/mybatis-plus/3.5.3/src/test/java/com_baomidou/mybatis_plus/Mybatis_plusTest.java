@@ -6,12 +6,16 @@
  */
 package com_baomidou.mybatis_plus;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.TableNameParser;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.DialectFactory;
+import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.toolkit.SqlParserUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -129,6 +133,18 @@ class Mybatis_plusTest {
                 .containsValue("ACTIVE")
                 .containsValue("PLATFORM")
                 .containsValue(7);
+    }
+
+    @Test
+    void mysqlPaginationDialectBuildsPaginationAndCountSql() {
+        String originalSql = "SELECT user_id, display_name FROM sample_users WHERE status = ? ORDER BY created_at DESC";
+        DialectModel dialectModel = DialectFactory.getDialect(DbType.MYSQL)
+                .buildPaginationSql(originalSql, 3, 5);
+
+        assertThat(dialectModel.getDialectSql())
+                .isEqualTo("SELECT user_id, display_name FROM sample_users WHERE status = ? ORDER BY created_at DESC LIMIT ?,?");
+        assertThat(SqlParserUtils.getOriginalCountSql(originalSql))
+                .isEqualTo("SELECT COUNT(*) FROM (SELECT user_id, display_name FROM sample_users WHERE status = ? ORDER BY created_at DESC) TOTAL");
     }
 
     @Test
