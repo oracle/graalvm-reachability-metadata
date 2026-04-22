@@ -25,7 +25,8 @@ public class DelegatorGeneratorTest {
         String generatedSource = writer.toString();
 
         assertThat(generatedSource).contains("package com_mchange.mchange_commons_java;");
-        assertThat(generatedSource).contains("class GeneratedDelegator implements ChildContract");
+        assertThat(generatedSource)
+                .contains("abstract class GeneratedDelegator implements DelegatorGeneratorTest.ChildContract");
         assertThat(generatedSource).contains("parentMessage()");
         assertThat(generatedSource).contains("return inner.parentMessage();");
         assertThat(generatedSource).contains("childValue()");
