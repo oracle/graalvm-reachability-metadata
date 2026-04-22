@@ -111,14 +111,14 @@ public class Jboss_classfilewriterTest {
                 StringBuilder.class.getName(),
                 "append",
                 "Ljava/lang/StringBuilder;",
-                new String[] { "Ljava/lang/String;" }
+                new String[] {"Ljava/lang/String;"}
         );
         describeCode.iload(1);
         describeCode.invokevirtual(
                 StringBuilder.class.getName(),
                 "append",
                 "Ljava/lang/StringBuilder;",
-                new String[] { "I" }
+                new String[] {"I"}
         );
         describeCode.invokevirtual(StringBuilder.class.getName(), "toString", "Ljava/lang/String;", new String[0]);
         describeCode.returnInstruction();
@@ -419,7 +419,7 @@ public class Jboss_classfilewriterTest {
             int[] classNameIndexes = new int[constantPoolCount];
             int[] integerEntries = new int[constantPoolCount];
             boolean[] hasIntegerEntries = new boolean[constantPoolCount];
-            for (int index = 1; index < constantPoolCount; index++) {
+            for (int index = 1; index < constantPoolCount;) {
                 int tag = input.readUnsignedByte();
                 switch (tag) {
                     case 1 -> utf8Entries[index] = input.readUTF();
@@ -428,16 +428,14 @@ public class Jboss_classfilewriterTest {
                         hasIntegerEntries[index] = true;
                     }
                     case 4 -> input.skipBytes(4);
-                    case 5, 6 -> {
-                        input.skipBytes(8);
-                        index++;
-                    }
+                    case 5, 6 -> input.skipBytes(8);
                     case 7, 16, 19, 20 -> classNameIndexes[index] = input.readUnsignedShort();
                     case 8 -> input.readUnsignedShort();
                     case 9, 10, 11, 12, 17, 18 -> input.skipBytes(4);
                     case 15 -> input.skipBytes(3);
                     default -> throw new IllegalArgumentException("Unsupported constant-pool tag: " + tag);
                 }
+                index += tag == 5 || tag == 6 ? 2 : 1;
             }
 
             input.readUnsignedShort();
