@@ -248,25 +248,39 @@ class Undertow_parser_generatorTest {
 
                 Object[] constantPool = new Object[input.readUnsignedShort()];
                 Set<String> utf8Constants = new LinkedHashSet<>();
-                for (int index = 1; index < constantPool.length; index++) {
+                int index = 1;
+                while (index < constantPool.length) {
                     int tag = input.readUnsignedByte();
                     switch (tag) {
                         case CONSTANT_UTF8 -> {
                             String value = input.readUTF();
                             constantPool[index] = value;
                             utf8Constants.add(value);
-                        }
-                        case CONSTANT_INTEGER, CONSTANT_FLOAT -> input.skipNBytes(Integer.BYTES);
-                        case CONSTANT_LONG, CONSTANT_DOUBLE -> {
-                            input.skipNBytes(Long.BYTES);
                             index++;
                         }
+                        case CONSTANT_INTEGER, CONSTANT_FLOAT -> {
+                            input.skipNBytes(Integer.BYTES);
+                            index++;
+                        }
+                        case CONSTANT_LONG, CONSTANT_DOUBLE -> {
+                            input.skipNBytes(Long.BYTES);
+                            index += 2;
+                        }
                         case CONSTANT_CLASS, CONSTANT_STRING, CONSTANT_METHOD_TYPE,
-                             CONSTANT_MODULE, CONSTANT_PACKAGE -> constantPool[index] = input.readUnsignedShort();
+                             CONSTANT_MODULE, CONSTANT_PACKAGE -> {
+                            constantPool[index] = input.readUnsignedShort();
+                            index++;
+                        }
                         case CONSTANT_FIELD_REF, CONSTANT_METHOD_REF,
                              CONSTANT_INTERFACE_METHOD_REF, CONSTANT_NAME_AND_TYPE,
-                             CONSTANT_DYNAMIC, CONSTANT_INVOKE_DYNAMIC -> input.skipNBytes(2L * Short.BYTES);
-                        case CONSTANT_METHOD_HANDLE -> input.skipNBytes(1L + Short.BYTES);
+                             CONSTANT_DYNAMIC, CONSTANT_INVOKE_DYNAMIC -> {
+                            input.skipNBytes(2L * Short.BYTES);
+                            index++;
+                        }
+                        case CONSTANT_METHOD_HANDLE -> {
+                            input.skipNBytes(1L + Short.BYTES);
+                            index++;
+                        }
                         default -> throw new IOException("Unsupported constant pool tag: " + tag);
                     }
                 }
