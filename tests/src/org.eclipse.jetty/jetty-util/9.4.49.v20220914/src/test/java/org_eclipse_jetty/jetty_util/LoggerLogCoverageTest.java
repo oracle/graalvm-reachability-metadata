@@ -8,15 +8,57 @@ package org_eclipse_jetty.jetty_util;
 
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.log.LoggerLog;
-import org.eclipse.jetty.util.log.Slf4jLog;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoggerLogCoverageTest {
+    public static class RecordingLogger {
+        private final String name;
+        private boolean debugEnabled;
+
+        public RecordingLogger(String name) {
+            this.name = name;
+        }
+
+        public void debug(String message, Throwable thrown) {
+        }
+
+        public void debug(String message, Object... arguments) {
+        }
+
+        public void info(String message, Throwable thrown) {
+        }
+
+        public void info(String message, Object... arguments) {
+        }
+
+        public void warn(String message, Throwable thrown) {
+        }
+
+        public void warn(String message, Object... arguments) {
+        }
+
+        public boolean isDebugEnabled() {
+            return debugEnabled;
+        }
+
+        public void setDebugEnabled(boolean debugEnabled) {
+            this.debugEnabled = debugEnabled;
+        }
+
+        public RecordingLogger getLogger(String loggerName) {
+            return new RecordingLogger(name + "." + loggerName);
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
     @Test
     void loggerLogDelegatesThroughReflectedMethods() {
-        LoggerLog logger = new LoggerLog(new Slf4jLog("logger-log-coverage"));
+        LoggerLog logger = new LoggerLog(new RecordingLogger("logger-log-coverage"));
 
         assertThat(logger.getName()).isEqualTo("logger-log-coverage");
 
@@ -34,6 +76,6 @@ public class LoggerLogCoverageTest {
         logger.debug("debug-long", 7L);
 
         Logger child = logger.getLogger("child");
-        assertThat(child.getName()).contains("child");
+        assertThat(child.getName()).isEqualTo("logger-log-coverage.child");
     }
 }
