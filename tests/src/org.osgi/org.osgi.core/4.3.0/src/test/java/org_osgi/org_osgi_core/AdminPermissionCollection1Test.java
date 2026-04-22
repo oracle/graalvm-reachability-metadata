@@ -30,17 +30,22 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
 public class AdminPermissionCollection1Test {
+    private static final TestBundle PREINITIALIZED_BUNDLE =
+            new TestBundle(7L, "com.example.bundle", "file:/bundle");
+    private static final AdminPermission PREINITIALIZED_GRANTED_PERMISSION = new AdminPermission(
+            "(&(id=7)(name=com.example.bundle)(location=file:/bundle))",
+            "class,lifecycle");
+    private static final PermissionCollection PREINITIALIZED_PERMISSION_COLLECTION =
+            createPermissionCollection(PREINITIALIZED_GRANTED_PERMISSION);
+
     @Test
     void permissionCollectionMatchesBundleBackedAdminRequests() {
-        TestBundle bundle = new TestBundle(7L, "com.example.bundle", "file:/bundle");
+        TestBundle bundle = PREINITIALIZED_BUNDLE;
         TestBundle otherBundle = new TestBundle(8L, "com.example.other", "file:/other-bundle");
-        AdminPermission grantedPermission = new AdminPermission(
-                "(&(id=7)(name=com.example.bundle)(location=file:/bundle))",
-                "class,lifecycle");
+        AdminPermission grantedPermission = PREINITIALIZED_GRANTED_PERMISSION;
         AdminPermission requestedPermission = new AdminPermission(bundle, "class");
         AdminPermission resolvePermission = new AdminPermission(bundle, "resolve");
-        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
-        permissionCollection.add(grantedPermission);
+        PermissionCollection permissionCollection = PREINITIALIZED_PERMISSION_COLLECTION;
 
         assertThat(grantedPermission.getActions()).isEqualTo("class,lifecycle,resolve");
         assertThat(grantedPermission.implies(requestedPermission)).isTrue();
@@ -52,6 +57,12 @@ public class AdminPermissionCollection1Test {
         assertThatThrownBy(() -> permissionCollection.add(new AdminPermission(bundle, "class")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("cannot add to collection");
+    }
+
+    private static PermissionCollection createPermissionCollection(AdminPermission grantedPermission) {
+        PermissionCollection permissionCollection = grantedPermission.newPermissionCollection();
+        permissionCollection.add(grantedPermission);
+        return permissionCollection;
     }
 
     private static <K, V> Dictionary<K, V> dictionaryOf(Map<K, V> values) {
