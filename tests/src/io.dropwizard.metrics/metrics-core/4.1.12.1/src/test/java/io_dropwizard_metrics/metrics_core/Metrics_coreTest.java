@@ -9,6 +9,8 @@ package io_dropwizard_metrics.metrics_core;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -24,11 +26,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.Clock;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.Counter;
+import com.codahale.metrics.CsvReporter;
 import com.codahale.metrics.DerivativeGauge;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
@@ -282,6 +286,56 @@ class Metrics_coreTest {
         assertThat(report).contains("reporting.meter", "mean rate =");
         assertThat(report).contains("reporting.timer", "min = 5.00 milliseconds", "max = 5.00 milliseconds");
         assertThat(report).doesNotContain("1-minute rate", "5-minute rate", "15-minute rate");
+    }
+
+    @Test
+    void csvReporterWritesFilteredMetricsAndAppendsSamplesAcrossReports() throws Exception {
+        MetricRegistry registry = new MetricRegistry();
+        Counter counter = registry.counter("csv.counter");
+        counter.inc(5);
+
+        Timer timer = registry.timer("csv.timer");
+        timer.update(Duration.ofMillis(8));
+        registry.register("skip.gauge", (Gauge<Integer>) () -> 99);
+
+        StepClock clock = new StepClock();
+        clock.addNanos(TimeUnit.SECONDS.toNanos(123));
+        Path reportDirectory = Files.createTempDirectory("metrics-core-csv-");
+
+        CsvReporter reporter = CsvReporter.forRegistry(registry)
+                .withClock(clock)
+                .filter((name, metric) -> name.startsWith("csv."))
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build(reportDirectory.toFile());
+        reporter.report();
+
+        counter.inc(2);
+        timer.update(Duration.ofMillis(10));
+        clock.addNanos(TimeUnit.SECONDS.toNanos(1));
+        reporter.report();
+
+        List<String> reportFiles;
+        try (Stream<Path> paths = Files.list(reportDirectory)) {
+            reportFiles = paths.map(path -> path.getFileName().toString()).sorted().toList();
+        }
+
+        Path counterReport = reportDirectory.resolve("csv.counter.csv");
+        Path timerReport = reportDirectory.resolve("csv.timer.csv");
+        List<String> counterLines = Files.readAllLines(counterReport, StandardCharsets.UTF_8);
+        List<String> timerLines = Files.readAllLines(timerReport, StandardCharsets.UTF_8);
+
+        assertThat(reportFiles).containsExactly("csv.counter.csv", "csv.timer.csv");
+        assertThat(counterLines).containsExactly("t,count", "123,5", "124,7");
+        assertThat(timerLines)
+                .hasSize(3)
+                .first().isEqualTo("t,count,max,mean,min,stddev,p50,p75,p95,p98,p99,p999,mean_rate,m1_rate,m5_rate,m15_rate,rate_unit,duration_unit");
+        assertThat(timerLines.get(1)).startsWith("123,1,8.000000,8.000000,8.000000,0.000000,8.000000,8.000000")
+                .endsWith(",calls/second,milliseconds");
+        assertThat(timerLines.get(2)).startsWith("124,2,10.000000,9.000000,8.000000,1.000000,10.000000,10.000000")
+                .endsWith(",calls/second,milliseconds");
+        assertThat(Files.exists(reportDirectory.resolve("skip.gauge.csv"))).isFalse();
+        reporter.stop();
     }
 
     @Test
