@@ -46,10 +46,10 @@ public class ContextFinderTest {
     }
 
     @Test
-    public void loadsContextPathFactoryFromJaxbPropertiesWithSystemClassLoaderLookup() throws Exception {
+    public void loadsContextPathFactoryFromJaxbPropertiesWithSystemClassLoader() throws Exception {
         JAXBContext context = JAXBContext.newInstance(
                 "javax_xml_bind.jaxb_api.objectfactorypath",
-                null,
+                ClassLoader.getSystemClassLoader(),
                 Collections.singletonMap("path", "objectfactory"));
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
