@@ -142,6 +142,24 @@ class Undertow_parser_generatorTest {
         assertThat(snapshot.fieldNames()).anyMatch(name -> name.startsWith("STATE_BYTES_"));
     }
 
+    @Test
+    void responseParserGeneratorIgnoresConfiguredRequestMethods() throws IOException {
+        ResponseParserGenerator generator = new ResponseParserGenerator("com.example.ResponseParserIgnoredMethods");
+        String[] protocols = {"HTTP/1.0", "HTTP/1.1"};
+        String[] headers = {"Server", "X-Env-Id", "X-Env-Name"};
+
+        ClassFileSnapshot withoutRequestMethods = ClassFileSnapshot.parse(
+            generator.createTokenizer(new String[0], protocols, headers)
+        );
+        ClassFileSnapshot withRequestMethods = ClassFileSnapshot.parse(
+            generator.createTokenizer(new String[]{"GET", "PATCH"}, protocols, headers)
+        );
+
+        assertThat(withRequestMethods).isEqualTo(withoutRequestMethods);
+        assertThat(withRequestMethods.methodNames()).doesNotContain("handleHttpVerb");
+        assertThat(withRequestMethods.utf8Constants()).doesNotContain("GET", "PATCH", "P");
+    }
+
     private record Member(String name, String descriptor) {
     }
 
