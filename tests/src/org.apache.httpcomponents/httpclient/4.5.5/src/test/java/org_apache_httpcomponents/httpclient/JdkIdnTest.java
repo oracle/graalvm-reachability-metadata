@@ -17,6 +17,6 @@ public class JdkIdnTest {
     void convertsPunycodeLabelsToUnicode() throws Exception {
         JdkIdn jdkIdn = new JdkIdn();
 
-        assertThat(jdkIdn.toUnicode("xn--bcher-kva")).isEqualTo("bücher");
+        assertThat(jdkIdn.toUnicode("xn--bcher-kva")).isEqualTo("b\u00FCcher");
     }
 }
