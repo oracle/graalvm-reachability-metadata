@@ -2,8 +2,9 @@ name: "Create scheduled release"
 
 on:
   schedule:
-    - cron: "0 0 1 * *"
-    - cron: "0 0 15 * *"
+    # Avoid top-of-hour scheduling because GitHub may delay or drop cron jobs there.
+    - cron: "17 2 1 * *"
+    - cron: "23 2 15 * *"
   workflow_dispatch:
 
 permissions:
