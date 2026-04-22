@@ -34,6 +34,9 @@ import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -46,6 +49,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.PaneInformation;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
 import org.apache.logging.log4j.message.FlowMessageFactory;
@@ -185,6 +189,44 @@ class PoiTest {
         }
     }
 
+    @Test
+    void workbookRoundTripsSheetDataValidations() throws Exception {
+        byte[] workbookBytes = createWorkbookWithDataValidationsBytes();
+
+        try (Workbook workbook = WorkbookFactory.create(new ByteArrayInputStream(workbookBytes))) {
+            Sheet sheet = workbook.getSheet("Validation");
+            assertThat(sheet).isNotNull();
+            assertThat(sheet.getDataValidations()).hasSize(2);
+
+            DataValidation listValidation = findValidationByRegion(sheet, "A2:A4");
+            DataValidationConstraint listConstraint = listValidation.getValidationConstraint();
+            assertThat(listConstraint.getValidationType()).isEqualTo(DataValidationConstraint.ValidationType.LIST);
+            assertThat(listConstraint.getExplicitListValues()).containsExactly("North", "South", "West");
+            assertThat(listValidation.getEmptyCellAllowed()).isFalse();
+            assertThat(listValidation.getShowPromptBox()).isTrue();
+            assertThat(listValidation.getPromptBoxTitle()).isEqualTo("Region");
+            assertThat(listValidation.getPromptBoxText()).isEqualTo("Choose a supported region");
+            assertThat(listValidation.getShowErrorBox()).isTrue();
+            assertThat(listValidation.getErrorBoxTitle()).isEqualTo("Invalid region");
+            assertThat(listValidation.getErrorBoxText()).isEqualTo("Use one of the supported regions");
+            assertThat(listValidation.getRegions().countRanges()).isEqualTo(1);
+            assertThat(listValidation.getRegions().getCellRangeAddress(0).formatAsString()).isEqualTo("A2:A4");
+
+            DataValidation quantityValidation = findValidationByRegion(sheet, "B2:B4");
+            DataValidationConstraint quantityConstraint = quantityValidation.getValidationConstraint();
+            assertThat(quantityConstraint.getValidationType()).isEqualTo(DataValidationConstraint.ValidationType.FORMULA);
+            assertThat(quantityConstraint.getFormula1()).isEqualTo("AND(B2>=1,B2<=100)");
+            assertThat(quantityValidation.getShowPromptBox()).isTrue();
+            assertThat(quantityValidation.getPromptBoxTitle()).isEqualTo("Quantity");
+            assertThat(quantityValidation.getPromptBoxText()).isEqualTo("Enter a value between 1 and 100");
+            assertThat(quantityValidation.getShowErrorBox()).isTrue();
+            assertThat(quantityValidation.getErrorBoxTitle()).isEqualTo("Invalid quantity");
+            assertThat(quantityValidation.getErrorBoxText()).isEqualTo("Quantity must stay between 1 and 100");
+            assertThat(quantityValidation.getRegions().countRanges()).isEqualTo(1);
+            assertThat(quantityValidation.getRegions().getCellRangeAddress(0).formatAsString()).isEqualTo("B2:B4");
+        }
+    }
+
     private static byte[] createWorkbookBytes() throws Exception {
         try (HSSFWorkbook workbook = new HSSFWorkbook()) {
             workbook.createInformationProperties();
@@ -265,6 +307,55 @@ class PoiTest {
 
             return writeDocument(workbook);
         }
+    }
+
+    private static byte[] createWorkbookWithDataValidationsBytes() throws Exception {
+        try (HSSFWorkbook workbook = new HSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Validation");
+
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Region");
+            headerRow.createCell(1).setCellValue("Quantity");
+
+            DataValidationHelper validationHelper = sheet.getDataValidationHelper();
+
+            DataValidationConstraint listConstraint = validationHelper.createExplicitListConstraint(
+                    new String[] {"North", "South", "West"});
+            DataValidation listValidation = validationHelper.createValidation(
+                    listConstraint,
+                    new CellRangeAddressList(1, 3, 0, 0));
+            listValidation.setEmptyCellAllowed(false);
+            listValidation.setShowPromptBox(true);
+            listValidation.createPromptBox("Region", "Choose a supported region");
+            listValidation.setShowErrorBox(true);
+            listValidation.createErrorBox("Invalid region", "Use one of the supported regions");
+            sheet.addValidationData(listValidation);
+
+            DataValidationConstraint quantityConstraint = validationHelper.createCustomConstraint("AND(B2>=1,B2<=100)");
+            DataValidation quantityValidation = validationHelper.createValidation(
+                    quantityConstraint,
+                    new CellRangeAddressList(1, 3, 1, 1));
+            quantityValidation.setShowPromptBox(true);
+            quantityValidation.createPromptBox("Quantity", "Enter a value between 1 and 100");
+            quantityValidation.setShowErrorBox(true);
+            quantityValidation.createErrorBox("Invalid quantity", "Quantity must stay between 1 and 100");
+            sheet.addValidationData(quantityValidation);
+
+            sheet.createRow(1).createCell(0).setCellValue("North");
+            sheet.getRow(1).createCell(1).setCellValue(12);
+            sheet.createRow(2).createCell(0).setCellValue("South");
+            sheet.getRow(2).createCell(1).setCellValue(24);
+
+            return writeDocument(workbook);
+        }
+    }
+
+    private static DataValidation findValidationByRegion(Sheet sheet, String expectedRegion) {
+        return sheet.getDataValidations().stream()
+                .filter(validation -> validation.getRegions().countRanges() == 1)
+                .filter(validation -> validation.getRegions().getCellRangeAddress(0).formatAsString().equals(expectedRegion))
+                .findFirst()
+                .orElseThrow();
     }
 
     private static byte[] writeDocument(POIDocument document) throws Exception {
