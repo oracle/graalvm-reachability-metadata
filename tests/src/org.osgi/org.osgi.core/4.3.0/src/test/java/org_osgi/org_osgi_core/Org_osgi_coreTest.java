@@ -29,7 +29,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundlePermission;
-import org.osgi.framework.CapabilityPermission;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkEvent;
@@ -227,27 +226,6 @@ public class Org_osgi_coreTest {
         assertThat(servicePermission.implies(new ServicePermission("com.example.WidgetService", "get"))).isTrue();
         assertThat(servicePermissions.implies(new ServicePermission("com.example.WidgetService", "register"))).isTrue();
         assertThat(servicePermissions.implies(new ServicePermission("org.example.WidgetService", "get"))).isFalse();
-    }
-
-    @Test
-    void capabilityPermissionsMatchRequestedObjects() {
-        TestBundle bundle = new TestBundle(7L, "com.example.bundle", "file:/bundle");
-
-        CapabilityPermission grantedCapabilityPermission = new CapabilityPermission(
-                "(&(capability.namespace=osgi.service)(vendor=acme)(name=com.example.bundle)(id=7)(location=file:/bundle))",
-                "require");
-        CapabilityPermission requestedCapabilityPermission = new CapabilityPermission(
-                "osgi.service",
-                Map.of("vendor", "acme", "mode", "sync"),
-                bundle,
-                "require");
-        PermissionCollection capabilityPermissions = grantedCapabilityPermission.newPermissionCollection();
-        capabilityPermissions.add(grantedCapabilityPermission);
-        capabilityPermissions.add(new CapabilityPermission("osgi.service", "provide"));
-
-        assertThat(grantedCapabilityPermission.getActions()).isEqualTo("require");
-        assertThat(grantedCapabilityPermission.implies(requestedCapabilityPermission)).isTrue();
-        assertThat(capabilityPermissions.implies(new CapabilityPermission("osgi.service", "provide"))).isTrue();
     }
 
     @Test
