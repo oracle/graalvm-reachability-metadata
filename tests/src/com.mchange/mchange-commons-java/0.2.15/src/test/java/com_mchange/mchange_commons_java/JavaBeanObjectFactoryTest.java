@@ -26,7 +26,8 @@ public class JavaBeanObjectFactoryTest {
         Reference reference = referenceMaker.createReference(bean);
         JavaBeanObjectFactory objectFactory = new JavaBeanObjectFactory();
 
-        Object recreated = objectFactory.getObjectInstance(reference, null, null, new Hashtable<>());
+        Object recreated = objectFactory.getObjectInstance(reference, null, null, new
+            Hashtable<>());
         ReferenceableBean recreatedBean = (ReferenceableBean) recreated;
 
         assertThat(recreated).isInstanceOf(ReferenceableBean.class);

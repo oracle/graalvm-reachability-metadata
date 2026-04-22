@@ -23,7 +23,8 @@ public class ReferenceableUtilsTest {
     void referenceToObjectInstantiatesConfiguredFactoryAndDelegatesReferenceResolution() throws Exception {
         Reference reference = new Reference(String.class.getName(), CapturingObjectFactory.class.getName(), null);
         reference.add(new StringRefAddr("value", "alpha"));
-        Hashtable<String, Object> environment = new Hashtable<>();
+        Hashtable<String, Object> environment = new
+            Hashtable<>();
         environment.put("prefix", "resolved");
 
         Object resolved = ReferenceableUtils.referenceToObject(reference, null, null, environment);
