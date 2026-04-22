@@ -189,6 +189,51 @@ class Stax_exTest {
     }
 
     @Test
+    void domStreamReaderExposesProcessingInstructionsAndSkipsNonTagNodesInNextTag() throws Exception {
+        Document document = newNamespaceAwareDocument();
+        document.appendChild(document.createComment("before-root"));
+        document.appendChild(document.createProcessingInstruction("setup", "mode='safe'"));
+
+        Element root = document.createElementNS("urn:test", "test:root");
+        root.appendChild(document.createTextNode("\n  "));
+        root.appendChild(document.createComment("before-child"));
+        root.appendChild(document.createProcessingInstruction("inner", "step='1'"));
+        root.appendChild(document.createElementNS("urn:test", "test:child"));
+        root.appendChild(document.createComment("after-child"));
+        root.appendChild(document.createTextNode("\n"));
+        document.appendChild(root);
+
+        DOMStreamReader reader = new DOMStreamReader(document);
+
+        assertThat(reader.getEventType()).isEqualTo(XMLStreamConstants.START_DOCUMENT);
+        assertThat(reader.next()).isEqualTo(XMLStreamConstants.COMMENT);
+        assertThat(reader.next()).isEqualTo(XMLStreamConstants.PROCESSING_INSTRUCTION);
+        assertThat(reader.getPITarget()).isEqualTo("setup");
+        assertThat(reader.getPIData()).isEqualTo("mode='safe'");
+
+        assertThat(reader.nextTag()).isEqualTo(XMLStreamConstants.START_ELEMENT);
+        reader.require(XMLStreamConstants.START_ELEMENT, "urn:test", "root");
+        assertThat(reader.getLocalName()).isEqualTo("root");
+
+        assertThat(reader.next()).isEqualTo(XMLStreamConstants.CHARACTERS);
+        assertThat(reader.isWhiteSpace()).isTrue();
+        assertThat(reader.next()).isEqualTo(XMLStreamConstants.COMMENT);
+        assertThat(reader.next()).isEqualTo(XMLStreamConstants.PROCESSING_INSTRUCTION);
+        assertThat(reader.getPITarget()).isEqualTo("inner");
+        assertThat(reader.getPIData()).isEqualTo("step='1'");
+
+        assertThat(reader.nextTag()).isEqualTo(XMLStreamConstants.START_ELEMENT);
+        reader.require(XMLStreamConstants.START_ELEMENT, "urn:test", "child");
+
+        assertThat(reader.nextTag()).isEqualTo(XMLStreamConstants.END_ELEMENT);
+        reader.require(XMLStreamConstants.END_ELEMENT, "urn:test", "child");
+
+        assertThat(reader.nextTag()).isEqualTo(XMLStreamConstants.END_ELEMENT);
+        reader.require(XMLStreamConstants.END_ELEMENT, "urn:test", "root");
+        assertThat(reader.next()).isEqualTo(XMLStreamConstants.END_DOCUMENT);
+    }
+
+    @Test
     void xmlStreamReaderToXmlStreamWriterBridgesLeadingCommentsAndProcessingInstructions() throws Exception {
         String xml = "<!--before-root--><root xmlns=\"urn:test\" xmlns:ex=\"urn:extra\" ex:flag=\"yes\">"
                 + "<child><![CDATA[Hello <xml> & more]]></child>"
