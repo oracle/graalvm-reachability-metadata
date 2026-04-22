@@ -6,12 +6,12 @@
  */
 package org_eclipse_jetty.jetty_util;
 
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.InputStream;
 
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.log.StdErrLog;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,10 +37,12 @@ public class LogCoverageTest {
 
     @Test
     void setLogToParentDelegatesToParentLogWhenAvailable() throws Exception {
-        URL jettyUtilLocation = Log.class.getProtectionDomain().getCodeSource().getLocation();
+        Assumptions.assumeTrue(System.getProperty("org.graalvm.nativeimage.imagecode") == null);
 
-        try (URLClassLoader parentLoader = new URLClassLoader(new URL[]{jettyUtilLocation}, ClassLoader.getPlatformClassLoader());
-             ChildFirstUrlClassLoader childLoader = new ChildFirstUrlClassLoader(new URL[]{jettyUtilLocation}, parentLoader)) {
+        try (JettyResourceClassLoader parentLoader = new JettyResourceClassLoader(
+            ClassLoader.getPlatformClassLoader(),
+            getClass().getClassLoader()
+        ); JettyResourceClassLoader childLoader = new JettyResourceClassLoader(parentLoader, getClass().getClassLoader())) {
             Class<?> childLogClass = Class.forName("org.eclipse.jetty.util.log.Log", true, childLoader);
             Class<?> childLoggerClass = Class.forName("org.eclipse.jetty.util.log.Logger", true, childLoader);
             Object originalLogger = childLogClass.getMethod("getRootLogger").invoke(null);
@@ -59,9 +61,12 @@ public class LogCoverageTest {
         }
     }
 
-    private static final class ChildFirstUrlClassLoader extends URLClassLoader {
-        private ChildFirstUrlClassLoader(URL[] urls, ClassLoader parent) {
-            super(urls, parent);
+    private static final class JettyResourceClassLoader extends ClassLoader implements AutoCloseable {
+        private final ClassLoader resourceLoader;
+
+        private JettyResourceClassLoader(ClassLoader parent, ClassLoader resourceLoader) {
+            super(parent);
+            this.resourceLoader = resourceLoader;
         }
 
         @Override
@@ -73,9 +78,9 @@ public class LogCoverageTest {
             Class<?> loadedClass = findLoadedClass(name);
             if (loadedClass == null) {
                 try {
-                    loadedClass = findClass(name);
+                    loadedClass = findJettyClass(name);
                 } catch (ClassNotFoundException ignored) {
-                    loadedClass = super.loadClass(name, false);
+                    loadedClass = getParent().loadClass(name);
                 }
             }
 
@@ -83,6 +88,25 @@ public class LogCoverageTest {
                 resolveClass(loadedClass);
             }
             return loadedClass;
+        }
+
+        private Class<?> findJettyClass(String name) throws ClassNotFoundException {
+            String resourceName = name.replace('.', '/') + ".class";
+            try (InputStream inputStream = resourceLoader.getResourceAsStream(resourceName)) {
+                if (inputStream == null) {
+                    throw new ClassNotFoundException(name);
+                }
+                byte[] classBytes = inputStream.readAllBytes();
+                return defineClass(name, classBytes, 0, classBytes.length);
+            } catch (ClassNotFoundException exception) {
+                throw exception;
+            } catch (Exception exception) {
+                throw new ClassNotFoundException(name, exception);
+            }
+        }
+
+        @Override
+        public void close() {
         }
     }
 }
