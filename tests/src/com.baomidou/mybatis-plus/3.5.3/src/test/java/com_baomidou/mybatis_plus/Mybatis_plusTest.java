@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.MybatisPlusVersion;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlLike;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.TableNameParser;
@@ -20,6 +21,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -68,6 +70,48 @@ class Mybatis_plusTest {
                 .isEqualTo("(id = ? AND status IN (?,?))");
         assertThat(updateWrapper.getParamNameValuePairs().values())
                 .containsExactlyInAnyOrder("Neo", 7, "ACTIVE", "LOCKED");
+    }
+
+    @Test
+    void pageConvertMutatesRecordsAndPreservesPagingConfiguration() {
+        Page<String> page = Page.<String>of(3, 2, 5, false)
+                .setRecords(List.of("neo", "trinity"))
+                .setSearchCount(false)
+                .setOptimizeCountSql(false)
+                .addOrder(OrderItem.desc("created_at"));
+        page.setOptimizeJoinOfCountSql(false);
+        page.setMaxLimit(50L);
+        page.setCountId("customCount");
+
+        IPage<Integer> convertedPage = page.convert(String::length);
+
+        assertThat((Object) convertedPage).isSameAs(page);
+        assertThat(convertedPage.getRecords()).containsExactly(3, 7);
+        assertThat(convertedPage.searchCount()).isFalse();
+        assertThat(convertedPage.optimizeCountSql()).isFalse();
+        assertThat(convertedPage.optimizeJoinOfCountSql()).isFalse();
+        assertThat(convertedPage.maxLimit()).isEqualTo(50L);
+        assertThat(convertedPage.countId()).isEqualTo("customCount");
+        assertThat(convertedPage.offset()).isEqualTo(4);
+        assertThat(convertedPage.orders())
+                .extracting(OrderItem::getColumn, OrderItem::isAsc)
+                .containsExactly(tuple("created_at", false));
+    }
+
+    @Test
+    void pageConvertSkipsMapperInvocationWhenNoRecordsArePresent() {
+        Page<String> page = Page.<String>of(1, 5)
+                .setRecords(List.of());
+        AtomicInteger mappingCount = new AtomicInteger();
+
+        IPage<Integer> convertedPage = page.convert(value -> {
+            mappingCount.incrementAndGet();
+            return value.length();
+        });
+
+        assertThat((Object) convertedPage).isSameAs(page);
+        assertThat(convertedPage.getRecords()).isEmpty();
+        assertThat(mappingCount).hasValue(0);
     }
 
     @Test
