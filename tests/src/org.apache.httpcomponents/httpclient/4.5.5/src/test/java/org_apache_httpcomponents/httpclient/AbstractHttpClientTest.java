@@ -39,6 +39,34 @@ public class AbstractHttpClientTest {
         }
     }
 
+    @Test
+    void createsConnectionManagerWhenContextClassLoaderIsNull() {
+        TestClientConnectionManagerFactory.invocations = 0;
+
+        BasicHttpParams params = new BasicHttpParams();
+        params.setParameter(
+                ClientPNames.CONNECTION_MANAGER_FACTORY_CLASS_NAME,
+                TestClientConnectionManagerFactory.class.getName());
+
+        Thread currentThread = Thread.currentThread();
+        ClassLoader originalClassLoader = currentThread.getContextClassLoader();
+        currentThread.setContextClassLoader(null);
+
+        ClientConnectionManager connectionManager = null;
+        try {
+            DefaultHttpClient httpClient = new DefaultHttpClient(params);
+            connectionManager = httpClient.getConnectionManager();
+
+            assertThat(connectionManager).isInstanceOf(BasicClientConnectionManager.class);
+            assertThat(TestClientConnectionManagerFactory.invocations).isEqualTo(1);
+        } finally {
+            currentThread.setContextClassLoader(originalClassLoader);
+            if (connectionManager != null) {
+                connectionManager.shutdown();
+            }
+        }
+    }
+
     public static class TestClientConnectionManagerFactory implements ClientConnectionManagerFactory {
 
         private static int invocations;
