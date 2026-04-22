@@ -14,6 +14,8 @@ import com.sun.jna.platform.RasterRangesUtils;
 import com.sun.jna.platform.win32.FlagEnum;
 import com.sun.jna.platform.win32.W32Errors;
 import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.Winioctl;
+import com.sun.jna.platform.win32.WinioctlUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -64,6 +66,75 @@ class Jna_platformTest {
         assertThat(W32Errors.FAILED(accessDenied)).isTrue();
         assertThat(W32Errors.HRESULT_FACILITY(accessDenied.intValue())).isEqualTo(7);
         assertThat(W32Errors.HRESULT_CODE(accessDenied.intValue())).isEqualTo(5);
+    }
+
+    @Test
+    void winioctlControlCodesMatchPredefinedFilesystemControlConstants() {
+        assertThat(WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_FILE_SYSTEM,
+                Winioctl.FSCTL_GET_COMPRESSION,
+                Winioctl.METHOD_BUFFERED,
+                Winioctl.FILE_ANY_ACCESS
+        )).isEqualTo(WinioctlUtil.FSCTL_GET_COMPRESSION);
+
+        assertThat(WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_FILE_SYSTEM,
+                Winioctl.FSCTL_SET_COMPRESSION,
+                Winioctl.METHOD_BUFFERED,
+                Winioctl.FILE_READ_ACCESS | Winioctl.FILE_WRITE_ACCESS
+        )).isEqualTo(WinioctlUtil.FSCTL_SET_COMPRESSION);
+
+        assertThat(WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_FILE_SYSTEM,
+                Winioctl.FSCTL_SET_REPARSE_POINT,
+                Winioctl.METHOD_BUFFERED,
+                Winioctl.FILE_ANY_ACCESS
+        )).isEqualTo(WinioctlUtil.FSCTL_SET_REPARSE_POINT);
+
+        assertThat(WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_FILE_SYSTEM,
+                Winioctl.FSCTL_GET_REPARSE_POINT,
+                Winioctl.METHOD_BUFFERED,
+                Winioctl.FILE_ANY_ACCESS
+        )).isEqualTo(WinioctlUtil.FSCTL_GET_REPARSE_POINT);
+    }
+
+    @Test
+    void winioctlControlCodesPreserveDeviceFunctionAccessAndMethodBitRanges() {
+        int baseCode = WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_DISK,
+                0x120,
+                Winioctl.METHOD_BUFFERED,
+                Winioctl.FILE_ANY_ACCESS
+        );
+
+        assertThat(WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_DISK,
+                0x121,
+                Winioctl.METHOD_BUFFERED,
+                Winioctl.FILE_ANY_ACCESS
+        )).isEqualTo(baseCode + (1 << 2));
+
+        assertThat(WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_DISK,
+                0x120,
+                Winioctl.METHOD_NEITHER,
+                Winioctl.FILE_ANY_ACCESS
+        )).isEqualTo(baseCode + Winioctl.METHOD_NEITHER);
+
+        assertThat(WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_DISK,
+                0x120,
+                Winioctl.METHOD_BUFFERED,
+                Winioctl.FILE_WRITE_ACCESS
+        )).isEqualTo(baseCode + (Winioctl.FILE_WRITE_ACCESS << 14));
+
+        assertThat(WinioctlUtil.CTL_CODE(
+                Winioctl.FILE_DEVICE_NETWORK,
+                0x120,
+                Winioctl.METHOD_BUFFERED,
+                Winioctl.FILE_ANY_ACCESS
+        )).isEqualTo(baseCode + ((Winioctl.FILE_DEVICE_NETWORK - Winioctl.FILE_DEVICE_DISK) << 16));
     }
 
     @Test
