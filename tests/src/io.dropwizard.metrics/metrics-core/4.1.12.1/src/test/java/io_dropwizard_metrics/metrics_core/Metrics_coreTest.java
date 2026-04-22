@@ -208,7 +208,7 @@ class Metrics_coreTest {
         clock.addNanos(2);
 
         Snapshot prunedSnapshot = timeWindowReservoir.getSnapshot();
-        UniformSnapshot uniformSnapshot = new UniformSnapshot(new long[] { 4, 1, 3, 2 });
+        UniformSnapshot uniformSnapshot = new UniformSnapshot(new long[] {4, 1, 3, 2 });
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         uniformSnapshot.dump(output);
 
