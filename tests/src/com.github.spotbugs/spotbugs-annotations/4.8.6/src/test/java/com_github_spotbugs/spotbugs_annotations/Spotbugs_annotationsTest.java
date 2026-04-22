@@ -12,6 +12,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Locale;
@@ -310,12 +311,12 @@ class Spotbugs_annotationsTest {
         assertThat(inherited.status()).isEqualTo("inherited:closed");
         assertThat(explicit.status()).isEqualTo("explicit:closed");
 
-        CleanupObligation baseCleanup = BaseObligationResource.class.getAnnotation(CleanupObligation.class);
-        CleanupObligation explicitCleanup = ExplicitObligationResource.class.getAnnotation(CleanupObligation.class);
+        CleanupObligation baseCleanup = annotation(BaseObligationResource.class, CleanupObligation.class);
+        CleanupObligation explicitCleanup = annotation(ExplicitObligationResource.class, CleanupObligation.class);
         ReturnValuesAreNonnullByDefault baseDefault =
-                BaseObligationResource.class.getAnnotation(ReturnValuesAreNonnullByDefault.class);
+                annotation(BaseObligationResource.class, ReturnValuesAreNonnullByDefault.class);
         ReturnValuesAreNonnullByDefault explicitDefault =
-                ExplicitObligationResource.class.getAnnotation(ReturnValuesAreNonnullByDefault.class);
+                annotation(ExplicitObligationResource.class, ReturnValuesAreNonnullByDefault.class);
 
         assertThat(baseCleanup).isNotNull();
         assertThat(explicitCleanup).isNotNull();
@@ -326,8 +327,8 @@ class Spotbugs_annotationsTest {
         assertThat(baseDefault).isEqualTo(explicitDefault);
         assertThat(baseDefault.hashCode()).isEqualTo(explicitDefault.hashCode());
 
-        assertThat(ImplicitObligationResource.class.getAnnotation(CleanupObligation.class)).isNull();
-        assertThat(ImplicitObligationResource.class.getAnnotation(ReturnValuesAreNonnullByDefault.class)).isNull();
+        assertThat(annotation(ImplicitObligationResource.class, CleanupObligation.class)).isNull();
+        assertThat(annotation(ImplicitObligationResource.class, ReturnValuesAreNonnullByDefault.class)).isNull();
 
         Constructor<ImplicitObligationResource> inheritedConstructor =
                 ImplicitObligationResource.class.getDeclaredConstructor(String.class);
@@ -336,11 +337,18 @@ class Spotbugs_annotationsTest {
         Method inheritedRelease = ImplicitObligationResource.class.getDeclaredMethod("release");
         Method explicitRelease = ExplicitObligationResource.class.getDeclaredMethod("release");
 
-        assertThat(inheritedConstructor.getAnnotation(CreatesObligation.class)).isNull();
-        assertThat(explicitConstructor.getAnnotation(CreatesObligation.class)).isNotNull();
-        assertThat(inheritedRelease.getAnnotation(DischargesObligation.class)).isNull();
-        assertThat(explicitRelease.getAnnotation(DischargesObligation.class)).isNotNull();
+        assertThat(annotation(inheritedConstructor, CreatesObligation.class)).isNull();
+        assertThat(annotation(explicitConstructor, CreatesObligation.class)).isNotNull();
+        assertThat(annotation(inheritedRelease, DischargesObligation.class)).isNull();
+        assertThat(annotation(explicitRelease, DischargesObligation.class)).isNotNull();
     }
+
+    // Checkstyle: allow direct annotation access
+    private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
+        A[] annotations = element.getAnnotationsByType(annotationType);
+        return annotations.length == 0 ? null : annotations[0];
+    }
+    // Checkstyle: disallow direct annotation access
 
     @ReturnValuesAreNonnullByDefault
     private static final class NullnessFixture {
