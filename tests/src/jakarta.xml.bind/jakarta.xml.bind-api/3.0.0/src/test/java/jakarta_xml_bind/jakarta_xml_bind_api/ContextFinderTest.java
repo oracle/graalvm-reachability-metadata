@@ -11,6 +11,7 @@ import java.util.Map;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta_xml_bind.jakarta_xml_bind_api.classproperties.PropertiesBoundType;
+import jakarta_xml_bind.jakarta_xml_bind_api.factorybacked.FactoryBackedBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.servicebound.ServiceBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
 import jakarta_xml_bind.jakarta_xml_bind_api.wrongtype.WrongTypeBoundType;
@@ -36,6 +37,17 @@ public class ContextFinderTest {
     }
 
     @Test
+    public void loadsThreeArgumentFactoryFromJaxbPropertiesUsingSystemClassLoaderWhenExplicitClassLoaderIsNull()
+            throws Exception {
+        JAXBContext context = JAXBContext.newInstance(
+                PROPERTIES_CONTEXT_PATH,
+                null,
+                Map.of("trigger", "system-class-loader"));
+
+        assertContextSource(context, "properties-context-path-factory");
+    }
+
+    @Test
     public void loadsFactoryFromPackagePropertiesForBoundClasses() throws Exception {
         JAXBContext context = JAXBContext.newInstance(PropertiesBoundType.class);
 
@@ -50,6 +62,13 @@ public class ContextFinderTest {
                 Map.of());
 
         assertContextSource(context, "service-context-factory-string");
+    }
+
+    @Test
+    public void instantiatesJaxbContextFactoryImplementations() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(FactoryBackedBoundType.class);
+
+        assertContextSource(context, "factory-backed-classes-factory");
     }
 
     @Test
