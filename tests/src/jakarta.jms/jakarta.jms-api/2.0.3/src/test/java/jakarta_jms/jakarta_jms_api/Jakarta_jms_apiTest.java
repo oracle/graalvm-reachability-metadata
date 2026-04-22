@@ -269,6 +269,46 @@ class Jakarta_jms_apiTest {
     }
 
     @Test
+    void mapMessageSupportsTypedEntriesByteSlicesAndBodyViews() throws JMSException {
+        RecordingMapMessage message = new RecordingMapMessage();
+        byte[] payload = new byte[] {(byte) 10, (byte) 20, (byte) 30, (byte) 40};
+
+        message.setBoolean("enabled", true);
+        message.setInt("count", 7);
+        message.setString("name", "orders");
+        message.setBytes("payload", payload, 1, 2);
+        payload[1] = (byte) 99;
+
+        assertThat(message.getBoolean("enabled")).isTrue();
+        assertThat(message.getInt("count")).isEqualTo(7);
+        assertThat(message.getString("name")).isEqualTo("orders");
+        assertThat(message.getBytes("payload")).containsExactly((byte) 20, (byte) 30);
+        assertThat(Set.copyOf(Collections.list(message.getMapNames())))
+                .containsExactlyInAnyOrder("enabled", "count", "name", "payload");
+        assertThat(message.itemExists("payload")).isTrue();
+        assertThat(message.isBodyAssignableTo(Map.class)).isTrue();
+        assertThat(message.isBodyAssignableTo(String.class)).isFalse();
+        assertThat(message.getBody(Map.class)).containsEntry("enabled", true)
+                .containsEntry("count", 7)
+                .containsEntry("name", "orders");
+        assertThat((byte[]) message.getBody(Map.class).get("payload")).containsExactly((byte) 20, (byte) 30);
+
+        byte[] returnedPayload = message.getBytes("payload");
+        returnedPayload[0] = (byte) 55;
+
+        assertThat(message.getBytes("payload")).containsExactly((byte) 20, (byte) 30);
+        assertThatThrownBy(() -> message.getBody(String.class))
+                .isInstanceOf(MessageFormatException.class)
+                .hasMessage("Body is not assignable to java.lang.String");
+
+        message.clearBody();
+
+        assertThat(Collections.list(message.getMapNames())).isEmpty();
+        assertThat(message.itemExists("name")).isFalse();
+        assertThat(message.getBody(Map.class)).isEmpty();
+    }
+
+    @Test
     void listenerContractsCanBeImplementedWithoutProviderSpecificCode() throws JMSException {
         RecordingMessage message = new RecordingMessage();
         JMSException failure = new JMSException("listener failure");
@@ -318,7 +358,7 @@ class Jakarta_jms_apiTest {
         return new UnsupportedOperationException("Not required by this API contract test");
     }
 
-    private static final class RecordingMessage implements Message {
+    private static class RecordingMessage implements Message {
         private String messageId;
         private long timestamp;
         private byte[] correlationIdBytes;
@@ -586,6 +626,176 @@ class Jakarta_jms_apiTest {
         @Override
         public boolean isBodyAssignableTo(Class type) {
             return body == null || type.isInstance(body);
+        }
+    }
+
+    private static final class RecordingMapMessage extends RecordingMessage implements MapMessage {
+        private final Map<String, Object> entries = new LinkedHashMap<>();
+
+        @Override
+        public boolean getBoolean(String name) {
+            return (boolean) entries.get(name);
+        }
+
+        @Override
+        public byte getByte(String name) {
+            return (byte) entries.get(name);
+        }
+
+        @Override
+        public short getShort(String name) {
+            return (short) entries.get(name);
+        }
+
+        @Override
+        public char getChar(String name) {
+            return (char) entries.get(name);
+        }
+
+        @Override
+        public int getInt(String name) {
+            return (int) entries.get(name);
+        }
+
+        @Override
+        public long getLong(String name) {
+            return (long) entries.get(name);
+        }
+
+        @Override
+        public float getFloat(String name) {
+            return (float) entries.get(name);
+        }
+
+        @Override
+        public double getDouble(String name) {
+            return (double) entries.get(name);
+        }
+
+        @Override
+        public String getString(String name) {
+            return (String) entries.get(name);
+        }
+
+        @Override
+        public byte[] getBytes(String name) {
+            return copyBytes((byte[]) entries.get(name));
+        }
+
+        @Override
+        public Object getObject(String name) {
+            return copyValue(entries.get(name));
+        }
+
+        @Override
+        public Enumeration getMapNames() {
+            return Collections.enumeration(entries.keySet());
+        }
+
+        @Override
+        public void setBoolean(String name, boolean value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setByte(String name, byte value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setShort(String name, short value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setChar(String name, char value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setInt(String name, int value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setLong(String name, long value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setFloat(String name, float value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setDouble(String name, double value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setString(String name, String value) {
+            entries.put(name, value);
+        }
+
+        @Override
+        public void setBytes(String name, byte[] value) {
+            entries.put(name, copyBytes(value));
+        }
+
+        @Override
+        public void setBytes(String name, byte[] value, int offset, int length) {
+            byte[] slice = new byte[length];
+            System.arraycopy(value, offset, slice, 0, length);
+            entries.put(name, slice);
+        }
+
+        @Override
+        public void setObject(String name, Object value) {
+            entries.put(name, copyValue(value));
+        }
+
+        @Override
+        public boolean itemExists(String name) {
+            return entries.containsKey(name);
+        }
+
+        @Override
+        public void clearBody() {
+            super.clearBody();
+            entries.clear();
+        }
+
+        @Override
+        public <T> T getBody(Class<T> type) throws JMSException {
+            Map<String, Object> snapshot = snapshotEntries();
+            if (!type.isInstance(snapshot)) {
+                throw new MessageFormatException("Body is not assignable to " + type.getName());
+            }
+            return type.cast(snapshot);
+        }
+
+        @Override
+        public boolean isBodyAssignableTo(Class type) {
+            return type.isInstance(snapshotEntries());
+        }
+
+        private Map<String, Object> snapshotEntries() {
+            Map<String, Object> snapshot = new LinkedHashMap<>();
+            for (Map.Entry<String, Object> entry : entries.entrySet()) {
+                snapshot.put(entry.getKey(), copyValue(entry.getValue()));
+            }
+            return snapshot;
+        }
+
+        private static Object copyValue(Object value) {
+            if (value instanceof byte[] bytes) {
+                return copyBytes(bytes);
+            }
+            return value;
+        }
+
+        private static byte[] copyBytes(byte[] value) {
+            return value == null ? null : value.clone();
         }
     }
 
