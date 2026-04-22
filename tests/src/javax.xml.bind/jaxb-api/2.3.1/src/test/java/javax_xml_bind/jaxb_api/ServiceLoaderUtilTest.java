@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.security.Permission;
 import java.util.Collections;
 import java.util.Enumeration;
 
@@ -54,11 +55,42 @@ public class ServiceLoaderUtilTest {
     }
 
     @Test
+    @SuppressWarnings("removal")
+    public void fallsBackToClassForNameWhenDefaultProviderPackageAccessIsDenied() {
+        ResourceHidingClassLoader classLoader = new ResourceHidingClassLoader(getClass().getClassLoader());
+        SecurityManager previousSecurityManager = System.getSecurityManager();
+        PackageAccessDenyingSecurityManager securityManager = new PackageAccessDenyingSecurityManager();
+        boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
+
+        try {
+            assertThatThrownBy(() -> withContextClassLoader(classLoader, () -> JAXBContext.newInstance(NoProviderBoundType.class)))
+                    .isInstanceOf(JAXBException.class);
+            if (securityManagerInstalled) {
+                assertThat(securityManager.wasCheckPackageAccessCalled()).isTrue();
+            }
+        } finally {
+            if (securityManagerInstalled) {
+                System.setSecurityManager(previousSecurityManager);
+            }
+        }
+    }
+
+    @Test
     public void attemptsOsgiLookupWhenNoOtherProviderIsAvailable() {
         ResourceHidingClassLoader classLoader = new ResourceHidingClassLoader(getClass().getClassLoader());
 
         assertThatThrownBy(() -> withContextClassLoader(classLoader, () -> JAXBContext.newInstance(NoProviderBoundType.class)))
                 .isInstanceOf(JAXBException.class);
+    }
+
+    @SuppressWarnings("removal")
+    private static boolean installSecurityManagerIfSupported(SecurityManager securityManager) {
+        try {
+            System.setSecurityManager(securityManager);
+            return System.getSecurityManager() == securityManager;
+        } catch (UnsupportedOperationException unsupportedOperationException) {
+            return false;
+        }
     }
 
     private static Object invokeLegacyNewInstance(String className) throws Exception {
@@ -87,6 +119,27 @@ public class ServiceLoaderUtilTest {
     @FunctionalInterface
     private interface ThrowingSupplier<T> {
         T get() throws Exception;
+    }
+
+    @SuppressWarnings("removal")
+    private static final class PackageAccessDenyingSecurityManager extends SecurityManager {
+        private boolean checkPackageAccessCalled;
+
+        @Override
+        public void checkPermission(Permission permission) {
+        }
+
+        @Override
+        public void checkPackageAccess(String packageName) {
+            if ("com.sun.xml.internal.bind.v2".equals(packageName)) {
+                checkPackageAccessCalled = true;
+                throw new SecurityException("package access denied for coverage test");
+            }
+        }
+
+        private boolean wasCheckPackageAccessCalled() {
+            return checkPackageAccessCalled;
+        }
     }
 
     private static final class ResourceHidingClassLoader extends ClassLoader {
