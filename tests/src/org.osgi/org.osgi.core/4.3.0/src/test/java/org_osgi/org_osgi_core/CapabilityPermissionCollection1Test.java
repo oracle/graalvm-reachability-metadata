@@ -41,12 +41,12 @@ public class CapabilityPermissionCollection1Test {
         CapabilityPermission filteredRequirePermission = new CapabilityPermission(
                 "(&(capability.namespace=osgi.service)(vendor=acme)(name=com.example.bundle)(id=7)(location=file:/bundle))",
                 "require");
-        PermissionCollection permissionCollection = filteredRequirePermission.newPermissionCollection();
-        permissionCollection.add(filteredRequirePermission);
-        permissionCollection.add(new CapabilityPermission("*", "provide"));
-        permissionCollection.add(new CapabilityPermission("*", "require"));
+        PermissionCollection wildcardPermissionCollection = filteredRequirePermission.newPermissionCollection();
+        wildcardPermissionCollection.add(filteredRequirePermission);
+        wildcardPermissionCollection.add(new CapabilityPermission("*", "provide"));
+        wildcardPermissionCollection.add(new CapabilityPermission("*", "require"));
 
-        PermissionCollection restoredPermissionCollection = serializeAndDeserialize(permissionCollection);
+        PermissionCollection restoredPermissionCollection = serializeAndDeserialize(wildcardPermissionCollection);
         CapabilityPermission requestedRequirePermission = new CapabilityPermission(
                 "osgi.service",
                 Map.of("vendor", "acme", "mode", "sync"),
@@ -57,6 +57,8 @@ public class CapabilityPermissionCollection1Test {
                 Map.of("vendor", "other"),
                 bundle,
                 "require");
+        PermissionCollection filteredPermissionCollection = filteredRequirePermission.newPermissionCollection();
+        filteredPermissionCollection.add(filteredRequirePermission);
         List<String> grantedPermissions = Collections.list(restoredPermissionCollection.elements()).stream()
                 .map(Permission.class::cast)
                 .map(permission -> (CapabilityPermission) permission)
@@ -67,8 +69,8 @@ public class CapabilityPermissionCollection1Test {
                 .isTrue();
         assertThat(restoredPermissionCollection.implies(new CapabilityPermission("org.example.feature", "require")))
                 .isTrue();
-        assertThat(restoredPermissionCollection.implies(requestedRequirePermission)).isTrue();
-        assertThat(restoredPermissionCollection.implies(mismatchedRequirePermission)).isFalse();
+        assertThat(filteredPermissionCollection.implies(requestedRequirePermission)).isTrue();
+        assertThat(filteredPermissionCollection.implies(mismatchedRequirePermission)).isFalse();
         assertThat(grantedPermissions)
                 .containsExactlyInAnyOrder(
                         "*=require,provide",
