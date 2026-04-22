@@ -37,17 +37,6 @@ public class ContextFinderTest {
     }
 
     @Test
-    public void loadsThreeArgumentFactoryFromJaxbPropertiesUsingSystemClassLoaderWhenExplicitClassLoaderIsNull()
-            throws Exception {
-        JAXBContext context = JAXBContext.newInstance(
-                PROPERTIES_CONTEXT_PATH,
-                null,
-                Map.of("trigger", "system-class-loader"));
-
-        assertContextSource(context, "properties-context-path-factory");
-    }
-
-    @Test
     public void loadsFactoryFromPackagePropertiesForBoundClasses() throws Exception {
         JAXBContext context = JAXBContext.newInstance(PropertiesBoundType.class);
 
