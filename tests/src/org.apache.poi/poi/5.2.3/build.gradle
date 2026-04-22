@@ -13,6 +13,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation "org.apache.poi:poi:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+    testCompileOnly("org.graalvm.nativeimage:graal-hotspot-library:22.0.0")
 }
 
 graalvmNative {
@@ -22,6 +23,12 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        test {
+            buildArgs.add('-H:+AddAllCharsets')
+            buildArgs.add('-H:IncludeResources=org/apache/poi/ss/formula/function/.*')
         }
     }
 }
