@@ -37,16 +37,13 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 
 public class ServicePermissionCollection1Test {
+    private static final PermissionCollection PREINITIALIZED_WILDCARD_PERMISSION_COLLECTION =
+            createWildcardPermissionCollection();
+
     @Test
     void permissionCollectionInitializesAtRunTimeAndMatchesNamedAndFilteredRequests() throws Exception {
-        PermissionCollection wildcardPermissionCollection = new ServicePermission("com.example.*", "register")
-                .newPermissionCollection();
-        wildcardPermissionCollection.add(new ServicePermission("com.example.*", "get"));
-        wildcardPermissionCollection.add(new ServicePermission("com.example.*", "register"));
-        wildcardPermissionCollection.add(new ServicePermission("*", "get"));
-
         PermissionCollection restoredWildcardPermissionCollection =
-                serializeAndDeserialize(wildcardPermissionCollection);
+                serializeAndDeserialize(PREINITIALIZED_WILDCARD_PERMISSION_COLLECTION);
         TestBundle bundle = new TestBundle(7L, "com.example.bundle", "file:/bundle");
         TestServiceReference matchingReference = new TestServiceReference(
                 bundle,
@@ -98,6 +95,15 @@ public class ServicePermissionCollection1Test {
         assertThatThrownBy(() -> restoredWildcardPermissionCollection.add(new RuntimePermission("exitVM")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("invalid permission");
+    }
+
+    private static PermissionCollection createWildcardPermissionCollection() {
+        PermissionCollection permissionCollection = new ServicePermission("com.example.*", "register")
+                .newPermissionCollection();
+        permissionCollection.add(new ServicePermission("com.example.*", "get"));
+        permissionCollection.add(new ServicePermission("com.example.*", "register"));
+        permissionCollection.add(new ServicePermission("*", "get"));
+        return permissionCollection;
     }
 
     private static PermissionCollection serializeAndDeserialize(PermissionCollection permissionCollection)
