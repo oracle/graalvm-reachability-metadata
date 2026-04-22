@@ -13,11 +13,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 import org.immutables.value.Value;
 import org.immutables.value.internal.$guava$.collect.$ArrayListMultimap;
 import org.immutables.value.internal.$guava$.collect.$HashMultiset;
 import org.immutables.value.internal.$guava$.collect.$ImmutableSetMultimap;
+import org.immutables.value.internal.$guava$.collect.$MapMaker;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +37,21 @@ public class SerializationTest {
 
         assertThat(restored).isEqualTo(original);
         assertThat(restored.scores()).containsExactlyInAnyOrderEntriesOf(original.scores());
+    }
+
+    @Test
+    void mapMakerMapPreservesEntriesAcrossRoundTrip() throws Exception {
+        String alpha = new String("alpha");
+        String beta = new String("beta");
+        ConcurrentMap<String, Integer> original = new $MapMaker()
+                .weakKeys()
+                .makeMap();
+        original.put(alpha, 1);
+        original.put(beta, 2);
+
+        ConcurrentMap<String, Integer> restored = roundTrip((Serializable) original, ConcurrentMap.class);
+
+        assertThat(restored).containsEntry(alpha, 1).containsEntry(beta, 2);
     }
 
     @Test
