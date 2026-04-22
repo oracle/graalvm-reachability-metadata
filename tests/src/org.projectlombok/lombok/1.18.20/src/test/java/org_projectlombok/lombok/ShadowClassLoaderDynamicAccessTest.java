@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
@@ -60,6 +61,19 @@ public class ShadowClassLoaderDynamicAccessTest {
 
         assertThat(shadowLoader.loadClass(LombokLaunchTestSupport.class.getName())).isSameAs(LombokLaunchTestSupport.class);
 
+        PrependedParentClassLoader prependedParent = new PrependedParentClassLoader(
+                ShadowClassLoaderDynamicAccessTest.class.getClassLoader(),
+                ShadowProvidedTarget.class.getName(),
+                ShadowProvidedTarget.class);
+        LombokLaunchTestSupport.invoke(
+                shadowLoader,
+                shadowLoader.getClass(),
+                "prependParent",
+                new Class<?>[] {ClassLoader.class},
+                prependedParent);
+        assertThat(shadowLoader.loadClass(ShadowProvidedTarget.class.getName())).isSameAs(ShadowProvidedTarget.class);
+        assertThat(prependedParent.wasAskedToLoadTarget()).isTrue();
+
         URL targetClass = ShadowDefinedTarget.class.getClassLoader()
                 .getResource(ShadowDefinedTarget.class.getName().replace('.', '/') + ".class");
         assertThat(targetClass).isNotNull();
@@ -99,6 +113,34 @@ public class ShadowClassLoaderDynamicAccessTest {
     }
 
     public static final class ShadowDefinedTarget {
+    }
+
+    public static final class ShadowProvidedTarget {
+    }
+
+    private static final class PrependedParentClassLoader extends ClassLoader {
+        private final String targetClassName;
+        private final Class<?> targetClass;
+        private final AtomicBoolean askedToLoadTarget = new AtomicBoolean();
+
+        private PrependedParentClassLoader(ClassLoader parent, String targetClassName, Class<?> targetClass) {
+            super(parent);
+            this.targetClassName = targetClassName;
+            this.targetClass = targetClass;
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (targetClassName.equals(name)) {
+                askedToLoadTarget.set(true);
+                return targetClass;
+            }
+            return super.loadClass(name);
+        }
+
+        private boolean wasAskedToLoadTarget() {
+            return askedToLoadTarget.get();
+        }
     }
 
     private static final class ResourceClassLoader extends ClassLoader {
