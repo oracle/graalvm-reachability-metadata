@@ -37,6 +37,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.PackagePermission;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceException;
 import org.osgi.framework.ServicePermission;
@@ -265,6 +266,44 @@ public class Org_osgi_coreTest {
         assertThat(adaptPermissions.implies(requestedAdaptPermission)).isTrue();
         assertThat(grantedAdaptPermission.implies(new AdaptPermission("org.example.OtherAdapter", bundle, "adapt")))
                 .isFalse();
+    }
+
+    @Test
+    void packagePermissionsHonorImportFiltersAndExportOnlyActions() {
+        TestBundle exportingBundle = new TestBundle(11L, "com.example.exporter", "file:/bundles/exporter");
+        TestBundle otherBundle = new TestBundle(12L, "com.example.other", "file:/bundles/other");
+
+        PackagePermission filteredImportPermission = new PackagePermission(
+                "(&(package.name=com.example.api)(name=com.example.exporter)(location=file:/bundles/exporter)(id=11))",
+                "import");
+        PackagePermission requestedImportPermission = new PackagePermission(
+                "com.example.api",
+                exportingBundle,
+                "import");
+        PackagePermission mismatchedImportPermission = new PackagePermission(
+                "com.example.api",
+                otherBundle,
+                "import");
+        PackagePermission exportOnlyPermission = new PackagePermission("com.example.api.*", "exportonly");
+        PermissionCollection packagePermissions = filteredImportPermission.newPermissionCollection();
+        packagePermissions.add(filteredImportPermission);
+        packagePermissions.add(exportOnlyPermission);
+
+        assertThat(filteredImportPermission.getActions()).isEqualTo("import");
+        assertThat(exportOnlyPermission.getActions()).isEqualTo("exportonly");
+        assertThat(filteredImportPermission.implies(requestedImportPermission)).isTrue();
+        assertThat(filteredImportPermission.implies(mismatchedImportPermission)).isFalse();
+        assertThat(exportOnlyPermission.implies(new PackagePermission("com.example.api.internal", "exportonly")))
+                .isTrue();
+        assertThat(exportOnlyPermission.implies(new PackagePermission("com.example.api.internal", "import")))
+                .isFalse();
+        assertThat(packagePermissions.implies(requestedImportPermission)).isTrue();
+        assertThat(packagePermissions.implies(new PackagePermission("com.example.api.internal", "exportonly")))
+                .isTrue();
+
+        assertThatThrownBy(() -> new PackagePermission("(package.name=com.example.api)", "exportonly"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("invalid action string for filter expression");
     }
 
     @Test
