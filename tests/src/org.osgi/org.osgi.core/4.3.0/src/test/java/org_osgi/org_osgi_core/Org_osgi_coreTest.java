@@ -42,6 +42,8 @@ import org.osgi.framework.ServiceException;
 import org.osgi.framework.ServicePermission;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
+import org.osgi.service.condpermadmin.BundleLocationCondition;
+import org.osgi.service.condpermadmin.Condition;
 import org.osgi.service.condpermadmin.ConditionInfo;
 import org.osgi.service.permissionadmin.PermissionInfo;
 
@@ -263,6 +265,39 @@ public class Org_osgi_coreTest {
         assertThat(adaptPermissions.implies(requestedAdaptPermission)).isTrue();
         assertThat(grantedAdaptPermission.implies(new AdaptPermission("org.example.OtherAdapter", bundle, "adapt")))
                 .isFalse();
+    }
+
+    @Test
+    void bundleLocationConditionsMatchPatternsAndNegation() {
+        TestBundle bundle = new TestBundle(8L, "com.example.location", "file:/bundles/widget(bundle)");
+
+        Condition exactMatch = BundleLocationCondition.getCondition(
+                bundle,
+                new ConditionInfo(
+                        BundleLocationCondition.class.getName(),
+                        new String[] {"file:/bundles/widget(bundle)"}));
+        Condition wildcardMatch = BundleLocationCondition.getCondition(
+                bundle,
+                new ConditionInfo(
+                        BundleLocationCondition.class.getName(),
+                        new String[] {"file:/bundles/*"}));
+        Condition negatedMismatch = BundleLocationCondition.getCondition(
+                bundle,
+                new ConditionInfo(
+                        BundleLocationCondition.class.getName(),
+                        new String[] {"file:/bundles/other*", "!"}));
+        Condition failingMatch = BundleLocationCondition.getCondition(
+                bundle,
+                new ConditionInfo(
+                        BundleLocationCondition.class.getName(),
+                        new String[] {"file:/bundles/other*"}));
+
+        assertThat(exactMatch.isPostponed()).isFalse();
+        assertThat(exactMatch.isMutable()).isFalse();
+        assertThat(exactMatch.isSatisfied()).isTrue();
+        assertThat(wildcardMatch.isSatisfied()).isTrue();
+        assertThat(negatedMismatch.isSatisfied()).isTrue();
+        assertThat(failingMatch.isSatisfied()).isFalse();
     }
 
     private static final class TestBundle implements Bundle {
