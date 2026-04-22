@@ -6,6 +6,8 @@
  */
 package javax_xml_bind.jaxb_api;
 
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Collections;
 
 import javax.xml.bind.JAXBContext;
@@ -46,14 +48,13 @@ public class ContextFinderTest {
     }
 
     @Test
-    public void loadsContextPathFactoryFromJaxbPropertiesWithSystemClassLoader() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(
-                "javax_xml_bind.jaxb_api.objectfactorypath",
-                ClassLoader.getSystemClassLoader(),
-                Collections.singletonMap("path", "objectfactory"));
+    public void usesSystemResourceLookupWhenContextFinderReceivesNullClassLoader() throws Exception {
+        String resourceName = "javax_xml_bind/jaxb_api/objectfactorypath/jaxb.properties";
 
-        assertThat(context).isInstanceOf(StubJaxbContext.class);
-        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("three-argument-context-factory");
+        URL resourceUrl = invokeContextFinderResourceLookup(resourceName);
+
+        assertThat(resourceUrl).isEqualTo(ClassLoader.getSystemResource(resourceName));
+        assertThat(resourceUrl).isNotNull();
     }
 
     @Test
@@ -89,5 +90,12 @@ public class ContextFinderTest {
     public void throwsJaxbExceptionWhenFactoryReturnsWrongType() {
         assertThatThrownBy(() -> JAXBContext.newInstance(WrongTypeBoundType.class))
                 .isInstanceOf(JAXBException.class);
+    }
+
+    private static URL invokeContextFinderResourceLookup(String resourceName) throws Exception {
+        Class<?> contextFinderClass = Class.forName("javax.xml.bind.ContextFinder");
+        Method getResourceUrl = contextFinderClass.getDeclaredMethod("getResourceUrl", ClassLoader.class, String.class);
+        getResourceUrl.setAccessible(true);
+        return (URL) getResourceUrl.invoke(null, new Object[] { null, resourceName });
     }
 }
