@@ -6,7 +6,7 @@
  */
 package com_mchange.mchange_commons_java;
 
-import com.mchange.v1.jvm.AmbiguousClassNameException;
+import com.mchange.v1.lang.AmbiguousClassNameException;
 import com.mchange.v1.lang.ClassUtils;
 import org.junit.jupiter.api.Test;
 
