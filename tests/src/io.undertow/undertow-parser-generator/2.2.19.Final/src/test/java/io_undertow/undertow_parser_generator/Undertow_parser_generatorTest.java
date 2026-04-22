@@ -160,6 +160,55 @@ class Undertow_parser_generatorTest {
         assertThat(withRequestMethods.utf8Constants()).doesNotContain("GET", "PATCH", "P");
     }
 
+    @Test
+    void requestParserGeneratorAddsValidationAndCompletionHooksToGeneratedParser() throws IOException {
+        ClassFileSnapshot snapshot = ClassFileSnapshot.parse(
+            new RequestParserGenerator("com.example.RequestParserHooks")
+                .createTokenizer(
+                    new String[]{"GET", "POST"},
+                    new String[]{"HTTP/1.1", "HTTP/2"},
+                    new String[]{"Host", "Content-Type"}
+                )
+        );
+
+        assertThat(snapshot.utf8Constants()).contains(
+            "io/undertow/server/Connectors",
+            "verifyToken",
+            "setRequestMethod",
+            "(Lio/undertow/util/HttpString;)Lio/undertow/server/HttpServerExchange;",
+            "setProtocol",
+            "nextHeader",
+            "leftOver",
+            "parseComplete"
+        );
+    }
+
+    @Test
+    void responseParserGeneratorKeepsResponseHooksWithoutRequestValidation() throws IOException {
+        ClassFileSnapshot snapshot = ClassFileSnapshot.parse(
+            new ResponseParserGenerator("com.example.ResponseParserHooks")
+                .createTokenizer(
+                    new String[]{"GET", "POST"},
+                    new String[]{"HTTP/1.0", "HTTP/1.1"},
+                    new String[]{"Server", "X-Env-Id", "X-Env-Name"}
+                )
+        );
+
+        assertThat(snapshot.utf8Constants()).contains(
+            "io/undertow/client/http/HttpResponseBuilder",
+            "setProtocol",
+            "(Lio/undertow/util/HttpString;)V",
+            "nextHeader",
+            "leftOver",
+            "parseComplete"
+        );
+        assertThat(snapshot.utf8Constants()).doesNotContain(
+            "io/undertow/server/Connectors",
+            "verifyToken",
+            "setRequestMethod"
+        );
+    }
+
     private record Member(String name, String descriptor) {
     }
 
