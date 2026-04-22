@@ -7,6 +7,7 @@
 package org_apache_poi.poi;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -53,6 +54,10 @@ public class CleanerUtilTest {
 
     @Test
     void isolatedCleanerUtilFallsBackWhenUnsafeCannotBeLoaded() throws Exception {
+        // Native Image resolves this path differently than the JVM on JDK 25,
+        // so the URLClassLoader-based "missing Unsafe" simulation is not reliable there.
+        assumeFalse(isNativeImageRuntime());
+
         try (UnsafeRejectingPoiClassLoader classLoader = new UnsafeRejectingPoiClassLoader(
                 new URL[] {codeSourceUrl(CleanerUtil.class)},
                 CleanerUtilTest.class.getClassLoader())) {
@@ -76,6 +81,10 @@ public class CleanerUtilTest {
         CodeSource codeSource = type.getProtectionDomain().getCodeSource();
         assertThat(codeSource).isNotNull();
         return codeSource.getLocation();
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class UnsafeRejectingPoiClassLoader extends URLClassLoader {
