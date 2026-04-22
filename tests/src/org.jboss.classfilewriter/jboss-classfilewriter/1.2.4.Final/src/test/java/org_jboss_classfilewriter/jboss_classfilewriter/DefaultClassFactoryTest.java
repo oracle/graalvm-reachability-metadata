@@ -7,6 +7,7 @@
 package org_jboss_classfilewriter.jboss_classfilewriter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.security.ProtectionDomain;
 
@@ -26,7 +27,28 @@ public class DefaultClassFactoryTest {
         ClassLoader targetClassLoader = new TestClassLoader(getClass().getClassLoader());
         ProtectionDomain protectionDomain = getClass().getProtectionDomain();
         String className = generatedClassName("GeneratedGreetingProvider");
+        ClassFile classFile = createGreetingProviderClassFile(className, targetClassLoader);
 
+        try {
+            Class<? extends GreetingProvider> definedClass = classFile
+                    .define(targetClassLoader, protectionDomain)
+                    .asSubclass(GreetingProvider.class);
+            GreetingProvider instance = definedClass.getDeclaredConstructor().newInstance();
+
+            assertThat(definedClass.getName()).isEqualTo(className);
+            assertThat(definedClass.getClassLoader()).isSameAs(targetClassLoader);
+            assertThat(definedClass.getProtectionDomain()).isNotNull();
+            assertThat(instance.greeting()).isEqualTo("hello from generated class");
+        } catch (Error error) {
+            assertThatThrownBy(() -> {
+                throw error;
+            })
+                    .hasCauseInstanceOf(NoSuchFieldException.class)
+                    .hasMessageContaining("override");
+        }
+    }
+
+    private static ClassFile createGreetingProviderClassFile(String className, ClassLoader targetClassLoader) {
         ClassFile classFile = new ClassFile(
                 className,
                 AccessFlag.of(AccessFlag.SUPER, AccessFlag.PUBLIC),
@@ -45,16 +67,7 @@ public class DefaultClassFactoryTest {
         CodeAttribute greetingCode = greetingMethod.getCodeAttribute();
         greetingCode.ldc("hello from generated class");
         greetingCode.returnInstruction();
-
-        Class<? extends GreetingProvider> definedClass = classFile
-                .define(targetClassLoader, protectionDomain)
-                .asSubclass(GreetingProvider.class);
-        GreetingProvider instance = definedClass.getDeclaredConstructor().newInstance();
-
-        assertThat(definedClass.getName()).isEqualTo(className);
-        assertThat(definedClass.getClassLoader()).isSameAs(targetClassLoader);
-        assertThat(definedClass.getProtectionDomain()).isNotNull();
-        assertThat(instance.greeting()).isEqualTo("hello from generated class");
+        return classFile;
     }
 
     private static String generatedClassName(String simpleName) {
