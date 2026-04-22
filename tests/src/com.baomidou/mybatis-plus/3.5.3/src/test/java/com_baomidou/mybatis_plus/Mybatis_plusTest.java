@@ -44,7 +44,13 @@ class Mybatis_plusTest {
 
         assertThat(queryWrapper.getSqlSelect()).isEqualTo("id,name");
         assertThat(normalizeSql(queryWrapper.getCustomSqlSegment()))
-                .isEqualTo("WHERE (status = #{ew.paramNameValuePairs.MPGENVAL1} AND (age >= #{ew.paramNameValuePairs.MPGENVAL2} AND age < #{ew.paramNameValuePairs.MPGENVAL3})) GROUP BY role HAVING count(*) > #{ew.paramNameValuePairs.MPGENVAL4} ORDER BY created_at DESC limit 5");
+                .isEqualTo(
+                        "WHERE (status = #{ew.paramNameValuePairs.MPGENVAL1}"
+                                + " AND (age >= #{ew.paramNameValuePairs.MPGENVAL2}"
+                                + " AND age < #{ew.paramNameValuePairs.MPGENVAL3}))"
+                                + " GROUP BY role HAVING count(*) > #{ew.paramNameValuePairs.MPGENVAL4}"
+                                + " ORDER BY created_at DESC limit 5"
+                );
         assertThat(normalizeSql(queryWrapper.getTargetSql()))
                 .isEqualTo("(status = ? AND (age >= ? AND age < ?)) GROUP BY role HAVING count(*) > ? ORDER BY created_at DESC limit 5");
         assertThat(queryWrapper.getParamNameValuePairs().values())
@@ -201,7 +207,7 @@ class Mybatis_plusTest {
     }
 
     public static final class NativeImageFriendlyLog implements org.apache.ibatis.logging.Log {
-        public NativeImageFriendlyLog(String loggerName) {
+        NativeImageFriendlyLog(String loggerName) {
         }
 
         @Override
