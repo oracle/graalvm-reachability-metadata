@@ -26,8 +26,7 @@ graalvmNative {
     }
     binaries {
         test {
-            buildArgs.add('--initialize-at-run-time=org.osgi.framework.AdaptPermissionCollection')
-            buildArgs.add('--initialize-at-run-time=org.osgi.framework.BundlePermissionCollection')
+            buildArgs.add('-H:ClassInitialization=org.osgi.framework.AdaptPermissionCollection:run_time,org.osgi.framework.BundlePermissionCollection:run_time')
         }
     }
 }
