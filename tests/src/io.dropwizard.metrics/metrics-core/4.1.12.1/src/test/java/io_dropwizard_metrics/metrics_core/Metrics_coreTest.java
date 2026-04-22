@@ -7,10 +7,13 @@
 package io_dropwizard_metrics.metrics_core;
 
 import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
@@ -24,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.codahale.metrics.CachedGauge;
 import com.codahale.metrics.Clock;
+import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.DerivativeGauge;
 import com.codahale.metrics.Gauge;
@@ -33,6 +37,7 @@ import com.codahale.metrics.InstrumentedScheduledExecutorService;
 import com.codahale.metrics.InstrumentedThreadFactory;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Metric;
+import com.codahale.metrics.MetricAttribute;
 import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricRegistryListener;
@@ -238,6 +243,45 @@ class Metrics_coreTest {
         assertThatThrownBy(() -> SharedMetricRegistries.setDefault("other"))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("already set");
+    }
+
+    @Test
+    void consoleReporterRendersMetricsAndSkipsDisabledRateAttributes() {
+        MetricRegistry registry = new MetricRegistry();
+        registry.register("reporting.gauge", (Gauge<Integer>) () -> 42);
+
+        Counter counter = registry.counter("reporting.counter");
+        counter.inc(7);
+
+        Histogram histogram = registry.histogram("reporting.histogram");
+        histogram.update(10);
+        histogram.update(20);
+
+        Meter meter = registry.meter("reporting.meter");
+        meter.mark(3);
+
+        Timer timer = registry.timer("reporting.timer");
+        timer.update(Duration.ofMillis(5));
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ConsoleReporter reporter = ConsoleReporter.forRegistry(registry)
+                .outputTo(new PrintStream(output, true, StandardCharsets.UTF_8))
+                .formattedFor(Locale.US)
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .disabledMetricAttributes(EnumSet.of(MetricAttribute.M1_RATE, MetricAttribute.M5_RATE,
+                        MetricAttribute.M15_RATE))
+                .build();
+
+        reporter.report();
+
+        String report = output.toString(StandardCharsets.UTF_8);
+        assertThat(report).contains("reporting.gauge", "value = 42");
+        assertThat(report).contains("reporting.counter", "count = 7");
+        assertThat(report).contains("reporting.histogram", "max = 20");
+        assertThat(report).contains("reporting.meter", "mean rate =");
+        assertThat(report).contains("reporting.timer", "min = 5.00 milliseconds", "max = 5.00 milliseconds");
+        assertThat(report).doesNotContain("1-minute rate", "5-minute rate", "15-minute rate");
     }
 
     @Test
