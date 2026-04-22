@@ -31,6 +31,28 @@ public class HikariConfigTest {
     }
 
     @Test
+    public void setDriverClassNameUsesThreadContextClassLoaderWhenPrimaryClassLoaderMisses() {
+        HikariConfig config = new HikariConfig();
+        String driverAlias = "com.example.ThreadContextDriver";
+        TrackingClassLoader contextClassLoader = new TrackingClassLoader(
+                HikariConfigTest.class.getClassLoader(),
+                driverAlias,
+                TestDriver.class
+        );
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
+            config.setDriverClassName(driverAlias);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+
+        assertThat(config.getDriverClassName()).isEqualTo(driverAlias);
+        assertThat(contextClassLoader.getAttemptedLoads()).contains(driverAlias);
+    }
+
+    @Test
     public void setDriverClassNameFallsBackToThreadContextClassLoaderAfterPrimaryMiss() {
         HikariConfig config = new HikariConfig();
         TrackingClassLoader contextClassLoader = new TrackingClassLoader(HikariConfigTest.class.getClassLoader());
@@ -125,15 +147,26 @@ public class HikariConfigTest {
 
     private static final class TrackingClassLoader extends ClassLoader {
         private final List<String> attemptedLoads;
+        private final String resolvableClassName;
+        private final Class<?> resolvedClass;
 
         private TrackingClassLoader(ClassLoader parent) {
+            this(parent, null, null);
+        }
+
+        private TrackingClassLoader(ClassLoader parent, String resolvableClassName, Class<?> resolvedClass) {
             super(parent);
             this.attemptedLoads = new ArrayList<>();
+            this.resolvableClassName = resolvableClassName;
+            this.resolvedClass = resolvedClass;
         }
 
         @Override
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             attemptedLoads.add(name);
+            if (name.equals(resolvableClassName)) {
+                return resolvedClass;
+            }
             return super.loadClass(name);
         }
 
