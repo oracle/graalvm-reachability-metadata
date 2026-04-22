@@ -30,7 +30,7 @@ public class OaIdlUtilTest {
 
         assertThat(converted).isInstanceOf(Object[][].class);
         Object[][] matrix = (Object[][]) converted;
-        assertThat(matrix).hasSize(2);
+        assertThat(matrix.length).isEqualTo(2);
         assertThat(matrix[0]).containsExactly(10, 20, 30);
         assertThat(matrix[1]).containsExactly(40, 50, 60);
         assertThat(safeArray.wasUnaccessed()).isTrue();
