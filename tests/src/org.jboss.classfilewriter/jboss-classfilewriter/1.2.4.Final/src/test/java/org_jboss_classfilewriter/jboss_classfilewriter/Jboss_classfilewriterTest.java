@@ -12,8 +12,14 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.jboss.classfilewriter.AccessFlag;
@@ -21,6 +27,11 @@ import org.jboss.classfilewriter.ClassFactory;
 import org.jboss.classfilewriter.ClassField;
 import org.jboss.classfilewriter.ClassFile;
 import org.jboss.classfilewriter.ClassMethod;
+import org.jboss.classfilewriter.annotations.BooleanAnnotationValue;
+import org.jboss.classfilewriter.annotations.ClassAnnotation;
+import org.jboss.classfilewriter.annotations.ClassAnnotationValue;
+import org.jboss.classfilewriter.annotations.IntAnnotationValue;
+import org.jboss.classfilewriter.annotations.StringAnnotationValue;
 import org.jboss.classfilewriter.code.BranchEnd;
 import org.jboss.classfilewriter.code.CodeAttribute;
 import org.jboss.classfilewriter.code.ExceptionHandler;
@@ -36,6 +47,30 @@ public class Jboss_classfilewriterTest {
 
     public interface IntDescriber {
         String describe(int value);
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface TypeLabel {
+        String value();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public @interface FieldOrder {
+        int value();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface ReturnTypeHint {
+        Class<?> value();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    public @interface OptionalFlag {
+        boolean value();
     }
 
     @Test
@@ -194,6 +229,78 @@ public class Jboss_classfilewriterTest {
         assertThat(containsPattern(parsedSafeLengthMethod.code, 42, 190, 172, 2, 172)).isTrue();
     }
 
+    @Test
+    void writesRuntimeVisibleAnnotationsForClassFieldMethodAndParameter() throws Exception {
+        String className = generatedClassName("GeneratedAnnotatedMembers");
+        ClassFile classFile = new ClassFile(
+                className,
+                AccessFlag.of(AccessFlag.SUPER, AccessFlag.PUBLIC),
+                Object.class.getName(),
+                getClass().getClassLoader(),
+                UNUSED_CLASS_FACTORY
+        );
+
+        classFile.getRuntimeVisibleAnnotationsAttribute().addAnnotation(new ClassAnnotation(
+                classFile.getConstPool(),
+                TypeLabel.class.getName(),
+                List.of(new StringAnnotationValue(classFile.getConstPool(), "value", "generated"))
+        ));
+
+        ClassField field = classFile.addField(AccessFlag.PUBLIC, "order", int.class);
+        field.getRuntimeVisibleAnnotationsAttribute().addAnnotation(new ClassAnnotation(
+                classFile.getConstPool(),
+                FieldOrder.class.getName(),
+                List.of(new IntAnnotationValue(classFile.getConstPool(), "value", 7))
+        ));
+
+        ClassMethod transformMethod = classFile.addMethod(AccessFlag.PUBLIC, "transform", "Ljava/lang/String;", "Ljava/lang/String;");
+        transformMethod.getRuntimeVisibleAnnotationsAttribute().addAnnotation(new ClassAnnotation(
+                classFile.getConstPool(),
+                ReturnTypeHint.class.getName(),
+                List.of(new ClassAnnotationValue(classFile.getConstPool(), "value", String.class))
+        ));
+        transformMethod.getRuntimeVisibleParameterAnnotationsAttribute().addAnnotation(0, new ClassAnnotation(
+                classFile.getConstPool(),
+                OptionalFlag.class.getName(),
+                List.of(new BooleanAnnotationValue(classFile.getConstPool(), "value", true))
+        ));
+        CodeAttribute transformCode = transformMethod.getCodeAttribute();
+        transformCode.aload(1);
+        transformCode.returnInstruction();
+
+        ParsedClass parsedClass = parseClassFile(classFile.toBytecode());
+        ParsedField parsedField = parsedClass.field("order", "I");
+        ParsedMethod parsedTransformMethod = parsedClass.method("transform", "(Ljava/lang/String;)Ljava/lang/String;");
+
+        assertThat(parsedClass.runtimeVisibleAnnotations)
+                .singleElement()
+                .satisfies(annotation -> {
+                    assertThat(annotation.typeDescriptor).isEqualTo(DescriptorUtils.makeDescriptor(TypeLabel.class));
+                    assertThat(annotation.values).containsExactly(Map.entry("value", "generated"));
+                });
+        assertThat(parsedField.runtimeVisibleAnnotations)
+                .singleElement()
+                .satisfies(annotation -> {
+                    assertThat(annotation.typeDescriptor).isEqualTo(DescriptorUtils.makeDescriptor(FieldOrder.class));
+                    assertThat(annotation.values).containsExactly(Map.entry("value", 7));
+                });
+        assertThat(parsedTransformMethod.runtimeVisibleAnnotations)
+                .singleElement()
+                .satisfies(annotation -> {
+                    assertThat(annotation.typeDescriptor).isEqualTo(DescriptorUtils.makeDescriptor(ReturnTypeHint.class));
+                    assertThat(annotation.values)
+                            .containsExactly(Map.entry("value", DescriptorUtils.makeDescriptor(String.class)));
+                });
+        assertThat(parsedTransformMethod.parameterAnnotations)
+                .singleElement()
+                .satisfies(parameterAnnotations -> assertThat(parameterAnnotations)
+                        .singleElement()
+                        .satisfies(annotation -> {
+                            assertThat(annotation.typeDescriptor).isEqualTo(DescriptorUtils.makeDescriptor(OptionalFlag.class));
+                            assertThat(annotation.values).containsExactly(Map.entry("value", true));
+                        }));
+    }
+
     private static String generatedClassName(String simpleName) {
         return Jboss_classfilewriterTest.class.getPackageName() + "." + simpleName;
     }
@@ -275,16 +382,23 @@ public class Jboss_classfilewriterTest {
             int constantPoolCount = input.readUnsignedShort();
             String[] utf8Entries = new String[constantPoolCount];
             int[] classNameIndexes = new int[constantPoolCount];
+            int[] integerEntries = new int[constantPoolCount];
+            boolean[] hasIntegerEntries = new boolean[constantPoolCount];
             for (int index = 1; index < constantPoolCount; index++) {
                 int tag = input.readUnsignedByte();
                 switch (tag) {
                     case 1 -> utf8Entries[index] = input.readUTF();
-                    case 3, 4 -> input.skipBytes(4);
+                    case 3 -> {
+                        integerEntries[index] = input.readInt();
+                        hasIntegerEntries[index] = true;
+                    }
+                    case 4 -> input.skipBytes(4);
                     case 5, 6 -> {
                         input.skipBytes(8);
                         index++;
                     }
-                    case 7, 8, 16, 19, 20 -> classNameIndexes[index] = input.readUnsignedShort();
+                    case 7, 16, 19, 20 -> classNameIndexes[index] = input.readUnsignedShort();
+                    case 8 -> input.readUnsignedShort();
                     case 9, 10, 11, 12, 17, 18 -> input.skipBytes(4);
                     case 15 -> input.skipBytes(3);
                     default -> throw new IllegalArgumentException("Unsupported constant-pool tag: " + tag);
@@ -308,8 +422,13 @@ public class Jboss_classfilewriterTest {
                 input.readUnsignedShort();
                 String name = utf8Entries[input.readUnsignedShort()];
                 String descriptor = utf8Entries[input.readUnsignedShort()];
-                skipAttributes(input);
-                fields.add(new ParsedField(name, descriptor));
+                List<ParsedAnnotation> runtimeVisibleAnnotations = readRuntimeVisibleAnnotations(
+                        input,
+                        utf8Entries,
+                        integerEntries,
+                        hasIntegerEntries
+                );
+                fields.add(new ParsedField(name, descriptor, runtimeVisibleAnnotations));
             }
 
             int methodCount = input.readUnsignedShort();
@@ -321,6 +440,8 @@ public class Jboss_classfilewriterTest {
                 int attributeCount = input.readUnsignedShort();
                 byte[] code = null;
                 List<ExceptionTableEntry> exceptionTable = List.of();
+                List<ParsedAnnotation> runtimeVisibleAnnotations = List.of();
+                List<List<ParsedAnnotation>> parameterAnnotations = List.of();
                 for (int attributeIndex = 0; attributeIndex < attributeCount; attributeIndex++) {
                     String attributeName = utf8Entries[input.readUnsignedShort()];
                     int attributeLength = input.readInt();
@@ -340,16 +461,122 @@ public class Jboss_classfilewriterTest {
                         }
                         skipAttributes(input);
                         exceptionTable = entries;
+                    } else if ("RuntimeVisibleAnnotations".equals(attributeName)) {
+                        runtimeVisibleAnnotations = readAnnotations(input, utf8Entries, integerEntries, hasIntegerEntries);
+                    } else if ("RuntimeVisibleParameterAnnotations".equals(attributeName)) {
+                        parameterAnnotations = readParameterAnnotations(input, utf8Entries, integerEntries, hasIntegerEntries);
                     } else {
                         input.skipBytes(attributeLength);
                     }
                 }
-                methods.add(new ParsedMethod(name, descriptor, code, exceptionTable));
+                methods.add(new ParsedMethod(name, descriptor, code, exceptionTable, runtimeVisibleAnnotations, parameterAnnotations));
             }
 
-            skipAttributes(input);
-            return new ParsedClass(thisClassName, superClassName, interfaces, fields, methods);
+            List<ParsedAnnotation> runtimeVisibleAnnotations = readRuntimeVisibleAnnotations(
+                    input,
+                    utf8Entries,
+                    integerEntries,
+                    hasIntegerEntries
+            );
+            return new ParsedClass(thisClassName, superClassName, interfaces, fields, methods, runtimeVisibleAnnotations);
         }
+    }
+
+    private static List<ParsedAnnotation> readRuntimeVisibleAnnotations(
+            DataInputStream input,
+            String[] utf8Entries,
+            int[] integerEntries,
+            boolean[] hasIntegerEntries
+    ) throws IOException {
+        int attributeCount = input.readUnsignedShort();
+        List<ParsedAnnotation> runtimeVisibleAnnotations = List.of();
+        for (int index = 0; index < attributeCount; index++) {
+            String attributeName = utf8Entries[input.readUnsignedShort()];
+            int attributeLength = input.readInt();
+            if ("RuntimeVisibleAnnotations".equals(attributeName)) {
+                runtimeVisibleAnnotations = readAnnotations(input, utf8Entries, integerEntries, hasIntegerEntries);
+            } else {
+                input.skipBytes(attributeLength);
+            }
+        }
+        return runtimeVisibleAnnotations;
+    }
+
+    private static List<ParsedAnnotation> readAnnotations(
+            DataInputStream input,
+            String[] utf8Entries,
+            int[] integerEntries,
+            boolean[] hasIntegerEntries
+    ) throws IOException {
+        int annotationCount = input.readUnsignedShort();
+        List<ParsedAnnotation> annotations = new ArrayList<>(annotationCount);
+        for (int index = 0; index < annotationCount; index++) {
+            annotations.add(readAnnotation(input, utf8Entries, integerEntries, hasIntegerEntries));
+        }
+        return annotations;
+    }
+
+    private static ParsedAnnotation readAnnotation(
+            DataInputStream input,
+            String[] utf8Entries,
+            int[] integerEntries,
+            boolean[] hasIntegerEntries
+    ) throws IOException {
+        String typeDescriptor = utf8Entries[input.readUnsignedShort()];
+        int valueCount = input.readUnsignedShort();
+        Map<String, Object> values = new LinkedHashMap<>(valueCount);
+        for (int index = 0; index < valueCount; index++) {
+            String name = utf8Entries[input.readUnsignedShort()];
+            Object value = readAnnotationValue(input, utf8Entries, integerEntries, hasIntegerEntries);
+            values.put(name, value);
+        }
+        return new ParsedAnnotation(typeDescriptor, values);
+    }
+
+    private static Object readAnnotationValue(
+            DataInputStream input,
+            String[] utf8Entries,
+            int[] integerEntries,
+            boolean[] hasIntegerEntries
+    ) throws IOException {
+        int tag = input.readUnsignedByte();
+        return switch (tag) {
+            case 'I' -> {
+                int constantPoolIndex = input.readUnsignedShort();
+                assertThat(hasIntegerEntries[constantPoolIndex]).isTrue();
+                yield integerEntries[constantPoolIndex];
+            }
+            case 'Z' -> {
+                int constantPoolIndex = input.readUnsignedShort();
+                assertThat(hasIntegerEntries[constantPoolIndex]).isTrue();
+                yield integerEntries[constantPoolIndex] != 0;
+            }
+            case 'c', 's' -> utf8Entries[input.readUnsignedShort()];
+            case '@' -> readAnnotation(input, utf8Entries, integerEntries, hasIntegerEntries);
+            case '[' -> {
+                int valueCount = input.readUnsignedShort();
+                List<Object> values = new ArrayList<>(valueCount);
+                for (int index = 0; index < valueCount; index++) {
+                    values.add(readAnnotationValue(input, utf8Entries, integerEntries, hasIntegerEntries));
+                }
+                yield values;
+            }
+            default -> throw new IllegalArgumentException("Unsupported annotation value tag: " + (char) tag);
+        };
+    }
+
+    private static List<List<ParsedAnnotation>> readParameterAnnotations(
+            DataInputStream input,
+            String[] utf8Entries,
+            int[] integerEntries,
+            boolean[] hasIntegerEntries
+    ) throws IOException {
+        int parameterCount = input.readUnsignedByte();
+        List<List<ParsedAnnotation>> annotations = new ArrayList<>(parameterCount);
+        for (int index = 0; index < parameterCount; index++) {
+            annotations.add(readAnnotations(input, utf8Entries, integerEntries, hasIntegerEntries));
+        }
+        return annotations;
     }
 
     private static void skipAttributes(DataInputStream input) throws IOException {
@@ -366,19 +593,29 @@ public class Jboss_classfilewriterTest {
         private final List<String> interfaces;
         private final List<ParsedField> fields;
         private final List<ParsedMethod> methods;
+        private final List<ParsedAnnotation> runtimeVisibleAnnotations;
 
         private ParsedClass(
                 String thisClassName,
                 String superClassName,
                 List<String> interfaces,
                 List<ParsedField> fields,
-                List<ParsedMethod> methods
+                List<ParsedMethod> methods,
+                List<ParsedAnnotation> runtimeVisibleAnnotations
         ) {
             this.thisClassName = thisClassName;
             this.superClassName = superClassName;
             this.interfaces = interfaces;
             this.fields = fields;
             this.methods = methods;
+            this.runtimeVisibleAnnotations = runtimeVisibleAnnotations;
+        }
+
+        private ParsedField field(String name, String descriptor) {
+            return fields.stream()
+                    .filter(field -> field.name.equals(name) && field.descriptor.equals(descriptor))
+                    .findFirst()
+                    .orElseThrow(() -> new AssertionError("Field not found: " + name + descriptor));
         }
 
         private ParsedMethod method(String name, String descriptor) {
@@ -392,10 +629,12 @@ public class Jboss_classfilewriterTest {
     private static final class ParsedField {
         private final String name;
         private final String descriptor;
+        private final List<ParsedAnnotation> runtimeVisibleAnnotations;
 
-        private ParsedField(String name, String descriptor) {
+        private ParsedField(String name, String descriptor, List<ParsedAnnotation> runtimeVisibleAnnotations) {
             this.name = name;
             this.descriptor = descriptor;
+            this.runtimeVisibleAnnotations = runtimeVisibleAnnotations;
         }
     }
 
@@ -404,12 +643,33 @@ public class Jboss_classfilewriterTest {
         private final String descriptor;
         private final byte[] code;
         private final List<ExceptionTableEntry> exceptionTable;
+        private final List<ParsedAnnotation> runtimeVisibleAnnotations;
+        private final List<List<ParsedAnnotation>> parameterAnnotations;
 
-        private ParsedMethod(String name, String descriptor, byte[] code, List<ExceptionTableEntry> exceptionTable) {
+        private ParsedMethod(
+                String name,
+                String descriptor,
+                byte[] code,
+                List<ExceptionTableEntry> exceptionTable,
+                List<ParsedAnnotation> runtimeVisibleAnnotations,
+                List<List<ParsedAnnotation>> parameterAnnotations
+        ) {
             this.name = name;
             this.descriptor = descriptor;
             this.code = code;
             this.exceptionTable = exceptionTable;
+            this.runtimeVisibleAnnotations = runtimeVisibleAnnotations;
+            this.parameterAnnotations = parameterAnnotations;
+        }
+    }
+
+    private static final class ParsedAnnotation {
+        private final String typeDescriptor;
+        private final Map<String, Object> values;
+
+        private ParsedAnnotation(String typeDescriptor, Map<String, Object> values) {
+            this.typeDescriptor = typeDescriptor;
+            this.values = values;
         }
     }
 
