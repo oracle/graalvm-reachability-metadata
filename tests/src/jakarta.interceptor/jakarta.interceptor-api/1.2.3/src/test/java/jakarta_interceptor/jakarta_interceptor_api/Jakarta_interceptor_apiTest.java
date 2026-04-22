@@ -193,6 +193,32 @@ class Jakarta_interceptor_apiTest {
     }
 
     @Test
+    void aroundConstructInterceptorsCanUpdateConstructorParametersBeforeProceed() throws Exception {
+        ConstructorParameterNormalizingInterceptor constructorParameterNormalizingInterceptor =
+                new ConstructorParameterNormalizingInterceptor();
+        ConstructorSnapshotInterceptor constructorSnapshotInterceptor = new ConstructorSnapshotInterceptor();
+        MutableInvocationContext invocationContext = MutableInvocationContext.forConstructor(
+                new Object[]{"  forge  ", "  metadata  "},
+                new InterceptorChain(
+                        constructorParameterNormalizingInterceptor::aroundConstruct,
+                        constructorSnapshotInterceptor::aroundConstruct,
+                        context -> new ParameterizedGreetingService(
+                                (String) context.getParameters()[0],
+                                (String) context.getParameters()[1])));
+
+        Object result = invocationContext.proceed();
+
+        assertThat(result).isInstanceOf(ParameterizedGreetingService.class);
+        assertThat(invocationContext.getTarget()).isSameAs(result);
+        assertThat(invocationContext.getParameters()).containsExactly("FORGE", "metadata");
+        assertThat(((ParameterizedGreetingService) result).message()).isEqualTo("FORGE:metadata");
+        assertThat(invocationContext.getContextData())
+                .containsEntry("normalizedPrefix", "FORGE")
+                .containsEntry("normalizedPayload", "metadata")
+                .containsEntry("constructorParametersSeenByNextInterceptor", List.of("FORGE", "metadata"));
+    }
+
+    @Test
     void lifecycleStyleContextsCanOmitParametersWhileStillSupportingProceedAndSharedState() throws Exception {
         MutableInvocationContext invocationContext = MutableInvocationContext.forLifecycle(
                 new LifecycleAwareComponent(),
@@ -289,6 +315,34 @@ class Jakarta_interceptor_apiTest {
         }
     }
 
+    @Interceptor
+    private static final class ConstructorParameterNormalizingInterceptor {
+
+        @AroundConstruct
+        Object aroundConstruct(InvocationContext context) throws Exception {
+            Object[] parameters = context.getParameters();
+            String normalizedPrefix = ((String) parameters[0]).trim().toUpperCase();
+            String normalizedPayload = ((String) parameters[1]).trim().toLowerCase();
+            context.setParameters(new Object[]{normalizedPrefix, normalizedPayload});
+            context.getContextData().put("normalizedPrefix", normalizedPrefix);
+            context.getContextData().put("normalizedPayload", normalizedPayload);
+            return context.proceed();
+        }
+    }
+
+    @Interceptor
+    private static final class ConstructorSnapshotInterceptor {
+
+        @AroundConstruct
+        Object aroundConstruct(InvocationContext context) throws Exception {
+            Object[] parameters = context.getParameters();
+            context.getContextData().put(
+                    "constructorParametersSeenByNextInterceptor",
+                    List.of((String) parameters[0], (String) parameters[1]));
+            return context.proceed();
+        }
+    }
+
     @ExcludeDefaultInterceptors
     @Interceptors({AuditTrailInterceptor.class, PayloadNormalizingInterceptor.class})
     private static final class GreetingService {
@@ -316,6 +370,22 @@ class Jakarta_interceptor_apiTest {
 
         private String message(String value) {
             return prefix + ":" + value;
+        }
+    }
+
+    @ExcludeDefaultInterceptors
+    @Interceptors({ConstructorParameterNormalizingInterceptor.class, ConstructorSnapshotInterceptor.class})
+    private static final class ParameterizedGreetingService {
+        private final String prefix;
+        private final String payload;
+
+        private ParameterizedGreetingService(String prefix, String payload) {
+            this.prefix = prefix;
+            this.payload = payload;
+        }
+
+        private String message() {
+            return prefix + ":" + payload;
         }
     }
 
