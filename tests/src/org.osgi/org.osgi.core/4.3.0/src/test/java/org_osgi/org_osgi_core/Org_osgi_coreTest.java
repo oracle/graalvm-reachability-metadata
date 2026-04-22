@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +90,7 @@ public class Org_osgi_coreTest {
 
         Filter normalized = FrameworkUtil.createFilter(" (  &(name=Widget)(enabled=true)  ) ");
         Filter canonical = FrameworkUtil.createFilter("(&(name=Widget)(enabled=true))");
-        Dictionary<String, Object> dictionary = new Hashtable<>();
+        Dictionary<String, Object> dictionary = dictionaryOf(new LinkedHashMap<>());
         dictionary.put("Name", "Widget");
         dictionary.put("enabled", true);
 
@@ -339,6 +338,45 @@ public class Org_osgi_coreTest {
         assertThat(failingMatch.isSatisfied()).isFalse();
     }
 
+    private static <K, V> Dictionary<K, V> dictionaryOf(Map<K, V> values) {
+        return new Dictionary<>() {
+            @Override
+            public int size() {
+                return values.size();
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return values.isEmpty();
+            }
+
+            @Override
+            public Enumeration<K> keys() {
+                return Collections.enumeration(values.keySet());
+            }
+
+            @Override
+            public Enumeration<V> elements() {
+                return Collections.enumeration(values.values());
+            }
+
+            @Override
+            public V get(Object key) {
+                return values.get(key);
+            }
+
+            @Override
+            public V put(K key, V value) {
+                return values.put(key, value);
+            }
+
+            @Override
+            public V remove(Object key) {
+                return values.remove(key);
+            }
+        };
+    }
+
     private static final class TestBundle implements Bundle {
         private final long bundleId;
         private final String symbolicName;
@@ -392,7 +430,7 @@ public class Org_osgi_coreTest {
 
         @Override
         public Dictionary<String, String> getHeaders() {
-            return new Hashtable<>();
+            return dictionaryOf(new LinkedHashMap<>());
         }
 
         @Override
@@ -427,7 +465,7 @@ public class Org_osgi_coreTest {
 
         @Override
         public Dictionary<String, String> getHeaders(String locale) {
-            return new Hashtable<>();
+            return dictionaryOf(new LinkedHashMap<>());
         }
 
         @Override
