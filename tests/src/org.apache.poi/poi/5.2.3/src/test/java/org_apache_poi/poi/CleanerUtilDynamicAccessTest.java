@@ -10,6 +10,7 @@ import org.apache.poi.poifs.nio.CleanerUtil;
 import org.apache.poi.poifs.nio.FileBackedDataSource;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -18,7 +19,6 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class CleanerUtilDynamicAccessTest {
 
@@ -46,34 +46,49 @@ public class CleanerUtilDynamicAccessTest {
     }
 
     @Test
-    void loadsDirectByteBufferCleanerFallbackWhenUnsafeIsUnavailable() throws Exception {
-        assumeFalse(
-                isFutureDefaultsNativeImageRuntime(),
-                "Future defaults do not support this runtime class-definition isolation pattern reliably"
-        );
+    void releasesMappedBuffersWithTheDirectByteBufferCleanerFallback() throws Exception {
+        Path file = Files.createTempFile("poi-cleaner-fallback", ".bin");
+        Files.write(file, new byte[]{5, 6, 7, 8});
 
-        ClassLoader loader = new CleanerUtilIsolationClassLoader(CleanerUtilDynamicAccessTest.class.getClassLoader());
+        try {
+            ClassLoader loader = new CleanerUtilIsolationClassLoader(CleanerUtilDynamicAccessTest.class.getClassLoader());
+            Class<?> isolatedCleanerUtilClass = loader.loadClass(CleanerUtil.class.getName());
+            Class<?> isolatedDataSourceClass = loader.loadClass(FileBackedDataSource.class.getName());
 
-        Class<?> isolatedCleanerUtilClass = Class.forName(CleanerUtil.class.getName(), true, loader);
-        boolean unmapSupported = isolatedCleanerUtilClass.getField("UNMAP_SUPPORTED").getBoolean(null);
-        Object cleaner = isolatedCleanerUtilClass.getMethod("getCleaner").invoke(null);
-        Object reason = isolatedCleanerUtilClass.getField("UNMAP_NOT_SUPPORTED_REASON").get(null);
+            boolean unmapSupported = isolatedCleanerUtilClass.getField("UNMAP_SUPPORTED").getBoolean(null);
+            Object cleaner = isolatedCleanerUtilClass.getMethod("getCleaner").invoke(null);
+            Object reason = isolatedCleanerUtilClass.getField("UNMAP_NOT_SUPPORTED_REASON").get(null);
 
-        assertThat(unmapSupported).isTrue();
-        assertThat(cleaner).isNotNull();
-        assertThat(reason).isNull();
-    }
+            assertThat(unmapSupported).isTrue();
+            assertThat(cleaner).isNotNull();
+            assertThat(reason).isNull();
 
-    private static boolean isFutureDefaultsNativeImageRuntime() {
-        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))
-                && Boolean.getBoolean("org.graalvm.nativeimage.future-defaults.class-for-name-respects-class-loader");
+            Object dataSource = isolatedDataSourceClass
+                    .getConstructor(File.class, boolean.class)
+                    .newInstance(file.toFile(), false);
+            try {
+                ByteBuffer buffer = (ByteBuffer) isolatedDataSourceClass
+                        .getMethod("read", int.class, long.class)
+                        .invoke(dataSource, 4, 0L);
+
+                assertThat(buffer.isDirect()).isTrue();
+                assertThat(buffer.get(0)).isEqualTo((byte) 5);
+
+                isolatedDataSourceClass.getMethod("releaseBuffer", ByteBuffer.class).invoke(dataSource, buffer);
+            } finally {
+                isolatedDataSourceClass.getMethod("close").invoke(dataSource);
+            }
+        } finally {
+            Files.deleteIfExists(file);
+        }
     }
 
     private static final class CleanerUtilIsolationClassLoader extends ClassLoader {
 
         private static final Set<String> ISOLATED_CLASSES = Set.of(
                 CleanerUtil.class.getName(),
-                CleanerUtil.class.getName() + "$BufferCleaner"
+                CleanerUtil.class.getName() + "$BufferCleaner",
+                FileBackedDataSource.class.getName()
         );
 
         private CleanerUtilIsolationClassLoader(ClassLoader parent) {
@@ -102,8 +117,8 @@ public class CleanerUtilDynamicAccessTest {
         }
 
         private Class<?> defineIsolatedClass(String name) throws ClassNotFoundException {
-            String resourceName = name.replace('.', '/') + ".class";
-            try (InputStream inputStream = getParent().getResourceAsStream(resourceName)) {
+            String resourceName = getIsolatedClassResourceName(name);
+            try (InputStream inputStream = CleanerUtilDynamicAccessTest.class.getResourceAsStream(resourceName)) {
                 if (inputStream == null) {
                     throw new ClassNotFoundException(name);
                 }
@@ -112,6 +127,19 @@ public class CleanerUtilDynamicAccessTest {
             } catch (IOException exception) {
                 throw new ClassNotFoundException(name, exception);
             }
+        }
+
+        private String getIsolatedClassResourceName(String name) throws ClassNotFoundException {
+            if (CleanerUtil.class.getName().equals(name)) {
+                return "/org/apache/poi/poifs/nio/CleanerUtil.class";
+            }
+            if ((CleanerUtil.class.getName() + "$BufferCleaner").equals(name)) {
+                return "/org/apache/poi/poifs/nio/CleanerUtil$BufferCleaner.class";
+            }
+            if (FileBackedDataSource.class.getName().equals(name)) {
+                return "/org/apache/poi/poifs/nio/FileBackedDataSource.class";
+            }
+            throw new ClassNotFoundException(name);
         }
     }
 }
