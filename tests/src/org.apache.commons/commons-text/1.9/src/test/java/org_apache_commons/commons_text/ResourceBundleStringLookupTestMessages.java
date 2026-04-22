@@ -13,7 +13,7 @@ public class ResourceBundleStringLookupTestMessages extends ListResourceBundle {
     @Override
     protected Object[][] getContents() {
         return new Object[][] {
-            { "greeting", "Hello from bundle" }
+            {"greeting", "Hello from bundle"}
         };
     }
 }
