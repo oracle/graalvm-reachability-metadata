@@ -28,14 +28,26 @@ public class DecodeUtilsTest {
         assertThat(decoded).isEqualTo("decoded:payload");
     }
 
+    @Test
+    void decodeUsesOptionalFinderLoadedDuringStaticInitialization() throws CannotDecodeException {
+        Object decoded = DecodeUtils.decode("finder:payload");
+
+        assertThat(decoded).isEqualTo("decoded:payload");
+    }
+
     public static class PrefixingDecoder implements Decoder {
         public PrefixingDecoder() {
         }
 
         @Override
-        public Object decode(Object obj) {
-            Map<?, ?> encoded = (Map<?, ?>) obj;
-            return "decoded:" + encoded.get("value");
+        public Object decode(Object obj) throws CannotDecodeException {
+            if (obj instanceof Map<?, ?> encoded) {
+                return "decoded:" + encoded.get("value");
+            }
+            if (obj instanceof String text && text.startsWith("finder:")) {
+                return "decoded:" + text.substring("finder:".length());
+            }
+            throw new CannotDecodeException("Unsupported encoded value: " + obj);
         }
     }
 }
