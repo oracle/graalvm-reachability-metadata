@@ -38,6 +38,8 @@ class ZipkinTest {
     private static final String SERVER_SPAN_ID = "b7ad6b7169203331";
     private static final String PRODUCER_TRACE_ID = "463ac35c9f6413ad48485a3953bb6125";
     private static final String PRODUCER_SPAN_ID = "a2fb4a1d1a96d313";
+    private static final String SHORT_TRACE_ID = "48485a3953bb6124";
+    private static final String SHORT_TRACE_SPAN_ID = "b7ad6b7169203332";
 
     @Test
     void buildsSpanModelsAndSupportsToBuilder() {
@@ -206,6 +208,78 @@ class ZipkinTest {
         assertThat(storage.getTraces(request).execute()).containsExactly(List.of(clientSpan, serverSpan));
         assertThat(storage.getDependencies(20L, 20L).execute()).containsExactly(
                 DependencyLink.newBuilder().parent("frontend").child("backend").callCount(1).build());
+    }
+
+    @Test
+    void separates64BitAnd128BitTraceIdsWhenStrictTraceIdIsEnabled() throws IOException {
+        Endpoint frontend = endpoint("frontend", "192.168.0.1", 8080);
+        Span longTraceSpan = Span.newBuilder()
+                .traceId(TRACE_ID)
+                .id(CLIENT_SPAN_ID)
+                .kind(Span.Kind.SERVER)
+                .name("GET")
+                .timestamp(10_000L)
+                .duration(100L)
+                .localEndpoint(frontend)
+                .build();
+        Span shortTraceSpan = Span.newBuilder()
+                .traceId(SHORT_TRACE_ID)
+                .id(SHORT_TRACE_SPAN_ID)
+                .kind(Span.Kind.SERVER)
+                .name("GET")
+                .timestamp(20_000L)
+                .duration(100L)
+                .localEndpoint(frontend)
+                .build();
+        QueryRequest request = QueryRequest.newBuilder()
+                .serviceName("frontend")
+                .endTs(30L)
+                .lookback(30L)
+                .limit(10)
+                .build();
+
+        InMemoryStorage nonStrictStorage = InMemoryStorage.newBuilder().strictTraceId(false).build();
+        nonStrictStorage.accept(List.of(longTraceSpan, shortTraceSpan)).execute();
+
+        assertThat(nonStrictStorage.getTrace(SHORT_TRACE_ID).execute()).containsExactly(longTraceSpan, shortTraceSpan);
+        assertThat(nonStrictStorage.getTrace(TRACE_ID).execute()).containsExactly(longTraceSpan, shortTraceSpan);
+        assertThat(nonStrictStorage.getTraces(request).execute()).containsExactly(List.of(longTraceSpan, shortTraceSpan));
+
+        InMemoryStorage strictStorage = InMemoryStorage.newBuilder().strictTraceId(true).build();
+        strictStorage.accept(List.of(longTraceSpan, shortTraceSpan)).execute();
+
+        assertThat(strictStorage.getTrace(SHORT_TRACE_ID).execute()).containsExactly(shortTraceSpan);
+        assertThat(strictStorage.getTrace(TRACE_ID).execute()).containsExactly(longTraceSpan);
+        assertThat(strictStorage.getTraces(request).execute())
+                .containsExactlyInAnyOrder(List.of(longTraceSpan), List.of(shortTraceSpan));
+    }
+
+    @Test
+    void keepsDirectTraceLookupsAvailableWhenSearchIsDisabled() throws IOException {
+        Endpoint frontend = endpoint("frontend", "192.168.0.1", 8080);
+        Endpoint backend = endpoint("backend", "192.168.0.2", 9000);
+        Span clientSpan = frontendClientSpan(frontend, backend);
+        QueryRequest request = QueryRequest.newBuilder()
+                .serviceName("frontend")
+                .endTs(20L)
+                .lookback(20L)
+                .limit(10)
+                .build();
+
+        InMemoryStorage storage = InMemoryStorage.newBuilder()
+                .searchEnabled(false)
+                .autocompleteKeys(List.of("http.method", "env"))
+                .build();
+
+        storage.accept(List.of(clientSpan)).execute();
+
+        assertThat(storage.getTrace(TRACE_ID).execute()).containsExactly(clientSpan);
+        assertThat(storage.getServiceNames().execute()).isEmpty();
+        assertThat(storage.getRemoteServiceNames("frontend").execute()).isEmpty();
+        assertThat(storage.getSpanNames("frontend").execute()).isEmpty();
+        assertThat(storage.getKeys().execute()).isEmpty();
+        assertThat(storage.getValues("http.method").execute()).isEmpty();
+        assertThat(storage.getTraces(request).execute()).isEmpty();
     }
 
     private static Endpoint endpoint(String serviceName, String ip, int port) {
