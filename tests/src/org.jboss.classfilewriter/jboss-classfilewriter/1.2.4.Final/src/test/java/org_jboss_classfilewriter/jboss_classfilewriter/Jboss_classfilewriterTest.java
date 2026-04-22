@@ -301,6 +301,41 @@ public class Jboss_classfilewriterTest {
                         }));
     }
 
+    @Test
+    void writesGenericSignaturesAndCheckedExceptions() throws Exception {
+        String className = generatedClassName("GeneratedGenericContract");
+        ClassFile classFile = new ClassFile(
+                className,
+                AccessFlag.of(AccessFlag.SUPER, AccessFlag.PUBLIC),
+                Object.class.getName(),
+                getClass().getClassLoader(),
+                UNUSED_CLASS_FACTORY
+        );
+
+        String fieldSignature = "Ljava/util/List<Ljava/lang/String;>;";
+        ClassField namesField = classFile.addField(AccessFlag.PRIVATE, "names", List.class, fieldSignature);
+
+        ClassMethod copyMethod = classFile.addMethod(AccessFlag.PUBLIC, "copy", "Ljava/util/List;", "Ljava/util/List;");
+        String methodSignature = "(Ljava/util/List<Ljava/lang/Integer;>;)Ljava/util/List<Ljava/lang/String;>;";
+        copyMethod.setSignature(methodSignature);
+        copyMethod.addCheckedExceptions(IOException.class.getName(), ClassNotFoundException.class.getName());
+        CodeAttribute copyCode = copyMethod.getCodeAttribute();
+        copyCode.aload(1);
+        copyCode.returnInstruction();
+
+        ParsedClass parsedClass = parseClassFile(classFile.toBytecode());
+        ParsedField parsedField = parsedClass.field("names", "Ljava/util/List;");
+        ParsedMethod parsedCopyMethod = parsedClass.method("copy", "(Ljava/util/List;)Ljava/util/List;");
+
+        assertThat(namesField.getSignature()).isEqualTo(fieldSignature);
+        assertThat(copyMethod.getSignature()).isEqualTo(methodSignature);
+        assertThat(parsedField.signature).isEqualTo(fieldSignature);
+        assertThat(parsedCopyMethod.signature).isEqualTo(methodSignature);
+        assertThat(parsedCopyMethod.exceptions)
+                .containsExactly(internalName(IOException.class), internalName(ClassNotFoundException.class));
+        assertThat(containsPattern(parsedCopyMethod.code, 43, 176)).isTrue();
+    }
+
     private static String generatedClassName(String simpleName) {
         return Jboss_classfilewriterTest.class.getPackageName() + "." + simpleName;
     }
@@ -422,13 +457,21 @@ public class Jboss_classfilewriterTest {
                 input.readUnsignedShort();
                 String name = utf8Entries[input.readUnsignedShort()];
                 String descriptor = utf8Entries[input.readUnsignedShort()];
-                List<ParsedAnnotation> runtimeVisibleAnnotations = readRuntimeVisibleAnnotations(
-                        input,
-                        utf8Entries,
-                        integerEntries,
-                        hasIntegerEntries
-                );
-                fields.add(new ParsedField(name, descriptor, runtimeVisibleAnnotations));
+                int attributeCount = input.readUnsignedShort();
+                List<ParsedAnnotation> runtimeVisibleAnnotations = List.of();
+                String signature = null;
+                for (int attributeIndex = 0; attributeIndex < attributeCount; attributeIndex++) {
+                    String attributeName = utf8Entries[input.readUnsignedShort()];
+                    int attributeLength = input.readInt();
+                    if ("RuntimeVisibleAnnotations".equals(attributeName)) {
+                        runtimeVisibleAnnotations = readAnnotations(input, utf8Entries, integerEntries, hasIntegerEntries);
+                    } else if ("Signature".equals(attributeName)) {
+                        signature = utf8Entries[input.readUnsignedShort()];
+                    } else {
+                        input.skipBytes(attributeLength);
+                    }
+                }
+                fields.add(new ParsedField(name, descriptor, signature, runtimeVisibleAnnotations));
             }
 
             int methodCount = input.readUnsignedShort();
@@ -442,6 +485,8 @@ public class Jboss_classfilewriterTest {
                 List<ExceptionTableEntry> exceptionTable = List.of();
                 List<ParsedAnnotation> runtimeVisibleAnnotations = List.of();
                 List<List<ParsedAnnotation>> parameterAnnotations = List.of();
+                String signature = null;
+                List<String> exceptions = List.of();
                 for (int attributeIndex = 0; attributeIndex < attributeCount; attributeIndex++) {
                     String attributeName = utf8Entries[input.readUnsignedShort()];
                     int attributeLength = input.readInt();
@@ -465,11 +510,29 @@ public class Jboss_classfilewriterTest {
                         runtimeVisibleAnnotations = readAnnotations(input, utf8Entries, integerEntries, hasIntegerEntries);
                     } else if ("RuntimeVisibleParameterAnnotations".equals(attributeName)) {
                         parameterAnnotations = readParameterAnnotations(input, utf8Entries, integerEntries, hasIntegerEntries);
+                    } else if ("Signature".equals(attributeName)) {
+                        signature = utf8Entries[input.readUnsignedShort()];
+                    } else if ("Exceptions".equals(attributeName)) {
+                        int exceptionCount = input.readUnsignedShort();
+                        List<String> exceptionNames = new ArrayList<>(exceptionCount);
+                        for (int exceptionIndex = 0; exceptionIndex < exceptionCount; exceptionIndex++) {
+                            exceptionNames.add(utf8Entries[classNameIndexes[input.readUnsignedShort()]]);
+                        }
+                        exceptions = exceptionNames;
                     } else {
                         input.skipBytes(attributeLength);
                     }
                 }
-                methods.add(new ParsedMethod(name, descriptor, code, exceptionTable, runtimeVisibleAnnotations, parameterAnnotations));
+                methods.add(new ParsedMethod(
+                        name,
+                        descriptor,
+                        code,
+                        exceptionTable,
+                        runtimeVisibleAnnotations,
+                        parameterAnnotations,
+                        signature,
+                        exceptions
+                ));
             }
 
             List<ParsedAnnotation> runtimeVisibleAnnotations = readRuntimeVisibleAnnotations(
@@ -629,11 +692,13 @@ public class Jboss_classfilewriterTest {
     private static final class ParsedField {
         private final String name;
         private final String descriptor;
+        private final String signature;
         private final List<ParsedAnnotation> runtimeVisibleAnnotations;
 
-        private ParsedField(String name, String descriptor, List<ParsedAnnotation> runtimeVisibleAnnotations) {
+        private ParsedField(String name, String descriptor, String signature, List<ParsedAnnotation> runtimeVisibleAnnotations) {
             this.name = name;
             this.descriptor = descriptor;
+            this.signature = signature;
             this.runtimeVisibleAnnotations = runtimeVisibleAnnotations;
         }
     }
@@ -645,6 +710,8 @@ public class Jboss_classfilewriterTest {
         private final List<ExceptionTableEntry> exceptionTable;
         private final List<ParsedAnnotation> runtimeVisibleAnnotations;
         private final List<List<ParsedAnnotation>> parameterAnnotations;
+        private final String signature;
+        private final List<String> exceptions;
 
         private ParsedMethod(
                 String name,
@@ -652,7 +719,9 @@ public class Jboss_classfilewriterTest {
                 byte[] code,
                 List<ExceptionTableEntry> exceptionTable,
                 List<ParsedAnnotation> runtimeVisibleAnnotations,
-                List<List<ParsedAnnotation>> parameterAnnotations
+                List<List<ParsedAnnotation>> parameterAnnotations,
+                String signature,
+                List<String> exceptions
         ) {
             this.name = name;
             this.descriptor = descriptor;
@@ -660,6 +729,8 @@ public class Jboss_classfilewriterTest {
             this.exceptionTable = exceptionTable;
             this.runtimeVisibleAnnotations = runtimeVisibleAnnotations;
             this.parameterAnnotations = parameterAnnotations;
+            this.signature = signature;
+            this.exceptions = exceptions;
         }
     }
 
