@@ -191,6 +191,84 @@ class Jakarta_jms_apiTest {
     }
 
     @Test
+    void messageHeadersPropertiesAndBodyCanBeManagedThroughStandardApi() throws JMSException {
+        RecordingMessage message = new RecordingMessage();
+        Queue replyQueue = new SimpleQueue("reply");
+        Topic destinationTopic = new SimpleTopic("events");
+        byte[] correlationId = new byte[] {(byte) 1, (byte) 2, (byte) 3};
+
+        message.setJMSMessageID("ID:123");
+        message.setJMSTimestamp(1234L);
+        message.setJMSCorrelationIDAsBytes(correlationId);
+        message.setJMSCorrelationID("corr-123");
+        message.setJMSReplyTo(replyQueue);
+        message.setJMSDestination(destinationTopic);
+        message.setJMSDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        message.setJMSRedelivered(true);
+        message.setJMSType("event");
+        message.setJMSExpiration(5678L);
+        message.setJMSDeliveryTime(91011L);
+        message.setJMSPriority(7);
+        message.setBooleanProperty("boolean", true);
+        message.setByteProperty("byte", (byte) 9);
+        message.setShortProperty("short", (short) 12);
+        message.setIntProperty("int", 34);
+        message.setLongProperty("long", 56L);
+        message.setFloatProperty("float", 7.5f);
+        message.setDoubleProperty("double", 8.5d);
+        message.setStringProperty("string", "value");
+        message.setObjectProperty("object", List.of("a", "b"));
+        message.setBodyValue("payload");
+        correlationId[0] = (byte) 99;
+
+        assertThat(message.getJMSMessageID()).isEqualTo("ID:123");
+        assertThat(message.getJMSTimestamp()).isEqualTo(1234L);
+        assertThat(message.getJMSCorrelationIDAsBytes()).containsExactly((byte) 1, (byte) 2, (byte) 3);
+        assertThat(message.getJMSCorrelationID()).isEqualTo("corr-123");
+        assertThat(message.getJMSReplyTo()).isSameAs(replyQueue);
+        assertThat(message.getJMSDestination()).isSameAs(destinationTopic);
+        assertThat(message.getJMSDeliveryMode()).isEqualTo(DeliveryMode.NON_PERSISTENT);
+        assertThat(message.getJMSRedelivered()).isTrue();
+        assertThat(message.getJMSType()).isEqualTo("event");
+        assertThat(message.getJMSExpiration()).isEqualTo(5678L);
+        assertThat(message.getJMSDeliveryTime()).isEqualTo(91011L);
+        assertThat(message.getJMSPriority()).isEqualTo(7);
+        assertThat(message.propertyExists("boolean")).isTrue();
+        assertThat(message.getBooleanProperty("boolean")).isTrue();
+        assertThat(message.getByteProperty("byte")).isEqualTo((byte) 9);
+        assertThat(message.getShortProperty("short")).isEqualTo((short) 12);
+        assertThat(message.getIntProperty("int")).isEqualTo(34);
+        assertThat(message.getLongProperty("long")).isEqualTo(56L);
+        assertThat(message.getFloatProperty("float")).isEqualTo(7.5f);
+        assertThat(message.getDoubleProperty("double")).isEqualTo(8.5d);
+        assertThat(message.getStringProperty("string")).isEqualTo("value");
+        assertThat(message.getObjectProperty("object")).isEqualTo(List.of("a", "b"));
+        assertThat(Set.copyOf(Collections.list(message.getPropertyNames())))
+                .containsExactlyInAnyOrder("boolean", "byte", "short", "int", "long", "float", "double", "string", "object");
+        assertThat(message.isBodyAssignableTo(String.class)).isTrue();
+        assertThat(message.isBodyAssignableTo(CharSequence.class)).isTrue();
+        assertThat(message.isBodyAssignableTo(Integer.class)).isFalse();
+        assertThat(message.getBody(String.class)).isEqualTo("payload");
+        assertThat(message.getBody(CharSequence.class)).isEqualTo("payload");
+
+        byte[] returnedCorrelationId = message.getJMSCorrelationIDAsBytes();
+        returnedCorrelationId[1] = (byte) 88;
+
+        assertThat(message.getJMSCorrelationIDAsBytes()).containsExactly((byte) 1, (byte) 2, (byte) 3);
+        assertThatThrownBy(() -> message.getBody(Integer.class))
+                .isInstanceOf(MessageFormatException.class)
+                .hasMessage("Body is not assignable to java.lang.Integer");
+
+        message.clearBody();
+        message.clearProperties();
+
+        assertThat(message.getBody(String.class)).isNull();
+        assertThat(message.isBodyAssignableTo(Integer.class)).isTrue();
+        assertThat(message.propertyExists("boolean")).isFalse();
+        assertThat(Collections.list(message.getPropertyNames())).isEmpty();
+    }
+
+    @Test
     void listenerContractsCanBeImplementedWithoutProviderSpecificCode() throws JMSException {
         RecordingMessage message = new RecordingMessage();
         JMSException failure = new JMSException("listener failure");
@@ -488,6 +566,10 @@ class Jakarta_jms_apiTest {
         @Override
         public void clearBody() {
             body = null;
+        }
+
+        private void setBodyValue(Object body) {
+            this.body = body;
         }
 
         @Override
