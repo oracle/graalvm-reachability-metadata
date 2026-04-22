@@ -10,14 +10,18 @@ import com.baomidou.mybatisplus.core.MybatisPlusVersion;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.enums.SqlLike;
+import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.core.toolkit.Sequence;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.TableNameParser;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.logging.LogFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -145,6 +149,26 @@ class Mybatis_plusTest {
     }
 
     @Test
+    void identifierGeneratorsProduceMonotonicIdsAndParsableTimestamps() {
+        configureMybatisLogging();
+        long beforeGeneration = System.currentTimeMillis();
+        Sequence sequence = new Sequence(1L, 1L);
+        long firstId = sequence.nextId();
+        long secondId = sequence.nextId();
+        long afterGeneration = System.currentTimeMillis();
+        DefaultIdentifierGenerator identifierGenerator = new DefaultIdentifierGenerator(1L, 1L);
+        long generatedId = identifierGenerator.nextId(new Object());
+
+        assertThat(firstId).isPositive();
+        assertThat(secondId).isGreaterThan(firstId);
+        assertThat(Sequence.parseIdTimestamp(firstId))
+                .isBetween(beforeGeneration - 1_000L, afterGeneration + 1_000L);
+        assertThat(generatedId).isPositive();
+        assertThat(IdWorker.getIdStr()).matches("\\d+");
+        assertThat(IdWorker.get32UUID()).matches("[0-9a-f]{32}");
+    }
+
+    @Test
     void sqlUtilitiesAndStringHelpersCoverCommonPublicHelpers() {
         assertThat(SqlScriptUtils.safeParam("name")).isEqualTo("#{name}");
         assertThat(SqlScriptUtils.unSafeParam("name")).isEqualTo("${name}");
@@ -167,7 +191,47 @@ class Mybatis_plusTest {
         assertThat(StringUtils.quotaMarkList(List.of("neo", 7))).isEqualTo("('neo',7)");
     }
 
+    private static void configureMybatisLogging() {
+        new NativeImageFriendlyLog(Mybatis_plusTest.class.getName());
+        LogFactory.useCustomLogging(NativeImageFriendlyLog.class);
+    }
+
     private static String normalizeSql(String sql) {
         return sql.replaceAll("\\s+", " ").trim();
+    }
+
+    public static final class NativeImageFriendlyLog implements org.apache.ibatis.logging.Log {
+        public NativeImageFriendlyLog(String loggerName) {
+        }
+
+        @Override
+        public boolean isDebugEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean isTraceEnabled() {
+            return false;
+        }
+
+        @Override
+        public void error(String message, Throwable throwable) {
+        }
+
+        @Override
+        public void error(String message) {
+        }
+
+        @Override
+        public void debug(String message) {
+        }
+
+        @Override
+        public void trace(String message) {
+        }
+
+        @Override
+        public void warn(String message) {
+        }
     }
 }
