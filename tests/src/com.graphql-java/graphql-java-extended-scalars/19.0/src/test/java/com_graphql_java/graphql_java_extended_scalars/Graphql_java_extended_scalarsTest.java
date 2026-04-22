@@ -8,6 +8,7 @@ package com_graphql_java.graphql_java_extended_scalars;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -130,6 +131,24 @@ class Graphql_java_extended_scalarsTest {
         assertThat(ExtendedScalars.GraphQLChar.getCoercing().parseValue("x")).isEqualTo('x');
         assertThatThrownBy(() -> ExtendedScalars.GraphQLChar.getCoercing().parseValue("xy"))
             .hasMessageContaining("Char");
+    }
+
+    @Test
+    void urlScalarAcceptsUrlObjectsAndPreservesExternalForm() throws Exception {
+        URL url = new URL("file:/tmp/graphql/schema.graphql");
+
+        URL parsedValue = (URL) ExtendedScalars.Url.getCoercing().parseValue(url);
+        assertThat(parsedValue.toExternalForm()).isEqualTo(url.toExternalForm());
+
+        StringValue literal = (StringValue) ExtendedScalars.Url.getCoercing().valueToLiteral(url);
+        assertThat(literal.getValue()).isEqualTo(url.toExternalForm());
+
+        EchoResult variableResult = executeVariableEcho(ExtendedScalars.Url, url);
+        assertSuccessful(variableResult);
+        assertThat(variableResult.inputValue()).isInstanceOf(URL.class);
+        assertThat(((URL) variableResult.inputValue()).toExternalForm()).isEqualTo(url.toExternalForm());
+        assertThat(outputValue(variableResult.executionResult())).isInstanceOf(URL.class);
+        assertThat(((URL) outputValue(variableResult.executionResult())).toExternalForm()).isEqualTo(url.toExternalForm());
     }
 
     @Test
