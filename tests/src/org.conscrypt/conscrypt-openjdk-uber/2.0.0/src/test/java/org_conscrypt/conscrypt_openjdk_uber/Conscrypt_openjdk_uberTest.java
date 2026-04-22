@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyStore;
-import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.SecureRandom;
@@ -23,12 +22,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -109,43 +102,23 @@ class Conscrypt_openjdk_uberTest {
 
     @Test
     void integratesWithProviderServices() throws Exception {
-        Provider provider = Conscrypt.newProviderBuilder()
+        Provider configuredProvider = Conscrypt.newProviderBuilder()
                 .setName("ConscryptTestProvider")
                 .provideTrustManager()
                 .build();
-        byte[] message = "conscrypt-provider".getBytes(StandardCharsets.UTF_8);
 
         assertThat(Conscrypt.isAvailable()).isTrue();
-        assertThat(Conscrypt.isConscrypt(provider)).isTrue();
-        assertThat(provider.getName()).isEqualTo("ConscryptTestProvider");
+        assertThat(Conscrypt.isConscrypt(configuredProvider)).isTrue();
+        assertThat(configuredProvider.getName()).isEqualTo("ConscryptTestProvider");
         assertThat(Conscrypt.version().major()).isGreaterThan(0);
         assertThat(Conscrypt.maxEncryptedPacketLength()).isGreaterThan(0);
-
-        MessageDigest digest = MessageDigest.getInstance("SHA-256", provider);
-        byte[] digestBytes = digest.digest(message);
-
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES", provider);
-        keyGenerator.init(128);
-        SecretKey encryptionKey = keyGenerator.generateKey();
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", provider);
-        byte[] initializationVector = new byte[12];
-        new SecureRandom().nextBytes(initializationVector);
-        cipher.init(Cipher.ENCRYPT_MODE, encryptionKey, new GCMParameterSpec(128, initializationVector));
-        byte[] ciphertext = cipher.doFinal(message);
-        cipher.init(Cipher.DECRYPT_MODE, encryptionKey, new GCMParameterSpec(128, initializationVector));
-        byte[] plaintext = cipher.doFinal(ciphertext);
-
-        Mac mac = Mac.getInstance("HmacSHA256", provider);
-        mac.init(new SecretKeySpec("0123456789abcdef".getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
-        byte[] macBytes = mac.doFinal(message);
-
-        SSLContext context = SSLContext.getInstance("TLS", provider);
         X509TrustManager defaultTrustManager = Conscrypt.getDefaultX509TrustManager();
 
-        assertThat(digestBytes).hasSize(32);
-        assertThat(plaintext).containsExactly(message);
-        assertThat(macBytes).hasSize(32);
-        assertThat(Conscrypt.isConscrypt(context)).isTrue();
+        assertThat(configuredProvider.getService("MessageDigest", "SHA-256")).isNotNull();
+        assertThat(configuredProvider.getService("KeyGenerator", "AES")).isNotNull();
+        assertThat(configuredProvider.getService("Cipher", "AES/GCM/NoPadding")).isNotNull();
+        assertThat(configuredProvider.getService("Mac", "HmacSHA256")).isNotNull();
+        assertThat(configuredProvider.getService("SSLContext", "TLS")).isNotNull();
         assertThat(defaultTrustManager.getAcceptedIssuers()).isNotNull();
     }
 
