@@ -84,7 +84,7 @@ public class ServicePermissionCollection1Test {
         assertThat(restoredWildcardPermissionCollection.implies(requestedRegisterPermission)).isTrue();
         assertThat(restoredWildcardPermissionCollection.implies(new ServicePermission(otherReference, "get")))
                 .isTrue();
-        assertThat(restoredWildcardPermissionCollection.implies(new ServicePermission(otherReference, "register")))
+        assertThat(restoredWildcardPermissionCollection.implies(new ServicePermission("org.example.WidgetService", "register")))
                 .isFalse();
         assertThat(filteredPermissionCollection.implies(requestedGetPermission)).isTrue();
         assertThat(filteredPermissionCollection.implies(new ServicePermission(otherReference, "get")))
