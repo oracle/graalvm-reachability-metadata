@@ -211,6 +211,34 @@ class ZipkinTest {
     }
 
     @Test
+    void evictsOldestStoredSpansWhenCapacityIsExceededAndClearResetsState() throws IOException {
+        Endpoint frontend = endpoint("frontend", "192.168.0.1", 8080);
+        Span oldestSpan = standaloneServerSpan("1", "1", 10_000L, frontend, "oldest");
+        Span middleSpan = standaloneServerSpan("2", "2", 20_000L, frontend, "middle");
+        Span newestSpan = standaloneServerSpan("3", "3", 30_000L, frontend, "newest");
+
+        InMemoryStorage storage = InMemoryStorage.newBuilder()
+                .maxSpanCount(2)
+                .build();
+
+        storage.accept(List.of(oldestSpan, middleSpan)).execute();
+        storage.accept(List.of(newestSpan)).execute();
+
+        assertThat(storage.acceptedSpanCount()).isEqualTo(3);
+        assertThat(storage.getTrace(oldestSpan.traceId()).execute()).isEmpty();
+        assertThat(storage.getTrace(middleSpan.traceId()).execute()).containsExactly(middleSpan);
+        assertThat(storage.getTrace(newestSpan.traceId()).execute()).containsExactly(newestSpan);
+        assertThat(storage.getTraces()).containsExactlyInAnyOrder(List.of(middleSpan), List.of(newestSpan));
+
+        storage.clear();
+
+        assertThat(storage.acceptedSpanCount()).isZero();
+        assertThat(storage.getTrace(middleSpan.traceId()).execute()).isEmpty();
+        assertThat(storage.getTraces()).isEmpty();
+        assertThat(storage.getServiceNames().execute()).isEmpty();
+    }
+
+    @Test
     void separates64BitAnd128BitTraceIdsWhenStrictTraceIdIsEnabled() throws IOException {
         Endpoint frontend = endpoint("frontend", "192.168.0.1", 8080);
         Span longTraceSpan = Span.newBuilder()
@@ -336,6 +364,18 @@ class ZipkinTest {
                 .remoteEndpoint(queue)
                 .putTag("http.method", "POST")
                 .putTag("env", "test")
+                .build();
+    }
+
+    private static Span standaloneServerSpan(String traceId, String spanId, long timestamp, Endpoint endpoint, String name) {
+        return Span.newBuilder()
+                .traceId(traceId)
+                .id(spanId)
+                .kind(Span.Kind.SERVER)
+                .name(name)
+                .timestamp(timestamp)
+                .duration(100L)
+                .localEndpoint(endpoint)
                 .build();
     }
 }
