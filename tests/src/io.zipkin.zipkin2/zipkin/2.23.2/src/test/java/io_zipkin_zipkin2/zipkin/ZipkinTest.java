@@ -11,6 +11,8 @@ import zipkin2.Annotation;
 import zipkin2.DependencyLink;
 import zipkin2.Endpoint;
 import zipkin2.Span;
+import zipkin2.SpanBytesDecoderDetector;
+import zipkin2.codec.BytesDecoder;
 import zipkin2.codec.DependencyLinkBytesDecoder;
 import zipkin2.codec.DependencyLinkBytesEncoder;
 import zipkin2.codec.SpanBytesDecoder;
@@ -18,11 +20,13 @@ import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.storage.InMemoryStorage;
 import zipkin2.storage.QueryRequest;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ZipkinTest {
     private static final String TRACE_ID = "463ac35c9f6413ad48485a3953bb6124";
@@ -119,6 +123,38 @@ class ZipkinTest {
             assertThat(decodedList).isTrue();
             assertThat(decodedIntoCollection).containsExactly(span);
             assertThat(decoder.encoding()).isEqualTo(encoder.encoding());
+        }
+    }
+
+    @Test
+    void spanBytesDecoderDetectorDetectsListFormatsAndRejectsUnsupportedSingleMessageDetection() {
+        Span span = newClientSpan();
+
+        for (SpanBytesEncoder encoder : SpanBytesEncoder.values()) {
+            SpanBytesDecoder expectedDecoder = SpanBytesDecoder.valueOf(encoder.name());
+            byte[] encodedSpanList = encoder.encodeList(List.of(span));
+            BytesDecoder<Span> detectedFromBytes = SpanBytesDecoderDetector.decoderForListMessage(encodedSpanList);
+            BytesDecoder<Span> detectedFromBuffer = SpanBytesDecoderDetector.decoderForListMessage(ByteBuffer.wrap(encodedSpanList));
+
+            assertThat(detectedFromBytes).isSameAs(expectedDecoder);
+            assertThat(detectedFromBuffer).isSameAs(expectedDecoder);
+            assertThat(detectedFromBytes.decodeList(encodedSpanList)).containsExactly(span);
+            assertThat(detectedFromBuffer.decodeList(encodedSpanList)).containsExactly(span);
+        }
+
+        for (SpanBytesEncoder encoder : List.of(SpanBytesEncoder.JSON_V1, SpanBytesEncoder.THRIFT)) {
+            byte[] encodedSpan = encoder.encode(span);
+            BytesDecoder<Span> detectedDecoder = SpanBytesDecoderDetector.decoderForMessage(encodedSpan);
+
+            assertThat(detectedDecoder).isSameAs(SpanBytesDecoder.valueOf(encoder.name()));
+            assertThat(detectedDecoder.decodeOne(encodedSpan)).isEqualTo(span);
+        }
+
+        for (SpanBytesEncoder encoder : List.of(SpanBytesEncoder.JSON_V2, SpanBytesEncoder.PROTO3)) {
+            byte[] encodedSpan = encoder.encode(span);
+
+            assertThatThrownBy(() -> SpanBytesDecoderDetector.decoderForMessage(encodedSpan))
+                    .isInstanceOf(UnsupportedOperationException.class);
         }
     }
 
