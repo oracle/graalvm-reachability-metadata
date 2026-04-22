@@ -20,12 +20,12 @@ import org.junit.jupiter.api.Test;
 public class AgentDynamicAccessTest {
     @Test
     void agentPremainDelegatesToTheShadowLauncher() throws Throwable {
-        LombokLaunchTestSupport.invokeStatic(
+        LombokLaunchTestSupport.withShadowOverride(() -> LombokLaunchTestSupport.invokeStatic(
                 "lombok.launch.Agent",
                 "premain",
                 new Class<?>[] {String.class, Instrumentation.class},
                 "",
-                new NoOpInstrumentation());
+                new NoOpInstrumentation()));
     }
 
     private static final class NoOpInstrumentation implements Instrumentation {

@@ -9,6 +9,9 @@ package org_projectlombok.lombok;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 final class LombokLaunchTestSupport {
     private LombokLaunchTestSupport() {
@@ -41,5 +44,38 @@ final class LombokLaunchTestSupport {
         } catch (InvocationTargetException exception) {
             throw exception.getCause();
         }
+    }
+
+    static void withShadowOverride(ThrowingAction action) throws Throwable {
+        String previousOverride = System.getProperty("shadow.override.lombok");
+        System.setProperty("shadow.override.lombok", findShadowOverrideRoot().toString());
+        try {
+            action.run();
+        } finally {
+            if (previousOverride == null) {
+                System.clearProperty("shadow.override.lombok");
+            } else {
+                System.setProperty("shadow.override.lombok", previousOverride);
+            }
+        }
+    }
+
+    private static Path findShadowOverrideRoot() {
+        for (Path candidate : List.of(
+                Path.of("build", "resources", "test"),
+                Path.of("..", "resources", "test"),
+                Path.of("..", "..", "resources", "test"))) {
+            Path absoluteCandidate = candidate.toAbsolutePath().normalize();
+            if (Files.isRegularFile(absoluteCandidate.resolve("META-INF/ShadowClassLoader"))) {
+                return absoluteCandidate;
+            }
+        }
+
+        throw new IllegalStateException("Could not locate the Lombok shadow override resources directory");
+    }
+
+    @FunctionalInterface
+    interface ThrowingAction {
+        void run() throws Throwable;
     }
 }

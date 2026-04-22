@@ -26,14 +26,16 @@ import org.junit.jupiter.api.Test;
 public class AnnotationProcessorHiderAnnotationProcessorDynamicAccessTest {
     @Test
     void annotationProcessorCreatesWrappedProcessorAndInitializesIt() throws Throwable {
-        Processor processor = (Processor) LombokLaunchTestSupport.newInstance(
-                "lombok.launch.AnnotationProcessorHider$AnnotationProcessor",
-                new Class<?>[0]);
+        LombokLaunchTestSupport.withShadowOverride(() -> {
+            Processor processor = (Processor) LombokLaunchTestSupport.newInstance(
+                    "lombok.launch.AnnotationProcessorHider$AnnotationProcessor",
+                    new Class<?>[0]);
 
-        processor.init(new StubProcessingEnvironment());
+            processor.init(new StubProcessingEnvironment());
 
-        assertThat(processor.getSupportedAnnotationTypes()).contains("*");
-        assertThat(processor.getSupportedSourceVersion()).isEqualTo(SourceVersion.latest());
+            assertThat(processor.getSupportedAnnotationTypes()).contains("*");
+            assertThat(processor.getSupportedSourceVersion()).isEqualTo(SourceVersion.latest());
+        });
     }
 
     private static final class StubProcessingEnvironment implements ProcessingEnvironment {
