@@ -30,6 +30,17 @@ public class MainDynamicAccessTest {
             System.setOut(originalOut);
         }
 
-        assertThat(output.toString(StandardCharsets.UTF_8)).contains(lombok.core.Version.getFullVersion());
+        Class<?> shadowVersionClass = (Class<?>) LombokLaunchTestSupport.invokeStatic(
+                "lombok.launch.PatchFixesHider$Util",
+                "shadowLoadClass",
+                new Class<?>[] {String.class},
+                "lombok.core.Version");
+        String expectedOutput = (String) LombokLaunchTestSupport.invoke(
+                null,
+                shadowVersionClass,
+                "getFullVersion",
+                new Class<?>[0]);
+
+        assertThat(output.toString(StandardCharsets.UTF_8)).contains(expectedOutput);
     }
 }

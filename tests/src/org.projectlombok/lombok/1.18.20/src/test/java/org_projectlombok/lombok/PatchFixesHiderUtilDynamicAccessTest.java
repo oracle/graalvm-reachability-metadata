@@ -54,9 +54,12 @@ public class PatchFixesHiderUtilDynamicAccessTest {
                 new Class<?>[] {Method.class, Object[].class},
                 anyArgsMethod,
                 new Object[] {});
-
         assertThat(typedMethod.getName()).isEqualTo("main");
         assertThat(namedMethod.getName()).isEqualTo("main");
-        assertThat(version).isEqualTo(lombok.core.Version.getVersion());
+        assertThat(version).isEqualTo((String) LombokLaunchTestSupport.invoke(
+                null,
+                shadowVersionClass,
+                "getVersion",
+                new Class<?>[0]));
     }
 }
