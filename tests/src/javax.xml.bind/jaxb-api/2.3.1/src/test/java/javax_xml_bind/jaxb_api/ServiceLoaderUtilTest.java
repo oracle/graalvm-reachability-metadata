@@ -56,15 +56,19 @@ public class ServiceLoaderUtilTest {
 
     @Test
     @SuppressWarnings("removal")
-    public void fallsBackToClassForNameWhenDefaultProviderPackageAccessIsDenied() {
-        ResourceHidingClassLoader classLoader = new ResourceHidingClassLoader(getClass().getClassLoader());
+    public void fallsBackToClassForNameWhenDefaultImplementationMatchesRequestedClass() throws Exception {
         SecurityManager previousSecurityManager = System.getSecurityManager();
-        PackageAccessDenyingSecurityManager securityManager = new PackageAccessDenyingSecurityManager();
+        PackageAccessDenyingSecurityManager securityManager =
+                new PackageAccessDenyingSecurityManager(InterfaceContextFactory.class.getPackage().getName());
         boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
 
         try {
-            assertThatThrownBy(() -> withContextClassLoader(classLoader, () -> JAXBContext.newInstance(NoProviderBoundType.class)))
-                    .isInstanceOf(JAXBException.class);
+            Class<?> providerClass = invokeSafeLoadClass(
+                    InterfaceContextFactory.class.getName(),
+                    InterfaceContextFactory.class.getName(),
+                    getClass().getClassLoader());
+
+            assertThat(providerClass).isEqualTo(InterfaceContextFactory.class);
             if (securityManagerInstalled) {
                 assertThat(securityManager.wasCheckPackageAccessCalled()).isTrue();
             }
@@ -105,6 +109,18 @@ public class ServiceLoaderUtilTest {
         return newInstanceMethod.invoke(null, className, className, null);
     }
 
+    private static Class<?> invokeSafeLoadClass(String className, String defaultImplClassName, ClassLoader classLoader)
+            throws Exception {
+        Class<?> serviceLoaderUtilClass = Class.forName("javax.xml.bind.ServiceLoaderUtil");
+        Method safeLoadClassMethod = serviceLoaderUtilClass.getDeclaredMethod(
+                "safeLoadClass",
+                String.class,
+                String.class,
+                ClassLoader.class);
+        safeLoadClassMethod.setAccessible(true);
+        return (Class<?>) safeLoadClassMethod.invoke(null, className, defaultImplClassName, classLoader);
+    }
+
     private static <T> T withContextClassLoader(ClassLoader classLoader, ThrowingSupplier<T> supplier) throws Exception {
         Thread currentThread = Thread.currentThread();
         ClassLoader previousClassLoader = currentThread.getContextClassLoader();
@@ -123,7 +139,12 @@ public class ServiceLoaderUtilTest {
 
     @SuppressWarnings("removal")
     private static final class PackageAccessDenyingSecurityManager extends SecurityManager {
+        private final String deniedPackageName;
         private boolean checkPackageAccessCalled;
+
+        private PackageAccessDenyingSecurityManager(String deniedPackageName) {
+            this.deniedPackageName = deniedPackageName;
+        }
 
         @Override
         public void checkPermission(Permission permission) {
@@ -131,7 +152,7 @@ public class ServiceLoaderUtilTest {
 
         @Override
         public void checkPackageAccess(String packageName) {
-            if ("com.sun.xml.internal.bind.v2".equals(packageName)) {
+            if (deniedPackageName.equals(packageName)) {
                 checkPackageAccessCalled = true;
                 throw new SecurityException("package access denied for coverage test");
             }
