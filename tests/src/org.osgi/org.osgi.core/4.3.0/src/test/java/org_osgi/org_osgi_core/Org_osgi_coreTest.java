@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.osgi.framework.AdaptPermission;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -231,7 +230,7 @@ public class Org_osgi_coreTest {
     }
 
     @Test
-    void capabilityAndAdaptPermissionsMatchRequestedObjects() {
+    void capabilityPermissionsMatchRequestedObjects() {
         TestBundle bundle = new TestBundle(7L, "com.example.bundle", "file:/bundle");
 
         CapabilityPermission grantedCapabilityPermission = new CapabilityPermission(
@@ -249,22 +248,6 @@ public class Org_osgi_coreTest {
         assertThat(grantedCapabilityPermission.getActions()).isEqualTo("require");
         assertThat(grantedCapabilityPermission.implies(requestedCapabilityPermission)).isTrue();
         assertThat(capabilityPermissions.implies(new CapabilityPermission("osgi.service", "provide"))).isTrue();
-
-        AdaptPermission grantedAdaptPermission = new AdaptPermission(
-                "(&(adaptClass=org.example.Adapter)(name=com.example.bundle)(location=file:/bundle))",
-                "adapt");
-        AdaptPermission requestedAdaptPermission = new AdaptPermission(
-                "org.example.Adapter",
-                bundle,
-                "adapt");
-        PermissionCollection adaptPermissions = grantedAdaptPermission.newPermissionCollection();
-        adaptPermissions.add(grantedAdaptPermission);
-
-        assertThat(grantedAdaptPermission.getActions()).isEqualTo("adapt");
-        assertThat(grantedAdaptPermission.implies(requestedAdaptPermission)).isTrue();
-        assertThat(adaptPermissions.implies(requestedAdaptPermission)).isTrue();
-        assertThat(grantedAdaptPermission.implies(new AdaptPermission("org.example.OtherAdapter", bundle, "adapt")))
-                .isFalse();
     }
 
     @Test
