@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,14 +24,17 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.jvnet.staxex.Base64Data;
 import org.jvnet.staxex.Base64EncoderStream;
 import org.jvnet.staxex.StreamingDataHandler;
 import org.jvnet.staxex.util.DOMStreamReader;
+import org.jvnet.staxex.util.XMLStreamReaderToXMLStreamWriter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
@@ -182,6 +186,45 @@ class Stax_exTest {
 
         assertThat(reader.next()).isEqualTo(XMLStreamConstants.END_ELEMENT);
         assertThat(reader.next()).isEqualTo(XMLStreamConstants.END_DOCUMENT);
+    }
+
+    @Test
+    void xmlStreamReaderToXmlStreamWriterBridgesLeadingCommentsAndProcessingInstructions() throws Exception {
+        String xml = "<!--before-root--><root xmlns=\"urn:test\" xmlns:ex=\"urn:extra\" ex:flag=\"yes\">"
+                + "<child><![CDATA[Hello <xml> & more]]></child>"
+                + "<!--inside-root-->"
+                + "<?target value?>"
+                + "<empty/></root>";
+
+        XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+        inputFactory.setProperty(XMLInputFactory.IS_COALESCING, false);
+
+        StringWriter output = new StringWriter();
+        XMLStreamWriter writer = XMLOutputFactory.newFactory().createXMLStreamWriter(output);
+        XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(xml));
+
+        new XMLStreamReaderToXMLStreamWriter().bridge(reader, writer);
+        writer.close();
+        reader.close();
+
+        String bridgedXml = output.toString();
+        assertThat(bridgedXml)
+                .contains("<!--before-root-->")
+                .contains("<!--inside-root-->")
+                .contains("<?target value?>");
+
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        Document bridgedDocument = documentBuilderFactory.newDocumentBuilder()
+                .parse(new ByteArrayInputStream(bridgedXml.getBytes(StandardCharsets.UTF_8)));
+        Element root = bridgedDocument.getDocumentElement();
+
+        assertThat(root.getLocalName()).isEqualTo("root");
+        assertThat(root.getNamespaceURI()).isEqualTo("urn:test");
+        assertThat(root.getAttributeNS("urn:extra", "flag")).isEqualTo("yes");
+        assertThat(root.getElementsByTagNameNS("urn:test", "child").item(0).getTextContent())
+                .isEqualTo("Hello <xml> & more");
+        assertThat(root.getElementsByTagNameNS("urn:test", "empty").getLength()).isEqualTo(1);
     }
 
     private static Document newNamespaceAwareDocument() throws Exception {
