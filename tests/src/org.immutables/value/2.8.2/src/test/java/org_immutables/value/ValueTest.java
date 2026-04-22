@@ -134,6 +134,44 @@ class ValueTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("min must not exceed max");
     }
+
+    @Test
+    void modifiableObjectsTrackInitializationAndMergeStateIncrementally() {
+        ModifiableEditableProfile profile = ModifiableEditableProfile.create();
+        ModifiableEditableProfile incoming = ModifiableEditableProfile.create();
+
+        assertThat(profile.isInitialized()).isFalse();
+        assertThat(profile.nameIsSet()).isFalse();
+        assertThat(profile).isNotEqualTo(incoming);
+        assertThat(profile.toString()).contains("name=?");
+
+        profile.setTitle("Lead")
+                .addTags("core")
+                .setName("Ada");
+
+        assertThat(profile.isInitialized()).isTrue();
+        assertThat(profile.name()).isEqualTo("Ada");
+        assertThat(profile.title()).contains("Lead");
+        assertThat(profile.tags()).containsExactly("core");
+
+        incoming.setName("Grace")
+                .addTags("ops");
+
+        profile.from(incoming);
+
+        assertThat(profile.name()).isEqualTo("Grace");
+        assertThat(profile.title()).contains("Lead");
+        assertThat(profile.tags()).containsExactly("core", "ops");
+
+        profile.unsetName();
+        assertThat(profile.isInitialized()).isFalse();
+        assertThat(profile.nameIsSet()).isFalse();
+
+        profile.clear();
+        assertThat(profile.title()).isEmpty();
+        assertThat(profile.tags()).isEmpty();
+        assertThat(profile.nameIsSet()).isFalse();
+    }
 }
 
 @Value.Immutable
@@ -171,6 +209,15 @@ interface Pair {
 
 @Value.Immutable(singleton = true)
 interface Marker {
+}
+
+@Value.Modifiable
+interface EditableProfile {
+    String name();
+
+    Optional<String> title();
+
+    List<String> tags();
 }
 
 @Value.Immutable
