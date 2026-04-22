@@ -18,21 +18,22 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProxyProcessorTest {
+public class ProxyProcessorProxyClassLoaderTest {
 
     private static final String OSGI_ARCH_PROPERTY = "osgi.arch";
     private static final String SUPPLIER_SERVICE_RESOURCE = "META-INF/services/java.util.function.Supplier";
+    private static final String ECLIPSE_COMPILER_ELEMENT_IMPL = "org.eclipse.jdt.internal.compiler.apt.model.ElementImpl";
     private static final String ECLIPSE_PACKAGE_PREFIX = "org.eclipse.";
     private static final String IMMUTABLES_PACKAGE_PREFIX = "org.immutables.";
 
     @Test
-    void proxyProcessorRemainsUsableWhenEclipseLikeDelegationConditionsArePresent() throws Exception {
+    void proxyProcessorLoadsEclipseTypesFromTheContextClassLoader() throws Exception {
         String previousOsgiArch = System.getProperty(OSGI_ARCH_PROPERTY);
         Thread currentThread = Thread.currentThread();
         ClassLoader previousContextClassLoader = currentThread.getContextClassLoader();
 
         URL[] urls = {
-                codeSourceUrl(ProxyProcessorTest.class),
+                codeSourceUrl(ProxyProcessorProxyClassLoaderTest.class),
                 resourceRootUrl(SUPPLIER_SERVICE_RESOURCE),
                 codeSourceUrl(ProxyProcessor.class)
         };
@@ -50,6 +51,11 @@ public class ProxyProcessorTest {
             assertThat((Set<?>) supportedAnnotationTypes)
                     .isNotEmpty()
                     .allSatisfy(annotationType -> assertThat(annotationType).isInstanceOf(String.class).isNotEqualTo(""));
+
+            ClassLoader proxyClassLoader = supportedAnnotationTypes.getClass().getClassLoader();
+            assertThat(proxyClassLoader).isNotNull();
+            Class<?> eclipseCompilerType = proxyClassLoader.loadClass(ECLIPSE_COMPILER_ELEMENT_IMPL);
+            assertThat(eclipseCompilerType.getName()).isEqualTo(ECLIPSE_COMPILER_ELEMENT_IMPL);
         } finally {
             currentThread.setContextClassLoader(previousContextClassLoader);
             restoreSystemProperty(previousOsgiArch);
@@ -63,7 +69,7 @@ public class ProxyProcessorTest {
     }
 
     private static URL resourceRootUrl(String resourceName) throws Exception {
-        URL resource = ProxyProcessorTest.class.getClassLoader().getResource(resourceName);
+        URL resource = ProxyProcessorProxyClassLoaderTest.class.getClassLoader().getResource(resourceName);
         assertThat(resource).isNotNull();
         String resourceUrl = resource.toExternalForm();
         assertThat(resourceUrl).endsWith(resourceName);
