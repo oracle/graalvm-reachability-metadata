@@ -11,15 +11,29 @@ import java.util.Collections;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax_xml_bind.jaxb_api.classproperties.PropertiesBoundType;
+import javax_xml_bind.jaxb_api.noprovider.NoProviderBoundType;
+import javax_xml_bind.jaxb_api.support.InterfaceContextFactory;
 import javax_xml_bind.jaxb_api.support.StubJaxbContext;
 import javax_xml_bind.jaxb_api.wrongtype.WrongTypeBoundType;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ContextFinderTest {
+    private final String previousFactoryProperty = System.getProperty(JAXBContext.JAXB_CONTEXT_FACTORY);
+
+    @AfterEach
+    public void restoreFactoryProperty() {
+        if (previousFactoryProperty == null) {
+            System.clearProperty(JAXBContext.JAXB_CONTEXT_FACTORY);
+            return;
+        }
+        System.setProperty(JAXBContext.JAXB_CONTEXT_FACTORY, previousFactoryProperty);
+    }
+
     @Test
     public void loadsContextPathFactoryFromJaxbPropertiesWithExplicitClassLoader() throws Exception {
         JAXBContext context = JAXBContext.newInstance(
@@ -48,6 +62,16 @@ public class ContextFinderTest {
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
         assertThat(((StubJaxbContext) context).getSource()).isEqualTo("classes-context-factory");
+    }
+
+    @Test
+    public void instantiatesJaxbContextFactoryProvidersFromSystemProperty() throws Exception {
+        System.setProperty(JAXBContext.JAXB_CONTEXT_FACTORY, InterfaceContextFactory.class.getName());
+
+        JAXBContext context = JAXBContext.newInstance(NoProviderBoundType.class);
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("interface-context-factory-classes");
     }
 
     @Test
