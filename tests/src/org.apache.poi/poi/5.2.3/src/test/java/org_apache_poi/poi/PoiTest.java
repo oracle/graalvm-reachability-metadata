@@ -47,6 +47,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.common.usermodel.HyperlinkType;
+import org.apache.poi.ss.usermodel.ComparisonOperator;
+import org.apache.poi.ss.usermodel.ConditionType;
+import org.apache.poi.ss.usermodel.ConditionalFormatting;
+import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
+import org.apache.poi.ss.usermodel.FontFormatting;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.PatternFormatting;
+import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -227,6 +235,44 @@ class PoiTest {
         }
     }
 
+    @Test
+    void workbookRoundTripsConditionalFormattingRules() throws Exception {
+        byte[] workbookBytes = createWorkbookWithConditionalFormattingBytes();
+
+        try (Workbook workbook = WorkbookFactory.create(new ByteArrayInputStream(workbookBytes))) {
+            Sheet sheet = workbook.getSheet("Conditional");
+            assertThat(sheet).isNotNull();
+            assertThat(sheet.getRow(1).getCell(1).getNumericCellValue()).isEqualTo(95.0d);
+            assertThat(sheet.getRow(4).getCell(1).getNumericCellValue()).isEqualTo(140.0d);
+
+            SheetConditionalFormatting conditionalFormatting = sheet.getSheetConditionalFormatting();
+            assertThat(conditionalFormatting.getNumConditionalFormattings()).isEqualTo(1);
+
+            ConditionalFormatting storedFormatting = conditionalFormatting.getConditionalFormattingAt(0);
+            assertThat(storedFormatting.getFormattingRanges()).hasSize(1);
+            assertThat(storedFormatting.getFormattingRanges()[0].formatAsString()).isEqualTo("B2:B5");
+            assertThat(storedFormatting.getNumberOfRules()).isEqualTo(2);
+
+            ConditionalFormattingRule thresholdRule = storedFormatting.getRule(0);
+            assertThat(thresholdRule.getConditionType()).isEqualTo(ConditionType.CELL_VALUE_IS);
+            assertThat(thresholdRule.getComparisonOperation()).isEqualTo(ComparisonOperator.GT);
+            assertThat(thresholdRule.getFormula1()).isEqualTo("100");
+            PatternFormatting thresholdPattern = thresholdRule.getPatternFormatting();
+            assertThat(thresholdPattern).isNotNull();
+            assertThat(thresholdPattern.getFillPattern()).isEqualTo(PatternFormatting.SOLID_FOREGROUND);
+            assertThat(thresholdPattern.getFillForegroundColor()).isEqualTo(IndexedColors.LIGHT_ORANGE.getIndex());
+
+            ConditionalFormattingRule alternatingRowRule = storedFormatting.getRule(1);
+            assertThat(alternatingRowRule.getConditionType()).isEqualTo(ConditionType.FORMULA);
+            assertThat(alternatingRowRule.getFormula1()).isEqualTo("MOD(ROW(),2)=0");
+            FontFormatting alternatingFont = alternatingRowRule.getFontFormatting();
+            assertThat(alternatingFont).isNotNull();
+            assertThat(alternatingFont.isBold()).isTrue();
+            assertThat(alternatingFont.isItalic()).isTrue();
+            assertThat(alternatingFont.getFontColorIndex()).isEqualTo(IndexedColors.BLUE.getIndex());
+        }
+    }
+
     private static byte[] createWorkbookBytes() throws Exception {
         try (HSSFWorkbook workbook = new HSSFWorkbook()) {
             workbook.createInformationProperties();
@@ -345,6 +391,53 @@ class PoiTest {
             sheet.getRow(1).createCell(1).setCellValue(12);
             sheet.createRow(2).createCell(0).setCellValue("South");
             sheet.getRow(2).createCell(1).setCellValue(24);
+
+            return writeDocument(workbook);
+        }
+    }
+
+    private static byte[] createWorkbookWithConditionalFormattingBytes() throws Exception {
+        try (HSSFWorkbook workbook = new HSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Conditional");
+
+            Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Region");
+            headerRow.createCell(1).setCellValue("Sales");
+
+            Row northRow = sheet.createRow(1);
+            northRow.createCell(0).setCellValue("North");
+            northRow.createCell(1).setCellValue(95);
+
+            Row southRow = sheet.createRow(2);
+            southRow.createCell(0).setCellValue("South");
+            southRow.createCell(1).setCellValue(105);
+
+            Row westRow = sheet.createRow(3);
+            westRow.createCell(0).setCellValue("West");
+            westRow.createCell(1).setCellValue(120);
+
+            Row eastRow = sheet.createRow(4);
+            eastRow.createCell(0).setCellValue("East");
+            eastRow.createCell(1).setCellValue(140);
+
+            SheetConditionalFormatting conditionalFormatting = sheet.getSheetConditionalFormatting();
+
+            ConditionalFormattingRule thresholdRule = conditionalFormatting.createConditionalFormattingRule(
+                    ComparisonOperator.GT,
+                    "100");
+            PatternFormatting thresholdPattern = thresholdRule.createPatternFormatting();
+            thresholdPattern.setFillForegroundColor(IndexedColors.LIGHT_ORANGE.getIndex());
+            thresholdPattern.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
+
+            ConditionalFormattingRule alternatingRowRule = conditionalFormatting.createConditionalFormattingRule(
+                    "MOD(ROW(),2)=0");
+            FontFormatting alternatingFont = alternatingRowRule.createFontFormatting();
+            alternatingFont.setFontStyle(true, true);
+            alternatingFont.setFontColorIndex(IndexedColors.BLUE.getIndex());
+
+            conditionalFormatting.addConditionalFormatting(
+                    new CellRangeAddress[] {CellRangeAddress.valueOf("B2:B5")},
+                    new ConditionalFormattingRule[] {thresholdRule, alternatingRowRule});
 
             return writeDocument(workbook);
         }
