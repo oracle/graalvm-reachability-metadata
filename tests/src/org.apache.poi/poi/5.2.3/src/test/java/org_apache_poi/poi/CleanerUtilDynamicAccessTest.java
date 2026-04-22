@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class CleanerUtilDynamicAccessTest {
 
@@ -46,6 +47,11 @@ public class CleanerUtilDynamicAccessTest {
 
     @Test
     void loadsDirectByteBufferCleanerFallbackWhenUnsafeIsUnavailable() throws Exception {
+        assumeFalse(
+                isFutureDefaultsNativeImageRuntime(),
+                "Future defaults do not support this runtime class-definition isolation pattern reliably"
+        );
+
         ClassLoader loader = new CleanerUtilIsolationClassLoader(CleanerUtilDynamicAccessTest.class.getClassLoader());
 
         Class<?> isolatedCleanerUtilClass = Class.forName(CleanerUtil.class.getName(), true, loader);
@@ -56,6 +62,11 @@ public class CleanerUtilDynamicAccessTest {
         assertThat(unmapSupported).isTrue();
         assertThat(cleaner).isNotNull();
         assertThat(reason).isNull();
+    }
+
+    private static boolean isFutureDefaultsNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))
+                && Boolean.getBoolean("org.graalvm.nativeimage.future-defaults.class-for-name-respects-class-loader");
     }
 
     private static final class CleanerUtilIsolationClassLoader extends ClassLoader {
