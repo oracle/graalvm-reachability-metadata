@@ -20,7 +20,7 @@ public class ModuleUtilTest {
     public void resolvesObjectFactoryClassesFromContextPath() throws Exception {
         JAXBContext context = JAXBContext.newInstance(
                 "javax_xml_bind.jaxb_api.objectfactorypath",
-                new PassiveDelegatingClassLoader(getClass().getClassLoader()),
+                ClassLoader.getSystemClassLoader(),
                 Collections.emptyMap());
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
@@ -31,16 +31,21 @@ public class ModuleUtilTest {
     public void resolvesIndexedClassesFromContextPath() throws Exception {
         JAXBContext context = JAXBContext.newInstance(
                 "javax_xml_bind.jaxb_api.indexpath",
-                new PassiveDelegatingClassLoader(getClass().getClassLoader()),
+                ClassLoader.getSystemClassLoader(),
                 Collections.emptyMap());
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
         assertThat(((StubJaxbContext) context).getSource()).isEqualTo("three-argument-context-factory");
     }
 
-    private static final class PassiveDelegatingClassLoader extends ClassLoader {
-        private PassiveDelegatingClassLoader(ClassLoader parent) {
-            super(parent);
-        }
+    @Test
+    public void resolvesMixedContextPathPackagesWithSystemClassLoader() throws Exception {
+        JAXBContext context = JAXBContext.newInstance(
+                "javax_xml_bind.jaxb_api.objectfactorypath:javax_xml_bind.jaxb_api.indexpath",
+                ClassLoader.getSystemClassLoader(),
+                Collections.emptyMap());
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("three-argument-context-factory");
     }
 }
