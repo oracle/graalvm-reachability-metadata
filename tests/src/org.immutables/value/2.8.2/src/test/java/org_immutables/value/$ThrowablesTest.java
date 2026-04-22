@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class $ThrowablesTest {
+class ThrowablesTest {
 
     @Test
     void utilityMethodsExposeCausalChainAndStackTraceText() {
@@ -29,7 +29,7 @@ public class $ThrowablesTest {
         assertThat($Throwables.getStackTraceAsString(top))
                 .contains(RuntimeException.class.getName())
                 .contains("top level")
-                .contains($ThrowablesTest.class.getName());
+                .contains(ThrowablesTest.class.getName());
     }
 
     @Test
