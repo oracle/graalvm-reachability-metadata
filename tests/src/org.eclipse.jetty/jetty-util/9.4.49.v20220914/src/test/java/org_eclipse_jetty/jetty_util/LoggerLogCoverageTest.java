@@ -48,7 +48,7 @@ public class LoggerLogCoverageTest {
         }
 
         public RecordingLogger getLogger(String loggerName) {
-            return new RecordingLogger(name + "." + loggerName);
+            return new RecordingLogger(loggerName);
         }
 
         public String getName() {
