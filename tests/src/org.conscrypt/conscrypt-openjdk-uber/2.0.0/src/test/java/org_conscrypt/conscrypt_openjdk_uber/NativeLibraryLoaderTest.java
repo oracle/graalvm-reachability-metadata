@@ -14,11 +14,9 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +46,7 @@ public class NativeLibraryLoaderTest {
         Files.write(fallbackLibrary, new byte[] {0x01, 0x23, 0x45, 0x67});
 
         System.setProperty("os.name", OSX_NAME);
-        try (IsolatedConscryptClassLoader isolatedConscryptClassLoader = new IsolatedConscryptClassLoader(codeSourceUrl("org.conscrypt.Conscrypt"))) {
+        try (IsolatedConscryptClassLoader isolatedConscryptClassLoader = new IsolatedConscryptClassLoader()) {
             NativeLibraryLookupClassLoader targetClassLoader = new NativeLibraryLookupClassLoader(
                     fallbackLibrary.toUri().toURL(),
                     true,
@@ -81,7 +79,6 @@ public class NativeLibraryLoaderTest {
 
         System.setProperty("os.name", OSX_NAME);
         try (IsolatedConscryptClassLoader isolatedConscryptClassLoader = new IsolatedConscryptClassLoader(
-                codeSourceUrl("org.conscrypt.Conscrypt"),
                 patchUtf8Constant(readClassBytes(NATIVE_LIBRARY_LOADER_CLASS_NAME), ".jnilib", ".so"))) {
             NativeLibraryLookupClassLoader targetClassLoader = new NativeLibraryLookupClassLoader(
                     null,
@@ -149,13 +146,6 @@ public class NativeLibraryLoaderTest {
             }
             throw invocationTargetException;
         }
-    }
-
-    private static URL codeSourceUrl(String className) throws Exception {
-        Class<?> type = Class.forName(className, false, NativeLibraryLoaderTest.class.getClassLoader());
-        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
-        assertThat(codeSource).isNotNull();
-        return codeSource.getLocation();
     }
 
     private static byte[] readClassBytes(String className) throws Exception {
@@ -272,17 +262,17 @@ public class NativeLibraryLoaderTest {
         }
     }
 
-    private static final class IsolatedConscryptClassLoader extends URLClassLoader {
+    private static final class IsolatedConscryptClassLoader extends ClassLoader implements AutoCloseable {
 
         private final byte[] patchedNativeLibraryLoaderClassBytes;
 
-        private IsolatedConscryptClassLoader(URL jarUrl, byte[] patchedNativeLibraryLoaderClassBytes) {
-            super(new URL[] {jarUrl}, ClassLoader.getPlatformClassLoader());
+        private IsolatedConscryptClassLoader(byte[] patchedNativeLibraryLoaderClassBytes) {
+            super(NativeLibraryLoaderTest.class.getClassLoader());
             this.patchedNativeLibraryLoaderClassBytes = patchedNativeLibraryLoaderClassBytes;
         }
 
-        private IsolatedConscryptClassLoader(URL jarUrl) {
-            this(jarUrl, null);
+        private IsolatedConscryptClassLoader() {
+            this(null);
         }
 
         @Override
@@ -290,14 +280,11 @@ public class NativeLibraryLoaderTest {
             synchronized (getClassLoadingLock(name)) {
                 Class<?> loadedClass = findLoadedClass(name);
                 if (loadedClass == null) {
-                    if (NATIVE_LIBRARY_LOADER_CLASS_NAME.equals(name) && patchedNativeLibraryLoaderClassBytes != null) {
-                        loadedClass = defineClass(name, patchedNativeLibraryLoaderClassBytes, 0, patchedNativeLibraryLoaderClassBytes.length);
-                    } else if (name.startsWith(CONSCRYPT_PACKAGE)) {
-                        try {
-                            loadedClass = findClass(name);
-                        } catch (ClassNotFoundException ignored) {
-                            loadedClass = super.loadClass(name, false);
-                        }
+                    if (name.startsWith(CONSCRYPT_PACKAGE)) {
+                        byte[] classBytes = NATIVE_LIBRARY_LOADER_CLASS_NAME.equals(name) && patchedNativeLibraryLoaderClassBytes != null
+                                ? patchedNativeLibraryLoaderClassBytes
+                                : readClassBytesUnchecked(name);
+                        loadedClass = defineClass(name, classBytes, 0, classBytes.length);
                     } else {
                         loadedClass = super.loadClass(name, false);
                     }
@@ -307,6 +294,18 @@ public class NativeLibraryLoaderTest {
                 }
                 return loadedClass;
             }
+        }
+
+        private static byte[] readClassBytesUnchecked(String className) throws ClassNotFoundException {
+            try {
+                return readClassBytes(className);
+            } catch (Exception exception) {
+                throw new ClassNotFoundException(className, exception);
+            }
+        }
+
+        @Override
+        public void close() {
         }
     }
 }
