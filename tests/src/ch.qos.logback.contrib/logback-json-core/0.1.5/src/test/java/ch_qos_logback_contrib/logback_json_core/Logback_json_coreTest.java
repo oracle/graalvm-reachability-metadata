@@ -11,7 +11,10 @@ import ch.qos.logback.contrib.json.JsonLayoutBase;
 import ch.qos.logback.core.ContextBase;
 import org.junit.jupiter.api.Test;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -119,6 +122,26 @@ class Logback_json_coreTest {
                 .doesNotContainKey("skipped");
     }
 
+    @Test
+    void doLayoutUsesOverriddenDateFormattingHooksForTimestampFields() {
+        HookedTimestampJsonLayout layout = new HookedTimestampJsonLayout();
+        RecordingJsonFormatter formatter = new RecordingJsonFormatter();
+
+        layout.setJsonFormatter(formatter);
+        layout.setTimestampFormat("custom-pattern");
+        layout.setTimestampFormatTimezoneId("GMT+02:00");
+
+        String output = layout.doLayout(new TestEvent("ignored", 0L, Collections.emptyMap(), false, true, false));
+
+        assertThat(layout.createDateFormatPattern).isEqualTo("custom-pattern");
+        assertThat(layout.formattedDate).isEqualTo(new Date(0L));
+        assertThat(layout.formatTimezoneId).isEqualTo("GMT+02:00");
+        assertThat(formatter.lastMap)
+                .containsEntry("timestamp", "0@GMT+02:00@custom-pattern")
+                .hasSize(1);
+        assertThat(output).isEqualTo("timestamp=0@GMT+02:00@custom-pattern");
+    }
+
     private static LinkedHashMap<String, String> linkedContext(String key, String value) {
         LinkedHashMap<String, String> context = new LinkedHashMap<>();
         context.put(key, value);
@@ -146,6 +169,36 @@ class Logback_json_coreTest {
             add("message", event.includeMessage(), event.message(), json);
             addTimestamp("timestamp", event.includeTimestamp(), event.timestamp(), json);
             addMap("context", event.includeContext(), event.context(), json);
+            return json;
+        }
+    }
+
+    private static final class HookedTimestampJsonLayout extends JsonLayoutBase<TestEvent> {
+
+        private String createDateFormatPattern;
+        private Date formattedDate;
+        private String formatTimezoneId;
+
+        @Override
+        protected DateFormat createDateFormat(String timestampFormat) {
+            createDateFormatPattern = timestampFormat;
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        }
+
+        @Override
+        protected String format(Date date, DateFormat dateFormat) {
+            formattedDate = new Date(date.getTime());
+            formatTimezoneId = dateFormat.getTimeZone().getID();
+            return date.getTime() + "@" + formatTimezoneId + "@" + createDateFormatPattern;
+        }
+
+        @Override
+        protected Map<String, Object> toJsonMap(TestEvent event) {
+            if (event == null) {
+                return null;
+            }
+            LinkedHashMap<String, Object> json = new LinkedHashMap<>();
+            addTimestamp("timestamp", event.includeTimestamp(), event.timestamp(), json);
             return json;
         }
     }
