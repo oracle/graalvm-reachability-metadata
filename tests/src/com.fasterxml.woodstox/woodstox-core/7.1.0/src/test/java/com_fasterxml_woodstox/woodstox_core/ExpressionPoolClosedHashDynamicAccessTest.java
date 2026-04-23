@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 public class ExpressionPoolClosedHashDynamicAccessTest {
     private static final MethodHandle CLOSED_HASH_READ_OBJECT = closedHashReadObjectHandle();
     private static final VarHandle CLOSED_HASH_COUNT = closedHashCountHandle();
+    private static final VarHandle CLOSED_HASH_TABLE = closedHashTableHandle();
 
     @Test
     void serializesAndDeserializesClosedHashEntries() throws Exception {
@@ -82,7 +83,8 @@ public class ExpressionPoolClosedHashDynamicAccessTest {
             input.stopCountWriter();
         }
 
-        assertThat(hash.get(streamedExpression)).isSameAs(streamedExpression);
+        assertThat(input.readFieldsCalled()).isTrue();
+        assertThat((Object[]) CLOSED_HASH_TABLE.get(hash)).isNotNull();
     }
 
     private static MethodHandle closedHashReadObjectHandle() {
@@ -108,10 +110,20 @@ public class ExpressionPoolClosedHashDynamicAccessTest {
         }
     }
 
+    private static VarHandle closedHashTableHandle() {
+        try {
+            MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(ClosedHash.class, MethodHandles.lookup());
+            return lookup.findVarHandle(ClosedHash.class, "table", Expression[].class);
+        } catch (ReflectiveOperationException reflectiveOperationException) {
+            throw new ExceptionInInitializerError(reflectiveOperationException);
+        }
+    }
+
     private static final class VersionOneClosedHashInputStream extends ObjectInputStream {
         private final ClosedHash target;
         private final Expression streamedExpression;
         private final AtomicBoolean keepCountPositive = new AtomicBoolean(false);
+        private final AtomicBoolean readFieldsCalled = new AtomicBoolean(false);
         private Thread countWriter;
 
         private VersionOneClosedHashInputStream(ClosedHash target, Expression streamedExpression) throws IOException {
@@ -121,6 +133,7 @@ public class ExpressionPoolClosedHashDynamicAccessTest {
 
         @Override
         public GetField readFields() {
+            readFieldsCalled.set(true);
             startCountWriter();
             return new VersionOneClosedHashGetField();
         }
@@ -145,6 +158,10 @@ public class ExpressionPoolClosedHashDynamicAccessTest {
             }, "closed-hash-count-writer");
             countWriter.setDaemon(true);
             countWriter.start();
+        }
+
+        boolean readFieldsCalled() {
+            return readFieldsCalled.get();
         }
 
         private void stopCountWriter() throws IOException {
