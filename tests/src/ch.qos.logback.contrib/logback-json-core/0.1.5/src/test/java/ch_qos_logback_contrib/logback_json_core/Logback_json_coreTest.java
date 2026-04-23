@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -120,6 +121,29 @@ class Logback_json_coreTest {
                 .containsEntry("negative", "-1")
                 .containsEntry("formatted", "1970-01-02")
                 .doesNotContainKey("skipped");
+    }
+
+    @Test
+    void doLayoutUsesSystemDefaultTimezoneWhenTimestampTimezoneIdIsNotConfigured() {
+        TimeZone originalDefaultTimeZone = TimeZone.getDefault();
+        try {
+            TimeZone.setDefault(TimeZone.getTimeZone("GMT+05:30"));
+
+            TestJsonLayout layout = new TestJsonLayout();
+            RecordingJsonFormatter formatter = new RecordingJsonFormatter();
+            layout.setJsonFormatter(formatter);
+            layout.setTimestampFormat("yyyy-MM-dd HH:mm");
+
+            String output = layout.doLayout(new TestEvent("ignored", 0L, Collections.emptyMap(), false, true, false));
+
+            assertThat(layout.getTimestampFormatTimezoneId()).isNull();
+            assertThat(formatter.lastMap)
+                    .containsEntry("timestamp", "1970-01-01 05:30")
+                    .hasSize(1);
+            assertThat(output).isEqualTo("timestamp=1970-01-01 05:30");
+        } finally {
+            TimeZone.setDefault(originalDefaultTimeZone);
+        }
     }
 
     @Test
