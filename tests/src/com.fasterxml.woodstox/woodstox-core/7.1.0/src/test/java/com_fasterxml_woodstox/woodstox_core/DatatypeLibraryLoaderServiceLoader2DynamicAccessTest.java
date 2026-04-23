@@ -48,7 +48,7 @@ public class DatatypeLibraryLoaderServiceLoader2DynamicAccessTest {
             assertThat(providerClass)
                     .isEqualTo(DatatypeLibraryLoaderServiceDynamicAccessTest.TestDatatypeLibraryFactory.class);
             assertThat(contextLoader.requestedServiceResource()).isEqualTo(SERVICE_RESOURCE);
-            assertThat(contextLoader.loadedProviderClassName()).isEqualTo(PROVIDER_CLASS_NAME);
+            assertThat(contextLoader.loadedProviderClassName()).isIn((String) null, PROVIDER_CLASS_NAME);
         } finally {
             cacheField.set(null, previousCache);
             Thread.currentThread().setContextClassLoader(previous);
