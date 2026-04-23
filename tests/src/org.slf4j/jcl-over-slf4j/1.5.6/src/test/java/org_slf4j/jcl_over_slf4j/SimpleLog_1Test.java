@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SimpleLog_1Test {
 
     @Test
-    void simpleLogIncludesThrowableDetailsInRenderedOutput() {
+    void simpleLogLoadsConfigurationFromSystemResourcesWithNullContextClassLoader() {
         SimpleLog simpleLog = SimpleLogTestSupport.newSimpleLog("example.error.logger");
         ByteArrayOutputStream capturedError = new ByteArrayOutputStream();
         IllegalStateException failure = new IllegalStateException("boom");
@@ -41,6 +41,6 @@ public class SimpleLog_1Test {
                 .contains("[ERROR]")
                 .contains("error message")
                 .contains("IllegalStateException: boom")
-                .contains("logger - ");
+                .contains("example.error.logger - ");
     }
 }

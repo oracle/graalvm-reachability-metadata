@@ -10,30 +10,24 @@ import org.apache.commons.logging.impl.SimpleLog;
 
 public final class SimpleLogTestSupport {
 
-    private static final Object LOCK = new Object();
+    // Initialize SimpleLog once with a null context class loader so it falls back to system resources.
+    static {
+        Thread currentThread = Thread.currentThread();
+        ClassLoader previousLoader = currentThread.getContextClassLoader();
 
-    private static boolean initialized;
+        currentThread.setContextClassLoader(null);
+        try {
+            new SimpleLog(SimpleLogTestSupport.class.getName());
+        }
+        finally {
+            currentThread.setContextClassLoader(previousLoader);
+        }
+    }
 
     private SimpleLogTestSupport() {
     }
 
     public static SimpleLog newSimpleLog(String name) {
-        synchronized (LOCK) {
-            if (!initialized) {
-                Thread currentThread = Thread.currentThread();
-                ClassLoader previousLoader = currentThread.getContextClassLoader();
-
-                currentThread.setContextClassLoader(null);
-                try {
-                    SimpleLog simpleLog = new SimpleLog(name);
-                    initialized = true;
-                    return simpleLog;
-                }
-                finally {
-                    currentThread.setContextClassLoader(previousLoader);
-                }
-            }
-        }
         return new SimpleLog(name);
     }
 }

@@ -52,6 +52,6 @@ public class SimpleLogTest {
                 .contains("trace message")
                 .contains("info message")
                 .contains("warn message")
-                .contains("logger - ");
+                .contains("example.trace.logger - ");
     }
 }
