@@ -16,8 +16,9 @@ public class TypeResolverDynamicAccessTest {
     void resolvesInheritedGenericArraySetterTypes() throws Exception {
         StringArrayContainer bean = JSON.std.beanFrom(StringArrayContainer.class,
                 "{\"values\":[\"alpha\",\"beta\"]}");
+        Object[] values = ((GenericArrayContainer<?>) bean).getValues();
 
-        assertThat(bean.getValues()).containsExactly("alpha", "beta");
+        assertThat(values).containsExactly("alpha", "beta");
     }
 
     static class GenericArrayContainer<T> {
