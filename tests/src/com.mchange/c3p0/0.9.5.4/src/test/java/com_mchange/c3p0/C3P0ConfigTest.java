@@ -9,7 +9,7 @@ package com_mchange.c3p0;
 import com.mchange.v2.c3p0.WrapperConnectionPoolDataSource;
 import com.mchange.v2.c3p0.cfg.C3P0Config;
 import com.mchange.v2.c3p0.cfg.C3P0ConfigFinder;
-import com.mchange.v2.c3p0.cfg.DefaultC3P0ConfigFinder;
+import com.mchange.v2.c3p0.cfg.C3P0ConfigUtils;
 import com.mchange.v2.c3p0.impl.C3P0ImplUtils;
 import com.mchange.v2.cfg.MultiPropertiesConfig;
 import org.junit.jupiter.api.Test;
@@ -69,9 +69,9 @@ public class C3P0ConfigTest {
         }
 
         @Override
-        public C3P0Config findConfig() throws Exception {
+        public C3P0Config findConfig() {
             INVOCATIONS.incrementAndGet();
-            return new DefaultC3P0ConfigFinder().findConfig();
+            return C3P0ConfigUtils.configFromFlatDefaults(C3P0ConfigUtils.extractHardcodedC3P0Defaults());
         }
     }
 }
