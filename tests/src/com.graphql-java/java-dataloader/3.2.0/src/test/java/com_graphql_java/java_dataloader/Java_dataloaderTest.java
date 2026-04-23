@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.dataloader.BatchLoader;
-import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.BatchLoaderWithContext;
 import org.dataloader.CacheKey;
 import org.dataloader.DataLoader;
