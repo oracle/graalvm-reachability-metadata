@@ -11,9 +11,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.dataloader.BatchLoader;
@@ -27,6 +29,7 @@ import org.dataloader.DataLoaderRegistry;
 import org.dataloader.DispatchResult;
 import org.dataloader.MappedBatchLoader;
 import org.dataloader.Try;
+import org.dataloader.ValueCache;
 import org.dataloader.stats.SimpleStatisticsCollector;
 import org.dataloader.stats.Statistics;
 import org.junit.jupiter.api.Test;
@@ -203,6 +206,43 @@ class Java_dataloaderTest {
     }
 
     @Test
+    void valueCacheReusesCachedValuesAcrossLoadersAndOnlyBatchesMisses() {
+        RecordingValueCache<String, String> valueCache = new RecordingValueCache<>();
+        List<List<String>> dispatchedBatches = new ArrayList<>();
+        BatchLoader<String, String> batchLoader = keys -> {
+            dispatchedBatches.add(List.copyOf(keys));
+            return CompletableFuture.completedFuture(keys.stream()
+                .map(key -> "value-" + key)
+                .toList());
+        };
+
+        DataLoaderOptions options = DataLoaderOptions.newOptions()
+            .setValueCache(valueCache);
+
+        DataLoader<String, String> firstLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
+        CompletableFuture<String> alpha = firstLoader.load("alpha");
+
+        assertThat(firstLoader.dispatchAndJoin()).containsExactly("value-alpha");
+        assertThat(alpha.join()).isEqualTo("value-alpha");
+        assertThat(dispatchedBatches).containsExactly(List.of("alpha"));
+        assertThat(valueCache.getRequests).containsExactly(List.of("alpha"));
+        assertThat(valueCache.setRequests).containsExactly(List.of("alpha"));
+
+        DataLoader<String, String> secondLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
+        CompletableFuture<List<String>> many = secondLoader.loadMany(List.of("alpha", "beta"));
+
+        assertThat(secondLoader.dispatchAndJoin()).containsExactly("value-alpha", "value-beta");
+        assertThat(many.join()).containsExactly("value-alpha", "value-beta");
+        assertThat(dispatchedBatches).containsExactly(List.of("alpha"), List.of("beta"));
+        assertThat(valueCache.getRequests).containsExactly(List.of("alpha"), List.of("alpha", "beta"));
+        assertThat(valueCache.setRequests).containsExactly(List.of("alpha"), List.of("beta"));
+        assertThat(valueCache.values)
+            .containsEntry("alpha", "value-alpha")
+            .containsEntry("beta", "value-beta");
+        assertThat(secondLoader.getValueCache()).isSameAs(valueCache);
+    }
+
+    @Test
     void registryDispatchesAllLoadersAndAggregatesStatistics() {
         DataLoaderOptions options = DataLoaderOptions.newOptions()
             .setStatisticsCollector(SimpleStatisticsCollector::new);
@@ -234,5 +274,54 @@ class Java_dataloaderTest {
         assertThat(statistics.getBatchInvokeCount()).isEqualTo(2);
         assertThat(statistics.getBatchLoadCount()).isEqualTo(3);
         assertThat(statistics.getCacheHitCount()).isZero();
+    }
+
+    private static final class RecordingValueCache<K, V> implements ValueCache<K, V> {
+
+        private final Map<K, V> values = new ConcurrentHashMap<>();
+        private final List<List<K>> getRequests = new ArrayList<>();
+        private final List<List<K>> setRequests = new ArrayList<>();
+
+        @Override
+        public CompletableFuture<V> get(K key) {
+            return CompletableFuture.completedFuture(values.get(key));
+        }
+
+        @Override
+        public CompletableFuture<List<Try<V>>> getValues(List<K> keys) {
+            getRequests.add(List.copyOf(keys));
+            return CompletableFuture.completedFuture(keys.stream()
+                .map(key -> values.containsKey(key)
+                    ? Try.succeeded(values.get(key))
+                    : Try.<V>failed(new NoSuchElementException("No cached value for " + key)))
+                .toList());
+        }
+
+        @Override
+        public CompletableFuture<V> set(K key, V value) {
+            values.put(key, value);
+            return CompletableFuture.completedFuture(value);
+        }
+
+        @Override
+        public CompletableFuture<List<V>> setValues(List<K> keys, List<V> valuesToCache) {
+            setRequests.add(List.copyOf(keys));
+            for (int index = 0; index < keys.size(); index++) {
+                values.put(keys.get(index), valuesToCache.get(index));
+            }
+            return CompletableFuture.completedFuture(List.copyOf(valuesToCache));
+        }
+
+        @Override
+        public CompletableFuture<Void> delete(K key) {
+            values.remove(key);
+            return CompletableFuture.completedFuture(null);
+        }
+
+        @Override
+        public CompletableFuture<Void> clear() {
+            values.clear();
+            return CompletableFuture.completedFuture(null);
+        }
     }
 }
