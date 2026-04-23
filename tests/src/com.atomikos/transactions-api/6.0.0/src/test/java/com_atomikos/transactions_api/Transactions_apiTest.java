@@ -26,6 +26,7 @@ import com.atomikos.icatch.config.Configuration;
 import com.atomikos.icatch.event.transaction.ParticipantHeuristicEvent;
 import com.atomikos.icatch.event.transaction.TransactionHeuristicEvent;
 import com.atomikos.icatch.provider.ConfigProperties;
+import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.recovery.PendingTransactionRecord;
 import com.atomikos.recovery.RecoveryLog;
 import com.atomikos.recovery.TxState;
@@ -43,6 +44,7 @@ import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class Transactions_apiTest {
@@ -125,6 +127,39 @@ class Transactions_apiTest {
         assertThatThrownBy(() -> configProperties.getProperty("missing.property"))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("Missing required property");
+    }
+
+    @Test
+    void configurationFailsFastWhenAssemblerServiceIsUnavailable() {
+        assertThat(Configuration.getTransactionService()).isNull();
+        assertThat(Configuration.getRecoveryService()).isNull();
+        assertThat(Configuration.getCompositeTransactionManager()).isNull();
+
+        assertThatThrownBy(Configuration::getConfigProperties)
+            .isInstanceOf(SysException.class)
+            .hasMessageContaining("No Assembler service found");
+
+        assertThatThrownBy(Configuration::init)
+            .isInstanceOf(SysException.class)
+            .hasMessageContaining("No Assembler service found");
+
+        assertThat(Configuration.getTransactionService()).isNull();
+        assertThat(Configuration.getRecoveryService()).isNull();
+        assertThat(Configuration.getCompositeTransactionManager()).isNull();
+    }
+
+    @Test
+    void userTransactionServiceImpPropagatesBootstrapFailuresAndSupportsSafeShutdownConveniences() {
+        UserTransactionServiceImp userTransactionService = new UserTransactionServiceImp(baseConfigProperties());
+
+        assertThatThrownBy(userTransactionService::init)
+            .isInstanceOf(SysException.class)
+            .hasMessageContaining("No Assembler service found");
+
+        assertThat(userTransactionService.getCompositeTransactionManager()).isNull();
+        assertThatCode(userTransactionService::shutdownWait).doesNotThrowAnyException();
+        assertThatCode(userTransactionService::shutdownForce).doesNotThrowAnyException();
+        assertThatCode(userTransactionService::close).doesNotThrowAnyException();
     }
 
     @Test
