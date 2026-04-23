@@ -6,6 +6,8 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
+import java.util.LinkedHashMap;
+
 import com.fasterxml.jackson.jr.ob.JSON;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +15,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleValueReaderDynamicAccessTest {
     @Test
-    void resolvesClassesFromStringValues() throws Exception {
-        Class<?> resolved = JSON.std.beanFrom(Class.class, "\"" + SampleType.class.getName() + "\"");
+    void resolvesTopLevelClassesFromStringValues() throws Exception {
+        Class<?> resolved = JSON.std.beanFrom(Class.class, '"' + LinkedHashMap.class.getName() + '"');
 
-        assertThat(resolved).isSameAs(SampleType.class);
+        assertThat(resolved).isSameAs(LinkedHashMap.class);
     }
 
-    static final class SampleType {
+    @Test
+    void resolvesClassTypedBeanPropertiesFromStringValues() throws Exception {
+        TypeHolder holder = JSON.std.beanFrom(TypeHolder.class,
+                "{\"type\":\"" + SampleType.class.getName() + "\"}");
+
+        assertThat(holder.type).isSameAs(SampleType.class);
+    }
+
+    public static final class TypeHolder {
+        public Class<?> type;
+    }
+
+    public static final class SampleType {
     }
 }
