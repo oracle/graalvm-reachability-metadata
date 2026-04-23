@@ -18,7 +18,6 @@ import com.ctc.wstx.shaded.msv_core.relaxns.verifier.AnyOtherElementVerifier;
 import java.util.Collections;
 import java.util.Iterator;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
