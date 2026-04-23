@@ -11,11 +11,13 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.logging.impl.SimpleLog;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org_slf4j.jcl_over_slf4j.support.SimpleLogTestSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(1)
 public class SimpleLog_1Test {
 
     @Test
