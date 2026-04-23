@@ -6,6 +6,9 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
+import java.awt.Point;
+import java.util.Date;
+
 import com.fasterxml.jackson.jr.ob.JSON;
 import org.junit.jupiter.api.Test;
 
@@ -15,37 +18,27 @@ public class BeanPropertyReaderDynamicAccessTest {
     private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
 
     @Test
-    void populatesFieldBackedProperties() throws Exception {
-        FieldBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(FieldBackedReaderBean.class,
-                "{\"id\":3,\"label\":\"reader\"}");
+    void populatesFieldBackedJdkBeanProperties() throws Exception {
+        Point point = JSON_WITH_FORCE_ACCESS.beanFrom(Point.class, "{\"x\":3,\"y\":4}");
 
-        assertThat(bean.getId()).isEqualTo(3);
-        assertThat(bean.getLabel()).isEqualTo("reader");
+        assertThat(point.x).isEqualTo(3);
+        assertThat(point.y).isEqualTo(4);
     }
 
     @Test
-    void populatesSetterBackedProperties() throws Exception {
+    void populatesPublicSetterBackedJdkBeanProperties() throws Exception {
+        Date date = JSON_WITH_FORCE_ACCESS.beanFrom(Date.class, "{\"time\":123456789}");
+
+        assertThat(date.getTime()).isEqualTo(123456789L);
+    }
+
+    @Test
+    void populatesPrivateSetterBackedProperties() throws Exception {
         SetterBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(SetterBackedReaderBean.class,
                 "{\"name\":\"Ada\"}");
 
         assertThat(bean.getName()).isEqualTo("Ada");
         assertThat(bean.getSetterCalls()).isEqualTo(1);
-    }
-
-    public static final class FieldBackedReaderBean {
-        public int id;
-        public String label;
-
-        public FieldBackedReaderBean() {
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getLabel() {
-            return label;
-        }
     }
 
     public static final class SetterBackedReaderBean {
