@@ -19,6 +19,9 @@ import kotlin.Pair;
 import kotlin.Triple;
 import kotlin.TuplesKt;
 import kotlin.collections.CollectionsKt;
+import kotlin.ranges.IntProgression;
+import kotlin.ranges.IntRange;
+import kotlin.ranges.RangesKt;
 import kotlin.sequences.Sequence;
 import kotlin.sequences.SequencesKt;
 import kotlin.text.MatchResult;
@@ -107,6 +110,23 @@ public class Kotlin_stdlib_commonTest {
         );
 
         assertThat(evenSquares).containsExactly(4, 16, 36);
+    }
+
+    @Test
+    void rangeUtilitiesCreateBoundedAndSteppedProgressions() {
+        IntRange supportedMinorRange = RangesKt.until(2, 6);
+        IntProgression retryCountdown = RangesKt.step(RangesKt.downTo(10, 2), 3);
+
+        assertThat(CollectionsKt.toList(supportedMinorRange)).containsExactly(2, 3, 4, 5);
+        assertThat(supportedMinorRange.contains(5)).isTrue();
+        assertThat(supportedMinorRange.contains(6)).isFalse();
+        assertThat(supportedMinorRange.getStart()).isEqualTo(2);
+        assertThat(supportedMinorRange.getEndInclusive()).isEqualTo(5);
+
+        assertThat(CollectionsKt.toList(retryCountdown)).containsExactly(10, 7, 4);
+        assertThat(RangesKt.coerceIn(0, supportedMinorRange)).isEqualTo(2);
+        assertThat(RangesKt.coerceIn(4, supportedMinorRange)).isEqualTo(4);
+        assertThat(RangesKt.coerceIn(9, supportedMinorRange)).isEqualTo(5);
     }
 
     @Test
