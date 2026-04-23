@@ -172,18 +172,6 @@ public class PoolBackedDataSourceBaseTest {
             throw new SQLFeatureNotSupportedException("Parent logger is not supported.");
         }
 
-        @Override
-        public <T> T unwrap(Class<T> iface) throws SQLException {
-            if (iface.isInstance(this)) {
-                return iface.cast(this);
-            }
-            throw new SQLException("Not a wrapper for " + iface.getName());
-        }
-
-        @Override
-        public boolean isWrapperFor(Class<?> iface) {
-            return iface.isInstance(this);
-        }
     }
 
     public static final class NonSerializableReferenceableConnectionPoolDataSourceFactory implements ObjectFactory {
