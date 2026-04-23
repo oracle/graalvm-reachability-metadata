@@ -247,7 +247,7 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
 
     public static String mapToSchemaPath(String filePath) {
         if (METADATA_PATTERN.matcher(filePath).matches()) {
-            return "metadata/schemas/metadata-library-index-schema-v2.1.0.json";
+            return "metadata/schemas/metadata-library-index-schema-v2.0.1.json";
         }
         return "";
     }
