@@ -7,7 +7,6 @@
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import java.awt.Point;
-import java.util.Date;
 
 import com.fasterxml.jackson.jr.ob.JSON;
 import org.junit.jupiter.api.Test;
@@ -26,10 +25,12 @@ public class BeanPropertyReaderDynamicAccessTest {
     }
 
     @Test
-    void populatesPublicSetterBackedJdkBeanProperties() throws Exception {
-        Date date = JSON_WITH_FORCE_ACCESS.beanFrom(Date.class, "{\"time\":123456789}");
+    void populatesPublicSetterBackedProperties() throws Exception {
+        PublicSetterBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(PublicSetterBackedReaderBean.class,
+                "{\"name\":\"Ada\"}");
 
-        assertThat(date.getTime()).isEqualTo(123456789L);
+        assertThat(bean.getName()).isEqualTo("Ada");
+        assertThat(bean.getSetterCalls()).isEqualTo(1);
     }
 
     @Test
@@ -39,6 +40,27 @@ public class BeanPropertyReaderDynamicAccessTest {
 
         assertThat(bean.getName()).isEqualTo("Ada");
         assertThat(bean.getSetterCalls()).isEqualTo(1);
+    }
+
+    public static final class PublicSetterBackedReaderBean {
+        private String name;
+        private int setterCalls;
+
+        public PublicSetterBackedReaderBean() {
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getSetterCalls() {
+            return setterCalls;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+            setterCalls++;
+        }
     }
 
     public static final class SetterBackedReaderBean {
