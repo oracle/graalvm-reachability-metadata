@@ -32,8 +32,18 @@ public class DatatypeLibraryLoaderDynamicAccessTest {
 
     @Test
     void invokesLegacySyntheticClassLookupHelper() throws Throwable {
-        assertThat(invokeSyntheticClassLookup(DatatypeLibraryFactory.class.getName()))
+        assertThat(invokeSyntheticClassLookup(datatypeLibraryFactoryClassName()))
                 .isEqualTo(DatatypeLibraryFactory.class);
+    }
+
+    private static String datatypeLibraryFactoryClassName() {
+        final char[] className = "com/ctc/wstx/shaded/msv/relaxng_datatype/DatatypeLibraryFactory".toCharArray();
+        for (int index = 0; index < className.length; index++) {
+            if (className[index] == '/') {
+                className[index] = '.';
+            }
+        }
+        return new String(className);
     }
 
     private static Class<?> invokeSyntheticClassLookup(final String className) throws Throwable {
