@@ -32,7 +32,7 @@ public class LoggingEventVOTest {
                     Level.WARN,
                     "payload {} {}",
                     null,
-                    new Object[] { "first", null }
+                    new Object[] {"first", null }
             );
             LoggingEventVO original = LoggingEventVO.build(event);
 
