@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 public class DatatypeLibraryLoaderServiceDynamicAccessTest {
     public static final String SERVICE_URI = "urn:test:provider";
+    private static final String XML_SCHEMA_DATATYPES_URI = "http://www.w3.org/2001/XMLSchema-datatypes";
     private static final AtomicInteger FACTORY_INSTANTIATIONS = new AtomicInteger();
 
     @Test
@@ -36,6 +37,22 @@ public class DatatypeLibraryLoaderServiceDynamicAccessTest {
             assertThat(FACTORY_INSTANTIATIONS.get()).isEqualTo(1);
             assertThat(library).isNotNull();
             assertThat(library.createDatatype("token").isValid("native image", null)).isTrue();
+        } finally {
+            Thread.currentThread().setContextClassLoader(previous);
+        }
+    }
+
+    @Test
+    void instantiatesBuiltInDatatypeLibraryFactoryFromLibraryServiceEntries() throws Exception {
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
+            DatatypeLibrary library = new DatatypeLibraryLoader().createDatatypeLibrary(XML_SCHEMA_DATATYPES_URI);
+
+            assertThat(library).isNotNull();
+            assertThat(library.createDatatype("string").isValid("woodstox", null)).isTrue();
         } finally {
             Thread.currentThread().setContextClassLoader(previous);
         }
