@@ -9,7 +9,7 @@ package com_mchange.c3p0;
 import com.mchange.v2.c3p0.impl.JndiRefDataSourceBase;
 import org.junit.jupiter.api.Test;
 
-import java.util.Hashtable;
+import java.util.Properties;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +18,7 @@ public class JndiRefDataSourceBaseTest {
     @Test
     void serializesJndiReferenceProperties() throws Exception {
         JndiRefDataSourceBase dataSource = new JndiRefDataSourceBase(false);
-        Hashtable<String, String> environment = new Hashtable<>();
+        Properties environment = new Properties();
         environment.put("java.naming.factory.initial", "example.Factory");
         dataSource.setCaching(false);
         dataSource.setFactoryClassLocation("factory-location");

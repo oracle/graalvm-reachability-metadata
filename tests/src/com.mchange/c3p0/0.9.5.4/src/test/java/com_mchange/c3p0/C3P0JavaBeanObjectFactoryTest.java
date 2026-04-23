@@ -11,7 +11,7 @@ import com.mchange.v2.c3p0.impl.JndiRefDataSourceBase;
 import org.junit.jupiter.api.Test;
 
 import javax.naming.Reference;
-import java.util.Hashtable;
+import java.util.Properties;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +26,7 @@ public class C3P0JavaBeanObjectFactoryTest {
         original.setJndiName("jdbc/factory");
 
         Reference reference = original.getReference();
-        Object recreated = new C3P0JavaBeanObjectFactory().getObjectInstance(reference, null, null, new Hashtable<>());
+        Object recreated = new C3P0JavaBeanObjectFactory().getObjectInstance(reference, null, null, new Properties());
 
         assertThat(recreated).isInstanceOf(JndiRefDataSourceBase.class);
         assertThat(((JndiRefDataSourceBase) recreated).getJndiName()).isEqualTo("jdbc/factory");
