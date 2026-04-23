@@ -20,8 +20,8 @@ public class MessageCatalogDynamicAccessTest {
         Locale.setDefault(Locale.ITALIAN);
         try {
             assertThat(catalog.getMessage(Locale.ENGLISH, "greeting")).isEqualTo("Hello from Woodstox");
-            assertThat(catalog.getMessage(Locale.GERMAN, "greeting")).isEqualTo("Hello from Woodstox");
-            assertThat(catalog.getMessage(Locale.GERMAN, "welcome", new Object[]{"native image"}))
+            assertThat(catalog.getMessage(Locale.ITALIAN, "greeting")).isEqualTo("Hello from Woodstox");
+            assertThat(catalog.getMessage(Locale.ITALIAN, "welcome", new Object[]{"native image"}))
                     .isEqualTo("Hello, native image!");
             assertThat(catalog.isLocaleSupported("en_US")).isTrue();
             assertThat(catalog.isLocaleSupported("zz_ZZ")).isFalse();
