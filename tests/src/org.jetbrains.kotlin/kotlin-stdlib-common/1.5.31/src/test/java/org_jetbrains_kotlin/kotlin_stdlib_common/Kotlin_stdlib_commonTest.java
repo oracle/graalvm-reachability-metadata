@@ -21,6 +21,8 @@ import kotlin.TuplesKt;
 import kotlin.collections.CollectionsKt;
 import kotlin.sequences.Sequence;
 import kotlin.sequences.SequencesKt;
+import kotlin.text.MatchResult;
+import kotlin.text.Regex;
 import kotlin.text.StringsKt;
 import org.junit.jupiter.api.Test;
 
@@ -120,5 +122,33 @@ public class Kotlin_stdlib_commonTest {
         assertThat(lazyValue.getValue()).isEqualTo("computed-1");
         assertThat(lazyValue.isInitialized()).isTrue();
         assertThat(invocations.get()).isEqualTo(1);
+    }
+
+    @Test
+    void regexOperationsCaptureTraverseAndRewriteMatches() {
+        Regex dependencyPattern = new Regex("([a-z]+):(\\d+)");
+        MatchResult firstMatch = dependencyPattern.find("core:7 test:19", 0);
+
+        assertThat(firstMatch).isNotNull();
+        assertThat(firstMatch.getValue()).isEqualTo("core:7");
+        assertThat(firstMatch.getGroups().get(1).getValue()).isEqualTo("core");
+        assertThat(firstMatch.getGroups().get(2).getValue()).isEqualTo("7");
+        assertThat(firstMatch.getRange()).hasToString("0..5");
+
+        MatchResult secondMatch = firstMatch.next();
+        assertThat(secondMatch).isNotNull();
+        assertThat(secondMatch.getValue()).isEqualTo("test:19");
+        assertThat(secondMatch.getGroups().get(1).getValue()).isEqualTo("test");
+        assertThat(secondMatch.getGroups().get(2).getValue()).isEqualTo("19");
+        assertThat(secondMatch.next()).isNull();
+
+        String rewritten = dependencyPattern.replace(
+            "core:7 test:19",
+            match -> "[" + match.getGroups().get(1).getValue() + "=" + match.getGroups().get(2).getValue() + "]"
+        );
+
+        assertThat(rewritten).isEqualTo("[core=7] [test=19]");
+        assertThat(dependencyPattern.matches("core:7")).isTrue();
+        assertThat(dependencyPattern.matches("core:7 test:19")).isFalse();
     }
 }
