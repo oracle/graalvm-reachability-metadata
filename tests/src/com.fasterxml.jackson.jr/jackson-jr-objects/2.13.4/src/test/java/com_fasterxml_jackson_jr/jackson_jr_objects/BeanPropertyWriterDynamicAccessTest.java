@@ -18,25 +18,33 @@ public class BeanPropertyWriterDynamicAccessTest {
     void serializesFieldBackedProperties() throws Exception {
         String json = JSON_WITH_FORCE_ACCESS.asString(new FieldBackedWriterBean());
 
-        assertThat(json).contains("\"id\":3");
+        assertThat(json).isEqualTo("{\"id\":3}");
     }
 
     @Test
     void serializesGetterBackedProperties() throws Exception {
-        String json = JSON_WITH_FORCE_ACCESS.asString(new GetterBackedWriterBean());
+        String json = JSON_WITH_FORCE_ACCESS.asString(new GetterBackedWriterBean("Ada"));
 
-        assertThat(json).contains("\"name\":\"Ada\"");
+        assertThat(json).isEqualTo("{\"name\":\"Ada\"}");
     }
 
-    static final class FieldBackedWriterBean {
+    public static final class FieldBackedWriterBean {
         public int id = 3;
     }
 
-    static final class GetterBackedWriterBean {
-        private final String name = "Ada";
+    public static final class GetterBackedWriterBean {
+        private String name;
+
+        public GetterBackedWriterBean(String name) {
+            this.name = name;
+        }
 
         public String getName() {
             return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }
