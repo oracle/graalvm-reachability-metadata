@@ -6,31 +6,42 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.api.CollectionBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CollectionBuilderDynamicAccessTest {
     @Test
-    void createsEmptyTypedArrays() throws Exception {
-        String[] values = JSON.std.arrayOfFrom(String.class, "[]");
+    void createsEmptyTypedArrays() {
+        CollectionBuilder builder = CollectionBuilder.defaultImpl();
+
+        String[] values = builder.emptyArray(String.class);
 
         assertThat(values).isEmpty();
         assertThat(values.getClass().getComponentType()).isSameAs(String.class);
     }
 
     @Test
-    void createsSingletonTypedArrays() throws Exception {
-        String[] values = JSON.std.arrayOfFrom(String.class, "[\"solo\"]");
+    void createsSingletonTypedArrays() {
+        CollectionBuilder builder = CollectionBuilder.defaultImpl();
+
+        String[] values = builder.singletonArray(String.class, "solo");
 
         assertThat(values).containsExactly("solo");
+        assertThat(values.getClass().getComponentType()).isSameAs(String.class);
     }
 
     @Test
-    void createsMultiValueTypedArrays() throws Exception {
-        String[] values = JSON.std.arrayOfFrom(String.class, "[\"left\",\"right\"]");
+    void createsMultiValueTypedArrays() {
+        CollectionBuilder builder = CollectionBuilder.defaultImpl();
+
+        String[] values = builder.start()
+                .add("left")
+                .add("right")
+                .buildArray(String.class);
 
         assertThat(values).containsExactly("left", "right");
+        assertThat(values.getClass().getComponentType()).isSameAs(String.class);
     }
 }
