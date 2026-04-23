@@ -16,6 +16,14 @@ import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeLibraryFactory;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeStreamingValidator;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.ValidationContext;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.helpers.DatatypeLibraryLoader;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
@@ -58,6 +66,29 @@ public class DatatypeLibraryLoaderServiceDynamicAccessTest {
         }
     }
 
+    @Test
+    void instantiatesDatatypeLibraryFactoryFromRuntimeProvidedServiceResource() throws Exception {
+        Path tempDir = Files.createTempDirectory("woodstox-datatype-library-loader");
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+        FACTORY_INSTANTIATIONS.set(0);
+
+        try {
+            RuntimeServiceClassLoader classLoader = new RuntimeServiceClassLoader(
+                    writeServiceResource(tempDir, TestDatatypeLibraryFactory.class.getName()),
+                    getClass().getClassLoader());
+            Thread.currentThread().setContextClassLoader(classLoader);
+
+            DatatypeLibrary library = new DatatypeLibraryLoader().createDatatypeLibrary(SERVICE_URI);
+
+            assertThat(FACTORY_INSTANTIATIONS.get()).isEqualTo(1);
+            assertThat(library).isNotNull();
+            assertThat(library.createDatatype("token").isValid("native image", null)).isTrue();
+        } finally {
+            Thread.currentThread().setContextClassLoader(previous);
+            deleteRecursively(tempDir);
+        }
+    }
+
     public static final class TestDatatypeLibraryFactory implements DatatypeLibraryFactory {
         public TestDatatypeLibraryFactory() {
             FACTORY_INSTANTIATIONS.incrementAndGet();
@@ -95,6 +126,56 @@ public class DatatypeLibraryLoaderServiceDynamicAccessTest {
         @Override
         public Datatype createDatatype(String typeLocalName) throws DatatypeException {
             return createDatatypeBuilder(typeLocalName).createDatatype();
+        }
+    }
+
+    private static URL writeServiceResource(Path tempDir, String providerClassName) throws IOException {
+        Path serviceFile = tempDir
+                .resolve("META-INF")
+                .resolve("services")
+                .resolve(DatatypeLibraryFactory.class.getName());
+        Files.createDirectories(serviceFile.getParent());
+        Files.writeString(serviceFile, providerClassName + System.lineSeparator());
+        return serviceFile.toUri().toURL();
+    }
+
+    private static void deleteRecursively(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            return;
+        }
+        try (var paths = Files.walk(path)) {
+            paths.sorted(Comparator.reverseOrder()).forEach(currentPath -> {
+                try {
+                    Files.deleteIfExists(currentPath);
+                } catch (IOException exception) {
+                    throw new RuntimeException(exception);
+                }
+            });
+        } catch (RuntimeException exception) {
+            if (exception.getCause() instanceof IOException ioException) {
+                throw ioException;
+            }
+            throw exception;
+        }
+    }
+
+    private static final class RuntimeServiceClassLoader extends ClassLoader {
+        private static final String SERVICE_RESOURCE =
+                "META-INF/services/" + DatatypeLibraryFactory.class.getName();
+
+        private final URL serviceResource;
+
+        private RuntimeServiceClassLoader(URL serviceResource, ClassLoader parent) {
+            super(parent);
+            this.serviceResource = serviceResource;
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            if (SERVICE_RESOURCE.equals(name)) {
+                return Collections.enumeration(List.of(serviceResource));
+            }
+            return super.getResources(name);
         }
     }
 
