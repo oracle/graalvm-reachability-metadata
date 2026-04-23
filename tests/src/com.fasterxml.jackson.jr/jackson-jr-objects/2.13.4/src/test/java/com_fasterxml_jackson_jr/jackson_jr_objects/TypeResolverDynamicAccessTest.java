@@ -18,11 +18,11 @@ public class TypeResolverDynamicAccessTest {
     void resolvesGenericArrayTypeArgumentsForInheritedSetterBackedProperties() throws Exception {
         StringArrayContainer bean = JSON.std.beanFrom(StringArrayContainer.class,
                 "{\"values\":[[\"alpha\"],[\"beta\",\"gamma\"]]}");
-        List<String[]> values = bean.getValues();
+        List<?> values = bean.getValues();
 
         assertThat(values).hasSize(2);
-        assertThat(values.get(0)).containsExactly("alpha");
-        assertThat(values.get(1)).containsExactly("beta", "gamma");
+        assertThat((Object[]) values.get(0)).containsExactly("alpha");
+        assertThat((Object[]) values.get(1)).containsExactly("beta", "gamma");
     }
 
     public static class GenericArrayContainer<T> {
