@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -110,6 +111,48 @@ class Jackson_dataformat_tomlTest {
         assertThat(tree.path("database").path("server").asText()).isEqualTo("192.168.1.1");
         assertThat(tree.path("database").path("ports").size()).isEqualTo(3);
         assertThat(tree.path("database").path("enabled").asBoolean()).isTrue();
+    }
+
+    @Test
+    void streamingGeneratorWritesArraysOfInlineTables() throws Exception {
+        TomlFactory factory = new TomlFactory();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        try (JsonGenerator generator = factory.createGenerator(output)) {
+            generator.writeStartObject();
+            generator.writeStringField("service", "health");
+            generator.writeFieldName("checks");
+            generator.writeStartArray();
+
+            generator.writeStartObject();
+            generator.writeStringField("name", "disk");
+            generator.writeStringField("status", "up");
+            generator.writeEndObject();
+
+            generator.writeStartObject();
+            generator.writeStringField("name", "cpu");
+            generator.writeStringField("status", "warm");
+            generator.writeEndObject();
+
+            generator.writeEndArray();
+            generator.writeEndObject();
+        }
+
+        byte[] serialized = output.toByteArray();
+        String toml = output.toString(StandardCharsets.UTF_8);
+        JsonNode tree = new TomlMapper().readTree(serialized);
+
+        assertThat(toml)
+                .contains("service = 'health'")
+                .contains("checks = [{name = 'disk', status = 'up'}, {name = 'cpu', status = 'warm'}]");
+
+        JsonNode checks = tree.path("checks");
+        assertThat(checks.isArray()).isTrue();
+        assertThat(checks.size()).isEqualTo(2);
+        assertThat(checks.get(0).path("name").asText()).isEqualTo("disk");
+        assertThat(checks.get(0).path("status").asText()).isEqualTo("up");
+        assertThat(checks.get(1).path("name").asText()).isEqualTo("cpu");
+        assertThat(checks.get(1).path("status").asText()).isEqualTo("warm");
     }
 
     @Test
