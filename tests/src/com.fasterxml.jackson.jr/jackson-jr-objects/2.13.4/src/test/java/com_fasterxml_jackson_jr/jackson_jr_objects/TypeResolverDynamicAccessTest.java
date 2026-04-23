@@ -15,18 +15,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeResolverDynamicAccessTest {
     @Test
-    void resolvesGenericArrayTypeArgumentsForInheritedBeanProperties() throws Exception {
+    void resolvesGenericArrayTypeArgumentsForInheritedSetterBackedProperties() throws Exception {
         StringArrayContainer bean = JSON.std.beanFrom(StringArrayContainer.class,
                 "{\"values\":[[\"alpha\"],[\"beta\",\"gamma\"]]}");
-        List<?> values = bean.values;
+        List<String[]> values = bean.getValues();
 
         assertThat(values).hasSize(2);
-        assertThat((Object[]) values.get(0)).containsExactly("alpha");
-        assertThat((Object[]) values.get(1)).containsExactly("beta", "gamma");
+        assertThat(values.get(0)).containsExactly("alpha");
+        assertThat(values.get(1)).containsExactly("beta", "gamma");
     }
 
     public static class GenericArrayContainer<T> {
-        public List<T[]> values;
+        private List<T[]> values;
+
+        public List<T[]> getValues() {
+            return values;
+        }
+
+        public void setValues(List<T[]> values) {
+            this.values = values;
+        }
     }
 
     public static class StringArrayContainer extends GenericArrayContainer<String> {

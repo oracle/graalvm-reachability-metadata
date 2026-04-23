@@ -14,8 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SimpleValueReaderDynamicAccessTest {
     @Test
     void resolvesClassesFromStringValues() throws Exception {
-        Class<?> resolved = JSON.std.beanFrom(Class.class, "\"java.lang.String\"");
+        Class<?> resolved = JSON.std.beanFrom(Class.class, "\"" + SampleType.class.getName() + "\"");
 
-        assertThat(resolved).isSameAs(String.class);
+        assertThat(resolved).isSameAs(SampleType.class);
+    }
+
+    public static class SampleType {
     }
 }

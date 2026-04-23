@@ -21,8 +21,11 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         assertThat(JSON.std.asString(bean)).contains("\"visible\":7").contains("\"name\":\"Ada\"");
     }
 
-    public static class IntrospectedBean {
+    public static class IntrospectedBase {
         public int visible;
+    }
+
+    public static class IntrospectedBean extends IntrospectedBase {
         private String name;
 
         public IntrospectedBean() {

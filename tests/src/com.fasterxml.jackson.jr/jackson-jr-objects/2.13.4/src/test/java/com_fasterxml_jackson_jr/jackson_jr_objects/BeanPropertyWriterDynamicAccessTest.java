@@ -13,16 +13,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyWriterDynamicAccessTest {
     @Test
-    void serializesFieldBackedAndGetterBackedProperties() throws Exception {
-        WriterBean bean = new WriterBean();
-        String json = JSON.std.asString(bean);
+    void serializesFieldBackedProperties() throws Exception {
+        String json = JSON.std.asString(new FieldBackedWriterBean());
 
-        assertThat(json).contains("\"id\":3").contains("\"name\":\"Ada\"");
+        assertThat(json).contains("\"id\":3");
     }
 
-    public static class WriterBean {
+    @Test
+    void serializesGetterBackedProperties() throws Exception {
+        String json = JSON.std.asString(new GetterBackedWriterBean());
+
+        assertThat(json).contains("\"name\":\"Ada\"");
+    }
+
+    public static class FieldBackedWriterBean {
         public int id = 3;
-        private String name = "Ada";
+    }
+
+    public static class GetterBackedWriterBean {
+        private final String name = "Ada";
 
         public String getName() {
             return name;

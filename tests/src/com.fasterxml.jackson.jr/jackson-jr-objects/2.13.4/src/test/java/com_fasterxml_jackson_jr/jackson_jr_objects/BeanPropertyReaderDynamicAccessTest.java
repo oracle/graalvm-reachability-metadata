@@ -13,15 +13,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyReaderDynamicAccessTest {
     @Test
-    void populatesFieldBackedAndSetterBackedProperties() throws Exception {
-        ReaderBean bean = JSON.std.beanFrom(ReaderBean.class, "{\"id\":3,\"name\":\"Ada\"}");
+    void populatesFieldBackedProperties() throws Exception {
+        FieldBackedReaderBean bean = JSON.std.beanFrom(FieldBackedReaderBean.class, "{\"id\":3}");
 
         assertThat(bean.id).isEqualTo(3);
+    }
+
+    @Test
+    void populatesSetterBackedProperties() throws Exception {
+        SetterBackedReaderBean bean = JSON.std.beanFrom(SetterBackedReaderBean.class, "{\"name\":\"Ada\"}");
+
         assertThat(bean.getName()).isEqualTo("Ada");
     }
 
-    public static class ReaderBean {
+    public static class FieldBackedReaderBean {
         public int id;
+    }
+
+    public static class SetterBackedReaderBean {
         private String name;
 
         public String getName() {

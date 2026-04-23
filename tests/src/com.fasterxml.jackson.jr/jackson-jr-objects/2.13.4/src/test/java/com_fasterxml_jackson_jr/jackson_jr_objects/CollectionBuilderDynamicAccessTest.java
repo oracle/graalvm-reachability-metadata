@@ -13,9 +13,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CollectionBuilderDynamicAccessTest {
     @Test
-    void readsTypedArraysWithEmptySingletonAndMultiValueInputs() throws Exception {
+    void readsEmptyTypedArrays() throws Exception {
         assertThat(JSON.std.arrayOfFrom(String.class, "[]")).isEmpty();
+    }
+
+    @Test
+    void readsSingletonTypedArrays() throws Exception {
         assertThat(JSON.std.arrayOfFrom(String.class, "[\"solo\"]")).containsExactly("solo");
+    }
+
+    @Test
+    void readsMultiValueTypedArrays() throws Exception {
         assertThat(JSON.std.arrayOfFrom(String.class, "[\"left\",\"right\"]"))
                 .containsExactly("left", "right");
     }
