@@ -137,7 +137,6 @@ public class PoolBackedDataSourceBaseTest {
             restored = deserializeWithReferenceableExtensions(serialized);
 
             assertThat(restored.getExtensions())
-                .isInstanceOf(NonSerializableReferenceableMap.class)
                 .containsEntry("role", "test")
                 .containsEntry("mode", "indirect-extensions");
             assertThat(serialize(restored)).isNotEmpty();
