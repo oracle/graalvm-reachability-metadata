@@ -15,18 +15,35 @@ public class BeanReaderDynamicAccessTest {
     private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
 
     @Test
-    void createsBeansThroughTheDefaultConstructor() throws Exception {
-        ConstructorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(ConstructorBean.class, "{\"name\":\"Ada\"}");
+    void createsBeansThroughPublicDefaultConstructors() throws Exception {
+        PublicConstructorBean bean = JSON.std.beanFrom(PublicConstructorBean.class, "{\"name\":\"Ada\"}");
 
         assertThat(bean.constructed).isTrue();
         assertThat(bean.name).isEqualTo("Ada");
     }
 
-    static final class ConstructorBean {
+    @Test
+    void createsBeansThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
+        PrivateConstructorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(PrivateConstructorBean.class, "{\"name\":\"Ada\"}");
+
+        assertThat(bean.constructed).isTrue();
+        assertThat(bean.name).isEqualTo("Ada");
+    }
+
+    public static final class PublicConstructorBean {
         public boolean constructed;
         public String name;
 
-        private ConstructorBean() {
+        public PublicConstructorBean() {
+            this.constructed = true;
+        }
+    }
+
+    static final class PrivateConstructorBean {
+        public boolean constructed;
+        public String name;
+
+        private PrivateConstructorBean() {
             this.constructed = true;
         }
     }
