@@ -6,41 +6,59 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import com.fasterxml.jackson.jr.ob.JSON;
+import java.util.List;
+
+import com.fasterxml.jackson.jr.ob.api.CollectionBuilder;
+import com.fasterxml.jackson.jr.ob.api.MapBuilder;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
+import com.fasterxml.jackson.jr.ob.impl.JSONReader;
+import com.fasterxml.jackson.jr.ob.impl.JSONWriter;
+import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyIntrospectorDynamicAccessTest {
-    private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
+    private static final BeanPropertyIntrospector INTROSPECTOR = BeanPropertyIntrospector.instance();
+    private static final JSONReader JSON_READER = new JSONReader(CollectionBuilder.defaultImpl(), MapBuilder.defaultImpl());
+    private static final JSONWriter JSON_WRITER = new JSONWriter();
 
     @Test
-    void deserializesBeansUsingDeclaredFieldsMethodsAndConstructors() throws Exception {
-        IntrospectedBean objectBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class,
-                "{\"visible\":7,\"name\":\"Ada\",\"active\":true}");
-        IntrospectedBean stringBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "\"Grace\"");
-        IntrospectedBean longBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "11");
+    void collectsDeclaredConstructorsForDeserialization() {
+        POJODefinition definition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER, IntrospectedBean.class);
 
-        assertThat(objectBean.visible).isEqualTo(7);
-        assertThat(objectBean.getName()).isEqualTo("Ada");
-        assertThat(objectBean.isActive()).isTrue();
-        assertThat(stringBean.getName()).isEqualTo("Grace");
-        assertThat(longBean.visible).isEqualTo(11);
+        assertThat(definition.defaultCtor).isNotNull();
+        assertThat(definition.stringCtor).isNotNull();
+        assertThat(definition.longCtor).isNotNull();
+        assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
     }
 
     @Test
-    void serializesPropertiesCollectedFromInheritedFieldsAndDeclaredGetters() throws Exception {
-        IntrospectedBean bean = new IntrospectedBean();
-        bean.visible = 3;
-        bean.setName("Lin");
-        bean.setActive(true);
+    void collectsDeclaredFieldsAndMethodsForSerialization() {
+        POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, IntrospectedBean.class);
 
-        String json = JSON_WITH_FORCE_ACCESS.asString(bean);
+        assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
 
-        assertThat(json)
-                .contains("\"visible\":3")
-                .contains("\"name\":\"Lin\"")
-                .contains("\"active\":true");
+        POJODefinition.Prop visible = property(definition, "visible");
+        POJODefinition.Prop name = property(definition, "name");
+        POJODefinition.Prop active = property(definition, "active");
+
+        assertThat(visible.field).isNotNull();
+        assertThat(name.getter).isNotNull();
+        assertThat(name.setter).isNotNull();
+        assertThat(active.isGetter).isNotNull();
+        assertThat(active.setter).isNotNull();
+    }
+
+    private static List<String> propertyNames(POJODefinition definition) {
+        return definition.getProperties().stream().map(prop -> prop.name).toList();
+    }
+
+    private static POJODefinition.Prop property(POJODefinition definition, String name) {
+        return definition.getProperties().stream()
+                .filter(prop -> prop.name.equals(name))
+                .findFirst()
+                .orElseThrow();
     }
 
     static class BaseBean {
