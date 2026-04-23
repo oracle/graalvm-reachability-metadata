@@ -9,6 +9,7 @@ package com_graphql_java.java_dataloader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.dataloader.BatchLoader;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.BatchLoaderWithContext;
+import org.dataloader.CacheKey;
 import org.dataloader.DataLoader;
 import org.dataloader.DataLoaderFactory;
 import org.dataloader.DataLoaderOptions;
@@ -88,6 +90,38 @@ class Java_dataloaderTest {
         assertThat(statistics.getBatchLoadCount()).isEqualTo(4);
         assertThat(statistics.getCacheHitCount()).isGreaterThanOrEqualTo(2);
         assertThat(statistics.toMap()).containsKeys("loadCount", "batchInvokeCount", "cacheHitCount");
+    }
+
+    @Test
+    void customCacheKeyFunctionDeduplicatesEquivalentKeysAcrossLoads() {
+        List<List<String>> dispatchedBatches = new ArrayList<>();
+        BatchLoader<String, String> batchLoader = keys -> {
+            dispatchedBatches.add(List.copyOf(keys));
+            return CompletableFuture.completedFuture(keys.stream()
+                .map(key -> "value-" + key.toLowerCase(Locale.ROOT))
+                .toList());
+        };
+
+        DataLoaderOptions options = DataLoaderOptions.newOptions()
+            .setCacheKeyFunction((CacheKey<String>) key -> key.toLowerCase(Locale.ROOT));
+        DataLoader<String, String> dataLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
+
+        CompletableFuture<String> mixedCase = dataLoader.load("Alpha");
+        CompletableFuture<String> upperCase = dataLoader.load("ALPHA");
+
+        assertThat(upperCase).isSameAs(mixedCase);
+        assertThat(dataLoader.getCacheKey("Alpha")).isEqualTo("alpha");
+        assertThat(dataLoader.dispatchAndJoin()).containsExactly("value-alpha");
+        assertThat(mixedCase.join()).isEqualTo("value-alpha");
+        assertThat(dataLoader.getIfPresent("alpha")).contains(mixedCase);
+        assertThat(dataLoader.getIfCompleted("ALPHA")).contains(mixedCase);
+
+        CompletableFuture<String> lowerCase = dataLoader.load("alpha");
+
+        assertThat(lowerCase).isSameAs(mixedCase);
+        assertThat(lowerCase.join()).isEqualTo("value-alpha");
+        assertThat(dataLoader.dispatchAndJoin()).isEmpty();
+        assertThat(dispatchedBatches).containsExactly(List.of("Alpha"));
     }
 
     @Test
