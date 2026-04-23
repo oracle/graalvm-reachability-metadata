@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 5
     permissions: write-all
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       none-found: ${{ steps.set-matrix.outputs.none-found }}
@@ -47,7 +49,48 @@ jobs:
           MATRIX_OUTPUT_FILE="$(mktemp)"
           RAW_OUTPUT="$(./gradlew fetchExistingLibrariesWithNewerVersions --quiet | sed -n '/\[/,$p')"
           JSON_PAYLOAD="$(printf '%s' "$RAW_OUTPUT" | jq -c '.')"
-          GITHUB_OUTPUT="$MATRIX_OUTPUT_FILE" ./gradlew generateNewLibraryVersionCompatibilityMatrix -PnewLibraryVersionCandidates="$JSON_PAYLOAD"
+          OPEN_ISSUES_JSON="$(
+            gh issue list \
+              --repo "${{ github.repository }}" \
+              --state open \
+              --limit 1000 \
+              --json title
+          )"
+          FILTERED_JSON_PAYLOAD="$(
+            printf '%s' "$JSON_PAYLOAD" | jq -c \
+              --arg issueTitlePrefix "[Automation] " \
+              --arg issueTitleMiddle " fails for " \
+              --argjson issues "$OPEN_ISSUES_JSON" '
+              [
+                .[]
+                | . as $library
+                | ($library.versions[0] // null) as $firstVersion
+                | if $firstVersion == null then
+                    $library
+                  else
+                    ($library.name + ":" + $firstVersion) as $gavCoordinates
+                    | ($issueTitleMiddle + $gavCoordinates) as $titleEnd
+                    | select(
+                        any(
+                          $issues[]?;
+                          .title | (startswith($issueTitlePrefix) and endswith($titleEnd))
+                        ) | not
+                      )
+                  end
+              ]
+            '
+          )"
+
+          TOTAL_CANDIDATES="$(printf '%s' "$JSON_PAYLOAD" | jq 'length')"
+          FILTERED_CANDIDATES="$(printf '%s' "$FILTERED_JSON_PAYLOAD" | jq 'length')"
+          SKIPPED_CANDIDATES="$((TOTAL_CANDIDATES - FILTERED_CANDIDATES))"
+          {
+            echo "Compatibility candidates discovered: $TOTAL_CANDIDATES"
+            echo "Filtered because an open automation issue already exists for the first candidate version: $SKIPPED_CANDIDATES"
+            echo "Libraries scheduled for testing: $FILTERED_CANDIDATES"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          GITHUB_OUTPUT="$MATRIX_OUTPUT_FILE" ./gradlew generateNewLibraryVersionCompatibilityMatrix -PnewLibraryVersionCandidates="$FILTERED_JSON_PAYLOAD"
 
           {
             echo "matrix<<EOF"
@@ -100,50 +143,17 @@ jobs:
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Check for an existing issue and skip further testing if found"
-        id: check-existing-issue
-        run: |
-          GROUP_ID="$(echo "${{ matrix.name }}" | cut -d: -f1)"
-          ARTIFACT_ID="$(echo "${{ matrix.name }}" | cut -d: -f2)"
-
-          readarray -t VERSIONS < <(echo '${{ toJson(matrix.versions) }}' | jq -r '.[]')
-          ISSUE_TITLE_PREFIX="[Automation] "
-          FIRST_TESTING_VERSION="${VERSIONS[0]}"
-          GAV_COORDINATES="$GROUP_ID:$ARTIFACT_ID:$FIRST_TESTING_VERSION"
-          TITLE_END=" fails for $GAV_COORDINATES"
-
-          ISSUE_NUMBER=$(
-            gh issue list \
-              --repo "${{ github.repository }}" \
-              --state open \
-              --search "\"$TITLE_END\" in:title" \
-              --json number,title \
-              --jq ".[] | select(.title | (startswith(\"$ISSUE_TITLE_PREFIX\") and endswith(\"$TITLE_END\"))) | .number"
-          )
-
-          echo "Found the issue(s) $ISSUE_NUMBER"
-          if [[ -n "$ISSUE_NUMBER" ]]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "There is no progress since last time for the $GAV_COORDINATES. Skipping further testing!"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: "Extract test path and library version"
-        if: steps.check-existing-issue.outputs.skip != 'true'
         id: extract-params
         run: ./gradlew extractLibraryTestParams -Pcoordinates="${{ matrix.name }}"
 
       - name: "Pull allowed docker images"
-        if: steps.check-existing-issue.outputs.skip != 'true'
         run: ./gradlew pullAllowedDockerImages -Pcoordinates="${{ env.TEST_COORDINATES }}"
 
       - name: "Disable docker networking"
-        if: steps.check-existing-issue.outputs.skip != 'true'
         run: bash ./.github/workflows/scripts/disable-docker.sh
 
       - name: "🧪 Run '${{ env.TEST_COORDINATES }}' tests"
-        if: steps.check-existing-issue.outputs.skip != 'true'
         id: runtests
         run: |
           bash ./.github/workflows/scripts/run-consecutive-tests.sh "${{ env.TEST_COORDINATES }}" '${{ toJson(matrix.versions) }}' 2>&1 | tee test_results.txt || true
@@ -201,24 +211,6 @@ jobs:
                 logLines: $logLines,
                 logTail: ($logTail | split("\n") | .[-($logLines | tonumber):] | join("\n"))
               } end)
-            }' > result.json
-
-      - name: "📝 Write skipped result"
-        if: steps.check-existing-issue.outputs.skip == 'true'
-        run: |
-          jq -n \
-            --arg name "${{ matrix.name }}" \
-            --arg os "${{ matrix.os }}" \
-            --arg jdk "${{ matrix.version }}" \
-            --arg nativeImageMode "${{ matrix.nativeImageMode }}" \
-            '{
-              name: $name,
-              os: $os,
-              version: $jdk,
-              nativeImageMode: $nativeImageMode,
-              skipped: true,
-              successfulVersions: [],
-              failure: null
             }' > result.json
 
       - name: "📝 Compute artifact names"
