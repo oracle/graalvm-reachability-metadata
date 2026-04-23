@@ -6,19 +6,31 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.type.ResolvedType;
+import com.fasterxml.jackson.jr.type.TypeBindings;
+import com.fasterxml.jackson.jr.type.TypeResolver;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Type;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeResolverDynamicAccessTest {
     @Test
-    void resolvesInheritedGenericArraySetterTypes() throws Exception {
-        StringArrayContainer bean = JSON.std.beanFrom(StringArrayContainer.class,
-                "{\"values\":[\"alpha\",\"beta\"]}");
-        Object[] values = ((GenericArrayContainer<?>) bean).getValues();
+    void resolvesGenericArrayTypesFromBoundTypeVariables() throws Exception {
+        TypeResolver resolver = new TypeResolver();
+        ResolvedType declaringType = resolver.resolve(
+                TypeBindings.emptyBindings(),
+                StringArrayContainer.class.getGenericSuperclass());
+        Type genericArrayType = GenericArrayContainer.class
+                .getDeclaredMethod("setValues", Object[].class)
+                .getGenericParameterTypes()[0];
 
-        assertThat(values).containsExactly("alpha", "beta");
+        ResolvedType resolvedArrayType = resolver.resolve(declaringType.typeBindings(), genericArrayType);
+
+        assertThat(resolvedArrayType.isArray()).isTrue();
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(String[].class);
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(String.class);
     }
 
     static class GenericArrayContainer<T> {
