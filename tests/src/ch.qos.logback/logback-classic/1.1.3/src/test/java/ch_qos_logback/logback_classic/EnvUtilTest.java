@@ -15,8 +15,12 @@ import org.junit.jupiter.api.Test;
 public class EnvUtilTest {
 
     @Test
-    void checksGroovyAvailabilityAndConsultsTheServiceLoader() {
-        EnvUtil.isGroovyAvailable();
+    void reportsGroovyAvailabilityWhenBindingClassIsResolvable() {
+        assertThat(EnvUtil.isGroovyAvailable()).isTrue();
+    }
+
+    @Test
+    void consultsTheServiceLoader() {
         EnvUtil.loadFromServiceLoader(Configurator.class);
 
         assertThat(EnvUtil.isServiceLoaderAvailable()).isTrue();
