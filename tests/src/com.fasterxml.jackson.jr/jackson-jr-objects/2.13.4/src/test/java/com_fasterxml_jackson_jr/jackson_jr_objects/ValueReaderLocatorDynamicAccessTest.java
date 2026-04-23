@@ -15,21 +15,30 @@ import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValueReaderLocatorDynamicAccessTest {
     @Test
     void readsEnumsFromModifierProvidedDefinitions() throws Exception {
-        Direction direction = enumAwareJson().beanFrom(Direction.class, "\"north\"");
+        Direction direction = enumAwareJson().beanFrom(Direction.class, "\"go-north\"");
 
         assertThat(direction).isEqualTo(Direction.NORTH);
     }
 
-    private static JSON enumAwareJson() {
-        return JSON.builder().register(new EnumDefinitionExtension()).build();
+    @Test
+    void readsModifierProvidedEnumDefinitionsCaseInsensitively() throws Exception {
+        Direction direction = enumAwareJson(JSON.Feature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .beanFrom(Direction.class, "\"GO-SOUTH\"");
+
+        assertThat(direction).isEqualTo(Direction.SOUTH);
+    }
+
+    private static JSON enumAwareJson(JSON.Feature... features) {
+        return JSON.builder()
+                .enable(features)
+                .register(new EnumDefinitionExtension())
+                .build();
     }
 
     public enum Direction {
@@ -54,16 +63,22 @@ public class ValueReaderLocatorDynamicAccessTest {
         }
 
         private static POJODefinition.Prop[] enumProps() {
-            return Arrays.stream(Direction.class.getFields())
-                    .filter(Field::isEnumConstant)
-                    .map(field -> new POJODefinition.Prop(
-                            field.getName().toLowerCase(Locale.ROOT),
-                            field,
-                            null,
-                            null,
-                            null,
-                            null))
-                    .toArray(POJODefinition.Prop[]::new);
+            return new POJODefinition.Prop[] {
+                    enumProp("go-north", "NORTH"),
+                    enumProp("go-south", "SOUTH")
+            };
+        }
+
+        private static POJODefinition.Prop enumProp(String externalName, String enumConstantName) {
+            return new POJODefinition.Prop(externalName, enumField(enumConstantName), null, null, null, null);
+        }
+
+        private static Field enumField(String enumConstantName) {
+            try {
+                return Direction.class.getField(enumConstantName);
+            } catch (NoSuchFieldException ex) {
+                throw new IllegalStateException(ex);
+            }
         }
     }
 }
