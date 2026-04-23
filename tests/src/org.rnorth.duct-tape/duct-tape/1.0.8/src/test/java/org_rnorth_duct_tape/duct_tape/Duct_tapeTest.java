@@ -12,6 +12,7 @@ import org.rnorth.ducttape.TimeoutException;
 import org.rnorth.ducttape.circuitbreakers.Breaker;
 import org.rnorth.ducttape.circuitbreakers.BreakerBuilder;
 import org.rnorth.ducttape.circuitbreakers.State;
+import org.rnorth.ducttape.circuitbreakers.StateStore;
 import org.rnorth.ducttape.inconsistents.InconsistentResultsException;
 import org.rnorth.ducttape.inconsistents.Inconsistents;
 import org.rnorth.ducttape.inconsistents.ResultsNeverConsistentException;
@@ -27,6 +28,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -260,5 +263,60 @@ public class Duct_tapeTest {
         long elapsedMillis = TimeUnit.NANOSECONDS.toMillis(invocationTimes.get(1) - invocationTimes.get(0));
         assertThat(elapsedMillis).isGreaterThanOrEqualTo(150L);
         assertThat(result).isEqualTo(7);
+    }
+
+    @Test
+    void breakerCanPersistAndReadStateThroughACustomStateStore() {
+        RecordingStateStore stateStore = new RecordingStateStore();
+        Breaker breaker = BreakerBuilder.newBuilder().storeStateIn(stateStore).build();
+        AtomicBoolean failedHandlerCalled = new AtomicBoolean();
+
+        String fallback = breaker.tryGet(() -> {
+            throw new IllegalStateException("boom");
+        }, () -> failedHandlerCalled.set(true), () -> "fallback");
+
+        assertThat(fallback).isEqualTo("fallback");
+        assertThat(failedHandlerCalled.get()).isTrue();
+        assertThat(stateStore.getState()).isEqualTo(State.BROKEN);
+        assertThat(stateStore.getLastFailure()).isPositive();
+
+        AtomicBoolean blockedPrimaryCalled = new AtomicBoolean();
+        assertThat(breaker.tryGet(() -> {
+            blockedPrimaryCalled.set(true);
+            return "primary";
+        }, () -> "broken"))
+                .isEqualTo("broken");
+        assertThat(blockedPrimaryCalled.get()).isFalse();
+
+        stateStore.setState(State.OK);
+
+        assertThat(breaker.tryGet(() -> "recovered")).contains("recovered");
+        assertThat(breaker.getState()).isEqualTo(State.OK);
+    }
+
+    private static final class RecordingStateStore implements StateStore {
+
+        private final AtomicReference<State> state = new AtomicReference<>(State.OK);
+        private final AtomicLong lastFailure = new AtomicLong();
+
+        @Override
+        public State getState() {
+            return state.get();
+        }
+
+        @Override
+        public void setState(State newState) {
+            state.set(newState);
+        }
+
+        @Override
+        public long getLastFailure() {
+            return lastFailure.get();
+        }
+
+        @Override
+        public void setLastFailure(long newLastFailure) {
+            lastFailure.set(newLastFailure);
+        }
     }
 }
