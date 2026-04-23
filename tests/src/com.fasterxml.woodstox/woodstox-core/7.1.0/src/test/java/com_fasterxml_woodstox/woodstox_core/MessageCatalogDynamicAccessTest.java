@@ -7,33 +7,22 @@
 package com_fasterxml_woodstox.woodstox_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.ctc.wstx.shaded.msv_core.scanner.dtd.MessageCatalog;
+import com.ctc.wstx.shaded.msv_core.scanner.dtd.DTDParser;
+import java.io.StringReader;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.InputSource;
 
 public class MessageCatalogDynamicAccessTest {
     @Test
-    void loadsMessagesAndDiscoversSupportedLocales() {
-        TestMessageCatalog catalog = new TestMessageCatalog();
-        Locale previousDefault = Locale.getDefault();
-        Locale.setDefault(Locale.ITALIAN);
-        try {
-            assertThat(catalog.getMessage(Locale.ENGLISH, "greeting")).isEqualTo("Hello from Woodstox");
-            assertThat(catalog.getMessage(Locale.ITALIAN, "greeting")).isEqualTo("Hello from Woodstox");
-            assertThat(catalog.getMessage(Locale.ITALIAN, "welcome", new Object[]{"native image"}))
-                    .isEqualTo("Hello, native image!");
-            assertThat(catalog.isLocaleSupported("en_US")).isTrue();
-            assertThat(catalog.isLocaleSupported("zz_ZZ")).isFalse();
-            assertThat(catalog.chooseLocale(new String[]{"en_US", "zz_ZZ"})).isEqualTo(Locale.US);
-        } finally {
-            Locale.setDefault(previousDefault);
-        }
-    }
+    void negotiatesSupportedLocalesAndLoadsDtdMessages() throws Exception {
+        DTDParser parser = new DTDParser();
 
-    public static final class TestMessageCatalog extends MessageCatalog {
-        public TestMessageCatalog() {
-            super(TestMessageCatalog.class);
-        }
+        assertThat(parser.chooseLocale(new String[]{"en_US", "zz_ZZ"})).isEqualTo(Locale.US);
+        assertThat(parser.getLocale()).isEqualTo(Locale.US);
+        assertThatThrownBy(() -> parser.parse(new InputSource(new StringReader("<!ELEMENTroot EMPTY>"))))
+                .hasMessageContaining("whitespace");
     }
 }
