@@ -15,6 +15,8 @@ import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,22 +50,20 @@ public class ValueReaderLocatorDynamicAccessTest {
             if (pojoType != Direction.class) {
                 return null;
             }
-            return new POJODefinition(Direction.class, new POJODefinition.Prop[]{
-                    prop("north", "NORTH"),
-                    prop("south", "SOUTH")
-            }, null, null, null);
+            return new POJODefinition(Direction.class, enumProps(), null, null, null);
         }
 
-        private static POJODefinition.Prop prop(String jsonName, String enumConstant) {
-            return new POJODefinition.Prop(jsonName, enumField(enumConstant), null, null, null, null);
-        }
-
-        private static Field enumField(String enumConstant) {
-            try {
-                return Direction.class.getField(enumConstant);
-            } catch (NoSuchFieldException e) {
-                throw new IllegalStateException(e);
-            }
+        private static POJODefinition.Prop[] enumProps() {
+            return Arrays.stream(Direction.class.getFields())
+                    .filter(Field::isEnumConstant)
+                    .map(field -> new POJODefinition.Prop(
+                            field.getName().toLowerCase(Locale.ROOT),
+                            field,
+                            null,
+                            null,
+                            null,
+                            null))
+                    .toArray(POJODefinition.Prop[]::new);
         }
     }
 }

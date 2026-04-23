@@ -12,30 +12,32 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyIntrospectorDynamicAccessTest {
+    private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
+
     @Test
-    void introspectsConstructorsFieldsAndMethodsDuringBeanBinding() throws Exception {
-        IntrospectedBean bean = JSON.std.beanFrom(IntrospectedBean.class, "{\"visible\":7,\"name\":\"Ada\"}");
+    void introspectsDeclaredConstructorsFieldsAndMethodsDuringBeanRoundTrip() throws Exception {
+        IntrospectedBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class,
+                "{\"visible\":7,\"name\":\"Ada\"}");
 
-        assertThat(bean.visible).isEqualTo(7);
+        assertThat(bean.visible()).isEqualTo(7);
         assertThat(bean.getName()).isEqualTo("Ada");
-        assertThat(JSON.std.asString(bean)).contains("\"visible\":7").contains("\"name\":\"Ada\"");
+        assertThat(JSON_WITH_FORCE_ACCESS.asString(bean))
+                .contains("\"visible\":7")
+                .contains("\"name\":\"Ada\"");
     }
 
-    public static class IntrospectedBase {
-        public int visible;
-    }
-
-    public static class IntrospectedBean extends IntrospectedBase {
+    static final class IntrospectedBean {
+        private int visible;
         private String name;
 
-        public IntrospectedBean() {
+        private IntrospectedBean() {
         }
 
-        public IntrospectedBean(String name) {
+        private IntrospectedBean(String name) {
             this.name = name;
         }
 
-        public IntrospectedBean(long visible) {
+        private IntrospectedBean(long visible) {
             this.visible = (int) visible;
         }
 
@@ -45,6 +47,18 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public int getVisible() {
+            return visible;
+        }
+
+        public void setVisible(int visible) {
+            this.visible = visible;
+        }
+
+        int visible() {
+            return visible;
         }
     }
 }

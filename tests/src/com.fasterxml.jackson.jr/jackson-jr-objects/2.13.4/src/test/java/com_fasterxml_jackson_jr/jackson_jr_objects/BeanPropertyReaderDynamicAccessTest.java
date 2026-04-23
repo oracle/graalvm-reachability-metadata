@@ -12,32 +12,38 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyReaderDynamicAccessTest {
+    private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
+
     @Test
     void populatesFieldBackedProperties() throws Exception {
-        FieldBackedReaderBean bean = JSON.std.beanFrom(FieldBackedReaderBean.class, "{\"id\":3}");
+        FieldBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(FieldBackedReaderBean.class, "{\"id\":3}");
 
-        assertThat(bean.id).isEqualTo(3);
+        assertThat(bean.getId()).isEqualTo(3);
     }
 
     @Test
     void populatesSetterBackedProperties() throws Exception {
-        SetterBackedReaderBean bean = JSON.std.beanFrom(SetterBackedReaderBean.class, "{\"name\":\"Ada\"}");
+        SetterBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(SetterBackedReaderBean.class, "{\"name\":\"Ada\"}");
 
         assertThat(bean.getName()).isEqualTo("Ada");
     }
 
-    public static class FieldBackedReaderBean {
+    static final class FieldBackedReaderBean {
         public int id;
+
+        public int getId() {
+            return id;
+        }
     }
 
-    public static class SetterBackedReaderBean {
+    static final class SetterBackedReaderBean {
         private String name;
 
         public String getName() {
             return name;
         }
 
-        public void setName(String name) {
+        private void setName(String name) {
             this.name = name;
         }
     }

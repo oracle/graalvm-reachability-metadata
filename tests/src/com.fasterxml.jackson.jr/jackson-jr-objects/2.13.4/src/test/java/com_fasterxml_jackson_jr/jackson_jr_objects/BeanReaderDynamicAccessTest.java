@@ -12,19 +12,21 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanReaderDynamicAccessTest {
+    private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
+
     @Test
     void createsBeansThroughTheDefaultConstructor() throws Exception {
-        ConstructorBean bean = JSON.std.beanFrom(ConstructorBean.class, "{\"name\":\"Ada\"}");
+        ConstructorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(ConstructorBean.class, "{\"name\":\"Ada\"}");
 
         assertThat(bean.constructed).isTrue();
         assertThat(bean.name).isEqualTo("Ada");
     }
 
-    public static class ConstructorBean {
+    static final class ConstructorBean {
         public boolean constructed;
         public String name;
 
-        public ConstructorBean() {
+        private ConstructorBean() {
             this.constructed = true;
         }
     }

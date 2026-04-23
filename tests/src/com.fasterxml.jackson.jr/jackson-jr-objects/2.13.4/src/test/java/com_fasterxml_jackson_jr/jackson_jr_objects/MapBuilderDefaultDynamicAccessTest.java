@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MapBuilderDefaultDynamicAccessTest {
     @Test
     void instantiatesConcreteMapImplementationsForBeanProperties() throws Exception {
-        CustomMapBean bean = JSON.std.beanFrom(CustomMapBean.class, "{\"counts\":{\"beta\":2,\"alpha\":1}}");
+        CustomMapBean bean = JSON.std.beanFrom(CustomMapBean.class, "{\"counts\":{\"alpha\":1,\"beta\":2}}");
 
         assertThat(bean.counts).isInstanceOf(CountsMap.class);
         assertThat(bean.counts).containsEntry("alpha", 1).containsEntry("beta", 2);

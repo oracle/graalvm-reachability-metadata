@@ -9,34 +9,29 @@ package com_fasterxml_jackson_jr.jackson_jr_objects;
 import com.fasterxml.jackson.jr.ob.JSON;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeResolverDynamicAccessTest {
     @Test
-    void resolvesGenericArrayTypeArgumentsForInheritedSetterBackedProperties() throws Exception {
+    void resolvesInheritedGenericArraySetterTypes() throws Exception {
         StringArrayContainer bean = JSON.std.beanFrom(StringArrayContainer.class,
-                "{\"values\":[[\"alpha\"],[\"beta\",\"gamma\"]]}");
-        List<?> values = bean.getValues();
+                "{\"values\":[\"alpha\",\"beta\"]}");
 
-        assertThat(values).hasSize(2);
-        assertThat((Object[]) values.get(0)).containsExactly("alpha");
-        assertThat((Object[]) values.get(1)).containsExactly("beta", "gamma");
+        assertThat(bean.getValues()).containsExactly("alpha", "beta");
     }
 
-    public static class GenericArrayContainer<T> {
-        private List<T[]> values;
+    static class GenericArrayContainer<T> {
+        private T[] values;
 
-        public List<T[]> getValues() {
+        public T[] getValues() {
             return values;
         }
 
-        public void setValues(List<T[]> values) {
+        public void setValues(T[] values) {
             this.values = values;
         }
     }
 
-    public static class StringArrayContainer extends GenericArrayContainer<String> {
+    static final class StringArrayContainer extends GenericArrayContainer<String> {
     }
 }

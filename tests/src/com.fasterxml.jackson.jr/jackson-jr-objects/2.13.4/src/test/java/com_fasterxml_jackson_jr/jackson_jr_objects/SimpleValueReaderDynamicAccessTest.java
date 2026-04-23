@@ -19,6 +19,6 @@ public class SimpleValueReaderDynamicAccessTest {
         assertThat(resolved).isSameAs(SampleType.class);
     }
 
-    public static class SampleType {
+    static final class SampleType {
     }
 }
