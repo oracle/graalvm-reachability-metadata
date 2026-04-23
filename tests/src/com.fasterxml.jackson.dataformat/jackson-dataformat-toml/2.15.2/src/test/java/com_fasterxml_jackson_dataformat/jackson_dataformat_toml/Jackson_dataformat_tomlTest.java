@@ -215,6 +215,50 @@ class Jackson_dataformat_tomlTest {
     }
 
     @Test
+    void quotedKeysPreserveLiteralFieldNamesAcrossStreamingReadAndWrite() throws Exception {
+        TomlFactory factory = new TomlFactory();
+        String toml = """
+                'literal.dot' = 'value'
+                "spaced key" = 7
+                """;
+
+        try (JsonParser parser = factory.createParser(toml)) {
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT);
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("literal.dot");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
+            assertThat(parser.getText()).isEqualTo("value");
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.FIELD_NAME);
+            assertThat(parser.currentName()).isEqualTo("spaced key");
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_NUMBER_INT);
+            assertThat(parser.getIntValue()).isEqualTo(7);
+
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.END_OBJECT);
+        }
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (JsonGenerator generator = factory.createGenerator(output)) {
+            generator.writeStartObject();
+            generator.writeStringField("literal.dot", "value");
+            generator.writeNumberField("spaced key", 7);
+            generator.writeEndObject();
+        }
+
+        String serialized = output.toString(StandardCharsets.UTF_8);
+        JsonNode roundTripped = new TomlMapper().readTree(serialized);
+
+        assertThat(serialized)
+                .contains("'literal.dot' = 'value'")
+                .contains("'spaced key' = 7");
+
+        assertThat(roundTripped.path("literal.dot").asText()).isEqualTo("value");
+        assertThat(roundTripped.path("spaced key").asInt()).isEqualTo(7);
+        assertThat(roundTripped.path("literal").isMissingNode()).isTrue();
+    }
+
+    @Test
     void factoryCopiesAndRebuildsKeepWriteFeatureBehavior() throws Exception {
         TomlFactory factory = TomlFactory.builder()
                 .enable(TomlReadFeature.PARSE_JAVA_TIME)
