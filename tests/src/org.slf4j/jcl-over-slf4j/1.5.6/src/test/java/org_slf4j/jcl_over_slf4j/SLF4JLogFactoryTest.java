@@ -26,8 +26,7 @@ public class SLF4JLogFactoryTest {
         System.setOut(new PrintStream(capturedOutput, true, StandardCharsets.UTF_8));
         try {
             factory.release();
-        }
-        finally {
+        } finally {
             System.setOut(originalOutput);
         }
 

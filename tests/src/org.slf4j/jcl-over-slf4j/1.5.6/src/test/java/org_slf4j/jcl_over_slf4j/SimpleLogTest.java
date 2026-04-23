@@ -38,8 +38,7 @@ public class SimpleLogTest {
             simpleLog.trace("trace message");
             simpleLog.info("info message");
             simpleLog.warn("warn message");
-        }
-        finally {
+        } finally {
             System.setErr(originalError);
         }
 

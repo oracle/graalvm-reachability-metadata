@@ -40,8 +40,7 @@ public class SimpleLog_1Test {
 
             System.setErr(new PrintStream(capturedError, true, StandardCharsets.UTF_8));
             invoke(simpleLog, "error", "error message", failure);
-        }
-        finally {
+        } finally {
             System.setErr(originalError);
             Thread.currentThread().setContextClassLoader(originalLoader);
         }
@@ -59,8 +58,7 @@ public class SimpleLog_1Test {
             target.getClass()
                     .getMethod(methodName, Object.class, Throwable.class)
                     .invoke(target, message, failure);
-        }
-        catch (InvocationTargetException invocationTargetException) {
+        } catch (InvocationTargetException invocationTargetException) {
             throw invocationTargetException.getTargetException();
         }
     }
