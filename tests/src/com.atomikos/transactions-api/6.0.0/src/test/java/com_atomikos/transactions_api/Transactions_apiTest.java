@@ -399,6 +399,25 @@ class Transactions_apiTest {
             .hasMessageContaining("Another resource already exists with name");
     }
 
+    @Test
+    void pendingTransactionRecordCollectsLineagesForMatchingAncestors() {
+        PendingTransactionRecord anchor = new PendingTransactionRecord("anchor", TxState.ACTIVE, 1L, "domain", null);
+        PendingTransactionRecord child = new PendingTransactionRecord("child", TxState.IN_DOUBT, 2L, "domain", "anchor");
+        PendingTransactionRecord grandchild = new PendingTransactionRecord("grandchild", TxState.COMMITTING, 3L, "domain", "child");
+        PendingTransactionRecord directMatch = new PendingTransactionRecord("direct-match", TxState.ABORTING, 4L, "domain", null);
+        PendingTransactionRecord unrelatedRoot = new PendingTransactionRecord("unrelated-root", TxState.ACTIVE, 5L, "domain", null);
+        PendingTransactionRecord unrelatedChild = new PendingTransactionRecord("unrelated-child", TxState.IN_DOUBT, 6L, "domain", "unrelated-root");
+        PendingTransactionRecord orphan = new PendingTransactionRecord("orphan", TxState.ACTIVE, 7L, "domain", "missing-root");
+        List<PendingTransactionRecord> records = List.of(anchor, child, grandchild, directMatch, unrelatedRoot, unrelatedChild, orphan);
+
+        Collection<PendingTransactionRecord> collected = PendingTransactionRecord.collectLineages(
+            record -> Objects.equals(record.id, "anchor") || Objects.equals(record.id, "direct-match"),
+            records
+        );
+
+        assertThat(collected).containsExactlyInAnyOrder(anchor, child, grandchild, directMatch);
+    }
+
     private static Properties baseConfigProperties() {
         Properties properties = new Properties();
         properties.setProperty(ConfigProperties.LOG_BASE_DIR_PROPERTY_NAME, "/tmp/atomikos");
