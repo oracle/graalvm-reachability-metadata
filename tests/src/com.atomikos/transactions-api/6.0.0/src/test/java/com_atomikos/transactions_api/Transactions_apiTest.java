@@ -7,18 +7,14 @@
 package com_atomikos.transactions_api;
 
 import com.atomikos.datasource.RecoverableResource;
-import com.atomikos.datasource.ResourceException;
 import com.atomikos.icatch.CompositeCoordinator;
 import com.atomikos.icatch.CompositeTransaction;
 import com.atomikos.icatch.CompositeTransactionManager;
 import com.atomikos.icatch.Extent;
-import com.atomikos.icatch.HeurHazardException;
-import com.atomikos.icatch.HeurMixedException;
 import com.atomikos.icatch.Participant;
 import com.atomikos.icatch.Propagation;
 import com.atomikos.icatch.RecoveryCoordinator;
 import com.atomikos.icatch.RecoveryService;
-import com.atomikos.icatch.RollbackException;
 import com.atomikos.icatch.SubTxAwareParticipant;
 import com.atomikos.icatch.SysException;
 import com.atomikos.icatch.Synchronization;
@@ -28,7 +24,6 @@ import com.atomikos.icatch.event.transaction.TransactionHeuristicEvent;
 import com.atomikos.icatch.provider.ConfigProperties;
 import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.recovery.PendingTransactionRecord;
-import com.atomikos.recovery.RecoveryLog;
 import com.atomikos.recovery.TxState;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -641,7 +636,7 @@ class Transactions_apiTest {
 
         @Override
         public Stack<CompositeTransaction> getLineage() {
-            Stack<CompositeTransaction> lineage = new Stack<>();
+            Stack<CompositeTransaction> lineage = new java.util.Stack<>();
             lineage.push(this);
             return lineage;
         }
