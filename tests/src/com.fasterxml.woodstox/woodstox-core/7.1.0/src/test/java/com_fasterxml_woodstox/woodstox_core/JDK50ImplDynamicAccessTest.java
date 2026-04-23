@@ -6,8 +6,9 @@
  */
 package com_fasterxml_woodstox.woodstox_core;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import com.ctc.wstx.shaded.msv_core.datatype.xsd.regex.RegExp;
 import com.ctc.wstx.shaded.msv_core.datatype.xsd.regex.RegExpFactory;
 import java.lang.reflect.Constructor;
 import org.junit.jupiter.api.Test;
@@ -17,12 +18,12 @@ public class JDK50ImplDynamicAccessTest {
             "com.ctc.wstx.shaded.msv_core.datatype.xsd.regex.JDK50Impl";
 
     @Test
-    void reachesLegacyJdk50RegexpConstructionPathEvenWhenModuleAccessIsRejected() throws Exception {
+    void compilesPatternsThroughTheLegacyJdk50RegexpImplementation() throws Exception {
         RegExpFactory factory = newFactory();
+        RegExp regExp = factory.compile("[A-Z]{2,5}-[0-9]{2}");
 
-        assertThatThrownBy(() -> factory.compile("[A-Z]{2,5}-[0-9]{2}"))
-                .isInstanceOf(IllegalAccessError.class)
-                .hasMessageContaining("RegularExpression");
+        assertThat(regExp.matches("WSTX-71")).isTrue();
+        assertThat(regExp.matches("woodstox-71")).isFalse();
     }
 
     private static RegExpFactory newFactory() throws Exception {

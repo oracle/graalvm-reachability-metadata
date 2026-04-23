@@ -17,6 +17,12 @@ dependencies {
 
 graalvmNative {
     agent {
+        binaries {
+            test {
+                buildArgs.add('--add-exports=java.xml/com.sun.org.apache.xerces.internal.impl.xpath.regex=ALL-UNNAMED')
+            }
+        }
+
         defaultMode = "conditional"
         modes {
             conditional {
@@ -24,4 +30,9 @@ graalvmNative {
             }
         }
     }
+}
+
+// Allow Woodstox's legacy JDK50 regexp adapter to access the JDK's internal Xerces regex implementation on Java 21+.
+tasks.withType(Test).configureEach {
+    jvmArgs '--add-exports', 'java.xml/com.sun.org.apache.xerces.internal.impl.xpath.regex=ALL-UNNAMED'
 }
