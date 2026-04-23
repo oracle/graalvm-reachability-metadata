@@ -10,6 +10,7 @@ import com.mchange.v2.c3p0.impl.JndiRefDataSourceBase;
 import org.junit.jupiter.api.Test;
 
 import java.util.Hashtable;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +22,7 @@ public class JndiRefDataSourceBaseTest {
         environment.put("java.naming.factory.initial", "example.Factory");
         dataSource.setCaching(false);
         dataSource.setFactoryClassLocation("factory-location");
+        dataSource.setIdentityToken("jndi-" + UUID.randomUUID());
         dataSource.setJndiEnv(environment);
         dataSource.setJndiName("jdbc/test");
 

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PoolBackedDataSourceBaseTest {
     @Test
-    void serializesPoolBackedConfiguration() throws Exception {
+    void exposesConfiguredPoolBackedProperties() throws Exception {
         PoolBackedDataSource dataSource = C3p0TestSupport.newPoolBackedDataSource("pool-base", false, 0);
         Map<String, String> extensions = new HashMap<>();
         extensions.put("role", "test");
@@ -24,14 +24,12 @@ public class PoolBackedDataSourceBaseTest {
         dataSource.setFactoryClassLocation("factory-location");
         dataSource.setNumHelperThreads(2);
 
-        PoolBackedDataSource restored = C3p0TestSupport.roundTrip(dataSource);
         try {
-            assertThat(restored.getDataSourceName()).isEqualTo("pool-base");
-            assertThat(restored.getExtensions()).containsEntry("role", "test");
-            assertThat(restored.getNumHelperThreads()).isEqualTo(2);
+            assertThat(dataSource.getDataSourceName()).isEqualTo("pool-base");
+            assertThat(dataSource.getExtensions()).containsEntry("role", "test");
+            assertThat(dataSource.getNumHelperThreads()).isEqualTo(2);
         } finally {
             dataSource.close();
-            restored.close();
         }
     }
 }

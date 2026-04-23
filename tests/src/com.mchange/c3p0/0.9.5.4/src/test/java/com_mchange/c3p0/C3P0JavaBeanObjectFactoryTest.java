@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.naming.Reference;
 import java.util.Hashtable;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +22,7 @@ public class C3P0JavaBeanObjectFactoryTest {
         JndiRefDataSourceBase original = new JndiRefDataSourceBase(false);
         original.setCaching(false);
         original.setFactoryClassLocation("factory-location");
+        original.setIdentityToken("factory-" + UUID.randomUUID());
         original.setJndiName("jdbc/factory");
 
         Reference reference = original.getReference();

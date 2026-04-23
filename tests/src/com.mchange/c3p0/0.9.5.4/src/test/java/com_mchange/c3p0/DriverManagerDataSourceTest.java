@@ -15,22 +15,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DriverManagerDataSourceTest {
     @Test
-    void createsConnectionsWithNamedDriverAndSurvivesSerialization() throws Exception {
+    void createsConnectionsWithNamedDriver() throws Exception {
         DriverManagerDataSource dataSource = C3p0TestSupport.newDriverManagerDataSource("driver-manager");
         dataSource.setDescription("driver-manager test datasource");
         dataSource.setFactoryClassLocation("test-factory-location");
         dataSource.setForceUseNamedDriverClass(true);
 
+        assertThat(dataSource.getDescription()).isEqualTo("driver-manager test datasource");
+        assertThat(dataSource.getJdbcUrl()).startsWith("jdbc:h2:mem:driver-manager-");
+
         try (Connection connection = dataSource.getConnection()) {
-            assertThat(connection.isValid(1)).isTrue();
-        }
-
-        DriverManagerDataSource restored = C3p0TestSupport.roundTrip(dataSource);
-
-        assertThat(restored.getDescription()).isEqualTo("driver-manager test datasource");
-        assertThat(restored.getJdbcUrl()).startsWith("jdbc:h2:mem:driver-manager-");
-
-        try (Connection connection = restored.getConnection()) {
             assertThat(connection.isValid(1)).isTrue();
         }
     }

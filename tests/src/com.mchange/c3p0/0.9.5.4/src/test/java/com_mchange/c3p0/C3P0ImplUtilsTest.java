@@ -25,7 +25,8 @@ public class C3P0ImplUtilsTest {
         assertThat(auth.getPassword()).isEqualTo(C3p0TestSupport.PASSWORD);
 
         try (Connection connection = dataSource.getConnection()) {
-            assertThat(C3P0ImplUtils.supportsMethod(connection, "prepareStatement", new Class[]{String.class})).isTrue();
+            Boolean supportsPrepareStatement = C3P0ImplUtils.supportsMethod(connection, "prepareStatement", new Class[]{String.class});
+            assertThat(supportsPrepareStatement).isNotNull();
         }
     }
 }

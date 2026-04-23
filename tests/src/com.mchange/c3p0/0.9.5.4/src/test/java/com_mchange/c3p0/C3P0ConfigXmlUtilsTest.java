@@ -14,6 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class C3P0ConfigXmlUtilsTest {
     @Test
     void returnsNullWhenDefaultXmlConfigIsAbsent() throws Exception {
-        assertThat(C3P0ConfigXmlUtils.extractXmlConfigFromDefaultResource()).isNull();
+        assertThat(C3P0ConfigXmlUtils.extractXmlConfigFromDefaultResource(false)).isNull();
     }
 }

@@ -18,6 +18,8 @@ public class C3P0ConfigUtilsTest {
     void extractsHardcodedDefaults() {
         Map<?, ?> defaults = C3P0ConfigUtils.extractHardcodedC3P0Defaults();
 
-        assertThat(defaults).containsKeys("maxPoolSize", "minPoolSize", "numHelperThreads");
+        assertThat(defaults.containsKey("maxPoolSize")).isTrue();
+        assertThat(defaults.containsKey("minPoolSize")).isTrue();
+        assertThat(defaults.containsKey("numHelperThreads")).isTrue();
     }
 }

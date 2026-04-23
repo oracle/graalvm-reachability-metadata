@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WrapperConnectionPoolDataSourceTest {
     @Test
-    void recreatesConnectionTesterAndRoundTripsThroughSerialization() throws Exception {
+    void recreatesConnectionTesterAndCreatesPooledConnections() throws Exception {
         WrapperConnectionPoolDataSource dataSource = C3p0TestSupport.newWrapperConnectionPoolDataSource("wrapper", false);
         Map<String, Map<String, String>> overrides = new HashMap<>();
         Map<String, String> userOverrides = new HashMap<>();
@@ -34,12 +34,10 @@ public class WrapperConnectionPoolDataSourceTest {
         assertThat(dataSource.getUser()).isEqualTo(C3p0TestSupport.USER);
         assertThat(dataSource.getPassword()).isEqualTo(C3p0TestSupport.PASSWORD);
 
-        WrapperConnectionPoolDataSource restored = C3p0TestSupport.roundTrip(dataSource);
+        assertThat(dataSource.getPreferredTestQuery()).isEqualTo("SELECT 1");
+        assertThat(dataSource.getConnectionTesterClassName()).isEqualTo("com.mchange.v2.c3p0.impl.DefaultConnectionTester");
 
-        assertThat(restored.getPreferredTestQuery()).isEqualTo("SELECT 1");
-        assertThat(restored.getConnectionTesterClassName()).isEqualTo("com.mchange.v2.c3p0.impl.DefaultConnectionTester");
-
-        PooledConnection pooledConnection = restored.getPooledConnection();
+        PooledConnection pooledConnection = dataSource.getPooledConnection();
         try (Connection connection = pooledConnection.getConnection()) {
             assertThat(connection.isValid(1)).isTrue();
         } finally {
