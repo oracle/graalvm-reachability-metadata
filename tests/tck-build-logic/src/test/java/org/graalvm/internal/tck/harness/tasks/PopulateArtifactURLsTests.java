@@ -48,24 +48,30 @@ class PopulateArtifactURLsTests {
         String output = outputBuffer.toString(StandardCharsets.UTF_8);
         assertThat(output)
                 .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ch.qos.logback:logback-classic:1.4.1")
+                .contains("Also determine whether this is a language-specific library.")
+                .contains("{ \"name\": \"kotlin\", \"version\": \"<kotlin major.minor, e.g. 2.0>\" }")
+                .contains("{ \"name\": \"scala\", \"version\": \"2\" }")
+                .contains("If the library is not language-specific, leave the \"language\" field absent.")
                 .contains("The sources URL, the test suite URL, and the documentation URL must be for the EXACT version \"1.4.1\".")
                 .contains("The \"description\" field must explain what the library does in exactly two sentences.")
-                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", and \"description\".")
+                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
                 .contains("Set missing \"repository-url\" to the selected repository URL.")
                 .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
                 .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
                 .contains("Set missing \"description\" to a concise explanation of the library in exactly two sentences.")
+                .contains("Set missing \"language\" only when the library is language-specific; otherwise leave the field absent.")
                 .contains("If any of these URLs or the description cannot be found with confidence, set that field value to \"N/A\".")
                 .contains("Current URL values:")
                 .contains("- source-code-url: <missing>")
                 .contains("- description: <missing>")
+                .contains("- language: <missing>")
                 .contains("Entry selector: \"metadata-version\" = \"1.4.1\"")
                 .doesNotContain("Source Artifact Verification (required):");
         assertThat(tempDir.resolve("build/agent-url-discovery-logs")).doesNotExist();
     }
 
     @Test
-    void runWithLimitStillPromptsForEntriesMissingDescription() throws IOException, InterruptedException {
+    void runWithLimitSkipsEntriesMissingOnlyLanguage() throws IOException, InterruptedException {
         Project project = createProjectWithMixedMetadata();
         PopulateArtifactURLs task = project.getTasks().create(
                 "populateArtifactURLs",
@@ -85,8 +91,35 @@ class PopulateArtifactURLsTests {
 
         String output = outputBuffer.toString(StandardCharsets.UTF_8);
         assertThat(output)
+                .doesNotContain("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: a.group:aaa:1.0.0")
+                .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: b.group:bbb:2.0.0");
+    }
+
+    @Test
+    void runWithCoordinatesBackfillsEntriesMissingOnlyLanguage() throws IOException, InterruptedException {
+        Project project = createProjectWithMixedMetadata();
+        PopulateArtifactURLs task = project.getTasks().create(
+                "populateArtifactURLs",
+                PopulateArtifactURLs.class
+        );
+        task.setCoordinatesOption("a.group:aaa:1.0.0");
+        task.setAgentCommandOption("opencode run");
+
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+        try (PrintStream capturedOut = new PrintStream(outputBuffer, true, StandardCharsets.UTF_8)) {
+            System.setOut(capturedOut);
+            task.run();
+        } finally {
+            System.setOut(originalOut);
+        }
+
+        String output = outputBuffer.toString(StandardCharsets.UTF_8);
+        assertThat(output)
                 .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: a.group:aaa:1.0.0")
-                .doesNotContain("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: b.group:bbb:2.0.0");
+                .contains("- source-code-url: https://example.com/source-a")
+                .contains("- description: A concise explanation. Another concise explanation.")
+                .contains("- language: <missing>");
     }
 
     @Test
@@ -114,7 +147,8 @@ class PopulateArtifactURLsTests {
                 .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: a.group:aaa:1.0.0")
                 .contains("- Overwrite existing URL values.")
                 .contains("- source-code-url: https://example.com/source-a")
-                .contains("- description: <missing>");
+                .contains("- description: A concise explanation. Another concise explanation.")
+                .contains("- language: <missing>");
     }
 
     @Test
@@ -185,7 +219,8 @@ class PopulateArtifactURLsTests {
                     "source-code-url": "https://example.com/source-a",
                     "repository-url": "https://example.com/repository-a",
                     "test-code-url": "https://example.com/tests-a",
-                    "documentation-url": "https://example.com/docs-a"
+                    "documentation-url": "https://example.com/docs-a",
+                    "description": "A concise explanation. Another concise explanation."
                   }
                 ]
                 """

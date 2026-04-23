@@ -166,6 +166,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         Set<String> packages = new LinkedHashSet<>();
         discoverTestPackages(testsDirectory.resolve("src/test/java"), packages);
         discoverTestPackages(testsDirectory.resolve("src/test/kotlin"), packages);
+        discoverTestPackages(testsDirectory.resolve("src/test/scala"), packages);
         return packages;
     }
 

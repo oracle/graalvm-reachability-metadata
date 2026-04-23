@@ -8,6 +8,9 @@ package org.graalvm.internal.tck;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+import org.graalvm.internal.tck.model.LibraryLanguage;
+import org.graalvm.internal.tck.utils.ArtifactMetadataDiscoveryUtils;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.Project;
 import org.gradle.testfixtures.ProjectBuilder;
@@ -133,6 +136,117 @@ class ScaffoldTaskTests {
         );
         assertThat(tempDir.resolve("tests/src/org.postgresql/postgresql/42.7.3/src/test/java/org_postgresql/postgresql/PostgresqlTest.java"))
                 .doesNotExist();
+    }
+
+    @Test
+    void runUsesDiscoveredKotlinScaffoldAndSeedsIndexEntry() throws IOException {
+        Coordinates coordinates = Coordinates.parse("io.ktor:ktor-server-core-jvm:3.1.0");
+        installLibraryArtifact(coordinates, List.of(
+                "io/ktor/server/application/Application.class",
+                "io/ktor/util/KtorExperimentalAPI.class"
+        ));
+        Project project = createProject();
+        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+                coordinates.toString(),
+                "https://example.com/source",
+                "https://example.com/repository",
+                "https://example.com/tests",
+                "https://example.com/docs",
+                "Ktor provides asynchronous servers. It is designed for Kotlin applications.",
+                new LibraryLanguage("kotlin", "2.0")
+        ));
+        ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
+
+        task.run();
+
+        assertThat(tempDir.resolve("tests/src/io.ktor/ktor-server-core-jvm/3.1.0/src/test/kotlin/io_ktor/ktor_server_core_jvm/Ktor_server_core_jvmTest.kt"))
+                .exists();
+        assertGeneratedFileMatchesTemplate(
+                coordinates,
+                "tests/src/io.ktor/ktor-server-core-jvm/3.1.0/build.gradle",
+                "/scaffold/build.gradle.kotlin.template"
+        );
+        assertThat(Files.readString(tempDir.resolve("tests/src/io.ktor/ktor-server-core-jvm/3.1.0/build.gradle"), StandardCharsets.UTF_8))
+                .contains("jvmToolchain(21)")
+                .contains("kotlinOptions.jvmTarget = \"21\"")
+                .doesNotContain("25");
+        List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
+                tempDir.resolve("metadata/io.ktor/ktor-server-core-jvm/index.json").toFile(),
+                new TypeReference<>() {}
+        );
+        assertThat(indexEntries.get(0))
+                .containsEntry("source-code-url", "https://example.com/source")
+                .containsEntry("repository-url", "https://example.com/repository")
+                .containsEntry("test-code-url", "https://example.com/tests")
+                .containsEntry("documentation-url", "https://example.com/docs")
+                .containsEntry("description", "Ktor provides asynchronous servers. It is designed for Kotlin applications.")
+                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+    }
+
+    @Test
+    void runUsesDiscoveredScala3Scaffold() throws IOException {
+        Coordinates coordinates = Coordinates.parse("org.typelevel:cats-core_3:2.12.0");
+        installLibraryArtifact(coordinates, List.of(
+                "cats/Functor.class",
+                "cats/data/Validated.class"
+        ));
+        Project project = createProject();
+        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+                coordinates.toString(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                new LibraryLanguage("scala", "3")
+        ));
+        ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
+
+        task.run();
+
+        assertThat(tempDir.resolve("tests/src/org.typelevel/cats-core_3/2.12.0/src/test/scala/org_typelevel/cats_core_3/Cats_core_3Test.scala"))
+                .exists();
+        assertGeneratedFileMatchesTemplate(
+                coordinates,
+                "tests/src/org.typelevel/cats-core_3/2.12.0/build.gradle",
+                "/scaffold/build.gradle.scala3.template"
+        );
+        assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_3/2.12.0/build.gradle"), StandardCharsets.UTF_8))
+                .contains("JavaLanguageVersion.of(21)")
+                .doesNotContain("25");
+    }
+
+    @Test
+    void runUsesDiscoveredScala2Scaffold() throws IOException {
+        Coordinates coordinates = Coordinates.parse("org.typelevel:cats-core_2.13:2.12.0");
+        installLibraryArtifact(coordinates, List.of(
+                "cats/Functor.class",
+                "cats/data/Validated.class"
+        ));
+        Project project = createProject();
+        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+                coordinates.toString(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                new LibraryLanguage("scala", "2")
+        ));
+        ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
+
+        task.run();
+
+        assertThat(tempDir.resolve("tests/src/org.typelevel/cats-core_2.13/2.12.0/src/test/scala/org_typelevel/cats_core_2_13/Cats_core_2_13Test.scala"))
+                .exists();
+        assertGeneratedFileMatchesTemplate(
+                coordinates,
+                "tests/src/org.typelevel/cats-core_2.13/2.12.0/build.gradle",
+                "/scaffold/build.gradle.scala2.template"
+        );
+        assertThat(Files.readString(tempDir.resolve("tests/src/org.typelevel/cats-core_2.13/2.12.0/build.gradle"), StandardCharsets.UTF_8))
+                .contains("JavaLanguageVersion.of(21)")
+                .doesNotContain("25");
     }
 
     @Test
@@ -418,5 +532,12 @@ class ScaffoldTaskTests {
 
     private Path ensureRepositoryRoot() throws IOException {
         return Files.createDirectories(tempDir.resolve("test-maven-repo"));
+    }
+
+    private void writeDiscoveredArtifactMetadata(Project project, DiscoveredArtifactMetadata metadata) throws IOException {
+        ArtifactMetadataDiscoveryUtils.writeDiscoveryFile(
+                ArtifactMetadataDiscoveryUtils.discoveryFile(project.getLayout(), metadata.coordinates()),
+                metadata
+        );
     }
 }

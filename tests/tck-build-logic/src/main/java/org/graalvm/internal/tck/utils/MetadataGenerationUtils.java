@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.graalvm.internal.tck.Coordinates;
+import org.graalvm.internal.tck.model.LibraryLanguage;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
@@ -201,6 +202,7 @@ public final class MetadataGenerationUtils {
 
         List<String> latestAllowedPackages = null;
         List<String> latestRequires = null;
+        LibraryLanguage latestLanguage = null;
         // Remove 'latest' flag from any existing latest entry
         for (int i = 0; i < entries.size(); i++) {
             MetadataVersionsIndexEntry entry = entries.get(i);
@@ -216,6 +218,7 @@ public final class MetadataGenerationUtils {
                         entry.testCodeUrl(),
                         entry.documentationUrl(),
                         entry.description(),
+                        entry.language(),
                         entry.testedVersions(),
                         entry.skippedVersions(),
                         entry.allowedPackages(),
@@ -223,6 +226,7 @@ public final class MetadataGenerationUtils {
                 ));
                 latestAllowedPackages = entry.allowedPackages();
                 latestRequires = entry.requires();
+                latestLanguage = entry.language();
             }
         }
 
@@ -240,6 +244,7 @@ public final class MetadataGenerationUtils {
                 null, // test-code-url
                 null, // documentation-url
                 null, // description
+                latestLanguage, // language
                 testedVersions,
                 null, // skipped-versions
                 latestAllowedPackages, // allowed-packages

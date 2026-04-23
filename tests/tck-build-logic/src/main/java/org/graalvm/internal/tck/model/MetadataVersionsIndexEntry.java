@@ -33,6 +33,8 @@ public record MetadataVersionsIndexEntry(
         String documentationUrl,
         @JsonProperty("description")
         String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
         @JsonProperty("tested-versions")
         List<String> testedVersions,
         @JsonProperty("skipped-versions")

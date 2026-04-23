@@ -33,6 +33,7 @@ import org.graalvm.internal.tck.harness.tasks.ValidateIndexFilesTask
 import org.graalvm.internal.tck.harness.tasks.ListLibraryJarsInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDynamicAccessCoverageReportTask
+import org.graalvm.internal.tck.harness.tasks.DiscoverArtifactMetadata
 import org.graalvm.internal.tck.harness.tasks.PopulateArtifactURLs
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
@@ -190,7 +191,12 @@ tasks.register("listCoordinates", DefaultTask) { task ->
 }
 
 tasks.register("populateArtifactURLs", PopulateArtifactURLs.class) { task ->
-    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, and documentation-url in matching metadata index entries.")
+    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+    task.setGroup(METADATA_GROUP)
+}
+
+tasks.register("discoverArtifactMetadata", DiscoverArtifactMetadata.class) { task ->
+    task.setDescription("Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.")
     task.setGroup(METADATA_GROUP)
 }
 
