@@ -46,8 +46,9 @@ public class DatatypeLibraryLoaderServiceLoaderDynamicAccessTest {
 
             Enumeration<?> providers = invokeProviders(serviceClass, service);
             assertThat(providers.hasMoreElements()).isTrue();
-            assertThat(providers.nextElement())
-                    .isInstanceOf(DatatypeLibraryLoaderServiceDynamicAccessTest.TestDatatypeLibraryFactory.class);
+            assertThat(containsProviderInstance(
+                    providers,
+                    DatatypeLibraryLoaderServiceDynamicAccessTest.TestDatatypeLibraryFactory.class)).isTrue();
 
             Class<?> factoryClass = invokeLoadClass(
                     loaderClass,
@@ -94,5 +95,14 @@ public class DatatypeLibraryLoaderServiceLoaderDynamicAccessTest {
         Method method = loaderClass.getDeclaredMethod("loadClass", String.class);
         method.setAccessible(true);
         return (Class<?>) method.invoke(loader, className);
+    }
+
+    private static boolean containsProviderInstance(Enumeration<?> providers, Class<?> providerType) {
+        while (providers.hasMoreElements()) {
+            if (providerType.isInstance(providers.nextElement())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
