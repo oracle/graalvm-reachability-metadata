@@ -59,7 +59,7 @@ public class JacksonAnnotatedMethodTest {
         }
     }
 
-    static class MethodTarget {
+    public static class MethodTarget {
 
         private String value;
 

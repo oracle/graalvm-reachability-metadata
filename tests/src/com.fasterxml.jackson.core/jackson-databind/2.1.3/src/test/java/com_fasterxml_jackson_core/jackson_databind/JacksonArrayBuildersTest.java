@@ -15,8 +15,10 @@ public class JacksonArrayBuildersTest {
 
     @Test
     void arrayBuildersInsertElementsWithAndWithoutDuplicates() {
+        String[] existing = new String[] { "a", "b" };
+
         assertThat(ArrayBuilders.insertInList(new String[] { "b", "c" }, "a")).containsExactly("a", "b", "c");
-        assertThat(ArrayBuilders.insertInListNoDup(new String[] { "b", "a" }, "a")).containsExactly("a", "b");
+        assertThat(ArrayBuilders.insertInListNoDup(existing, existing[0])).isSameAs(existing);
         assertThat(ArrayBuilders.insertInListNoDup(new String[] { "b", "c" }, "a")).containsExactly("a", "b", "c");
     }
 }

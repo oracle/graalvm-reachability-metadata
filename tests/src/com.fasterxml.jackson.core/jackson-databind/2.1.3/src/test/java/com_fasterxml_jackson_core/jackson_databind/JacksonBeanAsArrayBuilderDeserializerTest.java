@@ -22,7 +22,6 @@ public class JacksonBeanAsArrayBuilderDeserializerTest {
         assertThat(value.value).isEqualTo("array");
     }
 
-    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     @JsonDeserialize(builder = ArrayBuiltValueBuilder.class)
     static class ArrayBuiltValue {
 
@@ -33,6 +32,7 @@ public class JacksonBeanAsArrayBuilderDeserializerTest {
         }
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.ARRAY)
     public static class ArrayBuiltValueBuilder {
 
         private String value;

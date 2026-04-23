@@ -49,15 +49,15 @@ public class JacksonAnnotatedConstructorTest {
         }
     }
 
-    static class ConstructorTarget {
+    public static class ConstructorTarget {
 
-        final String value;
+        public final String value;
 
-        ConstructorTarget() {
+        public ConstructorTarget() {
             this("default");
         }
 
-        ConstructorTarget(String value) {
+        public ConstructorTarget(String value) {
             this.value = value;
         }
     }

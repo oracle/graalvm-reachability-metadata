@@ -46,8 +46,8 @@ public class JacksonAnnotatedFieldTest {
         }
     }
 
-    static class FieldTarget {
+    public static class FieldTarget {
 
-        String value = "initial";
+        public String value = "initial";
     }
 }

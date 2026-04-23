@@ -23,7 +23,7 @@ public class JacksonEnumResolverTest {
         assertThat(resolver.findEnum("resolved")).isEqualTo(ResolvedEnum.VALUE);
     }
 
-    enum ResolvedEnum {
+    public enum ResolvedEnum {
         VALUE;
 
         @JsonValue
