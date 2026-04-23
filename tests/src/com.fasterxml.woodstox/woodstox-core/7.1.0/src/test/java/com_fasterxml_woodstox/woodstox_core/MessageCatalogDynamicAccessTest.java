@@ -8,13 +8,14 @@ package com_fasterxml_woodstox.woodstox_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.ctc.wstx.shaded.msv_core.scanner.dtd.DTDParser;
 import com.ctc.wstx.shaded.msv_core.scanner.dtd.MessageCatalog;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
 
 public class MessageCatalogDynamicAccessTest {
     @Test
-    void prefersLocaleMarkerClassesAndFallsBackToEnglishBundles() {
+    void loadsMessagesForSupportedLocalesAndChecksUnsupportedParserLocales() throws Exception {
         TestMessageCatalog catalog = new TestMessageCatalog();
         Locale previousDefault = Locale.getDefault();
         Locale.setDefault(Locale.ITALIAN);
@@ -22,9 +23,13 @@ public class MessageCatalogDynamicAccessTest {
             assertThat(catalog.isLocaleSupported("en_US")).isTrue();
             assertThat(catalog.isLocaleSupported("zz_ZZ")).isFalse();
             assertThat(catalog.chooseLocale(new String[]{"en_US", "zz_ZZ"})).isEqualTo(Locale.US);
+            assertThat(catalog.getMessage(Locale.ENGLISH, "greeting")).isEqualTo("Hello from Woodstox");
+            assertThat(catalog.getMessage(Locale.ENGLISH, "welcome", new Object[]{"native image"}))
+                    .isEqualTo("Hello, native image!");
             assertThat(catalog.getMessage(null, "greeting")).isEqualTo("Hello from Woodstox");
             assertThat(catalog.getMessage(null, "welcome", new Object[]{"native image"}))
                     .isEqualTo("Hello, native image!");
+            assertThat(new DTDParser().chooseLocale(new String[]{"zz_ZZ"})).isNull();
         } finally {
             Locale.setDefault(previousDefault);
         }
