@@ -19,7 +19,13 @@ public class JacksonObjectArrayDeserializerTest {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
-        String[] values = mapper.readValue("\"only\"", String[].class);
-        assertThat(values).containsExactly("only");
+        ArrayElement[] values = mapper.readValue("{\"name\":\"only\"}", ArrayElement[].class);
+        assertThat(values).hasSize(1);
+        assertThat(values[0].name).isEqualTo("only");
+    }
+
+    public static class ArrayElement {
+
+        public String name;
     }
 }

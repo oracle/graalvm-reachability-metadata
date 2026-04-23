@@ -9,6 +9,7 @@ package com_fasterxml_jackson_core.jackson_databind;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -19,16 +20,18 @@ public class JacksonSetterlessPropertyTest {
     @Test
     void setterlessPropertyUpdatesCollectionThroughGetter() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.AUTO_DETECT_FIELDS, false);
+
         SetterlessBean bean = mapper.readValue("{\"values\":[\"a\",\"b\"]}", SetterlessBean.class);
         assertThat(bean.getValues()).containsExactly("a", "b");
     }
 
-    static class SetterlessBean {
+    public static class SetterlessBean {
 
-        private final List<String> values = new ArrayList<String>();
+        private final List<String> backingValues = new ArrayList<String>();
 
         public List<String> getValues() {
-            return values;
+            return backingValues;
         }
     }
 }

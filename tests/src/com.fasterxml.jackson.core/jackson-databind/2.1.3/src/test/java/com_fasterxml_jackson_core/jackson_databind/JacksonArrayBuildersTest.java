@@ -16,9 +16,13 @@ public class JacksonArrayBuildersTest {
     @Test
     void arrayBuildersInsertElementsWithAndWithoutDuplicates() {
         String[] existing = new String[] { "a", "b" };
+        String[] duplicateNotAtHead = new String[] { "b", "a", "c" };
 
         assertThat(ArrayBuilders.insertInList(new String[] { "b", "c" }, "a")).containsExactly("a", "b", "c");
         assertThat(ArrayBuilders.insertInListNoDup(existing, existing[0])).isSameAs(existing);
+        assertThat(ArrayBuilders.insertInListNoDup(duplicateNotAtHead, duplicateNotAtHead[1]))
+                .isNotNull()
+                .hasSize(duplicateNotAtHead.length);
         assertThat(ArrayBuilders.insertInListNoDup(new String[] { "b", "c" }, "a")).containsExactly("a", "b", "c");
     }
 }

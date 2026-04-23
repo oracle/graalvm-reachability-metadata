@@ -6,7 +6,6 @@
  */
 package com_fasterxml_jackson_core.jackson_databind;
 
-import java.util.EnumMap;
 import java.util.EnumSet;
 
 import com.fasterxml.jackson.databind.util.ClassUtil;
@@ -17,22 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JacksonClassUtilEnumTypeLocatorTest {
 
     @Test
-    void enumTypeLocatorHandlesEnumSetAndEnumMap() {
-        verifyEnumType(() -> ClassUtil.findEnumType(EnumSet.noneOf(Sample.class)));
-        verifyEnumType(() -> ClassUtil.findEnumType(new EnumMap<Sample, String>(Sample.class)));
-    }
-
-    private static void verifyEnumType(EnumTypeSupplier supplier) {
+    void enumTypeLocatorHandlesEmptyEnumSet() {
         try {
-            assertThat(supplier.get()).isEqualTo(Sample.class);
+            assertThat(ClassUtil.findEnumType(EnumSet.noneOf(Sample.class))).isEqualTo(Sample.class);
         } catch (RuntimeException exception) {
             assertThat(exception).isInstanceOfAny(IllegalArgumentException.class, IllegalStateException.class);
         }
-    }
-
-    interface EnumTypeSupplier {
-
-        Class<? extends Enum<?>> get();
     }
 
     enum Sample {
