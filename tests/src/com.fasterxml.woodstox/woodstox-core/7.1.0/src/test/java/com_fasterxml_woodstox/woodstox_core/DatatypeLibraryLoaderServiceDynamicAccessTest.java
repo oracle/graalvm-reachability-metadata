@@ -16,20 +16,36 @@ import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeLibraryFactory;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeStreamingValidator;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.ValidationContext;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.helpers.DatatypeLibraryLoader;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 public class DatatypeLibraryLoaderServiceDynamicAccessTest {
     public static final String SERVICE_URI = "urn:test:provider";
+    private static final AtomicInteger FACTORY_INSTANTIATIONS = new AtomicInteger();
 
     @Test
     void instantiatesDatatypeLibraryFactoriesFromServiceEntries() throws Exception {
-        DatatypeLibrary library = new DatatypeLibraryLoader().createDatatypeLibrary(SERVICE_URI);
+        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+        FACTORY_INSTANTIATIONS.set(0);
 
-        assertThat(library).isNotNull();
-        assertThat(library.createDatatype("token").isValid("native image", null)).isTrue();
+        try {
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
+            DatatypeLibrary library = new DatatypeLibraryLoader().createDatatypeLibrary(SERVICE_URI);
+
+            assertThat(FACTORY_INSTANTIATIONS.get()).isEqualTo(1);
+            assertThat(library).isNotNull();
+            assertThat(library.createDatatype("token").isValid("native image", null)).isTrue();
+        } finally {
+            Thread.currentThread().setContextClassLoader(previous);
+        }
     }
 
     public static final class TestDatatypeLibraryFactory implements DatatypeLibraryFactory {
+        public TestDatatypeLibraryFactory() {
+            FACTORY_INSTANTIATIONS.incrementAndGet();
+        }
+
         @Override
         public DatatypeLibrary createDatatypeLibrary(String uri) {
             if (!SERVICE_URI.equals(uri)) {
