@@ -15,12 +15,21 @@ import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -112,6 +121,34 @@ public class PoolBackedDataSourceBaseTest {
         }
     }
 
+    @Test
+    void serializesReferenceableExtensionsThroughIndirectSerialization() throws Exception {
+        PoolBackedDataSource dataSource = C3p0TestSupport.newPoolBackedDataSource("pool-base-extensions", false, 0);
+        Map<String, String> extensions = new HashMap<>();
+        extensions.put("marker", "replace-me");
+        dataSource.setExtensions(extensions);
+        dataSource.setFactoryClassLocation("factory-location");
+        dataSource.setIdentityToken("pool-base-extensions-token");
+        dataSource.setNumHelperThreads(4);
+
+        PoolBackedDataSource restored = null;
+        try {
+            byte[] serialized = serialize(dataSource);
+            restored = deserializeWithReferenceableExtensions(serialized);
+
+            assertThat(restored.getExtensions())
+                .isInstanceOf(NonSerializableReferenceableMap.class)
+                .containsEntry("role", "test")
+                .containsEntry("mode", "indirect-extensions");
+            assertThat(serialize(restored)).isNotEmpty();
+        } finally {
+            if (restored != null) {
+                restored.close();
+            }
+            dataSource.close();
+        }
+    }
+
     private static final class NonSerializableReferenceableConnectionPoolDataSource
         implements ConnectionPoolDataSource, Referenceable {
         private final String name;
@@ -172,6 +209,57 @@ public class PoolBackedDataSourceBaseTest {
             throw new SQLFeatureNotSupportedException("Parent logger is not supported.");
         }
 
+    }
+
+    private static byte[] serialize(Serializable value) throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(value);
+        }
+        return bytes.toByteArray();
+    }
+
+    private static PoolBackedDataSource deserializeWithReferenceableExtensions(byte[] serialized) throws Exception {
+        try (ReplacingObjectInputStream input = new ReplacingObjectInputStream(new ByteArrayInputStream(serialized))) {
+            return (PoolBackedDataSource) input.readObject();
+        }
+    }
+
+    private static final class ReplacingObjectInputStream extends ObjectInputStream {
+        private ReplacingObjectInputStream(InputStream input) throws IOException {
+            super(input);
+            enableResolveObject(true);
+        }
+
+        @Override
+        protected Object resolveObject(Object obj) {
+            if (
+                obj instanceof Map<?, ?> map
+                    && obj.getClass().getName().startsWith("java.util.Collections$")
+                    && "replace-me".equals(map.get("marker"))
+            ) {
+                return new NonSerializableReferenceableMap(Map.of("role", "test", "mode", "indirect-extensions"));
+            }
+            return obj;
+        }
+    }
+
+    private static final class NonSerializableReferenceableMap extends AbstractMap<String, String> implements Referenceable {
+        private final Map<String, String> delegate;
+
+        private NonSerializableReferenceableMap(Map<String, String> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Set<Entry<String, String>> entrySet() {
+            return delegate.entrySet();
+        }
+
+        @Override
+        public Reference getReference() {
+            return new Reference(NonSerializableReferenceableMap.class.getName(), null, null);
+        }
     }
 
     public static final class NonSerializableReferenceableConnectionPoolDataSourceFactory implements ObjectFactory {
