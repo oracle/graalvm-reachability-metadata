@@ -266,6 +266,31 @@ public class Duct_tapeTest {
     }
 
     @Test
+    void rateLimiterKeepsItsSpacingAfterAFailedInvocation() {
+        RateLimiter rateLimiter = RateLimiterBuilder.newBuilder()
+                .withRate(5, TimeUnit.SECONDS)
+                .withConstantThroughput()
+                .build();
+
+        rateLimiter.doWhenReady(() -> {
+        });
+
+        IllegalStateException failure = assertThrows(IllegalStateException.class,
+                () -> rateLimiter.getWhenReady(() -> {
+                    throw new IllegalStateException("boom");
+                }));
+
+        AtomicBoolean recoveryExecuted = new AtomicBoolean();
+        long recoveryStart = System.nanoTime();
+        rateLimiter.doWhenReady(() -> recoveryExecuted.set(true));
+        long recoveryDelayMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - recoveryStart);
+
+        assertThat(failure).hasMessage("boom");
+        assertThat(recoveryExecuted.get()).isTrue();
+        assertThat(recoveryDelayMillis).isGreaterThanOrEqualTo(150L);
+    }
+
+    @Test
     void breakerCanPersistAndReadStateThroughACustomStateStore() {
         RecordingStateStore stateStore = new RecordingStateStore();
         Breaker breaker = BreakerBuilder.newBuilder().storeStateIn(stateStore).build();
