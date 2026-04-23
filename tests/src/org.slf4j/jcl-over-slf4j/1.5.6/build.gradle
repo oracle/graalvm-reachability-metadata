@@ -16,6 +16,32 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+Provider<RegularFile> testedLibraryPathResource = layout.buildDirectory.file("generated/test-resources/tested-library-path.txt")
+
+tasks.register("generateTestedLibraryPathResource") {
+    outputs.file(testedLibraryPathResource)
+    doLast {
+        File testedLibraryJar = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
+                .findAll { artifact ->
+                    artifact.moduleVersion.id.group == "org.slf4j" && artifact.moduleVersion.id.name == "jcl-over-slf4j"
+                }
+                .collect { artifact -> artifact.file }
+                .find { File file -> file.name.endsWith(".jar") }
+
+        if (testedLibraryJar == null) {
+            throw new GradleException("Failed to resolve the tested library JAR for org.slf4j:jcl-over-slf4j")
+        }
+
+        File outputFile = testedLibraryPathResource.get().asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.text = testedLibraryJar.absolutePath + System.lineSeparator()
+    }
+}
+
+tasks.named("processTestResources") {
+    from(tasks.named("generateTestedLibraryPathResource"))
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"

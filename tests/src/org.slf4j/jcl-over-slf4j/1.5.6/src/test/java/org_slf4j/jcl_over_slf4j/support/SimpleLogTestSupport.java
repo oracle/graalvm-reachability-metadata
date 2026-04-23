@@ -14,15 +14,6 @@ public final class SimpleLogTestSupport {
     }
 
     public static SimpleLog newSimpleLog(String name) {
-        Thread currentThread = Thread.currentThread();
-        ClassLoader previousLoader = currentThread.getContextClassLoader();
-
-        currentThread.setContextClassLoader(null);
-        try {
-            return new SimpleLog(name);
-        }
-        finally {
-            currentThread.setContextClassLoader(previousLoader);
-        }
+        return new SimpleLog(name);
     }
 }
