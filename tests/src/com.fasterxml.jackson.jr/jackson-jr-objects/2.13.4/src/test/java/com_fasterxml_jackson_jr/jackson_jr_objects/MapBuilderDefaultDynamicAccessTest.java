@@ -9,40 +9,42 @@ package com_fasterxml_jackson_jr.jackson_jr_objects;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.MapBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapBuilderDefaultDynamicAccessTest {
-    private static final JSON JSON_WITH_CUSTOM_MAPS = JSON.std.with(MapBuilder.defaultImpl().newBuilder(CountsMap.class));
-
     @Test
-    void instantiatesConfiguredMapImplementationForTopLevelMaps() throws Exception {
-        Map<String, Object> counts = JSON_WITH_CUSTOM_MAPS.mapFrom("{\"alpha\":1,\"beta\":2}");
+    void instantiatesConfiguredMapImplementationWhenStartingABuilder() {
+        MapBuilder builder = MapBuilder.defaultImpl().newBuilder(CountsMap.class);
+
+        Map<String, Object> counts = builder.start()
+                .put("alpha", 1)
+                .put("beta", 2)
+                .build();
 
         assertThat(counts).isInstanceOf(CountsMap.class);
         assertThat(counts).containsEntry("alpha", 1).containsEntry("beta", 2);
     }
 
     @Test
-    void instantiatesConfiguredMapImplementationForEmptyTopLevelMaps() throws Exception {
-        Map<String, Object> counts = JSON_WITH_CUSTOM_MAPS.mapFrom("{}");
+    void instantiatesConfiguredMapImplementationForEmptyMaps() throws Exception {
+        MapBuilder builder = MapBuilder.defaultImpl().newBuilder(CountsMap.class);
+
+        Map<String, Object> counts = builder.emptyMap();
 
         assertThat(counts).isInstanceOf(CountsMap.class).isEmpty();
     }
 
     @Test
-    void instantiatesConcreteMapImplementationsForBeanProperties() throws Exception {
-        CustomMapBean bean = JSON.std.beanFrom(CustomMapBean.class, "{\"counts\":{\"alpha\":1,\"beta\":2}}");
+    void instantiatesConfiguredMapImplementationForSingletonMaps() throws Exception {
+        MapBuilder builder = MapBuilder.defaultImpl().newBuilder(CountsMap.class);
 
-        assertThat(bean.counts).isInstanceOf(CountsMap.class);
-        assertThat(bean.counts).containsEntry("alpha", 1).containsEntry("beta", 2);
-    }
+        Map<String, Object> counts = builder.singletonMap("only", 99);
 
-    public static final class CustomMapBean {
-        public CountsMap counts;
+        assertThat(counts).isInstanceOf(CountsMap.class);
+        assertThat(counts).containsEntry("only", 99);
     }
 
     public static final class CountsMap extends LinkedHashMap<String, Object> {
