@@ -16,9 +16,9 @@ public class JacksonObjectBufferTest {
     @Test
     void objectBufferCompletesIntoTypedArrays() {
         ObjectBuffer buffer = new ObjectBuffer();
-        buffer.appendCompletedChunk(new Object[] { "a", "b" });
+        buffer.appendCompletedChunk(new Object[]{"a", "b" });
 
-        String[] values = buffer.completeAndClearBuffer(new Object[] { "c" }, 1, String.class);
+        String[] values = buffer.completeAndClearBuffer(new Object[]{"c" }, 1, String.class);
         assertThat(values).containsExactly("a", "b", "c");
     }
 }

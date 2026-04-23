@@ -26,7 +26,7 @@ public class JacksonAnnotatedMethodTest {
         Method staticMethod = MethodTarget.class.getDeclaredMethod("decorate", String.class);
         AnnotatedMethod annotatedStatic = new AnnotatedMethod(staticMethod, new AnnotationMap(), null);
 
-        assertThat(annotatedStatic.call(new Object[] { "bean" })).isEqualTo("decorated-bean");
+        assertThat(annotatedStatic.call(new Object[]{"bean" })).isEqualTo("decorated-bean");
         assertThat(annotatedStatic.call1("value")).isEqualTo("decorated-value");
 
         Method zeroArgStatic = MethodTarget.class.getDeclaredMethod("constant");

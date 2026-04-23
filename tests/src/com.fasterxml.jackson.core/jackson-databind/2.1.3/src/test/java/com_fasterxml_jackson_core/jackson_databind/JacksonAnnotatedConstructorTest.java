@@ -30,7 +30,7 @@ public class JacksonAnnotatedConstructorTest {
 
         Constructor<ConstructorTarget> stringConstructor = ConstructorTarget.class.getDeclaredConstructor(String.class);
         AnnotatedConstructor annotatedString = new AnnotatedConstructor(stringConstructor, new AnnotationMap(), null);
-        assertThat(((ConstructorTarget) annotatedString.call(new Object[] { "array" })).value).isEqualTo("array");
+        assertThat(((ConstructorTarget) annotatedString.call(new Object[]{"array" })).value).isEqualTo("array");
         assertThat(((ConstructorTarget) annotatedString.call1("single")).value).isEqualTo("single");
 
         AnnotatedConstructor restored = reserialize(annotatedString);
