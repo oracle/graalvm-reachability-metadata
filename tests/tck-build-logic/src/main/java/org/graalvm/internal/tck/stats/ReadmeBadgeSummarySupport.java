@@ -23,6 +23,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -416,6 +417,7 @@ public final class ReadmeBadgeSummarySupport {
         ChartBounds bounds = calculateBounds(panel.points(), panel.percentMetric());
         List<BigDecimal> yTicks = buildYAxisTicks(bounds.minValue(), bounds.maxValue());
         List<Integer> xLabelIndexes = buildXLabelIndexes(panel.points().size());
+        List<String> xLabels = buildXLabels(panel.points(), xLabelIndexes);
 
         for (BigDecimal tick : yTicks) {
             double y = toPlotY(tick, bounds.minValue(), bounds.maxValue(), plotY, plotHeight);
@@ -437,7 +439,8 @@ public final class ReadmeBadgeSummarySupport {
                     .append("</text>\n");
         }
 
-        for (Integer pointIndex : xLabelIndexes) {
+        for (int labelIndex = 0; labelIndex < xLabelIndexes.size(); labelIndex++) {
+            int pointIndex = xLabelIndexes.get(labelIndex);
             MetricPoint point = panel.points().get(pointIndex);
             double x = toPlotX(pointIndex, panel.points().size(), plotX, plotWidth);
             boolean firstLabel = pointIndex == 0;
@@ -464,7 +467,7 @@ public final class ReadmeBadgeSummarySupport {
                     .append("\" fill=\"#6b7f95\" font-size=\"13\" text-anchor=\"")
                     .append(textAnchor)
                     .append("\">")
-                    .append(escapeXml(formatGraphDate(point.date())))
+                    .append(escapeXml(xLabels.get(labelIndex)))
                     .append("</text>\n");
         }
 
@@ -579,6 +582,35 @@ public final class ReadmeBadgeSummarySupport {
         return indexes;
     }
 
+    private static List<String> buildXLabels(List<MetricPoint> points, List<Integer> xLabelIndexes) {
+        List<LocalDate> labelDates = new ArrayList<>();
+        for (Integer pointIndex : xLabelIndexes) {
+            labelDates.add(points.get(pointIndex).date());
+        }
+
+        List<String> monthYearLabels = labelDates.stream()
+                .map(ReadmeBadgeSummarySupport::formatMonthYear)
+                .toList();
+        if (labelsAreUnique(monthYearLabels)) {
+            return monthYearLabels;
+        }
+
+        List<String> monthDayLabels = labelDates.stream()
+                .map(ReadmeBadgeSummarySupport::formatMonthDay)
+                .toList();
+        if (labelsAreUnique(monthDayLabels)) {
+            return monthDayLabels;
+        }
+
+        return labelDates.stream()
+                .map(LocalDate::toString)
+                .toList();
+    }
+
+    private static boolean labelsAreUnique(List<String> labels) {
+        return new HashSet<>(labels).size() == labels.size();
+    }
+
     private static String buildLinePath(
             List<MetricPoint> points,
             BigDecimal minValue,
@@ -653,11 +685,21 @@ public final class ReadmeBadgeSummarySupport {
         return value.divide(step, 0, RoundingMode.CEILING).multiply(step).setScale(1, RoundingMode.HALF_UP);
     }
 
-    private static String formatGraphDate(LocalDate date) {
-        return date.getMonth().name().substring(0, 1)
-                + date.getMonth().name().substring(1, 3).toLowerCase(Locale.ROOT)
+    private static String formatMonthYear(LocalDate date) {
+        return formatShortMonth(date)
                 + " "
                 + date.getYear();
+    }
+
+    private static String formatMonthDay(LocalDate date) {
+        return formatShortMonth(date)
+                + " "
+                + date.getDayOfMonth();
+    }
+
+    private static String formatShortMonth(LocalDate date) {
+        return date.getMonth().name().substring(0, 1)
+                + date.getMonth().name().substring(1, 3).toLowerCase(Locale.ROOT);
     }
 
     private static String formatTickValue(BigDecimal value, String valueFormat) {

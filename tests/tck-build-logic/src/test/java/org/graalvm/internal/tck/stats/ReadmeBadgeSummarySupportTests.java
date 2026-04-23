@@ -278,13 +278,51 @@ class ReadmeBadgeSummarySupportTests {
         assertThat(svg).contains("Covered lines reported across library coverage stats");
         assertThat(svg).contains("Updated 2026-04-07");
         assertThat(svg).contains("35.8%");
-        assertThat(svg).contains("Apr 2026");
-        assertThat(svg).contains("text-anchor=\"end\">Apr 2026</text>");
+        assertThat(svg).contains("text-anchor=\"start\">Apr 5</text>");
+        assertThat(svg).contains("text-anchor=\"middle\">Apr 6</text>");
+        assertThat(svg).contains("text-anchor=\"end\">Apr 7</text>");
         assertThat(svg).contains("<path d=\"M ");
         assertThat(svg).contains("<circle");
         assertThat(svg.indexOf("Supported libraries")).isLessThan(svg.indexOf("Tested library versions"));
         assertThat(svg.indexOf("Tested library versions")).isLessThan(svg.indexOf("Dynamic access coverage"));
         assertThat(svg.indexOf("Dynamic access coverage")).isLessThan(svg.indexOf("Tested lines of code"));
+    }
+
+    @Test
+    void writeMetricsOverviewGraphKeepsMonthYearLabelsWhenTheyAreUnique() throws IOException {
+        Path graphFile = tempDir.resolve("latest").resolve("metrics-over-time.svg");
+        ReadmeBadgeSummarySupport.ReadmeMetricsHistory history = new ReadmeBadgeSummarySupport.ReadmeMetricsHistory(
+                List.of(
+                        new ReadmeBadgeSummarySupport.HistoryEntry(
+                                "2026-04-05",
+                                new ReadmeBadgeSummarySupport.HistoryMetrics(
+                                        new ReadmeBadgeSummarySupport.MetadataIndexMetrics(4, 5, 6, 8),
+                                        new ReadmeBadgeSummarySupport.StatsMetrics(new BigDecimal("31.5"), 9, 120)
+                                )
+                        ),
+                        new ReadmeBadgeSummarySupport.HistoryEntry(
+                                "2026-05-06",
+                                new ReadmeBadgeSummarySupport.HistoryMetrics(
+                                        new ReadmeBadgeSummarySupport.MetadataIndexMetrics(4, 5, 6, 8),
+                                        new ReadmeBadgeSummarySupport.StatsMetrics(new BigDecimal("34.0"), 9, 144)
+                                )
+                        ),
+                        new ReadmeBadgeSummarySupport.HistoryEntry(
+                                "2026-06-07",
+                                new ReadmeBadgeSummarySupport.HistoryMetrics(
+                                        new ReadmeBadgeSummarySupport.MetadataIndexMetrics(4, 5, 6, 8),
+                                        new ReadmeBadgeSummarySupport.StatsMetrics(new BigDecimal("35.8"), 9, 159)
+                                )
+                        )
+                )
+        );
+
+        ReadmeBadgeSummarySupport.writeMetricsOverviewGraph(graphFile, history);
+
+        String svg = Files.readString(graphFile, StandardCharsets.UTF_8);
+        assertThat(svg).contains("text-anchor=\"start\">Apr 2026</text>");
+        assertThat(svg).contains("text-anchor=\"middle\">May 2026</text>");
+        assertThat(svg).contains("text-anchor=\"end\">Jun 2026</text>");
     }
 
     private void writeIndexFile(String groupId, String artifactId, String content) throws IOException {
