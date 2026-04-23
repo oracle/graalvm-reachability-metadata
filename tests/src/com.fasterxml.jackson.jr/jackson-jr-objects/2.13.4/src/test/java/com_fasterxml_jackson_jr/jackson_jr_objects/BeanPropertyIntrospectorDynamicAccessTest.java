@@ -15,20 +15,41 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
     private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
 
     @Test
-    void introspectsDeclaredConstructorsFieldsAndMethodsDuringBeanRoundTrip() throws Exception {
-        IntrospectedBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class,
-                "{\"visible\":7,\"name\":\"Ada\"}");
+    void deserializesBeansUsingDeclaredFieldsMethodsAndConstructors() throws Exception {
+        IntrospectedBean objectBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class,
+                "{\"visible\":7,\"name\":\"Ada\",\"active\":true}");
+        IntrospectedBean stringBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "\"Grace\"");
+        IntrospectedBean longBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "11");
 
-        assertThat(bean.visible()).isEqualTo(7);
-        assertThat(bean.getName()).isEqualTo("Ada");
-        assertThat(JSON_WITH_FORCE_ACCESS.asString(bean))
-                .contains("\"visible\":7")
-                .contains("\"name\":\"Ada\"");
+        assertThat(objectBean.visible).isEqualTo(7);
+        assertThat(objectBean.getName()).isEqualTo("Ada");
+        assertThat(objectBean.isActive()).isTrue();
+        assertThat(stringBean.getName()).isEqualTo("Grace");
+        assertThat(longBean.visible).isEqualTo(11);
     }
 
-    static final class IntrospectedBean {
-        private int visible;
+    @Test
+    void serializesPropertiesCollectedFromInheritedFieldsAndDeclaredGetters() throws Exception {
+        IntrospectedBean bean = new IntrospectedBean();
+        bean.visible = 3;
+        bean.setName("Lin");
+        bean.setActive(true);
+
+        String json = JSON_WITH_FORCE_ACCESS.asString(bean);
+
+        assertThat(json)
+                .contains("\"visible\":3")
+                .contains("\"name\":\"Lin\"")
+                .contains("\"active\":true");
+    }
+
+    static class BaseBean {
+        public int visible;
+    }
+
+    static final class IntrospectedBean extends BaseBean {
         private String name;
+        private boolean active;
 
         private IntrospectedBean() {
         }
@@ -45,20 +66,16 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
             return name;
         }
 
-        public void setName(String name) {
+        private void setName(String name) {
             this.name = name;
         }
 
-        public int getVisible() {
-            return visible;
+        public boolean isActive() {
+            return active;
         }
 
-        public void setVisible(int visible) {
-            this.visible = visible;
-        }
-
-        int visible() {
-            return visible;
+        public void setActive(boolean active) {
+            this.active = active;
         }
     }
 }
