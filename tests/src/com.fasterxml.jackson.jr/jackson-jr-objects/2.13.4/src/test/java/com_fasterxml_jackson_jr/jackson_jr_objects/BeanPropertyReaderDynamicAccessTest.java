@@ -16,35 +16,56 @@ public class BeanPropertyReaderDynamicAccessTest {
 
     @Test
     void populatesFieldBackedProperties() throws Exception {
-        FieldBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(FieldBackedReaderBean.class, "{\"id\":3}");
+        FieldBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(FieldBackedReaderBean.class,
+                "{\"id\":3,\"label\":\"reader\"}");
 
         assertThat(bean.getId()).isEqualTo(3);
+        assertThat(bean.getLabel()).isEqualTo("reader");
     }
 
     @Test
     void populatesSetterBackedProperties() throws Exception {
-        SetterBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(SetterBackedReaderBean.class, "{\"name\":\"Ada\"}");
+        SetterBackedReaderBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(SetterBackedReaderBean.class,
+                "{\"name\":\"Ada\"}");
 
         assertThat(bean.getName()).isEqualTo("Ada");
+        assertThat(bean.getSetterCalls()).isEqualTo(1);
     }
 
-    static final class FieldBackedReaderBean {
+    public static final class FieldBackedReaderBean {
         public int id;
+        public String label;
+
+        public FieldBackedReaderBean() {
+        }
 
         public int getId() {
             return id;
         }
+
+        public String getLabel() {
+            return label;
+        }
     }
 
-    static final class SetterBackedReaderBean {
+    public static final class SetterBackedReaderBean {
         private String name;
+        private int setterCalls;
+
+        public SetterBackedReaderBean() {
+        }
 
         public String getName() {
             return name;
         }
 
+        public int getSetterCalls() {
+            return setterCalls;
+        }
+
         private void setName(String name) {
             this.name = name;
+            setterCalls++;
         }
     }
 }
