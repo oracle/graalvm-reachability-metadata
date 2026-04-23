@@ -10,20 +10,6 @@ import org.apache.commons.logging.impl.SimpleLog;
 
 public final class SimpleLogTestSupport {
 
-    // Initialize SimpleLog once with a null context class loader so it falls back to system resources.
-    static {
-        Thread currentThread = Thread.currentThread();
-        ClassLoader previousLoader = currentThread.getContextClassLoader();
-
-        currentThread.setContextClassLoader(null);
-        try {
-            new SimpleLog(SimpleLogTestSupport.class.getName());
-        }
-        finally {
-            currentThread.setContextClassLoader(previousLoader);
-        }
-    }
-
     private SimpleLogTestSupport() {
     }
 
