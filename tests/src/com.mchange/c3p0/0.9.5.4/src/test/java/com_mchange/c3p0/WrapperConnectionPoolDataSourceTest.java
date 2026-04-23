@@ -19,13 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WrapperConnectionPoolDataSourceTest {
     @Test
-    void recreatesConnectionTesterAndCreatesPooledConnections() throws Exception {
+    void loadsCustomConnectionTesterAndCreatesPooledConnections() throws Exception {
         WrapperConnectionPoolDataSource dataSource = C3p0TestSupport.newWrapperConnectionPoolDataSource("wrapper", false);
         Map<String, Map<String, String>> overrides = new HashMap<>();
         Map<String, String> userOverrides = new HashMap<>();
         userOverrides.put("maxPoolSize", "4");
         overrides.put(C3p0TestSupport.USER, userOverrides);
-        dataSource.setConnectionTesterClassName("com.mchange.v2.c3p0.impl.DefaultConnectionTester");
+        dataSource.setConnectionTesterClassName(RegistryConnectionTester.class.getName());
         dataSource.setAutomaticTestTable("TEST_TABLE");
         dataSource.setContextClassLoaderSource("library");
         dataSource.setPreferredTestQuery("SELECT 1");
@@ -33,9 +33,8 @@ public class WrapperConnectionPoolDataSourceTest {
 
         assertThat(dataSource.getUser()).isEqualTo(C3p0TestSupport.USER);
         assertThat(dataSource.getPassword()).isEqualTo(C3p0TestSupport.PASSWORD);
-
         assertThat(dataSource.getPreferredTestQuery()).isEqualTo("SELECT 1");
-        assertThat(dataSource.getConnectionTesterClassName()).isEqualTo("com.mchange.v2.c3p0.impl.DefaultConnectionTester");
+        assertThat(dataSource.getConnectionTesterClassName()).isEqualTo(RegistryConnectionTester.class.getName());
 
         PooledConnection pooledConnection = dataSource.getPooledConnection();
         try (Connection connection = pooledConnection.getConnection()) {
