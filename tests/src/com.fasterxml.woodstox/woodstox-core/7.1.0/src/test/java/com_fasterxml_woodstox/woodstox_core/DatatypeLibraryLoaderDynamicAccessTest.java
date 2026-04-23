@@ -12,44 +12,40 @@ import com.ctc.wstx.shaded.msv.relaxng_datatype.Datatype;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeLibrary;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.DatatypeLibraryFactory;
 import com.ctc.wstx.shaded.msv.relaxng_datatype.helpers.DatatypeLibraryLoader;
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
+import java.lang.invoke.MethodType;
 import org.junit.jupiter.api.Test;
 
 public class DatatypeLibraryLoaderDynamicAccessTest {
-    private static final VarHandle DATATYPE_LIBRARY_FACTORY_CLASS_CACHE = datatypeLibraryFactoryClassCache();
-
     @Test
-    void loadsDatatypeLibrariesFromServiceResources() throws Throwable {
-        Class<?> previousCachedFactoryClass = (Class<?>) DATATYPE_LIBRARY_FACTORY_CLASS_CACHE.get();
+    void loadsDatatypeLibrariesFromServiceResources() throws Exception {
+        final DatatypeLibrary library = new DatatypeLibraryLoader()
+                .createDatatypeLibrary("http://www.w3.org/2001/XMLSchema-datatypes");
 
-        try {
-            DATATYPE_LIBRARY_FACTORY_CLASS_CACHE.set(null);
+        assertThat(library).isNotNull();
 
-            DatatypeLibrary library = new DatatypeLibraryLoader()
-                    .createDatatypeLibrary("http://www.w3.org/2001/XMLSchema-datatypes");
-
-            assertThat(DATATYPE_LIBRARY_FACTORY_CLASS_CACHE.get()).isEqualTo(DatatypeLibraryFactory.class);
-            assertThat(library).isNotNull();
-
-            Datatype datatype = library.createDatatype("string");
-            assertThat(datatype).isNotNull();
-            assertThat(datatype.isValid("woodstox", null)).isTrue();
-        } finally {
-            DATATYPE_LIBRARY_FACTORY_CLASS_CACHE.set(previousCachedFactoryClass);
-        }
+        final Datatype datatype = library.createDatatype("string");
+        assertThat(datatype).isNotNull();
+        assertThat(datatype.isValid("woodstox", null)).isTrue();
     }
 
-    private static VarHandle datatypeLibraryFactoryClassCache() {
-        try {
-            return MethodHandles.privateLookupIn(DatatypeLibraryLoader.class, MethodHandles.lookup())
-                    .findStaticVarHandle(
-                            DatatypeLibraryLoader.class,
-                            "class$org$relaxng$datatype$DatatypeLibraryFactory",
-                            Class.class
-                    );
-        } catch (ReflectiveOperationException reflectiveOperationException) {
-            throw new IllegalStateException(reflectiveOperationException);
-        }
+    @Test
+    void invokesLegacySyntheticClassLookupHelper() throws Throwable {
+        assertThat(invokeSyntheticClassLookup(DatatypeLibraryFactory.class.getName()))
+                .isEqualTo(DatatypeLibraryFactory.class);
+    }
+
+    private static Class<?> invokeSyntheticClassLookup(final String className) throws Throwable {
+        final MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                DatatypeLibraryLoader.class,
+                MethodHandles.lookup()
+        );
+        final MethodHandle classLookup = lookup.findStatic(
+                DatatypeLibraryLoader.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class)
+        );
+        return (Class<?>) classLookup.invokeExact(className);
     }
 }
