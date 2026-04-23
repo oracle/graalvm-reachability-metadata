@@ -30,8 +30,10 @@ public class ReadOnlyArrayMapSetViewTest {
 
         assertThat(keys).containsExactlyInAnyOrder("alpha", "beta");
         assertThat(values).containsExactlyInAnyOrder("one", "two");
-        assertThat(Arrays.stream(pairs)
-                .map(entry -> entry.getKey() + "=" + entry.getValue()))
-                .toArray(String[]::new)).containsExactlyInAnyOrder("alpha=one", "beta=two");
+        String[] pairStrings = Arrays.stream(pairs)
+                .map(entry -> entry.getKey() + "=" + entry.getValue())
+                .toArray(String[]::new);
+
+        assertThat(pairStrings).containsExactlyInAnyOrder("alpha=one", "beta=two");
     }
 }
