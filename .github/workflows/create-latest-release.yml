@@ -1,0 +1,106 @@
+name: "Create latest release"
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  get-changed-metadata:
+    name: "📋 Get a list of changed metadata"
+    if: github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      none-found: ${{ steps.set-matrix.outputs.none-found }}
+      latest-release-exists: ${{ steps.get-base-ref.outputs.latest-release-exists }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "🔎 Determine diff base"
+        id: get-base-ref
+        run: |
+          if git rev-parse --verify latest >/dev/null 2>&1; then
+            echo "Using existing latest tag as base"
+            echo "BASE_COMMIT=$(git rev-parse latest)" >> ${GITHUB_ENV}
+            echo "latest-release-exists=true" >> ${GITHUB_OUTPUT}
+            exit 0
+          fi
+
+          LATEST_VERSION_TAG=$(git tag --list | grep -v '^latest$' | sort -V | tail -1)
+          if [[ -z "${LATEST_VERSION_TAG}" ]]; then
+            echo "No existing version tag found to bootstrap the latest release"
+            exit 1
+          fi
+
+          echo "Bootstrapping latest release from ${LATEST_VERSION_TAG}"
+          echo "BASE_COMMIT=$(git rev-parse ${LATEST_VERSION_TAG})" >> ${GITHUB_ENV}
+          echo "latest-release-exists=false" >> ${GITHUB_OUTPUT}
+
+      - name: "🕸️ Get changed metadata matrix"
+        id: set-matrix
+        run: |
+          ./gradlew generateChangedCoordinatesMatrix -PbaseCommit=${BASE_COMMIT} -PnewCommit=$(git rev-parse HEAD)
+
+  release:
+    needs: get-changed-metadata
+    if: needs.get-changed-metadata.result == 'success' && needs.get-changed-metadata.outputs.none-found != 'true'
+    name: "🚀 Create latest release"
+    runs-on: "ubuntu-22.04"
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      - name: "🔧 Setup java"
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '21'
+
+      - name: "⬆️ Update version"
+        run: |
+          sed -i "s/project.version(\"1.0.0-SNAPSHOT\")/project.version(\"latest\")/g" build.gradle
+
+      - name: "🔍 Run spotless check"
+        run: |
+          ./gradlew spotlessCheck
+
+      - name: "🏭 Generate release artifacts"
+        run: |
+          ./gradlew package
+
+      - name: "🧹 Delete previous latest release and tag"
+        if: needs.get-changed-metadata.outputs.latest-release-exists == 'true'
+        run: |
+          gh release delete latest --cleanup-tag -y
+
+      - name: "📄 Commit changes"
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "Github Actions"
+          git add .
+          git commit -m "Update latest release"
+          git tag -f latest
+          git push origin refs/tags/latest --force
+
+      - name: "📝 Publish a release"
+        run: |
+          gh release create latest build/graalvm-reachability-metadata-*.zip --title "Latest"

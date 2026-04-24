@@ -84,7 +84,7 @@ jobs:
       - name: "🕸️ Get changed metadata matrix"
         id: set-matrix
         run: |
-          LATEST_TAG=$(git tag --list | sort -V | tail -1)
+          LATEST_TAG=$(git tag --list | grep -v '^latest$' | sort -V | tail -1)
           # Keep the expanded matrix out of job outputs; the release job only needs none-found.
           GRADLE_OUTPUT=$(mktemp)
           GITHUB_OUTPUT="$GRADLE_OUTPUT" ./gradlew generateChangedCoordinatesMatrix -PbaseCommit="$(git show-ref -s "$LATEST_TAG")" -PnewCommit="$(git rev-parse HEAD)"
@@ -111,7 +111,7 @@ jobs:
 
       - name: "Get tags"
         run: |
-          PREVIOUS_RELEASE_TAG=$(git tag --list | sort -V | tail -1)
+          PREVIOUS_RELEASE_TAG=$(git tag --list | grep -v '^latest$' | sort -V | tail -1)
           if [[ ! "$PREVIOUS_RELEASE_TAG" =~ ^[0-9]+[.][0-9]+[.][0-9]+$ ]]; then
             echo "Unexpected release tag format: $PREVIOUS_RELEASE_TAG" >&2
             exit 1
