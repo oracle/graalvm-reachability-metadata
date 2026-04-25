@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class $AnnotationMirrors$GetTypeAnnotationsTest {
+class AnnotationMirrorsGetTypeAnnotationsTest {
 
     @Test
     void fromUsesTypeMirrorGetAnnotationMirrorsWhenAvailable() {
