@@ -28,8 +28,10 @@ public class $AnnotationMirrors$GetTypeAnnotationsTest {
         AnnotationMirror annotationMirror = new SimpleAnnotationMirror();
         List<AnnotationMirror> annotationMirrors = List.of(annotationMirror);
         RecordingTypeMirror typeMirror = new RecordingTypeMirror(annotationMirrors);
+        List<? extends AnnotationMirror> returnedMirrors = $AnnotationMirrors.from(typeMirror);
 
-        assertThat($AnnotationMirrors.from(typeMirror)).containsExactly(annotationMirror);
+        assertThat(returnedMirrors).hasSize(1);
+        assertThat(returnedMirrors.get(0)).isSameAs(annotationMirror);
         assertThat(typeMirror.invocationCount()).isEqualTo(1);
     }
 
