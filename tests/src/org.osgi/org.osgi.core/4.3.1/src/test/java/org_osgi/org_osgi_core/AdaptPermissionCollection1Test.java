@@ -248,8 +248,8 @@ public class AdaptPermissionCollection1Test {
         }
 
         @Override
-        public int compareTo(Object other) {
-            return Long.compare(getBundleId(), ((Bundle) other).getBundleId());
+        public int compareTo(Bundle other) {
+            return Long.compare(getBundleId(), other.getBundleId());
         }
     }
 }

@@ -15,7 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.security.Permission;
 import java.security.PermissionCollection;
 import java.util.Collections;
@@ -27,14 +27,21 @@ import org.osgi.framework.PackagePermission;
 
 public class PackagePermissionCollection1Test {
     @Test
-    void syntheticClassLookupResolvesPersistentFieldTypes() throws ReflectiveOperationException {
+    void serialPersistentFieldsUseExpectedFieldTypes() throws ReflectiveOperationException {
         Class<?> collectionClass = Class.forName("org.osgi.framework.PackagePermissionCollection");
-        Method syntheticClassLookup = collectionClass.getDeclaredMethod("class$", String.class);
-        syntheticClassLookup.setAccessible(true);
+        Field serialPersistentFields = collectionClass.getDeclaredField("serialPersistentFields");
+        serialPersistentFields.setAccessible(true);
 
-        assertThat(syntheticClassLookup.invoke(null, "java.util.Hashtable"))
-                .isEqualTo(Hashtable.class);
-        assertThat(syntheticClassLookup.invoke(null, "java.util.HashMap")).isEqualTo(HashMap.class);
+        ObjectStreamField[] persistentFields =
+                (ObjectStreamField[]) serialPersistentFields.get(null);
+
+        assertThat(persistentFields).hasSize(3);
+        assertThat(persistentFields[0].getName()).isEqualTo("permissions");
+        assertThat(persistentFields[0].getType()).isEqualTo(Hashtable.class);
+        assertThat(persistentFields[1].getName()).isEqualTo("all_allowed");
+        assertThat(persistentFields[1].getType()).isEqualTo(Boolean.TYPE);
+        assertThat(persistentFields[2].getName()).isEqualTo("filterPermissions");
+        assertThat(persistentFields[2].getType()).isEqualTo(HashMap.class);
     }
 
     @Test
