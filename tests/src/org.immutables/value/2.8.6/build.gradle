@@ -16,6 +16,10 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ["-processor", "org.immutables.processor.ProxyProcessor"]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
