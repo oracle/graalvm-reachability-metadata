@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
@@ -26,6 +30,14 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SerializationTest {
+    private static final MethodHandle WRITE_MAP = serializationMethod(
+            "writeMap",
+            MethodType.methodType(void.class, Map.class, ObjectOutputStream.class)
+    );
+    private static final MethodHandle POPULATE_MAP = serializationMethod(
+            "populateMap",
+            MethodType.methodType(void.class, Map.class, ObjectInputStream.class)
+    );
 
     @Test
     void serializableImmutableWithMapAttributePreservesEntriesAcrossRoundTrip() throws Exception {
@@ -59,6 +71,18 @@ public class SerializationTest {
         assertThat(restored.map).hasSize(2);
         assertThat(restored.map.values()).containsExactlyInAnyOrder(1, 2);
         assertThat(restored.map.keySet()).containsExactlyInAnyOrderElementsOf(restored.keys);
+    }
+
+    @Test
+    void packagePrivateMapSerializationHelpersRoundTripLinkedHashMapEntries() throws Throwable {
+        LinkedHashMap<String, Integer> original = new LinkedHashMap<>();
+        original.put("wins", 12);
+        original.put("losses", 2);
+
+        LinkedHashMap<String, Integer> restored = new LinkedHashMap<>();
+        populateMapPayload(restored, serializeMapPayload(original));
+
+        assertThat(restored).containsExactlyEntriesOf(original);
     }
 
     @Test
@@ -102,6 +126,32 @@ public class SerializationTest {
         assertThat(restored).isEqualTo(original);
         assertThat(restored.get("team")).containsExactlyInAnyOrder("ada", "grace");
         assertThat(restored.inverse().get("ada")).containsExactly("team");
+    }
+
+    private static void populateMapPayload(Map<?, ?> target, byte[] serialized) throws Throwable {
+        Map<?, ?> map = target;
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(serialized))) {
+            POPULATE_MAP.invokeExact(map, objectInputStream);
+        }
+    }
+
+    private static byte[] serializeMapPayload(Map<?, ?> value) throws Throwable {
+        Map<?, ?> map = value;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
+            WRITE_MAP.invokeExact(map, objectOutputStream);
+        }
+        return outputStream.toByteArray();
+    }
+
+    private static MethodHandle serializationMethod(String methodName, MethodType methodType) {
+        try {
+            Class<?> serializationClass = Class.forName("org.immutables.value.internal.$guava$.collect.$Serialization");
+            return MethodHandles.privateLookupIn(serializationClass, MethodHandles.lookup())
+                    .findStatic(serializationClass, methodName, methodType);
+        } catch (ReflectiveOperationException exception) {
+            throw new AssertionError(exception);
+        }
     }
 
     private static <T> T roundTrip(Serializable value, Class<T> expectedType) throws IOException, ClassNotFoundException {
