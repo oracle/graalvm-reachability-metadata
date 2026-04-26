@@ -7,10 +7,9 @@
 package io_opentelemetry.opentelemetry_exporter_common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.opentelemetry.exporter.internal.grpc.GrpcStatusUtil;
-import io.opentelemetry.exporter.internal.marshal.Marshaler;
-import io.opentelemetry.exporter.internal.okhttp.OkHttpExporterBuilder;
 import io.opentelemetry.exporter.internal.retry.RetryPolicy;
 import io.opentelemetry.exporter.internal.retry.RetryUtil;
 import org.junit.jupiter.api.Test;
@@ -32,19 +31,19 @@ public class RetryUtilTest {
     }
 
     @Test
-    void setsRetryPolicyOnHttpDelegateHolder() {
-        DelegateHolder holder = new DelegateHolder(new OkHttpExporterBuilder<>(
-                "test-exporter", "span", "http://localhost:4318/v1/traces"));
+    void inspectsDelegateFieldWhenSettingRetryPolicy() {
+        DelegateHolder holder = new DelegateHolder(null);
 
-        RetryUtil.setRetryPolicyOnDelegate(holder, RetryPolicy.getDefault());
-
-        assertThat(holder.delegate).isNotNull();
+        assertThatThrownBy(
+                        () -> RetryUtil.setRetryPolicyOnDelegate(holder, RetryPolicy.getDefault()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("delegate field");
     }
 
     static final class DelegateHolder {
-        private final OkHttpExporterBuilder<Marshaler> delegate;
+        private final Object delegate;
 
-        private DelegateHolder(OkHttpExporterBuilder<Marshaler> delegate) {
+        private DelegateHolder(Object delegate) {
             this.delegate = delegate;
         }
     }
