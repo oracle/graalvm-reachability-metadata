@@ -26,6 +26,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -178,6 +181,37 @@ public class Opentelemetry_api_logsTest {
     }
 
     @Test
+    void noopLoggerWithoutEventDomainLogsApiUsageWarningWhenCreatingEventBuilder() {
+        java.util.logging.Logger apiUsageLogger = java.util.logging.Logger.getLogger("io.opentelemetry.ApiUsageLogging");
+        Level previousLevel = apiUsageLogger.getLevel();
+        boolean previousUseParentHandlers = apiUsageLogger.getUseParentHandlers();
+        RecordingLogHandler handler = new RecordingLogHandler();
+        handler.setLevel(Level.ALL);
+        apiUsageLogger.addHandler(handler);
+        apiUsageLogger.setUseParentHandlers(false);
+        apiUsageLogger.setLevel(Level.ALL);
+        try {
+            Logger logger = LoggerProvider.noop().get("io.opentelemetry.example.no-domain");
+
+            EventBuilder eventBuilder = logger.eventBuilder("startup");
+            assertThat(eventBuilder).isNotNull();
+
+            eventBuilder.setBody("service started").emit();
+
+            assertThat(handler.records).hasSize(1);
+            LogRecord warning = handler.records.get(0);
+            assertThat(warning.getLevel()).isEqualTo(Level.WARNING);
+            assertThat(warning.getMessage())
+                    .contains("Cannot emit event from Logger without event domain")
+                    .contains("LoggerBuilder#setEventDomain(String)");
+        } finally {
+            apiUsageLogger.removeHandler(handler);
+            apiUsageLogger.setUseParentHandlers(previousUseParentHandlers);
+            apiUsageLogger.setLevel(previousLevel);
+        }
+    }
+
+    @Test
     void severitiesExposeStableNumbersAndLookup() {
         assertThat(Severity.values()).containsExactly(
                 Severity.UNDEFINED_SEVERITY_NUMBER,
@@ -318,6 +352,25 @@ public class Opentelemetry_api_logsTest {
             );
             recordBuilders.add(builder);
             return builder;
+        }
+    }
+
+    private static final class RecordingLogHandler extends Handler {
+        private final List<LogRecord> records = new ArrayList<>();
+
+        @Override
+        public void publish(LogRecord record) {
+            if (isLoggable(record)) {
+                records.add(record);
+            }
+        }
+
+        @Override
+        public void flush() {
+        }
+
+        @Override
+        public void close() {
         }
     }
 
