@@ -18,6 +18,7 @@ import java.util.Base64;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 import org.xerial.snappy.SnappyFramedInputStream;
 import org.xerial.snappy.SnappyFramedOutputStream;
 import org.xerial.snappy.pool.BufferPool;
@@ -25,7 +26,7 @@ import org.xerial.snappy.pool.QuiescentBufferPool;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DirectByteBuffers$1Test {
+class DirectByteBuffers1Test {
 
     @Test
     void framedRoundTripWithQuiescentPoolReleasesDirectBuffers() throws IOException {
@@ -53,14 +54,14 @@ public class DirectByteBuffers$1Test {
     @Test
     void isolatedClassLoaderTriggersDirectBufferCleanerFallbackPath() throws Exception {
         Path stubClasses = compileUnsafeStub();
-        URL testClasses = DirectByteBuffers$1Test.class.getProtectionDomain().getCodeSource().getLocation();
+        URL testClasses = DirectByteBuffers1Test.class.getProtectionDomain().getCodeSource().getLocation();
         URL libraryClasses = QuiescentBufferPool.class.getProtectionDomain().getCodeSource().getLocation();
 
         try (ChildFirstClassLoader classLoader = new ChildFirstClassLoader(
                 new URL[]{stubClasses.toUri().toURL(), testClasses, libraryClasses},
-                DirectByteBuffers$1Test.class.getClassLoader())) {
-            Class<?> unsafeClass = classLoader.loadClass("sun.misc.Unsafe");
-            Class<?> childPoolClass = classLoader.loadClass("org.xerial.snappy.pool.QuiescentBufferPool");
+                DirectByteBuffers1Test.class.getClassLoader())) {
+            Class<?> unsafeClass = loadClassOrAbortInNativeImage(classLoader, "sun.misc.Unsafe");
+            Class<?> childPoolClass = loadClassOrAbortInNativeImage(classLoader, "org.xerial.snappy.pool.QuiescentBufferPool");
             Class<?> actionClass = classLoader.loadClass(DirectByteBuffersFallbackAction.class.getName());
             Runnable action = actionClass
                     .asSubclass(Runnable.class)
@@ -95,8 +96,33 @@ public class DirectByteBuffers$1Test {
         return payload;
     }
 
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
+    }
+
+    private static Class<?> loadClassOrAbortInNativeImage(ClassLoader classLoader, String className)
+            throws ClassNotFoundException {
+        try {
+            return classLoader.loadClass(className);
+        } catch (Throwable exception) {
+            if (isNativeImageRuntime()) {
+                throw new TestAbortedException(
+                        "Native image runtime does not support reloading snappy classes via isolated URLClassLoader",
+                        exception
+                );
+            }
+            if (exception instanceof ClassNotFoundException classNotFoundException) {
+                throw classNotFoundException;
+            }
+            throw exception;
+        }
+    }
+
     private static final String UNSAFE_STUB_CLASS =
-            "yv66vgAAADQAEgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCQAIAAkHAAoMAAsADAEAD3N1bi9taXNjL1Vuc2FmZQEACXRoZVVuc2FmZQEAEUxzdW4vbWlzYy9VbnNhZmU7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEACDxjbGluaXQ+AQAKU291cmNlRmlsZQEAC1Vuc2FmZS5qYXZhADEACAACAAAAAQAZAAsADAAAAAIAAQAFAAYAAQANAAAAHQABAAEAAAAFKrcAAbEAAAABAA4AAAAGAAEAAAADAAgADwAGAAEADQAAAB0AAQAAAAAABQGzAAexAAAAAQAOAAAABgABAAAABAABABAAAAACABE=";
+            "yv66vgAAADQAEgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCQAIAAkHAAoMAAsADAEAD3N1bi9taXNj"
+                    + "L1Vuc2FmZQEACXRoZVVuc2FmZQEAEUxzdW4vbWlzYy9VbnNhZmU7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEACDxjbGluaXQ+AQAKU291"
+                    + "cmNlRmlsZQEAC1Vuc2FmZS5qYXZhADEACAACAAAAAQAZAAsADAAAAAIAAQAFAAYAAQANAAAAHQABAAEAAAAFKrcAAbEAAAABAA4AAAAGAAEA"
+                    + "AAADAAgADwAGAAEADQAAAB0AAQAAAAAABQGzAAexAAAAAQAOAAAABgABAAAABAABABAAAAACABE=";
 
     public static final class DirectByteBuffersFallbackAction implements Runnable {
 
