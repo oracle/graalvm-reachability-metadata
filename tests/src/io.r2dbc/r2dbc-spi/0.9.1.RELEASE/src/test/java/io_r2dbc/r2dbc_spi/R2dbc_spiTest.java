@@ -27,6 +27,7 @@ import io.r2dbc.spi.RowMetadata;
 import io.r2dbc.spi.TransactionDefinition;
 import io.r2dbc.spi.Type;
 import io.r2dbc.spi.ValidationDepth;
+import io.r2dbc.spi.Wrapped;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -295,6 +296,19 @@ public class R2dbc_spiTest {
         assertThat(nameColumn.getScale()).isNull();
     }
 
+    @Test
+    void wrappedDefaultMethodRecursivelyUnwrapsNestedWrappers() {
+        DriverSpecificHandle inner = new DriverSpecificHandle("postgresql");
+        TestWrapped<DriverSpecificHandle> nested = new TestWrapped<>(inner);
+
+        assertThat(nested.unwrap(TestWrapped.class)).isSameAs(nested);
+        assertThat(nested.unwrap(DriverFacade.class)).isSameAs(inner);
+        assertThat(nested.unwrap(CharSequence.class)).isNull();
+        assertThatThrownBy(() -> nested.unwrap((Class<Object>) null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("targetClass must not be null");
+    }
+
     private static <T> PublisherOutcome<T> await(Publisher<T> publisher) {
         List<T> items = new ArrayList<>();
         AtomicReference<Throwable> error = new AtomicReference<>();
@@ -508,6 +522,44 @@ public class R2dbc_spiTest {
             this.items = items;
             this.error = error;
             this.completed = completed;
+        }
+    }
+
+    private interface DriverFacade {
+
+        String backend();
+    }
+
+    private static final class DriverSpecificHandle implements DriverFacade, Wrapped<Object> {
+
+        private final String backend;
+
+        private DriverSpecificHandle(String backend) {
+            this.backend = backend;
+        }
+
+        @Override
+        public String backend() {
+            return backend;
+        }
+
+        @Override
+        public Object unwrap() {
+            return backend;
+        }
+    }
+
+    private static final class TestWrapped<T> implements Wrapped<T> {
+
+        private final T delegate;
+
+        private TestWrapped(T delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public T unwrap() {
+            return delegate;
         }
     }
 
