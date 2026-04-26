@@ -19,7 +19,7 @@ import javax.naming.Reference;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class SerializableObjectFactory$1Test {
+public class SerializableObjectFactory1Test {
 
     private static final String MISSING_FIXTURE_CLASS_NAME = "missing.serializable.MissingFixture";
     private static final byte[] MISSING_FIXTURE_SERIALIZED_FORM = Base64.getDecoder().decode(
@@ -60,12 +60,12 @@ public class SerializableObjectFactory$1Test {
         }
 
         @Override
-        public Class<?> loadClass(String name) throws ClassNotFoundException {
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             if (this.rejectedClassName.equals(name)) {
                 this.requestedClassNames.add(name);
                 throw new ClassNotFoundException(name);
             }
-            return super.loadClass(name);
+            return super.loadClass(name, resolve);
         }
 
         private List<String> requestedClassNames() {
