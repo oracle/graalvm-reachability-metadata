@@ -8,10 +8,12 @@ package io_r2dbc.r2dbc_spi;
 
 import io.r2dbc.spi.Blob;
 import io.r2dbc.spi.Clob;
+import io.r2dbc.spi.ColumnMetadata;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.IsolationLevel;
 import io.r2dbc.spi.NoSuchOptionException;
+import io.r2dbc.spi.Nullability;
 import io.r2dbc.spi.Option;
 import io.r2dbc.spi.Parameter;
 import io.r2dbc.spi.Parameters;
@@ -19,6 +21,9 @@ import io.r2dbc.spi.R2dbcBadGrammarException;
 import io.r2dbc.spi.R2dbcTimeoutException;
 import io.r2dbc.spi.R2dbcTransientException;
 import io.r2dbc.spi.R2dbcType;
+import io.r2dbc.spi.Result;
+import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
 import io.r2dbc.spi.TransactionDefinition;
 import io.r2dbc.spi.Type;
 import io.r2dbc.spi.ValidationDepth;
@@ -31,11 +36,17 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -245,6 +256,45 @@ public class R2dbc_spiTest {
         assertThat(timeout.toString()).contains("Timed out", "[91]", "[57014]");
     }
 
+    @Test
+    void resultReadableAndMetadataDefaultMethodsDelegateToTypedAccessors() {
+        TestColumnMetadata nameColumn = new TestColumnMetadata("name", R2dbcType.VARCHAR);
+        TestColumnMetadata countColumn = new TestColumnMetadata("count", R2dbcType.INTEGER);
+        TestRowMetadata rowMetadata = new TestRowMetadata(List.of(nameColumn, countColumn));
+        TestRow row = new TestRow(
+                List.of("forge", 7),
+                Map.of("name", "forge", "count", 7),
+                rowMetadata);
+        TestResult result = new TestResult(row, rowMetadata);
+
+        assertThat(row.get(0)).isEqualTo("forge");
+        assertThat(row.get("count")).isEqualTo(7);
+        assertThat(row.lastIndexedType()).isEqualTo(Object.class);
+        assertThat(row.lastNamedType()).isEqualTo(Object.class);
+
+        PublisherOutcome<String> mapped = await(result.map(readable ->
+                readable.get("name", String.class) + ":" + readable.get(1, Integer.class)));
+
+        assertThat(mapped.completed).isTrue();
+        assertThat(mapped.error).isNull();
+        assertThat(mapped.items).containsExactly("forge:7");
+        assertThat(result.lastMappedRow()).isSameAs(row);
+        assertThat(result.lastMappedMetadata()).isSameAs(rowMetadata);
+
+        assertThat(rowMetadata.contains("name")).isTrue();
+        assertThat(rowMetadata.contains("missing")).isFalse();
+        assertThat(rowMetadata.getColumnMetadata("count")).isSameAs(countColumn);
+        assertThat(rowMetadata.getColumnMetadata(0)).isSameAs(nameColumn);
+
+        assertThat(nameColumn.getName()).isEqualTo("name");
+        assertThat(nameColumn.getType()).isEqualTo(R2dbcType.VARCHAR);
+        assertThat(nameColumn.getJavaType()).isNull();
+        assertThat(nameColumn.getNativeTypeMetadata()).isNull();
+        assertThat(nameColumn.getNullability()).isEqualTo(Nullability.UNKNOWN);
+        assertThat(nameColumn.getPrecision()).isNull();
+        assertThat(nameColumn.getScale()).isNull();
+    }
+
     private static <T> PublisherOutcome<T> await(Publisher<T> publisher) {
         List<T> items = new ArrayList<>();
         AtomicReference<Throwable> error = new AtomicReference<>();
@@ -297,6 +347,153 @@ public class R2dbc_spiTest {
             text.append(new String(bytes, StandardCharsets.UTF_8));
         }
         return text.toString();
+    }
+
+    private static final class TestResult implements Result {
+
+        private final Row row;
+
+        private final RowMetadata metadata;
+
+        private final AtomicReference<Row> lastMappedRow = new AtomicReference<>();
+
+        private final AtomicReference<RowMetadata> lastMappedMetadata = new AtomicReference<>();
+
+        private TestResult(Row row, RowMetadata metadata) {
+            this.row = row;
+            this.metadata = metadata;
+        }
+
+        @Override
+        public Publisher<Integer> getRowsUpdated() {
+            return new RecordingPublisher<>(List.of(1));
+        }
+
+        @Override
+        public <T> Publisher<T> map(BiFunction<Row, RowMetadata, ? extends T> mappingFunction) {
+            lastMappedRow.set(row);
+            lastMappedMetadata.set(metadata);
+            return new RecordingPublisher<>(List.of(mappingFunction.apply(row, metadata)));
+        }
+
+        @Override
+        public Result filter(Predicate<Result.Segment> filter) {
+            throw new UnsupportedOperationException("Not required for this test");
+        }
+
+        @Override
+        public <T> Publisher<T> flatMap(Function<Result.Segment, ? extends Publisher<? extends T>> mappingFunction) {
+            throw new UnsupportedOperationException("Not required for this test");
+        }
+
+        private Row lastMappedRow() {
+            return lastMappedRow.get();
+        }
+
+        private RowMetadata lastMappedMetadata() {
+            return lastMappedMetadata.get();
+        }
+    }
+
+    private static final class TestRow implements Row {
+
+        private final List<Object> indexedValues;
+
+        private final Map<String, Object> namedValues;
+
+        private final RowMetadata metadata;
+
+        private final AtomicReference<Class<?>> lastIndexedType = new AtomicReference<>();
+
+        private final AtomicReference<Class<?>> lastNamedType = new AtomicReference<>();
+
+        private TestRow(List<Object> indexedValues, Map<String, Object> namedValues, RowMetadata metadata) {
+            this.indexedValues = indexedValues;
+            this.namedValues = namedValues;
+            this.metadata = metadata;
+        }
+
+        @Override
+        public RowMetadata getMetadata() {
+            return metadata;
+        }
+
+        @Override
+        public <T> T get(int index, Class<T> type) {
+            lastIndexedType.set(type);
+            return type.cast(indexedValues.get(index));
+        }
+
+        @Override
+        public <T> T get(String name, Class<T> type) {
+            lastNamedType.set(type);
+            return type.cast(namedValues.get(name));
+        }
+
+        private Class<?> lastIndexedType() {
+            return lastIndexedType.get();
+        }
+
+        private Class<?> lastNamedType() {
+            return lastNamedType.get();
+        }
+    }
+
+    private static final class TestRowMetadata implements RowMetadata {
+
+        private final List<? extends ColumnMetadata> columns;
+
+        private final Map<String, ColumnMetadata> columnsByName;
+
+        private TestRowMetadata(List<? extends ColumnMetadata> columns) {
+            this.columns = columns;
+            this.columnsByName = new LinkedHashMap<>();
+            for (ColumnMetadata column : columns) {
+                columnsByName.put(column.getName(), column);
+            }
+        }
+
+        @Override
+        public ColumnMetadata getColumnMetadata(int index) {
+            return columns.get(index);
+        }
+
+        @Override
+        public ColumnMetadata getColumnMetadata(String name) {
+            return columnsByName.get(name);
+        }
+
+        @Override
+        public List<? extends ColumnMetadata> getColumnMetadatas() {
+            return columns;
+        }
+
+        @Override
+        public Collection<String> getColumnNames() {
+            return columnsByName.keySet();
+        }
+    }
+
+    private static final class TestColumnMetadata implements ColumnMetadata {
+
+        private final String name;
+
+        private final Type type;
+
+        private TestColumnMetadata(String name, Type type) {
+            this.name = name;
+            this.type = type;
+        }
+
+        @Override
+        public Type getType() {
+            return type;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 
     private static final class PublisherOutcome<T> {
