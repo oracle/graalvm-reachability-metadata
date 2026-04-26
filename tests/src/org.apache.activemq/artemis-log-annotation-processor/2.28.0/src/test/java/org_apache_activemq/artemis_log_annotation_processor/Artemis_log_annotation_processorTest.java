@@ -176,6 +176,36 @@ public class Artemis_log_annotation_processorTest {
     }
 
     @Test
+    void generatesMessageImplementationsForCustomThrowableHierarchies() {
+        ProcessingResult result = process(FakeTypeElement.interfaceType(
+                "example.logs.CustomThrowableBundle",
+                new LogBundleLiteral("CTM", ""),
+                new FakeExecutableElement(
+                        "customFailure",
+                        declaredType("example.logs.OperationFailure", declaredType("java.lang.RuntimeException")),
+                        List.of(
+                                new FakeVariableElement("operation", declaredType("java.lang.String")),
+                                new FakeVariableElement("cause", declaredType("example.logs.ProblemCause", declaredType("java.lang.Throwable")))
+                        ),
+                        new MessageLiteral(401, "Could not complete {}")
+                )
+        ));
+
+        assertThat(result.success()).isTrue();
+        assertThat(result.errors()).isEmpty();
+        assertThat(result.sources()).containsOnlyKeys("example.logs.CustomThrowableBundle_impl");
+
+        String generatedSource = result.sources().get("example.logs.CustomThrowableBundle_impl");
+        assertThat(generatedSource).contains(
+                "public example.logs.OperationFailure customFailure(java.lang.String operation, example.logs.ProblemCause cause)",
+                "String returnString = MessageFormatter.arrayFormat(\"CTM401: Could not complete {}\", new Object[]{operation, cause}).getMessage();",
+                "example.logs.OperationFailure objReturn_customFailure = new example.logs.OperationFailure(returnString);",
+                "objReturn_customFailure.initCause(cause);",
+                "_copyStackTraceMinusOne(objReturn_customFailure);"
+        );
+    }
+
+    @Test
     void escapesQuotesAndNewlinesInGeneratedSource() {
         ProcessingResult result = process(FakeTypeElement.interfaceType(
                 "example.logs.EscapedCharactersBundle",
@@ -343,6 +373,10 @@ public class Artemis_log_annotation_processorTest {
 
     private static FakeDeclaredType declaredType(String displayName) {
         return new FakeDeclaredType(displayName);
+    }
+
+    private static FakeDeclaredType declaredType(String displayName, TypeMirror superClass) {
+        return new FakeDeclaredType(displayName, FakeTypeElement.classType(displayName, superClass));
     }
 
     private static FakeTypeMirror primitiveType(String displayName, TypeKind kind) {
@@ -648,6 +682,17 @@ public class Artemis_log_annotation_processorTest {
                     Collections.emptyList(),
                     Collections.emptyMap(),
                     new FakeNoType("none", TypeKind.NONE)
+            );
+        }
+
+        private static FakeTypeElement classType(String qualifiedName, TypeMirror superClass) {
+            return new FakeTypeElement(
+                    qualifiedName,
+                    ElementKind.CLASS,
+                    new FakePackageElement(packageNameOf(qualifiedName)),
+                    Collections.emptyList(),
+                    Collections.emptyMap(),
+                    superClass
             );
         }
 
