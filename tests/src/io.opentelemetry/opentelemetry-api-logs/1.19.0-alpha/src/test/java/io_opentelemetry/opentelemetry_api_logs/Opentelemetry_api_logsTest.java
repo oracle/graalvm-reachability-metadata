@@ -212,6 +212,35 @@ public class Opentelemetry_api_logsTest {
     }
 
     @Test
+    void noopLoggerWithEventDomainDoesNotLogApiUsageWarningWhenCreatingEventBuilder() {
+        java.util.logging.Logger apiUsageLogger = java.util.logging.Logger.getLogger("io.opentelemetry.ApiUsageLogging");
+        Level previousLevel = apiUsageLogger.getLevel();
+        boolean previousUseParentHandlers = apiUsageLogger.getUseParentHandlers();
+        RecordingLogHandler handler = new RecordingLogHandler();
+        handler.setLevel(Level.ALL);
+        apiUsageLogger.addHandler(handler);
+        apiUsageLogger.setUseParentHandlers(false);
+        apiUsageLogger.setLevel(Level.ALL);
+        try {
+            Logger logger = LoggerProvider.noop()
+                    .loggerBuilder("io.opentelemetry.example.with-domain")
+                    .setEventDomain("audit")
+                    .build();
+
+            EventBuilder eventBuilder = logger.eventBuilder("startup");
+            assertThat(eventBuilder).isNotNull();
+
+            eventBuilder.setBody("service started").emit();
+
+            assertThat(handler.records).isEmpty();
+        } finally {
+            apiUsageLogger.removeHandler(handler);
+            apiUsageLogger.setUseParentHandlers(previousUseParentHandlers);
+            apiUsageLogger.setLevel(previousLevel);
+        }
+    }
+
+    @Test
     void severitiesExposeStableNumbersAndLookup() {
         assertThat(Severity.values()).containsExactly(
                 Severity.UNDEFINED_SEVERITY_NUMBER,
