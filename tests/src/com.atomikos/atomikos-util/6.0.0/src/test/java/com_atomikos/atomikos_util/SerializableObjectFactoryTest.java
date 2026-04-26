@@ -31,7 +31,7 @@ public class SerializableObjectFactoryTest {
         assertThat(reference.get("com.atomikos.serializable")).isInstanceOf(BinaryRefAddr.class);
         assertThat((byte[]) reference.get("com.atomikos.serializable").getContent()).isNotEmpty();
         assertThat(restored).isInstanceOf(ArrayList.class);
-        assertThat((ArrayList<?>) restored).containsExactly("alpha", "beta");
+        assertThat(restored).isEqualTo(original);
     }
 
     @Test
