@@ -6,8 +6,12 @@
  */
 package log4j.log4j;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +75,39 @@ public class ZeroConfSupportTest {
         zeroConfSupport.unadvertise();
 
         assertThat(jmDNS.getRegisteredServices()).isEmpty();
+    }
+
+    @Test
+    void initializesJmDNSDuringClassLoading() {
+        try (URLClassLoader classLoader = new URLClassLoader(getCurrentClasspathUrls(), ClassLoader.getPlatformClassLoader())) {
+            Class<?> zeroConfSupportClass = Class.forName("org.apache.log4j.net.ZeroConfSupport", true, classLoader);
+            Object jmDNSInstance = zeroConfSupportClass.getMethod("getJMDNSInstance").invoke(null);
+
+            assertThat(zeroConfSupportClass.getClassLoader()).isSameAs(classLoader);
+            assertThat(jmDNSInstance).isNotNull();
+            assertThat(jmDNSInstance.getClass().getName()).isEqualTo("javax.jmdns.JmDNS");
+        } catch (ReflectiveOperationException exception) {
+            throw new AssertionError(exception);
+        } catch (java.io.IOException exception) {
+            throw new AssertionError(exception);
+        }
+    }
+
+    private static URL[] getCurrentClasspathUrls() {
+        String[] classpathEntries = System.getProperty("java.class.path").split(File.pathSeparator);
+        URL[] urls = new URL[classpathEntries.length];
+        for (int index = 0; index < classpathEntries.length; index++) {
+            urls[index] = toUrl(classpathEntries[index]);
+        }
+        return urls;
+    }
+
+    private static URL toUrl(String classpathEntry) {
+        try {
+            return new File(classpathEntry).toURI().toURL();
+        } catch (MalformedURLException exception) {
+            throw new AssertionError(exception);
+        }
     }
 
     private static void setZeroConfState(Class<?> jmDNSClass, Class<?> serviceInfoClass, Object jmDNSInstance) {
