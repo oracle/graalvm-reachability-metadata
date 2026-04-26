@@ -176,6 +176,36 @@ public class Artemis_log_annotation_processorTest {
     }
 
     @Test
+    void escapesQuotesAndNewlinesInGeneratedSource() {
+        ProcessingResult result = process(FakeTypeElement.interfaceType(
+                "example.logs.EscapedCharactersBundle",
+                new LogBundleLiteral("ENC", ""),
+                new FakeExecutableElement(
+                        "messageWithEscapes",
+                        declaredType("java.lang.String"),
+                        List.of(),
+                        new MessageLiteral(301, "First line\nSecond \"quoted\" line")
+                ),
+                new FakeExecutableElement(
+                        "logWithEscapes",
+                        voidType(),
+                        List.of(),
+                        new LogMessageLiteral(302, "Logged\nmessage with \"quotes\"", LogMessage.Level.INFO)
+                )
+        ));
+
+        assertThat(result.success()).isTrue();
+        assertThat(result.errors()).isEmpty();
+        assertThat(result.sources()).containsOnlyKeys("example.logs.EscapedCharactersBundle_impl");
+
+        String generatedSource = result.sources().get("example.logs.EscapedCharactersBundle_impl");
+        assertThat(generatedSource).contains(
+                "String returnString = \"ENC301: First line\\nSecond \\\"quoted\\\" line\";",
+                "logger.info(\"ENC302: Logged\\nmessage with \\\"quotes\\\"\");"
+        );
+    }
+
+    @Test
     void rejectsInvalidPlaceholders() {
         ProcessingResult namedPlaceholderResult = process(FakeTypeElement.interfaceType(
                 "example.logs.NamedPlaceholderBundle",
