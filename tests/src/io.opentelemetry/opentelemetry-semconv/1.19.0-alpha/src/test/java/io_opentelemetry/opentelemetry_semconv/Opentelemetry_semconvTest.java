@@ -193,6 +193,53 @@ public class Opentelemetry_semconvTest {
     }
 
     @Test
+    void traceCloudEventsAttributesDescribeServerlessInvocationContext() {
+        assertAttributeKey(SemanticAttributes.AWS_LAMBDA_INVOKED_ARN, "aws.lambda.invoked_arn", AttributeType.STRING);
+        assertAttributeKey(SemanticAttributes.CLOUDEVENTS_EVENT_ID, "cloudevents.event_id", AttributeType.STRING);
+        assertAttributeKey(SemanticAttributes.CLOUDEVENTS_EVENT_SOURCE, "cloudevents.event_source", AttributeType.STRING);
+        assertAttributeKey(
+                SemanticAttributes.CLOUDEVENTS_EVENT_SPEC_VERSION,
+                "cloudevents.event_spec_version",
+                AttributeType.STRING
+        );
+        assertAttributeKey(SemanticAttributes.CLOUDEVENTS_EVENT_TYPE, "cloudevents.event_type", AttributeType.STRING);
+        assertAttributeKey(
+                SemanticAttributes.CLOUDEVENTS_EVENT_SUBJECT,
+                "cloudevents.event_subject",
+                AttributeType.STRING
+        );
+
+        Attributes cloudEventAttributes = Attributes.builder()
+                .put(
+                        SemanticAttributes.AWS_LAMBDA_INVOKED_ARN,
+                        "arn:aws:lambda:us-east-1:123456789012:function:metadata-handler"
+                )
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_ID, "evt-2026-04-27-0001")
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_SOURCE, "urn:metadata-forge:test")
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_SPEC_VERSION, "1.0")
+                .put(SemanticAttributes.CLOUDEVENTS_EVENT_TYPE, "com.example.metadata.generated")
+                .put(
+                        SemanticAttributes.CLOUDEVENTS_EVENT_SUBJECT,
+                        "libraries/io.opentelemetry/opentelemetry-semconv"
+                )
+                .build();
+
+        assertThat(cloudEventAttributes.asMap())
+                .containsEntry(
+                        SemanticAttributes.AWS_LAMBDA_INVOKED_ARN,
+                        "arn:aws:lambda:us-east-1:123456789012:function:metadata-handler"
+                )
+                .containsEntry(SemanticAttributes.CLOUDEVENTS_EVENT_ID, "evt-2026-04-27-0001")
+                .containsEntry(SemanticAttributes.CLOUDEVENTS_EVENT_SOURCE, "urn:metadata-forge:test")
+                .containsEntry(SemanticAttributes.CLOUDEVENTS_EVENT_SPEC_VERSION, "1.0")
+                .containsEntry(SemanticAttributes.CLOUDEVENTS_EVENT_TYPE, "com.example.metadata.generated")
+                .containsEntry(
+                        SemanticAttributes.CLOUDEVENTS_EVENT_SUBJECT,
+                        "libraries/io.opentelemetry/opentelemetry-semconv"
+                );
+    }
+
+    @Test
     void resourceSemanticConventionValueClassesExposeExpectedTaxonomies() {
         assertThat(List.of(
                 ResourceAttributes.CloudProviderValues.ALIBABA_CLOUD,
