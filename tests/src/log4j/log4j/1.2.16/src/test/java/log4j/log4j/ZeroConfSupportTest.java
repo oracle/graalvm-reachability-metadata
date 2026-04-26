@@ -126,9 +126,9 @@ public class ZeroConfSupportTest {
         private final int port;
         private final int weight;
         private final int priority;
-        private final Map<?, ?> properties;
+        private final Map<String, String> properties;
 
-        private ServiceInfoVersion3(String zone, String name, int port, int weight, int priority, Map<?, ?> properties) {
+        private ServiceInfoVersion3(String zone, String name, int port, int weight, int priority, Map<String, String> properties) {
             this.zone = zone;
             this.name = name;
             this.port = port;
@@ -137,7 +137,7 @@ public class ZeroConfSupportTest {
             this.properties = properties;
         }
 
-        public static ServiceInfoVersion3 create(String zone, String name, int port, int weight, int priority, Map<?, ?> properties) {
+        public static ServiceInfoVersion3 create(String zone, String name, int port, int weight, int priority, Map<String, String> properties) {
             return new ServiceInfoVersion3(zone, name, port, weight, priority, properties);
         }
 
@@ -161,7 +161,7 @@ public class ZeroConfSupportTest {
             return priority;
         }
 
-        public Map<?, ?> properties() {
+        public Map<String, String> properties() {
             return properties;
         }
     }

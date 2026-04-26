@@ -14,9 +14,9 @@ public class ServiceInfo {
     private final int port;
     private final int weight;
     private final int priority;
-    private final Hashtable<?, ?> properties;
+    private final Hashtable<String, String> properties;
 
-    public ServiceInfo(String zone, String name, int port, int weight, int priority, Hashtable<?, ?> properties) {
+    public ServiceInfo(String zone, String name, int port, int weight, int priority, Hashtable<String, String> properties) {
         this.zone = zone;
         this.name = name;
         this.port = port;
@@ -45,7 +45,7 @@ public class ServiceInfo {
         return priority;
     }
 
-    public Hashtable<?, ?> properties() {
+    public Hashtable<String, String> properties() {
         return properties;
     }
 }
