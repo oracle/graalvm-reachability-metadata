@@ -9,6 +9,13 @@ package org_xerial_snappy.snappy_java;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.xerial.snappy.SnappyFramedInputStream;
@@ -43,11 +50,102 @@ public class DirectByteBuffers$1Test {
         assertThat(restored.toByteArray()).containsExactly(input);
     }
 
+    @Test
+    void isolatedClassLoaderFallsBackToDirectBufferCleanerLookup() throws Exception {
+        Path stubClasses = compileUnsafeStub();
+        URL testClasses = DirectByteBuffers$1Test.class.getProtectionDomain().getCodeSource().getLocation();
+        URL libraryClasses = QuiescentBufferPool.class.getProtectionDomain().getCodeSource().getLocation();
+
+        try (ChildFirstClassLoader classLoader = new ChildFirstClassLoader(
+                new URL[]{stubClasses.toUri().toURL(), testClasses, libraryClasses},
+                DirectByteBuffers$1Test.class.getClassLoader())) {
+            Class<?> unsafeClass = classLoader.loadClass("sun.misc.Unsafe");
+            Runnable action = classLoader.loadClass(DirectByteBuffersFallbackAction.class.getName())
+                    .asSubclass(Runnable.class)
+                    .getDeclaredConstructor()
+                    .newInstance();
+
+            action.run();
+
+            assertThat(unsafeClass.getClassLoader()).isSameAs(classLoader);
+            assertThat(unsafeClass.getProtectionDomain().getCodeSource().getLocation())
+                    .isEqualTo(stubClasses.toUri().toURL());
+        }
+    }
+
+    private static Path compileUnsafeStub() throws IOException {
+        Path classRoot = Files.createTempDirectory("snappy-unsafe-stub-");
+        Path classFile = classRoot.resolve(Path.of("sun", "misc", "Unsafe.class"));
+
+        Files.createDirectories(classFile.getParent());
+        Files.write(classFile, Base64.getDecoder().decode(UNSAFE_STUB_CLASS));
+
+        return classRoot;
+    }
+
     private static byte[] createPayload(int size) {
         byte[] payload = new byte[size];
         for (int i = 0; i < payload.length; i++) {
             payload[i] = (byte) ('A' + (i % 23));
         }
         return payload;
+    }
+
+    private static final String UNSAFE_STUB_CLASS =
+            "yv66vgAAADQAFAoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCQAIAAkHAAoMAAsADAEAD3N1bi9taXNjL1Vuc2FmZQEACXRoZVVuc2FmZQEAEUxzdW4vbWlzYy9VbnNhZmU7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEADWludm9rZUNsZWFuZXIBABgoTGphdmEvbmlvL0J5dGVCdWZmZXI7KVYBAAg8Y2xpbml0PgEAClNvdXJjZUZpbGUBAAtVbnNhZmUuamF2YQAxAAgAAgAAAAEAGQALAAwAAAADAAEABQAGAAEADQAAAB0AAQABAAAABSq3AAGxAAAAAQAOAAAABgABAAAABQABAA8AEAABAA0AAAAZAAAAAgAAAAGxAAAAAQAOAAAABgABAAAACQAIABEABgABAA0AAAAdAAEAAAAAAAUBswAHsQAAAAEADgAAAAYAAQAAAAYAAQASAAAAAgAT";
+
+    public static final class DirectByteBuffersFallbackAction implements Runnable {
+
+        @Override
+        public void run() {
+            BufferPool bufferPool = QuiescentBufferPool.getInstance();
+            ByteBuffer buffer = bufferPool.allocateDirect(64);
+
+            buffer.put((byte) 1);
+            buffer.flip();
+            bufferPool.releaseDirect(buffer);
+        }
+    }
+
+    private static final class ChildFirstClassLoader extends URLClassLoader {
+        private final List<String> childFirstNames = List.of(
+                "sun.misc.Unsafe",
+                "org.xerial.snappy.",
+                DirectByteBuffersFallbackAction.class.getName()
+        );
+
+        private ChildFirstClassLoader(URL[] urls, ClassLoader parent) {
+            super(urls, parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                if (shouldLoadChildFirst(name)) {
+                    Class<?> loadedClass = findLoadedClass(name);
+                    if (loadedClass == null) {
+                        try {
+                            loadedClass = findClass(name);
+                        } catch (ClassNotFoundException exception) {
+                            loadedClass = super.loadClass(name, false);
+                        }
+                    }
+                    if (resolve) {
+                        resolveClass(loadedClass);
+                    }
+                    return loadedClass;
+                }
+                return super.loadClass(name, resolve);
+            }
+        }
+
+        private boolean shouldLoadChildFirst(String name) {
+            for (String childFirstName : childFirstNames) {
+                if (name.equals(childFirstName) || name.startsWith(childFirstName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
