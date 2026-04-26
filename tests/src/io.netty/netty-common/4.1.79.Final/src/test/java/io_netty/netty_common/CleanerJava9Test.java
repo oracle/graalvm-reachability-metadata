@@ -7,6 +7,7 @@
 package io_netty.netty_common;
 
 import java.nio.ByteBuffer;
+import java.security.Permission;
 
 import io.netty.util.internal.PlatformDependent;
 import org.junit.jupiter.api.Assertions;
@@ -22,5 +23,32 @@ public class CleanerJava9Test {
         Assertions.assertTrue(PlatformDependent.javaVersion() >= 9, "Expected the Java 9+ cleaner path");
         Assertions.assertTrue(PlatformDependent.hasUnsafe(), "Expected Unsafe-backed direct buffer cleanup");
         Assertions.assertDoesNotThrow(() -> PlatformDependent.freeDirectBuffer(buffer));
+    }
+
+    @Test
+    @SuppressWarnings("removal")
+    void freesDirectBuffersWithTheJava9PrivilegedInvokeCleanerPath() {
+        ByteBuffer buffer = ByteBuffer.allocateDirect(64);
+        buffer.putInt(0, 42);
+
+        Assertions.assertTrue(buffer.isDirect(), "Expected a direct buffer");
+        Assertions.assertTrue(PlatformDependent.javaVersion() >= 9, "Expected the Java 9+ cleaner path");
+        Assertions.assertTrue(PlatformDependent.hasUnsafe(), "Expected Unsafe-backed direct buffer cleanup");
+
+        SecurityManager previousSecurityManager = System.getSecurityManager();
+        System.setSecurityManager(new PermissiveSecurityManager());
+        try {
+            Assertions.assertNotNull(System.getSecurityManager(), "Expected the privileged cleaner path");
+            Assertions.assertDoesNotThrow(() -> PlatformDependent.freeDirectBuffer(buffer));
+        } finally {
+            System.setSecurityManager(previousSecurityManager);
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static final class PermissiveSecurityManager extends SecurityManager {
+        @Override
+        public void checkPermission(Permission permission) {
+        }
     }
 }
