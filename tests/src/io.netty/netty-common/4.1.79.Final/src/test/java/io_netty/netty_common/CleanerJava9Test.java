@@ -36,12 +36,28 @@ public class CleanerJava9Test {
         Assertions.assertTrue(PlatformDependent.hasUnsafe(), "Expected Unsafe-backed direct buffer cleanup");
 
         SecurityManager previousSecurityManager = System.getSecurityManager();
-        System.setSecurityManager(new PermissiveSecurityManager());
+        PermissiveSecurityManager securityManager = new PermissiveSecurityManager();
+        boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
         try {
-            Assertions.assertNotNull(System.getSecurityManager(), "Expected the privileged cleaner path");
+            if (securityManagerInstalled) {
+                Assertions.assertSame(securityManager, System.getSecurityManager(),
+                        "Expected the privileged cleaner path");
+            }
             Assertions.assertDoesNotThrow(() -> PlatformDependent.freeDirectBuffer(buffer));
         } finally {
-            System.setSecurityManager(previousSecurityManager);
+            if (securityManagerInstalled) {
+                System.setSecurityManager(previousSecurityManager);
+            }
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static boolean installSecurityManagerIfSupported(SecurityManager securityManager) {
+        try {
+            System.setSecurityManager(securityManager);
+            return System.getSecurityManager() == securityManager;
+        } catch (SecurityException | UnsupportedOperationException ignored) {
+            return false;
         }
     }
 
