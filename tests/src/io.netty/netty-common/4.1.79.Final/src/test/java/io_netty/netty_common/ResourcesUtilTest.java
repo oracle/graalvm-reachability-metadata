@@ -10,9 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.security.CodeSource;
 import java.security.ProtectionDomain;
-import java.security.cert.Certificate;
 
 import io.netty.util.internal.ResourcesUtil;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +40,9 @@ public class ResourcesUtilTest {
     }
 
     private static byte[] readPatchedResourcesUtilBytes() throws IOException {
-        try (InputStream inputStream = ResourcesUtil.class.getResourceAsStream("ResourcesUtil.class")) {
+        try (InputStream inputStream = ResourcesUtilTest.class.getClassLoader().getResourceAsStream(
+                "io/netty/util/internal/ResourcesUtil.class"
+        )) {
             Assertions.assertNotNull(inputStream, "Expected to find ResourcesUtil.class on the classpath");
 
             byte[] classBytes = inputStream.readAllBytes();
@@ -72,7 +72,24 @@ public class ResourcesUtilTest {
 
     private static final class PatchedResourcesUtilClassLoader extends ClassLoader {
         private PatchedResourcesUtilClassLoader() {
-            super(null);
+            super(ResourcesUtilTest.class.getClassLoader());
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> loadedClass = findLoadedClass(name);
+                if (loadedClass == null && TARGET_CLASS_NAME.equals(name)) {
+                    loadedClass = findClass(name);
+                }
+                if (loadedClass == null) {
+                    loadedClass = super.loadClass(name, false);
+                }
+                if (resolve) {
+                    resolveClass(loadedClass);
+                }
+                return loadedClass;
+            }
         }
 
         @Override
@@ -82,11 +99,7 @@ public class ResourcesUtilTest {
             }
             try {
                 byte[] classBytes = readPatchedResourcesUtilBytes();
-                CodeSource codeSource = ResourcesUtil.class.getProtectionDomain().getCodeSource();
-                ProtectionDomain protectionDomain = new ProtectionDomain(
-                        new CodeSource(codeSource.getLocation(), (Certificate[]) null),
-                        null
-                );
+                ProtectionDomain protectionDomain = ResourcesUtil.class.getProtectionDomain();
                 return defineClass(name, classBytes, 0, classBytes.length, protectionDomain);
             } catch (IOException exception) {
                 throw new ClassNotFoundException(name, exception);
