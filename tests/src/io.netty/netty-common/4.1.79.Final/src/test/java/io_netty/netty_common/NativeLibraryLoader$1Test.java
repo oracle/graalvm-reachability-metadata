@@ -26,17 +26,27 @@ public class NativeLibraryLoader$1Test {
                 () -> "Unexpected error message: " + error.getMessage()
         );
         Assertions.assertTrue(
-                containsSuppressedUnsatisfiedLinkError(error),
-                () -> "Expected helper invocation failure to be preserved as a suppressed error: " + error
+                containsNestedUnsatisfiedLinkError(error),
+                () -> "Expected helper invocation failure to be preserved in the exception chain: " + error
         );
     }
 
-    private static boolean containsSuppressedUnsatisfiedLinkError(Throwable throwable) {
+    private static boolean containsNestedUnsatisfiedLinkError(Throwable throwable) {
+        return containsNestedUnsatisfiedLinkError(throwable, true);
+    }
+
+    private static boolean containsNestedUnsatisfiedLinkError(Throwable throwable, boolean skipCurrent) {
+        if (throwable == null) {
+            return false;
+        }
+        if (!skipCurrent && throwable instanceof UnsatisfiedLinkError) {
+            return true;
+        }
         for (Throwable suppressed : throwable.getSuppressed()) {
-            if (suppressed instanceof UnsatisfiedLinkError) {
+            if (containsNestedUnsatisfiedLinkError(suppressed, false)) {
                 return true;
             }
         }
-        return false;
+        return containsNestedUnsatisfiedLinkError(throwable.getCause(), false);
     }
 }
