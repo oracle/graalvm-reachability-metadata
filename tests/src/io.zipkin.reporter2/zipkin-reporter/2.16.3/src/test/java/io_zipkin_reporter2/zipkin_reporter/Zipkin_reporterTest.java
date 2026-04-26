@@ -26,8 +26,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -187,6 +190,28 @@ public class Zipkin_reporterTest {
             assertThat(sender.rawMessages().get(0)).hasSize(2);
             assertThat(sender.rawMessages().get(0).get(0)).containsExactly(firstEncoded);
             assertThat(sender.rawMessages().get(0).get(1)).containsExactly(secondEncoded);
+        }
+    }
+
+    @Test
+    void asyncReporterFlushesReportedSpansAutomaticallyUsingTheConfiguredThreadFactory() throws InterruptedException {
+        CountDownLatch sendCompleted = new CountDownLatch(1);
+        AtomicInteger createdThreads = new AtomicInteger();
+        CapturingSender sender = new CapturingSender(Encoding.JSON, Integer.MAX_VALUE, encodedSpans -> sendCompleted.countDown());
+        ThreadFactory threadFactory = runnable -> {
+            createdThreads.incrementAndGet();
+            return new Thread(runnable);
+        };
+
+        try (AsyncReporter<Span> reporter = AsyncReporter.builder(sender)
+                .threadFactory(threadFactory)
+                .messageTimeout(25, TimeUnit.MILLISECONDS)
+                .build()) {
+            reporter.report(FIRST_SPAN);
+
+            assertThat(sendCompleted.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(sender.sentBatches()).containsExactly(List.of(FIRST_SPAN));
+            assertThat(createdThreads).hasValue(1);
         }
     }
 
@@ -400,8 +425,8 @@ public class Zipkin_reporterTest {
             for (byte[] encodedSpan : encodedSpans) {
                 copiedMessage.add(encodedSpan.clone());
             }
-            onSend.accept(copiedMessage);
             rawMessages.add(copiedMessage);
+            onSend.accept(copiedMessage);
             return Call.create(null);
         }
 
