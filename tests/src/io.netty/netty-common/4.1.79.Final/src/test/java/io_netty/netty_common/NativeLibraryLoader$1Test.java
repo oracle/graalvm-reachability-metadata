@@ -6,47 +6,71 @@
  */
 package io_netty.netty_common;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 import io.netty.util.internal.NativeLibraryLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class NativeLibraryLoader$1Test {
     @Test
-    void loadWithApplicationClassLoaderInvokesNativeLibraryUtilReflectivelyBeforeReportingMissingLibrary() {
-        ClassLoader classLoader = NativeLibraryLoader$1Test.class.getClassLoader();
-        Assertions.assertNotNull(classLoader, "Expected an application class loader for netty-common tests");
+    void loadWithLoaderThatForcesHelperDefinitionInvokesTheHelperPathBeforeReportingMissingLibrary() {
+        String libraryName = "metadata_forge_missing_native_library_helper_lookup";
+        ClassLoader parentLoader = NativeLibraryLoader$1Test.class.getClassLoader();
+        Assertions.assertNotNull(parentLoader, "Expected an application class loader for netty-common tests");
 
+        HelperDefiningClassLoader classLoader = new HelperDefiningClassLoader(parentLoader);
         UnsatisfiedLinkError error = Assertions.assertThrows(
                 UnsatisfiedLinkError.class,
-                () -> NativeLibraryLoader.load("metadata_forge_missing_native_library_helper_lookup", classLoader)
+                () -> NativeLibraryLoader.load(libraryName, classLoader)
         );
 
         Assertions.assertTrue(
                 error.getMessage().contains("could not load a native library"),
                 () -> "Unexpected error message: " + error.getMessage()
         );
-        Assertions.assertTrue(
-                containsNestedUnsatisfiedLinkError(error),
-                () -> "Expected helper invocation failure to be preserved in the exception chain: " + error
+        Assertions.assertTrue(classLoader.deniedHelperLoad(), "Expected helper class lookup to be forced through defineClass");
+        Assertions.assertEquals(
+                List.of("META-INF/native/" + System.mapLibraryName(libraryName)),
+                classLoader.requestedResources()
         );
     }
 
-    private static boolean containsNestedUnsatisfiedLinkError(Throwable throwable) {
-        return containsNestedUnsatisfiedLinkError(throwable, true);
-    }
+    private static final class HelperDefiningClassLoader extends ClassLoader {
+        private static final String HELPER_CLASS_NAME = "io.netty.util.internal.NativeLibraryUtil";
 
-    private static boolean containsNestedUnsatisfiedLinkError(Throwable throwable, boolean skipCurrent) {
-        if (throwable == null) {
-            return false;
+        private boolean deniedHelperLoad;
+        private final List<String> requestedResources = new ArrayList<>();
+
+        private HelperDefiningClassLoader(ClassLoader parent) {
+            super(parent);
         }
-        if (!skipCurrent && throwable instanceof UnsatisfiedLinkError) {
-            return true;
-        }
-        for (Throwable suppressed : throwable.getSuppressed()) {
-            if (containsNestedUnsatisfiedLinkError(suppressed, false)) {
-                return true;
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (HELPER_CLASS_NAME.equals(name)) {
+                deniedHelperLoad = true;
+                throw new ClassNotFoundException(name);
             }
+            return super.loadClass(name, resolve);
         }
-        return containsNestedUnsatisfiedLinkError(throwable.getCause(), false);
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            requestedResources.add(name);
+            return getParent().getResources(name);
+        }
+
+        private boolean deniedHelperLoad() {
+            return deniedHelperLoad;
+        }
+
+        private List<String> requestedResources() {
+            return requestedResources;
+        }
     }
 }
