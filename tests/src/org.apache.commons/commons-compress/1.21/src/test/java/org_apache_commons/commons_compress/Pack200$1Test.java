@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Pack200$1Test {
+class Pack2001Test {
 
     private static final String PACKER_PROPERTY = "java.util.jar.Pack200.Packer";
     @Test
