@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import zipkin2.Call;
 import zipkin2.CheckResult;
 import zipkin2.Span;
+import zipkin2.codec.BytesEncoder;
 import zipkin2.codec.Encoding;
 import zipkin2.codec.SpanBytesDecoder;
 import zipkin2.codec.SpanBytesEncoder;
@@ -168,6 +169,37 @@ public class Zipkin_reporterTest {
     }
 
     @Test
+    void asyncReporterBuildWithCustomEncoderReportsJsonPayloads() {
+        CapturingSender sender = new CapturingSender(Encoding.JSON, Integer.MAX_VALUE);
+        JsonMessage firstMessage = new JsonMessage("first", 1);
+        JsonMessage secondMessage = new JsonMessage("second", 2);
+        byte[] firstEncoded = JsonMessageEncoder.INSTANCE.encode(firstMessage);
+        byte[] secondEncoded = JsonMessageEncoder.INSTANCE.encode(secondMessage);
+
+        try (AsyncReporter<JsonMessage> reporter = AsyncReporter.builder(sender)
+                .messageTimeout(0, TimeUnit.MILLISECONDS)
+                .build(JsonMessageEncoder.INSTANCE)) {
+            reporter.report(firstMessage);
+            reporter.report(secondMessage);
+            reporter.flush();
+
+            assertThat(sender.rawMessages()).hasSize(1);
+            assertThat(sender.rawMessages().get(0)).hasSize(2);
+            assertThat(sender.rawMessages().get(0).get(0)).containsExactly(firstEncoded);
+            assertThat(sender.rawMessages().get(0).get(1)).containsExactly(secondEncoded);
+        }
+    }
+
+    @Test
+    void asyncReporterBuildRejectsEncodersWithDifferentEncodingThanSender() {
+        CapturingSender sender = new CapturingSender(Encoding.JSON, Integer.MAX_VALUE);
+
+        assertThatThrownBy(() -> AsyncReporter.builder(sender).build(ProtoJsonMessageEncoder.INSTANCE))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Encoder doesn't match Sender");
+    }
+
+    @Test
     void awaitableCallbackReturnsOnSuccessAndPropagatesFailures() {
         AwaitableCallback success = new AwaitableCallback();
         success.onSuccess(null);
@@ -250,6 +282,74 @@ public class Zipkin_reporterTest {
                 .putTag("http.method", "GET")
                 .putTag("http.route", route)
                 .build();
+    }
+
+    private static final class JsonMessage {
+
+        private final String name;
+        private final int sequence;
+
+        private JsonMessage(String name, int sequence) {
+            this.name = name;
+            this.sequence = sequence;
+        }
+
+        private byte[] jsonBytes() {
+            return ("{\"name\":\"" + name + "\",\"sequence\":" + sequence + "}")
+                    .getBytes(StandardCharsets.UTF_8);
+        }
+    }
+
+    private enum JsonMessageEncoder implements BytesEncoder<JsonMessage> {
+        INSTANCE;
+
+        @Override
+        public Encoding encoding() {
+            return Encoding.JSON;
+        }
+
+        @Override
+        public int sizeInBytes(JsonMessage message) {
+            return encode(message).length;
+        }
+
+        @Override
+        public byte[] encode(JsonMessage message) {
+            return message.jsonBytes();
+        }
+
+        @Override
+        public byte[] encodeList(List<JsonMessage> messages) {
+            List<byte[]> encodedMessages = new ArrayList<>(messages.size());
+            for (JsonMessage message : messages) {
+                encodedMessages.add(encode(message));
+            }
+            return BytesMessageEncoder.JSON.encode(encodedMessages);
+        }
+    }
+
+    private enum ProtoJsonMessageEncoder implements BytesEncoder<JsonMessage> {
+        INSTANCE;
+
+        @Override
+        public Encoding encoding() {
+            return Encoding.PROTO3;
+        }
+
+        @Override
+        public int sizeInBytes(JsonMessage message) {
+            return JsonMessageEncoder.INSTANCE.sizeInBytes(message);
+        }
+
+        @Override
+        public byte[] encode(JsonMessage message) {
+            return JsonMessageEncoder.INSTANCE.encode(message);
+        }
+
+        @Override
+        public byte[] encodeList(List<JsonMessage> messages) {
+            return JsonMessageEncoder.INSTANCE.encodeList(messages);
+        }
     }
 
     private static final class CapturingSender extends Sender {
