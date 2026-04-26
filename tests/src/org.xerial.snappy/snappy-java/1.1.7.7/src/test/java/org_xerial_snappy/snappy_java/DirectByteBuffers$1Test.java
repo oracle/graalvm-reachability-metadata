@@ -51,7 +51,7 @@ public class DirectByteBuffers$1Test {
     }
 
     @Test
-    void isolatedClassLoaderFallsBackToDirectBufferCleanerLookup() throws Exception {
+    void isolatedClassLoaderTriggersDirectBufferCleanerFallbackPath() throws Exception {
         Path stubClasses = compileUnsafeStub();
         URL testClasses = DirectByteBuffers$1Test.class.getProtectionDomain().getCodeSource().getLocation();
         URL libraryClasses = QuiescentBufferPool.class.getProtectionDomain().getCodeSource().getLocation();
@@ -60,7 +60,9 @@ public class DirectByteBuffers$1Test {
                 new URL[]{stubClasses.toUri().toURL(), testClasses, libraryClasses},
                 DirectByteBuffers$1Test.class.getClassLoader())) {
             Class<?> unsafeClass = classLoader.loadClass("sun.misc.Unsafe");
-            Runnable action = classLoader.loadClass(DirectByteBuffersFallbackAction.class.getName())
+            Class<?> childPoolClass = classLoader.loadClass("org.xerial.snappy.pool.QuiescentBufferPool");
+            Class<?> actionClass = classLoader.loadClass(DirectByteBuffersFallbackAction.class.getName());
+            Runnable action = actionClass
                     .asSubclass(Runnable.class)
                     .getDeclaredConstructor()
                     .newInstance();
@@ -68,6 +70,8 @@ public class DirectByteBuffers$1Test {
             action.run();
 
             assertThat(unsafeClass.getClassLoader()).isSameAs(classLoader);
+            assertThat(childPoolClass.getClassLoader()).isSameAs(classLoader);
+            assertThat(actionClass.getClassLoader()).isSameAs(classLoader);
             assertThat(unsafeClass.getProtectionDomain().getCodeSource().getLocation())
                     .isEqualTo(stubClasses.toUri().toURL());
         }
@@ -92,7 +96,7 @@ public class DirectByteBuffers$1Test {
     }
 
     private static final String UNSAFE_STUB_CLASS =
-            "yv66vgAAADQAFAoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCQAIAAkHAAoMAAsADAEAD3N1bi9taXNjL1Vuc2FmZQEACXRoZVVuc2FmZQEAEUxzdW4vbWlzYy9VbnNhZmU7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEADWludm9rZUNsZWFuZXIBABgoTGphdmEvbmlvL0J5dGVCdWZmZXI7KVYBAAg8Y2xpbml0PgEAClNvdXJjZUZpbGUBAAtVbnNhZmUuamF2YQAxAAgAAgAAAAEAGQALAAwAAAADAAEABQAGAAEADQAAAB0AAQABAAAABSq3AAGxAAAAAQAOAAAABgABAAAABQABAA8AEAABAA0AAAAZAAAAAgAAAAGxAAAAAQAOAAAABgABAAAACQAIABEABgABAA0AAAAdAAEAAAAAAAUBswAHsQAAAAEADgAAAAYAAQAAAAYAAQASAAAAAgAT";
+            "yv66vgAAADQAEgoAAgADBwAEDAAFAAYBABBqYXZhL2xhbmcvT2JqZWN0AQAGPGluaXQ+AQADKClWCQAIAAkHAAoMAAsADAEAD3N1bi9taXNjL1Vuc2FmZQEACXRoZVVuc2FmZQEAEUxzdW4vbWlzYy9VbnNhZmU7AQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEACDxjbGluaXQ+AQAKU291cmNlRmlsZQEAC1Vuc2FmZS5qYXZhADEACAACAAAAAQAZAAsADAAAAAIAAQAFAAYAAQANAAAAHQABAAEAAAAFKrcAAbEAAAABAA4AAAAGAAEAAAADAAgADwAGAAEADQAAAB0AAQAAAAAABQGzAAexAAAAAQAOAAAABgABAAAABAABABAAAAACABE=";
 
     public static final class DirectByteBuffersFallbackAction implements Runnable {
 
