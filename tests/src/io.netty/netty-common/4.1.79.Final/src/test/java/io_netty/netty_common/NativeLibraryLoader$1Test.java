@@ -10,10 +10,10 @@ import io.netty.util.internal.NativeLibraryLoader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class NativeLibraryLoader1Test {
+public class NativeLibraryLoader$1Test {
     @Test
-    void loadWithApplicationClassLoaderInvokesHelperMethodBeforeReportingMissingLibrary() {
-        ClassLoader classLoader = NativeLibraryLoader1Test.class.getClassLoader();
+    void loadWithApplicationClassLoaderInvokesNativeLibraryUtilReflectivelyBeforeReportingMissingLibrary() {
+        ClassLoader classLoader = NativeLibraryLoader$1Test.class.getClassLoader();
         Assertions.assertNotNull(classLoader, "Expected an application class loader for netty-common tests");
 
         UnsatisfiedLinkError error = Assertions.assertThrows(
@@ -25,5 +25,18 @@ public class NativeLibraryLoader1Test {
                 error.getMessage().contains("could not load a native library"),
                 () -> "Unexpected error message: " + error.getMessage()
         );
+        Assertions.assertTrue(
+                containsSuppressedUnsatisfiedLinkError(error),
+                () -> "Expected helper invocation failure to be preserved as a suppressed error: " + error
+        );
+    }
+
+    private static boolean containsSuppressedUnsatisfiedLinkError(Throwable throwable) {
+        for (Throwable suppressed : throwable.getSuppressed()) {
+            if (suppressed instanceof UnsatisfiedLinkError) {
+                return true;
+            }
+        }
+        return false;
     }
 }
