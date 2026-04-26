@@ -93,6 +93,18 @@ public class ZeroConfSupportTest {
         }
     }
 
+    @Test
+    void initializesJmDNSWhenInvokedDirectly() {
+        setStaticField("jmDNSClass", null);
+        setStaticField("serviceInfoClass", null);
+        setStaticField("jmDNS", null);
+
+        Object jmDNSInstance = invokePrivateStaticMethod("initializeJMDNS", Object.class);
+
+        assertThat(jmDNSInstance).isNotNull();
+        assertThat(jmDNSInstance).isInstanceOf(JmDNS.class);
+    }
+
     private static URL[] getCurrentClasspathUrls() {
         String[] classpathEntries = System.getProperty("java.class.path").split(File.pathSeparator);
         URL[] urls = new URL[classpathEntries.length];
