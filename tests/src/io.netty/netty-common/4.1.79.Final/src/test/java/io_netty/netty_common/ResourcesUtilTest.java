@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+import java.security.cert.Certificate;
 
 import io.netty.util.internal.ResourcesUtil;
 import org.junit.jupiter.api.Assertions;
@@ -79,7 +82,12 @@ public class ResourcesUtilTest {
             }
             try {
                 byte[] classBytes = readPatchedResourcesUtilBytes();
-                return defineClass(name, classBytes, 0, classBytes.length);
+                CodeSource codeSource = ResourcesUtil.class.getProtectionDomain().getCodeSource();
+                ProtectionDomain protectionDomain = new ProtectionDomain(
+                        new CodeSource(codeSource.getLocation(), (Certificate[]) null),
+                        null
+                );
+                return defineClass(name, classBytes, 0, classBytes.length, protectionDomain);
             } catch (IOException exception) {
                 throw new ClassNotFoundException(name, exception);
             }
