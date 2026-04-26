@@ -359,6 +359,44 @@ public class Opentelemetry_semconvTest {
     }
 
     @Test
+    void resourceAttributesSupportKubernetesWorkloadIdentity() {
+        assertAttributeKey(ResourceAttributes.K8S_CLUSTER_NAME, "k8s.cluster.name", AttributeType.STRING);
+        assertAttributeKey(ResourceAttributes.K8S_NAMESPACE_NAME, "k8s.namespace.name", AttributeType.STRING);
+        assertAttributeKey(ResourceAttributes.K8S_CONTAINER_RESTART_COUNT, "k8s.container.restart_count", AttributeType.LONG);
+        assertAttributeKey(ResourceAttributes.K8S_JOB_NAME, "k8s.job.name", AttributeType.STRING);
+        assertAttributeKey(ResourceAttributes.K8S_CRONJOB_NAME, "k8s.cronjob.name", AttributeType.STRING);
+
+        Attributes kubernetesAttributes = Attributes.builder()
+                .put(ResourceAttributes.K8S_CLUSTER_NAME, "metadata-forge-cluster")
+                .put(ResourceAttributes.K8S_NAMESPACE_NAME, "observability")
+                .put(ResourceAttributes.K8S_NODE_NAME, "worker-node-a")
+                .put(ResourceAttributes.K8S_POD_NAME, "metadata-forge-refresh-28671200-9x2hk")
+                .put(ResourceAttributes.K8S_CONTAINER_NAME, "metadata-worker")
+                .put(ResourceAttributes.K8S_CONTAINER_RESTART_COUNT, 3L)
+                .put(ResourceAttributes.K8S_JOB_NAME, "metadata-forge-refresh-28671200")
+                .put(ResourceAttributes.K8S_CRONJOB_NAME, "metadata-forge-refresh")
+                .build();
+
+        assertThat(kubernetesAttributes.get(ResourceAttributes.K8S_CLUSTER_NAME))
+                .isEqualTo("metadata-forge-cluster");
+        assertThat(kubernetesAttributes.get(ResourceAttributes.K8S_NAMESPACE_NAME)).isEqualTo("observability");
+        assertThat(kubernetesAttributes.get(ResourceAttributes.K8S_NODE_NAME)).isEqualTo("worker-node-a");
+        assertThat(kubernetesAttributes.get(ResourceAttributes.K8S_POD_NAME))
+                .isEqualTo("metadata-forge-refresh-28671200-9x2hk");
+        assertThat(kubernetesAttributes.get(ResourceAttributes.K8S_CONTAINER_NAME)).isEqualTo("metadata-worker");
+        assertThat(kubernetesAttributes.get(ResourceAttributes.K8S_CONTAINER_RESTART_COUNT)).isEqualTo(3L);
+        assertThat(kubernetesAttributes.get(ResourceAttributes.K8S_JOB_NAME))
+                .isEqualTo("metadata-forge-refresh-28671200");
+        assertThat(kubernetesAttributes.get(ResourceAttributes.K8S_CRONJOB_NAME))
+                .isEqualTo("metadata-forge-refresh");
+
+        assertThat(kubernetesAttributes.asMap())
+                .containsEntry(ResourceAttributes.K8S_CLUSTER_NAME, "metadata-forge-cluster")
+                .containsEntry(ResourceAttributes.K8S_CONTAINER_RESTART_COUNT, 3L)
+                .containsEntry(ResourceAttributes.K8S_CRONJOB_NAME, "metadata-forge-refresh");
+    }
+
+    @Test
     void traceSemanticConventionValueClassesExposeExpectedTaxonomies() {
         assertThat(List.of(
                 SemanticAttributes.OpentracingRefTypeValues.CHILD_OF,
