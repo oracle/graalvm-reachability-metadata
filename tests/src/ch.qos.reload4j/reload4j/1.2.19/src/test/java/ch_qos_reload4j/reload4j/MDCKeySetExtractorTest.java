@@ -8,6 +8,8 @@ package ch_qos_reload4j.reload4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.apache.log4j.Level;
@@ -34,6 +36,27 @@ public class MDCKeySetExtractorTest {
             assertThat(propertyKeys).containsExactlyInAnyOrder("requestId", "tenant");
         } finally {
             MDC.clear();
+        }
+    }
+
+    @Test
+    void extractsMappedDiagnosticContextKeysThroughLegacySerializationFallback() throws Exception {
+        Field keySetMethodField = MDCKeySetExtractor.class.getDeclaredField("getKeySetMethod");
+        keySetMethodField.setAccessible(true);
+        Method originalKeySetMethod = (Method) keySetMethodField.get(MDCKeySetExtractor.INSTANCE);
+        keySetMethodField.set(MDCKeySetExtractor.INSTANCE, null);
+        MDC.put("operation", "serialize");
+        MDC.put("component", "mdc-extractor");
+        try {
+            LoggingEvent event = new LoggingEvent(LOGGER_FQCN, LOGGER, Level.WARN,
+                    "message for legacy mapped diagnostic context extraction", null);
+
+            Set propertyKeys = MDCKeySetExtractor.INSTANCE.getPropertyKeySet(event);
+
+            assertThat(propertyKeys).containsExactlyInAnyOrder("operation", "component");
+        } finally {
+            MDC.clear();
+            keySetMethodField.set(MDCKeySetExtractor.INSTANCE, originalKeySetMethod);
         }
     }
 }
