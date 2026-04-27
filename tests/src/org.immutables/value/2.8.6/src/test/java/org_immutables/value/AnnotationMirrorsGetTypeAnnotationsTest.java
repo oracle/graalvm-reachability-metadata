@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class $AnnotationMirrors$GetTypeAnnotationsTest {
+public class AnnotationMirrorsGetTypeAnnotationsTest {
 
     @Test
     void fromUsesTypeMirrorGetAnnotationMirrorsOnImplementations() {
