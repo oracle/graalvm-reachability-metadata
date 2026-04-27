@@ -6,8 +6,12 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
+import javax.el.ELContext;
+import javax.el.ELManager;
 import javax.el.ELProcessor;
+import javax.el.ValueExpression;
 
+import org.apache.el.ExpressionFactoryImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +28,15 @@ public class AstFunctionTest {
                 FunctionLibrary.class.getName(),
                 "java.lang.String repeat(java.lang.String,int)");
 
-        Object value = processor.eval("lib:repeatBySignature('ha', 3)");
+        ELManager manager = processor.getELManager();
+        ELContext context = manager.getELContext();
+        ExpressionFactoryImpl expressionFactory = new ExpressionFactoryImpl();
+        ValueExpression expression = expressionFactory.createValueExpression(
+                context,
+                "${lib:repeatBySignature('ha', 3)}",
+                Object.class);
+
+        Object value = expression.getValue(context);
 
         assertThat(value).isEqualTo("hahaha");
     }
