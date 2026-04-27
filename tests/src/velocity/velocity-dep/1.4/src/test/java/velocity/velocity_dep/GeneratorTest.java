@@ -6,11 +6,8 @@
  */
 package velocity.velocity_dep;
 
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.log.NullLogSystem;
-import org.apache.velocity.texen.Generator;
+import org.apache.tools.ant.Project;
+import org.apache.velocity.texen.ant.TexenTask;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -25,7 +22,7 @@ public class GeneratorTest {
     Path temporaryDirectory;
 
     @Test
-    void parsesControlTemplateWithDefaultTexenContextObjects() throws Exception {
+    void texenTaskParsesControlTemplateWithDefaultGeneratorContextObjects() throws Exception {
         Path templateDirectory = temporaryDirectory.resolve("templates");
         Path outputDirectory = temporaryDirectory.resolve("generated");
         Files.createDirectories(templateDirectory);
@@ -37,29 +34,28 @@ public class GeneratorTest {
         Files.write(
                 templateDirectory.resolve("sample.properties"),
                 "greeting=hello from texen\n".getBytes(StandardCharsets.UTF_8));
+        Path contextProperties = templateDirectory.resolve("context.properties");
+        Files.write(
+                contextProperties,
+                ("word=velocity\n"
+                        + "fileName=report.txt\n"
+                        + "propertiesFile=sample.properties\n"
+                        + "propertyKey=greeting\n").getBytes(StandardCharsets.UTF_8));
 
-        Generator generator = Generator.getInstance();
-        generator.setVelocityEngine(createVelocityEngine(templateDirectory));
-        generator.setTemplatePath(templateDirectory.toString());
-        generator.setOutputPath(outputDirectory.toString());
+        TexenTask task = new TexenTask();
+        Project project = new Project();
+        project.setBaseDir(temporaryDirectory.toFile());
+        task.setProject(project);
+        task.setTemplatePath(templateDirectory.toString());
+        task.setContextProperties(contextProperties.toString());
+        task.setOutputDirectory(outputDirectory.toFile());
+        task.setOutputFile("result.txt");
+        task.setControlTemplate("control.vm");
 
-        VelocityContext context = new VelocityContext();
-        context.put("word", "velocity");
-        context.put("fileName", "report.txt");
-        context.put("propertiesFile", "sample.properties");
-        context.put("propertyKey", "greeting");
+        task.execute();
 
-        String output = generator.parse("control.vm", context);
-
-        assertThat(output).isEqualTo("Velocity|report.txt|hello from texen|" + outputDirectory);
-    }
-
-    private static VelocityEngine createVelocityEngine(Path templateDirectory) throws Exception {
-        VelocityEngine engine = new VelocityEngine();
-        engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new NullLogSystem());
-        engine.setProperty(RuntimeConstants.VM_LIBRARY, "");
-        engine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, templateDirectory.toString());
-        engine.init();
-        return engine;
+        assertThat(outputDirectory.resolve("result.txt"))
+                .content(StandardCharsets.UTF_8)
+                .isEqualTo("Velocity|report.txt|hello from texen|" + outputDirectory.toRealPath());
     }
 }
