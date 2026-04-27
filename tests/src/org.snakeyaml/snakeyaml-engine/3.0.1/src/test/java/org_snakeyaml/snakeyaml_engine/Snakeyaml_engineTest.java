@@ -57,7 +57,7 @@ public class Snakeyaml_engineTest {
                 count: 3
                 ratio: 1.5
                 nothing: null
-                tags: &tags [yaml, native, \"🐍\"]
+                tags: &tags [yaml, native, \"\uD83D\uDC0D\"]
                 copy: *tags
                 nested:
                   threshold: 42
@@ -70,7 +70,7 @@ public class Snakeyaml_engineTest {
         assertThat((Number) loaded.get("count")).hasToString("3");
         assertThat((Number) loaded.get("ratio")).isEqualTo(1.5d);
         assertThat(loaded).containsEntry("nothing", null);
-        assertThat(asList(loaded.get("tags"))).containsExactly("yaml", "native", "🐍");
+        assertThat(asList(loaded.get("tags"))).containsExactly("yaml", "native", "\uD83D\uDC0D");
         assertThat(loaded.get("copy")).isSameAs(loaded.get("tags"));
         assertThat(asMap(loaded.get("nested"))).containsEntry("threshold", 42);
     }
@@ -255,7 +255,7 @@ public class Snakeyaml_engineTest {
 
     @Test
     void readsBomEncodedUnicodeAndConstructsBinaryScalars() throws IOException {
-        String document = "message: café\npayload: !!binary SGVsbG8=\n";
+        String document = "message: caf\u00E9\npayload: !!binary SGVsbG8=\n";
 
         Object loaded;
         try (YamlUnicodeReader reader = new YamlUnicodeReader(new ByteArrayInputStream(withUtf8Bom(document)))) {
@@ -264,7 +264,7 @@ public class Snakeyaml_engineTest {
         }
 
         Map<Object, Object> map = asMap(loaded);
-        assertThat(map).containsEntry("message", "café");
+        assertThat(map).containsEntry("message", "caf\u00E9");
         assertThat((byte[]) map.get("payload")).containsExactly("Hello".getBytes(UTF_8));
     }
 
