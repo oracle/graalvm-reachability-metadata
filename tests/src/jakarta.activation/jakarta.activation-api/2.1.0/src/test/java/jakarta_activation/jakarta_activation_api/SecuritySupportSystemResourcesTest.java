@@ -6,46 +6,30 @@
  */
 package jakarta_activation.jakarta_activation_api;
 
-import jakarta.activation.MimetypesFileTypeMap;
-import jakarta.activation.spi.MimeTypeRegistryProvider;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.Method;
+import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecuritySupportSystemResourcesTest {
-    private static final String ANGUS_MIME_TYPE_REGISTRY_PROVIDER =
-            "org.eclipse.angus.activation.MimeTypeRegistryProviderImpl";
+    private static final String RESOURCE_NAME =
+            "jakarta_activation/jakarta_activation_api/security-support-4.resource";
 
     @Test
-    void mimetypeLoadingWithoutContextClassLoaderUsesSystemResourcesFallback() {
-        Thread currentThread = Thread.currentThread();
-        ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
-        String originalProvider = System.getProperty(MimeTypeRegistryProvider.class.getName());
+    void getSystemResourcesFindsSystemClasspathResources() throws Exception {
+        // SecuritySupport is package-private and this branch is not reachable through the public API
+        // while the library is loaded by an application class loader.
+        Class<?> securitySupportClass = Class.forName("jakarta.activation.SecuritySupport");
+        Method getSystemResourcesMethod = securitySupportClass.getDeclaredMethod("getSystemResources", String.class);
+        getSystemResourcesMethod.setAccessible(true);
 
-        currentThread.setContextClassLoader(null);
-        System.setProperty(MimeTypeRegistryProvider.class.getName(), ANGUS_MIME_TYPE_REGISTRY_PROVIDER);
-        try {
-            MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap(
-                    mimeTypes("application/x-security-support-system-resource securitysupportsystemresource")
-            );
+        URL[] resources = (URL[]) getSystemResourcesMethod.invoke(null, RESOURCE_NAME);
 
-            assertThat(fileTypeMap.getContentType("sample.securitysupportsystemresource"))
-                    .isEqualTo("application/x-security-support-system-resource");
-        } finally {
-            currentThread.setContextClassLoader(originalContextClassLoader);
-            if (originalProvider == null) {
-                System.clearProperty(MimeTypeRegistryProvider.class.getName());
-            } else {
-                System.setProperty(MimeTypeRegistryProvider.class.getName(), originalProvider);
-            }
-        }
-    }
-
-    private static InputStream mimeTypes(String content) {
-        return new ByteArrayInputStream((content + System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
+        assertThat(resources).isNotNull().isNotEmpty();
+        assertThat(resources)
+                .extracting(URL::toExternalForm)
+                .anySatisfy(url -> assertThat(url).contains("security-support-4.resource"));
     }
 }
