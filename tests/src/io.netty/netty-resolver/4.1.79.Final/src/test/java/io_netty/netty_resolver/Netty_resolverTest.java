@@ -22,6 +22,7 @@ import io.netty.resolver.HostsFileEntries;
 import io.netty.resolver.HostsFileEntriesProvider;
 import io.netty.resolver.HostsFileParser;
 import io.netty.resolver.InetSocketAddressResolver;
+import io.netty.resolver.RoundRobinInetAddressResolver;
 import io.netty.resolver.SimpleNameResolver;
 import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.EventExecutor;
@@ -155,6 +156,30 @@ public class Netty_resolverTest {
         } finally {
             otherExecutor.shutdownGracefully().syncUninterruptibly();
         }
+    }
+
+    @Test
+    void roundRobinInetAddressResolverUsesResolveAllResultsForSingleAndBulkLookups() throws Exception {
+        List<InetAddress> addresses = List.of(ip("203.0.113.30"), ip("203.0.113.31"), ip("203.0.113.32"));
+        RecordingNameResolver nameResolver = new RecordingNameResolver(
+                EXECUTOR,
+                Map.of("roundrobin.test", addresses)
+        );
+        RoundRobinInetAddressResolver resolver = new RoundRobinInetAddressResolver(EXECUTOR, nameResolver);
+
+        try {
+            InetAddress resolved = resolver.resolve("roundrobin.test").syncUninterruptibly().getNow();
+            List<InetAddress> resolvedAll = resolver.resolveAll("roundrobin.test").syncUninterruptibly().getNow();
+
+            assertThat(resolved).isIn(addresses);
+            assertThat(resolvedAll).containsExactlyInAnyOrderElementsOf(addresses);
+            assertThat(nameResolver.resolveHosts).isEmpty();
+            assertThat(nameResolver.resolveAllHosts).containsExactly("roundrobin.test", "roundrobin.test");
+        } finally {
+            resolver.close();
+        }
+
+        assertThat(nameResolver.closed).isTrue();
     }
 
     private static InetAddress ip(String literal) throws UnknownHostException {
