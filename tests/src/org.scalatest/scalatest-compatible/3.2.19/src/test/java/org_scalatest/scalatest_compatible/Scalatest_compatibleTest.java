@@ -62,6 +62,17 @@ public class Scalatest_compatibleTest {
         assertThat(renderDiagnostic(failing)).isEqualTo("FAIL: missing expected field");
     }
 
+    @Test
+    void assertionCanDriveExhaustiveDispatchAcrossSealedHierarchyImplementations() {
+        ValidationAssertion passing = validate("configuration", true, null);
+        ValidationAssertion failing = validate("credentials", false, "missing password");
+
+        assertThat(validationSummary(passing)).isEqualTo("configuration validated");
+        assertThat(validationSummary(failing)).isEqualTo("credentials failed: missing password");
+        assertThat(validationExitCode(passing)).isZero();
+        assertThat(validationExitCode(failing)).isEqualTo(1);
+    }
+
     private static String joinDescriptions(List<? extends Assertion> assertions) {
         return assertions.stream()
                 .map(Scalatest_compatibleTest::describe)
@@ -107,6 +118,28 @@ public class Scalatest_compatibleTest {
         return describe(assertion);
     }
 
+    private static ValidationAssertion validate(String subject, boolean passed, String failureReason) {
+        if (passed) {
+            return new PassedValidation(subject);
+        }
+        return new FailedValidation(subject, failureReason);
+    }
+
+    private static String validationSummary(ValidationAssertion assertion) {
+        return switch (assertion) {
+            case PassedValidation passedValidation -> passedValidation.subject() + " validated";
+            case FailedValidation failedValidation ->
+                    failedValidation.subject() + " failed: " + failedValidation.failureReason();
+        };
+    }
+
+    private static int validationExitCode(ValidationAssertion assertion) {
+        return switch (assertion) {
+            case PassedValidation ignored -> 0;
+            case FailedValidation ignored -> 1;
+        };
+    }
+
     private record NamedAssertion(String name, boolean passed) implements Assertion {
     }
 
@@ -117,6 +150,15 @@ public class Scalatest_compatibleTest {
     }
 
     private record DiagnosticResult(boolean passed, String detail) implements DiagnosticAssertion {
+    }
+
+    private sealed interface ValidationAssertion extends Assertion permits PassedValidation, FailedValidation {
+    }
+
+    private record PassedValidation(String subject) implements ValidationAssertion {
+    }
+
+    private record FailedValidation(String subject, String failureReason) implements ValidationAssertion {
     }
 
     private enum OutcomeAssertion implements Assertion {
