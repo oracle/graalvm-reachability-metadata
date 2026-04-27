@@ -230,6 +230,33 @@ public class Geronimo_jta_1_1_specTest {
                 "second:forget:51966");
     }
 
+    @Test
+    void transactionSynchronizationRegistryResourcesAreScopedToTransactionKeys() throws Exception {
+        InMemoryTransactionManager manager = new InMemoryTransactionManager();
+        TransactionSynchronizationRegistry registry = manager;
+
+        manager.begin();
+        Object firstKey = registry.getTransactionKey();
+        registry.putResource("shared", "first");
+        Transaction firstTransaction = manager.suspend();
+
+        manager.begin();
+        Object secondKey = registry.getTransactionKey();
+        assertThat(secondKey).isNotSameAs(firstKey);
+        assertThat(registry.getResource("shared")).isNull();
+
+        registry.putResource("shared", "second");
+        assertThat(registry.getResource("shared")).isEqualTo("second");
+        manager.commit();
+
+        manager.resume(firstTransaction);
+        assertThat(registry.getTransactionKey()).isSameAs(firstKey);
+        assertThat(registry.getResource("shared")).isEqualTo("first");
+
+        manager.rollback();
+        assertThat(registry.getResource("shared")).isNull();
+    }
+
     private static final class InMemoryTransactionManager
             implements TransactionManager, UserTransaction, TransactionSynchronizationRegistry {
         private TransactionContext currentTransaction;
