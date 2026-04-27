@@ -8,7 +8,7 @@ package jakarta_activation.jakarta_activation_api;
 
 import org.junit.jupiter.api.Test;
 
-class Jakarta_activation_apiTest {
+public class Jakarta_activation_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
