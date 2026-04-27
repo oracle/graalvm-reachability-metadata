@@ -7,6 +7,7 @@
 package commons_io.commons_io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,7 +35,7 @@ public class ClassLoaderObjectInputStreamTest {
     }
 
     @Test
-    void fallsBackToObjectInputStreamClassResolutionWhenTheProvidedLoaderCannotResolveTheClass() throws Exception {
+    void throwsClassNotFoundExceptionWhenTheProvidedLoaderCannotResolveTheClass() throws Exception {
         ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(String.class);
         ClassLoader rejectingClassLoader = new RejectingClassLoader(
                 String.class.getName(),
@@ -42,9 +43,9 @@ public class ClassLoaderObjectInputStreamTest {
 
         try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(
                 rejectingClassLoader)) {
-            Class<?> resolvedClass = inputStream.resolveClassDescriptor(objectStreamClass);
-
-            assertThat(resolvedClass).isEqualTo(String.class);
+            assertThatThrownBy(() -> inputStream.resolveClassDescriptor(objectStreamClass))
+                    .isInstanceOf(ClassNotFoundException.class)
+                    .hasMessage(String.class.getName());
         }
     }
 
