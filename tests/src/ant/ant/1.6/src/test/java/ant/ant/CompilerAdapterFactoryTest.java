@@ -8,9 +8,7 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
@@ -40,16 +38,11 @@ public class CompilerAdapterFactoryTest {
     }
 
     @Test
-    void resolvesCompilerFactoryClassThroughLegacyClassLiteralHelper() throws Throwable {
-        MethodHandle classLiteralResolver = MethodHandles.privateLookupIn(
-                CompilerAdapterFactory.class,
-                MethodHandles.lookup())
-            .findStatic(
-                CompilerAdapterFactory.class,
-                "class$",
-                MethodType.methodType(Class.class, String.class));
+    void resolvesCompilerFactoryClassThroughLegacyClassLiteralHelper() throws Exception {
+        Method classLiteralResolver = CompilerAdapterFactory.class.getDeclaredMethod("class$", String.class);
+        classLiteralResolver.setAccessible(true);
 
-        Object resolvedClass = classLiteralResolver.invoke(CompilerAdapterFactory.class.getName());
+        Object resolvedClass = classLiteralResolver.invoke(null, CompilerAdapterFactory.class.getName());
 
         assertThat(resolvedClass).isSameAs(CompilerAdapterFactory.class);
     }
