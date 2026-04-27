@@ -192,7 +192,7 @@ public class Geronimo_jta_1_1_specTest {
 
     @Test
     void xaResourceConstantsAndXidContractCanDriveTwoPhaseOperations() throws Exception {
-        SimpleXid xid = new SimpleXid(0xCAFE, new byte[] { 1, 2, 3 }, new byte[] { 4, 5 });
+        SimpleXid xid = new SimpleXid(0xCAFE, new byte[] {1, 2, 3 }, new byte[] {4, 5 });
         RecordingXaResource first = new RecordingXaResource("first");
         RecordingXaResource second = new RecordingXaResource("second");
 
@@ -387,7 +387,7 @@ public class Geronimo_jta_1_1_specTest {
     }
 
     private static final class TransactionContext implements Transaction {
-        private final SimpleXid xid = new SimpleXid(0x1234, new byte[] { 10, 20 }, new byte[] { 30 });
+        private final SimpleXid xid = new SimpleXid(0x1234, new byte[] {10, 20 }, new byte[] {30 });
         private final List<XAResource> xaResources = new ArrayList<>();
         private final List<Synchronization> synchronizations = new ArrayList<>();
         private final List<Synchronization> interposedSynchronizations = new ArrayList<>();
