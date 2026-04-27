@@ -24,6 +24,7 @@ import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.skyscreamer.jsonassert.JSONParser;
+import org.skyscreamer.jsonassert.LocationAwareValueMatcher;
 import org.skyscreamer.jsonassert.RegularExpressionValueMatcher;
 import org.skyscreamer.jsonassert.ValueMatcherException;
 import org.skyscreamer.jsonassert.comparator.ArraySizeComparator;
@@ -209,6 +210,67 @@ public class JsonassertTest {
 
         JSONAssert.assertEquals(expected, actual, comparator);
         assertThat(JSONCompare.compareJSON(expected, actual, comparator).passed()).isTrue();
+    }
+
+    @Test
+    public void locationAwareValueMatcherCanUseJsonPathWhenComparingValues() throws JSONException {
+        String expected = """
+                {
+                  "events": [
+                    {"status": "accepted", "trackingCode": "tracking"},
+                    {"status": "accepted", "trackingCode": "tracking"}
+                  ]
+                }
+                """;
+        String actual = """
+                {
+                  "events": [
+                    {"status": "accepted", "trackingCode": "tracking-0-alpha"},
+                    {"status": "accepted", "trackingCode": "tracking-1-beta"}
+                  ]
+                }
+                """;
+        String actualWithWrongPathSpecificCode = """
+                {
+                  "events": [
+                    {"status": "accepted", "trackingCode": "tracking-0-alpha"},
+                    {"status": "accepted", "trackingCode": "tracking-0-beta"}
+                  ]
+                }
+                """;
+        LocationAwareValueMatcher<Object> pathAwareTrackingCodeMatcher = new LocationAwareValueMatcher<>() {
+            @Override
+            public boolean equal(Object actualValue, Object expectedValue) {
+                return actualValue.toString().startsWith(expectedValue.toString());
+            }
+
+            @Override
+            public boolean equal(String prefix, Object actualValue, Object expectedValue, JSONCompareResult result) {
+                String eventIndex = prefix.substring(prefix.indexOf('[') + 1, prefix.indexOf(']'));
+                String expectedPrefix = expectedValue + "-" + eventIndex + "-";
+                if (!actualValue.toString().startsWith(expectedPrefix)) {
+                    throw new ValueMatcherException("Path-specific tracking code mismatch", expectedPrefix + "*",
+                            actualValue.toString());
+                }
+                return true;
+            }
+        };
+        CustomComparator comparator = new CustomComparator(JSONCompareMode.STRICT,
+                Customization.customization("events[*].trackingCode", pathAwareTrackingCodeMatcher));
+
+        JSONAssert.assertEquals(expected, actual, comparator);
+
+        JSONCompareResult result = JSONCompare.compareJSON(expected, actualWithWrongPathSpecificCode, comparator);
+
+        assertThat(result.failed()).isTrue();
+        assertThat(result.getFieldFailures())
+                .singleElement()
+                .satisfies(failure -> {
+                    assertThat(failure.getField())
+                            .isEqualTo("events[1].trackingCode: Path-specific tracking code mismatch");
+                    assertThat(failure.getExpected()).isEqualTo("tracking-1-*");
+                    assertThat(failure.getActual()).isEqualTo("tracking-0-beta");
+                });
     }
 
     @Test
