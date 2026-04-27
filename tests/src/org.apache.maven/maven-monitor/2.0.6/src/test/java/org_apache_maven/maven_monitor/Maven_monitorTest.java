@@ -129,6 +129,24 @@ public class Maven_monitorTest {
         assertThat(noEventsMonitor.events).isEmpty();
     }
 
+    @Test
+    void defaultDispatcherUsesCurrentMonitorRegistrationsForEachDispatch() {
+        EventDispatcher dispatcher = new DefaultEventDispatcher();
+        RecordingEventMonitor earlyMonitor = new RecordingEventMonitor("early");
+        RecordingEventMonitor lateMonitor = new RecordingEventMonitor("late");
+
+        dispatcher.addEventMonitor(earlyMonitor);
+        dispatcher.dispatchStart(MavenEvents.PHASE_EXECUTION, "validate");
+        dispatcher.addEventMonitor(lateMonitor);
+        dispatcher.dispatchStart(MavenEvents.PHASE_EXECUTION, "compile");
+
+        assertThat(earlyMonitor.events).extracting(event -> event.description()).containsExactly(
+                "early:start:phase-execute:validate",
+                "early:start:phase-execute:compile");
+        assertThat(lateMonitor.events).extracting(event -> event.description()).containsExactly(
+                "late:start:phase-execute:compile");
+    }
+
     private static final class RecordingEventMonitor implements EventMonitor {
         private final String name;
         private final List<ObservedEvent> events = new ArrayList<>();
