@@ -1,0 +1,2146 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcfd8-7b3d-7832-a6a6-18e5bfc3a985
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: logkit:logkit:2.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+- Set "coordinates" to "logkit:logkit:2.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the current JSON shape, then cross-check Maven and upstream project metadata for the exact `2.0` artifact before editing the file.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/logkit-logkit-2.0.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+{
+  "coordinates" : "logkit:logkit:2.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "logkit:logkit|logkit-logkit|Apache LogKit|logkit" .' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central logkit logkit 2.0 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/logkit/logkit/2.0/
+web search: 
+web search: 
+web search: 
+web search: site:archive.apache.org/dist/excalibur logkit 2.0 source
+codex
+Maven Central only lists the binary JAR and POM for `logkit:logkit:2.0`; there are no `-sources`, `-tests`, or `-javadoc` artifacts in that coordinate directory, so I’m checking Apache’s archived Excalibur/Avalon sources next.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/logkit/logkit/2.0/logkit-2.0.pom' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>logkit</groupId>
+  <artifactId>logkit</artifactId>
+  <version>2.0</version>
+</project>
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/logkit/logkit/2.0/logkit-2.0-sources.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 16:49:44 GMT
+content-type: text/html
+cf-ray: 9f2f527e8ca9bb0c-ZRH
+cf-cache-status: HIT
+age: 882
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/logkit/logkit/2.0/logkit-2.0-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/logkit/logkit/2.0/logkit-2.0-tests.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 238ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 16:49:44 GMT
+content-type: text/html
+cf-ray: 9f2f527e8dd2c115-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/logkit/logkit/2.0/logkit-2.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/logkit/logkit/2.0/logkit-2.0-javadoc.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 16:49:47 GMT
+content-type: text/html
+cf-ray: 9f2f528f789703b5-ZRH
+cf-cache-status: HIT
+age: 884
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/logkit/logkit/2.0/logkit-2.0-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: Maven Central logkit logkit 2.0 sources jar
+web search: 
+web search: "excalibur-logkit" "2.0" "svn.apache.org"
+exec
+/usr/bin/bash -lc "jar tf ~/.gradle/caches/modules-2/files-2.1/logkit/logkit/2.0/*/*.jar | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+java.nio.file.NoSuchFileException: /home/vjovanov/.gradle/caches/modules-2/files-2.1/logkit/logkit/2.0/*/*.jar
+	at java.base/sun.nio.fs.UnixException.translateToIOException(UnixException.java:92)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:106)
+	at java.base/sun.nio.fs.UnixException.rethrowAsIOException(UnixException.java:111)
+	at java.base/sun.nio.fs.UnixFileAttributeViews$Basic.readAttributes(UnixFileAttributeViews.java:57)
+	at java.base/sun.nio.fs.UnixFileSystemProvider.readAttributes(UnixFileSystemProvider.java:161)
+	at java.base/sun.nio.fs.LinuxFileSystemProvider.readAttributes(LinuxFileSystemProvider.java:99)
+	at java.base/java.nio.file.Files.readAttributes(Files.java:1702)
+	at java.base/java.util.zip.ZipFile$Source.get(ZipFile.java:1493)
+	at java.base/java.util.zip.ZipFile$CleanableResource.<init>(ZipFile.java:704)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:204)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:150)
+	at java.base/java.util.zip.ZipFile.<init>(ZipFile.java:131)
+	at jdk.jartool/sun.tools.jar.Main.list(Main.java:1553)
+	at jdk.jartool/sun.tools.jar.Main.run(Main.java:361)
+	at jdk.jartool/sun.tools.jar.Main.main(Main.java:1731)
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/logkit/logkit/2.0/logkit-2.0.jar -o /tmp/logkit-2.0.jar && jar xf /tmp/logkit-2.0.jar META-INF/MANIFEST.MF && sed -n '1,200p' META-INF/MANIFEST.MF && rm -rf META-INF" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: Apache Jakarta Maven
+Built-By: niclas
+Package: org.apache.log
+Build-Jdk: 1.4.2_01
+Extension-Name: logkit
+Specification-Version: 
+Specification-Vendor: The Apache Software Foundation
+Specification-Title: The Avalon-LogKit logging utility
+Implementation-Version: 2.0
+Implementation-Vendor: The Apache Software Foundation
+Implementation-Vendor-Id: 
+
+
+exec
+/usr/bin/bash -lc "jar tf /tmp/logkit-2.0.jar | sed -n '1,220p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/log/
+org/apache/log/util/
+org/apache/log/format/
+org/apache/log/output/
+org/apache/log/output/db/
+org/apache/log/output/io/
+org/apache/log/output/io/rotate/
+org/apache/log/output/jms/
+org/apache/log/output/lf5/
+org/apache/log/output/net/
+org/apache/log/ContextMap.class
+org/apache/log/ErrorAware.class
+org/apache/log/ErrorHandler.class
+org/apache/log/LogEvent.class
+org/apache/log/Priority.class
+org/apache/log/Hierarchy$InnerLoggerListener.class
+org/apache/log/Hierarchy$InnerErrorHandler.class
+org/apache/log/Hierarchy$1.class
+org/apache/log/Hierarchy.class
+org/apache/log/Logger.class
+org/apache/log/util/LoggerListener.class
+org/apache/log/util/Closeable.class
+org/apache/log/util/DefaultErrorHandler.class
+org/apache/log/util/LoggerOutputStream.class
+org/apache/log/util/StackIntrospector$CallStack.class
+org/apache/log/util/StackIntrospector$1.class
+org/apache/log/util/StackIntrospector.class
+org/apache/log/LogTarget.class
+org/apache/log/format/ExtendedPatternFormatter.class
+org/apache/log/format/PatternFormatter$PatternRun.class
+org/apache/log/format/PatternFormatter.class
+org/apache/log/format/Formatter.class
+org/apache/log/format/RawFormatter.class
+org/apache/log/format/SyslogFormatter.class
+org/apache/log/format/XMLFormatter.class
+org/apache/log/output/db/AbstractJDBCTarget.class
+org/apache/log/output/db/ColumnInfo.class
+org/apache/log/output/db/ColumnType.class
+org/apache/log/output/db/DefaultDataSource.class
+org/apache/log/output/db/DefaultJDBCTarget.class
+org/apache/log/output/db/NormalizedJDBCTarget.class
+org/apache/log/output/AbstractTarget.class
+org/apache/log/output/io/rotate/BaseFileNameFilter.class
+org/apache/log/output/io/rotate/FileStrategy.class
+org/apache/log/output/io/rotate/OrRotateStrategy.class
+org/apache/log/output/io/rotate/RotateStrategy.class
+org/apache/log/output/io/rotate/RevolvingFileStrategy.class
+org/apache/log/output/io/rotate/RotateStrategyByDate.class
+org/apache/log/output/io/rotate/RotateStrategyBySize.class
+org/apache/log/output/io/rotate/RotateStrategyByTime.class
+org/apache/log/output/io/rotate/RotateStrategyByTimeOfDay.class
+org/apache/log/output/io/rotate/RotatingFileTarget.class
+org/apache/log/output/io/rotate/UniqueFileStrategy.class
+org/apache/log/output/io/FileTarget.class
+org/apache/log/output/io/StreamTarget.class
+org/apache/log/output/io/SafeFileTarget.class
+org/apache/log/output/io/WriterTarget.class
+org/apache/log/output/AbstractOutputTarget.class
+org/apache/log/output/AbstractWrappingTarget.class
+org/apache/log/output/AsyncLogTarget.class
+org/apache/log/output/PriorityFilteringTarget.class
+org/apache/log/output/MemoryTarget.class
+org/apache/log/output/NullOutputLogTarget.class
+org/apache/log/output/ServletOutputLogTarget.class
+org/apache/log/output/jms/AbstractJMSTarget.class
+org/apache/log/output/jms/MessageBuilder.class
+org/apache/log/output/jms/JMSQueueTarget.class
+org/apache/log/output/jms/JMSTopicTarget.class
+org/apache/log/output/jms/ObjectMessageBuilder.class
+org/apache/log/output/jms/PropertyInfo.class
+org/apache/log/output/jms/PropertyType.class
+org/apache/log/output/jms/TextMessageBuilder.class
+org/apache/log/output/lf5/LF5LogTarget.class
+org/apache/log/output/lf5/LogKitLogRecord.class
+org/apache/log/output/net/DatagramOutputTarget.class
+org/apache/log/output/net/SMTPOutputLogTarget.class
+org/apache/log/output/net/SocketOutputTarget.class
+META-INF/LICENSE.txt
+META-INF/INDEX.LIST
+
+web search: 
+web search: "The Avalon-LogKit logging utility" "2.0"
+web search: 
+web search: "avalon-logkit" "2.0" "source"
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/avalon-logkit/avalon-logkit/2.0/ | sed -n '1,160p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: avalon-logkit/avalon-logkit/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>avalon-logkit/avalon-logkit/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="avalon-logkit-2.0.jar" title="avalon-logkit-2.0.jar">avalon-logkit-2.0.jar</a>                             2005-09-20 05:45     81680      
+<a href="avalon-logkit-2.0.jar.md5" title="avalon-logkit-2.0.jar.md5">avalon-logkit-2.0.jar.md5</a>                         2005-09-20 05:45        32      
+<a href="avalon-logkit-2.0.jar.sha1" title="avalon-logkit-2.0.jar.sha1">avalon-logkit-2.0.jar.sha1</a>                        2005-09-20 05:45        40      
+<a href="avalon-logkit-2.0.pom" title="avalon-logkit-2.0.pom">avalon-logkit-2.0.pom</a>                             2005-09-20 05:45       158      
+<a href="avalon-logkit-2.0.pom.md5" title="avalon-logkit-2.0.pom.md5">avalon-logkit-2.0.pom.md5</a>                         2005-09-20 05:45        32      
+<a href="avalon-logkit-2.0.pom.sha1" title="avalon-logkit-2.0.pom.sha1">avalon-logkit-2.0.pom.sha1</a>                        2005-09-20 05:45        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:45       123      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:45        87      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:45       142      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/avalon-logkit/avalon-logkit/2.0/avalon-logkit-2.0.jar -o /tmp/avalon-logkit-2.0.jar && sha1sum /tmp/logkit-2.0.jar /tmp/avalon-logkit-2.0.jar && unzip -p /tmp/avalon-logkit-2.0.jar META-INF/MANIFEST.MF | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/logkit/logkit/2.0/ | sed -n '1,160p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: logkit/logkit/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>logkit/logkit/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="logkit-2.0.jar" title="logkit-2.0.jar">logkit-2.0.jar</a>                                    2005-09-20 05:49     81885      
+<a href="logkit-2.0.jar.md5" title="logkit-2.0.jar.md5">logkit-2.0.jar.md5</a>                                2005-09-20 05:49        32      
+<a href="logkit-2.0.jar.sha1" title="logkit-2.0.jar.sha1">logkit-2.0.jar.sha1</a>                               2005-09-20 05:49        40      
+<a href="logkit-2.0.pom" title="logkit-2.0.pom">logkit-2.0.pom</a>                                    2005-09-20 05:49       144      
+<a href="logkit-2.0.pom.md5" title="logkit-2.0.pom.md5">logkit-2.0.pom.md5</a>                                2005-09-20 05:49       125      
+<a href="logkit-2.0.pom.sha1" title="logkit-2.0.pom.sha1">logkit-2.0.pom.sha1</a>                               2005-09-20 05:49       133      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:49       109      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:49        73      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:49       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 220ms:
+5ff38a5afa218f4a42b46b1a4aa44ca7516867b8  /tmp/logkit-2.0.jar
+4f5c530bb7c23409fdce61b7cf074490d44c49d3  /tmp/avalon-logkit-2.0.jar
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: Apache Jakarta Maven
+Built-By: mcconnell
+Package: org.apache.log
+Build-Jdk: 1.4.2_04
+Extension-Name: avalon-logkit
+Specification-Title: The Avalon-LogKit logging utility
+Specification-Vendor: The Apache Software Foundation
+Specification-Version: 2.0
+Implementation-Title: org.apache.log
+Implementation-Vendor: The Apache Software Foundation
+Implementation-Version: 2.0
+
+
+exec
+/usr/bin/bash -lc "svn ls https://svn.apache.org/repos/asf/avalon/ 2>/dev/null | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "svn ls https://svn.apache.org/repos/asf/excalibur/ 2>/dev/null | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "svn ls https://svn.apache.org/repos/asf/avalon/tags/ 2>/dev/null | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "svn ls https://svn.apache.org/repos/asf/excalibur/tags/ 2>/dev/null | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'svn --version --quiet && svn ls https://svn.apache.org/repos/asf/avalon/' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ exited 127 in 0ms:
+/usr/bin/bash: line 1: svn: command not found
+
+web search: 
+web search: 
+web search: 
+web search: site:svn.apache.org/repos/asf/avalon logkit tags 2.0
+web search: 
+web search: https://svn.apache.org/repos/asf/
+web search: 
+web search: https://svn.apache.org/repos/asf/avalon/
+web search: 
+web search: https://svn.apache.org/repos/asf/avalon/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/
+web search: 
+web search: https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/
+web search: 
+web search: https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/
+web search: 
+web search: https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/
+exec
+/usr/bin/bash -lc "ls build/discovered-artifact-metadata | sed -n '1,40p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+logkit-logkit-2.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' . --glob '*.json' | sed -n '1,160p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:6:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+./metadata/javax.el/javax.el-api/index.json:6:    "repository-url" : "https://github.com/javaee/el-spec",
+./metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+./metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-sources.jar",
+./metadata/io.projectreactor/reactor-core/index.json:6:    "repository-url" : "https://github.com/reactor/reactor-core",
+./metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+./metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-docs.zip",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:7:    "repository-url": "https://github.com/rnorth/duct-tape",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/1.0.8/src/test/java",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+./metadata/com.zaxxer/HikariCP/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3-sources.jar",
+./metadata/com.zaxxer/HikariCP/index.json:5:    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+./metadata/com.zaxxer/HikariCP/index.json:6:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-4.0.3/src/test",
+./metadata/com.zaxxer/HikariCP/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3-javadoc.jar",
+./metadata/com.zaxxer/HikariCP/index.json:18:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1-sources.jar",
+./metadata/com.zaxxer/HikariCP/index.json:19:    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+./metadata/com.zaxxer/HikariCP/index.json:20:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-5.0.1/src/test",
+./metadata/com.zaxxer/HikariCP/index.json:21:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1-javadoc.jar",
+./metadata/com.zaxxer/HikariCP/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/6.0.0/HikariCP-6.0.0-sources.jar",
+./metadata/com.zaxxer/HikariCP/index.json:35:    "repository-url" : "https://github.com/brettwooldridge/HikariCP",
+./metadata/com.zaxxer/HikariCP/index.json:36:    "test-code-url" : "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-6.0.0/src/test",
+./metadata/com.zaxxer/HikariCP/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/6.0.0/HikariCP-6.0.0-javadoc.jar",
+./metadata/org.glassfish.jaxb/txw2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-sources.jar",
+./metadata/org.glassfish.jaxb/txw2/index.json:6:    "repository-url" : "https://github.com/javaee/jaxb-v2",
+./metadata/org.glassfish.jaxb/txw2/index.json:7:    "test-code-url" : "https://github.com/javaee/jaxb-v2/tree/2.3.1/jaxb-ri/txw/runtime/src/test/java",
+./metadata/org.glassfish.jaxb/txw2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-javadoc.jar",
+./metadata/com.zaxxer/HikariCP-java7/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/zaxxer/HikariCP-java7/2.4.13/HikariCP-java7-2.4.13-sources.jar",
+./metadata/com.zaxxer/HikariCP-java7/index.json:7:    "repository-url": "https://github.com/brettwooldridge/HikariCP",
+./metadata/com.zaxxer/HikariCP-java7/index.json:8:    "test-code-url": "https://github.com/brettwooldridge/HikariCP/tree/HikariCP-2.4.13/src/test",
+./metadata/com.zaxxer/HikariCP-java7/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/zaxxer/HikariCP-java7/2.4.13/HikariCP-java7-2.4.13-javadoc.jar",
+./metadata/org.glassfish.jaxb/jaxb-runtime/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/3.0.2/jaxb-runtime-3.0.2-sources.jar",
+./metadata/org.glassfish.jaxb/jaxb-runtime/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/jaxb-ri",
+./metadata/org.glassfish.jaxb/jaxb-runtime/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.2-RI/jaxb-ri/runtime/impl/src/test",
+./metadata/org.glassfish.jaxb/jaxb-runtime/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/3.0.2/jaxb-runtime-3.0.2-javadoc.jar",
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/thymeleaf-extras-springsecurity6-3.1.0.RELEASE-sources.jar",
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:6:    "repository-url" : "https://github.com/thymeleaf/thymeleaf",
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/tests/thymeleaf-tests-springsecurity6",
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:8:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/lib/thymeleaf-extras-springsecurity6/README.markdown",
+./metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:6:    "repository-url" : "https://github.com/reactive-streams/reactive-streams-jvm",
+./metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:9:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:30:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/io.grpc/grpc-context/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-sources.jar",
+./metadata/io.grpc/grpc-context/index.json:6:    "repository-url" : "https://github.com/grpc/grpc-java",
+./metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.27.2/context/src/test",
+./metadata/io.grpc/grpc-context/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-javadoc.jar",
+./metadata/org.hibernate.validator/hibernate-validator/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/validator/hibernate-validator/7.0.4.Final/hibernate-validator-7.0.4.Final-sources.jar",
+./metadata/org.hibernate.validator/hibernate-validator/index.json:10:    "repository-url": "https://github.com/hibernate/hibernate-validator",
+./metadata/org.hibernate.validator/hibernate-validator/index.json:11:    "test-code-url": "https://github.com/hibernate/hibernate-validator/tree/7.0.4.Final/engine/src/test",
+./metadata/org.hibernate.validator/hibernate-validator/index.json:12:    "documentation-url": "https://github.com/hibernate/hibernate-validator/tree/7.0.4.Final/documentation",
+./metadata/org.apache.openejb/javaee-api/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/openejb/javaee-api/5.0-2/javaee-api-5.0-2-sources.jar",
+./metadata/org.apache.openejb/javaee-api/index.json:6:    "repository-url": "https://github.com/apache/openejb",
+./metadata/org.apache.openejb/javaee-api/index.json:7:    "test-code-url": "N/A",
+./metadata/org.apache.openejb/javaee-api/index.json:8:    "documentation-url": "N/A",
+./metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+./metadata/software.amazon.awssdk/s3/index.json:6:    "repository-url" : "https://github.com/aws/aws-sdk-java-v2",
+./metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+./metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+./metadata/org.apache.httpcomponents/httpclient/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-sources.jar",
+./metadata/org.apache.httpcomponents/httpclient/index.json:5:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+./metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-tests.jar",
+./metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+./metadata/org.apache.httpcomponents/httpclient/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-sources.jar",
+./metadata/org.apache.httpcomponents/httpclient/index.json:20:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+./metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-tests.jar",
+./metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+./metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-sources.jar",
+./metadata/io.grpc/grpc-netty/index.json:7:    "repository-url" : "https://github.com/grpc/grpc-java",
+./metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.51.0/netty/src/test",
+./metadata/io.grpc/grpc-netty/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/org.apache.httpcomponents/httpcore/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-sources.jar",
+./metadata/org.apache.httpcomponents/httpcore/index.json:7:    "repository-url": "https://github.com/apache/httpcomponents-core",
+./metadata/org.apache.httpcomponents/httpcore/index.json:8:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-tests.jar",
+./metadata/org.apache.httpcomponents/httpcore/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-javadoc.jar",
+./metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-sources.jar",
+./metadata/org.apache.maven.surefire/surefire-logger-api/index.json:6:    "repository-url" : "https://github.com/apache/maven-surefire",
+./metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.maven.surefire/surefire-logger-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-javadoc.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-sources.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:9:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+./metadata/org.apache.santuario/xmlsec/index.json:10:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-4.0.4/src/test",
+./metadata/org.apache.santuario/xmlsec/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+./metadata/org.unbescape/unbescape/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/unbescape/unbescape/1.1.6.RELEASE/unbescape-1.1.6.RELEASE-sources.jar",
+./metadata/org.unbescape/unbescape/index.json:7:    "repository-url": "https://github.com/unbescape/unbescape",
+./metadata/org.unbescape/unbescape/index.json:8:    "test-code-url": "N/A",
+./metadata/org.unbescape/unbescape/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/unbescape/unbescape/1.1.6.RELEASE/unbescape-1.1.6.RELEASE-javadoc.jar",
+./metadata/org.hdrhistogram/HdrHistogram/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-sources.jar",
+./metadata/org.hdrhistogram/HdrHistogram/index.json:14:    "repository-url": "https://github.com/HdrHistogram/HdrHistogram",
+./metadata/org.hdrhistogram/HdrHistogram/index.json:15:    "test-code-url": "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.12/src/test",
+./metadata/org.hdrhistogram/HdrHistogram/index.json:16:    "documentation-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-javadoc.jar",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.9.0/kotlinx-serialization-core-jvm-1.9.0-sources.jar",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:6:    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/core/jvmTest",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:8:    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+./metadata/org.eclipse.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:6:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.eclipse.aether/aether-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+./metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:5:    "repository-url" : "https://github.com/qos-ch/slf4j",
+./metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-tests.jar",
+./metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:20:    "repository-url" : "https://github.com/qos-ch/slf4j",
+./metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-tests.jar",
+./metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+./metadata/werken-xpath/werken-xpath/index.json:5:    "source-code-url" : "https://sources.debian.org/src/werken.xpath/0.9.4-16/",
+./metadata/werken-xpath/werken-xpath/index.json:6:    "repository-url" : "https://sourceforge.net/p/werken-xpath/code/",
+./metadata/werken-xpath/werken-xpath/index.json:7:    "test-code-url" : "https://sources.debian.org/src/werken.xpath/0.9.4-16/test/",
+
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|source-code-url|documentation-url' . --glob '"'!build/**'"' | sed -n '1,160p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:242:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:245:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:32:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:303:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:351:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:364:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:168:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-sources.jar",
+./metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-javadoc.jar",
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:194:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+./metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+./metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:181:                .containsEntry("documentation-url", "https://example.com/docs")
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+./metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-javadoc.jar",
+./metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:57:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:60:                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:65:                .contains("- source-code-url: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:120:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:149:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:219:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:222:                    "documentation-url": "https://example.com/docs-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:55:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:68:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+./metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+./metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+./metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+./metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+./metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+./metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+./metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+./metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-sources.jar",
+./metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+./metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper-jute/index.json:8:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+./metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+./metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-sources.jar",
+./metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+./metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+./metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar",
+./metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-javadoc.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-sources.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-javadoc.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-sources.jar",
+./metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-javadoc.jar",
+./metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-sources.jar",
+./metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+./metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+./metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+./metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-sources.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-javadoc.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-sources.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-javadoc.jar",
+./metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+./metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-sources.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-sources.jar",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-javadoc.jar",
+./metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+./metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '130,220p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+                throw new GradleException("Discovered metadata file " + discoveryFile + " has unexpected coordinates: " + metadata.coordinates());
+            }
+            success = true;
+        } finally {
+            if (!success) {
+                Files.deleteIfExists(discoveryFile);
+            }
+        }
+    }
+
+    private String effectiveAgentCommand() {
+        if (hasText(agentCommand)) {
+            return agentCommand.trim();
+        }
+        Object prop = getProject().findProperty("codingAgentCommand");
+        if (prop == null) {
+            prop = getProject().findProperty("agentCommand");
+        }
+        return prop == null ? null : prop.toString().trim();
+    }
+
+    private String buildPrompt(Coordinates parsedCoordinates, Path discoveryFile) {
+        return """
+                Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s
+                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+                - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "scala", "version": "2" } for Scala 2 libraries
+                - { "name": "scala", "version": "3" } for Scala 3 libraries
+                If the library is not language-specific, leave the "language" field absent.
+                The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "%s".
+                The source, test suite, and documentation URLs should point to the right tag of the library.
+                If we have these source of these artifacts on maven, that should be prefered.
+                If there are tests on maven that should also be prefered.
+                The "description" field must explain what the library does in exactly two sentences.
+
+                Update this file directly:
+                - File: %s
+                - Set "coordinates" to "%s".
+                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+                - Set "description" to the selected two-sentence explanation.
+                - If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+                - Keep the JSON valid and consistently formatted.
+                """.formatted(
+                parsedCoordinates.toString(),
+                parsedCoordinates.version(),
+                discoveryFile.toString().replace('\\', '/'),
+                parsedCoordinates.toString()
+        ).strip();
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+                invocation.add(token.replace(PROMPT_PLACEHOLDER, prompt));
+                replaced = true;
+            } else {
+                invocation.add(token);
+            }
+        }
+        if (!replaced) {
+            invocation.add(prompt);
+        }
+        return invocation;
+    }
+
+    private int runAndLogInvocation(List<String> invocation, File logFile) throws IOException, InterruptedException {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT).format(new Date());
+        String header = "==== [" + timestamp + "] " + coordinates + System.lineSeparator() +
+                "COMMAND: " + String.join(" ", invocation) + System.lineSeparator();
+        Files.writeString(logFile.toPath(), header, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(invocation);
+        processBuilder.directory(getProject().getProjectDir());
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        process.getOutputStream().close();
+        try (OutputStream logOutput = Files.newOutputStream(logFile.toPath(), StandardOpenOption.APPEND)) {
+            TeeOutputStream teeOutputStream = new TeeOutputStream(logOutput, System.out);
+            process.getInputStream().transferTo(teeOutputStream);
+            teeOutputStream.flush();
+        }
+        int exit = process.waitFor();
+
+        String footer = System.lineSeparator() + "EXIT_CODE: " + exit + System.lineSeparator();
+        Files.writeString(logFile.toPath(), footer, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        getLogger().lifecycle("Ran agent for {} (exit {}). Log: {}", coordinates, exit, logFile);
+        return exit;
+    }
+
+
+exec
+/usr/bin/bash -lc "sed -n '320,390p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+                metadataVersion,
+                urlUpdateInstructions,
+                currentValue(target.entry.sourceCodeUrl()),
+                currentValue(target.entry.repositoryUrl()),
+                currentValue(target.entry.testCodeUrl()),
+                currentValue(target.entry.documentationUrl()),
+                currentValue(target.entry.description()),
+                currentLanguageValue(target.entry),
+                target.version,
+                testVersion
+        ).strip();
+    }
+
+    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String version) {
+        if (!verifyArtifactSources) {
+            return "";
+        }
+        return """
+                Source Artifact Verification (required):
+                - Verify candidate source URLs for version "%s", including Maven and non-Maven candidates.
+                - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
+                - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
+                - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
+                - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                """.formatted(version).strip();
+    }
+
+    private static String urlUpdateInstructions(boolean overwriteExisting, String version) {
+        if (overwriteExisting) {
+            return """
+                    - Overwrite existing URL values.
+                    - Set "source-code-url" to the selected source URL.
+                    - Set "repository-url" to the selected repository URL.
+                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                    - Set "test-code-url" to the selected test suite URL.
+                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+                    - Set "description" to a concise explanation of the library in exactly two sentences.
+                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+                    """.formatted(version).strip();
+        }
+        return """
+                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+                - A field is missing only when absent, null, or blank.
+                - Do not modify fields that already contain a non-blank value.
+                - Set missing "source-code-url" to the selected source URL.
+                - Set missing "repository-url" to the selected repository URL.
+                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                - Set missing "test-code-url" to the selected test suite URL.
+                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+                """.formatted(version).strip();
+    }
+
+    private static String currentValue(String value) {
+        return hasText(value) ? value : "<missing>";
+    }
+
+    private static String currentLanguageValue(MetadataVersionsIndexEntry entry) {
+        if (entry.language() == null) {
+            return "<missing>";
+        }
+        return "{\"name\": \"%s\", \"version\": \"%s\"}".formatted(entry.language().name(), entry.language().version());
+    }
+
+    private List<String> buildInvocation(List<String> commandTokens, String prompt) {
+        List<String> invocation = new ArrayList<>(commandTokens.size() + 1);
+        boolean replaced = false;
+        for (String token : commandTokens) {
+            if (token.contains(PROMPT_PLACEHOLDER)) {
+                invocation.add(token.replace(PROMPT_PLACEHOLDER, prompt));
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/xdocs/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/xdocs</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/xdocs</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="features.xml">features.xml</a></li>
+  <li><a href="index.xml">index.xml</a></li>
+  <li><a href="navigation.xml">navigation.xml</a></li>
+  <li><a href="style/">style/</a></li>
+  <li><a href="whitepaper.xml">whitepaper.xml</a></li>
+ </ul>
+</body></html>
+ succeeded in 116ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>
+ succeeded in 118ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="java/">java/</a></li>
+  <li><a href="sql/">sql/</a></li>
+  <li><a href="test/">test/</a></li>
+ </ul>
+</body></html>
+ succeeded in 119ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href=".cvsignore">.cvsignore</a></li>
+  <li><a href="KEYS">KEYS</a></li>
+  <li><a href="LICENSE.txt">LICENSE.txt</a></li>
+  <li><a href="NOTICE.TXT">NOTICE.TXT</a></li>
+  <li><a href="README.txt">README.txt</a></li>
+  <li><a href="buildsystem/">buildsystem/</a></li>
+  <li><a href="maven.xml">maven.xml</a></li>
+  <li><a href="project.properties">project.properties</a></li>
+  <li><a href="project.xml">project.xml</a></li>
+  <li><a href="src/">src/</a></li>
+  <li><a href="xdocs/">xdocs/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/org/apache/log/ | sed -n '1,160p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 128ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/org/apache/log</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/org/apache/log</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="ContextMap.java">ContextMap.java</a></li>
+  <li><a href="ErrorAware.java">ErrorAware.java</a></li>
+  <li><a href="ErrorHandler.java">ErrorHandler.java</a></li>
+  <li><a href="Hierarchy.java">Hierarchy.java</a></li>
+  <li><a href="LogEvent.java">LogEvent.java</a></li>
+  <li><a href="LogTarget.java">LogTarget.java</a></li>
+  <li><a href="Logger.java">Logger.java</a></li>
+  <li><a href="Priority.java">Priority.java</a></li>
+  <li><a href="format/">format/</a></li>
+  <li><a href="output/">output/</a></li>
+  <li><a href="package.html">package.html</a></li>
+  <li><a href="util/">util/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/org/apache/log/ | sed -n '1,160p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/org/apache/log</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/org/apache/log</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="format/">format/</a></li>
+  <li><a href="output/">output/</a></li>
+  <li><a href="test/">test/</a></li>
+  <li><a href="util/">util/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/README.txt | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+
+                                   LogKit 
+                       
+  What is it?
+  -----------
+
+  It is a lightweight, fast, securely designed logging toolkit. It is designed to integrate 
+  into existing applications.
+
+  Where is it?
+  ------------
+
+  http://avalon.apache.org/logkit
+
+  Requirements
+  ------------
+
+  -JDK1.2 or above
+  -To build form CVS you must set JAVA_HOME to the jdk dir (eg:/usr/bin/jdk1.2 or 
+   c:\jdk1.3)
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/project.xml | sed -n '1,180p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ Copyright 2004 The Apache Software Foundation
+ Licensed  under the  Apache License,  Version 2.0  (the "License");
+ you may not use  this file  except in  compliance with the License.
+ You may obtain a copy of the License at 
+ 
+   http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed  under the  License is distributed on an "AS IS" BASIS,
+ WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ implied.
+  
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project>
+    <pomVersion>3</pomVersion>
+    <name>Avalon LogKit</name>
+    <id>avalon-logkit</id>
+    <groupId>avalon-logkit</groupId>
+    <currentVersion>2.0.0</currentVersion>
+    <inceptionYear>2003</inceptionYear>
+    
+    <shortDescription>The Avalon LogKit logging utility</shortDescription>
+    <description>
+Avalon LogKit is the logging utility used by default in all Avalon systems.
+    </description>
+
+    <package>org.apache.log</package>
+  
+    <repository>
+      <connection>scm:cvs:pserver:anoncvs@cvs.apache.org:/home/cvspublic:avalon-logkit</connection>
+      <url>http://cvs.apache.org/viewcvs/avalon-logkit/</url>
+    </repository>
+    
+    <dependencies>
+      <dependency>
+        <id>log4j</id>
+        <version>1.2.8</version>
+      </dependency>
+      <dependency>
+        <id>servletapi</id>
+        <version>2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>javamail</groupId>
+        <artifactId>mailapi</artifactId>
+        <version>1.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>jms</groupId>
+        <artifactId>jms</artifactId>
+        <version>1.1</version>
+      </dependency>
+    </dependencies>
+
+  <organization>
+    <name>The Apache Software Foundation</name>
+    <url>http://avalon.apache.org/</url>
+    <logo>http://avalon.apache.org/images/apache-avalon-logo.png</logo>
+  </organization>
+  <gumpRepositoryId>avalon-logkit</gumpRepositoryId>
+
+  <mailingLists>
+    <mailingList>
+      <name>Avalon Developer List</name>
+      <subscribe>dev-subscribe@avalon.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@avalon.apache.org</unsubscribe>
+      <archive>http://nagoya.apache.org/eyebrowse/SummarizeList?listName=dev@avalon.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>Avalon User List</name>
+      <subscribe>users-subscribe@avalon.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@avalon.apache.org</unsubscribe>
+      <archive>http://nagoya.apache.org/eyebrowse/SummarizeList?listName=users@avalon.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>CVS List</name>
+      <subscribe>cvs-subscribe@avalon.apache.org</subscribe>
+      <unsubscribe>cvs-unsubscribe@avalon.apache.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <developers>
+    <developer>
+      <name>Stephen McConnell</name>
+      <id>mcconnell</id>
+      <email>mcconnell@apache.org</email>
+    </developer>
+    <developer>
+      <name>Leo Simons</name>
+      <id>leosimons</id>
+      <email>leosimons@apache.org</email>
+    </developer>
+    <developer>
+      <name>Berin Loritsch</name>
+      <id>bloritsch</id>
+      <email>bloritsch@apache.org</email>
+    </developer>
+    <developer>
+      <name>Peter Royal</name>
+      <id>proyal</id>
+      <email>proyal@apache.org</email>
+    </developer>
+    <developer>
+      <name>Aaron Far</name>
+      <email>farra@apache.org</email>
+      <id>farra</id>
+      <organization>Sony Electronics</organization>
+    </developer>
+    <developer>
+      <name>Alex Karasulu</name>
+      <email>aok123@bellsouth.net</email>
+      <id>akarasulu</id>
+    </developer>
+    <developer>
+      <name>Niclas Hedhman</name>
+      <email>niclas@apache.org</email>
+      <id>niclas</id>
+    </developer>
+  </developers>
+  
+  <build>
+
+    <nagEmailAddress>dev@avalon.apache.org</nagEmailAddress>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory>
+    <integrationUnitTestSourceDirectory/>
+    <aspectSourceDirectory/>
+
+    <unitTest>
+      <includes>
+        <include>**/*TestCase*</include>
+      </includes>
+      <excludes>
+        <exclude>**/Abstract*</exclude>
+      </excludes>
+      <resources>
+        <resource>
+          <directory>${basedir}/src/test</directory>
+          <includes> 
+            <include>**/*.dtd</include>
+            <include>**/*.properties</include>
+            <include>**/*.xinfo</include>
+            <include>**/*.xtype</include>
+            <include>**/*.xprofile</include>
+            <include>**/*.xconfig</include>
+            <include>**/*.xml</include>
+            <include>**/*.xservice</include>
+            <include>**/*.mf</include>
+            <include>**/*.jar</include>
+          </includes>
+        </resource>
+        <resource>
+          <directory>${maven.conf.dir}</directory>
+          <includes> 
+            <include>**/*.properties</include>
+          </includes>
+        </resource>
+        <resource>
+          <directory>${basedir}/src/test/conf</directory>
+          <includes> 
+            <include>**/*</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+
+    <integrationUnitTestPatterns></integrationUnitTestPatterns>
+    
+    <resources>
+      <resource>
+        <directory>${basedir}/src/java</directory>
+        <includes>
+          <include>**/*.dtd</include>
+          <include>**/*.properties</include>
+          <include>**/*.xinfo</include>
+          <include>**/*.xtype</include>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/avalon-logkit/avalon-logkit/2.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: avalon-logkit/avalon-logkit/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>avalon-logkit/avalon-logkit/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="avalon-logkit-2.0.jar" title="avalon-logkit-2.0.jar">avalon-logkit-2.0.jar</a>                             2005-09-20 05:45     81680      
+<a href="avalon-logkit-2.0.jar.md5" title="avalon-logkit-2.0.jar.md5">avalon-logkit-2.0.jar.md5</a>                         2005-09-20 05:45        32      
+<a href="avalon-logkit-2.0.jar.sha1" title="avalon-logkit-2.0.jar.sha1">avalon-logkit-2.0.jar.sha1</a>                        2005-09-20 05:45        40      
+<a href="avalon-logkit-2.0.pom" title="avalon-logkit-2.0.pom">avalon-logkit-2.0.pom</a>                             2005-09-20 05:45       158      
+<a href="avalon-logkit-2.0.pom.md5" title="avalon-logkit-2.0.pom.md5">avalon-logkit-2.0.pom.md5</a>                         2005-09-20 05:45        32      
+<a href="avalon-logkit-2.0.pom.sha1" title="avalon-logkit-2.0.pom.sha1">avalon-logkit-2.0.pom.sha1</a>                        2005-09-20 05:45        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:45       123      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:45        87      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:45       142      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/avalon/logkit/ | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/logkit/logkit/2.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 209ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/avalon/logkit</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/avalon/logkit</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="avalon-logkit/" title="avalon-logkit/">avalon-logkit/</a>                                                   -         -      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 278ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: logkit/logkit/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>logkit/logkit/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="logkit-2.0.jar" title="logkit-2.0.jar">logkit-2.0.jar</a>                                    2005-09-20 05:49     81885      
+<a href="logkit-2.0.jar.md5" title="logkit-2.0.jar.md5">logkit-2.0.jar.md5</a>                                2005-09-20 05:49        32      
+<a href="logkit-2.0.jar.sha1" title="logkit-2.0.jar.sha1">logkit-2.0.jar.sha1</a>                               2005-09-20 05:49        40      
+<a href="logkit-2.0.pom" title="logkit-2.0.pom">logkit-2.0.pom</a>                                    2005-09-20 05:49       144      
+<a href="logkit-2.0.pom.md5" title="logkit-2.0.pom.md5">logkit-2.0.pom.md5</a>                                2005-09-20 05:49       125      
+<a href="logkit-2.0.pom.sha1" title="logkit-2.0.pom.sha1">logkit-2.0.pom.sha1</a>                               2005-09-20 05:49       133      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:49       109      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:49        73      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:49       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/avalon/logkit/avalon-logkit/ | sed -n '1,200p' && curl -fsSL https://repo.maven.apache.org/maven2/org/apache/avalon/logkit/avalon-logkit/2.2.1/ | sed -n '1,160p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 110ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/avalon/logkit/avalon-logkit/2.2.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/avalon/logkit/avalon-logkit/2.2.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="avalon-logkit-2.2.1-javadoc.jar" title="avalon-logkit-2.2.1-javadoc.jar">avalon-logkit-2.2.1-javadoc.jar</a>                   2007-02-15 20:43    388751      
+<a href="avalon-logkit-2.2.1-javadoc.jar.asc" title="avalon-logkit-2.2.1-javadoc.jar.asc">avalon-logkit-2.2.1-javadoc.jar.asc</a>               2007-02-15 20:43       186      
+<a href="avalon-logkit-2.2.1-javadoc.jar.asc.md5" title="avalon-logkit-2.2.1-javadoc.jar.asc.md5">avalon-logkit-2.2.1-javadoc.jar.asc.md5</a>           2007-02-15 20:43        32      
+<a href="avalon-logkit-2.2.1-javadoc.jar.asc.sha1" title="avalon-logkit-2.2.1-javadoc.jar.asc.sha1">avalon-logkit-2.2.1-javadoc.jar.asc.sha1</a>          2007-02-15 20:43        40      
+<a href="avalon-logkit-2.2.1-javadoc.jar.md5" title="avalon-logkit-2.2.1-javadoc.jar.md5">avalon-logkit-2.2.1-javadoc.jar.md5</a>               2007-02-15 20:43        32      
+<a href="avalon-logkit-2.2.1-javadoc.jar.sha1" title="avalon-logkit-2.2.1-javadoc.jar.sha1">avalon-logkit-2.2.1-javadoc.jar.sha1</a>              2007-02-15 20:43        40      
+<a href="avalon-logkit-2.2.1-sources.jar" title="avalon-logkit-2.2.1-sources.jar">avalon-logkit-2.2.1-sources.jar</a>                   2007-02-15 20:43    100594      
+<a href="avalon-logkit-2.2.1-sources.jar.asc" title="avalon-logkit-2.2.1-sources.jar.asc">avalon-logkit-2.2.1-sources.jar.asc</a>               2007-02-15 20:43       186      
+<a href="avalon-logkit-2.2.1-sources.jar.asc.md5" title="avalon-logkit-2.2.1-sources.jar.asc.md5">avalon-logkit-2.2.1-sources.jar.asc.md5</a>           2007-02-15 20:43        32      
+<a href="avalon-logkit-2.2.1-sources.jar.asc.sha1" title="avalon-logkit-2.2.1-sources.jar.asc.sha1">avalon-logkit-2.2.1-sources.jar.asc.sha1</a>          2007-02-15 20:43        40      
+<a href="avalon-logkit-2.2.1-sources.jar.md5" title="avalon-logkit-2.2.1-sources.jar.md5">avalon-logkit-2.2.1-sources.jar.md5</a>               2007-02-15 20:43        32      
+<a href="avalon-logkit-2.2.1-sources.jar.sha1" title="avalon-logkit-2.2.1-sources.jar.sha1">avalon-logkit-2.2.1-sources.jar.sha1</a>              2007-02-15 20:43        40      
+<a href="avalon-logkit-2.2.1.jar" title="avalon-logkit-2.2.1.jar">avalon-logkit-2.2.1.jar</a>                           2007-02-15 20:43     84389      
+<a href="avalon-logkit-2.2.1.jar.asc" title="avalon-logkit-2.2.1.jar.asc">avalon-logkit-2.2.1.jar.asc</a>                       2007-02-15 20:43       186      
+<a href="avalon-logkit-2.2.1.jar.asc.md5" title="avalon-logkit-2.2.1.jar.asc.md5">avalon-logkit-2.2.1.jar.asc.md5</a>                   2007-02-15 20:43        32      
+<a href="avalon-logkit-2.2.1.jar.asc.sha1" title="avalon-logkit-2.2.1.jar.asc.sha1">avalon-logkit-2.2.1.jar.asc.sha1</a>                  2007-02-15 20:43        40      
+<a href="avalon-logkit-2.2.1.jar.md5" title="avalon-logkit-2.2.1.jar.md5">avalon-logkit-2.2.1.jar.md5</a>                       2007-02-15 20:43        32      
+<a href="avalon-logkit-2.2.1.jar.sha1" title="avalon-logkit-2.2.1.jar.sha1">avalon-logkit-2.2.1.jar.sha1</a>                      2007-02-15 20:43        40      
+<a href="avalon-logkit-2.2.1.pom" title="avalon-logkit-2.2.1.pom">avalon-logkit-2.2.1.pom</a>                           2007-02-15 20:43      2728      
+<a href="avalon-logkit-2.2.1.pom.asc" title="avalon-logkit-2.2.1.pom.asc">avalon-logkit-2.2.1.pom.asc</a>                       2007-02-15 20:43       186      
+<a href="avalon-logkit-2.2.1.pom.asc.md5" title="avalon-logkit-2.2.1.pom.asc.md5">avalon-logkit-2.2.1.pom.asc.md5</a>                   2007-02-15 20:43        32      
+<a href="avalon-logkit-2.2.1.pom.asc.sha1" title="avalon-logkit-2.2.1.pom.asc.sha1">avalon-logkit-2.2.1.pom.asc.sha1</a>                  2007-02-15 20:43        40      
+<a href="avalon-logkit-2.2.1.pom.md5" title="avalon-logkit-2.2.1.pom.md5">avalon-logkit-2.2.1.pom.md5</a>                       2007-02-15 20:43        32      
+<a href="avalon-logkit-2.2.1.pom.sha1" title="avalon-logkit-2.2.1.pom.sha1">avalon-logkit-2.2.1.pom.sha1</a>                      2007-02-15 20:43        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/avalon/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/excalibur/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/jakarta/avalon/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 180ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/excalibur</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                          <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/">Parent Directory</a>                                   -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-connection/">cornerstone-connection/</a>       2005-08-30 03:03    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-datasources/">cornerstone-datasources/</a>      2005-08-30 03:08    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-scheduler/">cornerstone-scheduler/</a>        2005-08-30 03:13    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-sockets/">cornerstone-sockets/</a>          2005-08-30 03:10    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-store/">cornerstone-store/</a>            2005-08-30 03:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-threads/">cornerstone-threads/</a>          2005-08-30 03:06    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-compatibility/">excalibur-compatibility/</a>      2004-10-24 00:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-component-examples/">excalibur-component-examples/</a> 2005-08-30 02:47    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-component-tests/">excalibur-component-tests/</a>    2005-08-30 02:46    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-component/">excalibur-component/</a>          2005-08-30 02:45    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-configuration/">excalibur-configuration/</a>      2004-10-24 00:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-datasource/">excalibur-datasource/</a>         2005-08-30 02:36    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-event/">excalibur-event/</a>              2005-08-30 02:50    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-fortress/">excalibur-fortress/</a>           2005-08-31 02:01    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-framework/">excalibur-framework/</a>          2005-08-30 02:01    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-i18n/">excalibur-i18n/</a>               2004-10-24 00:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-instrument/">excalibur-instrument/</a>         2005-08-30 02:13    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-lifecycle/">excalibur-lifecycle/</a>          2005-08-30 02:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-logger/">excalibur-logger/</a>             2005-08-30 02:15    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-logkit/">excalibur-logkit/</a>             2005-08-30 02:04    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-monitor/">excalibur-monitor/</a>            2005-08-30 02:33    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-pool/">excalibur-pool/</a>               2005-08-30 02:29    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-sourceresolve/">excalibur-sourceresolve/</a>      2007-07-23 12:23    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-store/">excalibur-store/</a>              2005-08-30 02:38    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-thread/">excalibur-thread/</a>             2005-08-30 02:30    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-xmlutil/">excalibur-xmlutil/</a>            2005-08-30 02:41    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="releases/">releases/</a>                     2007-05-09 02:04    -   
+<img src="/icons/unknown.gif" alt="[   ]"> <a href="KEYS">KEYS</a>                          2007-03-16 01:53  9.6K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="LICENSE-2.0.txt">LICENSE-2.0.txt</a>               2004-01-22 22:37   11K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="LICENSE.txt">LICENSE.txt</a>                   2004-10-24 00:21  2.6K  
+<hr></pre>
+</body></html>
+
+ succeeded in 131ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 245ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/avalon</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                          <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/">Parent Directory</a>                                   -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-activation/">avalon-activation/</a>            2003-09-24 18:27    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-composition/">avalon-composition/</a>           2003-09-24 18:28    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-extension/">avalon-extension/</a>             2003-09-24 18:28    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-fortress/">avalon-fortress/</a>              2004-02-29 20:54    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-logging/">avalon-logging/</a>               2004-05-28 14:25    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-logkit/">avalon-logkit/</a>                2004-04-11 16:14    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-meta/">avalon-meta/</a>                  2003-09-24 18:29    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-repository/">avalon-repository/</a>            2004-01-31 07:31    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="avalon-util/">avalon-util/</a>                  2004-05-28 15:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-connection-api/">cornerstone-connection-api/</a>   2003-09-04 08:49    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-connection-impl/">cornerstone-connection-impl/</a>  2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-connection/">cornerstone-connection/</a>       2004-05-28 15:07    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-datasources-api/">cornerstone-datasources-api/</a>  2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-datasources-impl/">cornerstone-datasources-impl/</a> 2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-datasources/">cornerstone-datasources/</a>      2004-05-28 15:07    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-scheduler-api/">cornerstone-scheduler-api/</a>    2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-scheduler-impl/">cornerstone-scheduler-impl/</a>   2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-scheduler/">cornerstone-scheduler/</a>        2004-05-28 15:07    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-sockets-api/">cornerstone-sockets-api/</a>      2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-sockets-impl/">cornerstone-sockets-impl/</a>     2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-sockets/">cornerstone-sockets/</a>          2004-05-28 15:08    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-store-api/">cornerstone-store-api/</a>        2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-store-impl/">cornerstone-store-impl/</a>       2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-store/">cornerstone-store/</a>            2004-05-28 15:08    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-threads-api/">cornerstone-threads-api/</a>      2003-09-04 09:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-threads-impl/">cornerstone-threads-impl/</a>     2003-09-08 15:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone-threads/">cornerstone-threads/</a>          2004-05-28 15:08    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="cornerstone/">cornerstone/</a>                  2004-05-28 15:05    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-compatibility/">excalibur-compatibility/</a>      2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-component/">excalibur-component/</a>          2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-configuration/">excalibur-configuration/</a>      2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-datasource/">excalibur-datasource/</a>         2004-05-28 15:27    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-event/">excalibur-event/</a>              2003-09-25 12:11    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-fortress/">excalibur-fortress/</a>           2003-06-06 21:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-i18n/">excalibur-i18n/</a>               2003-09-25 12:11    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-instrument/">excalibur-instrument/</a>         2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-lifecycle/">excalibur-lifecycle/</a>          2004-05-28 15:48    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-logger/">excalibur-logger/</a>             2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-monitor/">excalibur-monitor/</a>            2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-naming/">excalibur-naming/</a>             2003-09-25 12:11    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-pool/">excalibur-pool/</a>               2004-05-28 15:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-sourceresolve/">excalibur-sourceresolve/</a>      2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-store/">excalibur-store/</a>              2004-02-29 20:50    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-thread/">excalibur-thread/</a>             2004-05-28 15:22    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur-xmlutil/">excalibur-xmlutil/</a>            2004-02-29 20:52    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="excalibur/">excalibur/</a>                    2003-09-25 12:11    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="framework/">framework/</a>                    2004-05-28 14:19    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="logkit/">logkit/</a>                       2003-09-25 12:12    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="merlin/">merlin/</a>                       2004-04-13 18:14    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="phoenix/">phoenix/</a>                      2004-10-27 14:32    -   
+<img src="/icons/unknown.gif" alt="[   ]"> <a href="KEYS">KEYS</a>                          2005-08-20 13:10   13K  
+<hr></pre>
+</body></html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/avalon/avalon-logkit/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/avalon/logkit/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/excalibur/excalibur-logkit/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 139ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/avalon/logkit</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                    <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/avalon/">Parent Directory</a>                             -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="binaries/">binaries/</a>               2003-09-25 12:12    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="jars/">jars/</a>                   2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="source/">source/</a>                 2003-09-25 12:12    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v1.0.1/">v1.0.1/</a>                 2003-01-30 20:32    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v1.0/">v1.0/</a>                   2003-01-30 20:18    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v1.1/">v1.1/</a>                   2003-09-25 11:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v1.2/">v1.2/</a>                   2003-02-19 13:21    -   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="LICENSE.txt">LICENSE.txt</a>             2003-02-10 21:12  2.6K  
+<hr></pre>
+</body></html>
+
+ succeeded in 153ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/avalon/avalon-logkit</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                    <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/avalon/">Parent Directory</a>                             -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="distributions/">distributions/</a>          2007-03-21 14:31    -   
+<hr></pre>
+</body></html>
+
+ succeeded in 150ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/excalibur/excalibur-logkit</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                    <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/excalibur/">Parent Directory</a>                             -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="binaries/">binaries/</a>               2007-03-20 01:12    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="jars/">jars/</a>                   2007-03-20 01:13    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="source/">source/</a>                 2007-03-20 01:13    -   
+<hr></pre>
+</body></html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/avalon/avalon-logkit/distributions/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/excalibur/excalibur-logkit/source/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/avalon/logkit/source/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 126ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/avalon/avalon-logkit/distributions</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                               <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/avalon/avalon-logkit/">Parent Directory</a>                                        -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="avalon-logkit-2.0.dev-0-src.tar.gz">avalon-logkit-2.0.dev-0-src.tar.gz</a> 2004-04-11 16:14   58K  
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="avalon-logkit-2.0.dev-0-src.zip">avalon-logkit-2.0.dev-0-src.zip</a>    2004-04-11 16:14  127K  
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="avalon-logkit-2.0.dev-0.tar.gz">avalon-logkit-2.0.dev-0.tar.gz</a>     2004-04-11 16:14  309K  
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="avalon-logkit-2.0.dev-0.zip">avalon-logkit-2.0.dev-0.zip</a>        2004-04-11 16:14  611K  
+<hr></pre>
+</body></html>
+
+ succeeded in 129ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/avalon/logkit/source</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                        <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/avalon/logkit/">Parent Directory</a>                                 -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="logkit-1.2.2-src.tar.gz">logkit-1.2.2-src.tar.gz</a>     2003-06-18 20:41  111K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="logkit-1.2.2-src.tar.gz.asc">logkit-1.2.2-src.tar.gz.asc</a> 2003-06-18 20:41  186   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="logkit-1.2.2-src.zip">logkit-1.2.2-src.zip</a>        2003-06-18 20:41  267K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="logkit-1.2.2-src.zip.asc">logkit-1.2.2-src.zip.asc</a>    2003-06-18 20:41  186   
+<hr></pre>
+</body></html>
+
+ succeeded in 131ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/excalibur/excalibur-logkit/source</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                      <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/excalibur/excalibur-logkit/">Parent Directory</a>                                               -   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="avalon-logkit-2.0.dev-0-src.tar.gz.md5">avalon-logkit-2.0.dev-0-src.tar.gz.md5</a>    2004-10-24 00:17   95   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="avalon-logkit-2.0.dev-0-src.zip.md5">avalon-logkit-2.0.dev-0-src.zip.md5</a>       2004-10-24 00:17   92   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="avalon-logkit-2.1-src.tar.gz">avalon-logkit-2.1-src.tar.gz</a>              2005-08-30 02:04   59K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="avalon-logkit-2.1-src.tar.gz.asc">avalon-logkit-2.1-src.tar.gz.asc</a>          2005-08-30 02:04  189   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="avalon-logkit-2.1-src.zip">avalon-logkit-2.1-src.zip</a>                 2005-08-30 02:03  126K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="avalon-logkit-2.1-src.zip.asc">avalon-logkit-2.1-src.zip.asc</a>             2005-08-30 02:04  189   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="excalibur-logkit-2.0.dev-0-src.tar.gz">excalibur-logkit-2.0.dev-0-src.tar.gz</a>     2004-10-24 00:17   58K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="excalibur-logkit-2.0.dev-0-src.tar.gz.asc">excalibur-logkit-2.0.dev-0-src.tar.gz.asc</a> 2004-10-27 14:08  189   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="excalibur-logkit-2.0.dev-0-src.tar.gz.md5">excalibur-logkit-2.0.dev-0-src.tar.gz.md5</a> 2004-10-24 00:17   98   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="excalibur-logkit-2.0.dev-0-src.zip">excalibur-logkit-2.0.dev-0-src.zip</a>        2004-10-24 00:17  127K  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="excalibur-logkit-2.0.dev-0-src.zip.asc">excalibur-logkit-2.0.dev-0-src.zip.asc</a>    2004-10-27 14:08  189   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="excalibur-logkit-2.0.dev-0-src.zip.md5">excalibur-logkit-2.0.dev-0-src.zip.md5</a>    2004-10-24 00:17   95   
+<hr></pre>
+</body></html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/ | rg -n \"LOGKIT|DOCS|2_0\" | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/ | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933396: /avalon</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="branches/">branches/</a></li>
+  <li><a href="cvs-migration-snapshot/">cvs-migration-snapshot/</a></li>
+  <li><a href="metro/">metro/</a></li>
+  <li><a href="site/">site/</a></li>
+  <li><a href="tags/">tags/</a></li>
+  <li><a href="trunk/">trunk/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/trunk/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933396: /avalon/trunk</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/trunk</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="README.txt">README.txt</a></li>
+  <li><a href="build.properties">build.properties</a></li>
+  <li><a href="build.xml">build.xml</a></li>
+  <li><a href="central/">central/</a></li>
+  <li><a href="discovery/">discovery/</a></li>
+  <li><a href="index.xml">index.xml</a></li>
+  <li><a href="planet/">planet/</a></li>
+  <li><a href="runtime/">runtime/</a></li>
+  <li><a href="studio/">studio/</a></li>
+  <li><a href="tools/">tools/</a></li>
+ </ul>
+</body></html>
+ succeeded in 124ms:
+6:  <li><a href="ACTIVATION_2_0_0_FINAL/">ACTIVATION_2_0_0_FINAL/</a></li>
+39:  <li><a href="COMPOSITION_2_0_0_FINAL/">COMPOSITION_2_0_0_FINAL/</a></li>
+42:  <li><a href="CORNERSTONE_2_0_0_FINAL/">CORNERSTONE_2_0_0_FINAL/</a></li>
+49:  <li><a href="DATASOURCE_1_2_0_FINAL/">DATASOURCE_1_2_0_FINAL/</a></li>
+50:  <li><a href="DOCS_031028/">DOCS_031028/</a></li>
+51:  <li><a href="DOCS_031029/">DOCS_031029/</a></li>
+52:  <li><a href="DOCS_031030/">DOCS_031030/</a></li>
+53:  <li><a href="DOCS_031125/">DOCS_031125/</a></li>
+54:  <li><a href="DOCS_031203/">DOCS_031203/</a></li>
+55:  <li><a href="DOCS_031204/">DOCS_031204/</a></li>
+56:  <li><a href="DOCS_031204B/">DOCS_031204B/</a></li>
+57:  <li><a href="DOCS_1_0_0/">DOCS_1_0_0/</a></li>
+58:  <li><a href="DOCS_1_1_0/">DOCS_1_1_0/</a></li>
+59:  <li><a href="DOCS_1_2_0/">DOCS_1_2_0/</a></li>
+60:  <li><a href="DOCS_1_4_0/">DOCS_1_4_0/</a></li>
+61:  <li><a href="DOCS_20031210/">DOCS_20031210/</a></li>
+62:  <li><a href="DOCS_20031211/">DOCS_20031211/</a></li>
+63:  <li><a href="DOCS_20031211_B/">DOCS_20031211_B/</a></li>
+64:  <li><a href="DOCS_20031222/">DOCS_20031222/</a></li>
+65:  <li><a href="DOCS_20031224/">DOCS_20031224/</a></li>
+66:  <li><a href="DOCS_20031225/">DOCS_20031225/</a></li>
+67:  <li><a href="DOCS_20040125/">DOCS_20040125/</a></li>
+68:  <li><a href="DOCS_20040204/">DOCS_20040204/</a></li>
+69:  <li><a href="DOCS_20040213/">DOCS_20040213/</a></li>
+70:  <li><a href="DOCS_20040220/">DOCS_20040220/</a></li>
+71:  <li><a href="DOCS_20040221/">DOCS_20040221/</a></li>
+72:  <li><a href="DOCS_20040222/">DOCS_20040222/</a></li>
+73:  <li><a href="DOCS_20040225/">DOCS_20040225/</a></li>
+74:  <li><a href="DOCS_20040309/">DOCS_20040309/</a></li>
+75:  <li><a href="DOCS_20040312/">DOCS_20040312/</a></li>
+76:  <li><a href="DOCS_20040331/">DOCS_20040331/</a></li>
+77:  <li><a href="DOCS_20040404/">DOCS_20040404/</a></li>
+78:  <li><a href="DOCS_20040414/">DOCS_20040414/</a></li>
+79:  <li><a href="DOCS_2_0_0/">DOCS_2_0_0/</a></li>
+80:  <li><a href="DOCS_3_3_0/">DOCS_3_3_0/</a></li>
+81:  <li><a href="DOCS_4_2_0/">DOCS_4_2_0/</a></li>
+97:  <li><a href="FRAMEWORK_4_2_0_FINAL/">FRAMEWORK_4_2_0_FINAL/</a></li>
+121:  <li><a href="LOGKIT_1_2_FINAL/">LOGKIT_1_2_FINAL/</a></li>
+122:  <li><a href="LOGKIT_1_3_RC1/">LOGKIT_1_3_RC1/</a></li>
+123:  <li><a href="LOGKIT_2_0_0_FINAL/">LOGKIT_2_0_0_FINAL/</a></li>
+124:  <li><a href="LOGKIT_2_0_RC1/">LOGKIT_2_0_RC1/</a></li>
+125:  <li><a href="LOGKIT_2_0_RC2/">LOGKIT_2_0_RC2/</a></li>
+149:  <li><a href="POOL_2_0_0_FINAL/">POOL_2_0_0_FINAL/</a></li>
+171:  <li><a href="REPOSITORY_2_0_0_FINAL/">REPOSITORY_2_0_0_FINAL/</a></li>
+189:  <li><a href="THREAD_2_0_0_FINAL/">THREAD_2_0_0_FINAL/</a></li>
+193:  <li><a href="UTIL_1_2_0_FINAL/">UTIL_1_2_0_FINAL/</a></li>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/ | sed -n '1,160p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/DOCS_2_0_0/avalon-site/site/logkit</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/DOCS_2_0_0/avalon-site/site/logkit</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="api/">api/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/api/org/apache/log/package-summary.html | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/ | sed -n '1,200p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/DOCS_2_0_0</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/DOCS_2_0_0</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="avalon-site/">avalon-site/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/org/apache/log/package-summary.html | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<!-- Generated by javadoc (build 1.4.2_04) on Sun May 16 06:30:31 CEST 2004 -->
+<TITLE>
+org.apache.log (Avalon LogKit 2.0.0 API)
+</TITLE>
+
+<META NAME="keywords" CONTENT="org.apache.log package">
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="org.apache.log (Avalon LogKit 2.0.0 API)";
+}
+</SCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=3 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Package</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <FONT CLASS="NavBarFont1">Class</FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-use.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;PREV PACKAGE&nbsp;
+&nbsp;<A HREF="../../../org/apache/log/format/package-summary.html"><B>NEXT PACKAGE</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="package-summary.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+</FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<H2>
+Package org.apache.log
+</H2>
+Avalon LogKit is the logging framework used throughout
+the Avalon project.
+<P>
+<B>See:</B>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A HREF="#package_description"><B>Description</B></A>
+<P>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN=2><FONT SIZE="+2">
+<B>Interface Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../org/apache/log/ErrorAware.html" title="interface in org.apache.log">ErrorAware</A></B></TD>
+<TD>Interface implemented by components that wish to
+ delegate ErrorHandling to an ErrorHandler.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../org/apache/log/ErrorHandler.html" title="interface in org.apache.log">ErrorHandler</A></B></TD>
+<TD>Handle unrecoverable errors that occur during logging.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../org/apache/log/LogTarget.html" title="interface in org.apache.log">LogTarget</A></B></TD>
+<TD>LogTarget is a class to encapsulate outputting LogEvent's.</TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>
+
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN=2><FONT SIZE="+2">
+<B>Class Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="../../../org/apache/log/ContextMap.html" title="class in org.apache.log">ContextMap</A></B></TD>
+<TD>The ContextMap contains non-hierarchical context information
+ relevant to a particular LogEvent.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<!-- Generated by javadoc on Sun May 16 06:30:31 CEST 2004-->
+<TITLE>
+Avalon LogKit 2.0.0 API
+</TITLE>
+</HEAD>
+<FRAMESET cols="20%,80%">
+<FRAMESET rows="30%,70%">
+<FRAME src="overview-frame.html" name="packageListFrame" title="All Packages">
+<FRAME src="allclasses-frame.html" name="packageFrame" title="All classes and interfaces (except non-static nested types)">
+</FRAMESET>
+<FRAME src="overview-summary.html" name="classFrame" title="Package, class and interface descriptions">
+<NOFRAMES>
+<H2>
+Frame Alert</H2>
+
+<P>
+This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client.
+<BR>
+Link to<A HREF="overview-summary.html">Non-frame version.</A>
+</NOFRAMES>
+</FRAMESET>
+</HTML>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/ | sed -n '1,180p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933396: /avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api</title></head>
+<body>
+ <h2>asf - Revision 1933396: /avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="allclasses-frame.html">allclasses-frame.html</a></li>
+  <li><a href="allclasses-noframe.html">allclasses-noframe.html</a></li>
+  <li><a href="constant-values.html">constant-values.html</a></li>
+  <li><a href="deprecated-list.html">deprecated-list.html</a></li>
+  <li><a href="help-doc.html">help-doc.html</a></li>
+  <li><a href="index-all.html">index-all.html</a></li>
+  <li><a href="index.html">index.html</a></li>
+  <li><a href="org/">org/</a></li>
+  <li><a href="overview-frame.html">overview-frame.html</a></li>
+  <li><a href="overview-summary.html">overview-summary.html</a></li>
+  <li><a href="overview-tree.html">overview-tree.html</a></li>
+  <li><a href="package-list">package-list</a></li>
+  <li><a href="packages.html">packages.html</a></li>
+  <li><a href="resources/">resources/</a></li>
+  <li><a href="serialized-form.html">serialized-form.html</a></li>
+  <li><a href="stylesheet.css">stylesheet.css</a></li>
+ </ul>
+</body></html>
+codex
+I found the exact Apache SVN tag `LOGKIT_2_0_0_FINAL` with `src/java`, `src/test`, and generated `Avalon LogKit 2.0.0 API` docs. Since Maven has no exact `2.0` sources, tests, or javadoc artifacts for this coordinate, I’m using those tagged Apache URLs and leaving `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+diff --git a/build/discovered-artifact-metadata/logkit-logkit-2.0.json b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+index 48996890a59eda279f200856ee8aeb749b670bcb..b4bb72e5505d20076e3f762ba9205acd8f696063
+--- a/build/discovered-artifact-metadata/logkit-logkit-2.0.json
++++ b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "logkit:logkit:2.0"
++  "coordinates" : "logkit:logkit:2.0",
++  "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/",
++  "repository-url" : "https://svn.apache.org/repos/asf/avalon/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/",
++  "description" : "Avalon LogKit is a Java logging toolkit that provides hierarchical loggers, priorities, formatters, and pluggable log targets. It supports output destinations such as files, streams, sockets, JMS, SMTP, JDBC, servlets, and LogFactor5 for applications that need configurable logging."
+ }
+
+diff --git a/build/discovered-artifact-metadata/logkit-logkit-2.0.json b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+index 48996890a59eda279f200856ee8aeb749b670bcb..b4bb72e5505d20076e3f762ba9205acd8f696063
+--- a/build/discovered-artifact-metadata/logkit-logkit-2.0.json
++++ b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "logkit:logkit:2.0"
++  "coordinates" : "logkit:logkit:2.0",
++  "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/",
++  "repository-url" : "https://svn.apache.org/repos/asf/avalon/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/",
++  "description" : "Avalon LogKit is a Java logging toolkit that provides hierarchical loggers, priorities, formatters, and pluggable log targets. It supports output destinations such as files, streams, sockets, JMS, SMTP, JDBC, servlets, and LogFactor5 for applications that need configurable logging."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/logkit-logkit-2.0.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+{
+  "coordinates": "logkit:logkit:2.0",
+  "source-code-url": "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/",
+  "repository-url": "https://svn.apache.org/repos/asf/avalon/",
+  "test-code-url": "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/",
+  "documentation-url": "https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/",
+  "description": "Avalon LogKit is a Java logging toolkit that provides hierarchical loggers, priorities, formatters, and pluggable log targets. It supports output destinations such as files, streams, sockets, JMS, SMTP, JDBC, servlets, and LogFactor5 for applications that need configurable logging."
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/ \\
+  https://svn.apache.org/repos/asf/avalon/ \\
+  https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/ \\
+  https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/; do curl -fsSIL \""'$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+diff --git a/build/discovered-artifact-metadata/logkit-logkit-2.0.json b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+index 48996890a59eda279f200856ee8aeb749b670bcb..b4bb72e5505d20076e3f762ba9205acd8f696063
+--- a/build/discovered-artifact-metadata/logkit-logkit-2.0.json
++++ b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "logkit:logkit:2.0"
++  "coordinates" : "logkit:logkit:2.0",
++  "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/",
++  "repository-url" : "https://svn.apache.org/repos/asf/avalon/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/",
++  "description" : "Avalon LogKit is a Java logging toolkit that provides hierarchical loggers, priorities, formatters, and pluggable log targets. It supports output destinations such as files, streams, sockets, JMS, SMTP, JDBC, servlets, and LogFactor5 for applications that need configurable logging."
+ }
+
+ succeeded in 481ms:
+HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/logkit-logkit-2.0.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/logkit-logkit-2.0.json b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+index 48996890a59eda279f200856ee8aeb749b670bcb..b4bb72e5505d20076e3f762ba9205acd8f696063
+--- a/build/discovered-artifact-metadata/logkit-logkit-2.0.json
++++ b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "logkit:logkit:2.0"
++  "coordinates" : "logkit:logkit:2.0",
++  "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/",
++  "repository-url" : "https://svn.apache.org/repos/asf/avalon/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/",
++  "description" : "Avalon LogKit is a Java logging toolkit that provides hierarchical loggers, priorities, formatters, and pluggable log targets. It supports output destinations such as files, streams, sockets, JMS, SMTP, JDBC, servlets, and LogFactor5 for applications that need configurable logging."
+ }
+
+codex
+Updated [logkit-logkit-2.0.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935/build/discovered-artifact-metadata/logkit-logkit-2.0.json) with the discovered source, repository, test, documentation, and two-sentence description fields.
+
+Validated the file with `jq`; no `language` field was added.
+diff --git a/build/discovered-artifact-metadata/logkit-logkit-2.0.json b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+index 48996890a59eda279f200856ee8aeb749b670bcb..b4bb72e5505d20076e3f762ba9205acd8f696063
+--- a/build/discovered-artifact-metadata/logkit-logkit-2.0.json
++++ b/build/discovered-artifact-metadata/logkit-logkit-2.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "logkit:logkit:2.0"
++  "coordinates" : "logkit:logkit:2.0",
++  "source-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/java/",
++  "repository-url" : "https://svn.apache.org/repos/asf/avalon/",
++  "test-code-url" : "https://svn.apache.org/repos/asf/avalon/tags/LOGKIT_2_0_0_FINAL/avalon-logkit/src/test/",
++  "documentation-url" : "https://svn.apache.org/repos/asf/avalon/tags/DOCS_2_0_0/avalon-site/site/logkit/api/",
++  "description" : "Avalon LogKit is a Java logging toolkit that provides hierarchical loggers, priorities, formatters, and pluggable log targets. It supports output destinations such as files, streams, sockets, JMS, SMTP, JDBC, servlets, and LogFactor5 for applications that need configurable logging."
+ }
+
+2026-04-27T16:53:26.554352Z ERROR codex_core::session: failed to record rollout items: thread 019dcfd8-7b3d-7832-a6a6-18e5bfc3a985 not found
+tokens used
+297,265
+Updated [logkit-logkit-2.0.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935/build/discovered-artifact-metadata/logkit-logkit-2.0.json) with the discovered source, repository, test, documentation, and two-sentence description fields.
+
+Validated the file with `jq`; no `language` field was added.
+Ran agent for logkit:logkit:2.0 (exit 0). Log: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935/build/agent-artifact-discovery-logs/logkit-logkit-2.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2394-d6db2935/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4m 3s
+9 actionable tasks: 4 executed, 5 from cache
