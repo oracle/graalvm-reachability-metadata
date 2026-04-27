@@ -37,6 +37,17 @@ public class CommandLineInnerDefaultFactoryTest {
     }
 
     @Test
+    void createsInstanceWhenPublicConstructorSucceedsOnDeclaredRetry() throws Exception {
+        CommandLine.IFactory factory = CommandLine.defaultFactory();
+        SucceedsOnSecondConstructionCommand.attempts = 0;
+
+        Object result = factory.create(SucceedsOnSecondConstructionCommand.class);
+
+        assertThat(result).isInstanceOf(SucceedsOnSecondConstructionCommand.class);
+        assertThat(SucceedsOnSecondConstructionCommand.attempts).isEqualTo(2);
+    }
+
+    @Test
     void createsInstancesWithPrivateNoArgConstructors() throws Exception {
         CommandLine.IFactory factory = CommandLine.defaultFactory();
 
@@ -60,6 +71,17 @@ public class CommandLineInnerDefaultFactoryTest {
     public static class ThrowingConstructorCommand {
         public ThrowingConstructorCommand() {
             throw new IllegalStateException("intentional constructor failure");
+        }
+    }
+
+    public static class SucceedsOnSecondConstructionCommand {
+        private static int attempts;
+
+        public SucceedsOnSecondConstructionCommand() {
+            attempts++;
+            if (attempts == 1) {
+                throw new IllegalStateException("retry with declared constructor");
+            }
         }
     }
 
