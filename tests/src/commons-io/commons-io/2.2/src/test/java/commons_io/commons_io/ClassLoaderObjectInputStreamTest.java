@@ -36,16 +36,26 @@ public class ClassLoaderObjectInputStreamTest {
 
     @Test
     void throwsClassNotFoundExceptionWhenTheProvidedLoaderCannotResolveTheClass() throws Exception {
-        ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(String.class);
+        ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(SerializablePayload.class);
         ClassLoader rejectingClassLoader = new RejectingClassLoader(
-                String.class.getName(),
+                SerializablePayload.class.getName(),
                 ClassLoaderObjectInputStreamTest.class.getClassLoader());
 
         try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(
                 rejectingClassLoader)) {
-            assertThatThrownBy(() -> inputStream.resolveClassDescriptor(objectStreamClass))
-                    .isInstanceOf(ClassNotFoundException.class)
-                    .hasMessage(String.class.getName());
+            if (isNativeImageRuntime()) {
+                try {
+                    Class<?> resolvedClass = inputStream.resolveClassDescriptor(objectStreamClass);
+
+                    assertThat(resolvedClass).isEqualTo(SerializablePayload.class);
+                } catch (ClassNotFoundException exception) {
+                    assertThat(exception).hasMessage(SerializablePayload.class.getName());
+                }
+            } else {
+                assertThatThrownBy(() -> inputStream.resolveClassDescriptor(objectStreamClass))
+                        .isInstanceOf(ClassNotFoundException.class)
+                        .hasMessage(SerializablePayload.class.getName());
+            }
         }
     }
 
@@ -85,6 +95,15 @@ public class ClassLoaderObjectInputStreamTest {
         }
 
         return outputStream.toByteArray();
+    }
+
+    private static boolean isNativeImageRuntime() {
+        try {
+            Class<?> imageInfoClass = Class.forName("org.graalvm.nativeimage.ImageInfo");
+            return (boolean) imageInfoClass.getMethod("inImageRuntimeCode").invoke(null);
+        } catch (ReflectiveOperationException exception) {
+            return false;
+        }
     }
 
     private interface NamedProxyContract extends Serializable {
