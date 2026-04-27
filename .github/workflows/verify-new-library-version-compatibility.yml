@@ -548,9 +548,9 @@ jobs:
                 done
               fi
 
-              ASSIGNEE="kimeta"
+              ASSIGNEE_ARGS=()
               if [[ "$FAILURE_LABEL" == "fails-native-image-build" ]]; then
-                ASSIGNEE="vjovanov"
+                ASSIGNEE_ARGS=(--assignee "vjovanov")
               fi
 
               gh issue create \
@@ -559,7 +559,7 @@ jobs:
                 --body-file "$BODY_FILE" \
                 --label "library-unsupported-version" \
                 --label "$FAILURE_LABEL" \
-                --assignee "$ASSIGNEE"
+                "${ASSIGNEE_ARGS[@]}"
 
               rm "$BODY_FILE"
             done
