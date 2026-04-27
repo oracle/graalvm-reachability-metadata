@@ -300,6 +300,32 @@ public class Aether_spiTest {
     }
 
     @Test
+    void transportListenerCancellationStopsTransfersBeforePayloadCopy() throws Exception {
+        InMemoryTransporter transporter = new InMemoryTransporter("downloaded-content");
+        CancellingTransportListener downloadListener = new CancellingTransportListener();
+        GetTask download = new GetTask(URI.create("cancelled-download.bin")).setListener(downloadListener);
+
+        assertThatExceptionOfType(TransferCancelledException.class)
+                .isThrownBy(() -> transporter.get(download))
+                .withMessageContaining("cancelled before transfer");
+
+        assertThat(downloadListener.started).isEqualTo(1);
+        assertThat(download.getDataString()).isEmpty();
+
+        CancellingTransportListener uploadListener = new CancellingTransportListener();
+        PutTask upload = new PutTask(URI.create("cancelled-upload.bin"))
+                .setDataString("uploaded-content")
+                .setListener(uploadListener);
+
+        assertThatExceptionOfType(TransferCancelledException.class)
+                .isThrownBy(() -> transporter.put(upload))
+                .withMessageContaining("cancelled before transfer");
+
+        assertThat(uploadListener.started).isEqualTo(1);
+        assertThat(transporter.uploadedContent()).isEmpty();
+    }
+
+    @Test
     void repositoryLayoutChecksumsNormalizeLocationsAndRejectInvalidInput() {
         RepositoryLayout.Checksum generated = RepositoryLayout.Checksum.forLocation(
                 URI.create("org/example/demo/1.0.0/demo-1.0.0.jar"), "SHA-256");
@@ -423,6 +449,16 @@ public class Aether_spiTest {
             byte[] chunk = new byte[data.remaining()];
             data.get(chunk);
             progressedBytes.write(chunk, 0, chunk.length);
+        }
+    }
+
+    private static final class CancellingTransportListener extends TransportListener {
+        private int started;
+
+        @Override
+        public void transportStarted(long resumeOffset, long dataLength) throws TransferCancelledException {
+            started++;
+            throw new TransferCancelledException("cancelled before transfer");
         }
     }
 
