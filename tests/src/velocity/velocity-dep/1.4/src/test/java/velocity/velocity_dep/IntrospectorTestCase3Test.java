@@ -7,17 +7,17 @@
 package velocity.velocity_dep;
 
 import junit.framework.TestResult;
-import org.apache.velocity.test.IntrospectorTestCase3;
+import junit.textui.TestRunner;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntrospectorTestCase3Test {
     @Test
-    void resolvesOverloadedPrimitiveMethodsWithVelocityIntrospector() {
-        TestResult result = new TestResult();
+    void resolvesOverloadedPrimitiveMethodsWithVelocityIntrospector() throws Exception {
+        TestRunner runner = new TestRunner();
 
-        IntrospectorTestCase3.suite().run(result);
+        TestResult result = runner.start(new String[] {"org.apache.velocity.test.IntrospectorTestCase3"});
 
         assertThat(result.errorCount()).isZero();
         assertThat(result.failureCount()).isZero();
