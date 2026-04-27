@@ -19,7 +19,11 @@ import org.objenesis.instantiator.sun.SunReflectionFactoryInstantiator;
 public class PercInstantiatorTest {
 
     @Test
-    void reportsMissingPercObjectInputStreamHookOnStandardJvm() {
+    void reportsMissingPercObjectInputStreamHookOnStandardJvm()
+        throws ReflectiveOperationException {
+        clearStaticClassCache("class$java$io$ObjectInputStream");
+        clearStaticClassCache("class$java$lang$Class");
+
         Assertions.assertThatThrownBy(() -> new PercInstantiator(ConstructorTarget.class))
             .isInstanceOf(ObjenesisException.class)
             .hasCauseInstanceOf(NoSuchMethodException.class);
@@ -55,6 +59,11 @@ public class PercInstantiatorTest {
         Field field = PercInstantiator.class.getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(target, value);
+    }
+
+    private static void clearStaticClassCache(String fieldName)
+        throws ReflectiveOperationException {
+        setField(null, fieldName, null);
     }
 
     public static class ConstructorTarget {
