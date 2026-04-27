@@ -29,6 +29,9 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -226,6 +229,44 @@ public class Xml_apisTest {
         assertThat(domSource.getNode()).isSameAs(document);
         assertThat(domSource.getSystemId()).isEqualTo("memory:/dom.xml");
         assertThat(new String(output.toByteArray(), StandardCharsets.UTF_8)).contains("entry");
+    }
+
+    @Test
+    void saxTransformerFactoryGeneratesXmlFromSaxEventsAndRoutesTransformationOutputToHandlers() throws Exception {
+        TransformerFactory baseFactory = TransformerFactory.newInstance();
+        baseFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        assertThat(baseFactory).isInstanceOf(SAXTransformerFactory.class);
+        SAXTransformerFactory factory = (SAXTransformerFactory) baseFactory;
+        TransformerHandler generator = factory.newTransformerHandler();
+        StringWriter writer = new StringWriter();
+        generator.setResult(new StreamResult(writer));
+        generator.getTransformer().setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        AttributesImpl attributes = new AttributesImpl();
+        attributes.addAttribute("", "kind", "kind", "CDATA", "generated");
+
+        generator.startDocument();
+        generator.startElement("", "report", "report", attributes);
+        char[] text = "complete".toCharArray();
+        generator.characters(text, 0, text.length);
+        generator.endElement("", "report", "report");
+        generator.endDocument();
+
+        String generatedXml = writer.toString();
+        assertThat(generatedXml)
+                .contains("<report")
+                .contains("kind=\"generated\"")
+                .contains(">complete</report>");
+
+        RecordingSaxHandler handler = new RecordingSaxHandler();
+        Transformer identity = factory.newTransformer();
+        identity.transform(new StreamSource(new StringReader(generatedXml)), new SAXResult(handler));
+
+        assertThat(handler.events).containsExactly(
+                "startDocument",
+                "start:report:{kind=generated}",
+                "text:complete",
+                "end:report",
+                "endDocument");
     }
 
     @Test
