@@ -274,6 +274,52 @@ public class JsonassertTest {
     }
 
     @Test
+    public void regularExpressionValueMatcherUsesExpectedValuesAsPatternsWhenNoConstantPatternIsConfigured()
+            throws JSONException {
+        String expected = """
+                {
+                  "invoice": {
+                    "number": "INV-[0-9]{4}",
+                    "region": "(EU|US)-[A-Z]{2}"
+                  }
+                }
+                """;
+        String actual = """
+                {
+                  "invoice": {
+                    "number": "INV-2048",
+                    "region": "EU-DE"
+                  }
+                }
+                """;
+        String actualWithInvalidRegion = """
+                {
+                  "invoice": {
+                    "number": "INV-2048",
+                    "region": "AP-SG"
+                  }
+                }
+                """;
+        CustomComparator comparator = new CustomComparator(JSONCompareMode.STRICT,
+                Customization.customization("invoice.number", new RegularExpressionValueMatcher<>()),
+                Customization.customization("invoice.region", new RegularExpressionValueMatcher<>()));
+
+        JSONAssert.assertEquals(expected, actual, comparator);
+
+        JSONCompareResult result = JSONCompare.compareJSON(expected, actualWithInvalidRegion, comparator);
+
+        assertThat(result.failed()).isTrue();
+        assertThat(result.getFieldFailures())
+                .singleElement()
+                .satisfies(failure -> {
+                    assertThat(failure.getField())
+                            .isEqualTo("invoice.region: Dynamic expected pattern did not match value");
+                    assertThat(failure.getExpected()).isEqualTo("(EU|US)-[A-Z]{2}");
+                    assertThat(failure.getActual()).isEqualTo("AP-SG");
+                });
+    }
+
+    @Test
     public void regularExpressionValueMatcherReportsExpectedAndActualValuesOnFailure() {
         RegularExpressionValueMatcher<Object> matcher = new RegularExpressionValueMatcher<>("[A-Z]{3}-\\d{2}");
 
