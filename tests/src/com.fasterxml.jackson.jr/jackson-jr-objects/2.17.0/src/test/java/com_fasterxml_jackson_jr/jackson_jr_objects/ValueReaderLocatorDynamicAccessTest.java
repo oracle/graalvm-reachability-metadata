@@ -23,25 +23,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ValueReaderLocatorDynamicAccessTest {
     @Test
     void readsEnumsFromModifierProvidedDefinitions() throws Exception {
-        ValueReaderLocatorDynamicAccessDirection direction = enumAwareJson()
-                .beanFrom(ValueReaderLocatorDynamicAccessDirection.class, "\"go-north\"");
+        Direction direction = enumAwareJson().beanFrom(Direction.class, "\"go-north\"");
 
-        assertThat(direction).isEqualTo(ValueReaderLocatorDynamicAccessDirection.NORTH);
+        assertThat(direction).isEqualTo(Direction.NORTH);
     }
 
     @Test
     void readsModifierProvidedEnumDefinitionsCaseInsensitively() throws Exception {
-        ValueReaderLocatorDynamicAccessDirection direction = enumAwareJson(JSON.Feature.ACCEPT_CASE_INSENSITIVE_ENUMS)
-                .beanFrom(ValueReaderLocatorDynamicAccessDirection.class, "\"GO-SOUTH\"");
+        Direction direction = enumAwareJson(JSON.Feature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .beanFrom(Direction.class, "\"GO-SOUTH\"");
 
-        assertThat(direction).isEqualTo(ValueReaderLocatorDynamicAccessDirection.SOUTH);
+        assertThat(direction).isEqualTo(Direction.SOUTH);
     }
 
     @Test
     void createsEnumReadersFromModifierProvidedDefinitions() {
         ValueReaderLocator locator = ValueReaderLocator.blueprint(null, new EnumDefinitionModifier());
 
-        ValueReader reader = locator.findReader(ValueReaderLocatorDynamicAccessDirection.class);
+        ValueReader reader = locator.findReader(Direction.class);
 
         assertThat(reader).isNotNull();
     }
@@ -53,6 +52,10 @@ public class ValueReaderLocatorDynamicAccessTest {
                 .build();
     }
 
+    public enum Direction {
+        NORTH,
+        SOUTH
+    }
 
     public static class EnumDefinitionExtension extends JacksonJrExtension {
         @Override
@@ -64,10 +67,10 @@ public class ValueReaderLocatorDynamicAccessTest {
     public static class EnumDefinitionModifier extends ReaderWriterModifier {
         @Override
         public POJODefinition pojoDefinitionForDeserialization(JSONReader readContext, Class<?> pojoType) {
-            if (pojoType != ValueReaderLocatorDynamicAccessDirection.class) {
+            if (pojoType != Direction.class) {
                 return null;
             }
-            return new POJODefinition(ValueReaderLocatorDynamicAccessDirection.class, enumProps(), null, null, null);
+            return new POJODefinition(Direction.class, enumProps(), null, null, null);
         }
 
         private static POJODefinition.Prop[] enumProps() {
@@ -83,15 +86,10 @@ public class ValueReaderLocatorDynamicAccessTest {
 
         private static Field enumField(String enumConstantName) {
             try {
-                return ValueReaderLocatorDynamicAccessDirection.class.getField(enumConstantName);
+                return Direction.class.getField(enumConstantName);
             } catch (NoSuchFieldException ex) {
                 throw new IllegalStateException(ex);
             }
         }
     }
-}
-
-enum ValueReaderLocatorDynamicAccessDirection {
-    NORTH,
-    SOUTH
 }
