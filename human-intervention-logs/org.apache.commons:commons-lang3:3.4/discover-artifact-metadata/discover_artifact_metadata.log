@@ -1,0 +1,883 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcf49-d54f-71e2-86d6-af8a64394bb4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.commons:commons-lang3:3.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+- Set "coordinates" to "org.apache.commons:commons-lang3:3.4".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll check the repo’s existing metadata conventions first, then verify the exact-version artifacts upstream before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.commons:commons-lang3:3.4"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' -n build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+codex
+The target file only has coordinates, and this worktree does not appear to have other discovered metadata files to copy from. I’m going to verify Maven Central artifacts and the Apache Commons Lang tag URLs directly.
+web search: 
+web search: Maven Central org.apache.commons commons-lang3 3.4 sources javadoc test-sources
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.commons/commons-lang3/3.4
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.4/
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url' -n . --glob '*.json' --glob '"'!build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json'"' | head -120" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:9:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:30:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:7:    "repository-url": "https://github.com/spotbugs/spotbugs",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:8:    "test-code-url": "N/A",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:6:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:7:    "repository-url": "https://github.com/fusesource/hawtbuf",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/3.0.0/src/test",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+./metadata/javax.annotation/jsr250-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0-sources.jar",
+./metadata/javax.annotation/jsr250-api/index.json:7:    "repository-url": "N/A",
+./metadata/javax.annotation/jsr250-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.annotation/jsr250-api/index.json:9:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+./metadata/javax.annotation/javax.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-sources.jar",
+./metadata/javax.annotation/javax.annotation-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.annotation",
+./metadata/javax.annotation/javax.annotation-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.annotation/javax.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-javadoc.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-sources.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:9:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+./metadata/org.apache.santuario/xmlsec/index.json:10:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-4.0.4/src/test",
+./metadata/org.apache.santuario/xmlsec/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:5:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:41:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+./metadata/org.jboss/jandex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jandex/2.4.2.Final/jandex-2.4.2.Final-sources.jar",
+./metadata/org.jboss/jandex/index.json:6:    "repository-url" : "https://github.com/smallrye/jandex",
+./metadata/org.jboss/jandex/index.json:7:    "test-code-url" : "https://github.com/smallrye/jandex/tree/2.4.2.Final/src/test/java",
+./metadata/org.jboss/jandex/index.json:8:    "documentation-url" : "https://github.com/smallrye/jandex/blob/2.4.2.Final/README.md",
+./metadata/com.h2database/h2/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-sources.jar",
+./metadata/com.h2database/h2/index.json:9:    "repository-url": "https://github.com/h2database/h2database",
+./metadata/com.h2database/h2/index.json:10:    "test-code-url": "https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test",
+./metadata/com.h2database/h2/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-javadoc.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-sources.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-tests.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+./metadata/io.netty/netty-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-sources.jar",
+./metadata/io.netty/netty-common/index.json:5:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-test-sources.jar",
+./metadata/io.netty/netty-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-javadoc.jar",
+./metadata/io.netty/netty-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-sources.jar",
+./metadata/io.netty/netty-common/index.json:21:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-test-sources.jar",
+./metadata/io.netty/netty-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-javadoc.jar",
+./metadata/io.netty/netty-common/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-sources.jar",
+./metadata/io.netty/netty-common/index.json:37:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-common/index.json:38:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-test-sources.jar",
+./metadata/io.netty/netty-common/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-javadoc.jar",
+./metadata/io.netty/netty-transport/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.115.Final/netty-transport-4.1.115.Final-sources.jar",
+./metadata/io.netty/netty-transport/index.json:10:    "repository-url": "https://github.com/netty/netty",
+./metadata/io.netty/netty-transport/index.json:11:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.115.Final/netty-transport-4.1.115.Final-test-sources.jar",
+./metadata/io.netty/netty-transport/index.json:12:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.115.Final/netty-transport-4.1.115.Final-javadoc.jar",
+./metadata/io.netty/netty-transport/index.json:41:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.80.Final/netty-transport-4.1.80.Final-sources.jar",
+./metadata/io.netty/netty-transport/index.json:42:    "repository-url": "https://github.com/netty/netty",
+./metadata/io.netty/netty-transport/index.json:43:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.80.Final/netty-transport-4.1.80.Final-test-sources.jar",
+./metadata/io.netty/netty-transport/index.json:44:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.80.Final/netty-transport-4.1.80.Final-javadoc.jar",
+./metadata/io.netty/netty-resolver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-sources.jar",
+./metadata/io.netty/netty-resolver/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-resolver/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-test-sources.jar",
+./metadata/io.netty/netty-resolver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-javadoc.jar",
+./metadata/com.atomikos/transactions-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/6.0.0/transactions-api-6.0.0-sources.jar",
+./metadata/com.atomikos/transactions-api/index.json:6:    "repository-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development",
+./metadata/com.atomikos/transactions-api/index.json:7:    "test-code-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development/file/6.0.0/public/transactions-api/src/test",
+./metadata/com.atomikos/transactions-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/6.0.0/transactions-api-6.0.0-javadoc.jar",
+./metadata/com.atomikos/transactions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/atomikos/transactions/6.0.0/transactions-6.0.0-sources.jar",
+./metadata/com.atomikos/transactions/index.json:6:    "repository-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development/file/6.0.0",
+./metadata/com.atomikos/transactions/index.json:7:    "test-code-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development/file/6.0.0/public/transactions/src/test",
+./metadata/com.atomikos/transactions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/atomikos/transactions/6.0.0/transactions-6.0.0-javadoc.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:6:    "repository-url" : "https://github.com/reactive-streams/reactive-streams-jvm",
+./metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"description\"' -n . --glob '*.json' | head -50" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+./metadata/io.zipkin.zipkin2/zipkin/index.json:9:    "description" : "Zipkin Core Library provides the core data model and codecs for representing and encoding distributed tracing spans. It includes APIs and utilities for traces, endpoints, annotations, dependency links, and query-related types used by Zipkin.",
+./metadata/org.jline/jline-terminal-jna/index.json:9:    "description" : "This module adds a JNA-backed terminal provider for JLine. It uses native platform APIs to manage terminals and pseudoterminals on supported operating systems.",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:34:    "description" : "Jackson module that adds support for serializing and deserializing Kotlin classes and data classes. It lets Jackson infer constructor parameter names and work with single-constructor classes without requiring explicit property name annotations or default constructors."
+./metadata/org.jline/jline/index.json:13:    "description": "JLine is a Java library for building interactive command-line applications with terminal abstraction, line editing, history, and completion support. The jline bundle packages the core JLine modules, including terminal, reader, builtins, console, style, and remote shell components.",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:9:    "description" : "Provides Bouncy Castle Java APIs for PKIX, CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It targets JDK 1.5 through JDK 1.8 and is typically used alongside a JCE/JCA provider such as Bouncy Castle's cryptography provider.",
+./metadata/com.graphql-java/java-dataloader/index.json:9:    "description" : "Java DataLoader is a Java 8 port of Facebook's DataLoader that batches and caches data-fetching operations behind a simple API. It is commonly used to reduce N+1 fetch overhead, especially in GraphQL Java applications.",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:36:    "description" : "Jackson Databind provides general-purpose data binding and tree-model APIs for Jackson on top of the core streaming API. It converts between JSON and Java objects and can also work with other data formats when compatible parsers and generators are available.",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:9:    "description" : "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and X.509 certificate generation on JDK 1.8 and later. It is typically used with a JCE/JCA provider such as Bouncy Castle to build and process public-key infrastructure and related cryptographic message formats.",
+./metadata/com.itextpdf/kernel/index.json:9:    "description" : "The iText kernel module provides the core low-level PDF engine for reading, writing, and manipulating PDF documents in Java. It exposes the foundational PDF object model and processing APIs that higher-level iText modules build on.",
+./metadata/org.jboss.narayana.jta/jta/index.json:9:    "description" : "Narayana JTA provides a Java Transaction API implementation built on the Narayana transaction manager. It coordinates transactional work and recovery across local resources, application servers, and XA-capable systems.",
+./metadata/org.apache.yetus/audience-annotations/index.json:16:    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience."
+./metadata/com.graphql-java/graphql-java/index.json:12:    "description": "GraphQL Java is a Java implementation of GraphQL. It provides APIs to define a schema and execute GraphQL queries against it.",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:12:    "description": "Bouncy Castle PKIX provides Java APIs for CMS, PKCS, EAC, TSP, CMP, CRMF, OCSP, and certificate generation. It supports parsing, creating, and processing PKIX- and certificate-related cryptographic structures on JDK 1.5 and later.",
+./metadata/org.objenesis/objenesis/index.json:9:    "description" : "Objenesis is a Java library for instantiating objects without invoking their constructors. It is commonly used by serialization, proxying, and mocking frameworks that need to create objects beyond standard reflection.",
+./metadata/javax.activation/javax.activation-api/index.json:10:    "description": "JavaBeans Activation Framework API defines the javax.activation types for describing data sources, determining MIME types, and dispatching data to content handlers. It provides the standard activation API that other libraries use to work with arbitrary data without bundling the implementation classes.",
+./metadata/com.itextpdf/forms/index.json:9:    "description" : "The iText forms module provides APIs for creating, reading, and modifying interactive PDF forms and their fields. It supports AcroForm and XFA processing, including field value updates, annotations, and form flattening.",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:42:    "description" : "Jackson Core provides the core abstractions and streaming JSON parser and generator implementation for Jackson. It lets Java applications read and write JSON incrementally with a low-level token-based API."
+./metadata/com.graphql-java/graphql-java-extended-scalars/index.json:9:    "description" : "This library adds extended scalar types for graphql-java beyond the GraphQL built-in scalars. It provides reusable scalars such as dates, times, UUIDs, JSON-like values, and constrained numeric types for GraphQL schemas.",
+./metadata/com.graphql-java/graphql-java-extended-validation/index.json:12:    "description": "This library adds extended validation for fields, arguments, and input values in graphql-java schemas. It provides directive-based constraints and validation rules that enforce allowable values during GraphQL execution.",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:16:    "description": "Provides the Jakarta Servlet 4.0 specification API as a JBoss-packaged artifact for Java web applications. It defines the standard server-side interfaces for handling HTTP requests, responses, and related web container interactions."
+./metadata/javax.activation/activation/index.json:9:    "description" : "JavaBeans Activation Framework provides a standard API for detecting data types, accessing arbitrary data through DataSource abstractions, and locating content handlers for that data. It is commonly used by JavaMail to process MIME content and dispatch operations such as viewing, editing, or transferring data.",
+./metadata/com.itextpdf/layout/index.json:9:    "description" : "iText Layout provides iText Core's high-level layout API for building PDF documents with elements such as paragraphs, tables, lists, and images. It handles page-aware composition and formatting on top of iText's lower-level PDF engine.",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:9:    "description" : "This artifact packages the Kotlin compiler daemon implementation for use with the embeddable compiler. It runs compilation work in a separate process so build tools and IDE integrations can invoke Kotlin compilation out of process.",
+./metadata/com.itextpdf/svg/index.json:9:    "description" : "This iText module integrates SVG images into PDF creation and manipulation workflows. It parses and renders SVG content so it can be used within documents generated with iText.",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:10:    "description": "This artifact provides the @IgnoreJRERequirement annotation used by Animal Sniffer to mark code that should be excluded from JRE API compatibility checks. It lets libraries document members that intentionally rely on newer JDK APIs while still validating their minimum runtime requirements.",
+./metadata/org.hibernate/hibernate-core/index.json:20:    "description": "Hibernate Core is the main module of Hibernate ORM, providing object-relational mapping between Java domain models and relational databases. It implements Jakarta Persistence and adds native APIs for mapping, querying, caching, and managing persistence.",
+./metadata/org.hibernate/hibernate-core/index.json:44:    "description": "Hibernate Core is the main module of Hibernate ORM, providing object-relational mapping between Java domain models and relational databases. It implements JPA and adds native APIs for mapping, querying, caching, and managing persistence.",
+./metadata/log4j/log4j/index.json:11:    "description": "Apache Log4j 1.2 is a Java logging framework that lets applications route log events to appenders such as the console, files, sockets, JDBC, and JMS. It provides hierarchical loggers plus configurable layouts, filters, and XML or properties-based configuration.",
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:9:    "description" : "Provides the core Kotlin scripting runtime types, including standard script templates and dependency-resolution APIs used by Kotlin scripts. It supplies the classes that other Kotlin scripting components and hosts rely on to compile, configure, and run .kts scripts.",
+./metadata/com.itextpdf/io/index.json:9:    "description" : "Provides iText's core input/output layer for reading and writing binary data, images, colors, and other low-level resources used in PDF processing. It also includes font parsing and encoding support plus random-access stream utilities that higher-level iText modules build on.",
+./metadata/org.hibernate/hibernate-spatial/index.json:13:    "description": "Hibernate Spatial integrates Spatial/GIS data support into Hibernate ORM. It lets Hibernate map and query geospatial types and functions through supported spatial databases.",
+./metadata/org.hibernate/hibernate-spatial/index.json:31:    "description": "Hibernate Spatial integrates Spatial/GIS data support into Hibernate ORM. It lets Hibernate map and query geospatial types and functions through supported spatial databases.",
+./metadata/org.jvnet.staxex/stax-ex/index.json:9:    "description" : "stax-ex provides extensions to the JSR-173 StAX API for handling binary and streaming XML content in Java. It adds XMLStreamReader and XMLStreamWriter support that enables efficient access to data such as base64-backed content without unnecessary copying.",
+./metadata/com.sun.mail/jakarta.mail/index.json:13:    "description": "Jakarta Mail provides a Java API for composing, sending, receiving, and processing email messages. It models common mail concepts and includes protocol-specific support for internet mail standards such as SMTP, POP3, IMAP, and MIME.",
+./metadata/javax.cache/cache-api/index.json:8:    "description" : "JSR107 (JCache) defines the standard Java API and SPI for interacting with caches. It lets applications use a common caching abstraction while enabling providers to implement compatible cache integrations.",
+./metadata/javax.cache/cache-api/index.json:23:    "description" : "JSR107 (JCache) defines the standard Java API and SPI for interacting with caches. It lets applications use a common caching abstraction while enabling providers to implement compatible cache integrations.",
+./metadata/org.openjfx/javafx-base/index.json:9:    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:9:    "description" : "Kotlin Standard Library for JVM provides the core runtime classes, collections, and extension APIs used by Kotlin applications on the JVM. It supports common programming tasks such as text handling, sequences, and Java interoperability required by compiled Kotlin code.",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:9:    "description" : "This artifact provides the base classes and interfaces used to represent Google credentials in Java. It supports authorized identities, request metadata callbacks, and service account signing abstractions for authentication flows.",
+./metadata/org.liquibase/liquibase-core/index.json:16:    "description": "Liquibase helps developers track, version, and deploy database schema changes. It automatically orders and applies change sets, supports rollbacks, and integrates with build and CI/CD tools."
+./metadata/org.liquibase/liquibase-core/index.json:33:    "description": "Liquibase helps developers track, version, and deploy database schema changes. It automatically orders changes for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+./metadata/org.liquibase/liquibase-core/index.json:50:    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders change sets for deployment, supports rollbacks, and integrates with build and CI/CD tooling."
+./metadata/org.liquibase/liquibase-core/index.json:68:    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders migration scripts for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+./metadata/org.liquibase/liquibase-core/index.json:91:    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders migration scripts for deployment, supports rollbacks, and integrates with build and CI/CD tools."
+./metadata/org.liquibase/liquibase-core/index.json:107:    "description": "Liquibase tracks, versions, and deploys database schema changes for applications. It orders database change sets for deployment, supports rollbacks, and integrates with build and CI/CD tools.",
+./metadata/com.atomikos/transactions-api/index.json:9:    "description" : "Atomikos Transactions API defines the public interfaces and configuration contracts for Atomikos-managed distributed transactions, participants, and transactional resources. It also exposes recovery and logging abstractions used to coordinate two-phase commit and crash recovery.",
+./metadata/org.yaml/snakeyaml/index.json:9:    "description" : "SnakeYAML is a Java library for parsing and emitting YAML 1.1 documents. It lets applications load YAML into Java objects and serialize Java data structures back to YAML.",
+./metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:9:    "description" : "kotlin-reflect is Kotlin's optional JVM runtime reflection library, providing full support for the kotlin.reflect API and related reflection extensions. It lets applications inspect Kotlin classes, functions, properties, and types at runtime without requiring reflection support in deployments that do not use it.",
+./metadata/org.ehcache/ehcache/index.json:15:    "description": "Ehcache is an open source, standards-based Java cache that improves performance, reduces database load, and simplifies scalability. It supports both the Ehcache API and the JSR-107 cache API, with configurations ranging from in-process caches to larger tiered deployments."
+./metadata/com.atomikos/transactions/index.json:9:    "description" : "Atomikos Transactions Core provides the core transaction manager and two-phase commit coordination classes used for distributed transactions. It also includes recovery and log persistence components for durable transaction state and crash recovery.",
+
+exec
+/usr/bin/bash -lc "find . -path '*metadata*' -name '*.json' | head -80" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+./metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/index.json
+./metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/index.json
+./metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util/index.json
+./metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/reachability-metadata.json
+./metadata/com.github.ben-manes.caffeine/caffeine/3.1.2/reachability-metadata.json
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json
+./metadata/com.github.ben-manes.caffeine/caffeine/2.9.3/reachability-metadata.json
+./metadata/org.openjfx/javafx-base/index.json
+./metadata/org.openjfx/javafx-base/11.0.2/reachability-metadata.json
+./metadata/log4j/log4j/index.json
+./metadata/log4j/log4j/1.2.17/reachability-metadata.json
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json
+./metadata/org.bouncycastle/bcpkix-jdk15on/1.70/reachability-metadata.json
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json
+./metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json
+./metadata/org.bouncycastle/bcpkix-jdk15to18/1.77/reachability-metadata.json
+./metadata/io.zipkin.zipkin2/zipkin/index.json
+./metadata/io.zipkin.zipkin2/zipkin/2.23.2/reachability-metadata.json
+./metadata/io.opencensus/opencensus-api/0.31.1/reachability-metadata.json
+./metadata/io.opencensus/opencensus-api/index.json
+./metadata/org.ehcache/ehcache/index.json
+./metadata/org.ehcache/ehcache/3.10.8-jakarta/reachability-metadata.json
+./metadata/org.jvnet.staxex/stax-ex/index.json
+./metadata/org.jvnet.staxex/stax-ex/1.8/reachability-metadata.json
+./metadata/org.jline/jline-terminal/index.json
+./metadata/org.jline/jline/index.json
+./metadata/org.jline/jline/3.21.0/reachability-metadata.json
+./metadata/org.jline/jline-console/index.json
+./metadata/org.jline/jline-terminal-jna/index.json
+./metadata/org.jline/jline-terminal-jna/3.20.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-log-annotation-processor/2.28.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json
+./metadata/org.apache.activemq/activemq-broker/index.json
+./metadata/org.apache.activemq/activemq-broker/6.0.0/reachability-metadata.json
+./metadata/org.apache.activemq/activemq-broker/5.18.1/reachability-metadata.json
+./metadata/org.apache.activemq/activemq-client/index.json
+./metadata/org.apache.activemq/activemq-client/6.0.0/reachability-metadata.json
+./metadata/org.apache.activemq/activemq-client/5.18.1/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-jms-client/2.36.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-jms-client/2.28.0/reachability-metadata.json
+./metadata/org.apache.activemq/artemis-jms-client/index.json
+./metadata/org.apache.activemq/artemis-jms-client/2.29.0/reachability-metadata.json
+./metadata/org.yaml/snakeyaml/index.json
+./metadata/org.yaml/snakeyaml/1.32/reachability-metadata.json
+./metadata/com.itextpdf/io/index.json
+./metadata/com.itextpdf/io/8.0.3/reachability-metadata.json
+./metadata/com.itextpdf/svg/index.json
+./metadata/com.itextpdf/svg/8.0.3/reachability-metadata.json
+./metadata/com.itextpdf/layout/index.json
+./metadata/com.itextpdf/layout/8.0.3/reachability-metadata.json
+./metadata/com.itextpdf/forms/index.json
+./metadata/com.itextpdf/forms/8.0.3/reachability-metadata.json
+./metadata/com.itextpdf/kernel/index.json
+./metadata/com.itextpdf/kernel/8.0.3/reachability-metadata.json
+./metadata/com.google.j2objc/j2objc-annotations/index.json
+./metadata/com.google.j2objc/j2objc-annotations/1.3/reachability-metadata.json
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/2.17.2/reachability-metadata.json
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/reachability-metadata.json
+./metadata/org.jetbrains.kotlin/kotlin-reflect/index.json
+./metadata/org.jetbrains.kotlin/kotlin-reflect/1.7.10/reachability-metadata.json
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/reachability-metadata.json
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/reachability-metadata.json
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/reachability-metadata.json
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.pom | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-parent</artifactId>
+    <version>37</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.commons</groupId>
+  <artifactId>commons-lang3</artifactId>
+  <version>3.4</version>
+  <name>Apache Commons Lang</name>
+
+  <inceptionYear>2001</inceptionYear>
+  <description>
+  Apache Commons Lang, a package of Java utility classes for the
+  classes that are in java.lang's hierarchy, or are considered to be so
+  standard as to justify existence in java.lang.
+  </description>
+
+  <url>http://commons.apache.org/proper/commons-lang/</url>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.apache.org/jira/browse/LANG</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/lang/tags/LANG_3_4</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/lang/tags/LANG_3_4</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/proper/lang/tags/LANG_3_4</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Daniel Rall</name>
+      <id>dlr</id>
+      <email>dlr@finemaltcoding.com</email>
+      <organization>CollabNet, Inc.</organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Stephen Colebourne</name>
+      <id>scolebourne</id>
+      <email>scolebourne@joda.org</email>
+      <organization>SITA ATS Ltd</organization>
+      <timezone>0</timezone>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Henri Yandell</name>
+      <id>bayard</id>
+      <email>bayard@apache.org</email>
+      <organization />
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Steven Caswell</name>
+      <id>scaswell</id>
+      <email>stevencaswell@apache.org</email>
+      <organization />
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+      <timezone>-5</timezone>
+    </developer>
+    <developer>
+      <name>Robert Burrell Donkin</name>
+      <id>rdonkin</id>
+      <email>rdonkin@apache.org</email>
+      <organization />
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Gary D. Gregory</name>
+      <id>ggregory</id>
+      <email>ggregory@apache.org</email>
+      <timezone>-5</timezone>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Fredrik Westermarck</name>
+      <id>fredrik</id>
+      <email />
+      <organization />
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>James Carman</name>
+      <id>jcarman</id>
+      <email>jcarman@apache.org</email>
+      <organization>Carman Consulting, Inc.</organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Niall Pemberton</name>
+      <id>niallp</id>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Matt Benson</name>
+      <id>mbenson</id>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Joerg Schaible</name>
+      <id>joehni</id>
+      <email>joerg.schaible@gmx.de</email>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <name>Oliver Heger</name>
+      <id>oheger</id>
+      <email>oheger@apache.org</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Paul Benedict</name>
+      <id>pbenedict</id>
+      <email>pbenedict@apache.org</email>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Benedikt Ritter</name>
+      <id>britter</id>
+      <email>britter@apache.org</email>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Duncan Jones</name>
+      <id>djones</id>
+      <email>djones@apache.org</email>
+      <timezone>0</timezone>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>C. Scott Ananian</name>
+    </contributor>
+    <contributor>
+      <name>Chris Audley</name>
+    </contributor>
+    <contributor>
+      <name>Stephane Bailliez</name>
+    </contributor>
+    <contributor>
+      <name>Michael Becke</name>
+    </contributor>
+    <contributor>
+      <name>Benjamin Bentmann</name>
+    </contributor>
+    <contributor>
+      <name>Ola Berg</name>
+    </contributor>
+    <contributor>
+      <name>Nathan Beyer</name>
+    </contributor>
+    <contributor>
+      <name>Stefan Bodewig</name>
+    </contributor>
+    <contributor>
+      <name>Janek Bogucki</name>
+    </contributor>
+    <contributor>
+      <name>Mike Bowler</name>
+    </contributor>
+    <contributor>
+      <name>Sean Brown</name>
+    </contributor>
+    <contributor>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/ | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/commons-lang.git | rg '3[._-]?4|LANG_3_4|commons-lang3-3.4|rel/commons-lang-3.4'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 211ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/commons/commons-lang3/3.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/commons/commons-lang3/3.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="commons-lang3-3.4-javadoc.jar" title="commons-lang3-3.4-javadoc.jar">commons-lang3-3.4-javadoc.jar</a>                     2015-04-03 12:31   1093607      
+<a href="commons-lang3-3.4-javadoc.jar.asc" title="commons-lang3-3.4-javadoc.jar.asc">commons-lang3-3.4-javadoc.jar.asc</a>                 2015-04-03 12:31       819      
+<a href="commons-lang3-3.4-javadoc.jar.md5" title="commons-lang3-3.4-javadoc.jar.md5">commons-lang3-3.4-javadoc.jar.md5</a>                 2015-04-03 12:31        32      
+<a href="commons-lang3-3.4-javadoc.jar.sha1" title="commons-lang3-3.4-javadoc.jar.sha1">commons-lang3-3.4-javadoc.jar.sha1</a>                2015-04-03 12:31        40      
+<a href="commons-lang3-3.4-sources.jar" title="commons-lang3-3.4-sources.jar">commons-lang3-3.4-sources.jar</a>                     2015-04-03 12:31    487156      
+<a href="commons-lang3-3.4-sources.jar.asc" title="commons-lang3-3.4-sources.jar.asc">commons-lang3-3.4-sources.jar.asc</a>                 2015-04-03 12:31       819      
+<a href="commons-lang3-3.4-sources.jar.md5" title="commons-lang3-3.4-sources.jar.md5">commons-lang3-3.4-sources.jar.md5</a>                 2015-04-03 12:31        32      
+<a href="commons-lang3-3.4-sources.jar.sha1" title="commons-lang3-3.4-sources.jar.sha1">commons-lang3-3.4-sources.jar.sha1</a>                2015-04-03 12:31        40      
+<a href="commons-lang3-3.4-test-sources.jar" title="commons-lang3-3.4-test-sources.jar">commons-lang3-3.4-test-sources.jar</a>                2015-04-03 12:31    380490      
+<a href="commons-lang3-3.4-test-sources.jar.asc" title="commons-lang3-3.4-test-sources.jar.asc">commons-lang3-3.4-test-sources.jar.asc</a>            2015-04-03 12:31       819      
+<a href="commons-lang3-3.4-test-sources.jar.md5" title="commons-lang3-3.4-test-sources.jar.md5">commons-lang3-3.4-test-sources.jar.md5</a>            2015-04-03 12:31        32      
+<a href="commons-lang3-3.4-test-sources.jar.sha1" title="commons-lang3-3.4-test-sources.jar.sha1">commons-lang3-3.4-test-sources.jar.sha1</a>           2015-04-03 12:31        40      
+<a href="commons-lang3-3.4-tests.jar" title="commons-lang3-3.4-tests.jar">commons-lang3-3.4-tests.jar</a>                       2015-04-03 12:31    699694      
+<a href="commons-lang3-3.4-tests.jar.asc" title="commons-lang3-3.4-tests.jar.asc">commons-lang3-3.4-tests.jar.asc</a>                   2015-04-03 12:31       819      
+<a href="commons-lang3-3.4-tests.jar.md5" title="commons-lang3-3.4-tests.jar.md5">commons-lang3-3.4-tests.jar.md5</a>                   2015-04-03 12:31        32      
+<a href="commons-lang3-3.4-tests.jar.sha1" title="commons-lang3-3.4-tests.jar.sha1">commons-lang3-3.4-tests.jar.sha1</a>                  2015-04-03 12:31        40      
+<a href="commons-lang3-3.4.jar" title="commons-lang3-3.4.jar">commons-lang3-3.4.jar</a>                             2015-04-03 12:31    434678      
+<a href="commons-lang3-3.4.jar.asc" title="commons-lang3-3.4.jar.asc">commons-lang3-3.4.jar.asc</a>                         2015-04-03 12:31       819      
+<a href="commons-lang3-3.4.jar.md5" title="commons-lang3-3.4.jar.md5">commons-lang3-3.4.jar.md5</a>                         2015-04-03 12:31        32      
+<a href="commons-lang3-3.4.jar.sha1" title="commons-lang3-3.4.jar.sha1">commons-lang3-3.4.jar.sha1</a>                        2015-04-03 12:31        40      
+<a href="commons-lang3-3.4.pom" title="commons-lang3-3.4.pom">commons-lang3-3.4.pom</a>                             2015-04-03 12:31     22183      
+<a href="commons-lang3-3.4.pom.asc" title="commons-lang3-3.4.pom.asc">commons-lang3-3.4.pom.asc</a>                         2015-04-03 12:31       819      
+<a href="commons-lang3-3.4.pom.md5" title="commons-lang3-3.4.pom.md5">commons-lang3-3.4.pom.md5</a>                         2015-04-03 12:31        32      
+<a href="commons-lang3-3.4.pom.sha1" title="commons-lang3-3.4.pom.sha1">commons-lang3-3.4.pom.sha1</a>                        2015-04-03 12:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 356ms:
+ee6890bb3e8509c81c4043456a625accb1edbb01	refs/tags/LANG_2_1_RC2^{}
+3ff4c82f1c4c3f181b522ca343131586d76d9f2b	refs/tags/LANG_2_1_RC5
+66f134a91b390be3d0e78f745ce1e1b3cda58395	refs/tags/LANG_2_1_RC6
+c3daec0d23340a25a189d9abe9a465ab4d6e3db5	refs/tags/LANG_2_2_DEV_STYLE^{}
+cc233441f2fe80dd658c7bea1c0384675afce55f	refs/tags/LANG_2_2_RC1^{}
+4132dc124ae67dab2399c66341a0859656005643	refs/tags/LANG_2_2_RC2
+737913a241ae3b88bb8f0ea1a7df161efb6348f6	refs/tags/LANG_2_2_RC2^{}
+3bb9813740dad26344fbd542d97f5b1742309f6c	refs/tags/LANG_2_3
+005d96af297b9d9655a6c34a7be2c5b30af9ccba	refs/tags/LANG_2_3_RC1
+930519ee19e7f21b7041f034b2e6583beded98fe	refs/tags/LANG_2_4_RC3
+983e00fd63f2dd9a8febb040d7990134da4d9766	refs/tags/LANG_2_5_RC1^{}
+c14519efdfd54051802926ad8682225b089342ef	refs/tags/LANG_2_5_RC2^{}
+0fe6a434f20b45c027badd89bd393dd4085cf1f2	refs/tags/LANG_2_6^{}
+3506995282e6ac346299f4d9f28fa57bccf0cd28	refs/tags/LANG_2_6_REPACKAGED
+631f3ce18ed9ae276b34105592a13f32df200260	refs/tags/LANG_2_6_REPACKAGED^{}
+2d4a7dacc4d345fc159e545477aabdcf0bafcfc4	refs/tags/LANG_3_0_1_RC2
+a8c480e341eb1cb5252c66fc8ee434ed8b84be1d	refs/tags/LANG_3_0_RC3
+a1e6cbe6c11345dceb2aad28c2645734c0499106	refs/tags/LANG_3_1_RC1
+4a405000e1b20349aec378465f5d661e48a2cbad	refs/tags/LANG_3_2
+ad3473c60a0c9ee2d5430721ec869f1f122c9989	refs/tags/LANG_3_2_1
+37f8fe84d934a92fe784c62e706b7aacf6fa4f97	refs/tags/LANG_3_3^{}
+27676c620a7dbb3365311c3424554c603bb11470	refs/tags/LANG_3_3_1^{}
+ee7933cecc58770675b9bdd49d1d4de167e5ddaf	refs/tags/LANG_3_4
+4777c3a5e4291af2420db57d008152c70c4a8f24	refs/tags/LANG_3_4^{}
+8986834c8235ed4d2fae28eece4755252443a1e5	refs/tags/LANG_3_4_RC1
+456836307569dd8b20847ec4c9551518cb8f087c	refs/tags/LANG_3_4_RC1^{}
+444b5ec324dffd86fa782d4c5a8fb17fe36ac522	refs/tags/LANG_3_4_RC2
+980ba4455bada55d2b768f5a05e0ac5274571cb8	refs/tags/LANG_3_4_RC2^{}
+f2637a1ebde9c2adb140d9d234b7917224dad167	refs/tags/LANG_3_5
+84b3172d5c7897c855722a5fa6ec8348a75cf7c5	refs/tags/LANG_3_6_RC1
+360198dfb6a2d68f1702f616dfacee34ae0541bb	refs/tags/LANG_3_6_RC3^{}
+9801e2fb9fcbf7ddd19221e9342608940d778f8c	refs/tags/LANG_3_8^{}
+9801e2fb9fcbf7ddd19221e9342608940d778f8c	refs/tags/LANG_3_8_RC1^{}
+d9025c182d595ab34b25b27b0164d32394933b08	refs/tags/STRUTS_1_1_B2^{}
+d055e5417a22bd53fad71ce5a36335346a868e54	refs/tags/commons-lang-3.11-RC2
+2e3420009ac7387150057be6f4f369992ae046f5	refs/tags/commons-lang-3.14.0-RC1
+6a2a10d88885343cfe37c1d9fa42ac5edda7cab5	refs/tags/commons-lang-3.16.0-RC1^{}
+b29c72f5981a27487234d8fbf5c73827e292cc29	refs/tags/commons-lang-3.18.0-RC2
+1d6289fe234eb2e5860fcb1f389cb3460c2cebe6	refs/tags/commons-lang-3.19.0-RC1
+5627b1c34bbd94ae8ea764b0f2f100e66da33e0a	refs/tags/commons-lang-3.20.0-RC2
+ca73bfdd99b391f85d52b24508dcd923134eb463	refs/tags/rel/commons-lang-3.16.0
+6a2a10d88885343cfe37c1d9fa42ac5edda7cab5	refs/tags/rel/commons-lang-3.16.0^{}
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4 commons-lang3-3.4-test-sources.jar
+web search: 
+web search: https://github.com/apache/commons-lang/tree/LANG_3_4
+codex
+Maven Central has version-specific `sources`, `test-sources`, and `javadoc` JARs for `3.4`, so I’ll use those as preferred artifact URLs. The repository root is the Apache Commons Lang GitHub repo, while the exact historical tag is `LANG_3_4`; no Kotlin or Scala language marker applies.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 14:14:16 GMT
+content-type: application/java-archive
+content-length: 487156
+cf-ray: 9f2e6ec37f0afcc9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1762391
+etag: "84e520d3e1c4e1f404caefae011753a1"
+last-modified: Fri, 03 Apr 2015 12:32:29 GMT
+x-checksum-md5: 84e520d3e1c4e1f404caefae011753a1
+x-checksum-sha1: b49dafc9cfef24c356827f322e773e7c26725dd2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 14:14:16 GMT
+content-type: application/java-archive
+content-length: 1093607
+cf-ray: 9f2e6ec37989bc60-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1011324
+etag: "65239c082a113091614409cf459dc14d"
+last-modified: Fri, 03 Apr 2015 12:31:15 GMT
+x-checksum-md5: 65239c082a113091614409cf459dc14d
+x-checksum-sha1: 75412eddcd8c9f4d338e09966b6df2f01c7df9ff
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/apache/commons-lang/tree/LANG_3_4 | sed -n '1,20p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 395ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 14:14:17 GMT
+content-type: application/java-archive
+content-length: 380490
+cf-ray: 9f2e6ec379ffdc8b-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "087442c9c78e3dbf0ce57a44b9dbea82"
+last-modified: Fri, 03 Apr 2015 12:32:34 GMT
+x-checksum-md5: 087442c9c78e3dbf0ce57a44b9dbea82
+x-checksum-sha1: 93b3acc34f150c81d9b06603841c7a0f23602d7b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 993ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 14:14:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"922ddea40264c64dfbbbe7e3d5c8e9a8"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=mRzbZ3YKnDJHGVqvBqU7TPioEgMqTMj2%2Fc%2FL2z%2FxqbU63%2FDukrtx81%2By8Kh8ZhYn6pExCVpLBTCX5sAt8ybWiXG0aNakZlNSOqqYdAZ7900doC401JaF3UBN5oEP50%2BFYaZSyeibRC98yucGoX20ZiZAokfbDsyHc36QcRAQ%2FKvT%2Bz7CikZizUjqHBdAuFIaeDGwpGHOUuG0bghA%2F4zVg5HjayS%2Fl4qNBzN7i4gvD0NavQDEbm9zTlTnaDCXhbIZvFRuUFbD3xLeBXI%2FQGiW7g%3D%3D--sbk9X2Fu2w8Dmsel--h6CpHJC4G%2B4rAqPB6dBbWw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.353265517.1777299256; expires=Tue, 27 Apr 2027 14:14:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 14:14:16 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 729B:26CA2B:19658121:131697BD:69EF6F38
+
+
+codex
+I’m updating the JSON with Maven artifact URLs for source, test source, and Javadoc, plus a root repository URL and a two-sentence description. No `language` field will be added because this is not a Kotlin or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+index 6d13b0d6782acf90db3d40677107291ae868b4e1..8de045b8aa68baa29ee97c051a75df3beef398cd
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-lang3:3.4"
++  "coordinates" : "org.apache.commons:commons-lang3:3.4",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-lang",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-javadoc.jar",
++  "description" : "Apache Commons Lang provides helper classes that extend core java.lang functionality, including utilities for strings, numbers, reflection, builders, ranges, tuples, and concurrency. It supplies reusable null-safe operations and small abstractions for common Java programming tasks that would otherwise require repeated boilerplate."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+index 6d13b0d6782acf90db3d40677107291ae868b4e1..8de045b8aa68baa29ee97c051a75df3beef398cd
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-lang3:3.4"
++  "coordinates" : "org.apache.commons:commons-lang3:3.4",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-lang",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-javadoc.jar",
++  "description" : "Apache Commons Lang provides helper classes that extend core java.lang functionality, including utilities for strings, numbers, reflection, builders, ranges, tuples, and concurrency. It supplies reusable null-safe operations and small abstractions for common Java programming tasks that would otherwise require repeated boilerplate."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.commons:commons-lang3:3.4",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar",
+  "repository-url": "https://github.com/apache/commons-lang",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-test-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-javadoc.jar",
+  "description": "Apache Commons Lang provides helper classes that extend core java.lang functionality, including utilities for strings, numbers, reflection, builders, ranges, tuples, and concurrency. It supplies reusable null-safe operations and small abstractions for common Java programming tasks that would otherwise require repeated boilerplate."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+index 6d13b0d6782acf90db3d40677107291ae868b4e1..8de045b8aa68baa29ee97c051a75df3beef398cd
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-lang3:3.4"
++  "coordinates" : "org.apache.commons:commons-lang3:3.4",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-lang",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-javadoc.jar",
++  "description" : "Apache Commons Lang provides helper classes that extend core java.lang functionality, including utilities for strings, numbers, reflection, builders, ranges, tuples, and concurrency. It supplies reusable null-safe operations and small abstractions for common Java programming tasks that would otherwise require repeated boilerplate."
+ }
+
+web search: 
+web search: https://github.com/apache/commons-lang/tree/LANG_3_4
+web search: 
+web search: repo.maven.apache.org/maven2 org/apache/commons/commons-lang3/3.4 commons-lang3-3.4-sources.jar commons-lang3-3.4-test-sources.jar commons-lang3-3.4-javadoc.jar
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json && git status --short -- build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.commons:commons-lang3:3.4",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar",
+  "repository-url" : "https://github.com/apache/commons-lang",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-test-sources.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-javadoc.jar",
+  "description" : "Apache Commons Lang provides helper classes that extend core java.lang functionality, including utilities for strings, numbers, reflection, builders, ranges, tuples, and concurrency. It supplies reusable null-safe operations and small abstractions for common Java programming tasks that would otherwise require repeated boilerplate."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+index 6d13b0d6782acf90db3d40677107291ae868b4e1..8de045b8aa68baa29ee97c051a75df3beef398cd
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-lang3:3.4"
++  "coordinates" : "org.apache.commons:commons-lang3:3.4",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-lang",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-javadoc.jar",
++  "description" : "Apache Commons Lang provides helper classes that extend core java.lang functionality, including utilities for strings, numbers, reflection, builders, ranges, tuples, and concurrency. It supplies reusable null-safe operations and small abstractions for common Java programming tasks that would otherwise require repeated boilerplate."
+ }
+
+web search: 
+web search: Central Repository org apache commons commons-lang3 3.4 commons-lang3-3.4-sources.jar
+codex
+Updated [org.apache.commons-commons-lang3-3.4.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json:1).
+
+I used Maven Central’s exact `3.4` source, test-source, and Javadoc artifacts, and set the repository to Apache’s `commons-lang` GitHub repo. No `language` field was added because this is not Kotlin or Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.4/?utm_source=openai))
+
+Validated the file with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+index 6d13b0d6782acf90db3d40677107291ae868b4e1..8de045b8aa68baa29ee97c051a75df3beef398cd
+--- a/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
++++ b/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.commons:commons-lang3:3.4"
++  "coordinates" : "org.apache.commons:commons-lang3:3.4",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-lang",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4-javadoc.jar",
++  "description" : "Apache Commons Lang provides helper classes that extend core java.lang functionality, including utilities for strings, numbers, reflection, builders, ranges, tuples, and concurrency. It supplies reusable null-safe operations and small abstractions for common Java programming tasks that would otherwise require repeated boilerplate."
+ }
+
+2026-04-27T14:14:51.221107Z ERROR codex_core::session: failed to record rollout items: thread 019dcf49-d54f-71e2-86d6-af8a64394bb4 not found
+tokens used
+76,907
+Updated [org.apache.commons-commons-lang3-3.4.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9/build/discovered-artifact-metadata/org.apache.commons-commons-lang3-3.4.json:1).
+
+I used Maven Central’s exact `3.4` source, test-source, and Javadoc artifacts, and set the repository to Apache’s `commons-lang` GitHub repo. No `language` field was added because this is not Kotlin or Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.4/?utm_source=openai))
+
+Validated the file with `jq`.
+Ran agent for org.apache.commons:commons-lang3:3.4 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9/build/agent-artifact-discovery-logs/org.apache.commons-commons-lang3-3.4.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2401-236580b9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 18s
+9 actionable tasks: 4 executed, 5 from cache
