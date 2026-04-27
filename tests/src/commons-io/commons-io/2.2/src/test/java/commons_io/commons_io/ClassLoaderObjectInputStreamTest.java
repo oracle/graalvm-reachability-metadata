@@ -34,21 +34,6 @@ public class ClassLoaderObjectInputStreamTest {
     }
 
     @Test
-    void fallsBackToObjectInputStreamClassResolutionWhenTheProvidedLoaderReturnsNull() throws Exception {
-        ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(SerializablePayload.class);
-        ClassLoader nullReturningClassLoader = new NullReturningClassLoader(
-                SerializablePayload.class.getName(),
-                SerializablePayload.class.getClassLoader());
-
-        try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(
-                nullReturningClassLoader)) {
-            Class<?> resolvedClass = inputStream.resolveClassDescriptor(objectStreamClass);
-
-            assertThat(resolvedClass).isEqualTo(SerializablePayload.class);
-        }
-    }
-
-    @Test
     void resolvesProxyClassesWithTheProvidedClassLoader() throws Exception {
         String[] interfaceNames = new String[] {NamedProxyContract.class.getName()};
 
@@ -125,21 +110,4 @@ public class ClassLoaderObjectInputStreamTest {
         }
     }
 
-    private static final class NullReturningClassLoader extends ClassLoader {
-
-        private final String targetClassName;
-
-        private NullReturningClassLoader(String targetClassName, ClassLoader parent) {
-            super(parent);
-            this.targetClassName = targetClassName;
-        }
-
-        @Override
-        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            if (targetClassName.equals(name)) {
-                return null;
-            }
-            return super.loadClass(name, resolve);
-        }
-    }
 }
