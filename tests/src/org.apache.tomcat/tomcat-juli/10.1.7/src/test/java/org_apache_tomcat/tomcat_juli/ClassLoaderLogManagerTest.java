@@ -35,7 +35,7 @@ public class ClassLoaderLogManagerTest {
         Files.writeString(loggingProperties, loggingProperties(), StandardCharsets.UTF_8);
 
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        URL[] urls = { temporaryDirectory.toUri().toURL() };
+        URL[] urls = {temporaryDirectory.toUri().toURL()};
         try (URLClassLoader configurationClassLoader = new URLClassLoader(urls, getClass().getClassLoader())) {
             Thread.currentThread().setContextClassLoader(configurationClassLoader);
             ClassLoaderLogManager logManager = newLogManager();
