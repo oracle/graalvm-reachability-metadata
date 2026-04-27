@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AopallianceTest {
     @Test
@@ -80,6 +81,28 @@ public class AopallianceTest {
 
         assertThat(result).isEqualTo("short-circuited cached");
         assertThat(invocation.proceedCalls()).isZero();
+    }
+
+    @Test
+    void methodInterceptorPropagatesCheckedTargetException() {
+        final Exception targetFailure = new Exception("target unavailable");
+        final List<String> events = new ArrayList<>();
+        final CountingMethodInvocation invocation = new CountingMethodInvocation(new Object(), new Object[] {"command"},
+                arguments -> {
+                    throw targetFailure;
+                });
+        final MethodInterceptor interceptor = methodInvocation -> {
+            events.add("before");
+            try {
+                return methodInvocation.proceed();
+            } finally {
+                events.add("after");
+            }
+        };
+
+        assertThatThrownBy(() -> interceptor.invoke(invocation)).isSameAs(targetFailure);
+        assertThat(events).containsExactly("before", "after");
+        assertThat(invocation.proceedCalls()).isEqualTo(1);
     }
 
     @Test
