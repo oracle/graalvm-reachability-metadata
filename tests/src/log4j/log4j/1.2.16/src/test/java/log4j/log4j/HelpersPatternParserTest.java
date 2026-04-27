@@ -6,6 +6,12 @@
  */
 package log4j.log4j;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.CodeSource;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -36,6 +42,47 @@ public class HelpersPatternParserTest {
         assertThat(formattedByHelperParser).isEqualTo(expected);
     }
 
+    @Test
+    void fallsBackToIso8601WhenDatePatternIsInvalidInFreshClassLoader() throws Exception {
+        try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[] { codeSourceUrl(PatternLayout.class) }, ClassLoader.getPlatformClassLoader())) {
+            Thread thread = Thread.currentThread();
+            ClassLoader previousContextClassLoader = thread.getContextClassLoader();
+            thread.setContextClassLoader(isolatedLoader);
+            try {
+                Class<?> patternLayoutClass = Class.forName("org.apache.log4j.PatternLayout", true, isolatedLoader);
+                Class<?> categoryClass = Class.forName("org.apache.log4j.Category", true, isolatedLoader);
+                Class<?> priorityClass = Class.forName("org.apache.log4j.Priority", true, isolatedLoader);
+                Class<?> loggerClass = Class.forName("org.apache.log4j.Logger", true, isolatedLoader);
+                Class<?> levelClass = Class.forName("org.apache.log4j.Level", true, isolatedLoader);
+                Class<?> loggingEventClass = Class.forName("org.apache.log4j.spi.LoggingEvent", true, isolatedLoader);
+
+                Object logger = loggerClass.getMethod("getLogger", String.class).invoke(null, HelpersPatternParserTest.class.getName());
+                Object infoLevel = levelClass.getField("INFO").get(null);
+                Constructor<?> loggingEventConstructor = loggingEventClass.getConstructor(
+                        String.class,
+                        categoryClass,
+                        long.class,
+                        priorityClass,
+                        Object.class,
+                        Throwable.class);
+                Object event = loggingEventConstructor.newInstance(
+                        HelpersPatternParserTest.class.getName(),
+                        logger,
+                        123456789L,
+                        infoLevel,
+                        "pattern-parser-fallback",
+                        null);
+
+                String expected = formatInIsolatedLoader(patternLayoutClass, loggingEventClass, event, "%d{ISO8601} %m");
+                String formatted = formatInIsolatedLoader(patternLayoutClass, loggingEventClass, event, "%d{invalid[} %m");
+
+                assertThat(formatted).isEqualTo(expected);
+            } finally {
+                thread.setContextClassLoader(previousContextClassLoader);
+            }
+        }
+    }
+
     private static String formatWithHelperParser(String pattern, LoggingEvent event) {
         StringBuffer output = new StringBuffer();
         PatternConverter converter = new PatternParser(pattern).parse();
@@ -44,5 +91,17 @@ public class HelpersPatternParserTest {
             converter = converter.next;
         }
         return output.toString();
+    }
+
+    private static String formatInIsolatedLoader(Class<?> patternLayoutClass, Class<?> loggingEventClass, Object event, String pattern) throws Exception {
+        Object layout = patternLayoutClass.getConstructor(String.class).newInstance(pattern);
+        Method formatMethod = patternLayoutClass.getMethod("format", loggingEventClass);
+        return (String) formatMethod.invoke(layout, event);
+    }
+
+    private static URL codeSourceUrl(Class<?> type) {
+        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
+        assertThat(codeSource).isNotNull();
+        return codeSource.getLocation();
     }
 }
