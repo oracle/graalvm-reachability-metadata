@@ -6,21 +6,29 @@
  */
 package velocity.velocity_dep;
 
+import junit.framework.Test;
 import junit.framework.TestResult;
-import junit.textui.TestRunner;
-import org.junit.jupiter.api.Test;
+import org.apache.velocity.test.ParserTestCase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ParserTestCaseTest {
-    @Test
-    void validatesParserErrorsWhenLoadedByJUnit() throws Exception {
-        TestRunner runner = new TestRunner();
+    @org.junit.jupiter.api.Test
+    void validatesParserErrorsThroughUpstreamSuite() {
+        Test suite = ParserTestCase.suite();
+        TestResult result = new TestResult();
 
-        TestResult result = runner.start(new String[] {"org.apache.velocity.test.ParserTestCase"});
+        suite.run(result);
 
         assertThat(result.errorCount()).isZero();
         assertThat(result.failureCount()).isZero();
         assertThat(result.runCount()).isEqualTo(3);
+    }
+
+    @org.junit.jupiter.api.Test
+    void validatesEachParserCaseDirectly() throws Throwable {
+        new ParserTestCase("testEquals").runBare();
+        new ParserTestCase("testMacro").runBare();
+        new ParserTestCase("testArgs").runBare();
     }
 }
