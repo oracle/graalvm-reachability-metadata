@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -211,6 +212,19 @@ public class Snakeyaml_engineTest {
         assertThat(loaded).containsEntry("truth", "true");
         assertThat(loaded).containsEntry("count", "7");
         assertThat(loaded).containsEntry("empty", "null");
+    }
+
+    @Test
+    void constructsApplicationValuesForCustomTags() {
+        Tag durationTag = new Tag("!duration");
+        LoadSettings settings = LoadSettings.builder()
+                .setTagConstructors(Map.of(durationTag, node -> Duration.parse(((ScalarNode) node).getValue())))
+                .build();
+        String document = "timeout: !duration PT5S\n";
+
+        Map<Object, Object> loaded = asMap(new Load(settings).loadFromString(document));
+
+        assertThat(loaded).containsEntry("timeout", Duration.ofSeconds(5));
     }
 
     @Test
