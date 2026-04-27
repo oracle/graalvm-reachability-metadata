@@ -1,0 +1,174 @@
+Starting a Gradle Daemon, 1 busy and 4 incompatible and 47 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dce8b-cf33-7423-b424-115ff198f056
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.bouncycastle:bcprov-jdk18on:1.77
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.77".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3/metadata/org.bouncycastle/bcprov-jdk18on/index.json
+- Entry selector: "metadata-version" = "1.77"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.77".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-sources.jar
+- repository-url: https://github.com/bcgit/bc-java
+- test-code-url: https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-javadoc.jar
+- description: Bouncy Castle Provider is a Java cryptography library that implements cryptographic algorithms for the Bouncy Castle APIs. This JDK 1.8+ artifact supplies the JCE/JCA provider and lightweight cryptography API used to add those algorithms to Java applications.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.77
+- Entry test-version: 1.77
+codex
+I’ll verify the version-specific URLs against Maven/GitHub, then update only blank or absent fields in the selected `index.json` entry.
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/
+codex
+The Maven directory confirms the exact `1.77` sources and Javadoc jars are published, and I don’t see a Maven test artifact there. I’m checking the local JSON now to see whether any target field is actually missing before editing.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.77\") | {\"metadata-version\", \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", description, language}' metadata/org.bouncycastle/bcprov-jdk18on/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3
+ succeeded in 0ms:
+{
+  "metadata-version": "1.77",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-sources.jar",
+  "repository-url": "https://github.com/bcgit/bc-java",
+  "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-javadoc.jar",
+  "description": "Bouncy Castle Provider is a Java cryptography library that implements cryptographic algorithms for the Bouncy Castle APIs. This JDK 1.8+ artifact supplies the JCE/JCA provider and lightweight cryptography API used to add those algorithms to Java applications.",
+  "language": null
+}
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.bouncycastle/bcprov-jdk18on/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3
+ succeeded in 0ms:
+?? metadata/org.bouncycastle/bcprov-jdk18on/index.json
+
+web search: 
+web search: https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test
+web search: 
+web search: 'sources.jar'
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/
+codex
+The selected entry already has non-blank source, repository, test, documentation, and description values. The only missing target field is `language`, and this artifact is a Java cryptography provider rather than a Kotlin or Scala-specific library, so I’m removing the null `language` key to leave it absent.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.bouncycastle/bcprov-jdk18on/index.json | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.77",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-sources.jar",
+     6	    "repository-url" : "https://github.com/bcgit/bc-java",
+     7	    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77-javadoc.jar",
+     9	    "description" : "Bouncy Castle Provider is a Java cryptography library that implements cryptographic algorithms for the Bouncy Castle APIs. This JDK 1.8+ artifact supplies the JCE/JCA provider and lightweight cryptography API used to add those algorithms to Java applications.",
+    10	    "tested-versions" : [
+    11	      "1.77"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.bouncycastle"
+    15	    ]
+    16	  }
+    17	]
+
+web search: 
+web search: bcprov-jdk18on 1.77 Maven sources javadoc jar
+web search: 
+web search: https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test
+web search: 
+web search: https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/
+web search: 
+web search: 
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.bouncycastle/bcprov-jdk18on/index.json && git diff -- metadata/org.bouncycastle/bcprov-jdk18on/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3
+ succeeded in 0ms:
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77 bcprov-jdk18on-1.77-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/
+web search: 
+web search: https://github.com/bcgit/bc-java/tree/r1rv77/prov/src/test
+codex
+Verified the selected `metadata-version: "1.77"` entry in [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3/metadata/org.bouncycastle/bcprov-jdk18on/index.json:4). It already contains non-blank source, repository, test, documentation, and two-sentence description fields, and `language` is absent, which is correct because this is not a Kotlin or Scala-specific library.
+
+Maven Central confirms the exact `1.77` sources and Javadoc jars, and GitHub confirms the canonical repo plus the `r1rv77/prov/src/test` test path. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/))
+
+No file edit was needed. I validated the JSON with `jq empty`.
+2026-04-27T10:46:57.001049Z ERROR codex_core::session: failed to record rollout items: thread 019dce8b-cf33-7423-b424-115ff198f056 not found
+tokens used
+52,317
+Verified the selected `metadata-version: "1.77"` entry in [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3/metadata/org.bouncycastle/bcprov-jdk18on/index.json:4). It already contains non-blank source, repository, test, documentation, and two-sentence description fields, and `language` is absent, which is correct because this is not a Kotlin or Scala-specific library.
+
+Maven Central confirms the exact `1.77` sources and Javadoc jars, and GitHub confirms the canonical repo plus the `r1rv77/prov/src/test` test path. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/))
+
+No file edit was needed. I validated the JSON with `jq empty`.
+Ran agent for org.bouncycastle:bcprov-jdk18on:1.77 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3/build/agent-url-discovery-logs/org.bouncycastle-bcprov-jdk18on-1.77.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/1500-9d71a3f3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 59s
+9 actionable tasks: 1 executed, 8 up-to-date
