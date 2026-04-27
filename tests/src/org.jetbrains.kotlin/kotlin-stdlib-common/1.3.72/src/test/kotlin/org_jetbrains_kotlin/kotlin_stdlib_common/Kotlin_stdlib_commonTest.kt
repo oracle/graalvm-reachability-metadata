@@ -16,6 +16,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.startCoroutine
 import kotlin.coroutines.suspendCoroutine
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 public class KotlinStdlibCommonTest {
@@ -186,6 +187,28 @@ public class KotlinStdlibCommonTest {
     }
 
     @Test
+    fun delegatedPropertiesTrackInitializationObservationAndVetoes() {
+        val settings = DelegatedSettings()
+
+        assertThatThrownBy { settings.requiredLimit }
+            .isInstanceOf(IllegalStateException::class.java)
+
+        settings.requiredLimit = 5
+        assertThat(settings.requiredLimit).isEqualTo(5)
+
+        settings.mode = "active"
+        settings.mode = "paused"
+        assertThat(settings.mode).isEqualTo("paused")
+        assertThat(settings.modeChanges).containsExactly("idle->active", "active->paused")
+
+        settings.priority = 3
+        settings.priority = -1
+        settings.priority = 8
+        assertThat(settings.priority).isEqualTo(8)
+        assertThat(settings.rejectedPriorities).containsExactly(-1)
+    }
+
+    @Test
     fun preconditionsThrowTheDocumentedExceptionTypes() {
         assertThatThrownBy { require(false) { "invalid argument" } }
             .isInstanceOf(IllegalArgumentException::class.java)
@@ -260,6 +283,23 @@ public class KotlinStdlibCommonTest {
     private data class Transaction(val category: String, val amount: Int)
 
     private data class Score(val name: String, val points: Int)
+
+    private class DelegatedSettings {
+        val modeChanges = mutableListOf<String>()
+        val rejectedPriorities = mutableListOf<Int>()
+
+        var requiredLimit: Int by Delegates.notNull()
+        var mode: String by Delegates.observable("idle") { _, oldValue, newValue ->
+            modeChanges += "$oldValue->$newValue"
+        }
+        var priority: Int by Delegates.vetoable(0) { _, _, newValue ->
+            (newValue >= 0).also { accepted ->
+                if (!accepted) {
+                    rejectedPriorities += newValue
+                }
+            }
+        }
+    }
 
     private data class NamedElement(val label: String) : AbstractCoroutineContextElement(NamedElement) {
         companion object Key : CoroutineContext.Key<NamedElement>
