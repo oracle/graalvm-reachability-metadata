@@ -191,6 +191,26 @@ public class Android_jsonTest {
     }
 
     @Test
+    void expandsArraysWithNullPaddingForSparseIndexedWrites() throws JSONException {
+        final JSONArray values = new JSONArray();
+
+        values.put(2, "tail");
+        values.put(0, "head");
+        values.put(4, false);
+
+        assertThat(values.length()).isEqualTo(5);
+        assertThat(values.getString(0)).isEqualTo("head");
+        assertThat(values.isNull(1)).isTrue();
+        assertThat(values.opt(1)).isNull();
+        assertThat(values.getString(2)).isEqualTo("tail");
+        assertThat(values.isNull(3)).isTrue();
+        assertThat(values.getBoolean(4)).isFalse();
+        assertThat(values.optString(1, "gap")).isEqualTo("gap");
+        assertThat(values.optBoolean(3, true)).isTrue();
+        assertThat(values.toString()).isEqualTo("[\"head\",null,\"tail\",null,false]");
+    }
+
+    @Test
     void buildsArraysFromCollectionsAndComparesNestedArrayContent() throws JSONException {
         final List<Object> sourceValues = new ArrayList<>();
         sourceValues.add("alpha");
