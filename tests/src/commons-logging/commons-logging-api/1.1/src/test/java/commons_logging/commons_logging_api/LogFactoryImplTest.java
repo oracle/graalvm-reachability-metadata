@@ -90,6 +90,25 @@ public class LogFactoryImplTest {
         }
     }
 
+    @Test
+    void skipsUnavailableDiscoveryCandidatesBeforeSelectingLogger() {
+        String previousDiagnosticsDestination = System.getProperty(DIAGNOSTICS_DEST_PROPERTY);
+        System.setProperty(DIAGNOSTICS_DEST_PROPERTY, "STDOUT");
+
+        LogFactoryImpl factory = null;
+        try {
+            factory = new LogFactoryImpl();
+
+            Log log = factory.getInstance("default.discovery.logger");
+
+            assertThat(log).isNotNull();
+            assertThat(log.isInfoEnabled()).isTrue();
+        } finally {
+            release(factory);
+            restoreProperty(DIAGNOSTICS_DEST_PROPERTY, previousDiagnosticsDestination);
+        }
+    }
+
     private static void release(LogFactoryImpl factory) {
         if (factory != null) {
             factory.release();
