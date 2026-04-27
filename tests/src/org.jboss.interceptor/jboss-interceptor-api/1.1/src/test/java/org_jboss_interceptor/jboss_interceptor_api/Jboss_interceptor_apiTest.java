@@ -82,6 +82,43 @@ public class Jboss_interceptor_apiTest {
     }
 
     @Test
+    public void aroundInvokeInterceptorCanRecoverFromProceedExceptionAndRecordFailure() throws Exception {
+        Map<String, Object> contextData = new LinkedHashMap<>();
+        contextData.put("events", new ArrayList<String>());
+
+        ChainedInvocationContext invocationContext = new ChainedInvocationContext(
+                null,
+                null,
+                new Object[0],
+                contextData,
+                null,
+                Arrays.asList(
+                        currentContext -> new ExceptionTranslatingInterceptor().aroundInvoke(currentContext),
+                        currentContext -> new CleanupInterceptor().aroundInvoke(currentContext)
+                ),
+                currentContext -> {
+                    eventsFrom(currentContext.getContextData()).add("target:throw");
+                    throw new OperationFailureException("database unavailable");
+                }
+        );
+
+        Object result = invocationContext.proceed();
+
+        assertThat(result).isEqualTo("fallback:database unavailable");
+        assertThat(invocationContext.getContextData())
+                .containsEntry("failureType", OperationFailureException.class.getSimpleName())
+                .containsEntry("cleanedUp", true);
+        assertThat(eventsFrom(invocationContext.getContextData()))
+                .containsExactly(
+                        "translate:before",
+                        "cleanup:before",
+                        "target:throw",
+                        "cleanup:finally",
+                        "translate:recovered"
+                );
+    }
+
+    @Test
     public void aroundTimeoutChainUsesTimerAndContextDataWithoutAConcreteInterceptorContainer() throws Exception {
         TimerDescriptor timer = new TimerDescriptor("nightly-cleanup", 5);
         Map<String, Object> contextData = new LinkedHashMap<>();
@@ -250,6 +287,42 @@ public class Jboss_interceptor_apiTest {
                     + context.getContextData().get("traceId")
                     + "|"
                     + context.getContextData().get("methodName");
+        }
+    }
+
+    private static final class ExceptionTranslatingInterceptor {
+
+        @AroundInvoke
+        Object aroundInvoke(InvocationContext context) throws Exception {
+            eventsFrom(context.getContextData()).add("translate:before");
+            try {
+                return context.proceed();
+            } catch (OperationFailureException exception) {
+                context.getContextData().put("failureType", exception.getClass().getSimpleName());
+                eventsFrom(context.getContextData()).add("translate:recovered");
+                return "fallback:" + exception.getMessage();
+            }
+        }
+    }
+
+    private static final class CleanupInterceptor {
+
+        @AroundInvoke
+        Object aroundInvoke(InvocationContext context) throws Exception {
+            eventsFrom(context.getContextData()).add("cleanup:before");
+            try {
+                return context.proceed();
+            } finally {
+                context.getContextData().put("cleanedUp", true);
+                eventsFrom(context.getContextData()).add("cleanup:finally");
+            }
+        }
+    }
+
+    private static final class OperationFailureException extends Exception {
+
+        private OperationFailureException(String message) {
+            super(message);
         }
     }
 
