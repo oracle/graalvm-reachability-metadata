@@ -8,7 +8,7 @@ package org_springframework.spring_jcl;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_jclTest {
+public class Spring_jclTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
