@@ -7,13 +7,20 @@
 package javax_jcr.jcr;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.Item;
+import javax.jcr.ItemVisitor;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.InvalidSerializedDataException;
 import javax.jcr.ItemExistsException;
@@ -21,23 +28,36 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.LoginException;
 import javax.jcr.MergeException;
 import javax.jcr.NamespaceException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.ReferentialIntegrityException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
+import javax.jcr.lock.Lock;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NodeDefinition;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.observation.Event;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
+import javax.jcr.util.TraversingItemVisitor;
 import javax.jcr.version.OnParentVersionAction;
+import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
+import javax.jcr.version.VersionHistory;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -248,6 +268,31 @@ public class JcrTest {
         assertThat(ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW).isEqualTo(3);
     }
 
+    @Test
+    void traversingItemVisitorWalksRepositoryItemsBreadthFirst() throws Exception {
+        TestNode root = new TestNode("root");
+        root.addProperty("title");
+        root.addNode(new TestNode("assets").addProperty("mimeType"));
+        root.addNode(new TestNode("notes").addProperty("summary"));
+
+        RecordingTraversingItemVisitor visitor = new RecordingTraversingItemVisitor(true, 2);
+        root.accept(visitor);
+
+        assertThat(visitor.events()).containsExactly(
+                "enter node root @0",
+                "leave node root @0",
+                "enter property title @1",
+                "leave property title @1",
+                "enter node assets @1",
+                "leave node assets @1",
+                "enter node notes @1",
+                "leave node notes @1",
+                "enter property mimeType @2",
+                "leave property mimeType @2",
+                "enter property summary @2",
+                "leave property summary @2");
+    }
+
     private record PropertyTypeCase(int value, String name) {
     }
 
@@ -259,5 +304,611 @@ public class JcrTest {
 
     private interface RepositoryExceptionFactory {
         RepositoryException create(String message, Throwable rootCause);
+    }
+
+    private static final class RecordingTraversingItemVisitor extends TraversingItemVisitor {
+        private final List<String> events = new ArrayList<>();
+
+        RecordingTraversingItemVisitor(boolean breadthFirst, int maxLevel) {
+            super(breadthFirst, maxLevel);
+        }
+
+        List<String> events() {
+            return events;
+        }
+
+        @Override
+        protected void entering(Property property, int level) throws RepositoryException {
+            events.add("enter property " + property.getName() + " @" + level);
+        }
+
+        @Override
+        protected void entering(Node node, int level) throws RepositoryException {
+            events.add("enter node " + node.getName() + " @" + level);
+        }
+
+        @Override
+        protected void leaving(Property property, int level) throws RepositoryException {
+            events.add("leave property " + property.getName() + " @" + level);
+        }
+
+        @Override
+        protected void leaving(Node node, int level) throws RepositoryException {
+            events.add("leave node " + node.getName() + " @" + level);
+        }
+    }
+
+    private abstract static class TestItem implements Item {
+        private final String name;
+
+        TestItem(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getPath() {
+            return "/" + name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public Item getAncestor(int depth) {
+            throw unsupported();
+        }
+
+        @Override
+        public Node getParent() {
+            throw unsupported();
+        }
+
+        @Override
+        public int getDepth() {
+            return 0;
+        }
+
+        @Override
+        public Session getSession() {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean isNew() {
+            return false;
+        }
+
+        @Override
+        public boolean isModified() {
+            return false;
+        }
+
+        @Override
+        public boolean isSame(Item otherItem) {
+            return this == otherItem;
+        }
+
+        @Override
+        public void save() {
+            throw unsupported();
+        }
+
+        @Override
+        public void refresh(boolean keepChanges) {
+            throw unsupported();
+        }
+
+        @Override
+        public void remove() {
+            throw unsupported();
+        }
+    }
+
+    private static final class TestNode extends TestItem implements Node {
+        private final List<TestProperty> properties = new ArrayList<>();
+        private final List<TestNode> nodes = new ArrayList<>();
+
+        TestNode(String name) {
+            super(name);
+        }
+
+        TestNode addProperty(String name) {
+            properties.add(new TestProperty(name));
+            return this;
+        }
+
+        TestNode addNode(TestNode node) {
+            nodes.add(node);
+            return this;
+        }
+
+        @Override
+        public boolean isNode() {
+            return true;
+        }
+
+        @Override
+        public void accept(ItemVisitor visitor) throws RepositoryException {
+            visitor.visit(this);
+        }
+
+        @Override
+        public NodeIterator getNodes() {
+            return new TestNodeIterator(nodes);
+        }
+
+        @Override
+        public PropertyIterator getProperties() {
+            return new TestPropertyIterator(properties);
+        }
+
+        @Override
+        public boolean hasNodes() {
+            return !nodes.isEmpty();
+        }
+
+        @Override
+        public boolean hasProperties() {
+            return !properties.isEmpty();
+        }
+
+        @Override
+        public Node addNode(String relPath) {
+            throw unsupported();
+        }
+
+        @Override
+        public Node addNode(String relPath, String primaryNodeTypeName) {
+            throw unsupported();
+        }
+
+        @Override
+        public void orderBefore(String srcChildRelPath, String destChildRelPath) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, Value value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, Value value, int type) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, Value[] values) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, Value[] values, int type) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, String[] values) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, String[] values, int type) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, String value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, String value, int type) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, InputStream value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, boolean value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, double value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, long value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, Calendar value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property setProperty(String name, Node value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Node getNode(String relPath) {
+            throw unsupported();
+        }
+
+        @Override
+        public NodeIterator getNodes(String namePattern) {
+            throw unsupported();
+        }
+
+        @Override
+        public Property getProperty(String relPath) {
+            throw unsupported();
+        }
+
+        @Override
+        public PropertyIterator getProperties(String namePattern) {
+            throw unsupported();
+        }
+
+        @Override
+        public Item getPrimaryItem() {
+            throw unsupported();
+        }
+
+        @Override
+        public String getUUID() {
+            throw unsupported();
+        }
+
+        @Override
+        public int getIndex() {
+            throw unsupported();
+        }
+
+        @Override
+        public PropertyIterator getReferences() {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean hasNode(String relPath) {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean hasProperty(String relPath) {
+            throw unsupported();
+        }
+
+        @Override
+        public NodeType getPrimaryNodeType() {
+            throw unsupported();
+        }
+
+        @Override
+        public NodeType[] getMixinNodeTypes() {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean isNodeType(String nodeTypeName) {
+            throw unsupported();
+        }
+
+        @Override
+        public void addMixin(String mixinName) {
+            throw unsupported();
+        }
+
+        @Override
+        public void removeMixin(String mixinName) {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean canAddMixin(String mixinName) {
+            throw unsupported();
+        }
+
+        @Override
+        public NodeDefinition getDefinition() {
+            throw unsupported();
+        }
+
+        @Override
+        public Version checkin() {
+            throw unsupported();
+        }
+
+        @Override
+        public void checkout() {
+            throw unsupported();
+        }
+
+        @Override
+        public void doneMerge(Version version) {
+            throw unsupported();
+        }
+
+        @Override
+        public void cancelMerge(Version version) {
+            throw unsupported();
+        }
+
+        @Override
+        public void update(String srcWorkspace) {
+            throw unsupported();
+        }
+
+        @Override
+        public NodeIterator merge(String srcWorkspace, boolean bestEffort) {
+            throw unsupported();
+        }
+
+        @Override
+        public String getCorrespondingNodePath(String workspaceName) {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean isCheckedOut() {
+            throw unsupported();
+        }
+
+        @Override
+        public void restore(String versionName, boolean removeExisting) {
+            throw unsupported();
+        }
+
+        @Override
+        public void restore(Version version, boolean removeExisting) {
+            throw unsupported();
+        }
+
+        @Override
+        public void restore(Version version, String relPath, boolean removeExisting) {
+            throw unsupported();
+        }
+
+        @Override
+        public void restoreByLabel(String versionLabel, boolean removeExisting) {
+            throw unsupported();
+        }
+
+        @Override
+        public VersionHistory getVersionHistory() {
+            throw unsupported();
+        }
+
+        @Override
+        public Version getBaseVersion() {
+            throw unsupported();
+        }
+
+        @Override
+        public Lock lock(boolean isDeep, boolean isSessionScoped) {
+            throw unsupported();
+        }
+
+        @Override
+        public Lock getLock() {
+            throw unsupported();
+        }
+
+        @Override
+        public void unlock() {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean holdsLock() {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean isLocked() {
+            throw unsupported();
+        }
+    }
+
+    private static final class TestProperty extends TestItem implements Property {
+        TestProperty(String name) {
+            super(name);
+        }
+
+        @Override
+        public boolean isNode() {
+            return false;
+        }
+
+        @Override
+        public void accept(ItemVisitor visitor) throws RepositoryException {
+            visitor.visit(this);
+        }
+
+        @Override
+        public void setValue(Value value) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(Value[] values) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(String value) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(String[] values) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(InputStream value) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(long value) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(double value) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(Calendar value) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(boolean value) {
+            throw unsupported();
+        }
+
+        @Override
+        public void setValue(Node value) {
+            throw unsupported();
+        }
+
+        @Override
+        public Value getValue() {
+            throw unsupported();
+        }
+
+        @Override
+        public Value[] getValues() {
+            throw unsupported();
+        }
+
+        @Override
+        public String getString() {
+            throw unsupported();
+        }
+
+        @Override
+        public InputStream getStream() {
+            throw unsupported();
+        }
+
+        @Override
+        public long getLong() {
+            throw unsupported();
+        }
+
+        @Override
+        public double getDouble() {
+            throw unsupported();
+        }
+
+        @Override
+        public Calendar getDate() {
+            throw unsupported();
+        }
+
+        @Override
+        public boolean getBoolean() {
+            throw unsupported();
+        }
+
+        @Override
+        public Node getNode() {
+            throw unsupported();
+        }
+
+        @Override
+        public long getLength() {
+            throw unsupported();
+        }
+
+        @Override
+        public long[] getLengths() {
+            throw unsupported();
+        }
+
+        @Override
+        public PropertyDefinition getDefinition() {
+            throw unsupported();
+        }
+
+        @Override
+        public int getType() {
+            throw unsupported();
+        }
+    }
+
+    private abstract static class TestRangeIterator<T> {
+        private final List<T> items;
+        private int position;
+
+        TestRangeIterator(List<? extends T> items) {
+            this.items = new ArrayList<>(items);
+        }
+
+        public boolean hasNext() {
+            return position < items.size();
+        }
+
+        public Object next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return items.get(position++);
+        }
+
+        public void skip(long skipNum) {
+            if (skipNum < 0 || skipNum > items.size() - position) {
+                throw new NoSuchElementException();
+            }
+            position += (int) skipNum;
+        }
+
+        public long getSize() {
+            return items.size();
+        }
+
+        public long getPosition() {
+            return position;
+        }
+    }
+
+    private static final class TestNodeIterator extends TestRangeIterator<Node> implements NodeIterator {
+        TestNodeIterator(List<? extends Node> nodes) {
+            super(nodes);
+        }
+
+        @Override
+        public Node nextNode() {
+            return (Node) next();
+        }
+    }
+
+    private static final class TestPropertyIterator extends TestRangeIterator<Property> implements PropertyIterator {
+        TestPropertyIterator(List<? extends Property> properties) {
+            super(properties);
+        }
+
+        @Override
+        public Property nextProperty() {
+            return (Property) next();
+        }
+    }
+
+    private static UnsupportedOperationException unsupported() {
+        return new UnsupportedOperationException("not needed by this test");
     }
 }
