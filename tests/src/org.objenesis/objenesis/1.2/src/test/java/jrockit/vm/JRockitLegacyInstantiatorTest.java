@@ -6,7 +6,9 @@
  */
 package jrockit.vm;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Method;
 
@@ -20,6 +22,7 @@ public class JRockitLegacyInstantiatorTest {
     @Test
     void createsInstancesThroughJRockitMemSystemAdapter() throws Throwable {
         resetJRockitLegacyStaticState();
+        Assertions.assertThat(resolveLegacyClassLiteral("java.lang.Class")).isEqualTo(Class.class);
         MemSystem.reset();
         JRockitLegacyTarget.constructorCalls = 0;
 
@@ -30,6 +33,13 @@ public class JRockitLegacyInstantiatorTest {
         Assertions.assertThat(MemSystem.requestedType()).isEqualTo(JRockitLegacyTarget.class);
         Assertions.assertThat(((JRockitLegacyTarget) instance).value).isEqualTo("created by MemSystem");
         Assertions.assertThat(JRockitLegacyTarget.constructorCalls).isEqualTo(1);
+    }
+
+    private static Class<?> resolveLegacyClassLiteral(String className) throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(JRockitLegacyInstantiator.class, MethodHandles.lookup());
+        MethodHandle legacyClassResolver = lookup.findStatic(JRockitLegacyInstantiator.class, "class$",
+            MethodType.methodType(Class.class, String.class));
+        return (Class<?>) legacyClassResolver.invokeExact(className);
     }
 
     private static void resetJRockitLegacyStaticState() throws ReflectiveOperationException {
