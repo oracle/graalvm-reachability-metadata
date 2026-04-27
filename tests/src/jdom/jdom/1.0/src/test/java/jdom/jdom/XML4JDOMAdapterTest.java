@@ -35,4 +35,27 @@ public class XML4JDOMAdapterTest {
         assertThat(child.getAttribute("name")).isEqualTo("parsed");
         assertThat(child.getTextContent()).isEqualTo("text");
     }
+
+    @Test
+    void getDocumentInstallsErrorHandlerWhenValidationIsEnabled() throws Exception {
+        XML4JDOMAdapter adapter = new XML4JDOMAdapter();
+        String xml = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <!DOCTYPE root [
+                  <!ELEMENT root (child)>
+                  <!ELEMENT child (#PCDATA)>
+                  <!ATTLIST child name CDATA #REQUIRED>
+                ]>
+                <root>
+                  <child name="validated">text</child>
+                </root>
+                """;
+
+        Document document = adapter.getDocument(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)), true);
+        Element child = (Element) document.getDocumentElement().getElementsByTagName("child").item(0);
+
+        assertThat(document.getDocumentElement().getTagName()).isEqualTo("root");
+        assertThat(child.getAttribute("name")).isEqualTo("validated");
+        assertThat(child.getTextContent()).isEqualTo("text");
+    }
 }
