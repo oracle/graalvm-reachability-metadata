@@ -21,6 +21,7 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.eclipse.aether.spi.connector.ArtifactDownload;
 import org.eclipse.aether.spi.connector.ArtifactUpload;
 import org.eclipse.aether.spi.connector.MetadataDownload;
 import org.eclipse.aether.spi.connector.MetadataUpload;
+import org.eclipse.aether.spi.connector.checksum.ChecksumPolicy;
 import org.eclipse.aether.spi.connector.layout.RepositoryLayout;
 import org.eclipse.aether.spi.connector.transport.AbstractTransporter;
 import org.eclipse.aether.spi.connector.transport.GetTask;
@@ -48,6 +50,7 @@ import org.eclipse.aether.spi.log.Logger;
 import org.eclipse.aether.spi.log.LoggerFactory;
 import org.eclipse.aether.spi.log.NullLoggerFactory;
 import org.eclipse.aether.transfer.ArtifactTransferException;
+import org.eclipse.aether.transfer.ChecksumFailureException;
 import org.eclipse.aether.transfer.MetadataTransferException;
 import org.eclipse.aether.transfer.TransferCancelledException;
 import org.eclipse.aether.transfer.TransferEvent;
@@ -349,6 +352,40 @@ public class Aether_spiTest {
     }
 
     @Test
+    void checksumPolicyCallbacksCanDistinguishOfficialMatchesFailuresAndRetries() {
+        StrictChecksumPolicy policy = new StrictChecksumPolicy();
+
+        assertThat(policy.onChecksumMatch("SHA-1", ChecksumPolicy.KIND_UNOFFICIAL)).isFalse();
+        assertThat(policy.onChecksumMatch("SHA-256", ChecksumPolicy.KIND_UNOFFICIAL + 1)).isTrue();
+        assertThat(policy.acceptedMatches).containsExactly("SHA-256");
+
+        ChecksumFailureException mismatch = new ChecksumFailureException("expected-sha1", "actual-sha1");
+        ChecksumFailureException thrownMismatch = assertThrows(ChecksumFailureException.class,
+                () -> policy.onChecksumMismatch("SHA-1", 1, mismatch));
+        assertThat(thrownMismatch).isSameAs(mismatch);
+        assertThat(thrownMismatch.getExpected()).isEqualTo("expected-sha1");
+        assertThat(thrownMismatch.getActual()).isEqualTo("actual-sha1");
+        assertThat(policy.mismatches).containsExactly("SHA-1:1");
+
+        ChecksumFailureException checksumError = new ChecksumFailureException("metadata checksum unavailable");
+        policy.onChecksumError("MD5", ChecksumPolicy.KIND_UNOFFICIAL, checksumError);
+        ChecksumFailureException noMoreChecksums = assertThrows(ChecksumFailureException.class,
+                policy::onNoMoreChecksums);
+        assertThat(noMoreChecksums).isSameAs(checksumError);
+        assertThat(policy.errors).containsExactly("MD5:" + ChecksumPolicy.KIND_UNOFFICIAL);
+
+        ChecksumFailureException retryableFailure = new ChecksumFailureException(true,
+                "temporary checksum stream failure", null);
+        ChecksumFailureException fatalFailure = new ChecksumFailureException(false,
+                "permanent checksum stream failure", null);
+        assertThat(policy.onTransferChecksumFailure(retryableFailure)).isTrue();
+        policy.onTransferRetry();
+        assertThat(policy.onTransferChecksumFailure(fatalFailure)).isFalse();
+        assertThat(policy.transferFailures).containsExactly(retryableFailure, fatalFailure);
+        assertThat(policy.retryCount).isEqualTo(1);
+    }
+
+    @Test
     void nullLoggerFactoryAlwaysSuppliesNoOpLogger() {
         Logger defaultLogger = NullLoggerFactory.INSTANCE.getLogger("any.category");
 
@@ -459,6 +496,55 @@ public class Aether_spiTest {
         public void transportStarted(long resumeOffset, long dataLength) throws TransferCancelledException {
             started++;
             throw new TransferCancelledException("cancelled before transfer");
+        }
+    }
+
+    private static final class StrictChecksumPolicy implements ChecksumPolicy {
+        private final List<String> acceptedMatches = new ArrayList<>();
+        private final List<String> mismatches = new ArrayList<>();
+        private final List<String> errors = new ArrayList<>();
+        private final List<ChecksumFailureException> transferFailures = new ArrayList<>();
+        private ChecksumFailureException lastError;
+        private int retryCount;
+
+        @Override
+        public boolean onChecksumMatch(String algorithm, int kind) {
+            if (kind == KIND_UNOFFICIAL) {
+                return false;
+            }
+            acceptedMatches.add(algorithm);
+            return true;
+        }
+
+        @Override
+        public void onChecksumMismatch(String algorithm, int kind, ChecksumFailureException exception)
+                throws ChecksumFailureException {
+            mismatches.add(algorithm + ":" + kind);
+            throw exception;
+        }
+
+        @Override
+        public void onChecksumError(String algorithm, int kind, ChecksumFailureException exception) {
+            errors.add(algorithm + ":" + kind);
+            lastError = exception;
+        }
+
+        @Override
+        public void onNoMoreChecksums() throws ChecksumFailureException {
+            if (lastError != null) {
+                throw lastError;
+            }
+        }
+
+        @Override
+        public void onTransferRetry() {
+            retryCount++;
+        }
+
+        @Override
+        public boolean onTransferChecksumFailure(ChecksumFailureException exception) {
+            transferFailures.add(exception);
+            return exception.isRetryWorthy();
         }
     }
 
