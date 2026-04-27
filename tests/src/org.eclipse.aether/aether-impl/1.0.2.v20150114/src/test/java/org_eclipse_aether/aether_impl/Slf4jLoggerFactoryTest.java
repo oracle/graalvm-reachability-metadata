@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 public class Slf4jLoggerFactoryTest {
     @Test
     void reportsSlf4jAvailabilityDuringFactoryInitialization() {
-        Boolean slf4jAvailable = Slf4jLoggerFactory.isSlf4jAvailable();
+        boolean slf4jAvailable = Slf4jLoggerFactory.isSlf4jAvailable();
 
-        assertThat(slf4jAvailable).isNotNull();
+        assertThat(slf4jAvailable).isTrue();
         assertThat(new Slf4jLoggerFactory()).isNotNull();
     }
 }
