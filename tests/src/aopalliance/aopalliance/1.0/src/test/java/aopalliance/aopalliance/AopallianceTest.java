@@ -131,6 +131,24 @@ public class AopallianceTest {
     }
 
     @Test
+    void constructorInterceptorCanReplaceConstructedObjectAfterProceed() throws Throwable {
+        final CountingConstructorInvocation invocation = new CountingConstructorInvocation(new Object[] {"worker", 1},
+                arguments -> new CreatedComponent((String) arguments[0], (Integer) arguments[1]));
+        final ConstructorInterceptor interceptor = constructorInvocation -> {
+            final CreatedComponent constructed = (CreatedComponent) constructorInvocation.proceed();
+            return new CreatedComponent(constructed.name() + "-instrumented", constructed.retries() + 2);
+        };
+
+        final Object constructed = interceptor.construct(invocation);
+
+        assertThat(constructed).isInstanceOfSatisfying(CreatedComponent.class, component -> {
+            assertThat(component.name()).isEqualTo("worker-instrumented");
+            assertThat(component.retries()).isEqualTo(3);
+        });
+        assertThat(invocation.proceedCalls()).isEqualTo(1);
+    }
+
+    @Test
     void methodInterceptorChainRunsInNestedOrderAndTransformsResult() throws Throwable {
         final List<String> events = new ArrayList<>();
         final List<MethodInterceptor> interceptors = List.of(
