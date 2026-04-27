@@ -10,11 +10,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.MapBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 public class MapBuilderDefaultDynamicAccessTest {
     @BeforeEach
@@ -23,13 +25,8 @@ public class MapBuilderDefaultDynamicAccessTest {
     }
 
     @Test
-    void instantiatesConfiguredMapImplementationWhenStartingABuilder() {
-        MapBuilder builder = MapBuilder.defaultImpl().newBuilder(ConstructorTrackingMap.class);
-
-        Map<String, Object> counts = builder.start()
-                .put("alpha", 1)
-                .put("beta", 2)
-                .build();
+    void readsMultiEntryJsonObjectIntoConfiguredMapImplementation() throws Exception {
+        Map<String, Object> counts = jsonWithConfiguredMaps().mapFrom("{\"alpha\":1,\"beta\":2}");
 
         assertThat(counts).isInstanceOf(ConstructorTrackingMap.class);
         assertThat(counts).containsEntry("alpha", 1).containsEntry("beta", 2);
@@ -37,24 +34,45 @@ public class MapBuilderDefaultDynamicAccessTest {
     }
 
     @Test
-    void instantiatesConfiguredMapImplementationForEmptyMaps() throws Exception {
-        MapBuilder builder = MapBuilder.defaultImpl().newBuilder(ConstructorTrackingMap.class);
-
-        Map<String, Object> counts = builder.emptyMap();
+    void readsEmptyJsonObjectIntoConfiguredMapImplementation() throws Exception {
+        Map<String, Object> counts = jsonWithConfiguredMaps().mapFrom("{}");
 
         assertThat(counts).isInstanceOf(ConstructorTrackingMap.class).isEmpty();
         assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
     }
 
     @Test
-    void instantiatesConfiguredMapImplementationForSingletonMaps() throws Exception {
-        MapBuilder builder = MapBuilder.defaultImpl().newBuilder(ConstructorTrackingMap.class);
-
-        Map<String, Object> counts = builder.singletonMap("only", 99);
+    void readsSingletonJsonObjectIntoConfiguredMapImplementation() throws Exception {
+        Map<String, Object> counts = jsonWithConfiguredMaps().mapFrom("{\"only\":99}");
 
         assertThat(counts).isInstanceOf(ConstructorTrackingMap.class);
         assertThat(counts).containsEntry("only", 99);
         assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void retainsConfiguredMapImplementationWhenRestartingABusyBuilder() {
+        MapBuilder builder = configuredMapBuilder();
+
+        Map<String, Object> counts = builder.start()
+                .put("discarded", true)
+                .start()
+                .put("kept", true)
+                .build();
+
+        assertThat(counts).isInstanceOf(ConstructorTrackingMap.class);
+        assertThat(counts).containsOnly(entry("kept", true));
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(2);
+    }
+
+    private static JSON jsonWithConfiguredMaps() {
+        return JSON.builder()
+                .mapBuilder(configuredMapBuilder())
+                .build();
+    }
+
+    private static MapBuilder configuredMapBuilder() {
+        return MapBuilder.defaultImpl().newBuilder(ConstructorTrackingMap.class);
     }
 
     public static final class ConstructorTrackingMap extends LinkedHashMap<String, Object> {
