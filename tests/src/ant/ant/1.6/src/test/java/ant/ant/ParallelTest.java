@@ -8,6 +8,7 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
@@ -16,7 +17,9 @@ import org.junit.jupiter.api.Test;
 
 public class ParallelTest {
     @Test
-    void scalesThreadCountFromAvailableProcessorsAndExecutesNestedTasks() {
+    void scalesThreadCountFromAvailableProcessorsAndExecutesNestedTasks() throws ReflectiveOperationException {
+        resetRuntimeClassCache();
+
         AtomicInteger executions = new AtomicInteger();
         Project project = new Project();
         project.init();
@@ -31,6 +34,12 @@ public class ParallelTest {
         parallel.execute();
 
         assertThat(executions).hasValue(2);
+    }
+
+    private static void resetRuntimeClassCache() throws ReflectiveOperationException {
+        Field runtimeClassCache = Parallel.class.getDeclaredField("class$java$lang$Runtime");
+        runtimeClassCache.setAccessible(true);
+        runtimeClassCache.set(null, null);
     }
 
     private static final class CountingTask extends Task {
