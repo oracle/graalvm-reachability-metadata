@@ -445,7 +445,7 @@ public class Aether_apiTest {
                 .setRequestType(TransferEvent.RequestType.GET)
                 .setTransferredBytes(32L)
                 .addTransferredBytes(16L)
-                .setDataBuffer(new byte[] { 1, 2, 3, 4 }, 1, 2)
+                .setDataBuffer(new byte[] {1, 2, 3, 4}, 1, 2)
                 .setException(failure)
                 .build();
         TransferEvent copiedEvent = new TransferEvent.Builder(session, resource)
