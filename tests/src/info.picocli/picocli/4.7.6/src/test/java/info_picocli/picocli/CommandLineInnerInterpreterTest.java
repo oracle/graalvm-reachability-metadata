@@ -9,7 +9,11 @@ package info_picocli.picocli;
 import java.io.ByteArrayInputStream;
 import java.io.Console;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -46,7 +50,7 @@ public class CommandLineInnerInterpreterTest {
     void readsInteractivePasswordWithoutEcho() throws Exception {
         PasswordCommand command = new PasswordCommand();
         InputStream originalIn = System.in;
-        ConsoleState consoleState = replaceSystemConsole(newUninitializedConsole());
+        ConsoleState consoleState = replaceSystemConsole(newConsoleReturning("s3cr3t".toCharArray()));
         System.setIn(new ByteArrayInputStream("s3cr3t\n".getBytes(StandardCharsets.UTF_8)));
         try {
             new CommandLine(command).parseArgs("--password");
@@ -58,8 +62,42 @@ public class CommandLineInnerInterpreterTest {
         assertThat(command.password).containsExactly('s', '3', 'c', 'r', '3', 't');
     }
 
-    private static Console newUninitializedConsole() throws Exception {
-        return (Console) unsafe().allocateInstance(Console.class);
+    private static Console newConsoleReturning(char[] password) throws Exception {
+        Unsafe unsafe = unsafe();
+        Object console = unsafe.allocateInstance(Class.forName("java.io.ProxyingConsole"));
+        putObjectField(unsafe, console, "delegate", newConsoleDelegate(password));
+        putObjectField(unsafe, console, "readLock", new Object());
+        putObjectField(unsafe, console, "writeLock", new Object());
+        return (Console) console;
+    }
+
+    private static Object newConsoleDelegate(char[] password) throws Exception {
+        Class<?> jdkConsole = Class.forName("jdk.internal.io.JdkConsole");
+        InvocationHandler delegate = (proxy, method, args) -> {
+            if ("readPassword".equals(method.getName())) {
+                return password;
+            }
+            if ("reader".equals(method.getName())) {
+                return new InputStreamReader(System.in);
+            }
+            if ("writer".equals(method.getName())) {
+                return new PrintWriter(System.out);
+            }
+            if ("charset".equals(method.getName())) {
+                return StandardCharsets.UTF_8;
+            }
+            if ("print".equals(method.getName()) || "println".equals(method.getName())
+                    || "format".equals(method.getName())) {
+                return proxy;
+            }
+            return null;
+        };
+        return Proxy.newProxyInstance(jdkConsole.getClassLoader(), new Class<?>[] {jdkConsole}, delegate);
+    }
+
+    private static void putObjectField(Unsafe unsafe, Object target, String fieldName, Object value) throws Exception {
+        Field field = target.getClass().getDeclaredField(fieldName);
+        unsafe.putObject(target, unsafe.objectFieldOffset(field), value);
     }
 
     private static ConsoleState replaceSystemConsole(Console console) throws Exception {
