@@ -35,7 +35,7 @@ public class AntClassLoaderTest {
     @Test
     void exercisesClassInitializationAndClassLoading(@TempDir Path temporaryDirectory) throws Exception {
         AntClassLoader.initializeClass(Project.class);
-        AntClassLoader.initializeClass(AntClassLoaderTest.class);
+        AntClassLoader.initializeClass(InitializationProbe.class);
 
         Path classesDirectory = temporaryDirectory.resolve("classes");
         Path fixtureClassFile = classesDirectory.resolve(FIXTURE_CLASS_RESOURCE);
@@ -89,6 +89,11 @@ public class AntClassLoaderTest {
         assertThat(inputStream).isNotNull();
         try (InputStream stream = inputStream) {
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+
+    public static final class InitializationProbe {
+        public InitializationProbe() {
         }
     }
 
