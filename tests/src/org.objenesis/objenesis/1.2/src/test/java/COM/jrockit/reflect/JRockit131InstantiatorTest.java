@@ -6,6 +6,9 @@
  */
 package COM.jrockit.reflect;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 
 import org.assertj.core.api.Assertions;
@@ -13,6 +16,19 @@ import org.junit.jupiter.api.Test;
 import org.objenesis.instantiator.jrockit.JRockit131Instantiator;
 
 public class JRockit131InstantiatorTest {
+
+    @Test
+    void resolvesClassesThroughLegacyClassLiteralHelper() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(JRockit131Instantiator.class, MethodHandles.lookup());
+        MethodHandle classResolver = lookup.findStatic(
+            JRockit131Instantiator.class,
+            "class$",
+            MethodType.methodType(Class.class, String.class));
+
+        Class<?> resolvedClass = (Class<?>) classResolver.invoke(JRockit131InstantiatorTest.class.getName());
+
+        Assertions.assertThat(resolvedClass).isEqualTo(JRockit131InstantiatorTest.class);
+    }
 
     @Test
     void createsInstancesThroughJRockitSerializationConstructorAdapter() {
