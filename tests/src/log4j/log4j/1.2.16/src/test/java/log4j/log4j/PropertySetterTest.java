@@ -6,7 +6,11 @@
  */
 package log4j.log4j;
 
+import org.apache.log4j.Appender;
+import org.apache.log4j.Logger;
 import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.spi.ErrorHandler;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.OptionHandler;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +19,15 @@ import java.util.Properties;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropertySetterTest {
+
+    @Test
+    void instantiatesErrorHandlerPropertiesByClassName() {
+        ErrorHandlerTarget target = new ErrorHandlerTarget();
+
+        new PropertySetter(target).setProperty("errorHandler", TrackingErrorHandler.class.getName());
+
+        assertThat(target.getErrorHandler()).isInstanceOf(TrackingErrorHandler.class);
+    }
 
     @Test
     void configuresNestedOptionHandlerPropertiesThroughBeanSetters() {
@@ -33,6 +46,18 @@ public class PropertySetterTest {
         assertThat(handler.getLabel()).isEqualTo("configured");
         assertThat(handler.isEnabled()).isTrue();
         assertThat(handler.isActivated()).isTrue();
+    }
+
+    public static final class ErrorHandlerTarget {
+        private ErrorHandler errorHandler;
+
+        public ErrorHandler getErrorHandler() {
+            return errorHandler;
+        }
+
+        public void setErrorHandler(ErrorHandler errorHandler) {
+            this.errorHandler = errorHandler;
+        }
     }
 
     public static final class ConfigurableTarget implements OptionHandler {
@@ -54,6 +79,36 @@ public class PropertySetterTest {
 
         public boolean isActivated() {
             return activated;
+        }
+    }
+
+    public static final class TrackingErrorHandler implements ErrorHandler {
+        @Override
+        public void setLogger(Logger logger) {
+        }
+
+        @Override
+        public void error(String message, Exception e, int errorCode) {
+        }
+
+        @Override
+        public void error(String message) {
+        }
+
+        @Override
+        public void error(String message, Exception e, int errorCode, LoggingEvent event) {
+        }
+
+        @Override
+        public void setAppender(Appender appender) {
+        }
+
+        @Override
+        public void setBackupAppender(Appender appender) {
+        }
+
+        @Override
+        public void activateOptions() {
         }
     }
 
