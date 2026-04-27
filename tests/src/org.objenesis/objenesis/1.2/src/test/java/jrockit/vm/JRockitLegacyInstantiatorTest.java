@@ -6,6 +6,10 @@
  */
 package jrockit.vm;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.lang.reflect.Method;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.objenesis.instantiator.ObjectInstantiator;
@@ -14,7 +18,8 @@ import org.objenesis.instantiator.jrockit.JRockitLegacyInstantiator;
 public class JRockitLegacyInstantiatorTest {
 
     @Test
-    void createsInstancesThroughJRockitMemSystemAdapter() {
+    void createsInstancesThroughJRockitMemSystemAdapter() throws Throwable {
+        resetJRockitLegacyStaticState();
         MemSystem.reset();
         JRockitLegacyTarget.constructorCalls = 0;
 
@@ -25,6 +30,18 @@ public class JRockitLegacyInstantiatorTest {
         Assertions.assertThat(MemSystem.requestedType()).isEqualTo(JRockitLegacyTarget.class);
         Assertions.assertThat(((JRockitLegacyTarget) instance).value).isEqualTo("created by MemSystem");
         Assertions.assertThat(JRockitLegacyTarget.constructorCalls).isEqualTo(1);
+    }
+
+    private static void resetJRockitLegacyStaticState() throws ReflectiveOperationException {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(JRockitLegacyInstantiator.class, MethodHandles.lookup());
+        clearStaticField(lookup, "safeAllocObjectMethod", Method.class);
+        clearStaticField(lookup, "class$java$lang$Class", Class.class);
+    }
+
+    private static void clearStaticField(MethodHandles.Lookup lookup, String fieldName, Class<?> fieldType)
+        throws NoSuchFieldException, IllegalAccessException {
+        VarHandle field = lookup.findStaticVarHandle(JRockitLegacyInstantiator.class, fieldName, fieldType);
+        field.set(null);
     }
 
     public static class JRockitLegacyTarget {
