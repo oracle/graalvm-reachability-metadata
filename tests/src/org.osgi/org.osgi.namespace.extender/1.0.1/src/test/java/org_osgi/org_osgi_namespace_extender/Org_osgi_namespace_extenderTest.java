@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 import org.osgi.namespace.extender.ExtenderNamespace;
 import org.osgi.resource.Capability;
@@ -159,6 +161,22 @@ public class Org_osgi_namespace_extenderTest {
                 RUNTIME_ATTRIBUTE, "standalone"))).containsExactly(felixDeclarativeServices);
     }
 
+    @Test
+    void requirementFilterCanSelectAlternativeExtenders() throws Exception {
+        SyntheticResource resource = new SyntheticResource();
+        Capability declarativeServices = resource.addExtenderCapability(DECLARATIVE_SERVICES_EXTENDER, "1.5.0", Map.of());
+        Capability blueprint = resource.addExtenderCapability(BLUEPRINT_EXTENDER, "1.0.0", Map.of());
+        resource.addExtenderCapability(WEB_EXTENDER, "1.0.0", Map.of());
+        Requirement requirement = resource.addRequirement(
+                ExtenderNamespace.EXTENDER_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+                        "(|(" + ExtenderNamespace.EXTENDER_NAMESPACE + "=" + DECLARATIVE_SERVICES_EXTENDER + ")("
+                                + ExtenderNamespace.EXTENDER_NAMESPACE + "=" + BLUEPRINT_EXTENDER + "))"),
+                Map.of());
+
+        assertThat(extenderCapabilitiesMatchingFilter(resource, requirement)).containsExactly(declarativeServices, blueprint);
+    }
+
     private static String extenderFilter(String extenderName, String floorVersion, String ceilingVersion) {
         return "(&(" + ExtenderNamespace.EXTENDER_NAMESPACE + "=" + extenderName + ")(" +
                 ExtenderNamespace.CAPABILITY_VERSION_ATTRIBUTE + ">=" + floorVersion + ")(!(" +
@@ -192,6 +210,13 @@ public class Org_osgi_namespace_extenderTest {
         return resource.getCapabilities(requirement.getNamespace()).stream()
                 .filter(capability -> expectedAttributes.entrySet().stream()
                         .allMatch(entry -> Objects.equals(capability.getAttributes().get(entry.getKey()), entry.getValue())))
+                .collect(Collectors.toList());
+    }
+
+    private static List<Capability> extenderCapabilitiesMatchingFilter(Resource resource, Requirement requirement) throws Exception {
+        Filter filter = FrameworkUtil.createFilter(requirement.getDirectives().get(Namespace.REQUIREMENT_FILTER_DIRECTIVE));
+        return resource.getCapabilities(requirement.getNamespace()).stream()
+                .filter(capability -> filter.matches(capability.getAttributes()))
                 .collect(Collectors.toList());
     }
 
