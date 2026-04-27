@@ -12,7 +12,7 @@ import org.thymeleaf.context.Context;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OGNLVariableExpressionEvaluator$ThymeleafDefaultClassResolverTest {
+class OGNLVariableExpressionEvaluatorThymeleafDefaultClassResolverTest {
 
     @Test
     void resolvesAllowedJavaTypeForStaticMethodInvocation() {

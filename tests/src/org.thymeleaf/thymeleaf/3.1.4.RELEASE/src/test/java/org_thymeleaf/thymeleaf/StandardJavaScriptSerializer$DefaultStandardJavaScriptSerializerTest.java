@@ -13,7 +13,7 @@ import org.thymeleaf.standard.serializer.StandardJavaScriptSerializer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StandardJavaScriptSerializer$DefaultStandardJavaScriptSerializerTest {
+class StandardJavaScriptSerializerDefaultStandardJavaScriptSerializerTest {
 
     @Test
     void serializeValueIntrospectsBeanPropertiesWhenJacksonIsDisabled() {
