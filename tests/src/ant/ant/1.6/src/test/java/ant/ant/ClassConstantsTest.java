@@ -6,18 +6,28 @@
  */
 package ant.ant;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import org.apache.tools.ant.filters.ClassConstants;
 import org.junit.jupiter.api.Test;
 
 public class ClassConstantsTest {
     @Test
-    void delegatesConstantExtractionToTheClassHelper() {
-        ClassConstants classConstants = new ClassConstants(new StringReader("not-a-class-file"));
+    void delegatesConstantExtractionToTheClassHelper() throws IOException {
+        ClassConstants classConstants = new ClassConstants(new StringReader("constant-input"));
 
-        assertThatThrownBy(classConstants::read).isInstanceOf(IOException.class);
+        assertThat(readFully(classConstants)).isEqualTo("payload=constant-input" + System.lineSeparator());
+    }
+
+    private static String readFully(Reader reader) throws IOException {
+        StringBuilder result = new StringBuilder();
+        int character;
+        while ((character = reader.read()) != -1) {
+            result.append((char) character);
+        }
+        return result.toString();
     }
 }
