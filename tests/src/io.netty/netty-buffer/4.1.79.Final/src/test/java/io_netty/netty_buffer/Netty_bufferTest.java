@@ -254,7 +254,7 @@ public class Netty_bufferTest {
             output.writeLong(0x0102030405060708L);
             output.writeFloat(1.25f);
             output.writeDouble(123.5d);
-            output.writeUTF("Grüße Netty");
+            output.writeUTF("Gr\u00fc\u00dfe Netty");
             output.write(new byte[] {9, 8, 7, 6});
 
             assertThat(output.buffer()).isSameAs(buffer);
@@ -274,7 +274,7 @@ public class Netty_bufferTest {
             assertThat(input.readLong()).isEqualTo(0x0102030405060708L);
             assertThat(input.readFloat()).isEqualTo(1.25f);
             assertThat(input.readDouble()).isEqualTo(123.5d);
-            assertThat(input.readUTF()).isEqualTo("Grüße Netty");
+            assertThat(input.readUTF()).isEqualTo("Gr\u00fc\u00dfe Netty");
 
             byte[] tail = new byte[4];
             input.readFully(tail);
@@ -288,12 +288,12 @@ public class Netty_bufferTest {
 
     @Test
     public void byteBufUtilEncodesTextHexDumpsAndComparesBuffers() {
-        ByteBuf utf8 = ByteBufUtil.writeUtf8(UnpooledByteBufAllocator.DEFAULT, "Netty こんにちは");
+        ByteBuf utf8 = ByteBufUtil.writeUtf8(UnpooledByteBufAllocator.DEFAULT, "Netty \u3053\u3093\u306b\u3061\u306f");
         ByteBuf ascii = ByteBufUtil.writeAscii(UnpooledByteBufAllocator.DEFAULT, "Netty");
         ByteBuf hex = null;
         try {
-            assertThat(utf8.toString(UTF_8)).isEqualTo("Netty こんにちは");
-            assertThat(ByteBufUtil.utf8Bytes("Netty こんにちは")).isEqualTo(utf8.readableBytes());
+            assertThat(utf8.toString(UTF_8)).isEqualTo("Netty \u3053\u3093\u306b\u3061\u306f");
+            assertThat(ByteBufUtil.utf8Bytes("Netty \u3053\u3093\u306b\u3061\u306f")).isEqualTo(utf8.readableBytes());
             assertThat(ByteBufUtil.isText(utf8, UTF_8)).isTrue();
             assertThat(ByteBufUtil.isText(utf8, US_ASCII)).isFalse();
             assertThat(ascii.toString(US_ASCII)).isEqualTo("Netty");
