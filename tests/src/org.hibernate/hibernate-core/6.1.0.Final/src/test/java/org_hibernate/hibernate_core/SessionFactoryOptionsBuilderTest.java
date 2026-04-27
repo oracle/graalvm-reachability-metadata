@@ -90,12 +90,12 @@ public class SessionFactoryOptionsBuilderTest {
         }
     }
 
-    private SessionFactory buildSessionFactory(Map<String, String> settings) {
+    private SessionFactory buildSessionFactory(Map<String, Object> settings) {
         return buildSessionFactory(settings, null);
     }
 
     private SessionFactory buildSessionFactory(
-            Map<String, String> settings,
+            Map<String, Object> settings,
             Consumer<SessionFactoryBuilder> customizer) {
         StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySetting(AvailableSettings.DIALECT, H2Dialect.class.getName())
