@@ -35,6 +35,7 @@ public class AntClassLoaderTest {
     @Test
     void exercisesClassInitializationAndClassLoading(@TempDir Path temporaryDirectory) throws Exception {
         AntClassLoader.initializeClass(Project.class);
+        AntClassLoader.initializeClass(AntClassLoaderTest.class);
 
         Path classesDirectory = temporaryDirectory.resolve("classes");
         Path fixtureClassFile = classesDirectory.resolve(FIXTURE_CLASS_RESOURCE);
@@ -53,6 +54,10 @@ public class AntClassLoaderTest {
         assertThat(loader.forceLoadSystemClass(String.class.getName())).isSameAs(String.class);
         assertThat(loader.loadClass(Integer.class.getName())).isSameAs(Integer.class);
         loader.cleanup();
+
+        NoParentAntClassLoader noParentLoader = new NoParentAntClassLoader();
+        assertThat(noParentLoader.forceLoadSystemClass(Long.class.getName())).isSameAs(Long.class);
+        noParentLoader.cleanup();
     }
 
     @Test
@@ -74,12 +79,27 @@ public class AntClassLoaderTest {
 
         parentFirstLoader.cleanup();
         loaderFirstLoader.cleanup();
+
+        NoParentAntClassLoader noParentLoader = new NoParentAntClassLoader();
+        assertThat(read(noParentLoader.getResourceAsStream("org/apache/tools/ant/Project.class"))).isNotEmpty();
+        noParentLoader.cleanup();
     }
 
     private static String read(InputStream inputStream) throws IOException {
         assertThat(inputStream).isNotNull();
         try (InputStream stream = inputStream) {
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+
+    private static final class NoParentAntClassLoader extends AntClassLoader {
+        private NoParentAntClassLoader() {
+            super(null, true);
+        }
+
+        @Override
+        public void setParent(ClassLoader parent) {
+            // Keep AntClassLoader's private parent field null to exercise the system-loader fallback.
         }
     }
 
