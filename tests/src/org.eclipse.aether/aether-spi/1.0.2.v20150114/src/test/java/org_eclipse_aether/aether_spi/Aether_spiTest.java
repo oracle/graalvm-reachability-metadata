@@ -217,10 +217,10 @@ public class Aether_spiTest {
         assertThat(task.getDataLength()).isZero();
         assertThat(readUtf8(task.newInputStream())).isEmpty();
 
-        task.setDataString("metadata äöü");
+        task.setDataString("metadata \u00E4\u00F6\u00FC");
         assertThat(task.getDataFile()).isNull();
-        assertThat(task.getDataLength()).isEqualTo("metadata äöü".getBytes(StandardCharsets.UTF_8).length);
-        assertThat(readUtf8(task.newInputStream())).isEqualTo("metadata äöü");
+        assertThat(task.getDataLength()).isEqualTo("metadata \u00E4\u00F6\u00FC".getBytes(StandardCharsets.UTF_8).length);
+        assertThat(readUtf8(task.newInputStream())).isEqualTo("metadata \u00E4\u00F6\u00FC");
 
         byte[] bytes = new byte[] {1, 2, 3, 4};
         task.setDataBytes(bytes);
