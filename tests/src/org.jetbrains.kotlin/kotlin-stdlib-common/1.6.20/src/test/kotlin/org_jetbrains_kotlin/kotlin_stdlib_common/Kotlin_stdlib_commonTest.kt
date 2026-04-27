@@ -8,6 +8,7 @@ package org_jetbrains_kotlin.kotlin_stdlib_common
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import kotlin.DeepRecursiveFunction
 import kotlin.properties.Delegates
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -169,7 +170,33 @@ public class Kotlin_stdlib_commonTest {
             "GROUP:org.jetbrains.kotlin | ARTIFACT:kotlin-stdlib-common | VERSION:1.6.20",
         )
     }
+
+    @Test
+    fun deepRecursiveFunctionTraversesDeepChainsWithoutConsumingTheCallStack() {
+        val releaseChain = (1..2048).fold<
+            Int,
+            ReleaseNode?
+        >(initial = null) { previous, step ->
+            ReleaseNode(step = step, previous = previous)
+        } ?: error("release chain should not be empty")
+        val checkpoints = mutableListOf<Int>()
+
+        val chainLength = DeepRecursiveFunction<ReleaseNode, Int> { node ->
+            if (node.step == 2048 || node.step == 1024 || node.step == 1) {
+                checkpoints += node.step
+            }
+            node.previous?.let { 1 + callRecursive(it) } ?: 1
+        }(releaseChain)
+
+        assertThat(chainLength).isEqualTo(2048)
+        assertThat(checkpoints).containsExactly(2048, 1024, 1)
+    }
 }
+
+private data class ReleaseNode(
+    val step: Int,
+    val previous: ReleaseNode?,
+)
 
 private class ModuleState {
     val events = mutableListOf<String>()
