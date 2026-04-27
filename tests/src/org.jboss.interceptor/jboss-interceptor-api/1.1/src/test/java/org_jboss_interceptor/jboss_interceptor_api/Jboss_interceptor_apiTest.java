@@ -82,6 +82,35 @@ public class Jboss_interceptor_apiTest {
     }
 
     @Test
+    public void aroundInvokeInterceptorCanShortCircuitInvocationWithoutProceedingToTarget() throws Exception {
+        Map<String, Object> contextData = new LinkedHashMap<>();
+        contextData.put("events", new ArrayList<String>());
+        contextData.put("cacheHit", true);
+        contextData.put("cachedValue", "cached:order-7");
+
+        ChainedInvocationContext invocationContext = new ChainedInvocationContext(
+                null,
+                null,
+                new Object[] {"order-7"},
+                contextData,
+                null,
+                Arrays.asList(
+                        currentContext -> new CacheLookupInterceptor().aroundInvoke(currentContext),
+                        currentContext -> new UnexpectedAroundInvokeInterceptor().aroundInvoke(currentContext)
+                ),
+                currentContext -> {
+                    throw new AssertionError("Target should not be invoked after a short-circuiting interceptor");
+                }
+        );
+
+        Object result = invocationContext.proceed();
+
+        assertThat(result).isEqualTo("cached:order-7");
+        assertThat(invocationContext.getContextData()).containsEntry("shortCircuited", true);
+        assertThat(eventsFrom(invocationContext.getContextData())).containsExactly("cache:lookup", "cache:hit");
+    }
+
+    @Test
     public void aroundInvokeInterceptorCanRecoverFromProceedExceptionAndRecordFailure() throws Exception {
         Map<String, Object> contextData = new LinkedHashMap<>();
         contextData.put("events", new ArrayList<String>());
@@ -149,6 +178,7 @@ public class Jboss_interceptor_apiTest {
                 .containsEntry("timerName", "nightly-cleanup");
     }
 
+    @SuppressWarnings("checkstyle:annotationAccess")
     @Test
     public void interceptorAnnotationsRetainBindingMembersAndInterceptorClassListsAtRuntime() throws Exception {
         Method operation = ConfiguredService.class.getDeclaredMethod("configuredOperation");
@@ -207,6 +237,7 @@ public class Jboss_interceptor_apiTest {
         return (List<String>) contextData.get("events");
     }
 
+    @SuppressWarnings("checkstyle:annotationAccess")
     private static void assertAnnotationContract(
             Class<? extends Annotation> annotationType,
             RetentionPolicy retentionPolicy,
@@ -287,6 +318,28 @@ public class Jboss_interceptor_apiTest {
                     + context.getContextData().get("traceId")
                     + "|"
                     + context.getContextData().get("methodName");
+        }
+    }
+
+    private static final class CacheLookupInterceptor {
+
+        @AroundInvoke
+        Object aroundInvoke(InvocationContext context) throws Exception {
+            eventsFrom(context.getContextData()).add("cache:lookup");
+            if (Boolean.TRUE.equals(context.getContextData().get("cacheHit"))) {
+                context.getContextData().put("shortCircuited", true);
+                eventsFrom(context.getContextData()).add("cache:hit");
+                return context.getContextData().get("cachedValue");
+            }
+            return context.proceed();
+        }
+    }
+
+    private static final class UnexpectedAroundInvokeInterceptor {
+
+        @AroundInvoke
+        Object aroundInvoke(InvocationContext context) {
+            throw new AssertionError("Later interceptors should not be invoked after a short-circuiting interceptor");
         }
     }
 
