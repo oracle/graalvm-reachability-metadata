@@ -32,6 +32,17 @@ public class ReflectHelperTest {
 
     @Test
     @SuppressWarnings("deprecation")
+    public void deprecatedClassForNameUsesContextClassLoader() throws Exception {
+        Class<?> loadedClass = withContextClassLoader(
+                ReflectHelperTest.class.getClassLoader(),
+                () -> ReflectHelper.classForName(HIBERNATE_EXCEPTION_CLASS)
+        );
+
+        assertThat(loadedClass).isEqualTo(MappingException.class);
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
     public void classForNameFallsBackWhenContextClassLoaderIsUnavailable() throws Exception {
         Class<?> callerLoadedClass = withContextClassLoader(
                 null,
@@ -130,8 +141,16 @@ public class ReflectHelperTest {
             return "ready";
         }
 
+        public static boolean isStatus() {
+            return false;
+        }
+
         public boolean isActive() {
             return true;
+        }
+
+        public static boolean getActive() {
+            return false;
         }
     }
 }
