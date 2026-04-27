@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class EnvUtilTest {
 
     @Test
-    void detectsThatJaninoIsUnavailableWhenOptionalJaninoDependencyIsAbsent() {
-        assertThat(EnvUtil.isJaninoAvailable()).isFalse();
+    void detectsThatJaninoIsAvailableWhenOptionalJaninoDependencyIsPresent() {
+        assertThat(EnvUtil.isJaninoAvailable()).isTrue();
     }
 }
