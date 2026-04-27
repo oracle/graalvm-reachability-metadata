@@ -6,6 +6,7 @@
  */
 package org_jetbrains_kotlin.kotlin_stdlib_common
 
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.math.absoluteValue
 import kotlin.properties.Delegates
+import kotlin.random.Random
 
 public class Kotlin_stdlib_commonTest {
     @Test
@@ -171,6 +173,29 @@ public class Kotlin_stdlib_commonTest {
         val sortedArtifacts = listOf("assertj-core", "junit-jupiter-api", "kotlin-stdlib-common")
         assertEquals(2, sortedArtifacts.binarySearch("kotlin-stdlib-common"))
         assertTrue(sortedArtifacts.windowed(size = 2).all { (left, right) -> left < right })
+    }
+
+    @Test
+    fun randomUtilitiesProduceReproducibleBoundedValuesAndBytes() {
+        val first = Random(8675309)
+        val second = Random(8675309)
+
+        val firstValues = List(20) { first.nextInt(from = 10, until = 25) }
+        val secondValues = List(20) { second.nextInt(from = 10, until = 25) }
+
+        assertEquals(firstValues, secondValues)
+        assertTrue(firstValues.all { it in 10 until 25 })
+
+        val bytes = ByteArray(8) { -1 }
+        val controlBytes = ByteArray(8) { -1 }
+        Random(123456).nextBytes(bytes, fromIndex = 2, toIndex = 6)
+        Random(123456).nextBytes(controlBytes, fromIndex = 2, toIndex = 6)
+
+        assertArrayEquals(controlBytes, bytes)
+        assertEquals(-1, bytes[0].toInt())
+        assertEquals(-1, bytes[1].toInt())
+        assertEquals(-1, bytes[6].toInt())
+        assertEquals(-1, bytes[7].toInt())
     }
 
     @Test
