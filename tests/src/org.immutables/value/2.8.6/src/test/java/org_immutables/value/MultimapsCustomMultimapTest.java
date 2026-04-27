@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.AbstractCollection;
 import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import org.immutables.value.internal.$guava$.base.$Supplier;
@@ -26,29 +28,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MultimapsCustomMultimapTest {
 
     @Test
-    void customMultimapRestoresFactoryAndEntriesAcrossRoundTrip() throws Exception {
+    void customMultimapSerializesBackingMapAndRestoresCollectionFactory() throws Exception {
         $Multimap<String, String> original = $Multimaps.newMultimap(
                 new LinkedHashMap<>(),
-                new SerializableArrayDequeSupplier<>()
+                new SerializableReverseInsertionCollectionSupplier<>()
         );
         original.put("team", "ada");
         original.put("team", "grace");
         original.put("language", "java");
+        original.put("language", "kotlin");
 
         assertThat(original.getClass().getName())
                 .isEqualTo("org.immutables.value.internal.$guava$.collect.$Multimaps$CustomMultimap");
+        assertThat(original.get("team")).containsExactly("grace", "ada");
+        assertThat(original.get("language")).containsExactly("kotlin", "java");
 
         $Multimap<String, String> restored = roundTrip((Serializable) original, $Multimap.class);
 
-        assertThat(restored.get("team")).containsExactly("ada", "grace");
-        assertThat(restored.get("language")).containsExactly("java");
+        assertThat(restored.get("team")).containsExactly("grace", "ada");
+        assertThat(restored.get("language")).containsExactly("kotlin", "java");
         assertThat(restored.keySet()).containsExactly("team", "language");
 
-        restored.put("team", "margaret");
         restored.put("database", "postgres");
+        restored.put("database", "oracle");
+        restored.put("team", "margaret");
 
-        assertThat(restored.get("team")).containsExactly("ada", "grace", "margaret");
-        assertThat(restored.get("database")).containsExactly("postgres");
+        assertThat(restored.get("database")).containsExactly("oracle", "postgres");
+        assertThat(restored.get("team")).containsExactly("margaret", "grace", "ada");
         assertThat(restored.keySet()).containsExactly("team", "language", "database");
     }
 
@@ -69,12 +75,35 @@ public class MultimapsCustomMultimapTest {
         return outputStream.toByteArray();
     }
 
-    private static final class SerializableArrayDequeSupplier<T> implements $Supplier<Collection<T>>, Serializable {
+    public static final class SerializableReverseInsertionCollectionSupplier<T>
+            implements $Supplier<Collection<T>>, Serializable {
         private static final long serialVersionUID = 1L;
 
         @Override
         public Collection<T> get() {
-            return new ArrayDeque<>();
+            return new ReverseInsertionCollection<>();
+        }
+    }
+
+    public static final class ReverseInsertionCollection<T> extends AbstractCollection<T> implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final ArrayDeque<T> values = new ArrayDeque<>();
+
+        @Override
+        public Iterator<T> iterator() {
+            return values.iterator();
+        }
+
+        @Override
+        public int size() {
+            return values.size();
+        }
+
+        @Override
+        public boolean add(T value) {
+            values.addFirst(value);
+            return true;
         }
     }
 }
