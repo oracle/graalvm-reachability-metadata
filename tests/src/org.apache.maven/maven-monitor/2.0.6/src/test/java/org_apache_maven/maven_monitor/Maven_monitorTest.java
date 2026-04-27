@@ -147,6 +147,25 @@ public class Maven_monitorTest {
                 "late:start:phase-execute:compile");
     }
 
+    @Test
+    void selectiveMonitorSubclassCanHandleOnlySelectedCustomEvents() {
+        String customEvent = "custom-build-step";
+        ErrorOnlySelectiveMonitor monitor = new ErrorOnlySelectiveMonitor(customEvent);
+        RuntimeException failure = new RuntimeException("custom step failed");
+
+        assertThatCode(() -> {
+            monitor.startEvent(customEvent, "prepare", 10L);
+            monitor.endEvent(customEvent, "prepare", 11L);
+        }).doesNotThrowAnyException();
+        monitor.errorEvent(customEvent, "prepare", 12L, failure);
+        monitor.errorEvent(MavenEvents.MOJO_EXECUTION, "compile", 13L, failure);
+
+        assertThat(monitor.events).extracting(event -> event.description())
+                .containsExactly("error-only:error:custom-build-step:prepare");
+        assertThat(monitor.events).extracting(event -> event.timestamp).containsExactly(12L);
+        assertThat(monitor.events.get(0).cause).isSameAs(failure);
+    }
+
     private static final class RecordingEventMonitor implements EventMonitor {
         private final String name;
         private final List<ObservedEvent> events = new ArrayList<>();
@@ -191,6 +210,19 @@ public class Maven_monitorTest {
         @Override
         protected void doErrorEvent(String eventName, String target, long timestamp, Throwable cause) {
             events.add(new ObservedEvent("selective", "error", eventName, target, timestamp, cause));
+        }
+    }
+
+    private static final class ErrorOnlySelectiveMonitor extends AbstractSelectiveEventMonitor {
+        private final List<ObservedEvent> events = new ArrayList<>();
+
+        private ErrorOnlySelectiveMonitor(String eventName) {
+            super(new String[] {eventName}, new String[] {eventName}, new String[] {eventName});
+        }
+
+        @Override
+        protected void doErrorEvent(String eventName, String target, long timestamp, Throwable cause) {
+            events.add(new ObservedEvent("error-only", "error", eventName, target, timestamp, cause));
         }
     }
 
