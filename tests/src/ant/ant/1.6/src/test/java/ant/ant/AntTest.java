@@ -9,6 +9,7 @@ package ant.ant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,10 +21,11 @@ import org.junit.jupiter.api.io.TempDir;
 
 public class AntTest {
     @BeforeEach
-    void resetRecordingReference() {
+    void resetRecordingReference() throws ReflectiveOperationException {
         RecordingReference.clonedFrom = null;
         RecordingReference.assignedReference = null;
         RecordingReference.assignedProject = null;
+        resetAntProjectClassCache();
     }
 
     @Test
@@ -53,6 +55,12 @@ public class AntTest {
         assertThat(RecordingReference.assignedProject).isNotNull();
         assertThat(RecordingReference.assignedProject).isNotSameAs(parentProject);
         assertThat(originalReference.project).isNull();
+    }
+
+    private static void resetAntProjectClassCache() throws ReflectiveOperationException {
+        Field projectClassCache = Ant.class.getDeclaredField("class$org$apache$tools$ant$Project");
+        projectClassCache.setAccessible(true);
+        projectClassCache.set(null, null);
     }
 
     private static Ant.Reference copiedReference() {
