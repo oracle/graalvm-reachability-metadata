@@ -21,6 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LocatorDynamicAccessTest {
 
     @Test
+    void getToolsJarReturnsNullWhenCompilerClassesArePresent() {
+        File toolsJar = Locator.getToolsJar();
+
+        assertThat(toolsJar).isNull();
+    }
+
+    @Test
     void getResourceSourceUsesProvidedClassLoader(@TempDir final Path tempDir) throws Exception {
         Path resourcePath = Files.writeString(tempDir.resolve("ant-launcher-resource.txt"), "marker");
         ClassLoader resourceLoader = new ClassLoader(null) {
