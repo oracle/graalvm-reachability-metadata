@@ -8,7 +8,7 @@ package org_objenesis.objenesis;
 
 import org.junit.jupiter.api.Test;
 
-class ObjenesisTest {
+public class ObjenesisTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
