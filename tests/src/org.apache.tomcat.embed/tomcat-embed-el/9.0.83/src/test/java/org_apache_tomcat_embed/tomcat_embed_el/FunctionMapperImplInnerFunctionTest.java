@@ -24,7 +24,7 @@ public class FunctionMapperImplInnerFunctionTest {
 
     @Test
     void resolvesSerializedFunctionMappingDuringExpressionEvaluation()
-            throws ClassNotFoundException, IOException {
+            throws ClassNotFoundException, IOException, NoSuchMethodException {
         ELProcessor processor = new ELProcessor();
         processor.defineFunction("lib", "join", FunctionLibrary.class.getName(), "join");
 
