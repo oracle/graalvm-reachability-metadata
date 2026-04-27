@@ -41,6 +41,9 @@ import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallResult;
 import org.eclipse.aether.metadata.DefaultMetadata;
 import org.eclipse.aether.metadata.Metadata;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.AuthenticationContext;
+import org.eclipse.aether.repository.AuthenticationDigest;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.Proxy;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -442,6 +445,54 @@ public class Aether_apiTest {
                 .isInstanceOf(UnsupportedOperationException.class);
     }
 
+    @Test
+    void authenticationContextFillsRepositoryAndProxyCredentialsAndComputesDigests() {
+        TestAuthentication repositoryAuthentication = new TestAuthentication(
+                "repository-user", "repository-secret".toCharArray(), "keys/repository.pem");
+        TestAuthentication proxyAuthentication = new TestAuthentication(
+                "proxy-user", "proxy-secret".toCharArray(), "keys/proxy.pem");
+        Proxy proxy = new Proxy(Proxy.TYPE_HTTP, "proxy.example.org", 8080, proxyAuthentication);
+        RemoteRepository repository = new RemoteRepository.Builder(
+                "secure", "default", "https://secure.example.org/repository")
+                .setAuthentication(repositoryAuthentication)
+                .setProxy(proxy)
+                .build();
+        DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
+
+        AuthenticationContext repositoryContext = AuthenticationContext.forRepository(session, repository);
+        AuthenticationContext proxyContext = AuthenticationContext.forProxy(session, repository);
+        try {
+            assertThat(repositoryContext.getSession()).isSameAs(session);
+            assertThat(repositoryContext.getRepository()).isSameAs(repository);
+            assertThat(repositoryContext.getProxy()).isNull();
+            assertThat(repositoryContext.get(AuthenticationContext.USERNAME)).isEqualTo("repository-user");
+            assertThat(repositoryContext.get(AuthenticationContext.USERNAME)).isEqualTo("repository-user");
+            assertThat(repositoryAuthentication.fillRequests).isEqualTo(1);
+            assertThat(repositoryContext.get(AuthenticationContext.PASSWORD)).isEqualTo("repository-secret");
+            assertThat(repositoryContext.get(AuthenticationContext.PRIVATE_KEY_PATH, File.class))
+                    .isEqualTo(new File("keys/repository.pem"));
+
+            assertThat(proxyContext.getRepository()).isSameAs(repository);
+            assertThat(proxyContext.getProxy()).isSameAs(proxy);
+            assertThat(proxyContext.get(AuthenticationContext.USERNAME)).isEqualTo("proxy-user");
+            assertThat(proxyContext.get(AuthenticationContext.PASSWORD, char[].class))
+                    .containsExactly("proxy-secret".toCharArray());
+        } finally {
+            AuthenticationContext.close(repositoryContext);
+            AuthenticationContext.close(proxyContext);
+        }
+
+        String repositoryDigest = AuthenticationDigest.forRepository(session, repository);
+        String proxyDigest = AuthenticationDigest.forProxy(session, repository);
+        assertThat(repositoryDigest).isNotEmpty();
+        assertThat(repositoryDigest).isEqualTo(AuthenticationDigest.forRepository(session, repository));
+        assertThat(proxyDigest).isNotEmpty();
+        assertThat(proxyDigest).isEqualTo(AuthenticationDigest.forProxy(session, repository));
+        assertThat(repositoryDigest).isNotEqualTo(proxyDigest);
+        assertThat(repositoryAuthentication.digestRequests).isEqualTo(2);
+        assertThat(proxyAuthentication.digestRequests).isEqualTo(2);
+    }
+
     private static RemoteRepository centralRepository() {
         return new RemoteRepository.Builder("central", "default", "https://repo1.maven.org/maven2").build();
     }
@@ -465,6 +516,40 @@ public class Aether_apiTest {
         @Override
         protected RepositorySystemSession getSession() {
             return session;
+        }
+    }
+
+    private static final class TestAuthentication implements Authentication {
+        private final String username;
+        private final char[] password;
+        private final String privateKeyPath;
+        private int fillRequests;
+        private int digestRequests;
+
+        private TestAuthentication(String username, char[] password, String privateKeyPath) {
+            this.username = username;
+            this.password = password;
+            this.privateKeyPath = privateKeyPath;
+        }
+
+        @Override
+        public void fill(AuthenticationContext context, String key, Map<String, String> data) {
+            fillRequests++;
+            if (AuthenticationContext.USERNAME.equals(key)) {
+                context.put(key, username);
+            } else if (AuthenticationContext.PASSWORD.equals(key)) {
+                context.put(key, password.clone());
+            } else if (AuthenticationContext.PRIVATE_KEY_PATH.equals(key)) {
+                context.put(key, privateKeyPath);
+            }
+        }
+
+        @Override
+        public void digest(AuthenticationDigest digest) {
+            digestRequests++;
+            digest.update(username);
+            digest.update(password);
+            digest.update(privateKeyPath);
         }
     }
 }
