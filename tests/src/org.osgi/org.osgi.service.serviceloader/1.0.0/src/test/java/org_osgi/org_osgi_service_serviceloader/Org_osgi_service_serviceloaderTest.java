@@ -7,6 +7,7 @@
 package org_osgi.org_osgi_service_serviceloader;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.osgi.resource.Namespace.REQUIREMENT_FILTER_DIRECTIVE;
 import static org.osgi.service.serviceloader.ServiceLoaderNamespace.CAPABILITY_REGISTER_DIRECTIVE;
 import static org.osgi.service.serviceloader.ServiceLoaderNamespace.SERVICELOADER_NAMESPACE;
 
@@ -37,6 +38,19 @@ public class Org_osgi_service_serviceloaderTest {
         assertThat(capabilityAttributes)
                 .containsEntry("osgi.serviceloader", EXAMPLE_SERVICE_TYPE)
                 .hasSize(1);
+    }
+
+    @Test
+    void requirementFilterMatchesOnlyCapabilitiesForRequestedServiceType() {
+        Map<String, Object> requirementDirectives = Map.of(
+                REQUIREMENT_FILTER_DIRECTIVE,
+                "(" + SERVICELOADER_NAMESPACE + "=" + EXAMPLE_SERVICE_TYPE + ")");
+        Map<String, Object> matchingCapability = Map.of(SERVICELOADER_NAMESPACE, EXAMPLE_SERVICE_TYPE);
+        Map<String, Object> otherCapability = Map.of(SERVICELOADER_NAMESPACE, "java.lang.Runnable");
+
+        assertThat(REQUIREMENT_FILTER_DIRECTIVE).isEqualTo("filter");
+        assertThat(capabilityMatchesRequirement(matchingCapability, requirementDirectives)).isTrue();
+        assertThat(capabilityMatchesRequirement(otherCapability, requirementDirectives)).isFalse();
     }
 
     @Test
@@ -110,6 +124,23 @@ public class Org_osgi_service_serviceloaderTest {
                         SERVICELOADER_NAMESPACE,
                         CAPABILITY_REGISTER_DIRECTIVE,
                         ".internal.selector");
+    }
+
+    private static boolean capabilityMatchesRequirement(
+            Map<String, Object> capabilityAttributes,
+            Map<String, Object> requirementDirectives) {
+        String filter = (String) requirementDirectives.get(REQUIREMENT_FILTER_DIRECTIVE);
+        if (filter == null) {
+            return true;
+        }
+
+        String prefix = "(" + SERVICELOADER_NAMESPACE + "=";
+        if (!filter.startsWith(prefix) || !filter.endsWith(")")) {
+            return false;
+        }
+
+        String serviceType = filter.substring(prefix.length(), filter.length() - 1);
+        return serviceType.equals(capabilityAttributes.get(SERVICELOADER_NAMESPACE));
     }
 
     private static List<String> selectedProviders(
