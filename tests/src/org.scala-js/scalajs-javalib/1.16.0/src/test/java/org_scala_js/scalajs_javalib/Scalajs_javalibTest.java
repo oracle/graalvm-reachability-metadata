@@ -32,6 +32,10 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -145,6 +149,33 @@ public class Scalajs_javalibTest {
         assertThat(joined).isEqualTo("start>alpha>beta>end");
         assertThat(new String(Base64.getUrlDecoder().decode(encoded), StandardCharsets.UTF_8)).isEqualTo("scala.js");
         assertThat(highestCounterKey).hasValue("alpha");
+    }
+
+    @Test
+    void supportsAtomicStateTransitionsAndCounters() {
+        AtomicInteger retries = new AtomicInteger(2);
+        AtomicReference<String> phase = new AtomicReference<>("created");
+        AtomicReferenceArray<String> steps = new AtomicReferenceArray<>(new String[]{"parse", "emit", "done"});
+        LongAdder completedTasks = new LongAdder();
+
+        assertThat(retries.addAndGet(5)).isEqualTo(7);
+        assertThat(retries.compareAndSet(7, 11)).isTrue();
+        assertThat(phase.compareAndSet("created", "running")).isTrue();
+        assertThat(phase.getAndSet("completed")).isEqualTo("running");
+        assertThat(steps.compareAndSet(1, "emit", "verify")).isTrue();
+        assertThat(steps.getAndSet(2, "publish")).isEqualTo("done");
+
+        completedTasks.increment();
+        completedTasks.add(2);
+        completedTasks.decrement();
+
+        assertThat(retries.get()).isEqualTo(11);
+        assertThat(phase.get()).isEqualTo("completed");
+        assertThat(steps.get(0)).isEqualTo("parse");
+        assertThat(steps.get(1)).isEqualTo("verify");
+        assertThat(steps.get(2)).isEqualTo("publish");
+        assertThat(completedTasks.sumThenReset()).isEqualTo(2);
+        assertThat(completedTasks.sum()).isZero();
     }
 
     @Test
