@@ -70,6 +70,33 @@ public class Org_osgi_service_serviceloaderTest {
     }
 
     @Test
+    void arbitraryCapabilityAttributesAreMatchingMetadataAndDotPrefixedAttributesArePrivate() {
+        List<String> supportedRegions = List.of("eu", "us");
+        Capability capability = serviceLoaderCapability(
+                Map.of(),
+                Map.of(
+                        "ranking", 100L,
+                        "weight", 0.75D,
+                        "regions", supportedRegions,
+                        ".provider.note", "internal metadata"
+                )
+        );
+
+        assertThat(capability.getAttributes())
+                .containsEntry(ServiceLoaderNamespace.SERVICELOADER_NAMESPACE, SERVICE_TYPE)
+                .containsEntry("ranking", 100L)
+                .containsEntry("weight", 0.75D)
+                .containsEntry("regions", supportedRegions)
+                .containsEntry(".provider.note", "internal metadata");
+        assertThat(serviceRegistrationProperties(capability))
+                .containsEntry(ServiceLoaderNamespace.SERVICELOADER_NAMESPACE, SERVICE_TYPE)
+                .containsEntry("ranking", 100L)
+                .containsEntry("weight", 0.75D)
+                .containsEntry("regions", supportedRegions)
+                .doesNotContainKey(".provider.note");
+    }
+
+    @Test
     void serviceLoaderRequirementUsesNamespaceAttributeInStandardRequirementDirectives() {
         Requirement requirement = serviceLoaderRequirement(
                 Namespace.RESOLUTION_OPTIONAL,
@@ -160,6 +187,16 @@ public class Org_osgi_service_serviceloaderTest {
 
     private static Requirement serviceLoaderRequirement(String resolution, String cardinality) {
         return serviceLoaderRequirement(new InMemoryResource(), resolution, cardinality);
+    }
+
+    private static Map<String, Object> serviceRegistrationProperties(Capability capability) {
+        Map<String, Object> serviceProperties = new LinkedHashMap<>();
+        capability.getAttributes().forEach((name, value) -> {
+            if (!name.startsWith(".")) {
+                serviceProperties.put(name, value);
+            }
+        });
+        return Map.copyOf(serviceProperties);
     }
 
     private static Requirement serviceLoaderRequirement(
