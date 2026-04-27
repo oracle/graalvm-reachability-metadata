@@ -6,47 +6,24 @@
  */
 package org.graalvm.jline;
 
-import org.fusesource.hawtjni.runtime.Library;
+import org.jline.reader.ParsedLine;
+import org.jline.reader.impl.DefaultParser;
 import org.junit.jupiter.api.Test;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class HawtjniRuntimeLibraryTest {
 
-    private static final String LIBRARY_NAME = "graalvmjlinemissingnative";
-
     @Test
-    void loadChecksClassLoaderResourcesWhenNativeLibraryLookupFails() {
-        TrackingResourceClassLoader classLoader = new TrackingResourceClassLoader(HawtjniRuntimeLibraryTest.class.getClassLoader());
-        Library library = new Library(LIBRARY_NAME, "integration-test", classLoader);
+    void defaultParserKeepsQuotedWordsAndEscapedWhitespaceTogether() throws Exception {
+        DefaultParser parser = new DefaultParser();
+        String line = "command \"quoted value\" escaped\\ word";
 
-        assertThatThrownBy(library::load)
-                .isInstanceOf(UnsatisfiedLinkError.class)
-                .hasMessageContaining("Could not load library. Reasons:");
+        ParsedLine parsedLine = parser.parse(line, line.length());
 
-        assertThat(classLoader.requestedResources).containsExactly(
-                library.getPlatformSpecifcResourcePath(),
-                library.getOperatingSystemSpecifcResourcePath(),
-                library.getResorucePath());
-    }
-
-    public static final class TrackingResourceClassLoader extends ClassLoader {
-
-        private final List<String> requestedResources = new ArrayList<String>();
-
-        public TrackingResourceClassLoader(final ClassLoader parent) {
-            super(parent);
-        }
-
-        @Override
-        public URL getResource(final String name) {
-            requestedResources.add(name);
-            return null;
-        }
+        assertThat(parsedLine.words()).containsExactly("command", "quoted value", "escaped word");
+        assertThat(parsedLine.wordIndex()).isEqualTo(2);
+        assertThat(parsedLine.word()).isEqualTo("escaped word");
+        assertThat(parsedLine.wordCursor()).isEqualTo("escaped word".length());
     }
 }
