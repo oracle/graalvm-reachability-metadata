@@ -14,13 +14,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntrospectorTestCase2Test {
     @Test
-    void resolvesMostSpecificOverloadedMethodsWithVelocityIntrospector() {
+    void resolvesMostSpecificOverloadedMethodsWithAndWithoutCachedClassLiterals() {
         TestResult result = new TestResult();
 
+        IntrospectorTestCase2.suite().run(result);
         IntrospectorTestCase2.suite().run(result);
 
         assertThat(result.errorCount()).isZero();
         assertThat(result.failureCount()).isZero();
-        assertThat(result.runCount()).isEqualTo(1);
+        assertThat(result.runCount()).isEqualTo(2);
     }
 }
