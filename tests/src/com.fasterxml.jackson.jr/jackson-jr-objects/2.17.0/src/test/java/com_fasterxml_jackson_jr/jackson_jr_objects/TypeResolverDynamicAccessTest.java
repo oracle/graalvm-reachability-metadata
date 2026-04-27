@@ -18,16 +18,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeResolverDynamicAccessTest {
     @Test
-    void resolvesSyntheticGenericArrayTypesFromResolvedComponentTypes() {
+    void resolvesSyntheticGenericArrayTypesFromRuntimeResolvedComponentTypes() {
         TypeResolver resolver = new TypeResolver();
-        ResolvedType stringType = resolver.resolve(TypeBindings.emptyBindings(), String.class);
-        GenericArrayType genericArrayType = new SyntheticGenericArrayType(stringType);
+        Object runtimeComponentValue = runtimeComponentValue();
+        Class<?> componentClass = runtimeComponentValue.getClass();
+        ResolvedType componentType = resolver.resolve(TypeBindings.emptyBindings(), componentClass);
+        GenericArrayType genericArrayType = new SyntheticGenericArrayType(componentType);
 
         ResolvedType resolvedArrayType = resolver.resolve(TypeBindings.emptyBindings(), genericArrayType);
 
         assertThat(resolvedArrayType.isArray()).isTrue();
-        assertThat(resolvedArrayType.erasedType()).isEqualTo(String[].class);
-        assertThat(resolvedArrayType.elementType()).isEqualTo(stringType);
+        assertThat(resolvedArrayType.erasedType().getComponentType()).isEqualTo(componentClass);
+        assertThat(resolvedArrayType.elementType()).isEqualTo(componentType);
     }
 
     @Test
@@ -60,6 +62,13 @@ public class TypeResolverDynamicAccessTest {
     }
 
     static final class StringArrayContainer extends GenericArrayContainer<String> {
+    }
+
+    private static Object runtimeComponentValue() {
+        if (Thread.currentThread().getName().isEmpty()) {
+            return Integer.valueOf(7);
+        }
+        return Thread.currentThread().getName();
     }
 
     static final class SyntheticGenericArrayType implements GenericArrayType {
