@@ -7,38 +7,38 @@
 package commons_logging.commons_logging_api;
 
 import org.apache.commons.logging.impl.SimpleLog;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Order(1)
 public class SimpleLogAnonymous1Test {
-    private static final String DEFAULT_LOG_LEVEL_PROPERTY = "org.apache.commons.logging.simplelog.defaultlog";
+    private static final String SIMPLE_LOG_CLASS_CACHE = "class$org$apache$commons$logging$impl$SimpleLog";
 
     @Test
-    void initializesSimpleLogWithNoThreadContextClassLoader() {
+    void readsFromSystemResourcesWhenNoClassLoaderIsAvailable() throws Exception {
         ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
-        String previousDefaultLogLevel = System.getProperty(DEFAULT_LOG_LEVEL_PROPERTY);
+        Field simpleLogClassCache = SimpleLog.class.getDeclaredField(SIMPLE_LOG_CLASS_CACHE);
+        simpleLogClassCache.setAccessible(true);
+        Method getResourceAsStream = SimpleLog.class.getDeclaredMethod("getResourceAsStream", String.class);
+        getResourceAsStream.setAccessible(true);
+        Object previousSimpleLogClass = simpleLogClassCache.get(null);
         Thread.currentThread().setContextClassLoader(null);
-        System.setProperty(DEFAULT_LOG_LEVEL_PROPERTY, "debug");
+        simpleLogClassCache.set(null, String.class);
 
         try {
-            SimpleLog log = new SimpleLog("coverage.simplelog.system.resource");
+            InputStream resource = (InputStream) getResourceAsStream.invoke(
+                    null,
+                    "commons_logging/commons_logging_api/missing-simplelog.properties"
+            );
 
-            assertThat(log.isDebugEnabled()).isTrue();
-            assertThat(log.isInfoEnabled()).isTrue();
+            assertThat(resource).isNull();
         } finally {
+            simpleLogClassCache.set(null, previousSimpleLogClass);
             Thread.currentThread().setContextClassLoader(previousContextClassLoader);
-            restoreProperty(DEFAULT_LOG_LEVEL_PROPERTY, previousDefaultLogLevel);
-        }
-    }
-
-    private static void restoreProperty(String name, String previousValue) {
-        if (previousValue == null) {
-            System.clearProperty(name);
-        } else {
-            System.setProperty(name, previousValue);
         }
     }
 }
