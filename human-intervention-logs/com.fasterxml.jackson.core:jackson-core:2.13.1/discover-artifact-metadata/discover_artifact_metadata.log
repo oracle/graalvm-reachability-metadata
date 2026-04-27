@@ -1,0 +1,200 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd0e3-31ae-7ea1-8ca6-21f471d7639f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.fasterxml.jackson.core:jackson-core:2.13.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.13.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1/build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-core-2.13.1.json
+- Set "coordinates" to "com.fasterxml.jackson.core:jackson-core:2.13.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+mcp startup: no servers
+codex
+I’ll locate authoritative URLs for `com.fasterxml.jackson.core:jackson-core:2.13.1` (preferably from Maven Central metadata and the exact git tag), then update the JSON file with those values and a two-sentence description. I’m starting by inspecting the current file and pulling the artifact’s POM/source artifacts.
+exec
+/usr/bin/zsh -lc "pwd && ls -la build/discovered-artifact-metadata | rg 'com.fasterxml.jackson.core-jackson-core-2.13.1.json' && sed -n '1,220p' build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-core-2.13.1.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1 succeeded in 51ms:
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1
+-rw-rw-r-- 1 mihailo mihailo   71 Apr 27 23:40 com.fasterxml.jackson.core-jackson-core-2.13.1.json
+{
+  "coordinates" : "com.fasterxml.jackson.core:jackson-core:2.13.1"
+}
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1.pom | sed -n '1,260p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/ | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1 succeeded in 51ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion> 
+  <parent>
+    <groupId>com.fasterxml.jackson</groupId>
+    <artifactId>jackson-base</artifactId>
+    <version>2.13.1</version>
+  </parent>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-core</artifactId>
+  <name>Jackson-core</name>
+  <version>2.13.1</version>
+  <packaging>bundle</packaging>
+  <description>Core Jackson processing abstractions (aka Streaming API), implementation for JSON</description>
+  <licenses>
+    <license>
+ succeeded in 51ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/fasterxml/jackson/core/jackson-core/2.13.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/fasterxml/jackson/core/jackson-core/2.13.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+codex
+I’ve confirmed Maven Central has both `-sources.jar` and `-javadoc.jar` for `2.13.1`, and the POM includes the SCM tag `jackson-core-2.13.1`. I’ll now align the final source/test/doc URLs to that exact version and patch the target JSON.
+exec
+/usr/bin/zsh -lc 'ls build/discovered-artifact-metadata | head -n 5' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1 succeeded in 51ms:
+com.fasterxml.jackson.core-jackson-core-2.13.1.json
+exec
+/usr/bin/zsh -lc "sed -n '1,220p' build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-databind-2.13.1.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1 exited 2 in 51ms:
+sed: can't read build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-databind-2.13.1.json: No such file or directory
+exec
+/usr/bin/zsh -lc "curl -fsSL https://github.com/FasterXML/jackson-core/tree/jackson-core-2.13.1/src/test | sed -n '1,80p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1 succeeded in 844ms:
+
+
+
+
+
+
+<!DOCTYPE html>
+<html
+  lang="en"
+  
+  data-color-mode="auto" data-light-theme="light" data-dark-theme="dark"
+  data-a11y-animated-images="system" data-a11y-link-underlines="true"
+  
+  >
+
+
+
+
+  <head>
+    <meta charset="utf-8">
+codex
+I confirmed there is no Maven-published test artifact for this coordinate, so I’ll use the exact tagged test directory in the upstream repository for `test-code-url` and keep source/docs on Maven Central artifacts for `2.13.1`. I’m applying the JSON update now.
+exec
+/usr/bin/zsh -lc "cat > build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-core-2.13.1.json <<'EOF'
+{
+  \"coordinates\" : \"com.fasterxml.jackson.core:jackson-core:2.13.1\",
+  \"source-code-url\" : \"https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-sources.jar\",
+  \"repository-url\" : \"https://github.com/FasterXML/jackson-core\",
+  \"test-code-url\" : \"https://github.com/FasterXML/jackson-core/tree/jackson-core-2.13.1/src/test\",
+  \"documentation-url\" : \"https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-javadoc.jar\",
+  \"description\" : \"Jackson Core provides low-level streaming APIs to parse and generate JSON in Java. It is the foundation of the Jackson stack that higher-level databinding and tree-model modules build on.\"
+}
+EOF
+jq . build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-core-2.13.1.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1 succeeded in 51ms:
+{
+  "coordinates": "com.fasterxml.jackson.core:jackson-core:2.13.1",
+  "source-code-url": "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-sources.jar",
+  "repository-url": "https://github.com/FasterXML/jackson-core",
+  "test-code-url": "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.13.1/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-javadoc.jar",
+  "description": "Jackson Core provides low-level streaming APIs to parse and generate JSON in Java. It is the foundation of the Jackson stack that higher-level databinding and tree-model modules build on."
+}
+exec
+/usr/bin/zsh -lc "sed -n '1,220p' build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-core-2.13.1.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1 succeeded in 51ms:
+{
+  "coordinates" : "com.fasterxml.jackson.core:jackson-core:2.13.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-sources.jar",
+  "repository-url" : "https://github.com/FasterXML/jackson-core",
+  "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.13.1/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-javadoc.jar",
+  "description" : "Jackson Core provides low-level streaming APIs to parse and generate JSON in Java. It is the foundation of the Jackson stack that higher-level databinding and tree-model modules build on."
+}
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/FasterXML/jackson-core.git | rg 'refs/tags/jackson-core-2.13.1"'$'"'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1 succeeded in 415ms:
+4674afc9888496e126020f18b800e53373f16de0	refs/tags/jackson-core-2.13.1
+codex
+Updated [com.fasterxml.jackson.core-jackson-core-2.13.1.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1/build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-core-2.13.1.json) with:
+
+- `coordinates`: `com.fasterxml.jackson.core:jackson-core:2.13.1`
+- `source-code-url`: `https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-sources.jar`
+- `repository-url`: `https://github.com/FasterXML/jackson-core`
+- `test-code-url`: `https://github.com/FasterXML/jackson-core/tree/jackson-core-2.13.1/src/test`
+- `documentation-url`: `https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-javadoc.jar`
+- `description` (exactly two sentences): set
+
+`language` was left absent because this is not Kotlin- or Scala-specific.
+tokens used
+13,002
+Updated [com.fasterxml.jackson.core-jackson-core-2.13.1.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1/build/discovered-artifact-metadata/com.fasterxml.jackson.core-jackson-core-2.13.1.json) with:
+
+- `coordinates`: `com.fasterxml.jackson.core:jackson-core:2.13.1`
+- `source-code-url`: `https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-sources.jar`
+- `repository-url`: `https://github.com/FasterXML/jackson-core`
+- `test-code-url`: `https://github.com/FasterXML/jackson-core/tree/jackson-core-2.13.1/src/test`
+- `documentation-url`: `https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.1/jackson-core-2.13.1-javadoc.jar`
+- `description` (exactly two sentences): set
+
+`language` was left absent because this is not Kotlin- or Scala-specific.
+Ran agent for com.fasterxml.jackson.core:jackson-core:2.13.1 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1/build/agent-artifact-discovery-logs/com.fasterxml.jackson.core-jackson-core-2.13.1.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2239-ec92a2a1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 39s
+9 actionable tasks: 4 executed, 5 from cache
