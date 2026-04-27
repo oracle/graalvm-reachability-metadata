@@ -36,7 +36,7 @@ public class ExtensionRegistryLiteTest {
 
         ExtensionRegistry fullRegistry = (ExtensionRegistry) registry;
         Descriptors.FieldDescriptor expectedDescriptor =
-            ExtensionDescriptorHolder.DESCRIPTOR.findExtensionByName(EXTENSION_NAME);
+            ExtensionDescriptorHolder.descriptor.findExtensionByName(EXTENSION_NAME);
         ExtensionRegistry.ExtensionInfo extensionByName = fullRegistry.findExtensionByName(EXTENSION_NAME);
         ExtensionRegistry.ExtensionInfo extensionByNumber =
             fullRegistry.findExtensionByNumber(DescriptorProtos.FileOptions.getDescriptor(), EXTENSION_NUMBER);
@@ -48,7 +48,7 @@ public class ExtensionRegistryLiteTest {
     }
 
     public static final class ExtensionDescriptorHolder {
-        public static final Descriptors.FileDescriptor DESCRIPTOR = createExtensionDescriptor();
+        public static final Descriptors.FileDescriptor descriptor = createExtensionDescriptor();
 
         private ExtensionDescriptorHolder() {
         }
