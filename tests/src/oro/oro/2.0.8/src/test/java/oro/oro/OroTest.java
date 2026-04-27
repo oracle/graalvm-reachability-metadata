@@ -275,6 +275,18 @@ public class OroTest {
     }
 
     @Test
+    void matchActionProcessorDefaultActionsCopyMatchingLines() throws IOException, MalformedPatternException {
+        MatchActionProcessor processor = new MatchActionProcessor();
+        StringWriter output = new StringWriter();
+
+        processor.addAction("^WARN");
+        processor.addAction("^ERROR", Perl5Compiler.CASE_INSENSITIVE_MASK);
+        processor.processMatches(new StringReader("INFO|started\nWARN|slow\nerror|failed\n"), output);
+
+        assertThat(output).hasToString("WARN|slow\nerror|failed\n");
+    }
+
+    @Test
     void matchActionProcessorSupportsByteStreamsWithExplicitEncoding() throws IOException, MalformedPatternException {
         MatchActionProcessor processor = new MatchActionProcessor();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
