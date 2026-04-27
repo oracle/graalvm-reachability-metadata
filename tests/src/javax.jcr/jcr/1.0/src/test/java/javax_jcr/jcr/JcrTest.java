@@ -293,6 +293,31 @@ public class JcrTest {
                 "leave property summary @2");
     }
 
+    @Test
+    void traversingItemVisitorWalksRepositoryItemsDepthFirstBeforeLeavingParent() throws Exception {
+        TestNode root = new TestNode("root");
+        root.addProperty("title");
+        root.addNode(new TestNode("assets").addProperty("mimeType"));
+        root.addNode(new TestNode("notes").addProperty("summary"));
+
+        RecordingTraversingItemVisitor visitor = new RecordingTraversingItemVisitor(false, -1);
+        root.accept(visitor);
+
+        assertThat(visitor.events()).containsExactly(
+                "enter node root @0",
+                "enter property title @1",
+                "leave property title @1",
+                "enter node assets @1",
+                "enter property mimeType @2",
+                "leave property mimeType @2",
+                "leave node assets @1",
+                "enter node notes @1",
+                "enter property summary @2",
+                "leave property summary @2",
+                "leave node notes @1",
+                "leave node root @0");
+    }
+
     private record PropertyTypeCase(int value, String name) {
     }
 
