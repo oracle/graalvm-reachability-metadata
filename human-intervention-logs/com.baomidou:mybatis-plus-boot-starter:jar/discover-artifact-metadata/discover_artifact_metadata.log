@@ -1,0 +1,447 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dce42-4a74-7b62-963c-08dd501f6675
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.baomidou:mybatis-plus-boot-starter:jar
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "jar".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+- Set "coordinates" to "com.baomidou:mybatis-plus-boot-starter:jar".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata file and nearby examples first, then verify the artifact coordinates against Maven/repository sources before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 0ms:
+{
+  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar"
+}
+
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -40' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+
+exec
+/usr/bin/bash -lc "rg '\"coordinates\": \"com.baomidou:mybatis-plus' -n ." in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central com.baomidou mybatis-plus-boot-starter versions scm tag
+web search: 
+web search: https://central.sonatype.com/artifact/com.baomidou/mybatis-plus-boot-starter
+codex
+The existing file only contains the coordinate. Maven Central identifies this artifact with normal numeric releases like `3.5.16`, so I’m checking whether the literal requested version `jar` exists anywhere before deciding which fields must be `N/A`.
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo.maven.apache.org/maven2/com/baomidou/mybatis-plus-boot-starter/jar/mybatis-plus-boot-starter-jar.pom' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/baomidou/mybatis-plus-boot-starter/maven-metadata.xml' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 172ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.baomidou</groupId>
+  <artifactId>mybatis-plus-boot-starter</artifactId>
+  <versioning>
+    <latest>3.5.16</latest>
+    <release>3.5.16</release>
+    <versions>
+      <version>2.1.9</version>
+      <version>2.2.0</version>
+      <version>2.3</version>
+      <version>2.3.1</version>
+      <version>2.3.2</version>
+      <version>2.3.3</version>
+      <version>3.0-alpha</version>
+      <version>3.0-beta</version>
+      <version>3.0-RC</version>
+      <version>3.0-RC1</version>
+      <version>3.0-RC2</version>
+      <version>3.0-RC3</version>
+      <version>3.0-RELEASE</version>
+      <version>3.0-gamma</version>
+      <version>3.0.1</version>
+      <version>3.0.2</version>
+      <version>3.0.3</version>
+      <version>3.0.4</version>
+      <version>3.0.5</version>
+      <version>3.0.6</version>
+      <version>3.0.7.1</version>
+      <version>3.0.7</version>
+      <version>3.1.0</version>
+      <version>3.1.1</version>
+      <version>3.1.2</version>
+      <version>3.2.0</version>
+      <version>3.3.0</version>
+      <version>3.3.1</version>
+      <version>3.3.1.tmp</version>
+      <version>3.3.2</version>
+      <version>3.4.0</version>
+      <version>3.4.1</version>
+      <version>3.4.2</version>
+      <version>3.4.3.1</version>
+      <version>3.4.3.2</version>
+      <version>3.4.3.3</version>
+      <version>3.4.3.4</version>
+      <version>3.4.3</version>
+      <version>3.5.0</version>
+      <version>3.5.1</version>
+      <version>3.5.2</version>
+      <version>3.5.3.1</version>
+      <version>3.5.3.2</version>
+      <version>3.5.3</version>
+      <version>3.5.4.1</version>
+      <version>3.5.4</version>
+      <version>3.5.5</version>
+      <version>3.5.6</version>
+      <version>3.5.7</version>
+      <version>3.5.8</version>
+      <version>3.5.9</version>
+      <version>3.5.10.1</version>
+      <version>3.5.10</version>
+      <version>3.5.11</version>
+      <version>3.5.12</version>
+      <version>3.5.13</version>
+      <version>3.5.14</version>
+      <version>3.5.15</version>
+      <version>3.5.16</version>
+    </versions>
+    <lastUpdated>20260111114747</lastUpdated>
+  </versioning>
+</metadata>
+
+ succeeded in 233ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Mon, 27 Apr 2026 09:26:05 GMT
+content-type: text/html
+cf-ray: 9f2cc89dc8db03a3-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/baomidou/mybatis-plus-boot-starter/jar/mybatis-plus-boot-starter-jar.pom
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/baomidou/mybatis-plus-boot-starter/3.5.16/mybatis-plus-boot-starter-3.5.16.pom | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.baomidou</groupId>
+  <artifactId>mybatis-plus-boot-starter</artifactId>
+  <version>3.5.16</version>
+  <name>mybatis-plus</name>
+  <description>An enhanced toolkit of Mybatis to simplify development.</description>
+  <url>https://github.com/baomidou/mybatis-plus</url>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>baomidou</id>
+      <name>hubin</name>
+      <email>jobob@qq.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git@github.com:Codearte/gradle-nexus-staging-plugin.git</connection>
+    <developerConnection>scm:git@github.com:Codearte/gradle-nexus-staging-plugin.git</developerConnection>
+    <url>https://github.com/baomidou/mybatis-plus</url>
+  </scm>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>2.7.18</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus</artifactId>
+      <version>3.5.16</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>2.1.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus-spring-boot-autoconfigure</artifactId>
+      <version>3.5.16</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure-processor</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis.scripting</groupId>
+      <artifactId>mybatis-thymeleaf</artifactId>
+      <version>1.0.4</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis.scripting</groupId>
+      <artifactId>mybatis-velocity</artifactId>
+      <version>2.1.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis.scripting</groupId>
+      <artifactId>mybatis-freemarker</artifactId>
+      <version>1.3.0</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-commons</artifactId>
+      <version>3.1.8</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://github.com/baomidou/mybatis-plus/tree/jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/baomidou/mybatis-plus/tags?per_page=100 | rg '\"name\": \"(jar|v?3\\.5\\.16|3\\.5\\.16)'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 221ms:
+    "name": "v3.5.16",
+
+ succeeded in 346ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 09:26:12 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=eZMxFoh%2BMjlLx6g1mNmStzYOI5L65WZfRjxBdR5N8EqXJm7JyDjsEkO5frDHPV7LCRC7vZM8TX%2BeSn4oGpOIgH8SM%2BjCAmfzqafyMZ%2FH2C
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+XtB5E6L5zDT6OLsGTXeSs3cJ1QzOUEWnVTv%2FgbwUY29pVVNqNA6AdjMm1H0t0PlgH%2FH4q40p%2B4WdDi9zzYBAuI6FO4P3MVHK0QlUg%2B3TnvbieFCBFpv7HIOsOSgjp6jWKq%2Flm%2FWk%2B4IIOemQJAvY7aUoRQcNIlL%2FUspZrQQ9EfFA%3D%3D--OX6XaibObuJx%2BZBn--xytSrcBzRUezjjm%2FaMBS%2Bw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2047665680.1777281971; expires=Tue, 27 Apr 2027 09:26:11 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 09:26:11 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 72D7:28217:15062C37:FB18019:69EF2BB3
+
+
+web search: 
+web search: site:central.sonatype.com/artifact/com.baomidou/mybatis-plus-boot-starter com.baomidou mybatis-plus-boot-starter
+codex
+The literal `jar` version is not present in Maven Central, and the GitHub repo has no `jar` tag/branch. I’m going to keep the repository URL, but mark version-specific source, test, and documentation URLs as `N/A` because there is no confident exact-version target.
+apply patch
+patch: completed
+/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+diff --git a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+index 388b06e40b73d5d765c32d2da743b9c7d68b9ba4..39e7c46530461e7d74ac7d2cba2f4e7977490f3a
+--- a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
++++ b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar"
++  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/baomidou/mybatis-plus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "MyBatis-Plus Boot Starter integrates MyBatis-Plus with Spring Boot 2 applications, wiring the enhanced MyBatis toolkit and its auto-configuration into a starter dependency. It helps developers build persistence layers with MyBatis-Plus features such as CRUD helpers, query wrappers, pagination support, and code generation while reducing Spring Boot setup work."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+index 388b06e40b73d5d765c32d2da743b9c7d68b9ba4..39e7c46530461e7d74ac7d2cba2f4e7977490f3a
+--- a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
++++ b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar"
++  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/baomidou/mybatis-plus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "MyBatis-Plus Boot Starter integrates MyBatis-Plus with Spring Boot 2 applications, wiring the enhanced MyBatis toolkit and its auto-configuration into a starter dependency. It helps developers build persistence layers with MyBatis-Plus features such as CRUD helpers, query wrappers, pagination support, and code generation while reducing Spring Boot setup work."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 0ms:
+{
+  "coordinates": "com.baomidou:mybatis-plus-boot-starter:jar",
+  "source-code-url": "N/A",
+  "repository-url": "https://github.com/baomidou/mybatis-plus",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "MyBatis-Plus Boot Starter integrates MyBatis-Plus with Spring Boot 2 applications, wiring the enhanced MyBatis toolkit and its auto-configuration into a starter dependency. It helps developers build persistence layers with MyBatis-Plus features such as CRUD helpers, query wrappers, pagination support, and code generation while reducing Spring Boot setup work."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+index 388b06e40b73d5d765c32d2da743b9c7d68b9ba4..39e7c46530461e7d74ac7d2cba2f4e7977490f3a
+--- a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
++++ b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar"
++  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/baomidou/mybatis-plus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "MyBatis-Plus Boot Starter integrates MyBatis-Plus with Spring Boot 2 applications, wiring the enhanced MyBatis toolkit and its auto-configuration into a starter dependency. It helps developers build persistence layers with MyBatis-Plus features such as CRUD helpers, query wrappers, pagination support, and code generation while reducing Spring Boot setup work."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 0ms:
+{
+  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar",
+  "source-code-url" : "N/A",
+  "repository-url" : "https://github.com/baomidou/mybatis-plus",
+  "test-code-url" : "N/A",
+  "documentation-url" : "N/A",
+  "description" : "MyBatis-Plus Boot Starter integrates MyBatis-Plus with Spring Boot 2 applications, wiring the enhanced MyBatis toolkit and its auto-configuration into a starter dependency. It helps developers build persistence layers with MyBatis-Plus features such as CRUD helpers, query wrappers, pagination support, and code generation while reducing Spring Boot setup work."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+index 388b06e40b73d5d765c32d2da743b9c7d68b9ba4..39e7c46530461e7d74ac7d2cba2f4e7977490f3a
+--- a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
++++ b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar"
++  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/baomidou/mybatis-plus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "MyBatis-Plus Boot Starter integrates MyBatis-Plus with Spring Boot 2 applications, wiring the enhanced MyBatis toolkit and its auto-configuration into a starter dependency. It helps developers build persistence layers with MyBatis-Plus features such as CRUD helpers, query wrappers, pagination support, and code generation while reducing Spring Boot setup work."
+ }
+
+web search: 
+web search: https://github.com/baomidou/mybatis-plus
+web search: 
+web search: repo.maven.apache.org maven2 com baomidou mybatis-plus-boot-starter maven-metadata.xml 3.5.16
+web search: 
+web search: https://central.sonatype.com/artifact/com.baomidou/mybatis-plus-boot-starter
+codex
+Updated [com.baomidou-mybatis-plus-boot-starter-jar.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json:1).
+
+I set the repository URL to the upstream MyBatis-Plus repo and left `source-code-url`, `test-code-url`, and `documentation-url` as `N/A` because the requested literal version `jar` does not provide a confident version-specific Maven/tag target. The artifact is a Java Spring Boot starter, not Kotlin- or Scala-specific, so I did not add a `language` field. Maven Central’s POM points the project and SCM URLs at the upstream repo and describes the artifact as a MyBatis enhancement toolkit. ([central.sonatype.com](https://central.sonatype.com/artifact/com.baomidou/mybatis-plus-boot-starter))
+diff --git a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+index 388b06e40b73d5d765c32d2da743b9c7d68b9ba4..39e7c46530461e7d74ac7d2cba2f4e7977490f3a
+--- a/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
++++ b/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar"
++  "coordinates" : "com.baomidou:mybatis-plus-boot-starter:jar",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/baomidou/mybatis-plus",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "MyBatis-Plus Boot Starter integrates MyBatis-Plus with Spring Boot 2 applications, wiring the enhanced MyBatis toolkit and its auto-configuration into a starter dependency. It helps developers build persistence layers with MyBatis-Plus features such as CRUD helpers, query wrappers, pagination support, and code generation while reducing Spring Boot setup work."
+ }
+
+2026-04-27T09:26:55.886915Z ERROR codex_core::session: failed to record rollout items: thread 019dce42-4a74-7b62-963c-08dd501f6675 not found
+tokens used
+59,349
+Updated [com.baomidou-mybatis-plus-boot-starter-jar.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb/build/discovered-artifact-metadata/com.baomidou-mybatis-plus-boot-starter-jar.json:1).
+
+I set the repository URL to the upstream MyBatis-Plus repo and left `source-code-url`, `test-code-url`, and `documentation-url` as `N/A` because the requested literal version `jar` does not provide a confident version-specific Maven/tag target. The artifact is a Java Spring Boot starter, not Kotlin- or Scala-specific, so I did not add a `language` field. Maven Central’s POM points the project and SCM URLs at the upstream repo and describes the artifact as a MyBatis enhancement toolkit. ([central.sonatype.com](https://central.sonatype.com/artifact/com.baomidou/mybatis-plus-boot-starter))
+Ran agent for com.baomidou:mybatis-plus-boot-starter:jar (exit 0). Log: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb/build/agent-artifact-discovery-logs/com.baomidou-mybatis-plus-boot-starter-jar.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/159-6497bcbb/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 13s
+9 actionable tasks: 4 executed, 5 from cache
