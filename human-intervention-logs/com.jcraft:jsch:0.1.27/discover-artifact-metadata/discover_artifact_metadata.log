@@ -1,0 +1,282 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd0e6-8b4e-79d1-8024-515e14c8249c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.jcraft:jsch:0.1.27
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.1.27".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+- Set "coordinates" to "com.jcraft:jsch:0.1.27".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+mcp startup: no servers
+codex
+I’m going to inspect the target JSON file first, then verify exact-version source/test/docs links (preferring Maven-hosted artifacts where available) before updating the metadata fields.
+exec
+/usr/bin/zsh -lc 'cat /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7exec
+/usr/bin/zsh -lc "ls -la /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata | rg 'com.jcraft-jsch-0.1.27.json'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 50ms:
+{
+  "coordinates" : "com.jcraft:jsch:0.1.27"
+}
+ succeeded in 50ms:
+-rw-rw-r-- 1 mihailo mihailo   47 Apr 27 23:44 com.jcraft-jsch-0.1.27.json
+codex
+I found the file with only `coordinates` set. Next I’m checking Maven Central metadata for `0.1.27` to locate version-specific source/test artifacts and then mapping repository/docs URLs to the matching release tag if available.
+exec
+/usr/bin/zsh -lc "curl -sSfL https://repo1.maven.org/maven2/com/jcraft/jsch/0.1.27/ | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 50ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/jcraft/jsch/0.1.27</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/jcraft/jsch/0.1.27</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+exec
+/usr/bin/zsh -lc "curl -sSfL https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/ | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 281ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/jcraft/jsch/0.1.27</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/jcraft/jsch/0.1.27</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+exec
+/usr/bin/zsh -lc 'curl -sSfL https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27.pom' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 51ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jcraft</groupId>
+  <artifactId>jsch</artifactId>
+  <version>0.1.27</version>
+  <name>JSch</name>
+  <description>JSch is a pure Java implementation of SSH2</description>
+  <url>http://www.jcraft.com/jsch/</url>
+
+  <organization>
+    <name>jcraft</name>
+    <url>http://www.jcraft.com/jsch</url>
+  </organization>
+
+  <licenses>
+    <license>
+codex
+Maven Central has exact-version `sources` and `javadoc` artifacts for `0.1.27`, so I’m using those for source and docs. I’ll quickly inspect the source JAR to see whether an actual test suite is published for this version; otherwise I’ll set `test-code-url` to `N/A`.
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d); cd "$tmpdir"; curl -sSfLO https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar; jar tf jsch-0.1.27-sources.jar | sed -n '"'1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 145ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/jcraft/
+com/jcraft/jsch/
+com/jcraft/jsch/Buffer.java
+com/jcraft/jsch/Channel.java
+com/jcraft/jsch/ChannelDirectTCPIP.java
+com/jcraft/jsch/ChannelExec.java
+com/jcraft/jsch/ChannelForwardedTCPIP.java
+com/jcraft/jsch/ChannelSession.java
+com/jcraft/jsch/ChannelSftp.java
+com/jcraft/jsch/ChannelShell.java
+com/jcraft/jsch/ChannelSubsystem.java
+com/jcraft/jsch/ChannelX11.java
+com/jcraft/jsch/Cipher.java
+com/jcraft/jsch/CipherNone.java
+com/jcraft/jsch/Compression.java
+com/jcraft/jsch/DH.java
+com/jcraft/jsch/DHG1.java
+exec
+/usr/bin/zsh -lc 'rg --files /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata | head -n 20' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7exec
+/usr/bin/zsh -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"language\"' /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata -n | head -n 40" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 50ms:
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json
+ succeeded in 51ms:
+
+codex
+I’m now verifying whether an authoritative version control repository exists for this legacy release (`0.1.27`) and whether a tag-specific test source is publicly available; if not, I’ll mark those fields as `N/A` per your rule.
+🌐 Searching the web...
+🌐 Searched: JSch 0.1.27 source tag repository
+🌐 Searching the web...
+🌐 Searched: sourceforge jsch code repository
+exec
+/usr/bin/zsh -lc 'for u in https://sourceforge.net/p/jsch/code/ https://sourceforge.net/projects/jsch/ https://www.jcraft.com/jsch/; do echo "--- $u"; curl -sI "$u" | head -n 5; done' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7exec
+/usr/bin/zsh -lc "curl -sSfL https://sourceforge.net/projects/jsch/files/jsch/0.1.27/ | sed -n '1,220p' | rg -n \"jsch-0.1.27|download|zip|jar|src|source|javadoc\" | head -n 40" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 419ms:
+13:        <script src="//a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1777314598"></script>
+40:            SF.floatingSitewideOrigin = 'https://sourceforge.net';
+97:    <link rel="canonical" href="https://sourceforge.net/projects/jsch/files/jsch/0.1.27/">
+116:        <script src="//a.fsdn.com/con/js/min/sf.sandiego-head.js?1777314598"></script>
+126:<script src="//a.fsdn.com/con/js/ad_top.js?1777314598"></script>
+128:<script src="//a.fsdn.com/con/js/asg_embed.js?1777314598"></script>
+172:                            data.domain = "sourceforge.net";
+193:                g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'sf.js'; s.parentNode.insertBefore(g,s);
+206:                "url": "https://sourceforge.net/"
+ succeeded in 1.12s:
+HTTP/2 301 
+date: Mon, 27 Apr 2026 21:45:10 GMT
+content-type: text/html; charset=UTF-8
+location: https://sourceforge.net/projects/jsch/
+server: cloudflare
+--- https://sourceforge.net/projects/jsch/
+HTTP/2 200 
+date: Mon, 27 Apr 2026 21:45:10 GMT
+content-type: text/html; charset=utf-8
+content-length: 120093
+server: cloudflare
+--- https://www.jcraft.com/jsch/
+exec
+/usr/bin/zsh -lc 'for u in http://www.jcraft.com/jsch/ https://www.jcraft.com/jsch/; do echo "--- $u"; curl -L -m 15 -sS -D - "$u" -o /tmp/jsch_page.html | head -n 12; echo "saved_bytes $(wc -c </tmp/jsch_page.html 2>/dev/null || true)"; done' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 822ms:
+HTTP/1.1 200 OK
+Date: Mon, 27 Apr 2026 21:45:07 GMT
+Server: Apache/2.2.2 (Fedora)
+Last-Modified: Mon, 26 Nov 2018 01:45:44 GMT
+ETag: "e4c9bc-553f-7dbea200"
+Accept-Ranges: bytes
+Content-Length: 21823
+Connection: close
+Content-Type: text/html
+
+saved_bytes 21823
+--- https://www.jcraft.com/jsch/
+curl: (7) Failed to connect to www.jcraft.com port 443 after 294 ms: Couldn't connect to server
+saved_bytes 21823
+exec
+/usr/bin/zsh -lc "rg -n \"0\\.1\\.27|download|cvs|git|source|javadoc|documentation|release\" /tmp/jsch_page.html | head -n 80" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 51ms:
+58:            <a href="/eclipse-cvsssh2/">CVS-SSH2 Plug-in</a>
+77:  <a href="http://sourceforge.net" target="_blank"><img src="http://sourceforge.net/sflogo.php?group_id=64920" border="0" alt="SourceForge Logo" /></a>
+218:      The downloadable archive includes the source code of JSch and
+238:on <a href="http://java.sun.com/j2se/1.4.2/download.html#docs">
+239:http://java.sun.com/j2se/1.4.2/download.html#docs</a>, we can enjoy 'aes256-cbc,aes256-ctr'.<br />  Please refer to <a href="./examples/AES.java">AES.java</a> how to choose those ciphers.
+252:           Our <a href="/eclipse-cvsssh2/">Eclipse-CVSSSH2</a> plug-in has been
+264:      <li> <a href="http://sancho-gui.sourceforge.net/" target="_blank">sanchor</a><br />
+266:      <li> <a href="http://esup-casgeneric.sourceforge.net/" target="_blank">CAS Generic Handler</a><br />
+278:On that web page, source code will be provided under revised BSD
+290:           <a href="https://sourceforge.net/projects/jsch/files/jsch/0.1.55/jsch-0.1.55.zip/download">jsch-0.1.55.zip</a>(369,664 bytes)
+294:          <br /> <b>NOTE:</b> If you downloaded jsch-0.1.30.zip before '<b>Thu Nov  2 02:05:12 UTC 2006</b>',
+297:      <li> <a href="https://sourceforge.net/projects/jsch/files/jsch.jar/0.1.55/jsch-0.1.55.jar/download">jsch-0.1.55.jar</a>(280,681 bytes)
+332:      <li> <a href="https://github.com/ymnk/jsch-agent-proxy">jsch-agent-proxy</a> is a proxy to ssh-agent and Pageant in Java.</li>
+333:      <li> <a href="http://www.jcraft.com/eclipse-cvsssh2/">CVS-SSH2 Plug-in for Eclipse</a>.</li>
+359:Go to <a href="http://lists.sourceforge.net/mailman/listinfo/jsch-users">Subscribe/Unsubscribe/Preferences</a>,&nbsp;
+360: <a href="http://sourceforge.net/p/jsch/mailman/jsch-users/">Archives</a>.</li>
+394:      <li>We also appreciate <a href="http://sourceforge.net/" target="_blank">SourceForge</a>'s awesome service to the Open Source Community.</li>
+codex
+I confirmed Maven Central hosts version-specific source and javadoc artifacts for `0.1.27`, while no test artifact is published there for this version. I’m now updating the JSON with those exact URLs, `N/A` for test code, and a two-sentence description.
+exec
+/usr/bin/zsh -lc "cat > /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json <<'EOF'
+{
+  \"coordinates\" : \"com.jcraft:jsch:0.1.27\",
+  \"source-code-url\" : \"https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar\",
+  \"repository-url\" : \"https://sourceforge.net/projects/jsch/\",
+  \"test-code-url\" : \"N/A\",
+  \"documentation-url\" : \"https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar\",
+  \"description\" : \"JSch is a pure Java implementation of the SSH2 protocol that lets applications establish secure remote sessions and tunnels. It provides APIs for SSH authentication, command execution, port forwarding, and SFTP file transfer.\"
+}
+EOF" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 51ms:
+
+exec
+/usr/bin/zsh -lc 'jq . /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 51ms:
+{
+  "coordinates": "com.jcraft:jsch:0.1.27",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar",
+  "repository-url": "https://sourceforge.net/projects/jsch/",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar",
+  "description": "JSch is a pure Java implementation of the SSH2 protocol that lets applications establish secure remote sessions and tunnels. It provides APIs for SSH authentication, command execution, port forwarding, and SFTP file transfer."
+}
+exec
+/usr/bin/zsh -lc 'curl -sI https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar | head -n 1 && curl -sI https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar | head -n 1 && curl -sI https://sourceforge.net/projects/jsch/ | head -n 1' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7 succeeded in 819ms:
+HTTP/2 200 
+HTTP/2 103 
+codex
+Updated [com.jcraft-jsch-0.1.27.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json) with:
+
+- `coordinates`: `com.jcraft:jsch:0.1.27`
+- `source-code-url`: `https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar` (exact version on Maven)
+- `repository-url`: `https://sourceforge.net/projects/jsch/`
+- `test-code-url`: `N/A` (no versioned test artifact found on Maven for `0.1.27`)
+- `documentation-url`: `https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar` (exact version on Maven)
+- `description`: exactly two sentences, concise
+- `language`: omitted (this is a Java library, not Kotlin/Scala-specific)
+tokens used
+22,073
+Updated [com.jcraft-jsch-0.1.27.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/discovered-artifact-metadata/com.jcraft-jsch-0.1.27.json) with:
+
+- `coordinates`: `com.jcraft:jsch:0.1.27`
+- `source-code-url`: `https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-sources.jar` (exact version on Maven)
+- `repository-url`: `https://sourceforge.net/projects/jsch/`
+- `test-code-url`: `N/A` (no versioned test artifact found on Maven for `0.1.27`)
+- `documentation-url`: `https://repo.maven.apache.org/maven2/com/jcraft/jsch/0.1.27/jsch-0.1.27-javadoc.jar` (exact version on Maven)
+- `description`: exactly two sentences, concise
+- `language`: omitted (this is a Java library, not Kotlin/Scala-specific)
+Ran agent for com.jcraft:jsch:0.1.27 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/agent-artifact-discovery-logs/com.jcraft-jsch-0.1.27.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2236-9971bdd7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 17s
+9 actionable tasks: 4 executed, 5 from cache
