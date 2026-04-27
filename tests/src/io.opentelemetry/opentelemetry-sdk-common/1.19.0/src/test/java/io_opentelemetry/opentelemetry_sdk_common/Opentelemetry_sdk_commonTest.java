@@ -258,6 +258,32 @@ public class Opentelemetry_sdk_commonTest {
     }
 
     @Test
+    void resourceValueSemanticsIncludeSchemaUrlAndAttributes() {
+        Resource first = Resource.create(Attributes.of(
+                SERVICE_NAME, "orders",
+                SERVICE_VERSION, "1.0.0"), "https://example.com/schemas/service");
+        Resource sameValues = Resource.create(Attributes.of(
+                SERVICE_NAME, "orders",
+                SERVICE_VERSION, "1.0.0"), "https://example.com/schemas/service");
+        Resource differentSchema = Resource.create(Attributes.of(
+                SERVICE_NAME, "orders",
+                SERVICE_VERSION, "1.0.0"), "https://example.com/schemas/other");
+        Resource differentAttributes = Resource.create(Attributes.of(
+                SERVICE_NAME, "payments",
+                SERVICE_VERSION, "1.0.0"), "https://example.com/schemas/service");
+
+        assertThat(first).isEqualTo(sameValues);
+        assertThat(first.hashCode()).isEqualTo(sameValues.hashCode());
+        assertThat(first).isNotEqualTo(differentSchema);
+        assertThat(first).isNotEqualTo(differentAttributes);
+        assertThat(first).isNotEqualTo("orders");
+        assertThat(first.toString())
+                .contains("https://example.com/schemas/service")
+                .contains("service.name")
+                .contains("orders");
+    }
+
+    @Test
     void resourceMergeUsesOtherResourceForCollisionsAndCombinesSchemaUrls() {
         Resource first = Resource.create(Attributes.of(
                 SERVICE_NAME, "orders",
