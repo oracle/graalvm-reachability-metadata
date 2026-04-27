@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
 
 public class MapBuilderDefaultDynamicAccessTest {
     @BeforeEach
@@ -61,7 +60,9 @@ public class MapBuilderDefaultDynamicAccessTest {
                 .build();
 
         assertThat(counts).isInstanceOf(ConstructorTrackingMap.class);
-        assertThat(counts).containsOnly(entry("kept", true));
+        assertThat(counts).hasSize(1);
+        assertThat(counts).containsEntry("kept", true);
+        assertThat(counts).doesNotContainKey("discarded");
         assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(2);
     }
 

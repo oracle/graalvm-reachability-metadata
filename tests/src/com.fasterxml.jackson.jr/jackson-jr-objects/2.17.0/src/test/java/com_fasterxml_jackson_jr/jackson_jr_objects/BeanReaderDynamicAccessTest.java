@@ -7,8 +7,6 @@
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import com.fasterxml.jackson.jr.ob.JSON;
-import com.fasterxml.jackson.jr.ob.JSONObjectException;
-import com.fasterxml.jackson.jr.ob.impl.ClassKey;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,20 +15,45 @@ public class BeanReaderDynamicAccessTest {
     private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
 
     @Test
-    void createsLibraryBeansThroughPublicDefaultConstructors() throws Exception {
-        ClassKey key = JSON.std.beanFrom(ClassKey.class, "{}");
+    void createsBeansThroughPublicDefaultConstructors() throws Exception {
+        PublicDefaultCtorBean bean = JSON.std.beanFrom(PublicDefaultCtorBean.class, "{\"name\":\"Ada\"}");
 
-        assertThat(key).isNotNull();
-        assertThat(key.hashCode()).isZero();
+        assertThat(bean.isConstructed()).isTrue();
+        assertThat(bean.name).isEqualTo("Ada");
     }
 
     @Test
-    void createsLibraryBeansThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
-        JSONObjectException.Reference reference = JSON_WITH_FORCE_ACCESS.beanFrom(JSONObjectException.Reference.class,
-                "{\"from\":\"source\",\"fieldName\":\"name\",\"index\":2}");
+    void createsBeansThroughNonPublicDefaultConstructorsWhenAccessIsForced() throws Exception {
+        PrivateDefaultCtorBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(PrivateDefaultCtorBean.class,
+                "{\"name\":\"Ada\"}");
 
-        assertThat(reference.getFrom()).isEqualTo("source");
-        assertThat(reference.getFieldName()).isEqualTo("name");
-        assertThat(reference.getIndex()).isEqualTo(2);
+        assertThat(bean.isConstructed()).isTrue();
+        assertThat(bean.name).isEqualTo("Ada");
+    }
+
+    public static final class PublicDefaultCtorBean {
+        private boolean constructed;
+        public String name;
+
+        public PublicDefaultCtorBean() {
+            constructed = true;
+        }
+
+        public boolean isConstructed() {
+            return constructed;
+        }
+    }
+
+    public static final class PrivateDefaultCtorBean {
+        private boolean constructed;
+        public String name;
+
+        private PrivateDefaultCtorBean() {
+            constructed = true;
+        }
+
+        public boolean isConstructed() {
+            return constructed;
+        }
     }
 }
