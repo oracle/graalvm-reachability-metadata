@@ -35,16 +35,16 @@ public class ClassLoaderObjectInputStreamTest {
 
     @Test
     void fallsBackToObjectInputStreamClassResolutionWhenTheProvidedLoaderCannotResolveTheClass() throws Exception {
-        ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(String.class);
+        ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(SerializablePayload.class);
         ClassLoader rejectingClassLoader = new RejectingClassLoader(
-                String.class.getName(),
+                SerializablePayload.class.getName(),
                 ClassLoaderObjectInputStreamTest.class.getClassLoader());
 
         try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(
                 rejectingClassLoader)) {
             Class<?> resolvedClass = inputStream.resolveClassDescriptor(objectStreamClass);
 
-            assertThat(resolvedClass).isEqualTo(String.class);
+            assertThat(resolvedClass).isEqualTo(SerializablePayload.class);
         }
     }
 

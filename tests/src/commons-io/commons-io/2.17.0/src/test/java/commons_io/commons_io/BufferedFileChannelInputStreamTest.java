@@ -21,15 +21,18 @@ import org.junit.jupiter.api.io.TempDir;
 public class BufferedFileChannelInputStreamTest {
 
     @Test
-    void readsEntireFileUsingTheFileConstructorAndClosesItsDirectBuffer(@TempDir final Path tempDirectory)
+    void readsEntireFileUsingTheFileBuilderAndClosesItsDirectBuffer(@TempDir final Path tempDirectory)
             throws IOException {
         final String fileContents = "0123456789abcdef";
         final Path file = writeFile(tempDirectory, fileContents);
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final byte[] buffer = new byte[3];
 
-        try (BufferedFileChannelInputStream inputStream = new BufferedFileChannelInputStream(file.toFile(), 4)) {
-            assertThat(inputStream.available()).isZero();
+        try (BufferedFileChannelInputStream inputStream = BufferedFileChannelInputStream.builder()
+                .setFile(file.toFile())
+                .setBufferSize(4)
+                .get()) {
+            assertThat(inputStream.available()).isEqualTo(4);
 
             outputStream.write(inputStream.read());
             int read = inputStream.read(buffer, 0, buffer.length);
@@ -43,12 +46,15 @@ public class BufferedFileChannelInputStreamTest {
     }
 
     @Test
-    void skipsAcrossBufferedAndChannelBytesUsingThePathConstructor(@TempDir final Path tempDirectory)
+    void skipsAcrossBufferedAndChannelBytesUsingThePathBuilder(@TempDir final Path tempDirectory)
             throws IOException {
         final Path file = writeFile(tempDirectory, "abcdefghij");
         final byte[] buffer = new byte[3];
 
-        try (BufferedFileChannelInputStream inputStream = new BufferedFileChannelInputStream(file, 3)) {
+        try (BufferedFileChannelInputStream inputStream = BufferedFileChannelInputStream.builder()
+                .setPath(file)
+                .setBufferSize(3)
+                .get()) {
             assertThat(inputStream.read()).isEqualTo((int) 'a');
             assertThat(inputStream.skip(3)).isEqualTo(3L);
             assertThat(inputStream.read(buffer, 0, buffer.length)).isEqualTo(3);

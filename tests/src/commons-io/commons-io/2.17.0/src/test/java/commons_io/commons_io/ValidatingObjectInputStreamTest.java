@@ -12,8 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 import org.apache.commons.io.serialization.ValidatingObjectInputStream;
 import org.junit.jupiter.api.Test;
@@ -22,27 +21,43 @@ public class ValidatingObjectInputStreamTest {
 
     @Test
     void deserializesAcceptedClassesThroughObjectInputStreamClassResolution() throws Exception {
-        ArrayList<String> payload = new ArrayList<>(List.of("alpha", "beta", "gamma"));
-        byte[] serializedPayload = serialize(payload);
+        final ValidatedPayload payload = new ValidatedPayload(42, true);
+        final byte[] serializedPayload = serialize(payload);
 
         try (ValidatingObjectInputStream inputStream = new ValidatingObjectInputStream(
                 new ByteArrayInputStream(serializedPayload))) {
-            inputStream.accept(ArrayList.class);
+            inputStream.accept(ValidatedPayload.class);
 
-            Object restored = inputStream.readObject();
+            final Object restored = inputStream.readObject();
 
-            assertThat(restored).isInstanceOf(ArrayList.class);
-            assertThat(restored).isEqualTo(payload);
+            assertThat(restored).isInstanceOf(ValidatedPayload.class);
+            final ValidatedPayload restoredPayload = (ValidatedPayload) restored;
+            assertThat(restoredPayload.count).isEqualTo(payload.count);
+            assertThat(restoredPayload.enabled).isEqualTo(payload.enabled);
         }
     }
 
-    private static byte[] serialize(Object value) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private static byte[] serialize(final Object value) throws IOException {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)) {
             objectOutputStream.writeObject(value);
         }
 
         return outputStream.toByteArray();
+    }
+
+    private static final class ValidatedPayload implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final int count;
+
+        private final boolean enabled;
+
+        private ValidatedPayload(final int count, final boolean enabled) {
+            this.count = count;
+            this.enabled = enabled;
+        }
     }
 }
