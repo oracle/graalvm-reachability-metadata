@@ -61,6 +61,22 @@ public class Werken_xpathTest {
     }
 
     @Test
+    void selectsElementsWithWildcardNameTests() {
+        Document document = bookDocument();
+
+        assertThat(elementIds(select("/book/*", document))).containsExactly(
+                "book-1-title-1",
+                "chapter-1",
+                "chapter-2",
+                "chapter-3",
+                "chapter-4",
+                "chapter-5",
+                "chapter-6");
+        assertThat(elementIds(select("/book/chapter[@author='bob']/*", document)))
+                .containsExactly("chapter-1-title-1", "chapter-3-title-1");
+    }
+
+    @Test
     void returnsAttributesCommentsAndProcessingInstructions() {
         Document document = bookDocument();
 
