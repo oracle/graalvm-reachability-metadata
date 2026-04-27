@@ -14,6 +14,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.TypeReference;
@@ -33,6 +34,11 @@ import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.LookupSwitchInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.ModuleExportNode;
+import org.objectweb.asm.tree.ModuleNode;
+import org.objectweb.asm.tree.ModuleOpenNode;
+import org.objectweb.asm.tree.ModuleProvideNode;
+import org.objectweb.asm.tree.ModuleRequireNode;
 import org.objectweb.asm.tree.MultiANewArrayInsnNode;
 import org.objectweb.asm.tree.RecordComponentNode;
 import org.objectweb.asm.tree.TableSwitchInsnNode;
@@ -136,6 +142,67 @@ public class Asm_treeTest {
         assertThat(parsedTagsComponent.name).isEqualTo("tags");
         assertThat(parsedTagsComponent.descriptor).isEqualTo("Ljava/util/List;");
         assertThat(parsedTagsComponent.signature).isEqualTo("Ljava/util/List<Ljava/lang/String;>;");
+    }
+
+    @Test
+    void preservesModuleDescriptorTreeMetadata() {
+        ClassNode moduleInfo = new ClassNode(Opcodes.ASM9);
+        moduleInfo.visit(Opcodes.V9, Opcodes.ACC_MODULE, "module-info", null, null, null);
+
+        ModuleVisitor module = moduleInfo.visitModule("generated.module", 0, "feature-test");
+        module.visitMainClass("generated/app/Main");
+        module.visitPackage("generated/app");
+        module.visitPackage("generated/spi");
+        module.visitRequire("java.base", Opcodes.ACC_MANDATED, null);
+        module.visitRequire("java.logging", Opcodes.ACC_TRANSITIVE, null);
+        module.visitExport("generated/api", 0, "consumer.module");
+        module.visitOpen("generated/internal", Opcodes.ACC_SYNTHETIC, "friend.module");
+        module.visitUse("generated/spi/Service");
+        module.visitProvide("generated/spi/Service", "generated/spi/impl/ServiceImpl");
+        module.visitEnd();
+        moduleInfo.visitEnd();
+        moduleInfo.check(Opcodes.ASM9);
+
+        ClassWriter classWriter = new ClassWriter(0);
+        moduleInfo.accept(classWriter);
+        ClassNode parsedClass = new ClassNode(Opcodes.ASM9);
+        new ClassReader(classWriter.toByteArray()).accept(parsedClass, 0);
+
+        assertThat(parsedClass.name).isEqualTo("module-info");
+        assertThat(parsedClass.access & Opcodes.ACC_MODULE).isEqualTo(Opcodes.ACC_MODULE);
+        assertThat(parsedClass.module).isNotNull();
+
+        ModuleNode parsedModule = parsedClass.module;
+        assertThat(parsedModule.name).isEqualTo("generated.module");
+        assertThat(parsedModule.version).isEqualTo("feature-test");
+        assertThat(parsedModule.mainClass).isEqualTo("generated/app/Main");
+        assertThat(parsedModule.packages).containsExactly("generated/app", "generated/spi");
+
+        assertThat(parsedModule.requires).hasSize(2);
+        ModuleRequireNode javaBase = parsedModule.requires.get(0);
+        assertThat(javaBase.module).isEqualTo("java.base");
+        assertThat(javaBase.access).isEqualTo(Opcodes.ACC_MANDATED);
+        assertThat(javaBase.version).isNull();
+        ModuleRequireNode javaLogging = parsedModule.requires.get(1);
+        assertThat(javaLogging.module).isEqualTo("java.logging");
+        assertThat(javaLogging.access).isEqualTo(Opcodes.ACC_TRANSITIVE);
+
+        assertThat(parsedModule.exports).hasSize(1);
+        ModuleExportNode exportedPackage = parsedModule.exports.get(0);
+        assertThat(exportedPackage.packaze).isEqualTo("generated/api");
+        assertThat(exportedPackage.modules).containsExactly("consumer.module");
+
+        assertThat(parsedModule.opens).hasSize(1);
+        ModuleOpenNode openedPackage = parsedModule.opens.get(0);
+        assertThat(openedPackage.packaze).isEqualTo("generated/internal");
+        assertThat(openedPackage.access).isEqualTo(Opcodes.ACC_SYNTHETIC);
+        assertThat(openedPackage.modules).containsExactly("friend.module");
+
+        assertThat(parsedModule.uses).containsExactly("generated/spi/Service");
+        assertThat(parsedModule.provides).hasSize(1);
+        ModuleProvideNode providedService = parsedModule.provides.get(0);
+        assertThat(providedService.service).isEqualTo("generated/spi/Service");
+        assertThat(providedService.providers).containsExactly("generated/spi/impl/ServiceImpl");
     }
 
     @Test
