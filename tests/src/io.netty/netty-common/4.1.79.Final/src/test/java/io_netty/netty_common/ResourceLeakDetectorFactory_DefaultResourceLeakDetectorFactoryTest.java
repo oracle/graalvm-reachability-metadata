@@ -11,7 +11,7 @@ import io.netty.util.ResourceLeakDetectorFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ResourceLeakDetectorFactory$DefaultResourceLeakDetectorFactoryTest {
+public class ResourceLeakDetectorFactory_DefaultResourceLeakDetectorFactoryTest {
     private static final String CUSTOM_RESOURCE_LEAK_DETECTOR_PROPERTY = "io.netty.customResourceLeakDetector";
 
     @Test

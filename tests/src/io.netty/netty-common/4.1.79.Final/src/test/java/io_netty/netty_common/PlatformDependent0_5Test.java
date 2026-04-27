@@ -6,37 +6,62 @@
  */
 package io_netty.netty_common;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.ByteBuffer;
+import java.security.AccessController;
 import java.security.CodeSource;
+import java.security.PrivilegedAction;
 
 import io.netty.util.internal.PlatformDependent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class PlatformDependent0$7Test {
+public class PlatformDependent0_5Test {
+    private static final String NETTY_MAX_DIRECT_MEMORY_PROPERTY = "io.netty.maxDirectMemory";
     private static final String NETTY_NO_UNSAFE_PROPERTY = "io.netty.noUnsafe";
-    private static final String NETTY_TRY_UNSAFE_PROPERTY = "io.netty.tryUnsafe";
-    private static final String LEGACY_NETTY_TRY_UNSAFE_PROPERTY = "org.jboss.netty.tryUnsafe";
-    private static final String UNINITIALIZED_ARRAY_THRESHOLD_PROPERTY =
-            "io.netty.uninitializedArrayAllocationThreshold";
 
     @Test
-    void initializesInternalUnsafeLookupWhenPublicUnsafeApisAreUsedFromAFreshClassLoader() throws Exception {
+    void runsThePrivilegedDirectByteBufferConstructorLookup() throws Throwable {
         URL isolatedLibraryLocation = findIsolatedLibraryLocation();
-        Assertions.assertNotNull(isolatedLibraryLocation, "Expected netty-common to have a code source");
+        if (isolatedLibraryLocation != null) {
+            runLookupThroughFreshPlatformDependentInitialization(isolatedLibraryLocation);
+            return;
+        }
 
+        ByteBuffer directBuffer = ByteBuffer.allocateDirect(1);
+        Assertions.assertTrue(directBuffer.isDirect(), "Expected a direct buffer");
+
+        Class<?> privilegedActionClass = Class.forName("io.netty.util.internal.PlatformDependent0$5");
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(privilegedActionClass, MethodHandles.lookup());
+        MethodHandle constructor = lookup.findConstructor(
+                privilegedActionClass,
+                MethodType.methodType(void.class, ByteBuffer.class)
+        );
+        @SuppressWarnings("unchecked")
+        PrivilegedAction<Object> privilegedAction = (PrivilegedAction<Object>) constructor.invoke(directBuffer);
+
+        Object result = AccessController.doPrivileged(privilegedAction);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(
+                result instanceof Constructor<?> || result instanceof Throwable,
+                () -> "Unexpected lookup result type: " + result.getClass().getName()
+        );
+    }
+
+    private static void runLookupThroughFreshPlatformDependentInitialization(URL isolatedLibraryLocation) throws Exception {
         try (SystemPropertiesRestorer ignored = new SystemPropertiesRestorer(
-                NETTY_NO_UNSAFE_PROPERTY,
-                NETTY_TRY_UNSAFE_PROPERTY,
-                LEGACY_NETTY_TRY_UNSAFE_PROPERTY,
-                UNINITIALIZED_ARRAY_THRESHOLD_PROPERTY
+                NETTY_MAX_DIRECT_MEMORY_PROPERTY,
+                NETTY_NO_UNSAFE_PROPERTY
         )) {
+            System.setProperty(NETTY_MAX_DIRECT_MEMORY_PROPERTY, "1048576");
             System.clearProperty(NETTY_NO_UNSAFE_PROPERTY);
-            System.clearProperty(NETTY_TRY_UNSAFE_PROPERTY);
-            System.clearProperty(LEGACY_NETTY_TRY_UNSAFE_PROPERTY);
-            System.setProperty(UNINITIALIZED_ARRAY_THRESHOLD_PROPERTY, "0");
 
             try (NettyIsolatedClassLoader classLoader = new NettyIsolatedClassLoader(isolatedLibraryLocation)) {
                 Class<?> platformDependentClass =
@@ -44,13 +69,20 @@ public class PlatformDependent0$7Test {
 
                 Assertions.assertTrue(invokeBoolean(platformDependentClass, "hasUnsafe"));
 
-                byte[] allocated = invokeByteArray(platformDependentClass, "allocateUninitializedArray", 32);
-
-                Assertions.assertEquals(32, allocated.length);
-                allocated[0] = 1;
-                allocated[31] = 2;
-                Assertions.assertEquals(1, allocated[0]);
-                Assertions.assertEquals(2, allocated[31]);
+                boolean useDirectBufferNoCleaner = invokeBoolean(platformDependentClass, "useDirectBufferNoCleaner");
+                if (useDirectBufferNoCleaner) {
+                    ByteBuffer currentBuffer = invokeByteBuffer(platformDependentClass, "allocateDirectNoCleaner", 16);
+                    try {
+                        Assertions.assertTrue(currentBuffer.isDirect());
+                        Assertions.assertEquals(16, currentBuffer.capacity());
+                    } finally {
+                        invokeVoid(platformDependentClass, "freeDirectNoCleaner", currentBuffer);
+                    }
+                } else {
+                    ByteBuffer directBuffer = ByteBuffer.allocateDirect(16);
+                    Assertions.assertTrue(directBuffer.isDirect());
+                    invokeVoid(platformDependentClass, "freeDirectBuffer", directBuffer);
+                }
             }
         }
     }
@@ -77,15 +109,20 @@ public class PlatformDependent0$7Test {
         return (Boolean) type.getMethod(methodName).invoke(null);
     }
 
-    private static byte[] invokeByteArray(Class<?> type, String methodName, int size)
+    private static ByteBuffer invokeByteBuffer(Class<?> type, String methodName, int capacity)
             throws ReflectiveOperationException {
-        Method method = type.getMethod(methodName, int.class);
-        return (byte[]) method.invoke(null, size);
+        return (ByteBuffer) type.getMethod(methodName, int.class).invoke(null, capacity);
+    }
+
+    private static void invokeVoid(Class<?> type, String methodName, ByteBuffer buffer)
+            throws ReflectiveOperationException {
+        Method method = type.getMethod(methodName, ByteBuffer.class);
+        method.invoke(null, buffer);
     }
 
     private static final class NettyIsolatedClassLoader extends URLClassLoader {
         private NettyIsolatedClassLoader(URL libraryLocation) {
-            super(new URL[] {libraryLocation}, PlatformDependent0$7Test.class.getClassLoader());
+            super(new URL[] {libraryLocation}, PlatformDependent0_5Test.class.getClassLoader());
         }
 
         @Override
