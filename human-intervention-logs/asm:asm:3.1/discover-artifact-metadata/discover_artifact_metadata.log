@@ -1,0 +1,906 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcf3c-905b-79e3-8a65-0a76e1e8df7d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: asm:asm:3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/build/discovered-artifact-metadata/asm-asm-3.1.json
+- Set "coordinates" to "asm:asm:3.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central first, then fall back to upstream tags only where Maven artifacts do not provide the exact-version source/test/docs links. After that I’ll update the JSON directly and validate it.
+web search: 
+web search: Maven Central asm asm 3.1 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/asm/asm/3.1/
+web search: 
+web search: site:gitlab.ow2.org asm ASM_3_1
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1
+web search: 
+web search: https://git.almalinux.org/rpms/objectweb-asm/commit/57c7eeeb58aea57563a324d9370abe81204a45ed
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/asm-asm-3.1.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+{
+  "coordinates" : "asm:asm:3.1"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/asm-asm-3.1.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+-rw-rw-r-- 1 vjovanov vjovanov 36 Apr 27 15:59 build/discovered-artifact-metadata/asm-asm-3.1.json
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://gitlab.ow2.org/asm/asm.git 'refs/tags/ASM_3_1*'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 391ms:
+c7fb397ffdf8016777a11044230fa1f706e2ac04	refs/tags/ASM_3_1
+
+codex
+The artifact file is currently just the coordinate stub. I confirmed OW2’s Git repo has the exact `ASM_3_1` tag, so I’m checking the tag layout now to choose precise source, tests, and docs targets.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/asm/asm/3.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: asm/asm/3.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>asm/asm/3.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="asm-3.1-sources.jar" title="asm-3.1-sources.jar">asm-3.1-sources.jar</a>                               2008-01-20 10:31    108730      
+<a href="asm-3.1-sources.jar.asc" title="asm-3.1-sources.jar.asc">asm-3.1-sources.jar.asc</a>                           2008-01-20 10:31       833      
+<a href="asm-3.1-sources.jar.md5" title="asm-3.1-sources.jar.md5">asm-3.1-sources.jar.md5</a>                           2008-01-20 10:31        33      
+<a href="asm-3.1-sources.jar.sha1" title="asm-3.1-sources.jar.sha1">asm-3.1-sources.jar.sha1</a>                          2008-01-20 10:31        41      
+<a href="asm-3.1.jar" title="asm-3.1.jar">asm-3.1.jar</a>                                       2008-01-20 10:31     43033      
+<a href="asm-3.1.jar.md5" title="asm-3.1.jar.md5">asm-3.1.jar.md5</a>                                   2008-01-20 10:31        32      
+<a href="asm-3.1.jar.sha1" title="asm-3.1.jar.sha1">asm-3.1.jar.sha1</a>                                  2008-01-20 10:31        40      
+<a href="asm-3.1.pom" title="asm-3.1.pom">asm-3.1.pom</a>                                       2008-01-20 10:31       278      
+<a href="asm-3.1.pom.md5" title="asm-3.1.pom.md5">asm-3.1.pom.md5</a>                                   2008-01-20 10:31        32      
+<a href="asm-3.1.pom.sha1" title="asm-3.1.pom.sha1">asm-3.1.pom.sha1</a>                                  2008-01-20 10:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1.pom' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>asm-parent</artifactId>
+    <groupId>asm</groupId>
+    <version>3.1</version>
+  </parent>
+
+  <name>ASM Core</name>
+  <artifactId>asm</artifactId>
+  <packaging>jar</packaging>
+  
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 135ms:
+[{"id":"9623778a6d723936d4e703e6f4e24c48621ab3e6","name":".settings","type":"tree","path":".settings","mode":"040000"},{"id":"106c725ac988a117dc98b85aa09dd86e4a16321d","name":"archive","type":"tree","path":"archive","mode":"040000"},{"id":"f711440472f0b364ae3a8ffa4e4d7017301ac126","name":"config","type":"tree","path":"config","mode":"040000"},{"id":"5bc4e08bf9ae9850b012f5a9a68a808dba4c4b1c","name":"doc","type":"tree","path":"doc","mode":"040000"},{"id":"139b41ea3a728d0898ff99318a1dfc0dfa578b7c","name":"examples","type":"tree","path":"examples","mode":"040000"},{"id":"201ccc17b859dc59e7f61356387494254b947cc6","name":"jdoc","type":"tree","path":"jdoc","mode":"040000"},{"id":"807c9f07491cb162ab902c8b52a76591518c064c","name":"src","type":"tree","path":"src","mode":"040000"},{"id":"0e293eab63f29aa0b33a780ccc53a6644c69b32b","name":"test","type":"tree","path":"test","mode":"040000"},{"id":"fb47c090a196a2e1af37eac0c9b0dcb2e59cdd77","name":".classpath","type":"blob","path":".classpath","mode":"100644"},{"id":"6b50e54d9383e6ea278dc9649a416f0882a80b2a","name":".gitignore","type":"blob","path":".gitignore","mode":"100644"},{"id":"8f5439fab4b7331861013963e9a7ce3b28dedc1f","name":".project","type":"blob","path":".project","mode":"100644"},{"id":"d0cd82defe0ab5eb38a10104ecffe848ccf8bf21","name":"LICENSE.txt","type":"blob","path":"LICENSE.txt","mode":"100644"},{"id":"abfc162e96f6384f7f5ae03f32a7df681950e171","name":"README.txt","type":"blob","path":"README.txt","mode":"100644"},{"id":"452caf896b1bddc1bc56c1d4fe3e5dd52e881bdc","name":"build.config","type":"blob","path":"build.config","mode":"100644"},{"id":"3e82a032cc49ee663caeed8f5caef31e2107d7f2","name":"build.properties","type":"blob","path":"build.properties","mode":"100644"},{"id":"0ddf02a862c97f620f3e6be38347513aaa77d83a","name":"build.xml","type":"blob","path":"build.xml","mode":"100644"}]
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&path=doc'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+[{"id":"84303fee616679f69995c94e1dd7d4198b338d64","name":"README.txt","type":"blob","path":"doc/README.txt","mode":"100644"}]
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&path=jdoc'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+[{"id":"a78cb67fa8d1679fe5fd3fe8efc3aab86e5b6db8","name":"README.txt","type":"blob","path":"jdoc/README.txt","mode":"100644"},{"id":"6159048ec254f83652443e2c63a3f60c515d86db","name":"package-list","type":"blob","path":"jdoc/package-list","mode":"100644"},{"id":"08ca1b0b167a47d529f98b6a447450f8bb11d247","name":"user.xml","type":"blob","path":"jdoc/user.xml","mode":"100644"}]
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&path=test'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+[{"id":"67d4b7557f68d3cbce08231d9bcc122efafc75c6","name":"conform","type":"tree","path":"test/conform","mode":"040000"},{"id":"35cb6544f5dd8d14782328d1448d20d3281a9bc8","name":"lib","type":"tree","path":"test/lib","mode":"040000"},{"id":"c6c3c9fcbe65c01f07234d87509b6bb4dcc3f2de","name":"perf","type":"tree","path":"test/perf","mode":"040000"},{"id":"f4d1e7e76d502fef9f60fae03e409398ed1872f9","name":"README.txt","type":"blob","path":"test/README.txt","mode":"100644"},{"id":"5919ee14b15baee9bf0c53b204753a24365528bd","name":"build.xml","type":"blob","path":"test/build.xml","mode":"100644"}]
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/README.txt/raw?ref=ASM_3_1'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 133ms:
+This directory is the base directory of the product.
+It contains(*) the following items:
+
+- archive: ant files to build the jar(s) of the product,
+- build.properties: properties to configure the build process,
+- build.xml: main ant file to build the product,
+- config: external libraries required only for building the product,
+- doc: documentation of the product,
+- etc: scripts to run the product,
+- examples: examples of use of the product,
+- externals: external libraires required for running the product,
+- jdoc: ant files to build the javadoc documentation(s) of the product,
+- sr': sources of the product,
+- test: tests of the product,
+- web: source of the web site of the product.
+
+(*) some items may not be present, depending on the product.
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/doc%2FREADME.txt/raw?ref=ASM_3_1'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+This directory contains the documentation of the product.
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/jdoc%2FREADME.txt/raw?ref=ASM_3_1'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+This directory contains ant files to build the javadocs of the product.
+The following rules describe the convention to write such files:
+
+- An ant file must build only one javadoc.
+
+- As there may exist several javadocs, all javadocs must be produced
+  in a sub dir of ${out.dist.jdoc}. For example the user javadoc could be 
+  produced into the ${out.dist.jdoc}/user directory
+
+- The name of the ant file must be the name of the destination directory of the 
+  javadoc it builds.
+
+- Only the default task is called on an xml file.
+
+Sample ant file:
+
+<project name="FOO" default="dist.jdoc">
+
+  <property name="jdoc.name" value="user"/>
+  <property name="jdoc.dir" value="${out.dist.jdoc}/${jdoc.name}"/>
+
+  <target name="dist.jdoc">
+    <uptodate property="jdoc.required" targetfile="${jdoc.dir}/index.html">
+      <srcfiles dir="${src}" includes="**/*.java"/>
+    </uptodate>
+    <antcall target="dist.jdoc.${jdoc.name}"/>
+  </target>
+
+  <target name="dist.jdoc.user" unless="jdoc.required">
+    <mkdir dir="${jdoc.dir}"/>
+    <javadoc destdir="${jdoc.dir}"
+             windowtitle="FOO User Documentation"
+             doctitle="FOO User Documentation">
+
+       ...
+       
+    </javadoc>
+  </target>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/test%2FREADME.txt/raw?ref=ASM_3_1'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+This directory contains the tests of the product. 
+It contains(*) the following items:
+
+- lib: external libraries required to run the tests
+- conform: conformance tests (unit tests)
+- deviance: deviance tests (unit tests)
+- thread: multi-threading tests (unit tests)
+- stress: stress tests
+- perf: performance tests
+
+Each sub directory contains:
+- the source of the tests, with package struture if there is one,
+- the xml descriptors to launch test suites. An xml desriptor describes
+  the execution of a test suite. The default task is called on this file.
+
+(*) some items may not be present, depending on the product.
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org|repo.maven.apache.org|javadoc.io|gitlab.ow2.org/asm/asm' build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-sources.jar",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+metadata/javax.xml.bind/jaxb-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-sources.jar",
+metadata/javax.xml.bind/jaxb-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/5.12.4.Final/jta-5.12.4.Final-sources.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/5.12.4.Final/jta-5.12.4.Final-tests.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/narayana-jta/5.12.4.Final/narayana-jta-5.12.4.Final-javadoc.jar",
+metadata/org.jboss/jandex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jandex/2.4.2.Final/jandex-2.4.2.Final-sources.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-sources.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-javadoc.jar",
+metadata/org.hibernate/hibernate-core/index.json:16:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.0.0.Final/hibernate-core-6.0.0.Final-sources.jar",
+metadata/org.hibernate/hibernate-core/index.json:19:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.0.0.Final/hibernate-core-6.0.0.Final-javadoc.jar",
+metadata/org.hibernate/hibernate-core/index.json:40:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/hibernate-core/5.6.14.Final/hibernate-core-5.6.14.Final-sources.jar",
+metadata/org.hibernate/hibernate-core/index.json:43:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/hibernate-core/5.6.14.Final/hibernate-core-5.6.14.Final-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-sources.jar",
+metadata/javax.cache/cache-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/com.google.auth/google-auth-library-credentials/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+exec
+/usr/bin/bash -lc "sed -n '1,35p' metadata/org.postgresql/postgresql/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.10.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+    "description" : "This artifact provides the base classes and interfaces used to represent Google credentials in Java. It supports authorized identities, request metadata callbacks, and service account signing abstractions for authentication flows.",
+    "tested-versions" : [
+      "1.10.0",
+      "1.11.0",
+      "1.12.0",
+      "1.12.1",
+      "1.12.2",
+      "1.13.0",
+      "1.14.0",
+      "1.15.0",
+      "1.16.0",
+      "1.16.1",
+      "1.17.0",
+      "1.18.0",
+      "1.19.0",
+      "1.20.0",
+      "1.21.0",
+      "1.22.0",
+      "1.23.0",
+      "1.24.0",
+      "1.24.1",
+      "1.25.0",
+      "1.26.0",
+      "1.27.0",
+      "1.28.0",
+      "1.29.0",
+      "1.30.0",
+      "1.30.1",
+      "1.31.0",
+      "1.32.0",
+      "1.32.1",
+      "1.33.0",
+
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.postgresql"
+    ],
+    "metadata-version": "42.7.3",
+    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+    "tested-versions": [
+      "42.7.3",
+      "42.7.4",
+      "42.7.5",
+      "42.7.6",
+      "42.7.7",
+      "42.7.8",
+      "42.7.9",
+      "42.7.10"
+    ]
+  },
+  {
+    "allowed-packages": [
+      "org.postgresql"
+    ],
+    "metadata-version": "42.3.4",
+    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+    "tested-versions": [
+      "42.3.4"
+
+exec
+/usr/bin/bash -lc "rg -n '\"description\"' metadata | head -20" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:16:    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience."
+metadata/javax.activation/javax.activation-api/index.json:10:    "description": "JavaBeans Activation Framework API defines the javax.activation types for describing data sources, determining MIME types, and dispatching data to content handlers. It provides the standard activation API that other libraries use to work with arbitrary data without bundling the implementation classes.",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:17:    "description": "JGit is a pure Java implementation of Git that lets Java applications read, write, and manage Git repositories and working trees. It provides APIs for repository access, object storage, transport protocols, and common Git operations without requiring native Git binaries."
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:32:    "description": "JGit is a pure Java implementation of Git that lets applications read, write, and manage Git repositories and working trees. It provides APIs for repository access, object storage, transport protocols, and common Git operations in Java applications."
+metadata/javax.activation/activation/index.json:9:    "description" : "JavaBeans Activation Framework provides a standard API for detecting data types, accessing arbitrary data through DataSource abstractions, and locating content handlers for that data. It is commonly used by JavaMail to process MIME content and dispatch operations such as viewing, editing, or transferring data.",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:10:    "description": "This artifact provides the @IgnoreJRERequirement annotation used by Animal Sniffer to mark code that should be excluded from JRE API compatibility checks. It lets libraries document members that intentionally rely on newer JDK APIs while still validating their minimum runtime requirements.",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:9:    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+metadata/com.sun.mail/jakarta.mail/index.json:13:    "description": "Jakarta Mail provides a Java API for composing, sending, receiving, and processing email messages. It models common mail concepts and includes protocol-specific support for internet mail standards such as SMTP, POP3, IMAP, and MIME.",
+metadata/com.google.auth/google-auth-library-credentials/index.json:9:    "description" : "This artifact provides the base classes and interfaces used to represent Google credentials in Java. It supports authorized identities, request metadata callbacks, and service account signing abstractions for authentication flows.",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:10:    "description": "Duct Tape is a Java 8 fault-tolerance library for code that calls external APIs and other unreliable components. It provides resilience utilities such as circuit breakers, retries, timeouts, rate limiters, and handling for inconsistent results.",
+metadata/org.postgresql/postgresql/index.json:12:    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+metadata/org.postgresql/postgresql/index.json:33:    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+metadata/org.slf4j/slf4j-api/index.json:8:    "description" : "SLF4J defines a common logging API for Java applications and libraries. It lets code route log messages to different logging implementations without changing application code.",
+metadata/org.slf4j/slf4j-api/index.json:23:    "description" : "SLF4J defines a common logging API for Java applications and libraries. It lets code route log messages to different logging implementations without changing application code.",
+metadata/com.squareup.okio/okio/index.json:9:    "description" : "Okio complements java.io and java.nio to make it easier to access, store, and process data. It provides efficient byte strings, buffers, sources, and sinks for I/O operations.",
+metadata/javax.servlet/javax.servlet-api/index.json:17:    "description" : "Defines the Java Servlet 3.1 API for handling HTTP requests and responses in Java web applications. It provides the standard interfaces, classes, annotations, and asynchronous processing contracts used by servlet containers and web components."
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:10:    "description": "SpotBugs Annotations provides Java annotations that SpotBugs understands, such as nullness and warning-suppression markers. Libraries and applications add these annotations to code so SpotBugs can produce more precise static analysis results.",
+metadata/org.apache.zookeeper/zookeeper/index.json:9:    "description" : "Apache ZooKeeper is a centralized coordination service for distributed applications. It provides primitives for configuration management, naming, distributed synchronization, and group services.",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:9:    "description" : "Apache ZooKeeper Jute provides ZooKeeper's binary serialization and code-generation layer. It defines and generates the record classes used to marshal and unmarshal ZooKeeper protocol messages and related data structures.",
+metadata/org.codehaus.woodstox/stax2-api/index.json:9:    "description" : "Stax2 API extends the standard StAX API for streaming XML processing with additional reader, writer, validation, and utility interfaces. It provides a common higher-level API for features such as typed access and XML validation used by StAX implementations like Woodstox.",
+
+web search: 
+web search: ASM 3.1 javadoc asm 3.1 user guide
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/files/jdoc%2Fuser.xml/raw?ref=ASM_3_1'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 143ms:
+<project name="asm" default="dist.jdoc">
+
+  <property name="jdoc.name" value="user"/>
+  <property name="jdoc.dir" value="${out.dist.jdoc}/${jdoc.name}"/>
+
+  <target name="dist.jdoc">
+    <uptodate property="jdoc.required" targetfile="${jdoc.dir}/index.html">
+      <srcfiles dir="${src}" includes="**/*.java,**/*.html"/>
+    </uptodate>
+    <antcall target="dist.jdoc.${jdoc.name}"/>
+  </target>
+
+  <target name="dist.jdoc.user" unless="jdoc.required">
+    <mkdir dir="${jdoc.dir}"/>
+    <javadoc destdir="${jdoc.dir}"
+             windowtitle="ASM ${product.version} Documentation"
+             doctitle="ASM ${product.version} Documentation">
+
+      <sourcepath path="${src}"/>
+      <package name="org.objectweb.asm"/>
+      <package name="org.objectweb.asm.attrs"/>
+      <package name="org.objectweb.asm.commons"/>
+      <package name="org.objectweb.asm.signature"/>
+      <package name="org.objectweb.asm.tree"/>
+      <package name="org.objectweb.asm.tree.analysis"/>
+      <package name="org.objectweb.asm.util"/>
+      <package name="org.objectweb.asm.util.attrs"/>
+      <package name="org.objectweb.asm.xml"/>
+
+      <link href="${jdk.url}" offline="true" packagelistLoc="${jdoc}"/>
+
+    </javadoc>
+
+    <copy todir="${jdoc.dir}">
+      <fileset dir="${src}" includes="**/*.dtd"/>
+    </copy>
+  </target>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/api/v4/projects/asm%2Fasm/repository/tree?ref=ASM_3_1&path=src'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+[{"id":"de35e03c62668a143c643e9a0cfea57fb36a233a","name":"org","type":"tree","path":"src/org","mode":"040000"}]
+codex
+Maven Central has the exact `asm-3.1-sources.jar` but no `tests` or `javadoc` artifact in that version directory. I’m using the exact upstream `ASM_3_1` tag for the test suite and the version-specific Javadoc descriptor because those are present in the source repository.
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 14:00:46 GMT
+content-type: application/java-archive
+content-length: 108730
+cf-ray: 9f2e5af9efffbc06-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 771626
+etag: "0c0e3e83d9ce7907334c5eb519dab10c"
+last-modified: Wed, 30 Nov 2011 08:50:19 GMT
+x-checksum-md5: 0c0e3e83d9ce7907334c5eb519dab10c
+x-checksum-sha1: 2eaa4de56203f433f287a6df5885ef9ad3c5bcae
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSI 'https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags' | sed -n '1,20p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+exec
+/usr/bin/bash -lc "curl -fsSI 'https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags' | sed -n '1,20p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+exec
+/usr/bin/bash -lc "curl -fsSI https://gitlab.ow2.org/asm/asm | sed -n '1,20p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 162ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Mon, 27 Apr 2026 14:00:46 GMT
+etag: W/"03184d8202cf66e0633e67e4c74ff81f"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: event_filter=all; path=/; Secure; SameSite=None
+set-cookie: _gitlab_session=70e1da5557534bcd13e3c1e0b6a5d75a; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQ7KW653KS1HQQ2HW3708BZM","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQ7KW653KS1HQQ2HW3708BZM
+x-runtime: 0.125077
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+
+ succeeded in 257ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Mon, 27 Apr 2026 14:00:46 GMT
+etag: W/"e680f1f3c1816a0540eb76280160ee70"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: _gitlab_session=cbfa3cba10c593fb7fcfc69c8d8319b5; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQ7KW646DGEC17T5H1QH2EVX","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQ7KW646DGEC17T5H1QH2EVX
+x-runtime: 0.176088
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+
+ succeeded in 211ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Mon, 27 Apr 2026 14:00:46 GMT
+etag: W/"51d492f63690a544e119a9286ef963f4"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: _gitlab_session=259a9bb3a64aed9068c54d7f6d5daa0b; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQ7KW64WV7BZ5F8SRPX91XZC","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQ7KW64WV7BZ5F8SRPX91XZC
+x-runtime: 0.172986
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+
+codex
+I’m going to write the discovered values now. The metadata will omit `language` because this artifact is Java bytecode tooling, not a Kotlin- or Scala-specific library under the requested schema.
+apply patch
+patch: completed
+/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/build/discovered-artifact-metadata/asm-asm-3.1.json
+diff --git a/build/discovered-artifact-metadata/asm-asm-3.1.json b/build/discovered-artifact-metadata/asm-asm-3.1.json
+index da336151c5e3f540660d8c682130027db0648173..14c0c47f5f6015b3893b23902d80110fa8997a3f
+--- a/build/discovered-artifact-metadata/asm-asm-3.1.json
++++ b/build/discovered-artifact-metadata/asm-asm-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "asm:asm:3.1"
++  "coordinates" : "asm:asm:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
++  "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
++  "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files."
+ }
+
+diff --git a/build/discovered-artifact-metadata/asm-asm-3.1.json b/build/discovered-artifact-metadata/asm-asm-3.1.json
+index da336151c5e3f540660d8c682130027db0648173..14c0c47f5f6015b3893b23902d80110fa8997a3f
+--- a/build/discovered-artifact-metadata/asm-asm-3.1.json
++++ b/build/discovered-artifact-metadata/asm-asm-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "asm:asm:3.1"
++  "coordinates" : "asm:asm:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
++  "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
++  "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/asm-asm-3.1.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+{
+  "coordinates": "asm:asm:3.1",
+  "source-code-url": "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
+  "repository-url": "https://gitlab.ow2.org/asm/asm",
+  "test-code-url": "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
+  "documentation-url": "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
+  "description": "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/asm-asm-3.1.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/asm-asm-3.1.json b/build/discovered-artifact-metadata/asm-asm-3.1.json
+index da336151c5e3f540660d8c682130027db0648173..14c0c47f5f6015b3893b23902d80110fa8997a3f
+--- a/build/discovered-artifact-metadata/asm-asm-3.1.json
++++ b/build/discovered-artifact-metadata/asm-asm-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "asm:asm:3.1"
++  "coordinates" : "asm:asm:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
++  "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
++  "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/asm-asm-3.1.json && sed -n '1,120p' build/discovered-artifact-metadata/asm-asm-3.1.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+{
+  "coordinates" : "asm:asm:3.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
+  "repository-url" : "https://gitlab.ow2.org/asm/asm",
+  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
+  "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
+  "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files."
+}
+
+diff --git a/build/discovered-artifact-metadata/asm-asm-3.1.json b/build/discovered-artifact-metadata/asm-asm-3.1.json
+index da336151c5e3f540660d8c682130027db0648173..14c0c47f5f6015b3893b23902d80110fa8997a3f
+--- a/build/discovered-artifact-metadata/asm-asm-3.1.json
++++ b/build/discovered-artifact-metadata/asm-asm-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "asm:asm:3.1"
++  "coordinates" : "asm:asm:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
++  "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
++  "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/asm/asm/3.1/
+web search: 
+web search: 
+web search: 
+web search: gitlab.ow2.org api asm ASM_3_1 test
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/asm/asm-parent/3.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: asm/asm-parent/3.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>asm/asm-parent/3.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="asm-parent-3.1.pom" title="asm-parent-3.1.pom">asm-parent-3.1.pom</a>                                2008-01-20 10:31      4153      
+<a href="asm-parent-3.1.pom.md5" title="asm-parent-3.1.pom.md5">asm-parent-3.1.pom.md5</a>                            2008-01-20 10:31        32      
+<a href="asm-parent-3.1.pom.sha1" title="asm-parent-3.1.pom.sha1">asm-parent-3.1.pom.sha1</a>                           2008-01-20 10:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/asm/asm-parent/3.1/asm-parent-3.1.pom' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                        http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>asm-parent</artifactId>
+  <groupId>asm</groupId>
+  <version>3.1</version>
+  <packaging>pom</packaging>
+
+  <name>ASM</name>
+  <description>A very small and fast Java bytecode manipulation framework</description>
+  <url>http://asm.objectweb.org/</url>
+  
+  <organization>
+    <name>ObjectWeb</name>
+    <url>http://www.objectweb.org/</url>
+  </organization>
+  <inceptionYear>2000</inceptionYear>
+
+  <developers>
+    <developer>
+      <name>Eric Bruneton</name>
+      <id>ebruneton</id>
+      <email>Eric.Bruneton@rd.francetelecom.com</email>
+      <roles>
+        <role>Creator</role>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Eugene Kuleshov</name>
+      <id>eu</id>
+      <email>eu@javatx.org</email>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:cvs:pserver:anonymous@cvs.forge.objectweb.org:/cvsroot/asm:asm</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.forge.objectweb.org:/cvsroot/asm:asm</developerConnection>
+    <url>http://cvs.forge.objectweb.org/cgi-bin/viewcvs.cgi/asm/asm/</url>
+  </scm>
+  
+  <issueManagement>
+    <url>http://forge.objectweb.org/tracker/?group_id=23</url>
+  </issueManagement>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <artifactId>asm</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>asm-tree</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>asm-analysis</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>asm-commons</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>asm-util</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>asm-xml</artifactId>
+        <groupId>${project.groupId}</groupId>
+        <version>${project.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>ASM Users List</name>
+      <subscribe>sympa@ow2.org?subject=subscribe%20asm</subscribe>
+      <unsubscribe>sympa@ow2.org?subject=unsubscribe%20asm</unsubscribe>
+      <post>asm@ow2.org</post>
+      <archive>http://www.ow2.org/wws/arc/asm</archive>
+    </mailingList>
+    <mailingList>
+      <name>ASM Team List</name>
+      <subscribe>sympa@ow2.org?subject=subscribe%20asm-team</subscribe>
+      <unsubscribe>sympa@ow2.org?subject=unsubscribe%20asm-team</unsubscribe>
+      <post>asm-team@ow2.org</post>
+      <archive>http://www.ow2.org/wws/arc/asm-team</archive>
+    </mailingList>
+  </mailingLists>
+
+  <distributionManagement>
+    <downloadUrl>http://mojo.codehaus.org/my-project</downloadUrl>
+    <repository>
+      <id>objectweb</id>
+      <uniqueVersion>false</uniqueVersion>
+      <name>ObjectWeb Maven 2.0 Repository</name>
+      <url>dav:https://maven.forge.objectweb.org:8002/maven2/</url>
+      <layout>default</layout>
+    </repository>
+    <snapshotRepository>
+      <id>objectweb.snapshots</id>
+      <uniqueVersion>false</uniqueVersion>
+      <name>ObjectWeb Maven 2.0 Snapshot Repository</name>
+      <url>dav:https://maven.forge.objectweb.org:8002/maven2-snapshot/</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
+
+</project>
+
+diff --git a/build/discovered-artifact-metadata/asm-asm-3.1.json b/build/discovered-artifact-metadata/asm-asm-3.1.json
+index da336151c5e3f540660d8c682130027db0648173..14c0c47f5f6015b3893b23902d80110fa8997a3f
+--- a/build/discovered-artifact-metadata/asm-asm-3.1.json
++++ b/build/discovered-artifact-metadata/asm-asm-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "asm:asm:3.1"
++  "coordinates" : "asm:asm:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
++  "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
++  "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files."
+ }
+
+web search: 
+web search: repo1.maven.org maven2 asm asm 3.1 asm-3.1-sources.jar
+codex
+Updated [asm-asm-3.1.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/build/discovered-artifact-metadata/asm-asm-3.1.json) with the discovered URLs and a two-sentence description.
+
+Maven Central has the exact `asm-3.1-sources.jar` but no tests or javadoc artifact in the `3.1` directory, so the test and documentation fields use the exact upstream `ASM_3_1` tag. OW2 describes ASM as a Java bytecode manipulation and analysis framework and notes that its source is hosted on GitLab. ([repo1.maven.org](https://repo1.maven.org/maven2/asm/asm/3.1/?utm_source=openai))
+
+I omitted `language` because this is not Kotlin- or Scala-specific. Validated the JSON with `jq .`.
+diff --git a/build/discovered-artifact-metadata/asm-asm-3.1.json b/build/discovered-artifact-metadata/asm-asm-3.1.json
+index da336151c5e3f540660d8c682130027db0648173..14c0c47f5f6015b3893b23902d80110fa8997a3f
+--- a/build/discovered-artifact-metadata/asm-asm-3.1.json
++++ b/build/discovered-artifact-metadata/asm-asm-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "asm:asm:3.1"
++  "coordinates" : "asm:asm:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
++  "repository-url" : "https://gitlab.ow2.org/asm/asm",
++  "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
++  "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
++  "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files."
+ }
+
+2026-04-27T14:01:48.801155Z ERROR codex_core::session: failed to record rollout items: thread 019dcf3c-905b-79e3-8a65-0a76e1e8df7d not found
+tokens used
+91,674
+Updated [asm-asm-3.1.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/build/discovered-artifact-metadata/asm-asm-3.1.json) with the discovered URLs and a two-sentence description.
+
+Maven Central has the exact `asm-3.1-sources.jar` but no tests or javadoc artifact in the `3.1` directory, so the test and documentation fields use the exact upstream `ASM_3_1` tag. OW2 describes ASM as a Java bytecode manipulation and analysis framework and notes that its source is hosted on GitLab. ([repo1.maven.org](https://repo1.maven.org/maven2/asm/asm/3.1/?utm_source=openai))
+
+I omitted `language` because this is not Kotlin- or Scala-specific. Validated the JSON with `jq .`.
+Ran agent for asm:asm:3.1 (exit 0). Log: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/build/agent-artifact-discovery-logs/asm-asm-3.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 44s
+9 actionable tasks: 4 executed, 5 from cache

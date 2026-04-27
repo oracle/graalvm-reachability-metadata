@@ -1,0 +1,371 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcf3f-2eb2-7e40-bb0e-b6c280b61992
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: asm:asm:3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/metadata/asm/asm/index.json
+- Entry selector: "metadata-version" = "3.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar
+- repository-url: https://gitlab.ow2.org/asm/asm
+- test-code-url: https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags
+- documentation-url: https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags
+- description: ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.1
+- Entry test-version: 3.1
+codex
+I’ll inspect the existing entry first, then verify whether any target fields are actually missing before touching the JSON. Since the URLs are version-specific, I’ll also verify the selected artifacts/tags against Maven and the upstream repository.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"3\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/asm/asm/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+4:    "metadata-version" : "3.1",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
+6:    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+7:    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
+8:    "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
+9:    "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files.",
+
+exec
+/usr/bin/bash -lc 'pwd && git status --short metadata/asm/asm/index.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+?? metadata/asm/asm/index.json
+
+web search: 
+web search: Maven Central asm asm 3.1 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/asm/asm/3.1/
+codex
+The local entry already has non-blank values for the five URL/description fields, and `language` is the only absent target field. I’m checking upstream now because the instruction says to leave `language` absent unless this is specifically a Kotlin or Scala library.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1.pom' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>asm-parent</artifactId>
+    <groupId>asm</groupId>
+    <version>3.1</version>
+  </parent>
+
+  <name>ASM Core</name>
+  <artifactId>asm</artifactId>
+  <packaging>jar</packaging>
+  
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -L https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Mon, 27 Apr 2026 14:02:15 GMT
+content-type: application/java-archive
+content-length: 108730
+cf-ray: 9f2e5d25ac00bbf9-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 771714
+etag: "0c0e3e83d9ce7907334c5eb519dab10c"
+last-modified: Wed, 30 Nov 2011 08:50:19 GMT
+x-checksum-md5: 0c0e3e83d9ce7907334c5eb519dab10c
+x-checksum-sha1: 2eaa4de56203f433f287a6df5885ef9ad3c5bcae
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  106k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://gitlab.ow2.org/asm/asm.git 'refs/tags/ASM_3_1'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+exec
+/usr/bin/bash -lc 'curl -I -L https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 169ms:
+c7fb397ffdf8016777a11044230fa1f706e2ac04	refs/tags/ASM_3_1
+
+ succeeded in 167ms:
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Mon, 27 Apr 2026 14:02:15 GMT
+etag: W/"804c9339e38d0b5a25f0a03ddd241ce1"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: _gitlab_session=f91696c16486e3010b205ea7e260c89c; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQ7KYWZATZCB0RARR89RWDKH","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQ7KYWZATZCB0RARR89RWDKH
+x-runtime: 0.132075
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+x-frame-options: SAMEORIGIN
+x-robots-tag: noarchive
+
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/asm/asm/3.1/ | sed -n '1,160p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: asm/asm/3.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>asm/asm/3.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="asm-3.1-sources.jar" title="asm-3.1-sources.jar">asm-3.1-sources.jar</a>                               2008-01-20 10:31    108730      
+<a href="asm-3.1-sources.jar.asc" title="asm-3.1-sources.jar.asc">asm-3.1-sources.jar.asc</a>                           2008-01-20 10:31       833      
+<a href="asm-3.1-sources.jar.md5" title="asm-3.1-sources.jar.md5">asm-3.1-sources.jar.md5</a>                           2008-01-20 10:31        33      
+<a href="asm-3.1-sources.jar.sha1" title="asm-3.1-sources.jar.sha1">asm-3.1-sources.jar.sha1</a>                          2008-01-20 10:31        41      
+<a href="asm-3.1.jar" title="asm-3.1.jar">asm-3.1.jar</a>                                       2008-01-20 10:31     43033      
+<a href="asm-3.1.jar.md5" title="asm-3.1.jar.md5">asm-3.1.jar.md5</a>                                   2008-01-20 10:31        32      
+<a href="asm-3.1.jar.sha1" title="asm-3.1.jar.sha1">asm-3.1.jar.sha1</a>                                  2008-01-20 10:31        40      
+<a href="asm-3.1.pom" title="asm-3.1.pom">asm-3.1.pom</a>                                       2008-01-20 10:31       278      
+<a href="asm-3.1.pom.md5" title="asm-3.1.pom.md5">asm-3.1.pom.md5</a>                                   2008-01-20 10:31        32      
+<a href="asm-3.1.pom.sha1" title="asm-3.1.pom.sha1">asm-3.1.pom.sha1</a>                                  2008-01-20 10:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/asm/asm/-/raw/ASM_3_1/jdoc/user.xml?ref_type=tags' | sed -n '1,40p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://gitlab.ow2.org/asm/asm/-/raw/ASM_3_1/test/conform/org/objectweb/asm/ClassReaderTest.java?ref_type=tags' | sed -n '1,20p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+<project name="asm" default="dist.jdoc">
+
+  <property name="jdoc.name" value="user"/>
+  <property name="jdoc.dir" value="${out.dist.jdoc}/${jdoc.name}"/>
+
+  <target name="dist.jdoc">
+    <uptodate property="jdoc.required" targetfile="${jdoc.dir}/index.html">
+      <srcfiles dir="${src}" includes="**/*.java,**/*.html"/>
+    </uptodate>
+    <antcall target="dist.jdoc.${jdoc.name}"/>
+  </target>
+
+  <target name="dist.jdoc.user" unless="jdoc.required">
+    <mkdir dir="${jdoc.dir}"/>
+    <javadoc destdir="${jdoc.dir}"
+             windowtitle="ASM ${product.version} Documentation"
+             doctitle="ASM ${product.version} Documentation">
+
+      <sourcepath path="${src}"/>
+      <package name="org.objectweb.asm"/>
+      <package name="org.objectweb.asm.attrs"/>
+      <package name="org.objectweb.asm.commons"/>
+      <package name="org.objectweb.asm.signature"/>
+      <package name="org.objectweb.asm.tree"/>
+      <package name="org.objectweb.asm.tree.analysis"/>
+      <package name="org.objectweb.asm.util"/>
+      <package name="org.objectweb.asm.util.attrs"/>
+      <package name="org.objectweb.asm.xml"/>
+
+      <link href="${jdk.url}" offline="true" packagelistLoc="${jdoc}"/>
+
+    </javadoc>
+
+    <copy todir="${jdoc.dir}">
+      <fileset dir="${src}" includes="**/*.dtd"/>
+    </copy>
+  </target>
+
+</project>
+
+ succeeded in 189ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+cache-control: max-age=0, private, must-revalidate
+content-length: 0
+content-security-policy: 
+content-type: text/html; charset=utf-8
+date: Mon, 27 Apr 2026 14:02:20 GMT
+etag: W/"87759bbcc2abc9745e9348412987d8dd"
+nel: {"max_age": 0}
+permissions-policy: interest-cohort=()
+set-cookie: _gitlab_session=02c908053bcbd7ebd4b0e8b97e9a2923; path=/; secure; HttpOnly; SameSite=None
+vary: Accept
+x-gitlab-meta: {"correlation_id":"01KQ7KZ23BQV9GRV2Y2S79V8HP","version":"1"}
+x-permitted-cross-domain-policies: none
+x-request-id: 01KQ7KZ23BQV9GRV2Y2S79V8HP
+x-runtime: 0.144558
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=15768000;includeSubDomains;preload
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+x-frame-options: SAMEORIGIN
+x-robots-tag: noarchive
+
+
+ succeeded in 133ms:
+/***
+ * ASM tests
+ * Copyright (c) 2002-2005 France Telecom
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the copyright holders nor the names of its
+ *    contributors may be used to endorse or promote products derived from
+ *    this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+
+codex
+Maven Central has the exact `asm-3.1-sources.jar` and no Maven test artifact in that version directory, so the upstream `ASM_3_1` tag remains the right exact-version test URL. The documentation URL also resolves to the tagged `jdoc/user.xml`, and ASM is Java bytecode tooling, not a Kotlin or Scala-specific artifact under the requested `language` schema.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/asm/asm/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1-sources.jar",
+    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+    "test-code-url" : "https://gitlab.ow2.org/asm/asm/-/tree/ASM_3_1/test?ref_type=tags",
+    "documentation-url" : "https://gitlab.ow2.org/asm/asm/-/blob/ASM_3_1/jdoc/user.xml?ref_type=tags",
+    "description" : "ASM is a Java bytecode manipulation and analysis framework. The asm artifact provides the core API for reading, writing, and transforming Java class files.",
+    "tested-versions" : [
+      "3.1"
+    ],
+    "allowed-packages" : [
+      "org.objectweb.asm"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'jq . metadata/asm/asm/index.json >/tmp/asm-index-json-check && wc -l /tmp/asm-index-json-check' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+17 /tmp/asm-index-json-check
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/asm/asm/index.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771
+ succeeded in 0ms:
+?? metadata/asm/asm/index.json
+
+web search: 
+web search: https://repo1.maven.org/maven2/asm/asm/3.1/
+web search: 
+web search: site:gitlab.ow2.org/asm/asm ASM_3_1 jdoc user.xml
+web search: 
+web search: "ASM_3_1" "jdoc/user.xml"
+codex
+Reviewed [metadata/asm/asm/index.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/metadata/asm/asm/index.json:4). No edit was needed: all requested URL and description fields are already non-blank, and `language` should remain absent because `asm:asm:3.1` is not Kotlin- or Scala-specific.
+
+Verification: Maven Central lists `asm-3.1-sources.jar` and no test artifact for `asm/asm/3.1`; upstream identifies ASM 3.1 with tag `ASM_3_1`; ASM is a Java bytecode manipulation and analysis framework. ([repo1.maven.org](https://repo1.maven.org/maven2/asm/asm/3.1/)) JSON validity checked with `jq`.
+2026-04-27T14:02:47.165648Z ERROR codex_core::session: failed to record rollout items: thread 019dcf3f-2eb2-7e40-bb0e-b6c280b61992 not found
+tokens used
+35,644
+Reviewed [metadata/asm/asm/index.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/metadata/asm/asm/index.json:4). No edit was needed: all requested URL and description fields are already non-blank, and `language` should remain absent because `asm:asm:3.1` is not Kotlin- or Scala-specific.
+
+Verification: Maven Central lists `asm-3.1-sources.jar` and no test artifact for `asm/asm/3.1`; upstream identifies ASM 3.1 with tag `ASM_3_1`; ASM is a Java bytecode manipulation and analysis framework. ([repo1.maven.org](https://repo1.maven.org/maven2/asm/asm/3.1/)) JSON validity checked with `jq`.
+Ran agent for asm:asm:3.1 (exit 0). Log: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/build/agent-url-discovery-logs/asm-asm-3.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2405-62ef2771/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 50s
+9 actionable tasks: 1 executed, 8 up-to-date
