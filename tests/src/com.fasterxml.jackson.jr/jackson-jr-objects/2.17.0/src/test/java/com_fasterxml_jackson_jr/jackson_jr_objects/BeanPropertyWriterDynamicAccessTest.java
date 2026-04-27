@@ -31,7 +31,7 @@ public class BeanPropertyWriterDynamicAccessTest {
         GetterBackedWriterBean bean = new GetterBackedWriterBean("Ada");
 
         assertThat(writer.getValueFor(bean)).isEqualTo("Ada");
-        assertThat(bean.getGetterCalls()).isEqualTo(1);
+        assertThat(bean.getterCalls()).isEqualTo(1);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class BeanPropertyWriterDynamicAccessTest {
         String json = JSON_WITH_FORCE_ACCESS.asString(bean);
 
         assertThat(json).isEqualTo("{\"name\":\"Ada\"}");
-        assertThat(bean.getGetterCalls()).isEqualTo(1);
+        assertThat(bean.getterCalls()).isEqualTo(1);
     }
 
     public static final class FieldBackedWriterBean {
@@ -62,7 +62,7 @@ public class BeanPropertyWriterDynamicAccessTest {
             this.name = name;
         }
 
-        public int getGetterCalls() {
+        private int getterCalls() {
             return getterCalls;
         }
 
