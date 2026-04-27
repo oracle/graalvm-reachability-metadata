@@ -7,7 +7,12 @@
 package org_javassist.javassist;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
 import java.security.ProtectionDomain;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,6 +27,9 @@ import javassist.util.proxy.DefineClassHelper;
 import org.junit.jupiter.api.Test;
 
 public class DefineClassHelperJava9ReferencedUnsafeTest {
+    private static final String JAVA9_HELPER_CLASS = "javassist.util.proxy.DefineClassHelper$Java9";
+    private static final String REFERENCED_UNSAFE_CLASS = JAVA9_HELPER_CLASS + "$ReferencedUnsafe";
+    private static final String SECURITY_ACTIONS_UNSAFE_CLASS = "javassist.util.proxy.SecurityActions$TheUnsafe";
     private static final AtomicInteger CLASS_COUNTER = new AtomicInteger();
 
     @Test
@@ -32,6 +40,37 @@ public class DefineClassHelperJava9ReferencedUnsafeTest {
         generatedClass.detach();
 
         assertGeneratedClassDefinition(generatedClassName, bytecode);
+    }
+
+    @Test
+    void referencedUnsafeChecksCallerBeforeDefiningClass() throws Throwable {
+        Object referencedUnsafe = createReferencedUnsafeWithInitializedStackWalker();
+        MethodHandle defineClass = MethodHandles.privateLookupIn(
+                        Class.forName(REFERENCED_UNSAFE_CLASS),
+                        MethodHandles.lookup())
+                .findVirtual(
+                        Class.forName(REFERENCED_UNSAFE_CLASS),
+                        "defineClass",
+                        MethodType.methodType(
+                                Class.class,
+                                String.class,
+                                byte[].class,
+                                int.class,
+                                int.class,
+                                ClassLoader.class,
+                                ProtectionDomain.class));
+        byte[] invalidBytecode = new byte[] {0, 1, 2};
+
+        assertThatThrownBy(() -> defineClass.invoke(
+                        referencedUnsafe,
+                        "org_javassist.javassist.GeneratedCallerGuardProbe",
+                        invalidBytecode,
+                        0,
+                        invalidBytecode.length,
+                        DefineClassHelperJava9ReferencedUnsafeTest.class.getClassLoader(),
+                        DefineClassHelperJava9ReferencedUnsafeTest.class.getProtectionDomain()))
+                .isInstanceOf(IllegalAccessError.class)
+                .hasMessageContaining("Access denied for caller");
     }
 
     private static void assertGeneratedClassDefinition(String generatedClassName, byte[] bytecode) throws Exception {
@@ -54,6 +93,37 @@ public class DefineClassHelperJava9ReferencedUnsafeTest {
     private static void assertExpectedRuntimeDefinitionFailure(Throwable expectedRuntimeDefinitionFailure) {
         assertThat(expectedRuntimeDefinitionFailure)
                 .hasStackTraceContaining("defineClass");
+    }
+
+    private static Object createReferencedUnsafeWithInitializedStackWalker() throws Throwable {
+        Class<?> java9Class = Class.forName(JAVA9_HELPER_CLASS);
+        Object java9 = unsafe().allocateInstance(java9Class);
+        setObjectField(
+                java9Class,
+                java9,
+                "stack",
+                StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE));
+        setObjectField(java9Class, java9, "getCallerClass", StackWalker.class.getMethod("getCallerClass"));
+
+        Class<?> referencedUnsafeClass = Class.forName(REFERENCED_UNSAFE_CLASS);
+        Class<?> unsafeWrapperClass = Class.forName(SECURITY_ACTIONS_UNSAFE_CLASS);
+        return MethodHandles.privateLookupIn(referencedUnsafeClass, MethodHandles.lookup())
+                .findConstructor(
+                        referencedUnsafeClass,
+                        MethodType.methodType(void.class, java9Class, unsafeWrapperClass, MethodHandle.class))
+                .invoke(java9, null, null);
+    }
+
+    private static void setObjectField(
+            Class<?> declaringClass, Object target, String fieldName, Object value) throws Exception {
+        Field field = declaringClass.getDeclaredField(fieldName);
+        unsafe().putObject(target, unsafe().objectFieldOffset(field), value);
+    }
+
+    private static sun.misc.Unsafe unsafe() throws Exception {
+        Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+        unsafeField.setAccessible(true);
+        return (sun.misc.Unsafe) unsafeField.get(null);
     }
 
     private static CtClass createGeneratedContractImplementation() throws Exception {
