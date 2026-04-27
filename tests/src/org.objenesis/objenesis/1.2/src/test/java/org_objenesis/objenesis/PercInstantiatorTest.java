@@ -6,6 +6,8 @@
  */
 package org_objenesis.objenesis;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,8 +23,7 @@ public class PercInstantiatorTest {
     @Test
     void reportsMissingPercObjectInputStreamHookOnStandardJvm()
         throws ReflectiveOperationException {
-        clearStaticClassCache("class$java$io$ObjectInputStream");
-        clearStaticClassCache("class$java$lang$Class");
+        resetPercStaticState();
 
         Assertions.assertThatThrownBy(() -> new PercInstantiator(ConstructorTarget.class))
             .isInstanceOf(ObjenesisException.class)
@@ -61,9 +62,21 @@ public class PercInstantiatorTest {
         field.set(target, value);
     }
 
-    private static void clearStaticClassCache(String fieldName)
+    private static void resetPercStaticState() throws ReflectiveOperationException {
+        MethodHandles.Lookup lookup =
+            MethodHandles.privateLookupIn(PercInstantiator.class, MethodHandles.lookup());
+        clearStaticClassCache(lookup, "class$java$io$ObjectInputStream");
+        clearStaticClassCache(lookup, "class$java$lang$Class");
+    }
+
+    private static void clearStaticClassCache(MethodHandles.Lookup lookup, String fieldName)
         throws ReflectiveOperationException {
-        setField(null, fieldName, null);
+        VarHandle field = lookup.findStaticVarHandle(
+            PercInstantiator.class,
+            fieldName,
+            Class.class
+        );
+        field.set(null);
     }
 
     public static class ConstructorTarget {
