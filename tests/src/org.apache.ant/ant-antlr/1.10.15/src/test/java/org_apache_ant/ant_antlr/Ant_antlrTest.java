@@ -16,7 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -92,6 +94,52 @@ public class Ant_antlrTest {
     }
 
     @Test
+    void generatesExtendedGrammarUsingSuperGrammarFile() throws Exception {
+        Path grammarDirectory = Files.createDirectory(temporaryDirectory.resolve("grammar-inheritance"));
+        Path baseGrammar = writeFile("grammar-inheritance/BaseCalc.g", """
+            class BaseCalcParser extends Parser;
+            options {
+                buildAST = true;
+            }
+            expr
+                : INT EOF
+                ;
+
+            class BaseCalcLexer extends Lexer;
+            LPAREN: '(';
+            RPAREN: ')';
+            INT: ('0'..'9')+;
+            WS: (' ' | '\\t' | '\\n' | '\\r')+ { $setType(Token.SKIP); };
+            """);
+        Path extendedGrammar = writeFile("grammar-inheritance/ExtendedCalc.g", """
+            class ExtendedCalcParser extends BaseCalcParser;
+            exprList
+                : LPAREN (expr)* RPAREN EOF
+                ;
+            """);
+
+        ANTLR baseTask = newAntlrTask();
+        baseTask.setTarget(baseGrammar.toFile());
+        addRuntimeClasspath(baseTask);
+        baseTask.execute();
+
+        ANTLR extendedTask = newAntlrTask();
+        extendedTask.setTarget(extendedGrammar.toFile());
+        extendedTask.setGlib(baseGrammar.toFile());
+        addRuntimeClasspath(extendedTask);
+
+        extendedTask.execute();
+
+        Path extendedParser = grammarDirectory.resolve("ExtendedCalcParser.java");
+        assertThat(extendedParser).exists();
+        assertThat(Files.readString(extendedParser))
+            .contains("public final void exprList()")
+            .contains("public final void expr()")
+            .contains("LPAREN")
+            .contains("RPAREN");
+    }
+
+    @Test
     void skipsExecutionWhenGeneratedFileIsNewerThanGrammar() throws Exception {
         Path grammar = writeFile("skip/ExistingParser.g", """
             class ExistingParser extends Parser;
@@ -157,8 +205,7 @@ public class Ant_antlrTest {
     private ANTLR newAntlrTask() {
         Project project = new Project();
         project.setBaseDir(temporaryDirectory.toFile());
-        project.init();
-
+        configureJavaHomeForForkedTool();
         ANTLR task = new ANTLR();
         task.setProject(project);
         task.setTaskName("antlr");
@@ -166,11 +213,40 @@ public class Ant_antlrTest {
         return task;
     }
 
-    private void addRuntimeClasspath(ANTLR task) {
+    private void configureJavaHomeForForkedTool() {
+        String environmentJavaHome = System.getenv("JAVA_HOME");
+        if (System.getProperty("java.home") == null && environmentJavaHome != null) {
+            System.setProperty("java.home", environmentJavaHome);
+        }
+    }
+
+    private void addRuntimeClasspath(ANTLR task) throws IOException {
         String classpath = System.getProperty("java.class.path", "");
         for (String entry : classpath.split(Pattern.quote(File.pathSeparator))) {
             if (!entry.isBlank()) {
                 task.createClasspath().setLocation(Path.of(entry).toFile());
+            }
+        }
+        addAntlrToolClasspathFromLocalRepository(task);
+    }
+
+    private void addAntlrToolClasspathFromLocalRepository(ANTLR task) throws IOException {
+        Path userHome = Path.of(System.getProperty("user.home"));
+        addMatchingJars(task, userHome.resolve(".m2/repository/antlr/antlr"));
+        addMatchingJars(task, userHome.resolve(".gradle/caches/modules-2/files-2.1/antlr/antlr"));
+    }
+
+    private void addMatchingJars(ANTLR task, Path repositoryDirectory) throws IOException {
+        if (!Files.isDirectory(repositoryDirectory)) {
+            return;
+        }
+        try (Stream<Path> paths = Files.walk(repositoryDirectory)) {
+            Path jar = paths.filter(Files::isRegularFile)
+                .filter(path -> path.getFileName().toString().matches("antlr-[^/]+\\.jar"))
+                .max(Comparator.comparing(Path::toString))
+                .orElse(null);
+            if (jar != null) {
+                task.createClasspath().setLocation(jar.toFile());
             }
         }
     }
