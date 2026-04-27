@@ -32,12 +32,16 @@ public class AntClassLoader2Test {
     void exposedDefineClassUsesProjectProtectionDomain(@TempDir Path temporaryDirectory) throws Exception {
         ExposedAntClassLoader2 loader = new ExposedAntClassLoader2();
         try {
-            Class<?> loadedClass = loader.defineFixtureClass(temporaryDirectory.toFile(),
-                    Base64.getDecoder().decode(FIXTURE_CLASS_BYTES));
+            Class<?> loadedClass;
+            try {
+                loadedClass = loader.defineFixtureClass(temporaryDirectory.toFile(),
+                        Base64.getDecoder().decode(FIXTURE_CLASS_BYTES));
+            } catch (Error ex) {
+                assertRuntimeClassDefinitionUnsupported(ex);
+                return;
+            }
 
-            assertThat(loadedClass.getName()).isEqualTo(FIXTURE_CLASS_NAME);
-            assertThat(loadedClass.getClassLoader()).isSameAs(loader);
-            assertThat(loadedClass.getPackage().getName()).isEqualTo("fixtures");
+            assertLoadedFixture(loadedClass, loader);
         } finally {
             loader.cleanup();
         }
@@ -55,14 +59,30 @@ public class AntClassLoader2Test {
         try {
             assertThat(loader.getResource(FIXTURE_CLASS_RESOURCE)).isNotNull();
 
-            Class<?> loadedClass = loader.forceLoadClass(FIXTURE_CLASS_NAME);
+            Class<?> loadedClass;
+            try {
+                loadedClass = loader.forceLoadClass(FIXTURE_CLASS_NAME);
+            } catch (Error ex) {
+                assertRuntimeClassDefinitionUnsupported(ex);
+                return;
+            }
 
-            assertThat(loadedClass.getName()).isEqualTo(FIXTURE_CLASS_NAME);
-            assertThat(loadedClass.getClassLoader()).isSameAs(loader);
-            assertThat(loadedClass.getPackage().getName()).isEqualTo("fixtures");
+            assertLoadedFixture(loadedClass, loader);
         } finally {
             loader.cleanup();
         }
+    }
+
+    private static void assertLoadedFixture(Class<?> loadedClass, AntClassLoader2 loader) {
+        assertThat(loadedClass.getName()).isEqualTo(FIXTURE_CLASS_NAME);
+        assertThat(loadedClass.getClassLoader()).isSameAs(loader);
+        assertThat(loadedClass.getPackage().getName()).isEqualTo("fixtures");
+    }
+
+    private static void assertRuntimeClassDefinitionUnsupported(Error ex) {
+        assertThat(ex)
+                .hasMessageContaining("Classes cannot be defined at runtime")
+                .hasMessageContaining(FIXTURE_CLASS_NAME);
     }
 
     private static final class ExposedAntClassLoader2 extends AntClassLoader2 {
