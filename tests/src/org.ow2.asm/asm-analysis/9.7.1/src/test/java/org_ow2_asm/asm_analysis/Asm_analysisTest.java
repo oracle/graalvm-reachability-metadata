@@ -8,7 +8,7 @@ package org_ow2_asm.asm_analysis;
 
 import org.junit.jupiter.api.Test;
 
-class Asm_analysisTest {
+public class Asm_analysisTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
