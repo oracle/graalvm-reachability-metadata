@@ -8,7 +8,7 @@ package org_iq80_snappy.snappy;
 
 import org.junit.jupiter.api.Test;
 
-class SnappyTest {
+public class SnappyTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
