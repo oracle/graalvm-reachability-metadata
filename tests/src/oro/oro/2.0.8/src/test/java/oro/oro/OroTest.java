@@ -36,6 +36,9 @@ import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.StringSubstitution;
 import org.apache.oro.text.regex.Util;
+import org.apache.oro.util.CacheFIFO;
+import org.apache.oro.util.CacheFIFO2;
+import org.apache.oro.util.CacheLRU;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -190,6 +193,49 @@ public class OroTest {
         assertThat(new GlobFilenameFilter("*.java").accept(temporaryDirectory, "Example.txt")).isFalse();
         assertThat(new Perl5FilenameFilter(".*\\.txt").accept(temporaryDirectory, "notes.txt")).isTrue();
         assertThat(new AwkFilenameFilter(".*\\.log").accept(temporaryDirectory, "server.log")).isTrue();
+    }
+
+    @Test
+    void genericCachesApplyTheirEvictionPolicies() {
+        CacheFIFO fifoCache = new CacheFIFO(2);
+        fifoCache.addElement("first", "alpha");
+        fifoCache.addElement("second", "beta");
+        assertThat(fifoCache.getElement("first")).isEqualTo("alpha");
+
+        fifoCache.addElement("third", "gamma");
+
+        assertThat(fifoCache.getElement("first")).isNull();
+        assertThat(fifoCache.getElement("second")).isEqualTo("beta");
+        assertThat(fifoCache.getElement("third")).isEqualTo("gamma");
+        assertThat(fifoCache.size()).isEqualTo(2);
+        assertThat(fifoCache.capacity()).isEqualTo(2);
+
+        CacheFIFO2 secondChanceCache = new CacheFIFO2(2);
+        secondChanceCache.addElement("first", "alpha");
+        secondChanceCache.addElement("second", "beta");
+        assertThat(secondChanceCache.getElement("first")).isEqualTo("alpha");
+
+        secondChanceCache.addElement("third", "gamma");
+
+        assertThat(secondChanceCache.getElement("first")).isEqualTo("alpha");
+        assertThat(secondChanceCache.getElement("second")).isNull();
+        assertThat(secondChanceCache.getElement("third")).isEqualTo("gamma");
+
+        CacheLRU leastRecentlyUsedCache = new CacheLRU(2);
+        leastRecentlyUsedCache.addElement("first", "alpha");
+        leastRecentlyUsedCache.addElement("second", "beta");
+        assertThat(leastRecentlyUsedCache.getElement("first")).isEqualTo("alpha");
+
+        leastRecentlyUsedCache.addElement("third", "gamma");
+
+        assertThat(leastRecentlyUsedCache.getElement("first")).isEqualTo("alpha");
+        assertThat(leastRecentlyUsedCache.getElement("second")).isNull();
+        assertThat(leastRecentlyUsedCache.getElement("third")).isEqualTo("gamma");
+
+        leastRecentlyUsedCache.addElement("first", "updated");
+
+        assertThat(leastRecentlyUsedCache.getElement("first")).isEqualTo("updated");
+        assertThat(leastRecentlyUsedCache.size()).isEqualTo(2);
     }
 
     @Test
