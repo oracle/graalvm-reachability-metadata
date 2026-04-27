@@ -1,0 +1,579 @@
+Starting a Gradle Daemon, 3 busy and 4 incompatible and 14 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dce6e-47a6-70b2-9287-0e781dcf7934
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xmlpull:xmlpull:1.1.3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.1.3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+- Set "coordinates" to "xmlpull:xmlpull:1.1.3.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/repository sources first, then update the JSON directly with only values I can tie to version `1.1.3.1`.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json && sed -n '1,160p' build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+ succeeded in 0ms:
+/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+-rw-rw-r-- 1 vjovanov vjovanov 48 Apr 27 12:13 build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+{
+  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'xmlpull:xmlpull|xmlpull-xmlpull|xmlpull' build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+ succeeded in 0ms:
+build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json:2:  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
+
+web search: 
+web search: xmlpull xmlpull 1.1.3.1 Maven sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/
+web search: 
+web search: https://www.xmlpull.org/tests.html
+web search: 
+web search: https://github.com/xmlpull-org/xmlpull-api-v1/
+codex
+Maven Central has the binary and POM for `1.1.3.1`, but its directory does not list sources, tests, or javadocs. I’m checking the upstream XMLPULL distribution now because that looks like the only versioned source bundle.
+exec
+/usr/bin/bash -lc 'curl -L --fail --silent --show-error https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.pom' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xmlpull</groupId>
+  <artifactId>xmlpull</artifactId>
+  <version>1.1.3.1</version>
+  <name>XML Pull Parsing API</name>
+  <url>http://www.xmlpull.org</url>
+
+  <licenses>
+    <license>
+      <name>Public Domain</name>
+      <url>http://www.xmlpull.org/v1/download/unpacked/LICENSE.txt</url>
+    </license>
+  </licenses>
+
+</project>
+exec
+/usr/bin/bash -lc "curl -L --silent --show-error https://www.xmlpull.org/v1/download/ | sed -n '1,200p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/xmlpull-org/xmlpull-api-v1.git | sed -n '1,120p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+ succeeded in 176ms:
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'">
+    <title>Page not found &middot; GitHub Pages</title>
+    <style type="text/css" media="screen">
+      body {
+        background-color: #f1f1f1;
+        margin: 0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      .container { margin: 50px auto 40px auto; width: 600px; text-align: center; }
+
+      a { color: #4183c4; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      h1 { width: 800px; position:relative; left: -100px; letter-spacing: -1px; line-height: 60px; font-size: 60px; font-weight: 100; margin: 0px 0 50px 0; text-shadow: 0 1px 0 #fff; }
+      p { color: rgba(0, 0, 0, 0.5); margin: 20px 0; line-height: 1.6; }
+
+      ul { list-style: none; margin: 25px 0; padding: 0; }
+      li { display: table-cell; font-weight: bold; width: 1%; }
+
+      .logo { display: inline-block; margin-top: 35px; }
+      .logo-img-2x { display: none; }
+      @media
+      only screen and (-webkit-min-device-pixel-ratio: 2),
+      only screen and (   min--moz-device-pixel-ratio: 2),
+      only screen and (     -o-min-device-pixel-ratio: 2/1),
+      only screen and (        min-device-pixel-ratio: 2),
+      only screen and (                min-resolution: 192dpi),
+      only screen and (                min-resolution: 2dppx) {
+        .logo-img-1x { display: none; }
+        .logo-img-2x { display: inline-block; }
+      }
+
+      #suggestions {
+        margin-top: 35px;
+        color: #ccc;
+      }
+      #suggestions a {
+        color: #666666;
+        font-weight: 200;
+        font-size: 14px;
+        margin: 0 10px;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+
+      <h1>404</h1>
+      <p><strong>File not found</strong></p>
+
+      <p>
+        The site configured at this address does not
+        contain the requested file.
+      </p>
+
+      <p>
+        If this is your site, make sure that the filename case matches the URL
+        as well as any file permissions.<br>
+        For root URLs (like <code>http://example.com/</code>) you must provide an
+        <code>index.html</code> file.
+      </p>
+
+      <p>
+        <a href="https://help.github.com/pages/">Read the full documentation</a>
+        for more information about using <strong>GitHub Pages</strong>.
+      </p>
+
+      <div id="suggestions">
+        <a href="https://githubstatus.com">GitHub Status</a> &mdash;
+        <a href="https://twitter.com/githubstatus">@githubstatus</a>
+      </div>
+
+      <a href="/" class="logo logo-img-1x">
+        <img width="32" height="32" title="" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpFMTZCRDY3REIzRjAxMUUyQUQzREIxQzRENUFFNUM5NiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpFMTZCRDY3RUIzRjAxMUUyQUQzREIxQzRENUFFNUM5NiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkUxNkJENjdCQjNGMDExRTJBRDNEQjFDNEQ1QUU1Qzk2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkUxNkJENjdDQjNGMDExRTJBRDNEQjFDNEQ1QUU1Qzk2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+SM9MCAAAA+5JREFUeNrEV11Ik1EY3s4+ddOp29Q5b0opCgKFsoKoi5Kg6CIhuwi6zLJLoYLopq4qsKKgi4i6CYIoU/q5iDAKs6syoS76IRWtyJ+p7cdt7sf1PGOD+e0c3dygAx/67ZzzPM95/877GYdHRg3ZjMXFxepQKNS6sLCwJxqNNuFpiMfjVs4ZjUa/pmmjeD6VlJS8NpvNT4QQ7mxwjSsJiEQim/1+/9lgMHgIr5ohuxG1WCw9Vqv1clFR0dCqBODElV6v90ogEDjGdYbVjXhpaendioqK07CIR7ZAqE49PT09BPL2PMgTByQGsYiZlQD4uMXtdr+JxWINhgINYhGT2MsKgMrm2dnZXgRXhaHAg5jEJodUAHxux4LudHJE9RdEdA+i3Juz7bGHe4mhE9FNrgwBCLirMFV9Okh5eflFh8PR5nK5nDabrR2BNJlKO0T35+Li4n4+/J+/JQCxhmu5h3uJoXNHPbmWZAHMshWB8l5/ipqammaAf0zPDDx1ONV3vurdidqwAQL+pEc8sLcAe1CCvQ3YHxIW8Pl85xSWNC1hADDIv0rIE/o4J0k3kww4xSlwIhcq3EFFOm7KN/hUGOQkt0CFa5WpNJlMvxBEz/IVQAxg/ZRZl9wiHA63yDYieM7DnLP5CiAGsC7I5sgtYKJGWe2A8seFqgFJrJjEPY1Cn3pJ8/9W1e5VWsFDTEmFrBcoDhZJEQkXuhICMyKpjhahqN21hRYATKfUOlDmkygrR4o4C0VOLGJKrOITKB4jijzdXygBKixyC5TDQdnk/Pz8qRw6oOWGlsTKGOQW6OH6FBWsyePxdOXLTgxiyebILZCjz+GLgMIKnXNzc49YMlcRdHXcSwxFVgTInQhC9G33UhNoJLuqq6t345p9y3eUy8OTk5PjAHuI9uo4b07FBaOhsu0A4Unc+T1TU1Nj3KsSSE5yJ65jqF2DDd8QqWYmAZrIM2VlZTdnZmb6AbpdV9V6ec9znf5Q7HjYumdRE0JOp3MjitO4SFa+cZz8Umqe3TCbSLvdfkR/kWDdNQl5InuTcysOcpFT35ZrbBxx4p3JAHlZVVW1D/634VRt+FvLBgK/v5LV9WS+10xMTEwtRw7XvqOL+e2Q8V3AYIOIAXQ26/heWVnZCVfcyKHg2CBgTpmPmjYM8l24GyaUHyaIh7XwfR9ErE8qHoDfn2LTNAVC0HX6MFcBIP8Bi+6F6cdW/DICkANRfx99fEYFQ7Nph5i/uQiA214gno7K+guhaiKg9gC62+M8eR7XsBsYJ4ilam60Fb7r7uAj8wFyuwM1oIOWgfmDy6RXEEQzJMPe23DXrVS7rtyD3Df8z/FPgAEAzWU5Ku59ZAUAAAAASUVORK5CYII=">
+      </a>
+
+      <a href="/" class="logo logo-img-2x">
+        <img width="32" height="32" title="" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpEQUM1QkUxRUI0MUMxMUUyQUQzREIxQzRENUFFNUM5NiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpEQUM1QkUxRkI0MUMxMUUyQUQzREIxQzRENUFFNUM5NiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkUxNkJENjdGQjNGMDExRTJBRDNEQjFDNEQ1QUU1Qzk2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkUxNkJENjgwQjNGMDExRTJBRDNEQjFDNEQ1QUU1Qzk2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+hfPRaQAAB6lJREFUeNrsW2mM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">
+      </a>
+    </div>
+  </body>
+</html>
+
+ succeeded in 408ms:
+web search: 
+web search: "xmlpull_1_1_3_1"
+web search: 
+web search: https://www.xmlpull.org/
+web search: 
+web search: https://github.com/xmlpull-org/xmlpull-api-v1/
+exec
+/usr/bin/bash -lc 'curl -I -L --silent --show-error https://www.xmlpull.org/v1/download/' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+ succeeded in 0ms:
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: A944:2ADB96:C6BD857:C86D177:69EF36ED
+accept-ranges: bytes
+date: Mon, 27 Apr 2026 10:14:17 GMT
+via: 1.1 varnish
+age: 11
+x-served-by: cache-fra-eddf8230142-FRA
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1777284857.010881,VS0,VE1
+vary: Accept-Encoding
+x-fastly-request-id: b9809347af7be661dc670247427feaa2ddd80a0c
+content-length: 9379
+
+
+exec
+/usr/bin/bash -lc 'curl -I -L --silent --show-error http://www.xmlpull.org/v1/download/' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+exec
+/usr/bin/bash -lc "curl -L --silent --show-error https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/README.md | sed -n '1,160p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+exec
+/usr/bin/bash -lc "curl -L --silent --show-error https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+ succeeded in 138ms:
+HTTP/1.1 301 Moved Permanently
+Connection: keep-alive
+Content-Length: 162
+Server: GitHub.com
+Content-Type: text/html
+Location: https://www.xmlpull.org/v1/download/
+X-GitHub-Request-Id: 3294:5197E:C720F9A:C8D0ACA:69EF36F8
+Accept-Ranges: bytes
+Age: 0
+Date: Mon, 27 Apr 2026 10:14:17 GMT
+Via: 1.1 varnish
+X-Served-By: cache-fra-eddf8230021-FRA
+X-Cache: MISS
+X-Cache-Hits: 0
+X-Timer: S1777284857.001951,VS0,VE94
+Vary: Accept-Encoding
+X-Fastly-Request-ID: 86218ab8e89d374e6b6d30fcb377bb42d04fc70e
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: A944:2ADB96:C6BD857:C86D177:69EF36ED
+accept-ranges: bytes
+date: Mon, 27 Apr 2026 10:14:17 GMT
+via: 1.1 varnish
+age: 11
+x-served-by: cache-fra-eddf8230112-FRA
+x-cache: HIT
+x-cache-hits: 1
+x-timer: S1777284857.139884,VS0,VE1
+vary: Accept-Encoding
+x-fastly-request-id: dfe3414837bbe11c5e305daa86cf2627262c5343
+content-length: 9379
+
+
+ succeeded in 207ms:
+# XMLPULL V1 API Documentation
+
+<p><a href="doc/quick_intro.html">Quick Introduction</a>
+
+<p><a href="doc/build.txt">How to build instructions API and automatic tests</a>.
+
+<p><a href="doc/run.txt">How to run instructions</a>.
+
+<p><a href="doc/faq.html">FAQ</a>
+
+<p><a href="doc/changes.html">List of changes</a>
+
+<p><a href="doc/api/org/xmlpull/v1/package-summary.html">API documentation</a>
+
+<p><a href="doc/features.html">list of XMLPULL API well-known URI features</a>.
+
+<p><b><a href="doc/THANKS.txt">Thanks!</a></b>
+
+
+<p>
+For the latest version and more information please see:
+<a href="http://www.xmlpull.org/">XMLPULL Home Page</a>
+<!-- and
+<a href="http://www.xmlpull.org/discussion.shtml">XMLPULL
+discussion list archives</a>.-->
+
+<p>
+
+
+<HR>
+
+
+<address><a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a><address>
+
+<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;
+</address>
+</body>
+</html>
+
+ succeeded in 179ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+
+ <groupId>org.xmlpull</groupId>
+ <artifactId>xmlpull</artifactId>
+ <version>1.1.3.4c-SNAPSHOT</version>
+ <packaging>jar</packaging>
+
+<name>XML Pull Parsing API</name>
+<url>http://www.xmlpull.org</url>
+ <licenses>
+  <license>
+    <name>Public Domain</name>
+    <url>
+    http://www.xmlpull.org/v1/download/unpacked/LICENSE.txt
+    </url>
+  </license>
+ </licenses>
+
+ <distributionManagement>
+  <snapshotRepository>
+   <id>ossrh</id>
+   <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+   <id>ossrh</id>
+   <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+ </distributionManagement>
+
+ <properties>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ </properties>
+
+ <dependencies>
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <version>3.8.1</version>
+   <scope>test</scope>
+  </dependency>
+ </dependencies>
+
+
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-source-plugin</artifactId>
+    <version>2.2.1</version>
+    <executions>
+     <execution>
+      <id>attach-sources</id>
+      <goals>
+       <goal>jar-no-fork</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>2.9.1</version>
+    <executions>
+     <execution>
+      <id>attach-javadocs</id>
+      <goals>
+       <goal>jar</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+  </plugins>
+ </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/xmlpull-org/xmlpull-api-v1.git' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+exec
+/usr/bin/bash -lc "curl -L --silent --show-error https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/ | sed -n '1,220p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+exec
+/usr/bin/bash -lc "curl -L --silent --show-error https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/tags | sed -n '1,120p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/1389-41c89a30
+ succeeded in 182ms:
+[
+
+]
+
+ succeeded in 201ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "8073a97b3c2babc45c7eb2ada917d941e06160bb",
+    "size": 22,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/.gitignore?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/.gitignore",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/8073a97b3c2babc45c7eb2ada917d941e06160bb",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/.gitignore?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/8073a97b3c2babc45c7eb2ada917d941e06160bb",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "6e63d3339280874dc30aeac1d58f9be2095d0b4d",
+    "size": 386,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/LICENSE.txt?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/6e63d3339280874dc30aeac1d58f9be2095d0b4d",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/LICENSE.txt?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/6e63d3339280874dc30aeac1d58f9be2095d0b4d",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/LICENSE.txt"
+    }
+  },
+  {
+    "name": "LICENSE_TESTS.txt",
+    "path": "LICENSE_TESTS.txt",
+    "sha": "f24ae6a4ce2559e007cf1fd688942524c8be2f20",
+    "size": 25639,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/LICENSE_TESTS.txt?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/LICENSE_TESTS.txt",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/f24ae6a4ce2559e007cf1fd688942524c8be2f20",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/LICENSE_TESTS.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/LICENSE_TESTS.txt?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/f24ae6a4ce2559e007cf1fd688942524c8be2f20",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/LICENSE_TESTS.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "01519678fe2351294ba9d5a2a2b471e05915e78f",
+    "size": 985,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/README.md?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/README.md",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/01519678fe2351294ba9d5a2a2b471e05915e78f",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/README.md?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/01519678fe2351294ba9d5a2a2b471e05915e78f",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/README.md"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "ab86decf23ae2bdfca93031ed4450f9daf642b66",
+    "size": 427,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/SECURITY.md?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/SECURITY.md",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/ab86decf23ae2bdfca93031ed4450f9daf642b66",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/SECURITY.md?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/ab86decf23ae2bdfca93031ed4450f9daf642b66",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/SECURITY.md"
+    }
+  },
+  {
+    "name": "addons",
+    "path": "addons",
+    "sha": "598842d8a976d7371946d6eeab295a3b9d1d0851",
+    "size": 0,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/addons?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/addons",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/598842d8a976d7371946d6eeab295a3b9d1d0851",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/addons?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/598842d8a976d7371946d6eeab295a3b9d1d0851",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/addons"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "be673137c2bfc1ccad57c0722102938a7a459c0f",
+    "size": 21540,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/build.xml?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/build.xml",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/be673137c2bfc1ccad57c0722102938a7a459c0f",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/build.xml?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/be673137c2bfc1ccad57c0722102938a7a459c0f",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/build.xml"
+    }
+  },
+  {
+    "name": "doc",
+    "path": "doc",
+    "sha": "536f903ffa1e5bb8954442c7057ccc81c38f353a",
+    "size": 0,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/doc?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/doc",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/536f903ffa1e5bb8954442c7057ccc81c38f353a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/doc?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/536f903ffa1e5bb8954442c7057ccc81c38f353a",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/doc"
+    }
+  },
+  {
+    "name": "lib",
+    "path": "lib",
+    "sha": "3cad63866bee61a34a579cad3a4c5e2de56bc578",
+    "size": 0,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/lib?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/lib",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/3cad63866bee61a34a579cad3a4c5e2de56bc578",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/lib?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/3cad63866bee61a34a579cad3a4c5e2de56bc578",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/lib"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "75431149dea880d32aef68ea00edfa84be09cba5",
+    "size": 1872,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/pom.xml?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/pom.xml",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/75431149dea880d32aef68ea00edfa84be09cba5",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/pom.xml?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/75431149dea880d32aef68ea00edfa84be09cba5",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "04b543e2397911bce71991ac29221673846f9abb",
+    "size": 0,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/src?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/src",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/04b543e2397911bce71991ac29221673846f9abb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/src?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/04b543e2397911bce71991ac29221673846f9abb",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/src"
+    }
+  }
+]
+
+ succeeded in 320ms:
+21127efba74f6f147e867e2bcf3e8b2a9624cc2c	refs/heads/master
+
