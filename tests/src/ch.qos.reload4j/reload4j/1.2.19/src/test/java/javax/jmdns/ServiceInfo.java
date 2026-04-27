@@ -14,7 +14,7 @@ public class ServiceInfo {
     private final int port;
     private final int weight;
     private final int priority;
-    private final Hashtable<?, ?> properties;
+    private final Hashtable<Object, Object> properties;
 
     public ServiceInfo(String type, String name, int port, int weight, int priority, Hashtable<?, ?> properties) {
         this.type = type;
@@ -22,7 +22,8 @@ public class ServiceInfo {
         this.port = port;
         this.weight = weight;
         this.priority = priority;
-        this.properties = properties;
+        this.properties = new Hashtable<>();
+        this.properties.putAll(properties);
     }
 
     public String getType() {
@@ -45,7 +46,7 @@ public class ServiceInfo {
         return priority;
     }
 
-    public Hashtable<?, ?> getProperties() {
+    public Hashtable<Object, Object> getProperties() {
         return properties;
     }
 }
