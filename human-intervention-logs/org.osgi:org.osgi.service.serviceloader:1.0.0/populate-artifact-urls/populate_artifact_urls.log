@@ -1,0 +1,365 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcfa5-f979-7a11-b514-0a6578be054d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:org.osgi.service.serviceloader:1.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/metadata/org.osgi/org.osgi.service.serviceloader/index.json
+- Entry selector: "metadata-version" = "1.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.0.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar
+- repository-url: https://github.com/osgi/osgi
+- test-code-url: https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader
+- documentation-url: https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar
+- description: This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0.0
+- Entry test-version: 1.0.0
+codex
+I’ll verify the existing metadata entry first, then confirm whether the artifact is language-specific before making the smallest possible JSON edit.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.osgi/org.osgi.service.serviceloader/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
+    "description" : "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently.",
+    "tested-versions" : [
+      "1.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi.service.serviceloader"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.osgi/org.osgi.service.serviceloader/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+4:    "metadata-version" : "1.0.0",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
+6:    "repository-url" : "https://github.com/osgi/osgi",
+7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
+9:    "description" : "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently.",
+
+web search: 
+web search: org.osgi.service.serviceloader 1.0.0 Maven Central sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/
+web search: 
+web search: 'OSGi Specification Project Build Repository' in https://github.com/osgi/osgi
+codex
+The target entry already has non-blank URL and description fields. The remaining decision is `language`; this is a Java OSGi API artifact, not Kotlin or Scala-specific, so the correct repository state is to leave `language` absent.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.osgi/org.osgi.service.serviceloader/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.osgi/org.osgi.service.serviceloader/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.osgi org.osgi.service.serviceloader 1.0.0 sources javadoc
+web search: 
+web search: https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader
+web search: 
+web search: 
+codex
+I’m doing one concrete verification pass now: Maven Central has versioned source and javadoc artifacts for 1.0.0, and the GitHub `r5-cmpn-spec-final` tree contains the matching service loader test suite.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0.pom | sed -n '1,180p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>org.osgi.service.serviceloader</artifactId>
+  <version>1.0.0</version>
+  <description>OSGi Companion Code for org.osgi.service.serviceloader Version 1.0.0.</description>
+  <name>org.osgi:org.osgi.service.serviceloader</name>
+  <url>http://www.osgi.org/</url>
+  <organization>
+    <name>OSGi Alliance</name>
+    <url>http://www.osgi.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://opensource.org/licenses/apache2.0.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://osgi.org/git/build.git</url>
+    <connection>scm:git:https://osgi.org/git/build.git</connection>
+    <developerConnection>scm:git:https://osgi.org/git/build.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <id>osgi</id>
+      <email>info@osgi.org</email>
+      <name>OSGi Alliance</name>
+      <organization>OSGi Alliance</organization>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d) && curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar -o "$tmp/src.jar" && jar tf "$tmp/src.jar" | sed -n '"'1,120p' && rm -rf \""'$tmp"' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+LICENSE
+org/
+org/osgi/
+org/osgi/service/
+org/osgi/service/serviceloader/
+org/osgi/service/serviceloader/ServiceLoaderNamespace.java
+org/osgi/service/serviceloader/package-info.java
+org/osgi/service/serviceloader/packageinfo
+about.html
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader?ref=r5-cmpn-spec-final | sed -n '1,160p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 165ms:
+[
+  {
+    "name": ".classpath",
+    "path": "org.osgi.test.cases.serviceloader/.classpath",
+    "sha": "6d3c62a7f00708d3885a92654acd61ea8573a3e6",
+    "size": 216,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/.classpath?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/.classpath",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/6d3c62a7f00708d3885a92654acd61ea8573a3e6",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/.classpath?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/6d3c62a7f00708d3885a92654acd61ea8573a3e6",
+      "html": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/.classpath"
+    }
+  },
+  {
+    "name": ".project",
+    "path": "org.osgi.test.cases.serviceloader/.project",
+    "sha": "b27656898e84f10f03a2035d2a5596309620f52f",
+    "size": 542,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/.project?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/.project",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/b27656898e84f10f03a2035d2a5596309620f52f",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/.project?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/b27656898e84f10f03a2035d2a5596309620f52f",
+      "html": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/.project"
+    }
+  },
+  {
+    "name": ".settings",
+    "path": "org.osgi.test.cases.serviceloader/.settings",
+    "sha": "6a0ee76a344fdfb6334fe98e18b875e7b28a55c7",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/.settings?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/.settings",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/6a0ee76a344fdfb6334fe98e18b875e7b28a55c7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/.settings?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/6a0ee76a344fdfb6334fe98e18b875e7b28a55c7",
+      "html": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/.settings"
+    }
+  },
+  {
+    "name": "TestPlan.txt",
+    "path": "org.osgi.test.cases.serviceloader/TestPlan.txt",
+    "sha": "ee8256cf4583e9ae7bd30587f7b86bd09a2d9315",
+    "size": 3399,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/TestPlan.txt?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/TestPlan.txt",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/ee8256cf4583e9ae7bd30587f7b86bd09a2d9315",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/TestPlan.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/TestPlan.txt?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/ee8256cf4583e9ae7bd30587f7b86bd09a2d9315",
+      "html": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/TestPlan.txt"
+    }
+  },
+  {
+    "name": "bnd.bnd",
+    "path": "org.osgi.test.cases.serviceloader/bnd.bnd",
+    "sha": "fdd14cda29c3aa298cbb6d982e9c9cf1036606dd",
+    "size": 1133,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/bnd.bnd?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/bnd.bnd",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/fdd14cda29c3aa298cbb6d982e9c9cf1036606dd",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/bnd.bnd",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/bnd.bnd?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/fdd14cda29c3aa298cbb6d982e9c9cf1036606dd",
+      "html": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/bnd.bnd"
+    }
+  },
+  {
+    "name": "bnd",
+    "path": "org.osgi.test.cases.serviceloader/bnd",
+    "sha": "3b26c3aa96a4d0a3955cbef4320bafe6cc27de6c",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/bnd?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/bnd",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/3b26c3aa96a4d0a3955cbef4320bafe6cc27de6c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/bnd?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/3b26c3aa96a4d0a3955cbef4320bafe6cc27de6c",
+      "html": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/bnd"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "org.osgi.test.cases.serviceloader/build.xml",
+    "sha": "5c2ed9aca704b78302e6e55e08ffbcce9e12785e",
+    "size": 130,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/build.xml?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/build.xml",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/blobs/5c2ed9aca704b78302e6e55e08ffbcce9e12785e",
+    "download_url": "https://raw.githubusercontent.com/osgi/osgi/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/build.xml?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/blobs/5c2ed9aca704b78302e6e55e08ffbcce9e12785e",
+      "html": "https://github.com/osgi/osgi/blob/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/build.xml"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "org.osgi.test.cases.serviceloader/resources",
+    "sha": "985374ff5322d754b6d35e065a4dd418dd21d0ca",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/resources?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/resources",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/985374ff5322d754b6d35e065a4dd418dd21d0ca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/resources?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/985374ff5322d754b6d35e065a4dd418dd21d0ca",
+      "html": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/resources"
+    }
+  },
+  {
+    "name": "src",
+    "path": "org.osgi.test.cases.serviceloader/src",
+    "sha": "252e7bfa298d315accba0401911ee99f5ed29ce6",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/src?ref=r5-cmpn-spec-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/src",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/252e7bfa298d315accba0401911ee99f5ed29ce6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.serviceloader/src?ref=r5-cmpn-spec-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/252e7bfa298d315accba0401911ee99f5ed29ce6",
+      "html": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.osgi/org.osgi.service.serviceloader/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+?? metadata/org.osgi/org.osgi.service.serviceloader/index.json
+
+web search: 
+web search: site:mvnrepository.com org.osgi.service.serviceloader 1.0.0
+web search: 
+web search: 
+web search: 
+web search: https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader
+codex
+No edit was needed in [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/metadata/org.osgi/org.osgi.service.serviceloader/index.json:1). The URL and `description` fields were already non-blank, and `org.osgi:org.osgi.service.serviceloader:1.0.0` is not Kotlin or Scala-specific, so `language` should remain absent.
+
+I verified the Maven Central version contains the exact `1.0.0` sources and javadoc artifacts, and the OSGi GitHub repository is the canonical source/TCK repository. ([repo1.maven.org](https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/?utm_source=openai)) JSON validation passed with `jq empty`; no file diff was produced.
+2026-04-27T15:55:15.259458Z ERROR codex_core::session: failed to record rollout items: thread 019dcfa5-f979-7a11-b514-0a6578be054d not found
+tokens used
+66,701
+No edit was needed in [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/metadata/org.osgi/org.osgi.service.serviceloader/index.json:1). The URL and `description` fields were already non-blank, and `org.osgi:org.osgi.service.serviceloader:1.0.0` is not Kotlin or Scala-specific, so `language` should remain absent.
+
+I verified the Maven Central version contains the exact `1.0.0` sources and javadoc artifacts, and the OSGi GitHub repository is the canonical source/TCK repository. ([repo1.maven.org](https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/?utm_source=openai)) JSON validation passed with `jq empty`; no file diff was produced.
+Ran agent for org.osgi:org.osgi.service.serviceloader:1.0.0 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/build/agent-url-discovery-logs/org.osgi-org.osgi.service.serviceloader-1.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 2s
+9 actionable tasks: 1 executed, 8 up-to-date

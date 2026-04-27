@@ -1,0 +1,1051 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcfa3-5348-7f62-8e1f-4bb1088d0807
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:org.osgi.service.serviceloader:1.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+- Set "coordinates" to "org.osgi:org.osgi.service.serviceloader:1.0.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s published metadata and version-specific source/test/doc locations, then update the JSON in place.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.osgi-org\\.osgi\\.service\\.serviceloader-1\\.0\\.0\\.json"'$'"'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
+}
+
+web search: 
+web search: org.osgi org.osgi.service.serviceloader 1.0.0 source jar maven
+web search: 
+web search: https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/
+web search: 
+web search: "org.osgi.service.serviceloader" "ServiceLoaderNamespace" github
+codex
+Maven Central has the 1.0.0 sources and javadoc artifacts, so I’m treating those as the preferred exact-version source and documentation URLs. I’m checking the upstream SCM now only for repository identity and whether there is a version-matched test suite.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://osgi.org/git/build.git | rg -i 'serviceloader|r5|cmpn|companion|1\\.0\\.0|2015|R5|R6'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+exec
+/usr/bin/bash -lc 'git ls-remote https://osgi.org/git/build.git HEAD' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ exited 1 in 563ms:
+fatal: repository 'https://osgi.org/git/build.git/' not found
+
+ exited 128 in 536ms:
+fatal: repository 'https://osgi.org/git/build.git/' not found
+
+web search: 
+web search: 
+web search: 
+web search: org.osgi org.osgi.service.serviceloader 1.0.0 Maven Central
+web search: 
+web search: https://libraries.io/maven/org.osgi%3Aorg.osgi.service.serviceloader
+web search: 
+web search: repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0.pom
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>org.osgi.service.serviceloader</artifactId>
+  <version>1.0.0</version>
+  <description>OSGi Companion Code for org.osgi.service.serviceloader Version 1.0.0.</description>
+  <name>org.osgi:org.osgi.service.serviceloader</name>
+  <url>http://www.osgi.org/</url>
+  <organization>
+    <name>OSGi Alliance</name>
+    <url>http://www.osgi.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://opensource.org/licenses/apache2.0.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://osgi.org/git/build.git</url>
+    <connection>scm:git:https://osgi.org/git/build.git</connection>
+    <developerConnection>scm:git:https://osgi.org/git/build.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <id>osgi</id>
+      <email>info@osgi.org</email>
+      <name>OSGi Alliance</name>
+      <organization>OSGi Alliance</organization>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar -o /tmp/org.osgi.service.serviceloader-1.0.0-sources.jar && jar tf /tmp/org.osgi.service.serviceloader-1.0.0-sources.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar -o /tmp/org.osgi.service.serviceloader-1.0.0-javadoc.jar && jar tf /tmp/org.osgi.service.serviceloader-1.0.0-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 119ms:
+META-INF/
+META-INF/MANIFEST.MF
+index.html
+help-doc.html
+overview-tree.html
+allclasses-frame.html
+deprecated-list.html
+stylesheet.css
+LICENSE.html
+constant-values.html
+package-list
+allclasses-noframe.html
+org/
+org/osgi/
+org/osgi/service/
+org/osgi/service/serviceloader/
+org/osgi/service/serviceloader/package-summary.html
+org/osgi/service/serviceloader/ServiceLoaderNamespace.html
+org/osgi/service/serviceloader/package-frame.html
+org/osgi/service/serviceloader/package-use.html
+org/osgi/service/serviceloader/package-tree.html
+org/osgi/service/serviceloader/class-use/
+org/osgi/service/serviceloader/class-use/ServiceLoaderNamespace.html
+index-files/
+index-files/index-3.html
+index-files/index-2.html
+index-files/index-1.html
+resources/
+resources/titlebar_end.gif
+resources/tab.gif
+resources/background.gif
+resources/titlebar.gif
+
+ succeeded in 150ms:
+META-INF/
+META-INF/MANIFEST.MF
+LICENSE
+org/
+org/osgi/
+org/osgi/service/
+org/osgi/service/serviceloader/
+org/osgi/service/serviceloader/ServiceLoaderNamespace.java
+org/osgi/service/serviceloader/package-info.java
+org/osgi/service/serviceloader/packageinfo
+about.html
+
+web search: 
+web search: Maven Central org.osgi.service.serviceloader 1.0.0 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/
+web search: 
+web search: 
+web search: 
+web search: https://libraries.io/maven/org.osgi%3Aorg.osgi.service.serviceloader
+web search: 
+web search: 
+web search: 
+web search: site:github.com/osgi org.osgi.service.serviceloader
+codex
+The upstream SCM recorded in the 1.0.0 POM points at the old OSGi build repository, and there is also a GitHub mirror/project for the same OSGi build sources. I’m checking tags/paths there before deciding whether a version-specific test URL can be filled confidently.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/osgi/osgi.git | rg -i 'r5|enterprise|cmpn|serviceloader|1\\.0\\.0|2015|R6|R5' | sed -n '1,160p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+exec
+/usr/bin/bash -lc 'git ls-remote https://github.com/osgi/osgi.git HEAD' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 352ms:
+705eba1ba09abdaaab755aed9d7e5d3bd87aadf1	refs/tags/8.1.0.cmpn
+8e96a2338c89bcf9976f71bd6f4fb3f5055f3f78	refs/tags/8.1.0.cmpn^{}
+9e1c74c47197691eb3f85e1d8cc914a5b3b836e3	refs/tags/8.1.0.cmpn-RC1
+a50e1dbfe4c99fa93bce3df288fd774973e7f09b	refs/tags/8.1.0.cmpn-RC1^{}
+b39cb733f4468ca67ee6a7a8c82762023fd8e539	refs/tags/r401-cmpn-ri-tck-final
+ba77e1ad550137b416efaf5bae0d39530a7e46b0	refs/tags/r401-cmpn-ri-tck-final^{}
+bcb8a044f35859cf7b63120d62f029d17fddaf76	refs/tags/r401-cmpn-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r401-cmpn-spec-final^{}
+d90b46c492395793d004bcd02199038f8f3631ef	refs/tags/r4v41-cmpn-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-cmpn-ri-tck-final^{}
+0d9b2787fa8d341930d806f87aa2216bd041cb90	refs/tags/r4v42-cmpn-spec-final
+8b283d49469e805fd42dc8486416ff6d8e7359e3	refs/tags/r4v42-cmpn-spec-final^{}
+ec6b5ff8940c6a954a596f6b626233bcb671c299	refs/tags/r4v42-core-cmpn-final
+7f0db3bb6dfc444c2604b09e540f965df7ab8b29	refs/tags/r4v42-core-cmpn-final^{}
+8408231684ea30dd2f7284dc4d8866ed30464ff2	refs/tags/r4v42-enterprise-ri-ct-final
+88a4172723302f8ffb7abddbc067b5f4d4653298	refs/tags/r4v42-enterprise-ri-ct-final^{}
+b249cf513552b26e25b7b95359c7f88cb91f0683	refs/tags/r4v42-enterprise-spec-final
+a0a2a3a893bacf09e4a04d8d9362b35a269d8091	refs/tags/r4v42-enterprise-spec-final^{}
+74c035a17b9b4a2ec2935b5096f645d5c2f4711b	refs/tags/r4v43-cmpn-ri-ct-final
+b4bdf0b13eb363c03a297903efbdecb4ec68f3c8	refs/tags/r4v43-cmpn-ri-ct-final^{}
+72920c5b272795ec24c05b4a29b138a76f54a9ba	refs/tags/r4v43-cmpn-spec-final
+11b8e9cfce63e1ec92d567ca570528220513946a	refs/tags/r4v43-cmpn-spec-final^{}
+8f1f83c4ad1c427e0e10a1b9156dffef6711c4ba	refs/tags/r4v431-core-cmpn-spec-final
+c7da4c70103383ed4e94a520e8c337b441a512b3	refs/tags/r4v431-core-cmpn-spec-final^{}
+7db8eb64f579ccb2208add5e543149ad259ecf76	refs/tags/r5-cmpn-ri-ct-final
+a834984f32027b4041ba5192db5b324967088bb0	refs/tags/r5-cmpn-ri-ct-final^{}
+8a3d85bbe1d04ef79bda177255bae087236565a2	refs/tags/r5-cmpn-spec-final
+a834984f32027b4041ba5192db5b324967088bb0	refs/tags/r5-cmpn-spec-final^{}
+541dce37542a0be2a0dc4ed46f9c256588e96dac	refs/tags/r5-core-ri-ct-final
+8ae7389a2e63c5e8bfefa131ea4585305d2be813	refs/tags/r5-core-ri-ct-final^{}
+2af5800d300564d74586a6ac5dbd0fcfb106f0de	refs/tags/r5-core-spec-final
+d375fa2dee6bc966094c087e7df5a3d312b46f46	refs/tags/r5-core-spec-final^{}
+64934d512f0fd4059c3decbc9f945e2b2c8e111a	refs/tags/r5-enterprise-ri-ct-final
+e708dbb8773c82dee4d2a0226acf523e28a30e88	refs/tags/r5-enterprise-ri-ct-final^{}
+f1164f15a8d47626bda9fb04a9288831f23875ea	refs/tags/r5-enterprise-spec-final
+d375fa2dee6bc966094c087e7df5a3d312b46f46	refs/tags/r5-enterprise-spec-final^{}
+aacb6db4325663de2567ac37c176169d552899e9	refs/tags/r5-javaone-prototype
+f8e0c00dcf99d95df55ec1bbd03d358866fe016c	refs/tags/r5-javaone-prototype^{}
+aeca6dd90e1d19302d6c3609cf568343edf4c6b5	refs/tags/r5-spec-javadoc
+93a465491b60efc4585d94ccd39798cc909b6f4b	refs/tags/r5-spec-javadoc^{}
+44369ee9127e86c27c1af59f1be763ecc263e34d	refs/tags/r6-cmpn-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-cmpn-ri-ct-final^{}
+482a684d7c95cdb8a7a308d9d12dcdded893fb34	refs/tags/r6-cmpn-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-cmpn-spec-final^{}
+2a11a3e5d8c60b50e4081343ebed6bcec311a598	refs/tags/r6-core-ri-ct-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-ri-ct-final^{}
+d8890daf8811f2c2c451a7ed793bac2d8dcce35a	refs/tags/r6-core-spec-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-spec-final^{}
+837e5d17769f3ef0646b913f1e02509291349d7f	refs/tags/r6-enterprise-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-enterprise-ri-ct-final^{}
+301ecbf2d2502438d34aeaedce156c45882ed856	refs/tags/r6-enterprise-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-enterprise-spec-final^{}
+234b425b53e5b3ef3e475750dc86561b81a7b1c2	refs/tags/r6-residential-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-residential-ri-ct-final^{}
+5655cfae7d61f051746213bab0f386423fa38d8e	refs/tags/r6-residential-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-residential-spec-final^{}
+b23a773251adfcd4e3f8248318a1262cb22ee7cb	refs/tags/r6-residential-supplement-ri-ct-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-ri-ct-final^{}
+7742076a96cb0f7cdd869f0d47ab11678fae7bdb	refs/tags/r6-residential-supplement-spec-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-spec-final^{}
+c27b1731cbca5a6b836195161c9330c8e395bafe	refs/tags/r7-cmpn-ri-ct-final
+c886e125edee3b79de55b0a2002e6ea61570b481	refs/tags/r7-cmpn-ri-ct-final^{}
+06a66f4bd61a26146a0fd8e9a9c44c25fe7d0256	refs/tags/r7-cmpn-spec-final
+ac877b9fdaa36e26adb939cf9dd425e77243f449	refs/tags/r7-cmpn-spec-final^{}
+f9c179ba3f7b7dac37d0b3fa7afb3a066999452a	refs/tags/r7-enterprise-ri-ct-final
+de3115285dde04d3a56d68698b4b3f4b766f4b2b	refs/tags/r7-enterprise-ri-ct-final^{}
+a5e0536048c3854870a70dda9022e784f1cbc404	refs/tags/r7-enterprise-spec-final
+c886e125edee3b79de55b0a2002e6ea61570b481	refs/tags/r7-enterprise-spec-final^{}
+148d6a318212c3e9e6f738563190d90c70815ff2	refs/tags/r8-cmpn-final
+db39ce672917cadce15aad14a33795cbed7e8791	refs/tags/r8-cmpn-final^{}
+4fd91a48643c84ab29ecb49ee9f42384f2b32fe5	refs/tags/r8-cmpn-spec-RC1
+b986b23c6429cf7bf0fa9079828cdcab15902325	refs/tags/r8-cmpn-spec-RC1^{}
+
+ succeeded in 381ms:
+beacb96c3a82278b86f7466dc8302b5aa316f0c9	HEAD
+64af76b84d8fdc014f9030f0dac99e963027021e	refs/remotes/origin/HEAD
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=%22org.osgi.service.serviceloader%22+repo:osgi/osgi' | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 111ms:
+curl: (22) The requested URL returned error: 401
+
+exec
+/usr/bin/bash -lc "rm -rf /tmp/osgi-r5-cmpn-spec && git clone --depth 1 --branch r5-cmpn-spec-final https://github.com/osgi/osgi.git /tmp/osgi-r5-cmpn-spec && rg -n \"org\\.osgi\\.service\\.serviceloader|ServiceLoaderNamespace|serviceloader\" /tmp/osgi-r5-cmpn-spec | sed -n '1,200p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+exec
+/usr/bin/bash -lc "rm -rf /tmp/osgi-r5-cmpn-ri && git clone --depth 1 --branch r5-cmpn-ri-ct-final https://github.com/osgi/osgi.git /tmp/osgi-r5-cmpn-ri && rg -n \"org\\.osgi\\.service\\.serviceloader|ServiceLoaderNamespace|serviceloader\" /tmp/osgi-r5-cmpn-ri | sed -n '1,200p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 13073ms:
+Note: switching to 'a834984f32027b4041ba5192db5b324967088bb0'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd.bnd:29:    org.osgi.service.serviceloader; version=project , \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd.bnd:35:	org.osgi.impl.bundle.serviceloader;version=latest
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/perms/implregister.perm:11:(org.osgi.framework.CapabilityPermission "osgi.serviceloader" "provide")
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/perms/implregister_noperm.perm:11:(org.osgi.framework.CapabilityPermission "osgi.serviceloader" "provide")
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/perms/client.perm:12:(org.osgi.framework.CapabilityPermission "osgi.serviceloader" "require")
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/perms/client_noperm.perm:12:(org.osgi.framework.CapabilityPermission "osgi.serviceloader" "require")
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/impl/ColorProviderImpl.java:6:package org.osgi.test.cases.serviceloader.secure.impl;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/impl/ColorProviderImpl.java:8:import org.osgi.test.cases.serviceloader.secure.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/impl/ColorProviderImpl.java:18:     * @see org.osgi.test.cases.serviceloader.secure.spi.ColorProvider#getColor()
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:6:package org.osgi.test.cases.serviceloader.secure.junit;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:67:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:82:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:144:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:198:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:213:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:266:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:281:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:335:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:350:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/TestBridge.java:6:package org.osgi.test.cases.serviceloader.secure.junit;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/spi/ColorProvider.java:6:package org.osgi.test.cases.serviceloader.secure.spi;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClient.java:6:package org.osgi.test.cases.serviceloader.secure.client;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClient.java:16:import org.osgi.test.cases.serviceloader.secure.junit.TestBridge;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClient.java:17:import org.osgi.test.cases.serviceloader.secure.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClient.java:33:     * @see org.osgi.test.cases.serviceloader.secure.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClientOSGi.java:6:package org.osgi.test.cases.serviceloader.secure.client;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClientOSGi.java:15:import org.osgi.test.cases.serviceloader.secure.junit.TestBridge;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClientOSGi.java:16:import org.osgi.test.cases.serviceloader.secure.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClientOSGi.java:33:     * @see org.osgi.test.cases.serviceloader.secure.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/client.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/client.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(provider=CT))"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/implregister.bnd:6:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/implregister.bnd:8:Provide-Capability: osgi.serviceloader; \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/implregister.bnd:12: osgi.serviceloader="${p}.spi.ColorProvider"; \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/client_noperm.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/client_noperm.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(provider=CT))"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/clientosgi.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/clientosgi.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(provider=CT))"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/clientosgi_noperm.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/clientosgi_noperm.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(provider=CT))"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/implregister_noperm.bnd:6:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/implregister_noperm.bnd:8:Provide-Capability: osgi.serviceloader; \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader.secure/bnd/implregister_noperm.bnd:12: osgi.serviceloader="${p}.spi.ColorProvider"; \
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1609:org.osgi.service.serviceloader,ServiceLoaderNamespace! Pcsfur class:org.osgi.resource.Namespace:java.lang.Object
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1610:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CAPABILITY_EFFECTIVE_DIRECTIVE Pcsfur Ljava/lang/String;:effective
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1611:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CAPABILITY_REGISTER_DIRECTIVE Pcsfur Ljava/lang/String;:register
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1612:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CAPABILITY_USES_DIRECTIVE Pcsfur Ljava/lang/String;:uses
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1613:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CARDINALITY_MULTIPLE Pcsfur Ljava/lang/String;:multiple
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1614:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CARDINALITY_SINGLE Pcsfur Ljava/lang/String;:single
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1615:org.osgi.service.serviceloader,ServiceLoaderNamespace!#EFFECTIVE_ACTIVE Pcsfur Ljava/lang/String;:active
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1616:org.osgi.service.serviceloader,ServiceLoaderNamespace!#EFFECTIVE_RESOLVE Pcsfur Ljava/lang/String;:resolve
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1617:org.osgi.service.serviceloader,ServiceLoaderNamespace!#REQUIREMENT_CARDINALITY_DIRECTIVE Pcsfur Ljava/lang/String;:cardinality
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1618:org.osgi.service.serviceloader,ServiceLoaderNamespace!#REQUIREMENT_EFFECTIVE_DIRECTIVE Pcsfur Ljava/lang/String;:effective
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1619:org.osgi.service.serviceloader,ServiceLoaderNamespace!#REQUIREMENT_FILTER_DIRECTIVE Pcsfur Ljava/lang/String;:filter
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1620:org.osgi.service.serviceloader,ServiceLoaderNamespace!#REQUIREMENT_RESOLUTION_DIRECTIVE Pcsfur Ljava/lang/String;:resolution
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1621:org.osgi.service.serviceloader,ServiceLoaderNamespace!#RESOLUTION_MANDATORY Pcsfur Ljava/lang/String;:mandatory
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1622:org.osgi.service.serviceloader,ServiceLoaderNamespace!#RESOLUTION_OPTIONAL Pcsfur Ljava/lang/String;:optional
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1623:org.osgi.service.serviceloader,ServiceLoaderNamespace!#SERVICELOADER_NAMESPACE Pcsfur Ljava/lang/String;:osgi.serviceloader
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1624:org.osgi.service.serviceloader,ServiceLoaderNamespace!clone() pcifur Ljava/lang/Object;*java.lang.CloneNotSupportedException
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1625:org.osgi.service.serviceloader,ServiceLoaderNamespace!equals(Ljava/lang/Object;) Pcifur Z
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1626:org.osgi.service.serviceloader,ServiceLoaderNamespace!finalize() pcifur V*java.lang.Throwable
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1627:org.osgi.service.serviceloader,ServiceLoaderNamespace!getClass() Pcifur Ljava/lang/Class<{Ljava/lang/Object;>;
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1628:org.osgi.service.serviceloader,ServiceLoaderNamespace!hashCode() Pcifur I
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1629:org.osgi.service.serviceloader,ServiceLoaderNamespace!notify() Pcifur V
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1630:org.osgi.service.serviceloader,ServiceLoaderNamespace!notifyAll() Pcifur V
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1631:org.osgi.service.serviceloader,ServiceLoaderNamespace!toString() Pcifur Ljava/lang/String;
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1632:org.osgi.service.serviceloader,ServiceLoaderNamespace!wait() Pcifur V*java.lang.InterruptedException
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1633:org.osgi.service.serviceloader,ServiceLoaderNamespace!wait(J) Pcifur V*java.lang.InterruptedException
+/tmp/osgi-r5-cmpn-ri/cnf/japi-published/osgi.enterprise-published.japi:1634:org.osgi.service.serviceloader,ServiceLoaderNamespace!wait(J,I) Pcifur V*java.lang.InterruptedException
+/tmp/osgi-r5-cmpn-ri/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/package-info.java:29: * {@code  Import-Package: org.osgi.service.serviceloader; version="[1.0,2.0)"}
+/tmp/osgi-r5-cmpn-ri/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/package-info.java:33: * {@code  Import-Package: org.osgi.service.serviceloader; version="[1.0,1.1)"}
+/tmp/osgi-r5-cmpn-ri/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/package-info.java:39:package org.osgi.service.serviceloader;
+/tmp/osgi-r5-cmpn-ri/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/ServiceLoaderNamespace.java:17:package org.osgi.service.serviceloader;
+/tmp/osgi-r5-cmpn-ri/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/ServiceLoaderNamespace.java:52:public final class ServiceLoaderNamespace extends Namespace {
+/tmp/osgi-r5-cmpn-ri/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/ServiceLoaderNamespace.java:61:	public static final String	SERVICELOADER_NAMESPACE			= "osgi.serviceloader";
+/tmp/osgi-r5-cmpn-ri/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/ServiceLoaderNamespace.java:78:	private ServiceLoaderNamespace() {
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd.bnd:38:    org.osgi.service.serviceloader; version=project , \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd.bnd:44:	org.osgi.impl.bundle.serviceloader;version=latest
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:6:package org.osgi.test.cases.serviceloader.serviceclient;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:15:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:16:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:33:     * @see org.osgi.test.cases.serviceloader.junit.TestBridge#run()
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:38:        TestCase.assertEquals("134.5.1 service missing sp.provider.url property", "META-INF/services/org.osgi.test.cases.serviceloader.spi.ColorProvider",
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl1/Activator.java:1:package org.osgi.test.cases.serviceloader.impl1;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl1/Activator.java:7:import org.osgi.test.cases.serviceloader.impl.ColorProviderImpl;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl1/Activator.java:8:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl1/Activator.java:17:		props.put("serviceloader.mediator", (long)-1);
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ShapeProviderImpl.java:6:package org.osgi.test.cases.serviceloader.impl;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ShapeProviderImpl.java:8:import org.osgi.test.cases.serviceloader.spi.ShapeProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl.java:6:package org.osgi.test.cases.serviceloader.impl;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl.java:8:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl.java:18:     * @see org.osgi.test.cases.serviceloader.spi.ColorProvider#getColor()
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl2.java:6:package org.osgi.test.cases.serviceloader.impl;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl2.java:8:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl2.java:18:     * @see org.osgi.test.cases.serviceloader.spi.ColorProvider#getColor()
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ShapeProviderImpl2.java:6:package org.osgi.test.cases.serviceloader.impl;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ShapeProviderImpl2.java:8:import org.osgi.test.cases.serviceloader.spi.ShapeProvider;
+/tmp/osgi-r5-cmpn-ri/osgi.cmpn/layout.bnd:27:     org.osgi.service.serviceloader, \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:6:package org.osgi.test.cases.serviceloader.junit;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:87:			assertEquals((long)-1, refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:173:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:191:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:238:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:280:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:289:			ServiceReference<?> ref1 = client1.getBundleContext().getServiceReference("org.osgi.test.cases.serviceloader.spi.ColorProvider");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:293:			ServiceReference<?> ref2 = client2.getBundleContext().getServiceReference("org.osgi.test.cases.serviceloader.spi.ColorProvider");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:6:package org.osgi.test.cases.serviceloader.junit;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:199:    				wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:252:    				wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:347:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:375:     *  Once a client is wired to a bundle because of its dependency on the serviceloader namespace, and it matches a requirement for a single service type, it
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:395:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/TestBridge.java:6:package org.osgi.test.cases.serviceloader.junit;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/spi/ShapeProvider.java:6:package org.osgi.test.cases.serviceloader.spi;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/spi/ColorProvider.java:6:package org.osgi.test.cases.serviceloader.spi;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient2.java:6:package org.osgi.test.cases.serviceloader.client;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient2.java:15:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient2.java:16:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient2.java:31:     * @see org.osgi.test.cases.serviceloader.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient.java:6:package org.osgi.test.cases.serviceloader.client;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient.java:15:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient.java:16:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient.java:31:     * @see org.osgi.test.cases.serviceloader.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/LegacyClient.java:5:package org.osgi.test.cases.serviceloader.client;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/LegacyClient.java:15:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/LegacyClient.java:16:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClientOSGi.java:6:package org.osgi.test.cases.serviceloader.client;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClientOSGi.java:16:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClientOSGi.java:17:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClientOSGi.java:34:     * @see org.osgi.test.cases.serviceloader.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/TestPlan.txt:5:	osgi.extender: osgi.extender=osgi.serviceloader.processor
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/TestPlan.txt:6:	osgi.extender: osgi.extender=osgi.serviceloader.registrar
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/TestPlan.txt:12:	- client bundle sets requirement on osgi.extender; file:="(osgi.extender=osgi.serviceloader.processor)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/TestPlan.txt:35:	3.1.1. install a bundle with a service provider, but without the Requirement on osgi.serviceloader.registrar
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/TestPlan.txt:45:	- install a bundle with service provider and Requirement on osgi.serviceloader.registrar
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/TestPlan.txt:49:		+ registered service must have property serviceloader.mediator (long) set to the bundle id of the mediator
+/tmp/osgi-r5-cmpn-ri/osgi.enterprise/layout.bnd:20:     org.osgi.service.serviceloader, \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/clientfilter.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/clientfilter.bnd:10: osgi.serviceloader; filter:="(osgi.serviceloader=${p}.spi.ColorProvider)";cardinality:=multiple
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implsecondprovider.bnd:7:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implsecondprovider.bnd:9:Provide-Capability: osgi.serviceloader;provider="CT";.hint="by TIBCO";type="two";osgi.serviceloader="${p}.spi.ColorProvider"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/client.bnd:8:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/serviceclient.bnd:7:Require-Capability: osgi.extender; filter:="(osgi.extender=serviceloader)"; effective:=active
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implwccap.bnd:6:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implwccap.bnd:8:Provide-Capability: osgi.serviceloader; \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implwccap.bnd:12: osgi.serviceloader="${p}.spi.ColorProvider"; \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implautoregister.bnd:7:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implautoregister.bnd:9:Provide-Capability: osgi.serviceloader;uses:="${p}.spi";provider="CT";.hint="by TIBCO";osgi.serviceloader="${p}.spi.ColorProvider"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implexplicitregister.bnd:6:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implexplicitregister.bnd:8:Provide-Capability: osgi.serviceloader; \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implexplicitregister.bnd:12: osgi.serviceloader="${p}.spi.ColorProvider"; \
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/clientfilterone.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/clientfilterone.bnd:10: osgi.serviceloader; filter:="(type=two)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:7:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:10: osgi.serviceloader; osgi.serviceloader="${p}.spi.ColorProvider";\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:11:   uses:="${p}.spi"; provider="CT"; .hint="by TIBCO"; type="one"; register:="org.osgi.test.cases.serviceloader.impl.ColorProviderImpl",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:12: osgi.serviceloader; osgi.serviceloader="${p}.spi.ColorProvider";\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:13:   uses:="${p}.spi"; provider="CT"; .hint="by TIBCO"; type="two"; register:="org.osgi.test.cases.serviceloader.impl.ColorProviderImpl2"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/clientlifecycle.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/clientlifecycle.bnd:10: osgi.serviceloader; filter:="(osgi.serviceloader=${p}.spi.ColorProvider)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implnocap.bnd:10:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/legacyclient.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/legacyclient.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(type=two))"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/clientosgi.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/clientosgi.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(type=two))"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implfirstprovider.bnd:7:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-ri/org.osgi.test.cases.serviceloader/bnd/implfirstprovider.bnd:9:Provide-Capability: osgi.serviceloader;provider="CT";.hint="by TIBCO";type="one";osgi.serviceloader="${p}.spi.ColorProvider"
+/tmp/osgi-r5-cmpn-ri/osgi.ct/layout.bnd:55:    org.osgi.test.cases.serviceloader, \
+/tmp/osgi-r5-cmpn-ri/osgi.ct/layout.bnd:56:    org.osgi.test.cases.serviceloader.secure, \
+/tmp/osgi-r5-cmpn-ri/osgi.ct/layout.bnd:96:    org.osgi.test.cases.serviceloader, \
+/tmp/osgi-r5-cmpn-ri/osgi.ct/layout.bnd:97:    org.osgi.test.cases.serviceloader.secure, \
+/tmp/osgi-r5-cmpn-ri/osgi.ri/layout.bnd:32:    ${repo;org.osgi.impl.bundle.serviceloader}, \
+/tmp/osgi-r5-cmpn-ri/osgi.ri/layout.bnd:69:	${repo;org.osgi.impl.bundle.serviceloader}, \
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/cardinality-service-type.svg:27:<text transform="matrix(1 0 0 1 158.5205 6.3203)" enable-background="new    "><tspan x="0" y="0" font-family="'ProductusSemibold'" font-size="7.98">osgi.</tspan><tspan x="0" y="9.576" font-family="'ProductusSemibold'" font-size="7.98">serviceloader</tspan><tspan x="0" y="19.152" font-family="'ProductusSemibold'" font-size="7.98">Capability</tspan></text>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:15:    <releaseinfo><xref endterm="org.osgi.service.serviceloader-version"
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:16:    linkend="org.osgi.service.serviceloader"/></releaseinfo>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:135:                       fileref="serviceloader-classes.svg"/>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:161:      <code>osgi.serviceloader.registrar</code> extender. This requirement
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:162:      activates a Meditator to inspect the <code>osgi.serviceloader</code>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:170:      <code>osgi.serviceloader</code> capability’s attributes are used to
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:177:      <code>osgi.serviceloader.processor</code> extender, which is the
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:184:      bundle declares one or more <code>osgi.serviceloader</code> capabilities
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:186:      <code>osgi.serviceloader</code> requirement for the given Service Type
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:339:      requirement to the <code>osgi.serviceloader.processor</code> extender.
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:349:        filter:="(osgi.extender=osgi.serviceloader.processor)"</programlisting>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:351:      <para>If the extender <code>osgi.serviceloader.processor</code>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:357:      restricts the visibility by having <code>osgi.serviceloader</code>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:360:      <code>osgi.serviceloader</code> capability for that Service Type.</para>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:367:      by declaring an <code>osgi.serviceloader</code> requirement for each
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:383:    osgi.serviceloader;
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:384:    filter:="(osgi.serviceloader=org.example.Foo)";
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:397:      <programlisting>osgi.serviceloader; filter:="(classified=*)"</programlisting>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:445:      <code>osgi.serviceloader.processor</code> extender:</para>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:449:    filter:="(osgi.extender=osgi.serviceloader.processor)"</programlisting>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:458:    osgi.serviceloader;
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:459:     filter:="(&amp;(format=WAVE)(osgi.serviceloader=com.example.Codec))"</programlisting>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:502:      providing one or more <code>osgi.serviceloader</code> capabilities for
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:504:      <code>osgi.serviceloader</code> capabilities must specify a fully
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:509:      <para>If a bundle does not provide <code>osgi.serviceloader</code>
+/tmp/osgi-r5-cmpn-ri/osgi.specs/docbook/133/service.loader.xml:514:      automatically generate the <code>osgi.serviceloader</code> capabilities
+
+ succeeded in 23501ms:
+Note: switching to 'a834984f32027b4041ba5192db5b324967088bb0'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Updating files:  99% (12941/13045)
+Updating files: 100% (13045/13045)
+Updating files: 100% (13045/13045), done.
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1609:org.osgi.service.serviceloader,ServiceLoaderNamespace! Pcsfur class:org.osgi.resource.Namespace:java.lang.Object
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1610:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CAPABILITY_EFFECTIVE_DIRECTIVE Pcsfur Ljava/lang/String;:effective
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1611:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CAPABILITY_REGISTER_DIRECTIVE Pcsfur Ljava/lang/String;:register
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1612:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CAPABILITY_USES_DIRECTIVE Pcsfur Ljava/lang/String;:uses
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1613:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CARDINALITY_MULTIPLE Pcsfur Ljava/lang/String;:multiple
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1614:org.osgi.service.serviceloader,ServiceLoaderNamespace!#CARDINALITY_SINGLE Pcsfur Ljava/lang/String;:single
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1615:org.osgi.service.serviceloader,ServiceLoaderNamespace!#EFFECTIVE_ACTIVE Pcsfur Ljava/lang/String;:active
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1616:org.osgi.service.serviceloader,ServiceLoaderNamespace!#EFFECTIVE_RESOLVE Pcsfur Ljava/lang/String;:resolve
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1617:org.osgi.service.serviceloader,ServiceLoaderNamespace!#REQUIREMENT_CARDINALITY_DIRECTIVE Pcsfur Ljava/lang/String;:cardinality
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1618:org.osgi.service.serviceloader,ServiceLoaderNamespace!#REQUIREMENT_EFFECTIVE_DIRECTIVE Pcsfur Ljava/lang/String;:effective
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1619:org.osgi.service.serviceloader,ServiceLoaderNamespace!#REQUIREMENT_FILTER_DIRECTIVE Pcsfur Ljava/lang/String;:filter
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1620:org.osgi.service.serviceloader,ServiceLoaderNamespace!#REQUIREMENT_RESOLUTION_DIRECTIVE Pcsfur Ljava/lang/String;:resolution
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1621:org.osgi.service.serviceloader,ServiceLoaderNamespace!#RESOLUTION_MANDATORY Pcsfur Ljava/lang/String;:mandatory
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1622:org.osgi.service.serviceloader,ServiceLoaderNamespace!#RESOLUTION_OPTIONAL Pcsfur Ljava/lang/String;:optional
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1623:org.osgi.service.serviceloader,ServiceLoaderNamespace!#SERVICELOADER_NAMESPACE Pcsfur Ljava/lang/String;:osgi.serviceloader
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1624:org.osgi.service.serviceloader,ServiceLoaderNamespace!clone() pcifur Ljava/lang/Object;*java.lang.CloneNotSupportedException
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1625:org.osgi.service.serviceloader,ServiceLoaderNamespace!equals(Ljava/lang/Object;) Pcifur Z
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1626:org.osgi.service.serviceloader,ServiceLoaderNamespace!finalize() pcifur V*java.lang.Throwable
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1627:org.osgi.service.serviceloader,ServiceLoaderNamespace!getClass() Pcifur Ljava/lang/Class<{Ljava/lang/Object;>;
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1628:org.osgi.service.serviceloader,ServiceLoaderNamespace!hashCode() Pcifur I
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1629:org.osgi.service.serviceloader,ServiceLoaderNamespace!notify() Pcifur V
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1630:org.osgi.service.serviceloader,ServiceLoaderNamespace!notifyAll() Pcifur V
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1631:org.osgi.service.serviceloader,ServiceLoaderNamespace!toString() Pcifur Ljava/lang/String;
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1632:org.osgi.service.serviceloader,ServiceLoaderNamespace!wait() Pcifur V*java.lang.InterruptedException
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1633:org.osgi.service.serviceloader,ServiceLoaderNamespace!wait(J) Pcifur V*java.lang.InterruptedException
+/tmp/osgi-r5-cmpn-spec/cnf/japi-published/osgi.enterprise-published.japi:1634:org.osgi.service.serviceloader,ServiceLoaderNamespace!wait(J,I) Pcifur V*java.lang.InterruptedException
+/tmp/osgi-r5-cmpn-spec/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/package-info.java:29: * {@code  Import-Package: org.osgi.service.serviceloader; version="[1.0,2.0)"}
+/tmp/osgi-r5-cmpn-spec/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/package-info.java:33: * {@code  Import-Package: org.osgi.service.serviceloader; version="[1.0,1.1)"}
+/tmp/osgi-r5-cmpn-spec/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/package-info.java:39:package org.osgi.service.serviceloader;
+/tmp/osgi-r5-cmpn-spec/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/ServiceLoaderNamespace.java:17:package org.osgi.service.serviceloader;
+/tmp/osgi-r5-cmpn-spec/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/ServiceLoaderNamespace.java:52:public final class ServiceLoaderNamespace extends Namespace {
+/tmp/osgi-r5-cmpn-spec/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/ServiceLoaderNamespace.java:61:	public static final String	SERVICELOADER_NAMESPACE			= "osgi.serviceloader";
+/tmp/osgi-r5-cmpn-spec/org.osgi.service.serviceloader/src/org/osgi/service/serviceloader/ServiceLoaderNamespace.java:78:	private ServiceLoaderNamespace() {
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd.bnd:29:    org.osgi.service.serviceloader; version=project , \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd.bnd:35:	org.osgi.impl.bundle.serviceloader;version=latest
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/perms/implregister.perm:11:(org.osgi.framework.CapabilityPermission "osgi.serviceloader" "provide")
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/perms/implregister_noperm.perm:11:(org.osgi.framework.CapabilityPermission "osgi.serviceloader" "provide")
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/perms/client.perm:12:(org.osgi.framework.CapabilityPermission "osgi.serviceloader" "require")
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/perms/client_noperm.perm:12:(org.osgi.framework.CapabilityPermission "osgi.serviceloader" "require")
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/impl/ColorProviderImpl.java:6:package org.osgi.test.cases.serviceloader.secure.impl;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/impl/ColorProviderImpl.java:8:import org.osgi.test.cases.serviceloader.secure.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/impl/ColorProviderImpl.java:18:     * @see org.osgi.test.cases.serviceloader.secure.spi.ColorProvider#getColor()
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:6:package org.osgi.test.cases.serviceloader.secure.junit;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:67:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:82:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:144:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:198:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:213:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:266:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:281:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:335:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/ServiceLoaderSecureTest.java:350:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/junit/TestBridge.java:6:package org.osgi.test.cases.serviceloader.secure.junit;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/spi/ColorProvider.java:6:package org.osgi.test.cases.serviceloader.secure.spi;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClient.java:6:package org.osgi.test.cases.serviceloader.secure.client;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClient.java:16:import org.osgi.test.cases.serviceloader.secure.junit.TestBridge;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClient.java:17:import org.osgi.test.cases.serviceloader.secure.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClient.java:33:     * @see org.osgi.test.cases.serviceloader.secure.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClientOSGi.java:6:package org.osgi.test.cases.serviceloader.secure.client;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClientOSGi.java:15:import org.osgi.test.cases.serviceloader.secure.junit.TestBridge;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClientOSGi.java:16:import org.osgi.test.cases.serviceloader.secure.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/src/org/osgi/test/cases/serviceloader/secure/client/ColorProviderClientOSGi.java:33:     * @see org.osgi.test.cases.serviceloader.secure.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/client.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/client.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(provider=CT))"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/implregister.bnd:6:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/implregister.bnd:8:Provide-Capability: osgi.serviceloader; \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/implregister.bnd:12: osgi.serviceloader="${p}.spi.ColorProvider"; \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/client_noperm.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/client_noperm.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(provider=CT))"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/clientosgi.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/clientosgi.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(provider=CT))"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/clientosgi_noperm.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/clientosgi_noperm.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(provider=CT))"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/implregister_noperm.bnd:6:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/implregister_noperm.bnd:8:Provide-Capability: osgi.serviceloader; \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader.secure/bnd/implregister_noperm.bnd:12: osgi.serviceloader="${p}.spi.ColorProvider"; \
+/tmp/osgi-r5-cmpn-spec/osgi.cmpn/layout.bnd:27:     org.osgi.service.serviceloader, \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd.bnd:38:    org.osgi.service.serviceloader; version=project , \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd.bnd:44:	org.osgi.impl.bundle.serviceloader;version=latest
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:6:package org.osgi.test.cases.serviceloader.serviceclient;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:15:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:16:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:33:     * @see org.osgi.test.cases.serviceloader.junit.TestBridge#run()
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/serviceclient/ColorProviderClient.java:38:        TestCase.assertEquals("134.5.1 service missing sp.provider.url property", "META-INF/services/org.osgi.test.cases.serviceloader.spi.ColorProvider",
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl1/Activator.java:1:package org.osgi.test.cases.serviceloader.impl1;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl1/Activator.java:7:import org.osgi.test.cases.serviceloader.impl.ColorProviderImpl;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl1/Activator.java:8:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl1/Activator.java:17:		props.put("serviceloader.mediator", (long)-1);
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ShapeProviderImpl.java:6:package org.osgi.test.cases.serviceloader.impl;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ShapeProviderImpl.java:8:import org.osgi.test.cases.serviceloader.spi.ShapeProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl.java:6:package org.osgi.test.cases.serviceloader.impl;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl.java:8:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl.java:18:     * @see org.osgi.test.cases.serviceloader.spi.ColorProvider#getColor()
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl2.java:6:package org.osgi.test.cases.serviceloader.impl;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl2.java:8:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ColorProviderImpl2.java:18:     * @see org.osgi.test.cases.serviceloader.spi.ColorProvider#getColor()
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ShapeProviderImpl2.java:6:package org.osgi.test.cases.serviceloader.impl;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/impl/ShapeProviderImpl2.java:8:import org.osgi.test.cases.serviceloader.spi.ShapeProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:6:package org.osgi.test.cases.serviceloader.junit;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:87:			assertEquals((long)-1, refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:173:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:191:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:238:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:280:			assertEquals("expecting serviceloader.mediator property to contain id of mediator bundle", mediatorBundle.getBundleId(), refs[0].getProperty("serviceloader.mediator"));
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:289:			ServiceReference<?> ref1 = client1.getBundleContext().getServiceReference("org.osgi.test.cases.serviceloader.spi.ColorProvider");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderTest.java:293:			ServiceReference<?> ref2 = client2.getBundleContext().getServiceReference("org.osgi.test.cases.serviceloader.spi.ColorProvider");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:6:package org.osgi.test.cases.serviceloader.junit;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:199:    				wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:252:    				wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:347:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:375:     *  Once a client is wired to a bundle because of its dependency on the serviceloader namespace, and it matches a requirement for a single service type, it
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/ServiceLoaderServiceClientTest.java:395:    			wires = rev.getWiring().getRequiredWires("osgi.serviceloader");
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/junit/TestBridge.java:6:package org.osgi.test.cases.serviceloader.junit;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/spi/ShapeProvider.java:6:package org.osgi.test.cases.serviceloader.spi;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/spi/ColorProvider.java:6:package org.osgi.test.cases.serviceloader.spi;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient2.java:6:package org.osgi.test.cases.serviceloader.client;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient2.java:15:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient2.java:16:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient2.java:31:     * @see org.osgi.test.cases.serviceloader.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient.java:6:package org.osgi.test.cases.serviceloader.client;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient.java:15:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient.java:16:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClient.java:31:     * @see org.osgi.test.cases.serviceloader.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/LegacyClient.java:5:package org.osgi.test.cases.serviceloader.client;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/LegacyClient.java:15:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/LegacyClient.java:16:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClientOSGi.java:6:package org.osgi.test.cases.serviceloader.client;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClientOSGi.java:16:import org.osgi.test.cases.serviceloader.junit.TestBridge;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClientOSGi.java:17:import org.osgi.test.cases.serviceloader.spi.ColorProvider;
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/src/org/osgi/test/cases/serviceloader/client/ColorProviderClientOSGi.java:34:     * @see org.osgi.test.cases.serviceloader.junit.TestBridge#run(java.lang.String)
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/TestPlan.txt:5:	osgi.extender: osgi.extender=osgi.serviceloader.processor
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/TestPlan.txt:6:	osgi.extender: osgi.extender=osgi.serviceloader.registrar
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/TestPlan.txt:12:	- client bundle sets requirement on osgi.extender; file:="(osgi.extender=osgi.serviceloader.processor)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/TestPlan.txt:35:	3.1.1. install a bundle with a service provider, but without the Requirement on osgi.serviceloader.registrar
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/TestPlan.txt:45:	- install a bundle with service provider and Requirement on osgi.serviceloader.registrar
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/TestPlan.txt:49:		+ registered service must have property serviceloader.mediator (long) set to the bundle id of the mediator
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/clientfilter.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/clientfilter.bnd:10: osgi.serviceloader; filter:="(osgi.serviceloader=${p}.spi.ColorProvider)";cardinality:=multiple
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implsecondprovider.bnd:7:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implsecondprovider.bnd:9:Provide-Capability: osgi.serviceloader;provider="CT";.hint="by TIBCO";type="two";osgi.serviceloader="${p}.spi.ColorProvider"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/client.bnd:8:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/serviceclient.bnd:7:Require-Capability: osgi.extender; filter:="(osgi.extender=serviceloader)"; effective:=active
+/tmp/osgi-r5-cmpn-spec/osgi.enterprise/layout.bnd:20:     org.osgi.service.serviceloader, \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implwccap.bnd:6:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implwccap.bnd:8:Provide-Capability: osgi.serviceloader; \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implwccap.bnd:12: osgi.serviceloader="${p}.spi.ColorProvider"; \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implautoregister.bnd:7:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implautoregister.bnd:9:Provide-Capability: osgi.serviceloader;uses:="${p}.spi";provider="CT";.hint="by TIBCO";osgi.serviceloader="${p}.spi.ColorProvider"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implexplicitregister.bnd:6:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implexplicitregister.bnd:8:Provide-Capability: osgi.serviceloader; \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implexplicitregister.bnd:12: osgi.serviceloader="${p}.spi.ColorProvider"; \
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/clientfilterone.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/clientfilterone.bnd:10: osgi.serviceloader; filter:="(type=two)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:7:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:10: osgi.serviceloader; osgi.serviceloader="${p}.spi.ColorProvider";\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:11:   uses:="${p}.spi"; provider="CT"; .hint="by TIBCO"; type="one"; register:="org.osgi.test.cases.serviceloader.impl.ColorProviderImpl",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:12: osgi.serviceloader; osgi.serviceloader="${p}.spi.ColorProvider";\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implmultiprovider.bnd:13:   uses:="${p}.spi"; provider="CT"; .hint="by TIBCO"; type="two"; register:="org.osgi.test.cases.serviceloader.impl.ColorProviderImpl2"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/clientlifecycle.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/clientlifecycle.bnd:10: osgi.serviceloader; filter:="(osgi.serviceloader=${p}.spi.ColorProvider)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implnocap.bnd:10:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/legacyclient.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)",\
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/legacyclient.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(type=two))"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/clientosgi.bnd:9: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/clientosgi.bnd:10: osgi.serviceloader; filter:="(&(osgi.serviceloader=${p}.spi.ColorProvider)(type=two))"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implfirstprovider.bnd:7:Require-Capability: osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
+/tmp/osgi-r5-cmpn-spec/org.osgi.test.cases.serviceloader/bnd/implfirstprovider.bnd:9:Provide-Capability: osgi.serviceloader;provider="CT";.hint="by TIBCO";type="one";osgi.serviceloader="${p}.spi.ColorProvider"
+/tmp/osgi-r5-cmpn-spec/osgi.ct/layout.bnd:55:    org.osgi.test.cases.serviceloader, \
+/tmp/osgi-r5-cmpn-spec/osgi.ct/layout.bnd:56:    org.osgi.test.cases.serviceloader.secure, \
+/tmp/osgi-r5-cmpn-spec/osgi.ct/layout.bnd:96:    org.osgi.test.cases.serviceloader, \
+/tmp/osgi-r5-cmpn-spec/osgi.ct/layout.bnd:97:    org.osgi.test.cases.serviceloader.secure, \
+/tmp/osgi-r5-cmpn-spec/osgi.ri/layout.bnd:32:    ${repo;org.osgi.impl.bundle.serviceloader}, \
+/tmp/osgi-r5-cmpn-spec/osgi.ri/layout.bnd:69:	${repo;org.osgi.impl.bundle.serviceloader}, \
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/enterprise/001/introduction.xml:779:              linkend="org.osgi.service.serviceloader"/></code></entry>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/enterprise/001/introduction.xml:782:              endterm="org.osgi.service.serviceloader-version"
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/cardinality-service-type.svg:27:<text transform="matrix(1 0 0 1 158.5205 6.3203)" enable-background="new    "><tspan x="0" y="0" font-family="'ProductusSemibold'" font-size="7.98">osgi.</tspan><tspan x="0" y="9.576" font-family="'ProductusSemibold'" font-size="7.98">serviceloader</tspan><tspan x="0" y="19.152" font-family="'ProductusSemibold'" font-size="7.98">Capability</tspan></text>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:15:    <releaseinfo><xref endterm="org.osgi.service.serviceloader-version"
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:16:    linkend="org.osgi.service.serviceloader"/></releaseinfo>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:135:                       fileref="serviceloader-classes.svg"/>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:161:      <code>osgi.serviceloader.registrar</code> extender. This requirement
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:162:      activates a Meditator to inspect the <code>osgi.serviceloader</code>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:170:      <code>osgi.serviceloader</code> capability’s attributes are used to
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:177:      <code>osgi.serviceloader.processor</code> extender, which is the
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:184:      bundle declares one or more <code>osgi.serviceloader</code> capabilities
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:186:      <code>osgi.serviceloader</code> requirement for the given Service Type
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:339:      requirement to the <code>osgi.serviceloader.processor</code> extender.
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:349:        filter:="(osgi.extender=osgi.serviceloader.processor)"</programlisting>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:351:      <para>If the extender <code>osgi.serviceloader.processor</code>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:357:      restricts the visibility by having <code>osgi.serviceloader</code>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:360:      <code>osgi.serviceloader</code> capability for that Service Type.</para>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:367:      by declaring an <code>osgi.serviceloader</code> requirement for each
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:383:    osgi.serviceloader;
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:384:    filter:="(osgi.serviceloader=org.example.Foo)";
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:397:      <programlisting>osgi.serviceloader; filter:="(classified=*)"</programlisting>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:445:      <code>osgi.serviceloader.processor</code> extender:</para>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:449:    filter:="(osgi.extender=osgi.serviceloader.processor)"</programlisting>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:458:    osgi.serviceloader;
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:459:     filter:="(&amp;(format=WAVE)(osgi.serviceloader=com.example.Codec))"</programlisting>
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:502:      providing one or more <code>osgi.serviceloader</code> capabilities for
+/tmp/osgi-r5-cmpn-spec/osgi.specs/docbook/133/service.loader.xml:504:      <code>osgi.serviceloader</code> capabilities must specify a fully
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\" : \"org\\.osgi:' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json:2:  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"https://github.com/osgi/osgi\"|\"repository-url\" : \"https://osgi.org/git/build.git\"|org.osgi.service' build/discovered-artifact-metadata metadata -g '*.json' | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json:2:  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:5:        "typeReached" : "org.osgi.service.dmt.DmtData"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:11:        "typeReached" : "org.osgi.service.dmt.DmtData"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:17:        "typeReached" : "org.osgi.service.application.ApplicationHandle"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:23:        "typeReached" : "org.osgi.service.application.ApplicationDescriptor"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:29:        "typeReached" : "org.osgi.service.deploymentadmin.DeploymentAdminPermission"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:35:        "typeReached" : "org.osgi.service.deploymentadmin.spi.DeploymentCustomizerPermission"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:41:        "typeReached" : "org.osgi.service.application.ApplicationDescriptor"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:47:        "typeReached" : "org.osgi.service.application.ApplicationDescriptor"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:49:      "type" : "org.osgi.service.application.ApplicationDescriptor"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:53:        "typeReached" : "org.osgi.service.application.ApplicationHandle"
+metadata/org.osgi/org.osgi.compendium/5.0.0/reachability-metadata.json:55:      "type" : "org.osgi.service.application.ApplicationHandle"
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
+}
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' -print0 | xargs -0 rg -n 'source-code-url.*repo1.maven.org|documentation-url.*javadoc|test-code-url.*github.com' | sed -n '1,160p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.osgi:org.osgi.service.serviceloader 1.0.0
+web search: 
+web search: https://github.com/osgi/osgi
+web search: 
+web search: https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.service.serviceloader
+exec
+/usr/bin/bash -lc "jar xf /tmp/org.osgi.service.serviceloader-1.0.0-sources.jar org/osgi/service/serviceloader/package-info.java org/osgi/service/serviceloader/ServiceLoaderNamespace.java && sed -n '1,140p' org/osgi/service/serviceloader/package-info.java && sed -n '1,130p' org/osgi/service/serviceloader/ServiceLoaderNamespace.java" in /tmp
+exec
+/usr/bin/bash -lc 'curl -fsSLI https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-tests.jar || true' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 150ms:
+/*
+ * Copyright (c) OSGi Alliance (2012, 2013). All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Service Loader Mediator Package Version 1.0.
+ * 
+ * <p>
+ * Bundles wishing to use this package must list the package in the
+ * Import-Package header of the bundle's manifest. This package has two types of
+ * users: the consumers that use the API in this package and the providers that
+ * implement the API in this package.
+ * 
+ * <p>
+ * Example import for consumers using the API in this package:
+ * <p>
+ * {@code  Import-Package: org.osgi.service.serviceloader; version="[1.0,2.0)"}
+ * <p>
+ * Example import for providers implementing the API in this package:
+ * <p>
+ * {@code  Import-Package: org.osgi.service.serviceloader; version="[1.0,1.1)"}
+ * 
+ * @author $Id: 893b956b26cdaf6866304338f288f1d54d55704c $
+ */
+
+@Version("1.0")
+package org.osgi.service.serviceloader;
+
+import org.osgi.annotation.versioning.Version;
+
+/*
+ * Copyright (c) OSGi Alliance (2012, 2014). All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.osgi.service.serviceloader;
+
+import org.osgi.resource.Namespace;
+
+/**
+ * Service Loader Capability and Requirement Namespace.
+ * 
+ * <p>
+ * This class defines the names for the attributes and directives for this
+ * namespace.
+ * 
+ * <p>
+ * All unspecified capability attributes are of one of the following types:
+ * <ul>
+ * <li>{@code String}</li>
+ * <li>{@code Version}</li>
+ * <li>{@code Long}</li>
+ * <li>{@code Double}</li>
+ * <li>{@code List<String>}</li>
+ * <li>{@code List<Version>}</li>
+ * <li>{@code List<Long>}</li>
+ * <li>{@code List<Double>}</li>
+ * </ul>
+ * and are used as arbitrary matching attributes for the capability. The values
+ * associated with the specified directive and attribute keys are of type
+ * {@code String}, unless otherwise indicated.
+ * 
+ * <p>
+ * All unspecified capability attributes, unless the attribute name starts with
+ * full stop ({@code '.'} &#92;u002E), are also used as service properties when
+ * registering a Service Provider as a service.
+ * 
+ * @Immutable
+ * @author $Id: dc10ac5db968434a8af4d141e8d5e6b424b3cd49 $
+ */
+public final class ServiceLoaderNamespace extends Namespace {
+
+	/**
+	 * Namespace name for service loader capabilities and requirements.
+	 * 
+	 * <p>
+	 * Also, the capability attribute used to specify the fully qualified name
+	 * of the service type.
+	 */
+	public static final String	SERVICELOADER_NAMESPACE			= "osgi.serviceloader";
+
+	/**
+	 * The capability directive used to specify the implementation classes of
+	 * the service. The value of this attribute must be of type
+	 * {@code List<String>}.
+	 * 
+	 * <p>
+	 * If this directive is not specified, then all advertised Service Providers
+	 * that match the service type name must be registered. If this directive is
+	 * specified, then only Service Providers that match the service type name
+	 * whose implementation class is contained in the value of this attribute
+	 * must be registered. To not register a service for this capability use an
+	 * empty string.
+	 */
+	public static final String	CAPABILITY_REGISTER_DIRECTIVE	= "register";
+
+	private ServiceLoaderNamespace() {
+		// empty
+	}
+}
+
+ succeeded in 225ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 27 Apr 2026 15:53:28 GMT
+content-type: text/html
+cf-ray: 9f2f00111b6db86b-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I have the exact 1.0.0 source and javadoc artifacts on Maven Central, and there is no `tests` classifier published for this artifact. I’m going to use the OSGi R5 component test folder at the matching `r5-cmpn-spec-final` tag for the test suite URL, and leave out `language` because this is not Kotlin or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+index f26f4ebd0bbe9f3c000d83ad624082ee22a12f85..f3faa6c6c3878b02bf74ed72692727978dfa8aca
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
++  "description" : "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+index f26f4ebd0bbe9f3c000d83ad624082ee22a12f85..f3faa6c6c3878b02bf74ed72692727978dfa8aca
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
++  "description" : "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+{
+  "coordinates": "org.osgi:org.osgi.service.serviceloader:1.0.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
+  "repository-url": "https://github.com/osgi/osgi",
+  "test-code-url": "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
+  "documentation-url": "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
+  "description": "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in 'https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar' 'https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar' 'https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader' 'https://github.com/osgi/osgi'; do printf '%s ' \""'$url"; curl -fsSLI "$url" | sed -n '"'1p'; done" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+index f26f4ebd0bbe9f3c000d83ad624082ee22a12f85..f3faa6c6c3878b02bf74ed72692727978dfa8aca
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
++  "description" : "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently."
+ }
+
+ succeeded in 1529ms:
+HTTP/2 200 
+https://github.com/osgi/osgi HTTP/2 200 
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+index f26f4ebd0bbe9f3c000d83ad624082ee22a12f85..f3faa6c6c3878b02bf74ed72692727978dfa8aca
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
++  "description" : "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+index f26f4ebd0bbe9f3c000d83ad624082ee22a12f85..f3faa6c6c3878b02bf74ed72692727978dfa8aca
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
++  "description" : "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently."
+ }
+
+codex
+Updated [org.osgi-org.osgi.service.serviceloader-1.0.0.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json).
+
+Validation done:
+- JSON parses with `jq`.
+- Source, javadoc, repository, and tagged test-suite URLs all return `HTTP 200`.
+- No `language` field added because this is not Kotlin or Scala-specific.
+diff --git a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+index f26f4ebd0bbe9f3c000d83ad624082ee22a12f85..f3faa6c6c3878b02bf74ed72692727978dfa8aca
+--- a/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0"
++  "coordinates" : "org.osgi:org.osgi.service.serviceloader:1.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r5-cmpn-spec-final/org.osgi.test.cases.serviceloader",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-javadoc.jar",
++  "description" : "This OSGi companion artifact defines the Service Loader Mediator namespace used to describe service-loader capabilities and requirements in OSGi bundles. It provides constants for the osgi.serviceloader namespace so extenders and bundles can advertise, require, and filter service-provider declarations consistently."
+ }
+
+2026-04-27T15:54:05.396036Z ERROR codex_core::session: failed to record rollout items: thread 019dcfa3-5348-7f62-8e1f-4bb1088d0807 not found
+tokens used
+107,633
+Updated [org.osgi-org.osgi.service.serviceloader-1.0.0.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/build/discovered-artifact-metadata/org.osgi-org.osgi.service.serviceloader-1.0.0.json).
+
+Validation done:
+- JSON parses with `jq`.
+- Source, javadoc, repository, and tagged test-suite URLs all return `HTTP 200`.
+- No `language` field added because this is not Kotlin or Scala-specific.
+Ran agent for org.osgi:org.osgi.service.serviceloader:1.0.0 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/build/agent-artifact-discovery-logs/org.osgi-org.osgi.service.serviceloader-1.0.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2387-86891af9/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 46s
+9 actionable tasks: 4 executed, 5 from cache
