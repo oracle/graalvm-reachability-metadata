@@ -22,7 +22,7 @@ public class ClassMetaobjectTest {
     @AfterEach
     void resetClassMetaobjectState() {
         ClassMetaobject.useContextClassLoader = false;
-        ReflectiveFixture.STATIC_TEXT = "initial";
+        ReflectiveFixture.staticText = "initial";
     }
 
     @Test
@@ -34,8 +34,8 @@ public class ClassMetaobjectTest {
         assertThat(classMetaobject.isInstance(instance)).isTrue();
         assertThat(((ReflectiveFixture) instance).label()).isEqualTo("Ada");
 
-        classMetaobject.trapFieldWrite("STATIC_TEXT", "updated");
-        assertThat(classMetaobject.trapFieldRead("STATIC_TEXT")).isEqualTo("updated");
+        classMetaobject.trapFieldWrite("staticText", "updated");
+        assertThat(classMetaobject.trapFieldRead("staticText")).isEqualTo("updated");
 
         int staticMethod = classMetaobject.getMethodIndex("staticJoin", new Class<?>[] {String.class, String.class});
         assertThat(classMetaobject.getMethodName(staticMethod)).isEqualTo("staticJoin");
@@ -74,7 +74,7 @@ public class ClassMetaobjectTest {
     }
 
     public static class ReflectiveFixture {
-        public static String STATIC_TEXT = "initial";
+        public static String staticText = "initial";
 
         private final String label;
 
@@ -87,7 +87,7 @@ public class ClassMetaobjectTest {
         }
 
         public static String _m_0_staticJoin(String first, String second) {
-            return first + ":" + second + ":" + STATIC_TEXT;
+            return first + ":" + second + ":" + staticText;
         }
 
         public String _m_1_rename(String replacement) {
