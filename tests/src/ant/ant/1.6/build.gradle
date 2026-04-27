@@ -22,6 +22,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--initialize-at-run-time=org.apache.tools.ant.taskdefs.Parallel')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
