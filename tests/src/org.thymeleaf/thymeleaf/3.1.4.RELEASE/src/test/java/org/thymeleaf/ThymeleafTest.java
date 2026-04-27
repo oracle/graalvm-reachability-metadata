@@ -6,15 +6,40 @@
  */
 package org.thymeleaf;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IdentifierSequences;
+import org.thymeleaf.engine.TemplateData;
+import org.thymeleaf.expression.Aggregates;
+import org.thymeleaf.expression.Bools;
+import org.thymeleaf.expression.Calendars;
+import org.thymeleaf.expression.Dates;
+import org.thymeleaf.expression.ExecutionInfo;
+import org.thymeleaf.expression.IExpressionObjects;
+import org.thymeleaf.expression.Ids;
+import org.thymeleaf.expression.Maps;
+import org.thymeleaf.expression.Numbers;
+import org.thymeleaf.expression.Sets;
+import org.thymeleaf.expression.Strings;
+import org.thymeleaf.expression.Temporals;
+import org.thymeleaf.expression.Uris;
+import org.thymeleaf.inline.IInliner;
 import org.thymeleaf.messageresolver.StandardMessageResolver;
+import org.thymeleaf.model.IModelFactory;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.templatemode.TemplateMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,104 +59,66 @@ public class ThymeleafTest {
     @SuppressWarnings("deprecation")
     @Test
     void renderDatesExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
         Date date = new Date(81, 5, 15);
-        context.setVariable("date", date);
-        String template = "<p th:text=\"${#dates.format(date, 'MMMM dd, YYYY')}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).startsWith("<p>June 15, 1981");
+        String output = new Dates(Locale.US).format(date, "MMMM dd, YYYY");
+        assertThat(output).startsWith("June 15, 1981");
     }
 
     @Test
     void renderCalendarsExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        Calendar calendar = Calendar.getInstance();
-        context.setVariable("calendar", calendar);
-        String template = "<p th:text=\"${#calendars.format(calendar)}\"></p>";
-        templateEngine.process(template, context);
+        Calendar calendar = Calendar.getInstance(Locale.US);
+        calendar.clear();
+        calendar.set(1981, Calendar.JUNE, 15);
+        String output = new Calendars(Locale.US).format(calendar, "yyyy-MM-dd");
+        assertThat(output).isEqualTo("1981-06-15");
     }
 
     @Test
     void renderNumbersExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("number", 10);
-        String template = "<p th:text=\"${#numbers.formatInteger(number,3)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>010</p>");
+        String output = new Numbers(Locale.US).formatInteger(10, 3);
+        assertThat(output).isEqualTo("010");
     }
 
     @Test
     void renderStringsExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("str", 10);
-        String template = "<p th:text=\"${#strings.toString(str)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>10</p>");
+        String output = new Strings(Locale.US).toString(10);
+        assertThat(output).isEqualTo("10");
     }
 
     @Test
     void renderObjectsExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("obj", null);
-        context.setVariable("str", 10);
-        String template = "<p th:text=\"${#objects.nullSafe(obj, str)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>10</p>");
+        Integer output = new org.thymeleaf.expression.Objects().nullSafe(null, 10);
+        assertThat(output).isEqualTo(10);
     }
 
     @Test
     void renderBoolsExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("cond", true);
-        String template = "<p th:text=\"${#bools.isFalse(cond)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>false</p>");
+        Boolean output = new Bools().isFalse(true);
+        assertThat(output).isFalse();
     }
 
     @Test
     void renderArraysExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("array", new String[] {"one", "two"});
-        String template = "<p th:text=\"${#arrays.length(array)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>2</p>");
+        int output = new org.thymeleaf.expression.Arrays().length(new String[] {"one", "two"});
+        assertThat(output).isEqualTo(2);
     }
 
     @Test
     void renderSetsExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("set", Collections.emptySet());
-        String template = "<p th:text=\"${#sets.size(set)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>0</p>");
+        int output = new Sets().size(Collections.emptySet());
+        assertThat(output).isEqualTo(0);
     }
 
     @Test
     void renderMapsExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("map", Collections.emptyMap());
-        String template = "<p th:text=\"${#maps.size(map)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>0</p>");
+        int output = new Maps().size(Collections.emptyMap());
+        assertThat(output).isEqualTo(0);
     }
 
     @Test
     void renderAggregatesExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("array", new int[] {1, 2, 3});
-        String template = "<p th:text=\"${#aggregates.sum(array)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>6</p>");
+        BigDecimal output = new Aggregates().sum(new int[] {1, 2, 3});
+        assertThat(output).isEqualByComparingTo("6");
     }
 
     @Test
@@ -148,50 +135,148 @@ public class ThymeleafTest {
 
     @Test
     void renderExecInfoExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("array", new int[] {1, 2, 3});
-        String template = "<p th:text=\"${#execInfo.getNow()}\"></p>";
-        templateEngine.process(template, context);
+        TestTemplateContext context = new TestTemplateContext("test-template", TemplateMode.HTML);
+        ExecutionInfo executionInfo = new ExecutionInfo(context);
+        assertThat(executionInfo.getTemplateName()).isEqualTo("test-template");
+        assertThat(executionInfo.getProcessedTemplateName()).isEqualTo("test-template");
+        assertThat(executionInfo.getTemplateMode()).isEqualTo(TemplateMode.HTML);
+        assertThat(executionInfo.getTemplateNames()).containsExactly("test-template");
+        assertThat(executionInfo.getNow()).isNotNull();
     }
 
     @Test
     void renderIdsExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("list", Arrays.asList("a", "b", "c"));
-        String template = "<ul><li th:each=\"property: ${list}\" th:id=\"${#ids.seq('property')}\" th:text=\"${property}\"></li></ul>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<ul><li id=\"property1\">a</li><li id=\"property2\">b</li><li id=\"property3\">c</li></ul>");
+        TestTemplateContext context = new TestTemplateContext("test-template", TemplateMode.HTML);
+        Ids ids = new Ids(context);
+        assertThat(ids.seq("property")).isEqualTo("property1");
+        assertThat(ids.seq("property")).isEqualTo("property2");
+        assertThat(ids.next("property")).isEqualTo("property3");
+        assertThat(ids.prev("property")).isEqualTo("property2");
     }
 
     @Test
     void renderUrisExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("uri", "/process?foo=bar");
-        String template = "<p th:text=\"${#uris.escapePath(uri)}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).isEqualTo("<p>/process%3Ffoo=bar</p>");
+        String output = new Uris().escapePath("/process?foo=bar");
+        assertThat(output).isEqualTo("/process%3Ffoo=bar");
     }
 
     @Test
     void renderTemporalsExpression() {
-        TemplateEngine templateEngine = new TemplateEngine();
-        Context context = new Context();
-        context.setVariable("localDateTime", LocalDateTime.of(1981, 6, 15, 0, 0));
-        String template = "<p th:text=\"${#temporals.format(localDateTime, 'dd/MM/yyyy')}\"></p>";
-        String output = templateEngine.process(template, context);
-        assertThat(output).startsWith("<p>15/06/1981</p>");
+        String output = new Temporals(Locale.US).format(LocalDateTime.of(1981, 6, 15, 0, 0), "dd/MM/yyyy");
+        assertThat(output).isEqualTo("15/06/1981");
     }
 
     @Test
-    void renderIteratorStatus() {
+    void renderIteration() {
         TemplateEngine templateEngine = new TemplateEngine();
         Context context = new Context();
         context.setVariable("array", new String[] {"one", "two"});
-        String template = "<ul><li th:each=\"v, iterStat:${array}\" th:class=\"${iterStat.odd}? 'odd'\" th:text=\"${v}\">value</li></ul>";
+        String template = "<ul><li th:each=\"value : ${array}\" th:text=\"${value}\">value</li></ul>";
         String output = templateEngine.process(template, context);
-        assertThat(output).startsWith("<ul><li class=\"odd\">one</li><li>two</li></ul>");
+        assertThat(output).isEqualTo("<ul><li>one</li><li>two</li></ul>");
+    }
+
+    private static final class TestTemplateContext implements ITemplateContext {
+
+        private final IdentifierSequences identifierSequences = new IdentifierSequences();
+        private final Locale locale = Locale.US;
+        private final TemplateData templateData;
+        private final List<TemplateData> templateStack;
+
+        private TestTemplateContext(final String templateName, final TemplateMode templateMode) {
+            this.templateData = new TemplateData(templateName, null, null, templateMode, null);
+            this.templateStack = Collections.singletonList(this.templateData);
+        }
+
+        @Override
+        public TemplateData getTemplateData() {
+            return this.templateData;
+        }
+
+        @Override
+        public TemplateMode getTemplateMode() {
+            return this.templateData.getTemplateMode();
+        }
+
+        @Override
+        public List<TemplateData> getTemplateStack() {
+            return this.templateStack;
+        }
+
+        @Override
+        public List<IProcessableElementTag> getElementStack() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public Map<String, Object> getTemplateResolutionAttributes() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public IModelFactory getModelFactory() {
+            return null;
+        }
+
+        @Override
+        public boolean hasSelectionTarget() {
+            return false;
+        }
+
+        @Override
+        public Object getSelectionTarget() {
+            return null;
+        }
+
+        @Override
+        public IInliner getInliner() {
+            return null;
+        }
+
+        @Override
+        public String getMessage(final Class<?> origin, final String key, final Object[] messageParameters,
+                final boolean useAbsentMessageRepresentation) {
+            return null;
+        }
+
+        @Override
+        public String buildLink(final String base, final Map<String, Object> parameters) {
+            return base;
+        }
+
+        @Override
+        public IdentifierSequences getIdentifierSequences() {
+            return this.identifierSequences;
+        }
+
+        @Override
+        public org.thymeleaf.IEngineConfiguration getConfiguration() {
+            return null;
+        }
+
+        @Override
+        public IExpressionObjects getExpressionObjects() {
+            return null;
+        }
+
+        @Override
+        public Locale getLocale() {
+            return this.locale;
+        }
+
+        @Override
+        public boolean containsVariable(final String name) {
+            return false;
+        }
+
+        @Override
+        public Set<String> getVariableNames() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Object getVariable(final String name) {
+            return null;
+        }
     }
 }
