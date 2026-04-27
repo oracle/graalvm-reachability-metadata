@@ -6,6 +6,11 @@
  */
 package log4j.log4j;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.CodeSource;
+
+import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,13 +18,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DetailPanelTest {
 
     @Test
-    void initializingDetailPanelLoadsItsOwnClassForLoggerInitialization() throws Exception {
-        Class<?> detailPanelClass = Class.forName(
-                "org.apache.log4j.chainsaw.DetailPanel",
-                true,
-                DetailPanelTest.class.getClassLoader()
-        );
+    void initializingDetailPanelInFreshClassLoaderLoadsItsOwnLoggerType() throws Exception {
+        try (URLClassLoader isolatedLoader = new URLClassLoader(isolatedClassPath(), ClassLoader.getPlatformClassLoader())) {
+            Class<?> detailPanelClass = Class.forName("org.apache.log4j.chainsaw.DetailPanel", true, isolatedLoader);
 
-        assertThat(detailPanelClass.getName()).isEqualTo("org.apache.log4j.chainsaw.DetailPanel");
+            assertThat(detailPanelClass.getName()).isEqualTo("org.apache.log4j.chainsaw.DetailPanel");
+            assertThat(detailPanelClass.getClassLoader()).isSameAs(isolatedLoader);
+        }
+    }
+
+    private static URL[] isolatedClassPath() {
+        URL testClassesUrl = codeSourceUrl(DetailPanelTest.class);
+        URL libraryClassesUrl = codeSourceUrl(Logger.class);
+        if (testClassesUrl.equals(libraryClassesUrl)) {
+            return new URL[] { testClassesUrl };
+        }
+        return new URL[] { testClassesUrl, libraryClassesUrl };
+    }
+
+    private static URL codeSourceUrl(Class<?> type) {
+        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
+        assertThat(codeSource).isNotNull();
+        return codeSource.getLocation();
     }
 }
