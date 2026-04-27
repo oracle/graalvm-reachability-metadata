@@ -200,6 +200,32 @@ public class KotlinStdlibCommonTest {
     }
 
     @Test
+    fun resultsComposeSuccessFailureAndRecoveryPaths() {
+        val quotas = mapOf("images" to 4, "documents" to 8)
+
+        val scaled = runCatching { readQuota(quotas, "documents") }
+            .map { quota -> quota * 3 }
+            .fold(
+                onSuccess = { quota -> "allowed:$quota" },
+                onFailure = { error -> "missing:${error.message}" },
+            )
+        assertThat(scaled).isEqualTo("allowed:24")
+
+        val fallback = runCatching { readQuota(quotas, "audio") }
+            .recover { error ->
+                assertThat(error).isInstanceOf(NoSuchElementException::class.java)
+                1
+            }
+        assertThat(fallback.isSuccess).isTrue()
+        assertThat(fallback.getOrThrow()).isEqualTo(1)
+
+        val failedComputation = runCatching { readQuota(quotas, "images") }
+            .mapCatching { quota -> quota / (quota - 4) }
+        assertThat(failedComputation.isFailure).isTrue()
+        assertThat(failedComputation.exceptionOrNull()).isInstanceOf(ArithmeticException::class.java)
+    }
+
+    @Test
     fun coroutinePrimitivesResumeContinuationsAndCombineContexts() {
         var completed: String? = null
         var failed: Throwable? = null
@@ -227,6 +253,9 @@ public class KotlinStdlibCommonTest {
     private suspend fun suspendEcho(value: String): String = suspendCoroutine { continuation ->
         continuation.resume("echo:$value")
     }
+
+    private fun readQuota(quotas: Map<String, Int>, name: String): Int =
+        quotas[name] ?: throw NoSuchElementException("No quota named $name")
 
     private data class Transaction(val category: String, val amount: Int)
 
