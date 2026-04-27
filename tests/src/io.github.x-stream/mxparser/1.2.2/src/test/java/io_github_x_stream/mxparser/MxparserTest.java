@@ -166,6 +166,52 @@ public class MxparserTest {
     }
 
     @Test
+    void parserTracksNamespaceDeclarationsAcrossNestedScopes() throws Exception {
+        MXParser parser = new MXParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+        parser.setInput(new StringReader("""
+                <root xmlns="urn:root" xmlns:ns="urn:outer">
+                  <ns:parent xmlns:inner="urn:inner">
+                    <inner:child xmlns:ns="urn:shadow"/>
+                  </ns:parent>
+                </root>
+                """));
+
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.START_TAG);
+        parser.require(XmlPullParser.START_TAG, "urn:root", "root");
+        assertThat(parser.getNamespaceCount(parser.getDepth())).isEqualTo(2);
+        assertThat(parser.getNamespacePrefix(0)).isNull();
+        assertThat(parser.getNamespaceUri(0)).isEqualTo("urn:root");
+        assertThat(parser.getNamespacePrefix(1)).isEqualTo("ns");
+        assertThat(parser.getNamespaceUri(1)).isEqualTo("urn:outer");
+
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.START_TAG);
+        parser.require(XmlPullParser.START_TAG, "urn:outer", "parent");
+        assertThat(parser.getNamespaceCount(parser.getDepth())).isEqualTo(3);
+        assertThat(parser.getNamespacePrefix(2)).isEqualTo("inner");
+        assertThat(parser.getNamespaceUri(2)).isEqualTo("urn:inner");
+
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.START_TAG);
+        parser.require(XmlPullParser.START_TAG, "urn:inner", "child");
+        assertThat(parser.getPrefix()).isEqualTo("inner");
+        assertThat(parser.isEmptyElementTag()).isTrue();
+        assertThat(parser.getNamespaceCount(parser.getDepth())).isEqualTo(4);
+        assertThat(parser.getNamespacePrefix(3)).isEqualTo("ns");
+        assertThat(parser.getNamespaceUri(3)).isEqualTo("urn:shadow");
+        assertThat(parser.getNamespace("ns")).isEqualTo("urn:shadow");
+
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.END_TAG);
+        parser.require(XmlPullParser.END_TAG, "urn:inner", "child");
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.END_TAG);
+        parser.require(XmlPullParser.END_TAG, "urn:outer", "parent");
+        assertThat(parser.getNamespaceCount(parser.getDepth())).isEqualTo(3);
+        assertThat(parser.getNamespace("ns")).isEqualTo("urn:outer");
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.END_TAG);
+        parser.require(XmlPullParser.END_TAG, "urn:root", "root");
+        assertThat(parser.next()).isEqualTo(XmlPullParser.END_DOCUMENT);
+    }
+
+    @Test
     void parserCanDisableNamespaceProcessingAndExposeQualifiedNamesVerbatim() throws Exception {
         MXParser parser = new MXParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
