@@ -17,6 +17,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.add('--initialize-at-run-time=org.apache.velocity.test.IntrospectorTestCase')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
