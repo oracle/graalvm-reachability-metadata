@@ -1,0 +1,321 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd152-f9ce-76b1-955e-264a9437ad8c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+mcp startup: no servers
+codex
+I’ll identify authoritative URLs for `org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0` (preferring Maven-hosted sources/tests/docs when available), then update the target JSON with those values and the language field decision. I’m starting by inspecting the current file and then verifying exact-version links.
+exec
+/usr/bin/zsh -lc 'pwd && ls -la build/discovered-artifact-metadata | head' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06exec
+/usr/bin/zsh -lc 'cat /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06 succeeded in 50ms:
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06
+total 12
+drwxrwxr-x 2 mihailo mihailo 4096 Apr 28 01:42 .
+drwxrwxr-x 4 mihailo mihailo 4096 Apr 28 01:42 ..
+-rw-rw-r-- 1 mihailo mihailo   68 Apr 28 01:42 org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+ succeeded in 51ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0"
+}
+codex
+I confirmed the file is currently minimal. Next I’m validating the exact `2.3.0` source/test/doc locations from Maven Central and Kotlin’s tagged repository so we can populate all required fields confidently.
+🌐 Searching the web...
+🌐 Searched: Maven Central org.jetbrains.kotlin kotlin-stdlib-js 2.3.0 sources jar
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/ | sed -n '1,260p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/kotlin-stdlib-js-2.3.0.pom | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06 succeeded in 51ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-stdlib-js</artifactId>
+  <version>2.3.0</version>
+  <packaging>klib</packaging>
+  <name>Kotlin Stdlib Js</name>
+  <description>Kotlin Standard Library for JS</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+ succeeded in 211ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+codex
+I found the exact Maven 2.3.0 artifact page and confirmed a `-sources.jar` exists there, which we can use for `source-code-url`. I’m now confirming the matching Git tag and stable tag-pinned URLs for tests and docs.
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/JetBrains/kotlin.git | rg \"2\\.3\\.0\" | tail -n 20" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06exec
+/usr/bin/zsh -lc "curl -fsSL https://api.github.com/repos/JetBrains/kotlin/git/refs/tags | rg '2.3.0|v2.3.0' | head -n 40" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06 succeeded in 1.24s:
+1bdcf073deaaee385cb70af9e3753f545fdbc5a7	refs/tags/build-2.3.0-dev-9971
+3bff8397cba1d9f687922b61c94960c78d237922	refs/tags/build-2.3.0-dev-9971^{}
+b0fb4cf5233565e9eb1deca635d4c8be26b9354d	refs/tags/build-2.3.0-dev-9979
+3fdb2a43e39b9ca6b4fdc813cac77a2b640470c8	refs/tags/build-2.3.0-dev-9979^{}
+dca7f7e869ce8caa354acb78a8705bad3f0a610e	refs/tags/build-2.3.0-dev-9981
+3fdb2a43e39b9ca6b4fdc813cac77a2b640470c8	refs/tags/build-2.3.0-dev-9981^{}
+dc209846d923cbca69d6795cd9bc72b63ab05609	refs/tags/build-2.3.0-dev-9985
+3fdb2a43e39b9ca6b4fdc813cac77a2b640470c8	refs/tags/build-2.3.0-dev-9985^{}
+f78c2fa4fd95182b9be45553eb5411ef41edf877	refs/tags/build-2.3.0-dev-9991
+5007cd4869df9fba304b98481d7dd06ee02c83b0	refs/tags/build-2.3.0-dev-9991^{}
+c3dbc804388f7535c84244be301038430a227de9	refs/tags/build-2.3.0-dev-9992
+5007cd4869df9fba304b98481d7dd06ee02c83b0	refs/tags/build-2.3.0-dev-9992^{}
+d43e685eeb48461b010dd7f8f93afabd2060c656	refs/tags/build-2.3.0-release-356
+f95cb2f7693a15966fd8fd9b1d78d440545e7b66	refs/tags/build-2.3.0-release-356^{}
+f95cb2f7693a15966fd8fd9b1d78d440545e7b66	refs/tags/v2.3.0
+8f08be628eb5bb1a4016a39f9eb89f1da513b1ef	refs/tags/v2.3.0-Beta1
+547eda83607402954731105d132a3a22655aa91a	refs/tags/v2.3.0-Beta2
+0b9b42d48a28ac62121b4313222f7d7505aa11c2	refs/tags/v2.3.0-RC
+e66298c5e9ee3def62d12f8bcb1bb8aea4b5270b	refs/tags/v2.3.0-RC2
+f95cb2f7693a15966fd8fd9b1d78d440545e7b66	refs/tags/v2.3.0-RC3
+ succeeded in 11.10s:
+curl: (22) The requested URL returned error: 504
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/js?ref=v2.3.0' | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib?ref=v2.3.0' | rg '\"name\"|\"path\"' | sed -n '1,180p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06 succeeded in 164ms:
+[
+  {
+    "name": "ReadMe.md",
+    "path": "libraries/stdlib/js/ReadMe.md",
+    "sha": "1454310bd7da4e6b94c36449a0cdb0b3cd8fdc55",
+    "size": 378,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/js/ReadMe.md?ref=v2.3.0",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/1454310bd7da4e6b94c36449a0cdb0b3cd8fdc55",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/js/ReadMe.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/js/ReadMe.md?ref=v2.3.0",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/1454310bd7da4e6b94c36449a0cdb0b3cd8fdc55",
+      "html": "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md"
+    }
+  },
+  {
+    "name": "builtins",
+    "path": "libraries/stdlib/js/builtins",
+ succeeded in 223ms:
+    "name": "ReadMe.md",
+    "path": "libraries/stdlib/ReadMe.md",
+    "name": "build.gradle.kts",
+    "path": "libraries/stdlib/build.gradle.kts",
+    "name": "common-js-wasmjs",
+    "path": "libraries/stdlib/common-js-wasmjs",
+    "name": "common-non-jvm",
+    "path": "libraries/stdlib/common-non-jvm",
+    "name": "common",
+    "path": "libraries/stdlib/common",
+    "name": "gradle.properties",
+    "path": "libraries/stdlib/gradle.properties",
+    "name": "jdk7",
+    "path": "libraries/stdlib/jdk7",
+    "name": "jdk8",
+    "path": "libraries/stdlib/jdk8",
+    "name": "js-ir-minimal-for-test",
+    "path": "libraries/stdlib/js-ir-minimal-for-test",
+    "name": "js",
+    "path": "libraries/stdlib/js",
+codex
+I confirmed tag `v2.3.0` exists and that the Kotlin repo contains tag-pinned JS stdlib source, tests, and README paths. I’m now writing the JSON with Maven `-sources.jar` for source code, tag-pinned GitHub URLs for tests/docs, and the Kotlin language field.
+file update
+M /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/kotlin-stdlib-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md",
++  "description" : "This artifact provides the Kotlin standard library implementation for JavaScript targets. It supplies core language runtime APIs and collections needed by Kotlin/JS applications.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+apply_patch(auto_approved=true) exited 0 in 3ms:
+Success. Updated the following files:
+M /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+file update:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+index a9c0565dca22d239991603c10c0d4d66a7b91500..fe16919ef38897f32e2d36b19dc61c62f5fa65a9
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/kotlin-stdlib-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md",
++  "description" : "This artifact provides the Kotlin standard library implementation for JavaScript targets. It supplies core language runtime APIs and collections needed by Kotlin/JS applications.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+file update:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+index a9c0565dca22d239991603c10c0d4d66a7b91500..fe16919ef38897f32e2d36b19dc61c62f5fa65a9
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/kotlin-stdlib-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md",
++  "description" : "This artifact provides the Kotlin standard library implementation for JavaScript targets. It supplies core language runtime APIs and collections needed by Kotlin/JS applications.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json >/dev/null && echo OK' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06 succeeded in 51ms:
+OK
+file update:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+index a9c0565dca22d239991603c10c0d4d66a7b91500..fe16919ef38897f32e2d36b19dc61c62f5fa65a9
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/kotlin-stdlib-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md",
++  "description" : "This artifact provides the Kotlin standard library implementation for JavaScript targets. It supplies core language runtime APIs and collections needed by Kotlin/JS applications.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+codex
+Updated [org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json) with:
+
+- `coordinates`: `org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0`
+- `source-code-url`: `https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/kotlin-stdlib-js-2.3.0-sources.jar`
+- `repository-url`: `https://github.com/JetBrains/kotlin`
+- `test-code-url`: `https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test`
+- `documentation-url`: `https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md`
+- `description` (exactly two sentences)
+- `language`: `{ "name": "kotlin", "version": "2.3" }`
+
+JSON validity was checked with `jq`.
+file update:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+index a9c0565dca22d239991603c10c0d4d66a7b91500..fe16919ef38897f32e2d36b19dc61c62f5fa65a9
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/kotlin-stdlib-js-2.3.0-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md",
++  "description" : "This artifact provides the Kotlin standard library implementation for JavaScript targets. It supplies core language runtime APIs and collections needed by Kotlin/JS applications.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.3"
++  }
+ }
+
+tokens used
+20,613
+Updated [org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.json) with:
+
+- `coordinates`: `org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0`
+- `source-code-url`: `https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-js/2.3.0/kotlin-stdlib-js-2.3.0-sources.jar`
+- `repository-url`: `https://github.com/JetBrains/kotlin`
+- `test-code-url`: `https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test`
+- `documentation-url`: `https://github.com/JetBrains/kotlin/blob/v2.3.0/libraries/stdlib/js/ReadMe.md`
+- `description` (exactly two sentences)
+- `language`: `{ "name": "kotlin", "version": "2.3" }`
+
+JSON validity was checked with `jq`.
+Ran agent for org.jetbrains.kotlin:kotlin-stdlib-js:2.3.0 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-stdlib-js-2.3.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2193-93251e06/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 54s
+9 actionable tasks: 4 executed, 5 from cache
