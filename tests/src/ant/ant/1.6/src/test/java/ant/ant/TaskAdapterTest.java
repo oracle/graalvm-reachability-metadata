@@ -8,13 +8,17 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.TaskAdapter;
 import org.junit.jupiter.api.Test;
 
 public class TaskAdapterTest {
     @Test
-    void validatesAndExecutesProjectAwareProxyTask() {
+    void validatesAndExecutesProjectAwareProxyTask() throws IllegalAccessException {
+        clearCachedProjectClass();
+
         Project project = new Project();
         ProjectAwareProxyTask proxyTask = new ProjectAwareProxyTask();
         TaskAdapter adapter = new TaskAdapter();
@@ -28,6 +32,20 @@ public class TaskAdapterTest {
         assertThat(adapter.getProxy()).isSameAs(proxyTask);
         assertThat(proxyTask.project).isSameAs(project);
         assertThat(proxyTask.executions).isEqualTo(1);
+    }
+
+    private static void clearCachedProjectClass() throws IllegalAccessException {
+        boolean cleared = false;
+        for (Field field : TaskAdapter.class.getDeclaredFields()) {
+            if (Modifier.isStatic(field.getModifiers()) && field.getType().equals(Class.class)
+                    && field.getName().contains(Project.class.getName().replace('.', '$'))) {
+                field.setAccessible(true);
+                field.set(null, null);
+                cleared = true;
+                break;
+            }
+        }
+        assertThat(cleared).as("TaskAdapter should expose a cached Project class field").isTrue();
     }
 
     public static final class ProjectAwareProxyTask {
