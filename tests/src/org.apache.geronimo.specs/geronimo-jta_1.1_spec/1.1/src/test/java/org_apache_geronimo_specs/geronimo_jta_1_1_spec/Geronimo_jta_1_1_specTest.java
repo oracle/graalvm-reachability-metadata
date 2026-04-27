@@ -144,6 +144,32 @@ public class Geronimo_jta_1_1_specTest {
     }
 
     @Test
+    void xaPrepareFailureIsExposedAsSystemExceptionWithOriginalXaErrorCode() throws Exception {
+        InMemoryTransactionManager manager = new InMemoryTransactionManager();
+        manager.begin();
+        Transaction transaction = manager.getTransaction();
+        PrepareFailingXaResource resource = new PrepareFailingXaResource(XAException.XA_RBTIMEOUT);
+
+        assertThat(transaction.enlistResource(resource)).isTrue();
+
+        assertThatThrownBy(manager::commit)
+                .isInstanceOf(SystemException.class)
+                .satisfies(exception -> {
+                    SystemException systemException = (SystemException) exception;
+                    assertThat(systemException.errorCode).isEqualTo(XAException.XA_RBTIMEOUT);
+                    assertThat(systemException.getCause()).isInstanceOf(XAException.class);
+                    assertThat(((XAException) systemException.getCause()).errorCode)
+                            .isEqualTo(XAException.XA_RBTIMEOUT);
+                });
+
+        assertThat(transaction.getStatus()).isEqualTo(Status.STATUS_UNKNOWN);
+        assertThat(manager.getStatus()).isEqualTo(Status.STATUS_NO_TRANSACTION);
+        assertThat(resource.events()).containsExactly(
+                "start:4660:0",
+                "prepare:4660");
+    }
+
+    @Test
     void transactionManagerSuspendsResumesAndRejectsInvalidUsage() throws Exception {
         InMemoryTransactionManager manager = new InMemoryTransactionManager();
 
@@ -561,6 +587,70 @@ public class Geronimo_jta_1_1_specTest {
         @Override
         public void start(Xid xid, int flags) {
             events.add(name + ":start:" + xid.getFormatId() + ":" + flags);
+        }
+
+        List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class PrepareFailingXaResource implements XAResource {
+        private final int errorCode;
+        private final List<String> events = new ArrayList<>();
+
+        PrepareFailingXaResource(int errorCode) {
+            this.errorCode = errorCode;
+        }
+
+        @Override
+        public void commit(Xid xid, boolean onePhase) {
+            events.add("commit:" + onePhase);
+        }
+
+        @Override
+        public void end(Xid xid, int flags) {
+            events.add("end:" + flags);
+        }
+
+        @Override
+        public void forget(Xid xid) {
+            events.add("forget:" + xid.getFormatId());
+        }
+
+        @Override
+        public int getTransactionTimeout() {
+            return 0;
+        }
+
+        @Override
+        public boolean isSameRM(XAResource xaResource) {
+            return this == xaResource;
+        }
+
+        @Override
+        public int prepare(Xid xid) throws XAException {
+            events.add("prepare:" + xid.getFormatId());
+            throw new XAException(errorCode);
+        }
+
+        @Override
+        public Xid[] recover(int flag) {
+            return new Xid[0];
+        }
+
+        @Override
+        public void rollback(Xid xid) {
+            events.add("rollback:" + xid.getFormatId());
+        }
+
+        @Override
+        public boolean setTransactionTimeout(int seconds) {
+            return true;
+        }
+
+        @Override
+        public void start(Xid xid, int flags) {
+            events.add("start:" + xid.getFormatId() + ":" + flags);
         }
 
         List<String> events() {
