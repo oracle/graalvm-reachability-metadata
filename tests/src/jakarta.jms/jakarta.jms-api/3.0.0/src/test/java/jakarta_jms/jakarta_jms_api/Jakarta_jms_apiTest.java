@@ -16,37 +16,37 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.jms.BytesMessage;
-import javax.jms.CompletionListener;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.ExceptionListener;
-import javax.jms.InvalidDestinationException;
-import javax.jms.JMSException;
-import javax.jms.JMSRuntimeException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageFormatException;
-import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.QueueBrowser;
-import javax.jms.QueueReceiver;
-import javax.jms.QueueRequestor;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.jms.StreamMessage;
-import javax.jms.TemporaryQueue;
-import javax.jms.TemporaryTopic;
-import javax.jms.TextMessage;
-import javax.jms.Topic;
-import javax.jms.TopicPublisher;
-import javax.jms.TopicRequestor;
-import javax.jms.TopicSession;
-import javax.jms.TopicSubscriber;
+import jakarta.jms.BytesMessage;
+import jakarta.jms.CompletionListener;
+import jakarta.jms.DeliveryMode;
+import jakarta.jms.Destination;
+import jakarta.jms.ExceptionListener;
+import jakarta.jms.InvalidDestinationException;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.MapMessage;
+import jakarta.jms.Message;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.MessageFormatException;
+import jakarta.jms.MessageListener;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.ObjectMessage;
+import jakarta.jms.Queue;
+import jakarta.jms.QueueBrowser;
+import jakarta.jms.QueueReceiver;
+import jakarta.jms.QueueRequestor;
+import jakarta.jms.QueueSender;
+import jakarta.jms.QueueSession;
+import jakarta.jms.Session;
+import jakarta.jms.StreamMessage;
+import jakarta.jms.TemporaryQueue;
+import jakarta.jms.TemporaryTopic;
+import jakarta.jms.TextMessage;
+import jakarta.jms.Topic;
+import jakarta.jms.TopicPublisher;
+import jakarta.jms.TopicRequestor;
+import jakarta.jms.TopicSession;
+import jakarta.jms.TopicSubscriber;
 
 import org.junit.jupiter.api.Test;
 
@@ -65,10 +65,10 @@ class Jakarta_jms_apiTest {
         assertThat(Session.CLIENT_ACKNOWLEDGE).isEqualTo(2);
         assertThat(Session.DUPS_OK_ACKNOWLEDGE).isEqualTo(3);
 
-        assertThat(javax.jms.JMSContext.SESSION_TRANSACTED).isEqualTo(Session.SESSION_TRANSACTED);
-        assertThat(javax.jms.JMSContext.AUTO_ACKNOWLEDGE).isEqualTo(Session.AUTO_ACKNOWLEDGE);
-        assertThat(javax.jms.JMSContext.CLIENT_ACKNOWLEDGE).isEqualTo(Session.CLIENT_ACKNOWLEDGE);
-        assertThat(javax.jms.JMSContext.DUPS_OK_ACKNOWLEDGE).isEqualTo(Session.DUPS_OK_ACKNOWLEDGE);
+        assertThat(jakarta.jms.JMSContext.SESSION_TRANSACTED).isEqualTo(Session.SESSION_TRANSACTED);
+        assertThat(jakarta.jms.JMSContext.AUTO_ACKNOWLEDGE).isEqualTo(Session.AUTO_ACKNOWLEDGE);
+        assertThat(jakarta.jms.JMSContext.CLIENT_ACKNOWLEDGE).isEqualTo(Session.CLIENT_ACKNOWLEDGE);
+        assertThat(jakarta.jms.JMSContext.DUPS_OK_ACKNOWLEDGE).isEqualTo(Session.DUPS_OK_ACKNOWLEDGE);
 
         assertThat(Message.DEFAULT_DELIVERY_MODE).isEqualTo(DeliveryMode.PERSISTENT);
         assertThat(Message.DEFAULT_PRIORITY).isEqualTo(4);
@@ -86,19 +86,19 @@ class Jakarta_jms_apiTest {
         assertThat(base.getErrorCode()).isEqualTo("JMS-0001");
         assertThat(base.getLinkedException()).isSameAs(linked);
 
-        assertCheckedException(new javax.jms.IllegalStateException("bad state"), "bad state", null);
-        assertCheckedException(new javax.jms.IllegalStateException("bad state", "JMS-1000"), "bad state", "JMS-1000");
-        assertCheckedException(new javax.jms.InvalidClientIDException("bad client", "JMS-1001"), "bad client", "JMS-1001");
+        assertCheckedException(new jakarta.jms.IllegalStateException("bad state"), "bad state", null);
+        assertCheckedException(new jakarta.jms.IllegalStateException("bad state", "JMS-1000"), "bad state", "JMS-1000");
+        assertCheckedException(new jakarta.jms.InvalidClientIDException("bad client", "JMS-1001"), "bad client", "JMS-1001");
         assertCheckedException(new InvalidDestinationException("bad destination", "JMS-1002"), "bad destination", "JMS-1002");
-        assertCheckedException(new javax.jms.InvalidSelectorException("bad selector", "JMS-1003"), "bad selector", "JMS-1003");
-        assertCheckedException(new javax.jms.JMSSecurityException("access denied", "JMS-1004"), "access denied", "JMS-1004");
-        assertCheckedException(new javax.jms.MessageEOFException("unexpected eof", "JMS-1005"), "unexpected eof", "JMS-1005");
+        assertCheckedException(new jakarta.jms.InvalidSelectorException("bad selector", "JMS-1003"), "bad selector", "JMS-1003");
+        assertCheckedException(new jakarta.jms.JMSSecurityException("access denied", "JMS-1004"), "access denied", "JMS-1004");
+        assertCheckedException(new jakarta.jms.MessageEOFException("unexpected eof", "JMS-1005"), "unexpected eof", "JMS-1005");
         assertCheckedException(new MessageFormatException("bad format", "JMS-1006"), "bad format", "JMS-1006");
-        assertCheckedException(new javax.jms.MessageNotReadableException("not readable", "JMS-1007"), "not readable", "JMS-1007");
-        assertCheckedException(new javax.jms.MessageNotWriteableException("not writeable", "JMS-1008"), "not writeable", "JMS-1008");
-        assertCheckedException(new javax.jms.ResourceAllocationException("out of resources", "JMS-1009"), "out of resources", "JMS-1009");
-        assertCheckedException(new javax.jms.TransactionInProgressException("tx in progress", "JMS-1010"), "tx in progress", "JMS-1010");
-        assertCheckedException(new javax.jms.TransactionRolledBackException("tx rolled back", "JMS-1011"), "tx rolled back", "JMS-1011");
+        assertCheckedException(new jakarta.jms.MessageNotReadableException("not readable", "JMS-1007"), "not readable", "JMS-1007");
+        assertCheckedException(new jakarta.jms.MessageNotWriteableException("not writeable", "JMS-1008"), "not writeable", "JMS-1008");
+        assertCheckedException(new jakarta.jms.ResourceAllocationException("out of resources", "JMS-1009"), "out of resources", "JMS-1009");
+        assertCheckedException(new jakarta.jms.TransactionInProgressException("tx in progress", "JMS-1010"), "tx in progress", "JMS-1010");
+        assertCheckedException(new jakarta.jms.TransactionRolledBackException("tx rolled back", "JMS-1011"), "tx rolled back", "JMS-1011");
     }
 
     @Test
@@ -110,16 +110,16 @@ class Jakarta_jms_apiTest {
         assertThat(new JMSRuntimeException("reason only")).hasMessage("reason only");
         assertThat(new JMSRuntimeException("reason and code", "JMS-2001").getErrorCode()).isEqualTo("JMS-2001");
 
-        assertRuntimeException(new javax.jms.IllegalStateRuntimeException("bad state", "JMS-2002", cause), "bad state", "JMS-2002", cause);
-        assertRuntimeException(new javax.jms.InvalidClientIDRuntimeException("bad client", "JMS-2003", cause), "bad client", "JMS-2003", cause);
-        assertRuntimeException(new javax.jms.InvalidDestinationRuntimeException("bad destination", "JMS-2004", cause), "bad destination", "JMS-2004", cause);
-        assertRuntimeException(new javax.jms.InvalidSelectorRuntimeException("bad selector", "JMS-2005", cause), "bad selector", "JMS-2005", cause);
-        assertRuntimeException(new javax.jms.JMSSecurityRuntimeException("access denied", "JMS-2006", cause), "access denied", "JMS-2006", cause);
-        assertRuntimeException(new javax.jms.MessageFormatRuntimeException("bad format", "JMS-2007", cause), "bad format", "JMS-2007", cause);
-        assertRuntimeException(new javax.jms.MessageNotWriteableRuntimeException("not writeable", "JMS-2008", cause), "not writeable", "JMS-2008", cause);
-        assertRuntimeException(new javax.jms.ResourceAllocationRuntimeException("out of resources", "JMS-2009", cause), "out of resources", "JMS-2009", cause);
-        assertRuntimeException(new javax.jms.TransactionInProgressRuntimeException("tx in progress", "JMS-2010", cause), "tx in progress", "JMS-2010", cause);
-        assertRuntimeException(new javax.jms.TransactionRolledBackRuntimeException("tx rolled back", "JMS-2011", cause), "tx rolled back", "JMS-2011", cause);
+        assertRuntimeException(new jakarta.jms.IllegalStateRuntimeException("bad state", "JMS-2002", cause), "bad state", "JMS-2002", cause);
+        assertRuntimeException(new jakarta.jms.InvalidClientIDRuntimeException("bad client", "JMS-2003", cause), "bad client", "JMS-2003", cause);
+        assertRuntimeException(new jakarta.jms.InvalidDestinationRuntimeException("bad destination", "JMS-2004", cause), "bad destination", "JMS-2004", cause);
+        assertRuntimeException(new jakarta.jms.InvalidSelectorRuntimeException("bad selector", "JMS-2005", cause), "bad selector", "JMS-2005", cause);
+        assertRuntimeException(new jakarta.jms.JMSSecurityRuntimeException("access denied", "JMS-2006", cause), "access denied", "JMS-2006", cause);
+        assertRuntimeException(new jakarta.jms.MessageFormatRuntimeException("bad format", "JMS-2007", cause), "bad format", "JMS-2007", cause);
+        assertRuntimeException(new jakarta.jms.MessageNotWriteableRuntimeException("not writeable", "JMS-2008", cause), "not writeable", "JMS-2008", cause);
+        assertRuntimeException(new jakarta.jms.ResourceAllocationRuntimeException("out of resources", "JMS-2009", cause), "out of resources", "JMS-2009", cause);
+        assertRuntimeException(new jakarta.jms.TransactionInProgressRuntimeException("tx in progress", "JMS-2010", cause), "tx in progress", "JMS-2010", cause);
+        assertRuntimeException(new jakarta.jms.TransactionRolledBackRuntimeException("tx rolled back", "JMS-2011", cause), "tx rolled back", "JMS-2011", cause);
     }
 
     @Test
