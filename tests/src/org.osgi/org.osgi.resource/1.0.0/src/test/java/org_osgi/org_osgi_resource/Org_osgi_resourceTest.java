@@ -200,6 +200,34 @@ public class Org_osgi_resourceTest {
     }
 
     @Test
+    void synthesizedRequirementCanBeWiredWithoutDeclaringResource() {
+        SimpleResource provider = new SimpleResource("repository:provider");
+        SimpleResource consumer = new SimpleResource("repository:consumer");
+        Capability capability = provider.addCapability(
+                PACKAGE_NAMESPACE,
+                Map.of(),
+                Map.of(PACKAGE_NAMESPACE, "com.acme.synthesized.api"));
+        Requirement synthesizedRequirement = new SimpleRequirement(
+                null,
+                PACKAGE_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE, "(osgi.wiring.package=com.acme.synthesized.api)"),
+                Map.of("origin", "resolver"));
+        Wire wire = new SimpleWire(capability, synthesizedRequirement, provider, consumer);
+
+        assertThat(synthesizedRequirement.getNamespace()).isEqualTo(PACKAGE_NAMESPACE);
+        assertThat(synthesizedRequirement.getResource()).isNull();
+        assertThat(synthesizedRequirement.getDirectives())
+                .containsEntry(
+                        Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+                        "(osgi.wiring.package=com.acme.synthesized.api)");
+        assertThat(synthesizedRequirement.getAttributes()).containsEntry("origin", "resolver");
+        assertThat(wire.getCapability()).isSameAs(capability);
+        assertThat(wire.getRequirement()).isSameAs(synthesizedRequirement);
+        assertThat(wire.getProvider()).isSameAs(provider);
+        assertThat(wire.getRequirer()).isSameAs(consumer);
+    }
+
+    @Test
     void wireCanConnectCapabilitiesAndRequirementsThroughDifferentProviderAndRequirerResources() {
         SimpleResource host = new SimpleResource("repository:host");
         SimpleResource fragment = new SimpleResource("repository:fragment");
