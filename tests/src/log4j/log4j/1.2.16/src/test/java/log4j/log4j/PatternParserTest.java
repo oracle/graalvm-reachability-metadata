@@ -53,7 +53,7 @@ public class PatternParserTest {
     }
 
     private static String format(PatternConverter converter) {
-        StringBuffer output = new StringBuffer();
+        StringBuffer output = new java.lang.StringBuffer();
         converter.format(new Object(), output);
         return output.toString();
     }

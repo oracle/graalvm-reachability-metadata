@@ -30,7 +30,7 @@ public class LogSFTest {
         logger.addAppender(appender);
 
         try {
-            LogSF.info(logger, "Hello {}", new Object[] { "native image" });
+            LogSF.info(logger, "Hello {}", new Object[]{"native image"});
 
             assertThat(appender.getMessages()).containsExactly("Hello native image");
         } finally {
@@ -47,7 +47,7 @@ public class LogSFTest {
         logger.addAppender(appender);
 
         try {
-            LogSF.logrb(logger, Level.INFO, TestMessages.class.getName(), "message", new Object[] { "native image" });
+            LogSF.logrb(logger, Level.INFO, TestMessages.class.getName(), "message", new Object[]{"native image"});
 
             assertThat(appender.getMessages()).containsExactly("Hello native image");
         } finally {
@@ -59,7 +59,7 @@ public class LogSFTest {
         @Override
         protected Object[][] getContents() {
             return new Object[][] {
-                    { "message", "Hello {}" }
+                    {"message", "Hello {}" }
             };
         }
     }

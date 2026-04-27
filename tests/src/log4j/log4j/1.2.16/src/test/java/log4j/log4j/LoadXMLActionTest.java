@@ -19,6 +19,8 @@ public class LoadXMLActionTest {
 
     @Test
     void initializingLoadXmlActionInFreshClassLoaderResolvesItsOwnClassLiteral() throws Exception {
+        NativeImageTestSupport.assumeDesktopToolkitAvailable();
+
         try (URLClassLoader isolatedLoader = new URLClassLoader(isolatedClassPath(), ClassLoader.getPlatformClassLoader())) {
             Class<?> loadXmlActionClass = Class.forName("org.apache.log4j.chainsaw.LoadXMLAction", true, isolatedLoader);
 
@@ -31,9 +33,9 @@ public class LoadXMLActionTest {
         URL testClassesUrl = codeSourceUrl(LoadXMLActionTest.class);
         URL libraryClassesUrl = codeSourceUrl(Logger.class);
         if (testClassesUrl.equals(libraryClassesUrl)) {
-            return new URL[] { testClassesUrl };
+            return new URL[]{testClassesUrl};
         }
-        return new URL[] { testClassesUrl, libraryClassesUrl };
+        return new URL[]{testClassesUrl, libraryClassesUrl};
     }
 
     private static URL codeSourceUrl(Class<?> type) {

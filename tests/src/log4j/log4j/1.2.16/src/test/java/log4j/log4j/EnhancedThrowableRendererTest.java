@@ -22,7 +22,7 @@ public class EnhancedThrowableRendererTest {
         EnhancedThrowableRenderer renderer = new EnhancedThrowableRenderer();
         RuntimeException throwable = new RuntimeException("resolved");
         StackTraceElement frame = new StackTraceElement(ResolvedFrameType.class.getName(), "invoke", "ResolvedFrameType.java", 17);
-        throwable.setStackTrace(new StackTraceElement[] { frame });
+        throwable.setStackTrace(new StackTraceElement[]{frame});
 
         String[] rendered = renderer.doRender(throwable);
 
@@ -41,7 +41,7 @@ public class EnhancedThrowableRendererTest {
             EnhancedThrowableRenderer renderer = new EnhancedThrowableRenderer();
             RuntimeException throwable = new RuntimeException("fallback");
             StackTraceElement frame = new StackTraceElement(FallbackFrameType.class.getName(), "call", "FallbackFrameType.java", 23);
-            throwable.setStackTrace(new StackTraceElement[] { frame });
+            throwable.setStackTrace(new StackTraceElement[]{frame});
 
             String[] rendered = renderer.doRender(throwable);
 
@@ -61,13 +61,13 @@ public class EnhancedThrowableRendererTest {
         thread.setContextClassLoader(new RejectingClassLoader(previousClassLoader, IsolatedFrameType.class.getName()));
 
         try (URLClassLoader isolatedLoader = new FailOnceClassLoader(
-                new URL[] { codeSourceUrl(EnhancedThrowableRenderer.class), codeSourceUrl(EnhancedThrowableRendererTest.class) },
+                new URL[]{codeSourceUrl(EnhancedThrowableRenderer.class), codeSourceUrl(EnhancedThrowableRendererTest.class)},
                 ClassLoader.getPlatformClassLoader(),
                 IsolatedFrameType.class.getName())) {
             Class<?> rendererClass = Class.forName(EnhancedThrowableRenderer.class.getName(), true, isolatedLoader);
             Object renderer = rendererClass.getConstructor().newInstance();
             RuntimeException throwable = new RuntimeException("isolated");
-            throwable.setStackTrace(new StackTraceElement[] { frame });
+            throwable.setStackTrace(new StackTraceElement[]{frame});
 
             String[] rendered = (String[]) rendererClass.getMethod("doRender", Throwable.class).invoke(renderer, throwable);
 
@@ -84,7 +84,7 @@ public class EnhancedThrowableRendererTest {
         EnhancedThrowableRenderer renderer = new EnhancedThrowableRenderer();
         RuntimeException throwable = new RuntimeException("missing");
         StackTraceElement frame = new StackTraceElement("missing.example.DoesNotExist", "call", null, -1);
-        throwable.setStackTrace(new StackTraceElement[] { frame });
+        throwable.setStackTrace(new StackTraceElement[]{frame});
 
         String[] rendered = renderer.doRender(throwable);
 

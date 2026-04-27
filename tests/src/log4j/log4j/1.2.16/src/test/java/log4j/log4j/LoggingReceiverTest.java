@@ -19,6 +19,8 @@ public class LoggingReceiverTest {
 
     @Test
     void initializingLoggingReceiverInFreshClassLoaderResolvesItsOwnClassLiteral() throws Exception {
+        NativeImageTestSupport.assumeDesktopToolkitAvailable();
+
         try (URLClassLoader isolatedLoader = new URLClassLoader(isolatedClassPath(), ClassLoader.getPlatformClassLoader())) {
             Class<?> loggingReceiverClass = Class.forName("org.apache.log4j.chainsaw.LoggingReceiver", true, isolatedLoader);
 
@@ -31,9 +33,9 @@ public class LoggingReceiverTest {
         URL testClassesUrl = codeSourceUrl(LoggingReceiverTest.class);
         URL libraryClassesUrl = codeSourceUrl(Logger.class);
         if (testClassesUrl.equals(libraryClassesUrl)) {
-            return new URL[] { testClassesUrl };
+            return new URL[]{testClassesUrl};
         }
-        return new URL[] { testClassesUrl, libraryClassesUrl };
+        return new URL[]{testClassesUrl, libraryClassesUrl};
     }
 
     private static URL codeSourceUrl(Class<?> type) {

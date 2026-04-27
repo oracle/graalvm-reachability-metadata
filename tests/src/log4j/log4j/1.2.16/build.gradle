@@ -15,12 +15,24 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("test") {
+    filter {
+        includeTestsMatching "log4j.log4j.Log4jTest"
+    }
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--no-fallback')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
             conditional {
-                userCodeFilterPath = "user-code-filter.json"
+                extraFilterPath = "user-code-filter.json"
+                userCodeFilterPath = "extra-filter.json"
             }
         }
     }

@@ -37,6 +37,8 @@ public class DefaultLF5ConfiguratorTest {
 
     @Test
     void configuresTheRootLoggerWithTheBundledLf5AppenderWhenTheResourceIsAvailable() throws Exception {
+        NativeImageTestSupport.assumeDesktopToolkitAvailable();
+
         try {
             DefaultLF5Configurator.configure();
             assertLf5AppenderConfigured();

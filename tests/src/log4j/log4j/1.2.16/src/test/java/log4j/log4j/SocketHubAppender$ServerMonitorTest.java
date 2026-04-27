@@ -24,11 +24,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SocketHubAppender$ServerMonitorTest {
+class SocketHubAppenderServerMonitorTest {
 
     @Test
     void sendsBufferedEventsToNewlyConnectedClients() throws Exception {
-        String loggerName = SocketHubAppender$ServerMonitorTest.class.getName() + "." + System.nanoTime();
+        String loggerName = SocketHubAppenderServerMonitorTest.class.getName() + "." + System.nanoTime();
         Hierarchy hierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
         Logger logger = hierarchy.getLogger(loggerName);
         logger.setAdditivity(false);

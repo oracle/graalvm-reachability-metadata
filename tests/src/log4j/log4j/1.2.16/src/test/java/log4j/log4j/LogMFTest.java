@@ -42,7 +42,7 @@ public class LogMFTest {
         @Override
         protected Object[][] getContents() {
             return new Object[][] {
-                    { "message", "Hello {0}" }
+                    {"message", "Hello {0}" }
             };
         }
     }

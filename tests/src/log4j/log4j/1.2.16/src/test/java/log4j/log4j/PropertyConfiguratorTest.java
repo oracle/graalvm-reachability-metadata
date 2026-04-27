@@ -83,9 +83,9 @@ public class PropertyConfiguratorTest {
         URL testClassesUrl = codeSourceUrl(PropertyConfiguratorTest.class);
         URL libraryClassesUrl = codeSourceUrl(org.apache.log4j.PropertyConfigurator.class);
         if (testClassesUrl.equals(libraryClassesUrl)) {
-            return new URL[] { testClassesUrl };
+            return new URL[]{testClassesUrl};
         }
-        return new URL[] { testClassesUrl, libraryClassesUrl };
+        return new URL[]{testClassesUrl, libraryClassesUrl};
     }
 
     private static URL codeSourceUrl(Class<?> type) {

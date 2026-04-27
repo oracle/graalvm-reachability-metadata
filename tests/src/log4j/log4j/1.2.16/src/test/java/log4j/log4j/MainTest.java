@@ -19,6 +19,8 @@ public class MainTest {
 
     @Test
     void initializingChainsawMainInFreshClassLoaderResolvesItsOwnClassLiteral() throws Exception {
+        NativeImageTestSupport.assumeDesktopToolkitAvailable();
+
         try (URLClassLoader isolatedLoader = new URLClassLoader(isolatedClassPath(), ClassLoader.getPlatformClassLoader())) {
             Class<?> mainClass = Class.forName("org.apache.log4j.chainsaw.Main", true, isolatedLoader);
 
@@ -31,9 +33,9 @@ public class MainTest {
         URL testClassesUrl = codeSourceUrl(MainTest.class);
         URL libraryClassesUrl = codeSourceUrl(Logger.class);
         if (testClassesUrl.equals(libraryClassesUrl)) {
-            return new URL[] { testClassesUrl };
+            return new URL[]{testClassesUrl};
         }
-        return new URL[] { testClassesUrl, libraryClassesUrl };
+        return new URL[]{testClassesUrl, libraryClassesUrl};
     }
 
     private static URL codeSourceUrl(Class<?> type) {

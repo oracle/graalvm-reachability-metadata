@@ -19,6 +19,8 @@ public class DetailPanelTest {
 
     @Test
     void initializingDetailPanelInFreshClassLoaderLoadsItsOwnLoggerType() throws Exception {
+        NativeImageTestSupport.assumeDesktopToolkitAvailable();
+
         try (URLClassLoader isolatedLoader = new URLClassLoader(isolatedClassPath(), ClassLoader.getPlatformClassLoader())) {
             Class<?> detailPanelClass = Class.forName("org.apache.log4j.chainsaw.DetailPanel", true, isolatedLoader);
 
@@ -31,9 +33,9 @@ public class DetailPanelTest {
         URL testClassesUrl = codeSourceUrl(DetailPanelTest.class);
         URL libraryClassesUrl = codeSourceUrl(Logger.class);
         if (testClassesUrl.equals(libraryClassesUrl)) {
-            return new URL[] { testClassesUrl };
+            return new URL[]{testClassesUrl};
         }
-        return new URL[] { testClassesUrl, libraryClassesUrl };
+        return new URL[]{testClassesUrl, libraryClassesUrl};
     }
 
     private static URL codeSourceUrl(Class<?> type) {

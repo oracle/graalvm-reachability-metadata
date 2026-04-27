@@ -18,6 +18,8 @@ public class ControlPanelTest {
 
     @Test
     void syntheticClassLookupLoadsAnotherChainsawTypeByName() throws Throwable {
+        NativeImageTestSupport.assumeDesktopToolkitAvailable();
+
         Class<?> controlPanelClass = Class.forName(
                 "org.apache.log4j.chainsaw.ControlPanel",
                 false,

@@ -23,14 +23,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LoggingReceiver$SlurperTest {
+class LoggingReceiverSlurperTest {
 
     @Test
     void readsSerializedLoggingEventsFromAcceptedSocketConnections() throws Exception {
+        NativeImageTestSupport.assumeDesktopToolkitAvailable();
+
         AbstractTableModel model = newMyTableModel();
         Thread receiver = newLoggingReceiver(model, 0);
         ServerSocket serverSocket = serverSocketOf(receiver);
-        String loggerName = LoggingReceiver$SlurperTest.class.getName() + "." + System.nanoTime();
+        String loggerName = LoggingReceiverSlurperTest.class.getName() + "." + System.nanoTime();
         String message = "slurper message";
 
         receiver.start();
@@ -73,7 +75,7 @@ public class LoggingReceiver$SlurperTest {
 
     private static void sendSerializedEvent(int port, String loggerName, String message) throws IOException {
         LoggingEvent event = new LoggingEvent(
-                LoggingReceiver$SlurperTest.class.getName(),
+                LoggingReceiverSlurperTest.class.getName(),
                 Logger.getLogger(loggerName),
                 Level.INFO,
                 message,

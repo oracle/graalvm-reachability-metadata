@@ -272,7 +272,7 @@ public class DOMConfiguratorTest {
 
         @Override
         public String[] doRender(Throwable throwable) {
-            return new String[] { label + ":" + throwable.getMessage() };
+            return new String[]{label + ":" + throwable.getMessage()};
         }
 
         public String getLabel() {

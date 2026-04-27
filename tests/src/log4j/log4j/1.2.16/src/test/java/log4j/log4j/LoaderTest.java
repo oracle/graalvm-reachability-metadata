@@ -106,7 +106,7 @@ public class LoaderTest {
     }
 
     private static URL invokeIsolatedLoaderGetResource(String resourceName, ClassLoader contextClassLoader) throws Exception {
-        try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[] { codeSourceUrl(Loader.class) }, ClassLoader.getPlatformClassLoader())) {
+        try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[]{codeSourceUrl(Loader.class)}, ClassLoader.getPlatformClassLoader())) {
             Thread thread = Thread.currentThread();
             ClassLoader previousClassLoader = thread.getContextClassLoader();
             thread.setContextClassLoader(contextClassLoader);
@@ -122,7 +122,7 @@ public class LoaderTest {
     }
 
     private static Class<?> invokeIsolatedLoaderLoadClass(String className, ClassLoader contextClassLoader) throws Exception {
-        try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[] { codeSourceUrl(Loader.class) }, ClassLoader.getPlatformClassLoader())) {
+        try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[]{codeSourceUrl(Loader.class)}, ClassLoader.getPlatformClassLoader())) {
             Thread thread = Thread.currentThread();
             ClassLoader previousClassLoader = thread.getContextClassLoader();
             thread.setContextClassLoader(contextClassLoader);

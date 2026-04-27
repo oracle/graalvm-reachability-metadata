@@ -44,7 +44,7 @@ public class HelpersPatternParserTest {
 
     @Test
     void fallsBackToIso8601WhenDatePatternIsInvalidInFreshClassLoader() throws Exception {
-        try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[] { codeSourceUrl(PatternLayout.class) }, ClassLoader.getPlatformClassLoader())) {
+        try (URLClassLoader isolatedLoader = new URLClassLoader(new URL[]{codeSourceUrl(PatternLayout.class)}, ClassLoader.getPlatformClassLoader())) {
             Thread thread = Thread.currentThread();
             ClassLoader previousContextClassLoader = thread.getContextClassLoader();
             thread.setContextClassLoader(isolatedLoader);
@@ -84,7 +84,7 @@ public class HelpersPatternParserTest {
     }
 
     private static String formatWithHelperParser(String pattern, LoggingEvent event) {
-        StringBuffer output = new StringBuffer();
+        StringBuffer output = new java.lang.StringBuffer();
         PatternConverter converter = new PatternParser(pattern).parse();
         while (converter != null) {
             converter.format(output, event);

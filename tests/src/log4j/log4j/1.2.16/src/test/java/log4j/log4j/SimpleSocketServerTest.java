@@ -31,9 +31,9 @@ public class SimpleSocketServerTest {
         URL testClassesUrl = codeSourceUrl(SimpleSocketServerTest.class);
         URL libraryClassesUrl = codeSourceUrl(Logger.class);
         if (testClassesUrl.equals(libraryClassesUrl)) {
-            return new URL[] { testClassesUrl };
+            return new URL[]{testClassesUrl};
         }
-        return new URL[] { testClassesUrl, libraryClassesUrl };
+        return new URL[]{testClassesUrl, libraryClassesUrl};
     }
 
     private static URL codeSourceUrl(Class<?> type) {
