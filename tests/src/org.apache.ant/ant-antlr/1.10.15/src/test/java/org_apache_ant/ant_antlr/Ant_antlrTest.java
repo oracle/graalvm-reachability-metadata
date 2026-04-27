@@ -94,6 +94,41 @@ public class Ant_antlrTest {
     }
 
     @Test
+    void generatesTracingCodeForTreeWalkerGrammar() throws Exception {
+        Path grammarDirectory = Files.createDirectory(temporaryDirectory.resolve("tree-walker"));
+        writeFile("tree-walker/TreeTokensTokenTypes.txt", """
+            TreeTokens
+            PLUS=4
+            INT=5
+            """);
+        Path grammar = writeFile("tree-walker/TraceTreeWalker.g", """
+            class TraceTreeWalker extends TreeParser;
+            options {
+                importVocab = TreeTokens;
+            }
+            expr
+                : #(PLUS INT INT)
+                ;
+            """);
+
+        ANTLR task = newAntlrTask();
+        task.setTarget(grammar.toFile());
+        task.setTrace(true);
+        addRuntimeClasspath(task);
+
+        task.execute();
+
+        Path treeWalker = grammarDirectory.resolve("TraceTreeWalker.java");
+        assertThat(treeWalker).exists();
+        assertThat(Files.readString(treeWalker))
+            .contains("public class TraceTreeWalker extends antlr.TreeParser")
+            .contains("traceIn(\"expr\",_t)")
+            .contains("traceOut(\"expr\",_t)")
+            .contains("PLUS")
+            .contains("INT");
+    }
+
+    @Test
     void generatesExtendedGrammarUsingSuperGrammarFile() throws Exception {
         Path grammarDirectory = Files.createDirectory(temporaryDirectory.resolve("grammar-inheritance"));
         Path baseGrammar = writeFile("grammar-inheritance/BaseCalc.g", """
