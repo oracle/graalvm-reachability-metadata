@@ -26,6 +26,13 @@ public class Org_osgi_annotation_versioningTest {
     }
 
     @Test
+    void consumerTypeCanMarkAbstractClassesExtendedByConsumers() {
+        ConsumerBase consumer = new ConsumerBaseImplementation();
+
+        assertThat(consumer.format("request")).isEqualTo("abstract-consumer:request");
+    }
+
+    @Test
     void providerTypeCanMarkTypesUsedByConsumers() {
         ProviderRole providerRole = new DefaultProvider();
         DefaultProvider providerClass = new DefaultProvider();
@@ -64,6 +71,22 @@ public class Org_osgi_annotation_versioningTest {
         @Override
         public String format(String value) {
             return "consumer:" + value;
+        }
+    }
+
+    @ConsumerType
+    private abstract static class ConsumerBase {
+        final String format(String value) {
+            return prefix() + ":" + value;
+        }
+
+        abstract String prefix();
+    }
+
+    private static final class ConsumerBaseImplementation extends ConsumerBase {
+        @Override
+        String prefix() {
+            return "abstract-consumer";
         }
     }
 
