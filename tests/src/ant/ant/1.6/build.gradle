@@ -21,6 +21,13 @@ dependencies {
     testImplementation 'xml-resolver:xml-resolver:1.2'
 }
 
+tasks.withType(Test).configureEach {
+    List<File> bootstrapJars = configurations.testRuntimeClasspath.files.findAll {
+        it.name.startsWith('ant-') || it.name.startsWith('xml-resolver-')
+    }.toList()
+    jvmArgs += ["-Xbootclasspath/a:${bootstrapJars*.absolutePath.join(File.pathSeparator)}"]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"

@@ -22,7 +22,15 @@ public class AvailableTest {
 
     @Test
     void findsClassWithCurrentClassLoader() {
-        Available available = newAvailableTask();
+        Available available = newApplicationLoadedAvailableTask();
+        available.setClassname(String.class.getName());
+
+        assertThat(available.eval()).isTrue();
+    }
+
+    @Test
+    void findsClassWithBootstrapLoadedAvailable() {
+        Available available = newLibraryAvailableTask();
         available.setClassname(String.class.getName());
 
         assertThat(available.eval()).isTrue();
@@ -39,7 +47,15 @@ public class AvailableTest {
 
     @Test
     void findsResourceWithCurrentClassLoader() {
-        Available available = newAvailableTask();
+        Available available = newApplicationLoadedAvailableTask();
+        available.setResource(PROJECT_CLASS_RESOURCE);
+
+        assertThat(available.eval()).isTrue();
+    }
+
+    @Test
+    void findsResourceWithBootstrapLoadedAvailable() {
+        Available available = newLibraryAvailableTask();
         available.setResource(PROJECT_CLASS_RESOURCE);
 
         assertThat(available.eval()).isTrue();
@@ -62,12 +78,26 @@ public class AvailableTest {
     }
 
     private static Available newAvailableTask() {
+        return newAvailableTask(new Available());
+    }
+
+    private static Available newApplicationLoadedAvailableTask() {
+        return newAvailableTask(new ApplicationLoadedAvailable());
+    }
+
+    private static Available newLibraryAvailableTask() {
+        return newAvailableTask(new Available());
+    }
+
+    private static Available newAvailableTask(Available available) {
         Project project = new Project();
         project.init();
 
-        Available available = new Available();
         available.setProject(project);
         available.setTaskName("available");
         return available;
+    }
+
+    private static final class ApplicationLoadedAvailable extends Available {
     }
 }
