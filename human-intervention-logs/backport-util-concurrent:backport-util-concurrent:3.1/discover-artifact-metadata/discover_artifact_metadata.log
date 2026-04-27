@@ -1,0 +1,1676 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd0fc-dba4-7a41-86cd-308254b106ce
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: backport-util-concurrent:backport-util-concurrent:3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+- Set "coordinates" to "backport-util-concurrent:backport-util-concurrent:3.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata style in the repo, then check Maven and upstream sources so the URLs are version-specific where possible.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+{
+  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata | head -10" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+
+web search: 
+web search: Maven Central backport-util-concurrent backport-util-concurrent 3.1 sources jar javadoc
+codex
+Maven Central lists the 3.1 artifact, and I’m checking the actual repository files now so I can prefer Maven-hosted source/javadoc artifacts when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>backport-util-concurrent</groupId>
+    <artifactId>backport-util-concurrent</artifactId>
+    <version>3.1</version>
+    <packaging>jar</packaging>
+    <name>Backport of JSR 166</name>
+    <url>http://backport-jsr166.sourceforge.net/</url>
+    <description>Dawid Kurzyniec's backport of JSR 166</description>
+    <licenses>
+        <license>
+            <name>Public Domain</name>
+            <url>http://creativecommons.org/licenses/publicdomain</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>svn://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/</url>
+    </scm>
+    <organization>
+        <name>Dawid Kurzyniec</name>
+        <url>http://www.mathcs.emory.edu/~dawidk/</url>
+    </organization>
+    <dependencies/>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: backport-util-concurrent/backport-util-concurrent/3.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>backport-util-concurrent/backport-util-concurrent/3.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="backport-util-concurrent-3.1-javadoc.jar" title="backport-util-concurrent-3.1-javadoc.jar">backport-util-concurrent-3.1-javadoc.jar</a>          2007-11-11 22:28    531125      
+<a href="backport-util-concurrent-3.1-javadoc.jar.md5" title="backport-util-concurrent-3.1-javadoc.jar.md5">backport-util-concurrent-3.1-javadoc.jar.md5</a>      2007-11-11 22:28       178      
+<a href="backport-util-concurrent-3.1-javadoc.jar.sha1" title="backport-util-concurrent-3.1-javadoc.jar.sha1">backport-util-concurrent-3.1-javadoc.jar.sha1</a>     2007-11-11 22:28       186      
+<a href="backport-util-concurrent-3.1-sources.jar" title="backport-util-concurrent-3.1-sources.jar">backport-util-concurrent-3.1-sources.jar</a>          2007-11-11 22:28    310720      
+<a href="backport-util-concurrent-3.1-sources.jar.md5" title="backport-util-concurrent-3.1-sources.jar.md5">backport-util-concurrent-3.1-sources.jar.md5</a>      2007-11-11 22:28       178      
+<a href="backport-util-concurrent-3.1-sources.jar.sha1" title="backport-util-concurrent-3.1-sources.jar.sha1">backport-util-concurrent-3.1-sources.jar.sha1</a>     2007-11-11 22:28       186      
+<a href="backport-util-concurrent-3.1.jar" title="backport-util-concurrent-3.1.jar">backport-util-concurrent-3.1.jar</a>                  2007-11-11 22:28    331716      
+<a href="backport-util-concurrent-3.1.jar.md5" title="backport-util-concurrent-3.1.jar.md5">backport-util-concurrent-3.1.jar.md5</a>              2007-11-11 22:28       170      
+<a href="backport-util-concurrent-3.1.jar.sha1" title="backport-util-concurrent-3.1.jar.sha1">backport-util-concurrent-3.1.jar.sha1</a>             2007-11-11 22:28       178      
+<a href="backport-util-concurrent-3.1.pom" title="backport-util-concurrent-3.1.pom">backport-util-concurrent-3.1.pom</a>                  2007-11-11 22:28       880      
+<a href="backport-util-concurrent-3.1.pom.md5" title="backport-util-concurrent-3.1.pom.md5">backport-util-concurrent-3.1.pom.md5</a>              2007-11-11 22:28       170      
+<a href="backport-util-concurrent-3.1.pom.sha1" title="backport-util-concurrent-3.1.pom.sha1">backport-util-concurrent-3.1.pom.sha1</a>             2007-11-11 22:28       178      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -L -s https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar && curl -I -L -s https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar && curl -I -L -s https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-test-sources.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 347ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 22:09:02 GMT
+content-type: text/html
+cf-ray: 9f3126345d589a60-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLO https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar; jar tf backport-util-concurrent-3.1-sources.jar | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "curl -I -L -s http://backport-jsr166.sourceforge.net/ | sed -n '1,40p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLO https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar; jar tf backport-util-concurrent-3.1-javadoc.jar | sed -n '"'1,60p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 104ms:
+t/locks/
+edu/emory/mathcs/backport/java/util/concurrent/locks/Condition.java
+edu/emory/mathcs/backport/java/util/concurrent/locks/CondVar.java
+edu/emory/mathcs/backport/java/util/concurrent/locks/FIFOCondVar.java
+edu/emory/mathcs/backport/java/util/concurrent/locks/Lock.java
+edu/emory/mathcs/backport/java/util/concurrent/locks/package.html
+edu/emory/mathcs/backport/java/util/concurrent/locks/ReadWriteLock.java
+edu/emory/mathcs/backport/java/util/concurrent/locks/ReentrantLock.java
+edu/emory/mathcs/backport/java/util/concurrent/locks/ReentrantReadWriteLock.java
+edu/emory/mathcs/backport/java/util/concurrent/package.html
+edu/emory/mathcs/backport/java/util/concurrent/PriorityBlockingQueue.java
+edu/emory/mathcs/backport/java/util/concurrent/RejectedExecutionException.java
+edu/emory/mathcs/backport/java/util/concurrent/RejectedExecutionHandler.java
+edu/emory/mathcs/backport/java/util/concurrent/RunnableFuture.java
+
+ succeeded in 134ms:
+META-INF/
+META-INF/MANIFEST.MF
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+edu/
+edu/emory/
+edu/emory/mathcs/
+edu/emory/mathcs/backport/
+edu/emory/mathcs/backport/java/
+edu/emory/mathcs/backport/java/util/
+edu/emory/mathcs/backport/java/util/AbstractCollection.html
+edu/emory/mathcs/backport/java/util/AbstractList.html
+edu/emory/mathcs/backport/java/util/AbstractMap.html
+edu/emory/mathcs/backport/java/util/AbstractMap.SimpleEntry.html
+edu/emory/mathcs/backport/java/util/AbstractMap.SimpleImmutableEntry.html
+edu/emory/mathcs/backport/java/util/AbstractQueue.html
+edu/emory/mathcs/backport/java/util/AbstractSequentialList.html
+edu/emory/mathcs/backport/java/util/AbstractSet.html
+edu/emory/mathcs/backport/java/util/ArrayDeque.html
+edu/emory/mathcs/backport/java/util/Arrays.html
+edu/emory/mathcs/backport/java/util/Collections.html
+edu/emory/mathcs/backport/java/util/concurrent/
+edu/emory/mathcs/backport/java/util/concurrent/AbstractExecutorService.html
+edu/emory/mathcs/backport/java/util/concurrent/ArrayBlockingQueue.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicBoolean.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicInteger.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicIntegerArray.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicLong.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicLongArray.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicMarkableReference.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicReference.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicReferenceArray.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicStampedReference.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/package-frame.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/package-summary.html
+edu/emory/mathcs/backport/java/util/concurrent/atomic/package-tree.html
+edu/emory/mathcs/backport/java/util/concurrent/BlockingDeque.html
+edu/emory/mathcs/backport/java/util/concurrent/BlockingQueue.html
+edu/emory/mathcs/backport/java/util/concurrent/BrokenBarrierException.html
+edu/emory/mathcs/backport/java/util/concurrent/Callable.html
+edu/emory/mathcs/backport/java/util/concurrent/CancellationException.html
+edu/emory/mathcs/backport/java/util/concurrent/CompletionService.html
+edu/emory/mathcs/backport/java/util/concurrent/ConcurrentHashMap.html
+edu/emory/mathcs/backport/java/util/concurrent/ConcurrentLinkedQueue.html
+edu/emory/mathcs/backport/java/util/concurrent/ConcurrentMap.html
+edu/emory/mathcs/backport/java/util/concurrent/ConcurrentNavigableMap.html
+edu/emory/mathcs/backport/java/util/concurrent/ConcurrentSkipListMap.html
+edu/emory/mathcs/backport/java/util/concurrent/ConcurrentSkipListSet.html
+edu/emory/mathcs/backport/java/util/concurrent/CopyOnWriteArrayList.html
+edu/emory/mathcs/backport/java/util/concurrent/CopyOnWriteArraySet.html
+edu/emory/mathcs/backport/java/util/concurrent/CountDownLatch.html
+edu/emory/mathcs/backport/java/util/concurrent/CyclicBarrier.html
+edu/emory/mathcs/backport/java/util/concurrent/Delayed.html
+edu/emory/mathcs/backport/java/util/concurrent/DelayQueue.html
+edu/emory/mathcs/backport/java/util/concurrent/Exchanger.html
+edu/emory/mathcs/backport/java/util/concurrent/ExecutionException.html
+edu/emory/mathcs/backport/java/util/concurrent/Executor.html
+
+ succeeded in 247ms:
+HTTP/1.1 301 Moved Permanently
+Date: Mon, 27 Apr 2026 22:09:07 GMT
+Connection: keep-alive
+Location: https://backport-jsr166.sourceforge.net/
+Content-Security-Policy: upgrade-insecure-requests
+Server: cloudflare
+CF-RAY: 9f31265369ce23bc-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 27 Apr 2026 22:09:07 GMT
+content-type: text/html
+content-length: 8018
+server: cloudflare
+content-security-policy: upgrade-insecure-requests
+last-modified: Thu, 12 Jun 2025 16:58:34 GMT
+etag: "684b073a-1f52"
+expires: Mon, 27 Apr 2026 22:10:07 GMT
+cache-control: max-age=60
+x-from: sfp-staticweb-2
+accept-ranges: bytes
+cf-cache-status: DYNAMIC
+set-cookie: __cf_bm=4bSfVJz2DqOnRgXoTBDMSebJEXWaSkLdW78QLcUHgLA-1777327747.150821-1.0.1.1-_k.j4hqRxN5lA_R9HfljBRZNzHX.GsJWFdR95m4Gdz2u_aaku8j.dLko9rY5sJlW3fY4F6DfYF2nNLOjofe6I_9qYMVIc5vD3Cm3jCAlVylstr17IaxgpAYSoxLiPRqA; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Mon, 27 Apr 2026 22:39:07 GMT
+cf-ray: 9f312653bd81c115-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: backport-util-concurrent 3.1 Maven Central sources javadoc backport-util-concurrent
+exec
+/usr/bin/bash -lc "curl -I -L -s https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "curl -fsSL https://backport-jsr166.sourceforge.net/ | sed -n '1,200p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/3.1/' | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 157ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>backport-util-concurrent - Distributed Computing Laboratory, Emory University</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="https://static.sourceforge.net/css/sfx.php?secure=1&amp;20070612-2045" media="screen" title="SFx" />
+  <link rel="stylesheet" href="css/style.css" type="text/css">  </head>
+  <body>
+    <div id="main-header"><div>
+      <h1 class="dcl-logo">Distributed Computing Laboratory</h1>
+      <h1 class="emory-logo">Emory University</h1>
+      <hr class="hide">
+    </div></div>
+    <div id="header"><div>
+      <h1>backport-util-concurrent</h1>
+      <p>Backport ot JSR 166 (java.util.concurrent) to Java 1.2, 1.3, 1.4, and ... 5.0, 6.0</p>
+      <p>maintained by Dawid Kurzyniec</p>
+      <hr class="hide">
+    </div></div>
+    <div id="content">
+<div id="side"><div class="nav-title"><div><h3>Menu</h3></div></div><ul class="nav">
+<li><a class="selected" href="index.php">Overview</a></li>
+<li><a href="compatibility.php">Compatibility</a></li>
+<li><a href="robustness.php">Robustness</a></li>
+<li><a href="changelog.php">Changelog</a></li>
+<li><a href="https://sourceforge.net/project/showfiles.php?group_id=153802&package_id=170644">Downloads</a></li>
+<li><a href="documentation.php">Documentation and Support</a></li>
+<li><a href="developers.php">Developer Access</a></li>
+<li><a href="related.php">Related Links</a></li>
+</ul>
+<div class="nav-footer"><div></div></div><hr class="hide">
+<div class="nav-title"><div><h3>Go To</h3></div></div><ul class="nav">
+<li><a href="http://dcl.mathcs.emory.edu/">DCL Home</a></li>
+<li><a href="http://dcl.mathcs.emory.edu/util/">Emory Utilities</a></li>
+</ul>
+<div class="nav-footer"><div></div></div><hr class="hide">
+<div class="news-title"><div><h3>News</h3></div></div><dl class="news">
+<dt>Sept 3, 2007</dt><dd>Version 3.1 released. Now includes versions for Java 6.0</dd>
+<dt>Nov 11, 2006</dt><dd>Version 3.0 released. Now includes versions for Java 1.2, 1.3, 1.4, and 5.0 (sic!)</dd>
+<dt>Jun 4, 2006</dt><dd>Version 2.2 released.</dd>
+</dl>
+<div class="news-footer"><div></div></div><hr class="hide">
+<div class="logo"><a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=153802&amp;type=4" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></div></div>
+
+<div id="mainContent">
+
+<h2>Overview</h2>
+
+<p>
+This package is the backport of 
+<a href="http://gee.cs.oswego.edu/dl/concurrency-interest/">java.util.concurrent</a> API,
+introduced in
+<a href="http://java.sun.com/j2se/1.5.0/docs/guide/concurrency/overview.html">Java 5.0</a>
+and further refined in Java 6.0,
+to older Java platforms. The backport is based on public-domain sources from the
+<a href="http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/main/java/">
+JSR 166 CVS repository</a>, the
+<a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">
+dl.util.concurrent</a> package, and the Doug Lea's
+<a href="http://gee.oswego.edu/dl/classes/collections/">
+collections</a> package.
+<p>
+The ambition of this project is to provide a concurrency library that works with 
+uncompromised performance on all Java platforms currently in use,
+allowing development of fully portable concurrent applications. More precisely,
+the traget scope is Java 1.3 and above, and some limited support if offered for Java 1.2.
+<p>
+The backport is close to complete; unsupported functionality is 
+limited to: 1) classes that rely on explicit 
+JVM support and cannot be emulated at a satisfactory
+performance level on platforms before 5.0, 2) some of the functions 
+described in the original javadoc as "designed primarily for use in 
+monitoring in system state, not for synchronization control".
+</p>
+<p>
+The ultimate purpose of the backport is to enable gradual migration to java.util.concurrent.
+In a perfect world, everybody would instantly and simultaneously upgrade to Java 6.0 once
+it comes out. In reality, many people are, for various reasons, still stuck to older platforms.
+The backport allows them to use the JSR 166 goodies without upgrading just yet. 
+And once they are ready to switch, their concurrency code will require only very minor
+modifications, such as changing the import statements.
+</p>
+<p>Note: <a href="http://retrotranslator.sourceforge.net/">Retrotranslator</a>
+   in an interesting alternative to using the backport directly.</p>
+
+<h3>Latest release</h3>
+
+<p>
+The current release is 3.1. This release features several alternative versions, all with
+the same API, but optimized for different Java platforms.
+<p>
+<div style='border: 1px solid #008000; background: #4186cb url("images/menu_bg.png") repeat-x top left; font-size: 82.3%; color: #456; .3em 4.5em 1.7em .5em !important; margin: 0 0 -.5em 1em; width: 17em; padding: 4px; margin-bottom: 6px'><a style="color: white; font-weight: bold;" href="https://sourceforge.net/project/platformdownload.php?group_id=153802&amp;sel_platform=4411">Downloads<br>for the latest release</a></div>
+
+<h4>The "standard" 1.4 backport</h4>
+This was the only option available in releases prior to 3.0.
+
+<h4>The Java 1.3 backport</h4>
+Compiled on 1.3.1. It runs also on Java 1.2, but it is not thoroughly tested with it.
+
+<h4>The Java 5.0 backport</h4>
+
+<p>
+What's the point of backporting java.util.concurrent to Java 5.0? Well, there are two,
+actually. First, the backport is based on more recent sources of JSR 166, as they will
+appear in Java 6.0, and thus it has some extra functionality, bug fixes, and optimizations.
+(At the same time though, some stuff from j.u.c. is <a href="compatibility.php">missing</a>).
+Second, people apparently sometimes decide to stick to the backport even on 5.0,
+to keep their code portable. The standard 1.4 backport
+works on 5.0, but not as fast as JVM-supported java.util.concurrent. This new, dedicated version
+of the backport
+utilizes the native concurrency support of new JVMs, and thus achieves the same performance
+as java.util.concurrent.
+</p>
+
+<p>NOTE: unfortunately, this version doesn't work on JVMs newer than 5.0. Hence, the dedicated
+version below.</p>
+
+<h4>The Java 6.0 backport</h4>
+
+<p>
+See above for the motivation. This version requires a JVM 6.0+. It will match the performance
+of native java.util.concurrent, and it should be forward-compatible with upcoming Java releases.
+(No backport version 7.0 is anticipated).</p>
+
+<h3>Features</h3>
+
+<p>
+The following functionality of java.util.concurrent is supported in the backport:
+<ul>
+<li>All JSR 166 executors, utilities, and everything related (thread pools, 
+FutureTask, scheduled tasks and executors, etc.)</li>
+<li>Locks: ReentrantLock, Semaphore, ReentrantReadWriteLock 
+(see <a href="compatibility.php">Compatibility</a>), Conditions</li>
+<li>Queues: synchronous, array, linked, delay, and priority queues</li>
+<li>Deques: array, and linked deques</li>
+<li>Atomics: everything except reflection-based updaters</li>
+<li>Other concurrency utils: CountDownLatch, CyclicBarrier, Exchanger</li>
+<li>Concurrent collections: ConcurrentHashMap, CopyOnWriteArrayList, CopyOnWriteArraySet,
+    ConcurrentLinkedQueue, 
+    ConcurrentSkipList[Map,Set]</li>
+<li>Retrofitted standard collections</li>
+</ul>
+</p>
+
+<h3>License</h3>
+
+<p>
+This software is released to the 
+<a href="http://creativecommons.org/licenses/publicdomain">public domain</a>,
+in the spirit of the original code written by Doug Lea.
+The code can be used for any purpose, modified, and redistributed 
+without acknowledgment. No warranty is provided, either express or implied.
+</p>
+
+</div>
+
+    </div>
+    <div id="footer">
+      <hr class="hide">
+      <div id="footer-contents">Copyright &copy; 2004-2007
+      <a href="http://dcl.mathcs.emory.edu/">Distributed Computing Laboratory</a>, Emory University
+      <br>
+      Last updated: Sept 15, 2007</div>
+    </div>
+
+</body>
+</html>
+
+ succeeded in 369ms:
+<!doctype html><html class="no-js" lang="en">
+    <head>
+        
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+        
+        
+        
+    
+        
+        <script src="//a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1777314598"></script>
+
+        
+    
+
+        
+
+    
+    
+    <link rel="stylesheet" href="//a.fsdn.com/con/css/sftheme/sandiego/cmp.css?1777314598">
+    
+    <script>
+        window.bizx.cmp.init({
+            
+            geo: {
+                is_euro_union: 1,
+                country_code2: 'CH',
+                region: '',
+            },
+        });
+    </script>
+
+
+            
+
+
+
+        <script>
+            /*global unescape, window, SF*/
+            // Setup our namespace
+            if (!window.SF) { window.SF = {}; }
+            if (!window.net) { window.net = {}; }
+            if (!window.net.sf) { window.net.sf = {}; }
+            SF.Ads = {};
+            SF.cdn = '//a.fsdn.com/con';
+            SF.alluracdn = '//a.fsdn.com/allura/cdn/allura/nf';
+            SF.deploy_time = '1777314598';
+            SF.sandiego = true;
+            SF.sandiego_chrome = true;
+            SF.variant = 'sf';
+            SF.fpid = '219ce509-cbef-4950-a94d-86fdf219348b';
+            SF.comm_billboard_route = '/software/product/$slug/';
+            SF.floatingSitewideOrigin = 'https://sourceforge.net';
+            
+            SF.Breakpoints = {
+              small: 0,
+              medium: 640,
+              leaderboard: 743,
+              billboard: 985,
+              large: 1053,
+              xlarge: 1295,
+              xxlarge: 1366
+            };
+            SF.initial_breakpoints_visible = {};
+            for (var bp in SF.Breakpoints) {
+                if (!SF.Breakpoints.hasOwnProperty(bp)) {
+                    continue;
+                }
+                SF.initial_breakpoints_visible[bp] = !window.matchMedia || window.matchMedia('(min-width: ' + SF.Breakpoints[bp] + 'px)').matches;
+            }
+            
+                
+                SF.Ads.viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                SF.Ads.viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            
+        </script>
+
+        
+        <script>
+            window.ID5EspConfig = {partnerId: 1787};
+        </script>
+        
+
+        
+<script>
+    var data = {hem: null };
+    bizx.uids.gatherAndClean(data);
+</script>
+
+        
+            
+    
+    
+    
+    
+    
+    
+    
+    
+    <link rel="stylesheet" href="//a.fsdn.com/con/css/lato.css?1777314598">
+
+        
+        
+        
+        <link rel="stylesheet" href="//a.fsdn.com/con/css/sandiego.css?1777314598">
+        
+        <link rel="stylesheet" href="//a.fsdn.com/con/css/disallow.css?1777314598">
+
+        
+    <link rel="canonical" href="https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/3.1/">
+    <meta name="description" content="backport-util-concurrent /backport-jsr166/3.1 files. Browse /backport-jsr166/3.1 files for backport-util-concurrent">
+    <meta name="keywords" content="backport-util-concurrent /backport-jsr166/3.1 files. Browse /backport-jsr166/3.1 files for backport-util-concurrent">
+        <title>backport-util-concurrent -  Browse /backport-jsr166/3.1 at SourceForge.net</title>
+        <link rel="icon" sizes="180x180" href="//a.fsdn.com/con/img/sandiego/logo-180x180.png" type="image/png">
+<link rel="icon" sizes="any" href="//a.fsdn.com/con/img/sandiego/svg/originals/sf-icon-orange-no_sf.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="//a.fsdn.com/con/img/sandiego/logo-180x180.png">
+<link rel="mask-icon" href="//a.fsdn.com/con/img/sandiego/svg/originals/sf-icon-orange-no_sf.svg" color="#FF6600">
+        
+
+ succeeded in 692ms:
+HTTP/2 302 
+date: Mon, 27 Apr 2026 22:09:15 GMT
+content-type: text/html; charset=UTF-8
+location: https://master.dl.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip?viasf=1
+server: cloudflare
+content-security-policy: upgrade-insecure-requests
+content-disposition: attachment; filename="backport-util-concurrent-3.1-src.zip"
+cf-cache-status: DYNAMIC
+set-cookie: sf_mirror_attempt=backport-jsr166:master:backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip; Max-Age=120; Path=/; expires=Mon, 27-Apr-2026 22:11:14 GMT; secure
+set-cookie: __cf_bm=tVsRDmU3R03tH1oD8UageSpCQtLYjBYsV7AGisObVQQ-1777327754.8649309-1.0.1.1-nOEAozC681k6Mv.ANtHJw56N3Be253IJJSOiYK20IU_2foLQJn1Gtgs8OY55tt6jTHmyKz5YzVYTPaXBIytj2ylsfZf5aMzC_g.cg7iFVGtVvZSeSvyGyRbu_BYVnlSI; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Mon, 27 Apr 2026 22:39:15 GMT
+cf-ray: 9f312683e979039b-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Mon, 27 Apr 2026 22:09:15 GMT
+Content-Type: application/octet-stream
+Content-Length: 953563
+Connection: keep-alive
+last-modified: Sat, 15 Sep 2007 10:20:24 GMT
+etag: "46ebb1e8-e8cdb"
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://backport-jsr166.sourceforge.net/developers.php | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "curl -fsSL https://backport-jsr166.sourceforge.net/documentation.php | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/3.1/' | rg -o 'backport-util-concurrent-3\\.1["'^"<> ]+'"' | sort -u" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 288ms:
+backport-util-concurrent-3.1-src.tar.bz2
+backport-util-concurrent-3.1-src.tar.bz2/
+backport-util-concurrent-3.1-src.tar.bz2/download
+backport-util-concurrent-3.1-src.tar.bz2/stats/timeline
+backport-util-concurrent-3.1-src.tar.gz
+backport-util-concurrent-3.1-src.tar.gz/
+backport-util-concurrent-3.1-src.tar.gz/download
+backport-util-concurrent-3.1-src.tar.gz/stats/timeline
+backport-util-concurrent-3.1-src.zip
+backport-util-concurrent-3.1-src.zip/
+backport-util-concurrent-3.1-src.zip/download
+backport-util-concurrent-3.1-src.zip/stats/timeline
+backport-util-concurrent-3.1.tar.bz2
+backport-util-concurrent-3.1.tar.bz2/
+backport-util-concurrent-3.1.tar.bz2/download
+backport-util-concurrent-3.1.tar.bz2/stats/timeline
+backport-util-concurrent-3.1.tar.gz
+backport-util-concurrent-3.1.tar.gz/
+backport-util-concurrent-3.1.tar.gz/download
+backport-util-concurrent-3.1.tar.gz/stats/timeline
+backport-util-concurrent-3.1.zip
+backport-util-concurrent-3.1.zip/
+backport-util-concurrent-3.1.zip/download
+backport-util-concurrent-3.1.zip/stats/timeline
+backport-util-concurrent-3.1.zip:
+
+ succeeded in 355ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>backport-util-concurrent - Distributed Computing Laboratory, Emory University</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="https://static.sourceforge.net/css/sfx.php?secure=1&amp;20070612-2045" media="screen" title="SFx" />
+  <link rel="stylesheet" href="css/style.css" type="text/css">  </head>
+  <body>
+    <div id="main-header"><div>
+      <h1 class="dcl-logo">Distributed Computing Laboratory</h1>
+      <h1 class="emory-logo">Emory University</h1>
+      <hr class="hide">
+    </div></div>
+    <div id="header"><div>
+      <h1>backport-util-concurrent</h1>
+      <p>Backport ot JSR 166 (java.util.concurrent) to Java 1.2, 1.3, 1.4, and ... 5.0, 6.0</p>
+      <p>maintained by Dawid Kurzyniec</p>
+      <hr class="hide">
+    </div></div>
+    <div id="content">
+<div id="side"><div class="nav-title"><div><h3>Menu</h3></div></div><ul class="nav">
+<li><a class="selected" href="index.php">Overview</a></li>
+<li><a href="compatibility.php">Compatibility</a></li>
+<li><a href="robustness.php">Robustness</a></li>
+<li><a href="changelog.php">Changelog</a></li>
+<li><a href="https://sourceforge.net/project/showfiles.php?group_id=153802&package_id=170644">Downloads</a></li>
+<li><a href="documentation.php">Documentation and Support</a></li>
+<li><a href="developers.php">Developer Access</a></li>
+<li><a href="related.php">Related Links</a></li>
+</ul>
+<div class="nav-footer"><div></div></div><hr class="hide">
+<div class="nav-title"><div><h3>Go To</h3></div></div><ul class="nav">
+<li><a href="http://dcl.mathcs.emory.edu/">DCL Home</a></li>
+<li><a href="http://dcl.mathcs.emory.edu/util/">Emory Utilities</a></li>
+</ul>
+<div class="nav-footer"><div></div></div><hr class="hide">
+<div class="news-title"><div><h3>News</h3></div></div><dl class="news">
+<dt>Sept 3, 2007</dt><dd>Version 3.1 released. Now includes versions for Java 6.0</dd>
+<dt>Nov 11, 2006</dt><dd>Version 3.0 released. Now includes versions for Java 1.2, 1.3, 1.4, and 5.0 (sic!)</dd>
+<dt>Jun 4, 2006</dt><dd>Version 2.2 released.</dd>
+</dl>
+<div class="news-footer"><div></div></div><hr class="hide">
+<div class="logo"><a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=153802&amp;type=4" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></div></div>
+
+<div id="mainContent">
+
+<h2>Overview</h2>
+
+<p>
+This package is the backport of 
+<a href="http://gee.cs.oswego.edu/dl/concurrency-interest/">java.util.concurrent</a> API,
+introduced in
+<a href="http://java.sun.com/j2se/1.5.0/docs/guide/concurrency/overview.html">Java 5.0</a>
+and further refined in Java 6.0,
+to older Java platforms. The backport is based on public-domain sources from the
+<a href="http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/main/java/">
+JSR 166 CVS repository</a>, the
+<a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">
+dl.util.concurrent</a> package, and the Doug Lea's
+<a href="http://gee.oswego.edu/dl/classes/collections/">
+collections</a> package.
+<p>
+The ambition of this project is to provide a concurrency library that works with 
+uncompromised performance on all Java platforms currently in use,
+allowing development of fully portable concurrent applications. More precisely,
+the traget scope is Java 1.3 and above, and some limited support if offered for Java 1.2.
+<p>
+The backport is close to complete; unsupported functionality is 
+limited to: 1) classes that rely on explicit 
+JVM support and cannot be emulated at a satisfactory
+performance level on platforms before 5.0, 2) some of the functions 
+described in the original javadoc as "designed primarily for use in 
+monitoring in system state, not for synchronization control".
+</p>
+<p>
+The ultimate purpose of the backport is to enable gradual migration to java.util.concurrent.
+In a perfect world, everybody would instantly and simultaneously upgrade to Java 6.0 once
+it comes out. In reality, many people are, for various reasons, still stuck to older platforms.
+The backport allows them to use the JSR 166 goodies without upgrading just yet. 
+And once they are ready to switch, their concurrency code will require only very minor
+modifications, such as changing the import statements.
+</p>
+<p>Note: <a href="http://retrotranslator.sourceforge.net/">Retrotranslator</a>
+   in an interesting alternative to using the backport directly.</p>
+
+<h3>Latest release</h3>
+
+<p>
+The current release is 3.1. This release features several alternative versions, all with
+the same API, but optimized for different Java platforms.
+<p>
+<div style='border: 1px solid #008000; background: #4186cb url("images/menu_bg.png") repeat-x top left; font-size: 82.3%; color: #456; .3em 4.5em 1.7em .5em !important; margin: 0 0 -.5em 1em; width: 17em; padding: 4px; margin-bottom: 6px'><a style="color: white; font-weight: bold;" href="https://sourceforge.net/project/platformdownload.php?group_id=153802&amp;sel_platform=4411">Downloads<br>for the latest release</a></div>
+
+<h4>The "standard" 1.4 backport</h4>
+This was the only option available in releases prior to 3.0.
+
+<h4>The Java 1.3 backport</h4>
+Compiled on 1.3.1. It runs also on Java 1.2, but it is not thoroughly tested with it.
+
+<h4>The Java 5.0 backport</h4>
+
+<p>
+What's the point of backporting java.util.concurrent to Java 5.0? Well, there are two,
+actually. First, the backport is based on more recent sources of JSR 166, as they will
+appear in Java 6.0, and thus it has some extra functionality, bug fixes, and optimizations.
+(At the same time though, some stuff from j.u.c. is <a href="compatibility.php">missing</a>).
+Second, people apparently sometimes decide to stick to the backport even on 5.0,
+to keep their code portable. The standard 1.4 backport
+works on 5.0, but not as fast as JVM-supported java.util.concurrent. This new, dedicated version
+of the backport
+utilizes the native concurrency support of new JVMs, and thus achieves the same performance
+as java.util.concurrent.
+</p>
+
+<p>NOTE: unfortunately, this version doesn't work on JVMs newer than 5.0. Hence, the dedicated
+version below.</p>
+
+<h4>The Java 6.0 backport</h4>
+
+<p>
+See above for the motivation. This version requires a JVM 6.0+. It will match the performance
+of native java.util.concurrent, and it should be forward-compatible with upcoming Java releases.
+(No backport version 7.0 is anticipated).</p>
+
+<h3>Features</h3>
+
+<p>
+The following functionality of java.util.concurrent is supported in the backport:
+<ul>
+<li>All JSR 166 executors, utilities, and everything related (thread pools, 
+FutureTask, scheduled tasks and executors, etc.)</li>
+<li>Locks: ReentrantLock, Semaphore, ReentrantReadWriteLock 
+(see <a href="compatibility.php">Compatibility</a>), Conditions</li>
+<li>Queues: synchronous, array, linked, delay, and priority queues</li>
+<li>Deques: array, and linked deques</li>
+<li>Atomics: everything except reflection-based updaters</li>
+<li>Other concurrency utils: CountDownLatch, CyclicBarrier, Exchanger</li>
+<li>Concurrent collections: ConcurrentHashMap, CopyOnWriteArrayList, CopyOnWriteArraySet,
+    ConcurrentLinkedQueue, 
+    ConcurrentSkipList[Map,Set]</li>
+<li>Retrofitted standard collections</li>
+</ul>
+</p>
+
+<h3>License</h3>
+
+<p>
+This software is released to the 
+<a href="http://creativecommons.org/licenses/publicdomain">public domain</a>,
+in the spirit of the original code written by Doug Lea.
+The code can be used for any purpose, modified, and redistributed 
+without acknowledgment. No warranty is provided, either express or implied.
+</p>
+
+</div>
+
+    </div>
+    <div id="footer">
+      <hr class="hide">
+      <div id="footer-contents">Copyright &copy; 2004-2007
+      <a href="http://dcl.mathcs.emory.edu/">Distributed Computing Laboratory</a>, Emory University
+      <br>
+      Last updated: Sept 15, 2007</div>
+    </div>
+
+</body>
+</html>
+
+ succeeded in 532ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>backport-util-concurrent - Distributed Computing Laboratory, Emory University</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="https://static.sourceforge.net/css/sfx.php?secure=1&amp;20070612-2045" media="screen" title="SFx" />
+  <link rel="stylesheet" href="css/style.css" type="text/css">  </head>
+  <body>
+    <div id="main-header"><div>
+      <h1 class="dcl-logo">Distributed Computing Laboratory</h1>
+      <h1 class="emory-logo">Emory University</h1>
+      <hr class="hide">
+    </div></div>
+    <div id="header"><div>
+      <h1>backport-util-concurrent</h1>
+      <p>Backport ot JSR 166 (java.util.concurrent) to Java 1.2, 1.3, 1.4, and ... 5.0, 6.0</p>
+      <p>maintained by Dawid Kurzyniec</p>
+      <hr class="hide">
+    </div></div>
+    <div id="content">
+<div id="side"><div class="nav-title"><div><h3>Menu</h3></div></div><ul class="nav">
+<li><a class="selected" href="index.php">Overview</a></li>
+<li><a href="compatibility.php">Compatibility</a></li>
+<li><a href="robustness.php">Robustness</a></li>
+<li><a href="changelog.php">Changelog</a></li>
+<li><a href="https://sourceforge.net/project/showfiles.php?group_id=153802&package_id=170644">Downloads</a></li>
+<li><a href="documentation.php">Documentation and Support</a></li>
+<li><a href="developers.php">Developer Access</a></li>
+<li><a href="related.php">Related Links</a></li>
+</ul>
+<div class="nav-footer"><div></div></div><hr class="hide">
+<div class="nav-title"><div><h3>Go To</h3></div></div><ul class="nav">
+<li><a href="http://dcl.mathcs.emory.edu/">DCL Home</a></li>
+<li><a href="http://dcl.mathcs.emory.edu/util/">Emory Utilities</a></li>
+</ul>
+<div class="nav-footer"><div></div></div><hr class="hide">
+<div class="news-title"><div><h3>News</h3></div></div><dl class="news">
+<dt>Sept 3, 2007</dt><dd>Version 3.1 released. Now includes versions for Java 6.0</dd>
+<dt>Nov 11, 2006</dt><dd>Version 3.0 released. Now includes versions for Java 1.2, 1.3, 1.4, and 5.0 (sic!)</dd>
+<dt>Jun 4, 2006</dt><dd>Version 2.2 released.</dd>
+</dl>
+<div class="news-footer"><div></div></div><hr class="hide">
+<div class="logo"><a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=153802&amp;type=4" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a></div></div>
+
+<div id="mainContent">
+
+<h2>Overview</h2>
+
+<p>
+This package is the backport of 
+<a href="http://gee.cs.oswego.edu/dl/concurrency-interest/">java.util.concurrent</a> API,
+introduced in
+<a href="http://java.sun.com/j2se/1.5.0/docs/guide/concurrency/overview.html">Java 5.0</a>
+and further refined in Java 6.0,
+to older Java platforms. The backport is based on public-domain sources from the
+<a href="http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/main/java/">
+JSR 166 CVS repository</a>, the
+<a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">
+dl.util.concurrent</a> package, and the Doug Lea's
+<a href="http://gee.oswego.edu/dl/classes/collections/">
+collections</a> package.
+<p>
+The ambition of this project is to provide a concurrency library that works with 
+uncompromised performance on all Java platforms currently in use,
+allowing development of fully portable concurrent applications. More precisely,
+the traget scope is Java 1.3 and above, and some limited support if offered for Java 1.2.
+<p>
+The backport is close to complete; unsupported functionality is 
+limited to: 1) classes that rely on explicit 
+JVM support and cannot be emulated at a satisfactory
+performance level on platforms before 5.0, 2) some of the functions 
+described in the original javadoc as "designed primarily for use in 
+monitoring in system state, not for synchronization control".
+</p>
+<p>
+The ultimate purpose of the backport is to enable gradual migration to java.util.concurrent.
+In a perfect world, everybody would instantly and simultaneously upgrade to Java 6.0 once
+it comes out. In reality, many people are, for various reasons, still stuck to older platforms.
+The backport allows them to use the JSR 166 goodies without upgrading just yet. 
+And once they are ready to switch, their concurrency code will require only very minor
+modifications, such as changing the import statements.
+</p>
+<p>Note: <a href="http://retrotranslator.sourceforge.net/">Retrotranslator</a>
+   in an interesting alternative to using the backport directly.</p>
+
+<h3>Latest release</h3>
+
+<p>
+The current release is 3.1. This release features several alternative versions, all with
+the same API, but optimized for different Java platforms.
+<p>
+<div style='border: 1px solid #008000; background: #4186cb url("images/menu_bg.png") repeat-x top left; font-size: 82.3%; color: #456; .3em 4.5em 1.7em .5em !important; margin: 0 0 -.5em 1em; width: 17em; padding: 4px; margin-bottom: 6px'><a style="color: white; font-weight: bold;" href="https://sourceforge.net/project/platformdownload.php?group_id=153802&amp;sel_platform=4411">Downloads<br>for the latest release</a></div>
+
+<h4>The "standard" 1.4 backport</h4>
+This was the only option available in releases prior to 3.0.
+
+<h4>The Java 1.3 backport</h4>
+Compiled on 1.3.1. It runs also on Java 1.2, but it is not thoroughly tested with it.
+
+<h4>The Java 5.0 backport</h4>
+
+<p>
+What's the point of backporting java.util.concurrent to Java 5.0? Well, there are two,
+actually. First, the backport is based on more recent sources of JSR 166, as they will
+appear in Java 6.0, and thus it has some extra functionality, bug fixes, and optimizations.
+(At the same time though, some stuff from j.u.c. is <a href="compatibility.php">missing</a>).
+Second, people apparently sometimes decide to stick to the backport even on 5.0,
+to keep their code portable. The standard 1.4 backport
+works on 5.0, but not as fast as JVM-supported java.util.concurrent. This new, dedicated version
+of the backport
+utilizes the native concurrency support of new JVMs, and thus achieves the same performance
+as java.util.concurrent.
+</p>
+
+<p>NOTE: unfortunately, this version doesn't work on JVMs newer than 5.0. Hence, the dedicated
+version below.</p>
+
+<h4>The Java 6.0 backport</h4>
+
+<p>
+See above for the motivation. This version requires a JVM 6.0+. It will match the performance
+of native java.util.concurrent, and it should be forward-compatible with upcoming Java releases.
+(No backport version 7.0 is anticipated).</p>
+
+<h3>Features</h3>
+
+<p>
+The following functionality of java.util.concurrent is supported in the backport:
+<ul>
+<li>All JSR 166 executors, utilities, and everything related (thread pools, 
+FutureTask, scheduled tasks and executors, etc.)</li>
+<li>Locks: ReentrantLock, Semaphore, ReentrantReadWriteLock 
+(see <a href="compatibility.php">Compatibility</a>), Conditions</li>
+<li>Queues: synchronous, array, linked, delay, and priority queues</li>
+<li>Deques: array, and linked deques</li>
+<li>Atomics: everything except reflection-based updaters</li>
+<li>Other concurrency utils: CountDownLatch, CyclicBarrier, Exchanger</li>
+<li>Concurrent collections: ConcurrentHashMap, CopyOnWriteArrayList, CopyOnWriteArraySet,
+    ConcurrentLinkedQueue, 
+    ConcurrentSkipList[Map,Set]</li>
+<li>Retrofitted standard collections</li>
+</ul>
+</p>
+
+<h3>License</h3>
+
+<p>
+This software is released to the 
+<a href="http://creativecommons.org/licenses/publicdomain">public domain</a>,
+in the spirit of the original code written by Doug Lea.
+The code can be used for any purpose, modified, and redistributed 
+without acknowledgment. No warranty is provided, either express or implied.
+</p>
+
+</div>
+
+    </div>
+    <div id="footer">
+      <hr class="hide">
+      <div id="footer-contents">Copyright &copy; 2004-2007
+      <a href="http://dcl.mathcs.emory.edu/">Distributed Computing Laboratory</a>, Emory University
+      <br>
+      Last updated: Sept 15, 2007</div>
+    </div>
+
+</body>
+</html>
+
+codex
+The SourceForge 3.1 release also has a full source archive. I’m inspecting it for bundled tests and docs before deciding whether the Maven artifacts are the better URL targets.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLo src.zip https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip; unzip -l src.zip | sed -n '"'1,220p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLo bin.zip https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1.zip; unzip -l bin.zip | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "curl -I -L -s https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.tar.gz | sed -n '1,60p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 650ms:
+HTTP/2 302 
+date: Mon, 27 Apr 2026 22:09:26 GMT
+content-type: text/html; charset=UTF-8
+location: https://master.dl.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.tar.gz?viasf=1
+server: cloudflare
+content-security-policy: upgrade-insecure-requests
+content-disposition: attachment; filename="backport-util-concurrent-3.1-src.tar.gz"
+cf-cache-status: DYNAMIC
+set-cookie: sf_mirror_attempt=backport-jsr166:master:backport-jsr166/3.1/backport-util-concurrent-3.1-src.tar.gz; Max-Age=120; Path=/; expires=Mon, 27-Apr-2026 22:11:26 GMT; secure
+set-cookie: __cf_bm=sm1JBX7.oc6GUfnTsIhKeAkK7ZFhsW9jG820BBNciR8-1777327766.709085-1.0.1.1-YjSLrGDfqfjPQjN9W7jdaVwShGtHLA7JTD54bRfY7AqEiM7acS27rM2QJ5YClzVmmfkHP7j7d5KyYkS7kFmbbMYrwyZA4hlX5plSRl9NeTTwigQLdljuJGePhAFxYpi6; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Mon, 27 Apr 2026 22:39:26 GMT
+cf-ray: 9f3126cded5cbc50-ZRH
+alt-svc: h3=":443"; ma=86400
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Mon, 27 Apr 2026 22:09:27 GMT
+Content-Type: application/x-gzip
+Content-Length: 772932
+Connection: keep-alive
+last-modified: Sat, 15 Sep 2007 10:20:21 GMT
+etag: "46ebb1e5-bcb44"
+
+
+ succeeded in 2070ms:
+Archive:  src.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/test/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/test/tck/
+      450  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/backport.util.concurrent.1.4.library
+     4048  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/tck.jpx
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/test/tck/src/
+     5063  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/src/AtomicMarkableReferenceTest.java
+    31942  2006-01-24 21:44   backport-util-concurrent-3.1-src/test/tck/src/LinkedBlockingQueueTest.java
+    25321  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/tck/src/SynchronousQueueTest.java
+     2476  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/src/ThreadTest.java
+    38340  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/ConcurrentSkipListMapTest.java
+    32785  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/TreeSubMapTest.java
+     4821  2006-01-24 21:44   backport-util-concurrent-3.1-src/test/tck/src/AbstractQueueTest.java
+    35426  2006-05-23 06:25   backport-util-concurrent-3.1-src/test/tck/src/ReentrantLockTest.java
+     7564  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/tck/src/ExecutorCompletionServiceTest.java
+    30175  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/TreeSetTest.java
+     4627  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicBooleanTest.java
+     3048  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/src/ThreadLocalTest.java
+    42928  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/ConcurrentSkipListSubMapTest.java
+    15356  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/ConcurrentLinkedQueueTest.java
+    31149  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/ConcurrentSkipListSetTest.java
+     9189  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicIntegerFieldUpdaterTest.java
+     2506  2005-06-15 07:24   backport-util-concurrent-3.1-src/test/tck/src/SystemTest.java
+    17256  2006-01-24 21:44   backport-util-concurrent-3.1-src/test/tck/src/ConcurrentHashMapTest.java
+    31351  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/TreeSubSetTest.java
+    19075  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/JSR166TestCase.java
+     7455  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicIntegerTest.java
+    40868  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AbstractQueuedSynchronizerTest.java
+    56627  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/ThreadPoolExecutorSubclassTest.java
+    31934  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/ConcurrentSkipListSubSetTest.java
+    11201  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicLongArrayTest.java
+     6366  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/src/CountDownLatchTest.java
+    28676  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/tck/src/PriorityBlockingQueueTest.java
+     4169  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/EntryTest.java
+    18224  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/tck/src/ArrayDequeTest.java
+    17555  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/tck/src/LinkedListTest.java
+    29354  2006-01-24 21:44   backport-util-concurrent-3.1-src/test/tck/src/DelayQueueTest.java
+    24626  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/AbstractExecutorServiceTest.java
+    57573  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/tck/src/LinkedBlockingDequeTest.java
+     7164  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/src/ExchangerTest.java
+     5009  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/src/AtomicStampedReferenceTest.java
+    21177  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/CyclicBarrierTest.java
+    18472  2005-06-21 23:45   backport-util-concurrent-3.1-src/test/tck/src/CopyOnWriteArrayListTest.java
+    37776  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/ScheduledExecutorSubclassTest.java
+    36941  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/ScheduledExecutorTest.java
+    55551  2006-05-23 06:25   backport-util-concurrent-3.1-src/test/tck/src/ReentrantReadWriteLockTest.java
+    53849  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/ThreadPoolExecutorTest.java
+    20506  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/ExecutorsTest.java
+     4168  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/LockSupportTest.java
+    29653  2006-05-13 18:38   backport-util-concurrent-3.1-src/test/tck/src/SemaphoreTest.java
+     6065  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicReferenceFieldUpdaterTest.java
+     9037  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicLongFieldUpdaterTest.java
+    14645  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/PriorityQueueTest.java
+    11324  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/AtomicIntegerArrayTest.java
+     7224  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicReferenceArrayTest.java
+     4505  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicReferenceTest.java
+    31686  2006-01-24 21:44   backport-util-concurrent-3.1-src/test/tck/src/ArrayBlockingQueueTest.java
+     7061  2005-06-15 02:38   backport-util-concurrent-3.1-src/test/tck/src/AtomicLongTest.java
+     7935  2006-01-24 21:44   backport-util-concurrent-3.1-src/test/tck/src/CopyOnWriteArraySetTest.java
+    12686  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/tck/src/FutureTaskTest.java
+    32013  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/tck/src/TreeMapTest.java
+    17681  2005-01-19 00:29   backport-util-concurrent-3.1-src/test/tck/src/TimeUnitTest.java
+    16013  2005-07-03 22:31   backport-util-concurrent-3.1-src/test/tck/LinkedListTest.java
+       11  2004-12-01 01:35   backport-util-concurrent-3.1-src/test/tck/RECONCILED_ON
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/test/loops/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/test/loops/src/
+     4460  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/CancelledLockLoops.java
+     6731  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/StringMapLoops.java
+     4830  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/loops/src/ExchangeLoops.java
+     3196  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/NoopLockLoops.java
+     2134  2005-02-05 03:12   backport-util-concurrent-3.1-src/test/loops/src/FinalLongTest142.java
+     1549  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/Mutex.java
+    11623  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/LockLoops.java
+     3629  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleReentrantLockLoops.java
+     4523  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/RWCollection.java
+     3253  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/FinalLongTest.java
+     5697  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/CollectionWordLoops.java
+     3661  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleSpinLockLoops.java
+    13769  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/UncheckedLockLoops.java
+     3895  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/TimeoutLockLoops.java
+     5314  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/LoopHelpers.java
+    19634  2007-07-05 10:35   backport-util-concurrent-3.1-src/test/loops/src/CASLoops.java
+     6486  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/MapLoops.java
+     2879  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/SCollection.java
+     2172  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SMap.java
+     3313  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/SimpleLoops.java
+     2350  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/RLMap.java
+     6664  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/CountedMapLoops.java
+     2322  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/ConcurrentHashSet.java
+     3758  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/loops/src/IteratorLoops.java
+     5215  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/ConcurrentQueueLoops.java
+     3618  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/CachedThreadPoolLoops.java
+     1396  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/LastKeyOfSubMap.java
+     4699  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/SetBash.java
+     2858  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/RWMap.java
+     5458  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/loops/src/TimeoutExchangerLoops.java
+     5146  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/ProducerConsumerLoops.java
+    13649  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/CheckedLockLoops.java
+     3533  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleLockLoops.java
+     3195  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/NoopNoLockLoops.java
+     4893  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/MultipleProducersSingleConsumerLoops.java
+     4420  2005-02-05 03:12   backport-util-concurrent-3.1-src/test/loops/src/SingleProducerMultipleConsumerLoops.java
+     5881  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/TimeoutProducerConsumerLoops.java
+     2032  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/SynchronizedLinkedListQueue.java
+     2464  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/SynchronizedCollection.java
+     3537  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleWriteLockLoops.java
+     4662  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/ReadHoldingWriteLock.java
+     2451  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/PriorityQueueSort.java
+     6467  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/CollectionLoops.java
+     2335  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/UnboundedQueueFillEmptyLoops.java
+     3321  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/LockOncePerThreadLoops.java
+     2037  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/ContextSwitchTest.java
+    17640  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/IntMapCheck.java
+     9370  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/RLIBar.java
+    17973  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/MapCheck.java
+     5140  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/RLJBar.java
+     5375  2006-01-25 05:03   backport-util-concurrent-3.1-src/test/loops/src/CancelledProducerConsumerLoops.java
+     2138  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/Finals.java
+     5274  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/ConcurrentDequeLoops.java
+    15546  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/loops/src/NavigableMapCheck.java
+     5730  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/MapWordLoops.java
+     3496  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/TimeoutMutexLoops.java
+     3678  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleMutexLoops.java
+     2631  2005-02-05 03:12   backport-util-concurrent-3.1-src/test/loops/src/ExecutorCompletionServiceLoops.java
+     3408  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/NoopSpinLockLoops.java
+    15812  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/DequeBash.java
+     3640  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleTimedLockLoops.java
+    13390  2006-05-13 06:28   backport-util-concurrent-3.1-src/test/loops/src/NavigableSetCheck.java
+     1961  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/TimeUnitLoops.java
+    10132  2005-12-08 22:15   backport-util-concurrent-3.1-src/test/loops/src/ListBash.java
+     1202  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/Sync100M.java
+     3629  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleFairReentrantLockLoops.java
+     3530  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleSemaphoreLoops.java
+     3474  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/src/SimpleNoLockLoops.java
+     3788  2005-06-15 07:36   backport-util-concurrent-3.1-src/test/loops/src/CancelledFutureLoops.java
+    25190  2006-05-15 06:08   backport-util-concurrent-3.1-src/test/loops/src/TSPExchangerTest.java
+      515  2005-06-21 23:42   backport-util-concurrent-3.1-src/test/loops/src/NoopMutex.java
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/test/loops/words/
+  1042619  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/words/dir.txt
+      335  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/words/kw.txt
+    18901  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/words/class.txt
+   285191  2005-06-21 23:44   backport-util-concurrent-3.1-src/test/loops/words/ids.txt
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/test/serialization/
+     6698  2006-01-26 07:01   backport-util-concurrent-3.1-src/test/serialization/SerializationTest.java
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/external/
+   121070  2004-12-11 19:40   backport-util-concurrent-3.1-src/external/junit.jar
+     1959  2004-12-01 01:35   backport-util-concurrent-3.1-src/license.html
+      330  2006-01-28 19:03   backport-util-concurrent-3.1-src/LEGAL
+    33240  2007-07-05 11:52   backport-util-concurrent-3.1-src/README.html
+      969  2007-07-05 12:12   backport-util-concurrent-3.1-src/backport-util-concurrent.iml
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/sun/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/sun/misc/
+      743  2004-12-01 01:35   backport-util-concurrent-3.1-src/src/sun/misc/Perf.java
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/helpers/
+      198  2007-01-11 01:50   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/helpers/package.html
+    14504  2006-01-24 22:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/helpers/Utils.java
+     2497  2004-12-28 22:01   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/helpers/ThreadHelpers.java
+     5083  2006-05-13 18:38   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/helpers/WaitQueue.java
+     2149  2006-05-18 03:54   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/helpers/FIFOWaitQueue.java
+     1184  2004-12-01 01:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/helpers/NanoTimer.java
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/
+     4845  2005-07-03 22:23   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/ReadWriteLock.java
+     4679  2006-05-13 06:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/FIFOCondVar.java
+    19847  2006-05-15 06:06   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/Condition.java
+    14172  2006-05-15 05:45   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/Lock.java
+    52188  2006-11-03 05:55   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/ReentrantReadWriteLock.java
+    34271  2006-05-15 05:45   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/ReentrantLock.java
+     6262  2006-11-11 02:06   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/CondVar.java
+     2553  2005-06-12 21:33   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/locks/package.html
+     2121  2006-05-15 05:45   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ExecutionException.java
+    25825  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/SynchronousQueue.java
+     1340  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ThreadFactory.java
+     6256  2007-06-12 00:40   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ExecutorCompletionService.java
+   112955  2007-06-12 00:24   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentSkipListMap.java
+    14003  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ExecutorService.java
+      961  2004-12-01 01:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/CancellationException.java
+    15692  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentLinkedQueue.java
+        0  2007-07-06 11:02   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/
+     6444  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicStampedReference.java
+     6270  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicIntegerArray.java
+     6164  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicLongArray.java
+     5251  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicInteger.java
+     6327  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicMarkableReference.java
+     4748  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicReferenceArray.java
+     3308  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicReference.java
+     3650  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicBoolean.java
+     5260  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicLong.java
+     8068  2006-07-24 03:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/package.html
+     1117  2004-12-01 01:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/Callable.java
+    16066  2006-05-15 06:07   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentSkipListSet.java
+     7196  2006-05-15 06:06   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ScheduledExecutorService.java
+    25352  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/LinkedBlockingQueue.java
+    47304  2007-06-12 00:14   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentHashMap.java
+      524  2004-12-01 01:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ScheduledFuture.java
+    10347  2006-05-15 05:45   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/CountDownLatch.java
+    30692  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/LinkedBlockingDeque.java
+    15345  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/BlockingQueue.java
+    43537  2007-06-13 23:30   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ScheduledThreadPoolExecutor.java
+    19881  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/PriorityBlockingQueue.java
+      691  2005-06-21 05:34   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/RunnableFuture.java
+    75841  2007-06-13 23:27   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/ThreadPoolExecutor.java
+    25481  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/BlockingDeque.java
+    15238  2006-07-24 03:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/DelayQueue.java
+     9450  2005-12-08 21:47   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/Exchanger.java
+      902  2006-05-13 06:28   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/Delayed.java
+    10471  2006-11-03 07:10   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/AbstractExecutorService.java
+     1001  2004-12-01 01:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/BrokenBarrierException.java
+     1150  2004-12-01 01:35   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/TimeoutException.java
+     5661  2006-05-15 05:45   backport-util-concurrent-3.1-src/src/edu/emory/mathcs/backport/java/util/concurrent/Future.java
+
+ succeeded in 2231ms:
+Archive:  bin.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+   331716  2007-06-14 00:09   backport-util-concurrent-3.1/backport-util-concurrent.jar
+    18422  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/allclasses-frame.html
+    16582  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/allclasses-noframe.html
+     4973  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/constant-values.html
+     4909  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/deprecated-list.html
+    12728  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/AbstractCollection.html
+    14219  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/AbstractList.html
+    13671  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/AbstractMap.html
+    16848  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/AbstractMap.SimpleEntry.html
+    17237  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/AbstractMap.SimpleImmutableEntry.html
+    26061  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/AbstractQueue.html
+    14920  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/AbstractSequentialList.html
+    13515  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/AbstractSet.html
+    65487  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/ArrayDeque.html
+    73523  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/Arrays.html
+    45351  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/Collections.html
+    39085  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/AbstractExecutorService.html
+    54195  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ArrayBlockingQueue.html
+    17642  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicBoolean.html
+    25606  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicInteger.html
+    25105  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicIntegerArray.html
+    25535  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicLong.html
+    24824  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicLongArray.html
+    19640  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicMarkableReference.html
+    18165  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicReference.html
+    20360  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicReferenceArray.html
+    19165  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicStampedReference.html
+     2344  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/package-frame.html
+    19553  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/package-summary.html
+     9098  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/atomic/package-tree.html
+    82148  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/BlockingDeque.html
+    37640  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/BlockingQueue.html
+    11939  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/BrokenBarrierException.html
+     9634  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/Callable.html
+    12118  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/CancellationException.html
+    18402  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/CompletionService.html
+    48974  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentHashMap.html
+    30159  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentLinkedQueue.html
+    18969  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentMap.html
+    37893  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentNavigableMap.html
+    96534  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentSkipListMap.html
+    64416  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentSkipListSet.html
+    34877  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/CopyOnWriteArrayList.html
+    37331  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/CopyOnWriteArraySet.html
+    22955  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/CountDownLatch.html
+    29781  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/CyclicBarrier.html
+    10399  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/Delayed.html
+    46989  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/DelayQueue.html
+    18021  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/Exchanger.html
+    14515  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ExecutionException.html
+    13622  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/Executor.html
+    27950  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ExecutorCompletionService.html
+    55361  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/Executors.html
+    39213  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ExecutorService.html
+    19419  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/Future.html
+    30231  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/FutureTask.html
+    23214  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/FIFOWaitQueue.html
+     9453  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/NanoTimer.html
+     2414  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/package-frame.html
+    10034  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/package-summary.html
+     8614  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/package-tree.html
+    12013  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/ThreadHelpers.html
+    10362  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/ThreadHelpers.UncaughtExceptionHandler.html
+    18838  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/Utils.html
+    17136  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/WaitQueue.html
+    10498  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/WaitQueue.QueuedSync.html
+    15326  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/helpers/WaitQueue.WaitNode.html
+   118405  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/LinkedBlockingDeque.html
+    49537  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/LinkedBlockingQueue.html
+    27590  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/Condition.html
+    28042  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/Lock.html
+     2270  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/package-frame.html
+    14288  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/package-summary.html
+     9128  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/package-tree.html
+    15592  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/ReadWriteLock.html
+    48762  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/ReentrantLock.html
+    32804  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/ReentrantReadWriteLock.html
+    26001  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html
+    31846  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html
+     8597  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/package-frame.html
+    46905  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/package-summary.html
+    30861  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/package-tree.html
+    55986  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/PriorityBlockingQueue.html
+    14538  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/RejectedExecutionException.html
+    12267  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/RejectedExecutionHandler.html
+    11671  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/RunnableFuture.html
+    15196  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/RunnableScheduledFuture.html
+    27533  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ScheduledExecutorService.html
+    11360  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ScheduledFuture.html
+    83125  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ScheduledThreadPoolExecutor.html
+    47005  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/Semaphore.html
+    48758  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/SynchronousQueue.html
+     9665  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ThreadFactory.html
+    13172  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ThreadPoolExecutor.AbortPolicy.html
+    13313  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ThreadPoolExecutor.CallerRunsPolicy.html
+    13614  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ThreadPoolExecutor.DiscardOldestPolicy.html
+    12974  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ThreadPoolExecutor.DiscardPolicy.html
+    93864  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/ThreadPoolExecutor.html
+    11805  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/TimeoutException.html
+    37603  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/concurrent/TimeUnit.html
+    56173  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/Deque.html
+    71028  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/LinkedList.html
+    45447  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/NavigableMap.html
+    34727  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/NavigableSet.html
+     3653  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/package-frame.html
+    13037  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/package-summary.html
+    12215  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/package-tree.html
+    42704  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/PriorityQueue.html
+    24937  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/Queue.html
+    15618  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/TreeMap.Entry.html
+    65015  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/TreeMap.html
+    49661  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/edu/emory/mathcs/backport/java/util/TreeSet.html
+     9081  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/help-doc.html
+   588699  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/index-all.html
+     1455  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/index.html
+     1837  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/overview-frame.html
+     6696  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/overview-summary.html
+    42208  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/overview-tree.html
+      250  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/package-list
+       57  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/resources/inherit.gif
+    64304  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/serialized-form.html
+     1231  2007-06-14 00:09   backport-util-concurrent-3.1/doc/api/stylesheet.css
+      338  2007-06-14 00:09   backport-util-concurrent-3.1/LEGAL
+     1999  2007-06-14 00:09   backport-util-concurrent-3.1/license.html
+    33916  2007-07-06 10:06   backport-util-concurrent-3.1/README.html
+      993  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/AbstractCollection.java
+      969  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/AbstractList.java
+     7863  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/AbstractMap.java
+     6594  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/AbstractQueue.java
+      999  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/AbstractSequentialList.java
+      965  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/AbstractSet.java
+    29599  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/ArrayDeque.java
+    25288  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/Arrays.java
+    29599  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/Collections.java
+    10763  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/AbstractExecutorService.java
+    26757  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/ArrayBlockingQueue.java
+     3779  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicBoolean.java
+     5461  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicInteger.java
+     6498  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicIntegerArray.java
+     5469  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicLong.java
+     6392  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicLongArray.java
+     6493  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicMarkableReference.java
+     3428  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicReference.java
+     4913  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicReferenceArray.java
+     6614  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/AtomicStampedReference.java
+     8236  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/atomic/package.html
+    26095  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/BlockingDeque.java
+    15688  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/BlockingQueue.java
+     1039  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/BrokenBarrierException.java
+     1152  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/Callable.java
+      995  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/CancellationException.java
+     4131  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/CompletionService.java
+    48579  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentHashMap.java
+    16185  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentLinkedQueue.java
+     6164  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentMap.java
+     6175  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentNavigableMap.java
+   116087  2007-06-14 00:09   backport-util-concurrent-3.1/src/edu/emory/mathcs/backport/java/util/concurrent/ConcurrentSkipListMap.java
+
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -g '*.json' . | head -30" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/javax.activation/javax.activation-api/index.json:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/org.postgresql/postgresql/index.json:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/org.eclipse.aether/aether-util/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/org.eclipse.aether/aether-api/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "repository-url": "https://github.com/spotbugs/spotbugs",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "repository-url": "https://github.com/fusesource/hawtbuf",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/javax.annotation/jsr250-api/index.json:    "repository-url": "N/A",
+./metadata/javax.annotation/javax.annotation-api/index.json:    "repository-url" : "https://github.com/javaee/javax.annotation",
+./metadata/org.apache.santuario/xmlsec/index.json:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/com.vaadin.external.google/android-json/index.json:    "repository-url" : "http://developer.android.com/sdk/",
+./metadata/org.jboss/jandex/index.json:    "repository-url" : "https://github.com/smallrye/jandex",
+./metadata/com.h2database/h2/index.json:    "repository-url": "https://github.com/h2database/h2database",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-common/index.json:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-common/index.json:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-common/index.json:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-transport/index.json:    "repository-url": "https://github.com/netty/netty",
+
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\"' -g '*.json' . | head -30" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+./metadata/com.sun.istack/istack-commons-runtime/index.json:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/3.0.7-RELEASE/istack-commons/test",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.0.0/istack-commons/runtime/src/test",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:    "test-code-url": "N/A",
+./metadata/com.google.guava/listenablefuture/index.json:    "test-code-url": "N/A",
+./metadata/com.google.code.findbugs/findbugs-annotations/index.json:    "test-code-url": "N/A",
+./metadata/javax.activation/activation/index.json:    "test-code-url" : "N/A",
+./metadata/com.google.guava/failureaccess/index.json:    "test-code-url" : "N/A",
+./metadata/com.google.code.findbugs/jsr305/index.json:    "test-code-url" : "N/A",
+./metadata/javax.servlet.jsp/jsp-api/index.json:    "test-code-url" : "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "test-code-url": "N/A",
+./metadata/com.google.android/annotations/index.json:    "test-code-url": "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "test-code-url" : "N/A",
+./metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.1.0/test",
+./metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.0.20/test",
+./metadata/org.eclipse.jetty.alpn/alpn-api/index.json:    "test-code-url": "N/A",
+./metadata/com.baomidou/mybatis-plus/index.json:    "test-code-url" : "https://github.com/baomidou/mybatis-plus/tree/v3.5.3/mybatis-plus/src/test",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:    "test-code-url" : "https://github.com/jakartaee/validation/tree/3.0.0/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-source-release.zip",
+./metadata/org.apache.kafka/kafka-clients/index.json:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-test-sources.jar",
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/tests/thymeleaf-tests-springsecurity6",
+./metadata/org.checkerframework/checker-qual/index.json:    "test-code-url" : "N/A",
+./metadata/org.checkerframework/checker-qual/index.json:    "test-code-url" : "N/A",
+./metadata/org.hibernate/hibernate-core/index.json:    "test-code-url": "https://github.com/hibernate/hibernate-orm/tree/6.0.0/hibernate-core/src/test",
+./metadata/org.hibernate/hibernate-core/index.json:    "test-code-url": "https://github.com/hibernate/hibernate-orm/tree/5.6.14/hibernate-core/src/test",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.apache.kafka/kafka-streams/index.json:    "test-code-url": "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-test-sources.jar",
+./metadata/org.freemarker/freemarker/index.json:    "test-code-url": "https://github.com/apache/freemarker/tree/v2.3.31/src/test",
+./metadata/org.checkerframework/checker-compat-qual/index.json:    "test-code-url" : "https://github.com/typetools/checker-framework/tree/checker-framework-2.5.5/checker/tests/nullness-extra/compat",
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' -g '*.json' . | head -30" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "documentation-url" : "N/A",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/javax.el/javax.el-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+./metadata/org.apache.openejb/javaee-api/index.json:    "documentation-url": "N/A",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+./metadata/org.glassfish.jaxb/txw2/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-javadoc.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/lib/thymeleaf-extras-springsecurity6/README.markdown",
+./metadata/io.grpc/grpc-context/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-javadoc.jar",
+./metadata/org.slf4j/slf4j-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+./metadata/org.glassfish.jaxb/jaxb-runtime/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/3.0.2/jaxb-runtime-3.0.2-javadoc.jar",
+./metadata/org.hibernate.validator/hibernate-validator/index.json:    "documentation-url": "https://github.com/hibernate/hibernate-validator/tree/7.0.4.Final/documentation",
+./metadata/org.apache.santuario/xmlsec/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+./metadata/io.grpc/grpc-netty/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-javadoc.jar",
+./metadata/org.slf4j/slf4j-nop/index.json:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+./metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-javadoc.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+
+web search: 
+web search: "svn://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent"
+exec
+/usr/bin/bash -lc "curl -I -L -s https://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/ | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "curl -I -L -s http://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/ | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+exec
+/usr/bin/bash -lc "curl -I -L -s https://sourceforge.net/projects/backport-jsr166/ | sed -n '1,60p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 331ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 22:09:48 GMT
+content-type: text/html; charset=utf-8
+content-length: 94805
+server: cloudflare
+cache-control: no-cache
+pragma: no-cache
+link: <https://a.fsdn.com/con/js/min/sf.sandiego-cmp-top.js?1777314598>; rel=preload; as=script, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-regular.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/fonts/sftheme/lato-v20-latin-ext_latin-700.woff2>; rel=preload; as=font; crossorigin, <https://a.fsdn.com/con/css/lato.css?1777314598>; rel=preload; as=style, <https://a.fsdn.com/con/css/sandiego.css?1777314598>; rel=preload; as=style, <https://a.fsdn.com/con/js/min/sf.sandiego-head.js?1777314598>; rel=preload; as=script
+cross-origin-opener-policy: same-origin
+permissions-policy: geolocation=(), microphone=(), camera=(), payment=(), document-domain=(), display-capture=(), autoplay=()
+feature-policy: geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; document-domain 'none'; display-capture 'none'; autoplay 'none'
+x-frame-options: SAMEORIGIN
+content-security-policy: upgrade-insecure-requests; frame-src 'self' a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.googletagmanager.com *.doubleclick.net *.gstatic.com *.recaptcha.net recaptcha.net *.youtube.com www.youtube-nocookie.com *.consentmanager.net player.twitch.tv app.hubspot.com; fenced-frame-src https:; object-src 'none'; frame-ancestors 'self'; script-src 'self' *.licdn.com a.fsdn.com *.google.com http://c.sf-syn.com http://b.sf-syn.com *.cloudflareinsights.com *.google-analytics.com *.tiny.cloud *.recaptcha.net recaptcha.net *.gstatic.com *.googletagservices.com *.googlesyndication.com *.doubleclick.net *.googletagmanager.com *.consentmanager.net *.microsofttranslator.com translate.googleapis.com translate.google.cn *.gstatic.cn *.tds.bid esm.sh blob: *.adnxs.com *.bing.com *.slashdotmedia.com ml314.com j.6sc.co *.hs-scripts.com js.hsadspixel.net js.hs-analytics.net js.hs-banner.com js.hscollectedforms.net js.usemessages.com fe.sitedataprocessing.com a.usbrowserspeed.com d-code.liadm.com frontend.id-visitors.com *.identitymatrix.ai 'unsafe-inline' 'unsafe-eval'; form-action 'self' lists.sourceforge.net aistudio.google.com; script-src-attr 'unsafe-hashes' 'sha256-4d6SN0yYeMqJ0cKMQtg6WeJWMAytzagOyddgGs8IrQg=' 'sha256-tBDVzvq7nAZRA5cnijB1/8uEyvj+5hEDBhcx7F72AGE=' 'report-sample'
+x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+set-cookie: VISITOR=b78e0432-de5e-4d97-9464-c8775bc21261; Max-Age=315360000; Path=/; expires=Thu, 24-Apr-2036 22:09:47 GMT; secure; HttpOnly
+set-cookie: __cf_bm=GW_B_P_26P5z1kn6R6Ug.8lZ7hx82BRmwsToeRgS95w-1777327787.7564967-1.0.1.1-614sdsL303WrbSV00lZMcLfbAjdVb5PqPcmlOgA_iQ2tASHTLLYboch_EeRcCpPvipOR2OpQCfVd93kz3fa.SQy144rbbROHMvR_hPZTb6LwrHjq_EM8RCB.i2yNZV3P; HttpOnly; Secure; Path=/; Domain=sourceforge.net; Expires=Mon, 27 Apr 2026 22:39:48 GMT
+cf-cache-status: DYNAMIC
+cf-ray: 9f312751799dfbd6-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+2026-04-27T22:10:19.607498Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+2026-04-27T22:10:19.639511Z ERROR codex_core::tools::router: error=write_stdin failed: stdin is closed for this session; rerun exec_command with tty=true to keep stdin open
+exec
+/usr/bin/bash -lc "pkill -f 'curl -I -L -s https://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/' || true; pkill -f 'curl -I -L -s http://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/' || true" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ exited -1 in 0ms:
+ exited -1 in 60443ms:
+exec
+/usr/bin/bash -lc "ps -ef | rg 'dcl\\.mathcs|curl -I -L -s http'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+vjovanov 2008071 2003902  0 00:09 ?        00:00:00 /usr/bin/bash -c curl -I -L -s http://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/ | sed -n '1,80p'
+vjovanov 2008076 2008071  0 00:09 ?        00:00:00 curl -I -L -s http://dcl.mathcs.emory.edu/software/harness2/trunk/util/backport-util-concurrent/
+vjovanov 2014064 2003902  0 00:10 ?        00:00:00 /usr/bin/bash -c ps -ef | rg 'dcl\.mathcs|curl -I -L -s http'
+vjovanov 2014066 2014064  0 00:10 ?        00:00:00 rg dcl\.mathcs|curl -I -L -s http
+
+exec
+/usr/bin/bash -lc 'kill 2008071 2008076 || true' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+ exited -1 in 74451ms:
+web search: 
+web search: 
+web search: 
+web search: site:mvnrepository.com/artifact/backport-util-concurrent/backport-util-concurrent/3.1 backport util concurrent 3.1
+codex
+I found Maven-hosted `sources` and `javadoc` jars for 3.1, but no Maven test-sources jar. The SourceForge 3.1 source archive contains the `test/` tree, so I’ll use that archive for `test-code-url` and keep the Kotlin/Scala `language` field absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+diff --git a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+index 06df5887e09aadad00ae10ca869eaa894d9f8227..baa3f8fde59d36a61fc9c34e2ff2c4c41fe0b05d
+--- a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
++++ b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1"
++  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/backport-jsr166/",
++  "test-code-url" : "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
++  "description" : "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer."
+ }
+
+diff --git a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+index 06df5887e09aadad00ae10ca869eaa894d9f8227..baa3f8fde59d36a61fc9c34e2ff2c4c41fe0b05d
+--- a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
++++ b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1"
++  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/backport-jsr166/",
++  "test-code-url" : "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
++  "description" : "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+{
+  "coordinates": "backport-util-concurrent:backport-util-concurrent:3.1",
+  "source-code-url": "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
+  "repository-url": "https://sourceforge.net/projects/backport-jsr166/",
+  "test-code-url": "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
+  "documentation-url": "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
+  "description": "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+index 06df5887e09aadad00ae10ca869eaa894d9f8227..baa3f8fde59d36a61fc9c34e2ff2c4c41fe0b05d
+--- a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
++++ b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1"
++  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/backport-jsr166/",
++  "test-code-url" : "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
++  "description" : "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+{
+  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
+  "repository-url" : "https://sourceforge.net/projects/backport-jsr166/",
+  "test-code-url" : "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
+  "documentation-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
+  "description" : "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer."
+}
+
+exec
+/usr/bin/bash -lc 'git ls-files --error-unmatch build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+index 06df5887e09aadad00ae10ca869eaa894d9f8227..baa3f8fde59d36a61fc9c34e2ff2c4c41fe0b05d
+--- a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
++++ b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1"
++  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/backport-jsr166/",
++  "test-code-url" : "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
++  "description" : "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/
+codex
+Updated [metadata JSON](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json:1).
+
+Used Maven Central for the exact 3.1 sources and javadoc artifacts, and SourceForge’s exact 3.1 source archive for tests because no Maven test-sources jar exists. The library is not Kotlin- or Scala-specific, so no `language` field was added. ([repo1.maven.org](https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/))
+
+Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+index 06df5887e09aadad00ae10ca869eaa894d9f8227..baa3f8fde59d36a61fc9c34e2ff2c4c41fe0b05d
+--- a/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
++++ b/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1"
++  "coordinates" : "backport-util-concurrent:backport-util-concurrent:3.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
++  "repository-url" : "https://sourceforge.net/projects/backport-jsr166/",
++  "test-code-url" : "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
++  "description" : "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer."
+ }
+
+2026-04-27T22:11:35.379986Z ERROR codex_core::session: failed to record rollout items: thread 019dd0fc-dba4-7a41-86cd-308254b106ce not found
+tokens used
+83,196
+Updated [metadata JSON](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/build/discovered-artifact-metadata/backport-util-concurrent-backport-util-concurrent-3.1.json:1).
+
+Used Maven Central for the exact 3.1 sources and javadoc artifacts, and SourceForge’s exact 3.1 source archive for tests because no Maven test-sources jar exists. The library is not Kotlin- or Scala-specific, so no `language` field was added. ([repo1.maven.org](https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/))
+
+Validated the JSON with `jq`.
+Ran agent for backport-util-concurrent:backport-util-concurrent:3.1 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/build/agent-artifact-discovery-logs/backport-util-concurrent-backport-util-concurrent-3.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 51s
+9 actionable tasks: 4 executed, 5 from cache

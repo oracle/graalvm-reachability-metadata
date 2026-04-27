@@ -1,0 +1,175 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd0ff-a54f-79f2-9c43-cc2afc14bfec
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: backport-util-concurrent:backport-util-concurrent:3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/metadata/backport-util-concurrent/backport-util-concurrent/index.json
+- Entry selector: "metadata-version" = "3.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar
+- repository-url: https://sourceforge.net/projects/backport-jsr166/
+- test-code-url: https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip
+- documentation-url: https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar
+- description: backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.1
+- Entry test-version: 3.1
+codex
+I’ll verify the existing metadata entry and cross-check the version-specific Maven/SourceForge URLs before touching the JSON. If the only missing field is `language` and the library is plain Java, I’ll leave it absent as requested.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,220p' metadata/backport-util-concurrent/backport-util-concurrent/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
+    "repository-url" : "https://sourceforge.net/projects/backport-jsr166/",
+    "test-code-url" : "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
+    "documentation-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
+    "description" : "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer.",
+    "tested-versions" : [
+      "3.1"
+    ],
+    "allowed-packages" : [
+      "edu.emory.mathcs.backport.java.util"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"3\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/backport-util-concurrent/backport-util-concurrent/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+4:    "metadata-version" : "3.1",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
+6:    "repository-url" : "https://sourceforge.net/projects/backport-jsr166/",
+7:    "test-code-url" : "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar",
+9:    "description" : "backport-util-concurrent backports the JSR 166 java.util.concurrent API to older Java platforms. It provides executors, locks, concurrent queues, atomic classes, and related collections so applications can use modern concurrency utilities without requiring Java 5 or newer.",
+
+web search: 
+web search: backport-util-concurrent 3.1 maven sources javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/
+web search: 
+web search: https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/3.1/
+codex
+The entry already has non-blank values for the requested URL and description fields. I’ve confirmed Maven Central has the exact `3.1` sources and javadoc artifacts, while the SourceForge `3.1` file area provides the full source archive used for test-code coverage.
+exec
+/usr/bin/bash -lc "jq -e 'map(select(.\"metadata-version\" == \"3.1\")) | length == 1' metadata/backport-util-concurrent/backport-util-concurrent/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+true
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/backport-util-concurrent/backport-util-concurrent/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f
+ succeeded in 0ms:
+web search: 
+web search: repo1.maven.org backport-util-concurrent 3.1 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/
+web search: 
+web search: https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/
+web search: 
+web search: https://sourceforge.net/projects/backport-jsr166/files/backport-jsr166/3.1/
+codex
+No file changes were needed in [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/metadata/backport-util-concurrent/backport-util-concurrent/index.json:1). The `3.1` entry already had non-blank values for all requested URL and description fields, and `language` should remain absent because this is a Java library, not a Kotlin or Scala version-specific artifact. ([sourceforge.net](https://sourceforge.net/projects/backport-jsr166/))
+
+Selected values verified:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
+  "repository-url": "https://sourceforge.net/projects/backport-jsr166/",
+  "test-code-url": "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
+  "documentation-url": "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar"
+}
+```
+
+Maven Central lists the exact `3.1` sources and javadoc artifacts, and SourceForge lists the exact `3.1` source archive. ([repo1.maven.org](https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/)) JSON validation passed, and `git diff` for the file is empty.
+2026-04-27T22:12:31.736421Z ERROR codex_core::session: failed to record rollout items: thread 019dd0ff-a54f-79f2-9c43-cc2afc14bfec not found
+tokens used
+37,818
+No file changes were needed in [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/metadata/backport-util-concurrent/backport-util-concurrent/index.json:1). The `3.1` entry already had non-blank values for all requested URL and description fields, and `language` should remain absent because this is a Java library, not a Kotlin or Scala version-specific artifact. ([sourceforge.net](https://sourceforge.net/projects/backport-jsr166/))
+
+Selected values verified:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar",
+  "repository-url": "https://sourceforge.net/projects/backport-jsr166/",
+  "test-code-url": "https://downloads.sourceforge.net/project/backport-jsr166/backport-jsr166/3.1/backport-util-concurrent-3.1-src.zip",
+  "documentation-url": "https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-javadoc.jar"
+}
+```
+
+Maven Central lists the exact `3.1` sources and javadoc artifacts, and SourceForge lists the exact `3.1` source archive. ([repo1.maven.org](https://repo1.maven.org/maven2/backport-util-concurrent/backport-util-concurrent/3.1/)) JSON validation passed, and `git diff` for the file is empty.
+Ran agent for backport-util-concurrent:backport-util-concurrent:3.1 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/build/agent-url-discovery-logs/backport-util-concurrent-backport-util-concurrent-3.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2232-977e163f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 45s
+9 actionable tasks: 1 executed, 8 up-to-date
