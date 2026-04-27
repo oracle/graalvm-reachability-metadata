@@ -1,0 +1,313 @@
+Starting a Gradle Daemon, 1 incompatible and 1 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd146-70ad-7982-9588-70a746794bc2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.jsr166-mirror:jsr166y:1.7.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.7.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30/build/discovered-artifact-metadata/org.codehaus.jsr166-mirror-jsr166y-1.7.0.json
+- Set "coordinates" to "org.codehaus.jsr166-mirror:jsr166y:1.7.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+mcp startup: no servers
+codex
+I’ll inspect the target JSON first, then verify authoritative URLs for `org.codehaus.jsr166-mirror:jsr166y:1.7.0` (preferring Maven-hosted artifacts for sources/tests/docs where available) before updating the file.
+🌐 Searching the web...
+🌐 Searched: Maven Central org.codehaus.jsr166-mirror jsr166y 1.7.0
+🌐 Searching the web...
+🌐 Searched the web
+🌐 Searching the web...
+🌐 Searched: https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/
+codex
+I found the artifact on Maven Central; next I’ll inspect the exact `1.7.0` POM and available files directly to extract reliable repository/source/test/doc links before editing the JSON.
+exec
+/usr/bin/zsh -lc "cd /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 && sed -n '1,200p' build/discovered-artifact-metadata/org.codehaus.jsr166-mirror-jsr166y-1.7.0.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 51ms:
+{
+  "coordinates" : "org.codehaus.jsr166-mirror:jsr166y:1.7.0"
+}
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0.pom' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/ | sed -n '1,200p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 51ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codehaus.jsr166-mirror</groupId>
+  <artifactId>jsr166y</artifactId>
+  <version>1.7.0</version>
+</project>
+ succeeded in 50ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/jsr166-mirror/jsr166y/1.7.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/jsr166-mirror/jsr166y/1.7.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+🌐 Searching the web...
+🌐 Searched: codehaus jsr166-mirror repository
+codex
+I confirmed Maven Central has `-sources.jar` and `-javadoc.jar` for `1.7.0`; now I’m inspecting the source archive contents to verify whether test sources are published and to infer an authoritative upstream repository URL.
+exec
+/usr/bin/zsh -lc "cd /tmp && curl -fsSLO https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-javadoc.jar && jar tf jsr166y-1.7.0-javadoc.jar | sed -n '1,120p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 67ms:
+META-INF/
+META-INF/MANIFEST.MF
+javadoc/
+javadoc/index.html
+javadoc/help-doc.html
+javadoc/index-all.html
+javadoc/stylesheet.css
+javadoc/package-list
+javadoc/allclasses-noframe.html
+javadoc/deprecated-list.html
+javadoc/constant-values.html
+javadoc/overview-tree.html
+javadoc/serialized-form.html
+javadoc/allclasses-frame.html
+javadoc/jsr166y/
+javadoc/jsr166y/ForkJoinPool.ManagedBlocker.html
+javadoc/jsr166y/Phaser.html
+javadoc/jsr166y/ForkJoinWorkerThread.html
+javadoc/jsr166y/ForkJoinPool.ForkJoinWorkerThreadFactory.html
+javadoc/jsr166y/LinkedTransferQueue.html
+exec
+/usr/bin/zsh -lc "cd /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 && curl -fsSL -o /tmp/jsr166y-1.7.0-sources.jar https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-sources.jar && jar tf /tmp/jsr166y-1.7.0-sources.jar | sed -n '1,240p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 74ms:
+META-INF/
+META-INF/MANIFEST.MF
+jsr166y/
+jsr166y/ForkJoinWorkerThread.java
+jsr166y/RecursiveAction.java
+jsr166y/TransferQueue.java
+jsr166y/package-info.java
+jsr166y/LinkedTransferQueue.java
+jsr166y/ForkJoinPool.java
+jsr166y/Phaser.java
+jsr166y/ThreadLocalRandom.java
+jsr166y/RecursiveTask.java
+jsr166y/ForkJoinTask.java
+exec
+/usr/bin/zsh -lc 'unzip -p /tmp/jsr166y-1.7.0-sources.jar META-INF/MANIFEST.MF' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30exec
+/usr/bin/zsh -lc "unzip -p /tmp/jsr166y-1.7.0-sources.jar jsr166y/package-info.java | sed -n '1,200p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30exec
+/usr/bin/zsh -lc "unzip -p /tmp/jsr166y-1.7.0-sources.jar jsr166y/ForkJoinPool.java | sed -n '1,120p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 50ms:
+Manifest-Version: 1.0
+
+ succeeded in 51ms:
+/*
+ * Written by Doug Lea with assistance from members of JCP JSR-166
+ * Expert Group and released to the public domain, as explained at
+ * http://creativecommons.org/publicdomain/zero/1.0/
+ */
+
+
+/**
+ * Preview versions of classes targeted for Java 7.  Includes a
+ * fine-grained parallel computation framework: ForkJoinTasks and
+ * their related support classes provide a very efficient basis for
+ * obtaining platform-independent parallel speed-ups of
+ * computation-intensive operations.  They are not a full substitute
+ * for the kinds of arbitrary processing supported by Executors or
+ * Threads. However, when applicable, they typically provide
+ * significantly greater performance on multiprocessor platforms.
+ *
+ * <p>Candidates for fork/join processing mainly include those that
+ * can be expressed using parallel divide-and-conquer techniques: To
+ * solve a problem, break it in two (or more) parts, and then solve
+ succeeded in 51ms:
+/*
+ * Written by Doug Lea with assistance from members of JCP JSR-166
+ * Expert Group and released to the public domain, as explained at
+ * http://creativecommons.org/publicdomain/zero/1.0/
+ */
+
+package jsr166y;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.RunnableFuture;
+exec
+/usr/bin/zsh -lc "unzip -p /tmp/jsr166y-1.7.0-javadoc.jar javadoc/index.html | sed -n '1,200p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30exec
+/usr/bin/zsh -lc "unzip -p /tmp/jsr166y-1.7.0-javadoc.jar javadoc/jsr166y/package-summary.html | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 51ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<!-- Generated by javadoc on Mon May 09 15:03:21 BST 2011-->
+<TITLE>
+jsr166y 1.7.0 API
+</TITLE>
+<SCRIPT type="text/javascript">
+    targetPage = "" + window.location.search;
+    if (targetPage != "" && targetPage != "undefined")
+        targetPage = targetPage.substring(1);
+    if (targetPage.indexOf(":") != -1)
+        targetPage = "undefined";
+    function loadFrames() {
+        if (targetPage != "" && targetPage != "undefined")
+             top.classFrame.location = top.targetPage;
+    }
+</SCRIPT>
+<NOSCRIPT>
+exec
+/usr/bin/zsh -lc "unzip -p /tmp/jsr166y-1.7.0-javadoc.jar javadoc/help-doc.html | sed -n '1,200p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 51ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<!-- Generated by javadoc (build 1.6.0_24) on Mon May 09 15:03:20 BST 2011 -->
+<TITLE>
+jsr166y (jsr166y 1.7.0 API)
+</TITLE>
+
+<META NAME="date" CONTENT="2011-05-09">
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="jsr166y (jsr166y 1.7.0 API)";
+    }
+}
+ succeeded in 51ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<!-- Generated by javadoc (build 1.6.0_24) on Mon May 09 15:03:21 BST 2011 -->
+<TITLE>
+API Help (jsr166y 1.7.0 API)
+</TITLE>
+
+<META NAME="date" CONTENT="2011-05-09">
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="API Help (jsr166y 1.7.0 API)";
+    }
+}
+exec
+/usr/bin/zsh -lc "git ls-remote --heads --tags https://github.com/codehaus/jsr166-mirror.git | sed -n '1,40p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 412ms:
+b7021950b4f27192cdffca401136364aeeb51667	refs/heads/gradleBuild
+883c085e28ae4cce6c4844760c72b5aff139d8bd	refs/heads/master
+codex
+I verified the Maven-hosted versioned source and javadoc artifacts and confirmed no versioned test artifact is published; I’ll now write the JSON with those exact URLs, set unresolved fields to `N/A`, and keep `language` absent since this is a general Java library.
+exec
+/usr/bin/zsh -lc "cat > /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30/build/discovered-artifact-metadata/org.codehaus.jsr166-mirror-jsr166y-1.7.0.json <<'EOF'
+{
+  \"coordinates\" : \"org.codehaus.jsr166-mirror:jsr166y:1.7.0\",
+  \"source-code-url\" : \"https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-sources.jar\",
+  \"repository-url\" : \"https://github.com/codehaus/jsr166-mirror\",
+  \"test-code-url\" : \"N/A\",
+  \"documentation-url\" : \"https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-javadoc.jar\",
+  \"description\" : \"jsr166y provides pre-Java-7 preview implementations of concurrency utilities, including the fork/join framework and related synchronization classes. It offers high-performance work-stealing based primitives for parallel divide-and-conquer computations on multicore systems.\"
+}
+EOF" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 51ms:
+
+exec
+/usr/bin/zsh -lc 'jq . /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30/build/discovered-artifact-metadata/org.codehaus.jsr166-mirror-jsr166y-1.7.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30 succeeded in 51ms:
+{
+  "coordinates": "org.codehaus.jsr166-mirror:jsr166y:1.7.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-sources.jar",
+  "repository-url": "https://github.com/codehaus/jsr166-mirror",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-javadoc.jar",
+  "description": "jsr166y provides pre-Java-7 preview implementations of concurrency utilities, including the fork/join framework and related synchronization classes. It offers high-performance work-stealing based primitives for parallel divide-and-conquer computations on multicore systems."
+}
+codex
+Updated [org.codehaus.jsr166-mirror-jsr166y-1.7.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30/build/discovered-artifact-metadata/org.codehaus.jsr166-mirror-jsr166y-1.7.0.json) with:
+
+- `coordinates`: `org.codehaus.jsr166-mirror:jsr166y:1.7.0`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-sources.jar`
+- `repository-url`: `https://github.com/codehaus/jsr166-mirror`
+- `test-code-url`: `N/A` (no versioned test artifact published on Maven Central for `1.7.0`)
+- `documentation-url`: `https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-javadoc.jar`
+- `description`: exactly two sentences, concise
+
+`language` was left absent because this is not a Kotlin/Scala-specific library.
+tokens used
+44,842
+Updated [org.codehaus.jsr166-mirror-jsr166y-1.7.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30/build/discovered-artifact-metadata/org.codehaus.jsr166-mirror-jsr166y-1.7.0.json) with:
+
+- `coordinates`: `org.codehaus.jsr166-mirror:jsr166y:1.7.0`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-sources.jar`
+- `repository-url`: `https://github.com/codehaus/jsr166-mirror`
+- `test-code-url`: `N/A` (no versioned test artifact published on Maven Central for `1.7.0`)
+- `documentation-url`: `https://repo1.maven.org/maven2/org/codehaus/jsr166-mirror/jsr166y/1.7.0/jsr166y-1.7.0-javadoc.jar`
+- `description`: exactly two sentences, concise
+
+`language` was left absent because this is not a Kotlin/Scala-specific library.
+Ran agent for org.codehaus.jsr166-mirror:jsr166y:1.7.0 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30/build/agent-artifact-discovery-logs/org.codehaus.jsr166-mirror-jsr166y-1.7.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2217-e943af30/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 6s
+9 actionable tasks: 4 executed, 5 from cache
