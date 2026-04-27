@@ -29,7 +29,7 @@ public class UtilsTest {
         previousNanoTimerProvider = System.getProperty(NANO_TIMER_PROVIDER_PROPERTY);
         System.setProperty(
                 NANO_TIMER_PROVIDER_PROPERTY,
-                edu.emory.mathcs.backport.java.util.ArrayList.class.getName());
+                edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap.class.getName());
     }
 
     @AfterAll
