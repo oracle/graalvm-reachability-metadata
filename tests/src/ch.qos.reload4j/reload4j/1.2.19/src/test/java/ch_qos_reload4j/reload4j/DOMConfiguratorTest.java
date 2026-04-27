@@ -77,7 +77,6 @@ public class DOMConfiguratorTest {
                   </appender>
                   <logger name="%s" class="%s" additivity="false">
                     <level value="%s" class="%s"/>
-                    <appender-ref ref="%s"/>
                   </logger>
                   <root>
                     <level value="%s" class="%s"/>
@@ -92,7 +91,6 @@ public class DOMConfiguratorTest {
                         CustomLogger.class.getName(),
                         CUSTOM_LEVEL_NAME,
                         CustomLevel.class.getName(),
-                        APPENDER_NAME,
                         CUSTOM_LEVEL_NAME,
                         CustomLevel.class.getName(),
                         APPENDER_NAME);
