@@ -18,6 +18,7 @@ import java.util.Map;
 import io.netty.resolver.AddressResolver;
 import io.netty.resolver.AddressResolverGroup;
 import io.netty.resolver.CompositeNameResolver;
+import io.netty.resolver.DefaultNameResolver;
 import io.netty.resolver.HostsFileEntries;
 import io.netty.resolver.HostsFileEntriesProvider;
 import io.netty.resolver.HostsFileParser;
@@ -65,6 +66,25 @@ public class Netty_resolverTest {
         assertThat(entries.inet4Entries().get("example.test")).isEqualTo(ip("10.0.0.10"));
         assertThat(entries.inet6Entries().get("example.test")).isEqualTo(ip("2001:db8::1"));
         assertThat(entries.inet4Entries()).doesNotContainKey("ignored.example");
+    }
+
+    @Test
+    void defaultNameResolverResolvesIpv4AndIpv6Literals() throws Exception {
+        DefaultNameResolver resolver = new DefaultNameResolver(EXECUTOR);
+
+        try {
+            InetAddress resolvedIpv4 = resolver.resolve("198.51.100.70").syncUninterruptibly().getNow();
+            List<InetAddress> resolvedAllIpv4 = resolver.resolveAll("198.51.100.70").syncUninterruptibly().getNow();
+            InetAddress resolvedIpv6 = resolver.resolve("2001:db8::70").syncUninterruptibly().getNow();
+            List<InetAddress> resolvedAllIpv6 = resolver.resolveAll("2001:db8::70").syncUninterruptibly().getNow();
+
+            assertThat(resolvedIpv4).isEqualTo(ip("198.51.100.70"));
+            assertThat(resolvedAllIpv4).containsExactly(ip("198.51.100.70"));
+            assertThat(resolvedIpv6).isEqualTo(ip("2001:db8::70"));
+            assertThat(resolvedAllIpv6).containsExactly(ip("2001:db8::70"));
+        } finally {
+            resolver.close();
+        }
     }
 
     @Test
