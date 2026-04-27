@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.Parser;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.helpers.DefaultHandler;
@@ -89,12 +91,14 @@ public class SAXOutputterTest {
         }
 
         @Override
-        public void setFeature(String name, boolean value) throws ParserConfigurationException, SAXException {
+        public void setFeature(String name, boolean value)
+                throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException {
             delegate.setFeature(name, value);
         }
 
         @Override
-        public boolean getFeature(String name) throws ParserConfigurationException, SAXException {
+        public boolean getFeature(String name)
+                throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException {
             return delegate.getFeature(name);
         }
     }
@@ -127,12 +131,14 @@ public class SAXOutputterTest {
         }
 
         @Override
-        public void setProperty(String name, Object value) throws SAXException {
+        public void setProperty(String name, Object value)
+                throws SAXNotRecognizedException, SAXNotSupportedException {
             delegate.setProperty(name, value);
         }
 
         @Override
-        public Object getProperty(String name) throws SAXException {
+        public Object getProperty(String name)
+                throws SAXNotRecognizedException, SAXNotSupportedException {
             return delegate.getProperty(name);
         }
     }
