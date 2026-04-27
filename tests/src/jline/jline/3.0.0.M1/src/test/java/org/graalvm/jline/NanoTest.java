@@ -31,14 +31,20 @@ public class NanoTest {
                 new ByteArrayInputStream(input),
                 terminalOutput,
                 StandardCharsets.UTF_8.name())) {
-            terminal.setSize(new Size(24, 80));
+            Size size = new Size();
+            size.setColumns(80);
+            size.setRows(24);
+            terminal.setSize(size);
 
             Nano nano = new Nano(terminal, Path.of("."));
             nano.run();
         }
 
         String output = terminalOutput.toString(StandardCharsets.UTF_8);
-        assertThat(output).contains("Nano help loaded from the test classpath.");
+        assertThat(output).contains("nano-test-help-1");
+        assertThat(output).contains("nano-test-help-2");
+        assertThat(output).contains("nano-test-help-3");
         assertThat(output).contains("JLine Nano");
+        assertThat(output).doesNotContain("Unable to read help");
     }
 }
