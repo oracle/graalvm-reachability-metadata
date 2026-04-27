@@ -6,10 +6,10 @@
  */
 package COM.jrockit.reflect;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,16 +18,16 @@ import org.objenesis.instantiator.jrockit.JRockit131Instantiator;
 public class JRockit131InstantiatorTest {
 
     @Test
-    void resolvesClassesThroughLegacyClassLiteralHelper() throws Throwable {
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(JRockit131Instantiator.class, MethodHandles.lookup());
-        MethodHandle classResolver = lookup.findStatic(
-            JRockit131Instantiator.class,
-            "class$",
-            MethodType.methodType(Class.class, String.class));
+    void resolvesLegacyClassLiteralsWhenInitializingFromColdState() throws Throwable {
+        resetJRockitStaticState();
+        MemberAccess.reset();
+        JRockitTarget.constructorCalls = 0;
 
-        Class<?> resolvedClass = (Class<?>) classResolver.invoke(JRockit131InstantiatorTest.class.getName());
+        JRockit131Instantiator instantiator = new JRockit131Instantiator(JRockitTarget.class);
 
-        Assertions.assertThat(resolvedClass).isEqualTo(JRockit131InstantiatorTest.class);
+        Assertions.assertThat(MemberAccess.baseConstructorDeclaringClass()).isEqualTo(Object.class);
+        Assertions.assertThat(MemberAccess.requestedType()).isEqualTo(JRockitTarget.class);
+        Assertions.assertThat(instantiator.newInstance()).isInstanceOf(JRockitTarget.class);
     }
 
     @Test
@@ -43,6 +43,20 @@ public class JRockit131InstantiatorTest {
         Assertions.assertThat(instance).isInstanceOf(JRockitTarget.class);
         Assertions.assertThat(((JRockitTarget) instance).value).isEqualTo("constructed");
         Assertions.assertThat(JRockitTarget.constructorCalls).isEqualTo(1);
+    }
+
+    private static void resetJRockitStaticState() throws ReflectiveOperationException {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(JRockit131Instantiator.class, MethodHandles.lookup());
+        clearStaticField(lookup, "newConstructorForSerializationMethod", Method.class);
+        clearStaticField(lookup, "class$java$lang$reflect$Constructor", Class.class);
+        clearStaticField(lookup, "class$java$lang$Class", Class.class);
+        clearStaticField(lookup, "class$java$lang$Object", Class.class);
+    }
+
+    private static void clearStaticField(MethodHandles.Lookup lookup, String fieldName, Class<?> fieldType)
+        throws NoSuchFieldException, IllegalAccessException {
+        VarHandle field = lookup.findStaticVarHandle(JRockit131Instantiator.class, fieldName, fieldType);
+        field.set(null);
     }
 
     public static class JRockitTarget {
