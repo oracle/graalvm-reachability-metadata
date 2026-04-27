@@ -29,8 +29,8 @@ public class ReflectionUtilTest {
                 null,
                 new InterfaceBackedTarget(),
                 "echo",
-                new Class<?>[] { String.class },
-                new Object[] { "value" });
+                new Class<?>[]{String.class},
+                new Object[]{"value"});
 
         assertThat(method).isNotNull();
         assertThat(method.getDeclaringClass()).isEqualTo(PublicEchoContract.class);
@@ -44,8 +44,8 @@ public class ReflectionUtilTest {
                 null,
                 new SuperclassBackedTarget(),
                 "echo",
-                new Class<?>[] { String.class },
-                new Object[] { "value" });
+                new Class<?>[]{String.class},
+                new Object[]{"value"});
 
         assertThat(method).isNotNull();
         assertThat(method.getDeclaringClass()).isEqualTo(PublicEchoBase.class);

@@ -15,6 +15,10 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+jar {
+    from sourceSets.test.output
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -22,6 +26,12 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        test {
+            // Keep Tomcat's bundled provider from shadowing the test service entry in native ServiceLoader discovery.
+            buildArgs.add('-H:ServiceLoaderFeatureExcludeServiceProviders=org.apache.el.ExpressionFactoryImpl')
         }
     }
 }
