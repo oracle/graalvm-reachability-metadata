@@ -6,7 +6,8 @@
  */
 package javax.jmdns;
 
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ServiceInfo {
     private final String type;
@@ -14,16 +15,21 @@ public class ServiceInfo {
     private final int port;
     private final int weight;
     private final int priority;
-    private final Hashtable<Object, Object> properties;
+    private final Map<Object, Object> properties;
 
-    public ServiceInfo(String type, String name, int port, int weight, int priority, Hashtable<?, ?> properties) {
+    public ServiceInfo(String type, String name, int port, int weight, int priority, Map<?, ?> properties) {
         this.type = type;
         this.name = name;
         this.port = port;
         this.weight = weight;
         this.priority = priority;
-        this.properties = new Hashtable<>();
+        this.properties = new LinkedHashMap<>();
         this.properties.putAll(properties);
+    }
+
+    public static ServiceInfo create(String type, String name, int port, int weight, int priority,
+            Map<?, ?> properties) {
+        return new ServiceInfo(type, name, port, weight, priority, properties);
     }
 
     public String getType() {
@@ -46,7 +52,7 @@ public class ServiceInfo {
         return priority;
     }
 
-    public Hashtable<Object, Object> getProperties() {
+    public Map<Object, Object> getProperties() {
         return properties;
     }
 }

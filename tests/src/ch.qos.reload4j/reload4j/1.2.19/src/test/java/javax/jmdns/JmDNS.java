@@ -13,6 +13,10 @@ import java.util.List;
 public class JmDNS {
     private final List<ServiceInfo> registeredServices = new ArrayList<>();
 
+    public static JmDNS create() {
+        return new JmDNS();
+    }
+
     public void registerService(ServiceInfo serviceInfo) {
         registeredServices.add(serviceInfo);
     }

@@ -22,7 +22,7 @@ public class ZeroConfSupportTest {
     private static final String SERVICE_TYPE = "_reload4j-test._tcp.local.";
 
     @Test
-    public void shouldAdvertiseAndUnadvertiseServiceWithJmDnsVersionOneApi() {
+    public void shouldAdvertiseAndUnadvertiseServiceWithJmDnsVersionThreeApi() {
         Map<String, String> properties = new LinkedHashMap<>();
         properties.put("library", "reload4j");
         properties.put("scenario", "zero-conf-support");
