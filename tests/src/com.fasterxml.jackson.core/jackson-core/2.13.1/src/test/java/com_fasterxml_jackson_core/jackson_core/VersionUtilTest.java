@@ -28,16 +28,16 @@ public class VersionUtilTest {
     }
 
     @Test
-    void mavenVersionForReadsPomPropertiesFromTheLibraryJar() {
-        Version expectedVersion = new JsonFactory().version();
-
+    void mavenVersionForReadsPomPropertiesFromTheClassPathResource() {
         Version version = VersionUtil.mavenVersionFor(
                 VersionUtilTest.class.getClassLoader(),
-                "com.fasterxml.jackson.core",
-                "jackson-core"
+                "com.example.versionutil",
+                "versionutil-fixture"
         );
 
         assertThat(version.isUnknownVersion()).isFalse();
-        assertThat(version).isEqualTo(expectedVersion);
+        assertThat(version.toString()).isEqualTo("4.5.6-test");
+        assertThat(version.getGroupId()).isEqualTo("com.example.versionutil");
+        assertThat(version.getArtifactId()).isEqualTo("versionutil-fixture");
     }
 }
