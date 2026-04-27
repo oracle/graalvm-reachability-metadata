@@ -74,6 +74,33 @@ public class Org_osgi_namespace_serviceTest {
     }
 
     @Test
+    void effectiveDirectiveSeparatesResolveTimeAndActiveTimeServiceEntries() {
+        SyntheticResource resource = new SyntheticResource();
+        Capability resolveCapability = resource.addCapability(
+                ServiceNamespace.SERVICE_NAMESPACE,
+                Map.of(),
+                Map.of(ServiceNamespace.CAPABILITY_OBJECTCLASS_ATTRIBUTE, List.of(PAYMENT_SERVICE)));
+        resource.addCapability(
+                ServiceNamespace.SERVICE_NAMESPACE,
+                Map.of(Namespace.CAPABILITY_EFFECTIVE_DIRECTIVE, Namespace.EFFECTIVE_ACTIVE),
+                Map.of(ServiceNamespace.CAPABILITY_OBJECTCLASS_ATTRIBUTE, List.of(AUDIT_SERVICE)));
+        Requirement resolveRequirement = resource.addRequirement(
+                ServiceNamespace.SERVICE_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE, objectClassFilter(PAYMENT_SERVICE)),
+                Map.of());
+        Requirement activeRequirement = resource.addRequirement(
+                ServiceNamespace.SERVICE_NAMESPACE,
+                Map.of(
+                        Namespace.REQUIREMENT_FILTER_DIRECTIVE, objectClassFilter(AUDIT_SERVICE),
+                        Namespace.REQUIREMENT_EFFECTIVE_DIRECTIVE, Namespace.EFFECTIVE_ACTIVE),
+                Map.of());
+
+        assertThat(resolveEffectiveServiceCapabilities(resource)).containsExactly(resolveCapability);
+        assertThat(requirementEffectiveDirective(resolveRequirement)).isEqualTo(Namespace.EFFECTIVE_RESOLVE);
+        assertThat(activeServiceRequirements(resource)).containsExactly(activeRequirement);
+    }
+
+    @Test
     void resourceFilteringSelectsOnlyServiceNamespaceCapabilitiesAndRequirements() {
         SyntheticResource resource = new SyntheticResource();
         Capability paymentCapability = resource.addCapability(
@@ -130,6 +157,28 @@ public class Org_osgi_namespace_serviceTest {
         return resource.getCapabilities(ServiceNamespace.SERVICE_NAMESPACE).stream()
                 .filter(capability -> objectClassValues(capability).contains(objectClass))
                 .collect(Collectors.toList());
+    }
+
+    private static List<Capability> resolveEffectiveServiceCapabilities(Resource resource) {
+        return resource.getCapabilities(ServiceNamespace.SERVICE_NAMESPACE).stream()
+                .filter(capability -> Namespace.EFFECTIVE_RESOLVE.equals(capabilityEffectiveDirective(capability)))
+                .collect(Collectors.toList());
+    }
+
+    private static List<Requirement> activeServiceRequirements(Resource resource) {
+        return resource.getRequirements(ServiceNamespace.SERVICE_NAMESPACE).stream()
+                .filter(requirement -> Namespace.EFFECTIVE_ACTIVE.equals(requirementEffectiveDirective(requirement)))
+                .collect(Collectors.toList());
+    }
+
+    private static String capabilityEffectiveDirective(Capability capability) {
+        return capability.getDirectives()
+                .getOrDefault(Namespace.CAPABILITY_EFFECTIVE_DIRECTIVE, Namespace.EFFECTIVE_RESOLVE);
+    }
+
+    private static String requirementEffectiveDirective(Requirement requirement) {
+        return requirement.getDirectives()
+                .getOrDefault(Namespace.REQUIREMENT_EFFECTIVE_DIRECTIVE, Namespace.EFFECTIVE_RESOLVE);
     }
 
     private static List<String> objectClassValues(Capability capability) {
