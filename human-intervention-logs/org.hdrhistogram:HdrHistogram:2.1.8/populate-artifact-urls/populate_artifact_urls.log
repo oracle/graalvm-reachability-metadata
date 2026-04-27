@@ -1,0 +1,232 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dceea-7288-7f93-a9d3-33deff24b6d4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.hdrhistogram:HdrHistogram:2.1.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.1.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3/metadata/org.hdrhistogram/HdrHistogram/index.json
+- Entry selector: "metadata-version" = "2.1.8"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.1.8".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-sources.jar
+- repository-url: https://github.com/HdrHistogram/HdrHistogram
+- test-code-url: https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.8/src/test
+- documentation-url: https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-javadoc.jar
+- description: HdrHistogram records and analyzes sampled value distributions across a configurable integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.1.8
+- Entry test-version: 2.1.8
+codex
+I’ll verify the exact-version artifacts and tag, then update only blank or absent fields in the target JSON entry. After that I’ll validate the JSON shape so we don’t introduce formatting or syntax drift.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"2\\.1\\.8\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.hdrhistogram/HdrHistogram/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3
+ succeeded in 0ms:
+/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3
+3:    "metadata-version" : "2.1.8",
+4:    "source-code-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-sources.jar",
+5:    "repository-url" : "https://github.com/HdrHistogram/HdrHistogram",
+6:    "test-code-url" : "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.8/src/test",
+7:    "documentation-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-javadoc.jar",
+8:    "description" : "HdrHistogram records and analyzes sampled value distributions across a configurable integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs.",
+19:    "source-code-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-sources.jar",
+20:    "repository-url" : "https://github.com/HdrHistogram/HdrHistogram",
+21:    "test-code-url" : "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.12/src/test",
+22:    "documentation-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-javadoc.jar",
+23:    "description" : "HdrHistogram records and analyzes sampled value distributions across a wide integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.hdrhistogram/HdrHistogram/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3
+ succeeded in 0ms:
+[
+  {
+    "metadata-version" : "2.1.8",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-sources.jar",
+    "repository-url" : "https://github.com/HdrHistogram/HdrHistogram",
+    "test-code-url" : "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.8/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-javadoc.jar",
+    "description" : "HdrHistogram records and analyzes sampled value distributions across a configurable integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs.",
+    "tested-versions" : [
+      "2.1.8"
+    ],
+    "allowed-packages" : [
+      "org.HdrHistogram"
+    ]
+  },
+  {
+    "latest" : true,
+    "metadata-version" : "2.1.12",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-sources.jar",
+    "repository-url" : "https://github.com/HdrHistogram/HdrHistogram",
+    "test-code-url" : "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.12/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-javadoc.jar",
+    "description" : "HdrHistogram records and analyzes sampled value distributions across a wide integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs.",
+    "tested-versions" : [
+      "2.1.12",
+      "2.2.1",
+      "2.2.2"
+    ],
+    "allowed-packages" : [
+      "org.HdrHistogram"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central org.hdrhistogram HdrHistogram 2.1.8 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/
+codex
+The target entry already has non-blank values for the URL and description fields. The only absent field is `language`; this artifact is the Java HdrHistogram artifact, not a Kotlin or Scala binary-specific library, so that field should stay absent under the requested schema.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.1.8\")' metadata/org.hdrhistogram/HdrHistogram/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3
+ succeeded in 0ms:
+{
+  "metadata-version": "2.1.8",
+  "source-code-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-sources.jar",
+  "repository-url": "https://github.com/HdrHistogram/HdrHistogram",
+  "test-code-url": "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.8/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-javadoc.jar",
+  "description": "HdrHistogram records and analyzes sampled value distributions across a configurable integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs.",
+  "tested-versions": [
+    "2.1.8"
+  ],
+  "allowed-packages": [
+    "org.HdrHistogram"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.hdrhistogram/HdrHistogram/index.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3
+ succeeded in 0ms:
+diff --git i/metadata/org.hdrhistogram/HdrHistogram/index.json w/metadata/org.hdrhistogram/HdrHistogram/index.json
+index 0b7fb486cb..8bdfbfed2c 100644
+--- i/metadata/org.hdrhistogram/HdrHistogram/index.json
++++ w/metadata/org.hdrhistogram/HdrHistogram/index.json
+@@ -1,19 +1,33 @@
+ [
+   {
+-    "latest": true,
+-    "allowed-packages": [
+-      "org.HdrHistogram"
++    "metadata-version" : "2.1.8",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-sources.jar",
++    "repository-url" : "https://github.com/HdrHistogram/HdrHistogram",
++    "test-code-url" : "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.8/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/HdrHistogram-2.1.8-javadoc.jar",
++    "description" : "HdrHistogram records and analyzes sampled value distributions across a configurable integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs.",
++    "tested-versions" : [
++      "2.1.8"
+     ],
+-    "metadata-version": "2.1.12",
+-    "tested-versions": [
++    "allowed-packages" : [
++      "org.HdrHistogram"
++    ]
++  },
++  {
++    "latest" : true,
++    "metadata-version" : "2.1.12",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-sources.jar",
++    "repository-url" : "https://github.com/HdrHistogram/HdrHistogram",
++    "test-code-url" : "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.12/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-javadoc.jar",
++    "description" : "HdrHistogram records and analyzes sampled value distributions across a wide integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs.",
++    "tested-versions" : [
+       "2.1.12",
+       "2.2.1",
+       "2.2.2"
+     ],
+-    "source-code-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-sources.jar",
+-    "repository-url": "https://github.com/HdrHistogram/HdrHistogram",
+-    "test-code-url": "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.12/src/test",
+-    "documentation-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-javadoc.jar",
+-    "description": "HdrHistogram records and analyzes sampled value distributions across a wide integer range with configurable precision. It is commonly used for latency and performance measurements because it provides fast recording with predictable space and time costs."
++    "allowed-packages" : [
++      "org.HdrHistogram"
++    ]
+   }
+ ]
+
+web search: 
+web search: 
+web search: 
+web search: site:repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8 HdrHistogram-2.1.8-sources.jar HdrHistogram-2.1.8-javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/
+codex
+No file edit was needed in [index.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3/metadata/org.hdrhistogram/HdrHistogram/index.json:3). The `2.1.8` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`.
+
+I verified Maven Central has the exact `2.1.8` sources and javadoc jars, and the GitHub `HdrHistogram-2.1.8` tag has `src/test`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/)) I left `language` absent because this is not a Kotlin or Scala-specific artifact under the requested schema. JSON validation with `jq` succeeded.
+2026-04-27T12:29:58.134707Z ERROR codex_core::session: failed to record rollout items: thread 019dceea-7288-7f93-a9d3-33deff24b6d4 not found
+tokens used
+32,010
+No file edit was needed in [index.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3/metadata/org.hdrhistogram/HdrHistogram/index.json:3). The `2.1.8` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`.
+
+I verified Maven Central has the exact `2.1.8` sources and javadoc jars, and the GitHub `HdrHistogram-2.1.8` tag has `src/test`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.8/)) I left `language` absent because this is not a Kotlin or Scala-specific artifact under the requested schema. JSON validation with `jq` succeeded.
+Ran agent for org.hdrhistogram:HdrHistogram:2.1.8 (exit 0). Log: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3/build/agent-url-discovery-logs/org.hdrhistogram-HdrHistogram-2.1.8.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2444-b904f2f3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 35s
+9 actionable tasks: 1 executed, 8 up-to-date
