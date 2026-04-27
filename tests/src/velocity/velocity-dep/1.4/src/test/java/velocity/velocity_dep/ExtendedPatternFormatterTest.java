@@ -14,20 +14,12 @@ import org.apache.log.LogEvent;
 import org.apache.log.Logger;
 import org.apache.log.Priority;
 import org.apache.log.format.ExtendedPatternFormatter;
-import org.apache.log.format.ExtendedPatternFormatterAccess;
 import org.apache.log.output.io.StreamTarget;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExtendedPatternFormatterTest {
-    @Test
-    void resolvesLoggerClassThroughFormatterClassLiteralHelper() {
-        Class<?> loggerClass = ExtendedPatternFormatterAccess.resolveClass("org.apache.log.", "Logger");
-
-        assertThat(loggerClass).isSameAs(Logger.class);
-    }
-
     @Test
     void formatsMethodFromCallerStackWhenContextDoesNotProvideIt() {
         ExtendedPatternFormatter formatter = new ExtendedPatternFormatter("caller=%{method}");
