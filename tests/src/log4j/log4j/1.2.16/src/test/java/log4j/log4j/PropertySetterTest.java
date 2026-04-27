@@ -1,0 +1,90 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package log4j.log4j;
+
+import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.spi.OptionHandler;
+import org.junit.jupiter.api.Test;
+
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class PropertySetterTest {
+
+    @Test
+    void configuresNestedOptionHandlerPropertiesThroughBeanSetters() {
+        ConfigurableTarget target = new ConfigurableTarget();
+        Properties properties = new Properties();
+        properties.setProperty("target.handler", TrackingOptionHandler.class.getName());
+        properties.setProperty("target.handler.label", "configured");
+        properties.setProperty("target.handler.enabled", "true");
+
+        new PropertySetter(target).setProperties(properties, "target.");
+
+        assertThat(target.isActivated()).isTrue();
+        assertThat(target.getHandler()).isInstanceOf(TrackingOptionHandler.class);
+
+        TrackingOptionHandler handler = target.getHandler();
+        assertThat(handler.getLabel()).isEqualTo("configured");
+        assertThat(handler.isEnabled()).isTrue();
+        assertThat(handler.isActivated()).isTrue();
+    }
+
+    public static final class ConfigurableTarget implements OptionHandler {
+        private TrackingOptionHandler handler;
+        private boolean activated;
+
+        @Override
+        public void activateOptions() {
+            activated = true;
+        }
+
+        public TrackingOptionHandler getHandler() {
+            return handler;
+        }
+
+        public void setHandler(TrackingOptionHandler handler) {
+            this.handler = handler;
+        }
+
+        public boolean isActivated() {
+            return activated;
+        }
+    }
+
+    public static final class TrackingOptionHandler implements OptionHandler {
+        private String label;
+        private boolean enabled;
+        private boolean activated;
+
+        @Override
+        public void activateOptions() {
+            activated = true;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isActivated() {
+            return activated;
+        }
+    }
+}
