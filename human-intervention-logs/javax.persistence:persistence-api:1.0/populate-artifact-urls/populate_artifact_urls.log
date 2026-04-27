@@ -1,0 +1,197 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd0b1-7421-7e73-8b2a-33dee3cd289f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.persistence:persistence-api:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d/metadata/javax.persistence/persistence-api/index.json
+- Entry selector: "metadata-version" = "1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar
+- repository-url: https://jcp.org/en/jsr/detail?id=220
+- test-code-url: N/A
+- documentation-url: https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar
+- description: Java Persistence API defines standard annotations and interfaces used by Java applications to map objects to relational database tables and manage persistent entities. This artifact contains the persistence API contracts for enterprise Java applications and is intended to be used with a compliant persistence provider rather than as a standalone implementation.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0
+- Entry test-version: 1.0
+codex
+I’ll check the target entry first, then verify the artifact URLs against Maven/versioned artifacts so I only touch fields that are actually missing.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"1\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/javax.persistence/persistence-api/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d
+ succeeded in 0ms:
+4:    "metadata-version" : "1.0",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar",
+6:    "repository-url" : "https://jcp.org/en/jsr/detail?id=220",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar",
+9:    "description" : "Java Persistence API defines standard annotations and interfaces used by Java applications to map objects to relational database tables and manage persistent entities. This artifact contains the persistence API contracts for enterprise Java applications and is intended to be used with a compliant persistence provider rather than as a standalone implementation.",
+
+web search: 
+web search: Maven javax.persistence persistence-api 1.0 sources jar javadoc jar tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/
+codex
+The target entry already has non-blank values for every requested URL/description field. I’m verifying the Maven listings now because the only unset field is `language`, which should remain absent unless this is specifically a Kotlin or Scala library.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.0\")' metadata/javax.persistence/persistence-api/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.0",
+  "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar",
+  "repository-url": "https://jcp.org/en/jsr/detail?id=220",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar",
+  "description": "Java Persistence API defines standard annotations and interfaces used by Java applications to map objects to relational database tables and manage persistent entities. This artifact contains the persistence API contracts for enterprise Java applications and is intended to be used with a compliant persistence provider rather than as a standalone implementation.",
+  "tested-versions": [
+    "1.0"
+  ],
+  "allowed-packages": [
+    "javax.persistence"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/javax.persistence/persistence-api/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d
+ succeeded in 0ms:
+web search: 
+web search: repo1.maven.org javax.persistence persistence-api 1.0 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/
+web search: 
+web search: https://jcp.org/en/jsr/detail?id=220
+exec
+/usr/bin/bash -lc 'curl -I -L --silent --show-error https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-sources.jar | head -n 12' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 20:46:57 GMT
+content-type: application/java-archive
+content-length: 106248
+cf-ray: 9f30adf9caabfbd6-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1130869
+etag: "eb6c488db142e3f9c10fa8d9bee3c0d7"
+last-modified: Mon, 17 Jul 2006 11:09:04 GMT
+x-checksum-md5: eb6c488db142e3f9c10fa8d9bee3c0d7
+x-checksum-sha1: 2773a7910e8f0c7d59749dc4fcef2a4b94fcf85a
+
+exec
+/usr/bin/bash -lc 'curl -I -L --silent --show-error https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-tests.jar | head -n 12' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d
+ succeeded in 0ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 20:46:57 GMT
+content-type: text/html
+cf-ray: 9f30adf9fb1c03a9-ZRH
+cf-cache-status: HIT
+age: 291
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+exec
+/usr/bin/bash -lc 'curl -I -L --silent --show-error https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/persistence-api-1.0-javadoc.jar | head -n 12' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d
+ succeeded in 255ms:
+HTTP/2 200 
+strict-transport-security: max-age=7776000
+server: Nexus/3.77.2-02 (PRO)
+x-content-type-options: nosniff
+content-security-policy: sandbox allow-forms allow-modals allow-popups allow-presentation allow-scripts allow-top-navigation
+x-xss-protection: 1; mode=block
+etag: "9a7d6f0eea0c767034658f19fd628c0302d7bc82"
+last-modified: Thu, 03 Jul 2025 10:51:58 GMT
+content-type: application/java-archive
+content-length: 408456
+expires: Mon, 27 Apr 2026 20:46:57 GMT
+cache-control: max-age=0, no-cache, no-store
+
+web search: 
+web search: javax.persistence persistence-api 1.0 Maven Central
+web search: 
+web search: https://jcp.org/en/jsr/detail?id=220
+web search: 
+web search: https://repository.jboss.org/nexus/repository/root_repository/maven2/javax/persistence/persistence-api/1.0/
+web search: 
+web search: 
+codex
+No changes were needed in [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d/metadata/javax.persistence/persistence-api/index.json:4). The `1.0` entry already has non-blank values for source, repository, test, documentation, and description; `language` remains absent because this is a Java API artifact, not a Kotlin or Scala-specific library.
+
+I verified Maven Central has the exact `1.0` sources artifact and no tests artifact in that version directory, matching the existing `source-code-url` and `test-code-url: N/A`. The repository value points at JSR 220, whose final release corresponds to the EJB 3.0 / Java Persistence API specification context for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/))
+2026-04-27T20:47:18.461548Z ERROR codex_core::session: failed to record rollout items: thread 019dd0b1-7421-7e73-8b2a-33dee3cd289f not found
+tokens used
+37,527
+No changes were needed in [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d/metadata/javax.persistence/persistence-api/index.json:4). The `1.0` entry already has non-blank values for source, repository, test, documentation, and description; `language` remains absent because this is a Java API artifact, not a Kotlin or Scala-specific library.
+
+I verified Maven Central has the exact `1.0` sources artifact and no tests artifact in that version directory, matching the existing `source-code-url` and `test-code-url: N/A`. The repository value points at JSR 220, whose final release corresponds to the EJB 3.0 / Java Persistence API specification context for this artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/persistence/persistence-api/1.0/))
+Ran agent for javax.persistence:persistence-api:1.0 (exit 0). Log: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d/build/agent-url-discovery-logs/javax.persistence-persistence-api-1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2335-f719be7d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 56s
+9 actionable tasks: 1 executed, 8 up-to-date
