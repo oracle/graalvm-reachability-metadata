@@ -7,7 +7,9 @@
 package log4j.log4j;
 
 import org.apache.log4j.Appender;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.LoggingEvent;
@@ -19,6 +21,17 @@ import java.util.Properties;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropertySetterTest {
+
+    @Test
+    void convertsSupportedArgumentTypesThroughPropertySetterConversion() {
+        TestablePropertySetter propertySetter = new TestablePropertySetter();
+
+        assertThat(propertySetter.convert("text", String.class)).isEqualTo("text");
+        assertThat(propertySetter.convert("WARN", Priority.class))
+                .isSameAs(Level.WARN);
+        assertThat(propertySetter.convert(TrackingErrorHandler.class.getName(), ErrorHandler.class))
+                .isInstanceOf(TrackingErrorHandler.class);
+    }
 
     @Test
     void instantiatesErrorHandlerPropertiesByClassName() {
@@ -79,6 +92,16 @@ public class PropertySetterTest {
 
         public boolean isActivated() {
             return activated;
+        }
+    }
+
+    public static final class TestablePropertySetter extends PropertySetter {
+        public TestablePropertySetter() {
+            super(new Object());
+        }
+
+        public Object convert(String value, Class<?> type) {
+            return super.convertArg(value, type);
         }
     }
 
