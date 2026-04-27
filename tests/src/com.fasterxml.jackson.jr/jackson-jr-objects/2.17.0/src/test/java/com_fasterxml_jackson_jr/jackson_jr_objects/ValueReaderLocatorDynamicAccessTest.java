@@ -10,8 +10,10 @@ import com.fasterxml.jackson.jr.ob.JacksonJrExtension;
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.ExtensionContext;
 import com.fasterxml.jackson.jr.ob.api.ReaderWriterModifier;
+import com.fasterxml.jackson.jr.ob.api.ValueReader;
 import com.fasterxml.jackson.jr.ob.impl.JSONReader;
 import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
+import com.fasterxml.jackson.jr.ob.impl.ValueReaderLocator;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -32,6 +34,15 @@ public class ValueReaderLocatorDynamicAccessTest {
                 .beanFrom(Direction.class, "\"GO-SOUTH\"");
 
         assertThat(direction).isEqualTo(Direction.SOUTH);
+    }
+
+    @Test
+    void createsEnumReadersFromModifierProvidedDefinitions() {
+        ValueReaderLocator locator = ValueReaderLocator.blueprint(null, new EnumDefinitionModifier());
+
+        ValueReader reader = locator.findReader(Direction.class);
+
+        assertThat(reader).isNotNull();
     }
 
     private static JSON enumAwareJson(JSON.Feature... features) {
