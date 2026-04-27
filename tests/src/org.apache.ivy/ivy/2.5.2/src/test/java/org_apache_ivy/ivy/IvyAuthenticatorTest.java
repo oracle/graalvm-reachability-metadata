@@ -13,23 +13,34 @@ import java.net.PasswordAuthentication;
 
 import org.apache.ivy.util.url.IvyAuthenticator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
+@ResourceLock("java.net.Authenticator")
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class IvyAuthenticatorTest {
     @Test
     public void installsWithModernAndLegacyAuthenticatorDiscovery() {
         String previousJavaSpecificationVersion = System.getProperty("java.specification.version");
         Authenticator previousAuthenticator = Authenticator.getDefault();
         try {
+            Authenticator legacyOriginal = new FixedAuthenticator("legacy-user");
+            installWithJavaSpecificationVersion("1.8", legacyOriginal);
+
+            PasswordAuthentication legacyAuthentication =
+                    Authenticator.requestPasswordAuthentication(
+                            "repository.example", null, 443, "https", "integration-realm", "basic");
+            assertThat(legacyAuthentication).isNotNull();
+            assertThat(legacyAuthentication.getUserName()).isEqualTo("legacy-user");
+
             Authenticator modernOriginal = new FixedAuthenticator("modern-user");
             installWithJavaSpecificationVersion("9", modernOriginal);
 
-            PasswordAuthentication authentication = Authenticator.requestPasswordAuthentication(
-                    "repository.example", null, 443, "https", "integration-realm", "basic");
-            assertThat(authentication).isNotNull();
-            assertThat(authentication.getUserName()).isEqualTo("modern-user");
-
-            Authenticator legacyOriginal = new FixedAuthenticator("legacy-user");
-            installWithJavaSpecificationVersion("1.8", legacyOriginal);
+            PasswordAuthentication modernAuthentication =
+                    Authenticator.requestPasswordAuthentication(
+                            "repository.example", null, 443, "https", "integration-realm", "basic");
+            assertThat(modernAuthentication).isNotNull();
+            assertThat(modernAuthentication.getUserName()).isEqualTo("modern-user");
         } finally {
             Authenticator.setDefault(previousAuthenticator);
             restoreJavaSpecificationVersion(previousJavaSpecificationVersion);
