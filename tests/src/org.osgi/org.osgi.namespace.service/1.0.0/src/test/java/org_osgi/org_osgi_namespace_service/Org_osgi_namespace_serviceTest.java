@@ -25,6 +25,10 @@ public class Org_osgi_namespace_serviceTest {
     private static final String PAYMENT_SERVICE = "com.acme.payments.PaymentService";
     private static final String AUDIT_SERVICE = "com.acme.audit.AuditService";
     private static final String INVENTORY_SERVICE = "com.acme.inventory.InventoryService";
+    private static final String SERVICE_TIER_ATTRIBUTE = "service.tier";
+    private static final String SERVICE_RANKING_ATTRIBUTE = "service.ranking";
+    private static final String SERVICE_PROTOCOLS_ATTRIBUTE = "service.protocols";
+    private static final String SERVICE_LATENCY_ATTRIBUTE = "service.latency";
 
     @Test
     void constantsExposeServiceNamespaceContract() {
@@ -149,6 +153,43 @@ public class Org_osgi_namespace_serviceTest {
                 .isEqualTo(List.of(PAYMENT_SERVICE, AUDIT_SERVICE));
     }
 
+    @Test
+    void arbitraryTypedServiceAttributesSupportRequirementMatching() {
+        SyntheticResource resource = new SyntheticResource();
+        Capability preferredCapability = resource.addCapability(
+                ServiceNamespace.SERVICE_NAMESPACE,
+                Map.of(),
+                Map.of(
+                        ServiceNamespace.CAPABILITY_OBJECTCLASS_ATTRIBUTE, List.of(PAYMENT_SERVICE),
+                        SERVICE_TIER_ATTRIBUTE, "gold",
+                        SERVICE_RANKING_ATTRIBUTE, 100L,
+                        SERVICE_PROTOCOLS_ATTRIBUTE, List.of("grpc", "http"),
+                        SERVICE_LATENCY_ATTRIBUTE, 3.5D));
+        resource.addCapability(
+                ServiceNamespace.SERVICE_NAMESPACE,
+                Map.of(),
+                Map.of(
+                        ServiceNamespace.CAPABILITY_OBJECTCLASS_ATTRIBUTE, List.of(AUDIT_SERVICE),
+                        SERVICE_TIER_ATTRIBUTE, "silver",
+                        SERVICE_RANKING_ATTRIBUTE, 25L,
+                        SERVICE_PROTOCOLS_ATTRIBUTE, List.of("http"),
+                        SERVICE_LATENCY_ATTRIBUTE, 18.0D));
+        Requirement requirement = resource.addRequirement(
+                ServiceNamespace.SERVICE_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE,
+                        "(&(service.tier=gold)(service.ranking>=50)(service.protocols=grpc)(service.latency<=5.0))"),
+                Map.of());
+
+        List<Capability> matchingCapabilities = serviceCapabilitiesMatchingTypedAttributes(resource, requirement);
+
+        assertThat(matchingCapabilities).containsExactly(preferredCapability);
+        assertThat(preferredCapability.getAttributes())
+                .containsEntry(SERVICE_TIER_ATTRIBUTE, "gold")
+                .containsEntry(SERVICE_RANKING_ATTRIBUTE, 100L)
+                .containsEntry(SERVICE_PROTOCOLS_ATTRIBUTE, List.of("grpc", "http"))
+                .containsEntry(SERVICE_LATENCY_ATTRIBUTE, 3.5D);
+    }
+
     private static String objectClassFilter(String objectClass) {
         return "(" + ServiceNamespace.CAPABILITY_OBJECTCLASS_ATTRIBUTE + "=" + objectClass + ")";
     }
@@ -157,6 +198,39 @@ public class Org_osgi_namespace_serviceTest {
         return resource.getCapabilities(ServiceNamespace.SERVICE_NAMESPACE).stream()
                 .filter(capability -> objectClassValues(capability).contains(objectClass))
                 .collect(Collectors.toList());
+    }
+
+    private static List<Capability> serviceCapabilitiesMatchingTypedAttributes(Resource resource, Requirement requirement) {
+        assertThat(requirement.getDirectives().get(Namespace.REQUIREMENT_FILTER_DIRECTIVE))
+                .contains(SERVICE_TIER_ATTRIBUTE)
+                .contains(SERVICE_RANKING_ATTRIBUTE)
+                .contains(SERVICE_PROTOCOLS_ATTRIBUTE)
+                .contains(SERVICE_LATENCY_ATTRIBUTE);
+        return resource.getCapabilities(requirement.getNamespace()).stream()
+                .filter(capability -> attributeEquals(capability, SERVICE_TIER_ATTRIBUTE, "gold"))
+                .filter(capability -> longAttributeAtLeast(capability, SERVICE_RANKING_ATTRIBUTE, 50L))
+                .filter(capability -> listAttributeContains(capability, SERVICE_PROTOCOLS_ATTRIBUTE, "grpc"))
+                .filter(capability -> doubleAttributeAtMost(capability, SERVICE_LATENCY_ATTRIBUTE, 5.0D))
+                .collect(Collectors.toList());
+    }
+
+    private static boolean attributeEquals(Capability capability, String attributeName, Object expectedValue) {
+        return Objects.equals(capability.getAttributes().get(attributeName), expectedValue);
+    }
+
+    private static boolean longAttributeAtLeast(Capability capability, String attributeName, long threshold) {
+        Object value = capability.getAttributes().get(attributeName);
+        return value instanceof Long && (Long) value >= threshold;
+    }
+
+    private static boolean doubleAttributeAtMost(Capability capability, String attributeName, double threshold) {
+        Object value = capability.getAttributes().get(attributeName);
+        return value instanceof Double && (Double) value <= threshold;
+    }
+
+    private static boolean listAttributeContains(Capability capability, String attributeName, String expectedElement) {
+        Object value = capability.getAttributes().get(attributeName);
+        return value instanceof List<?> && ((List<?>) value).contains(expectedElement);
     }
 
     private static List<Capability> resolveEffectiveServiceCapabilities(Resource resource) {
