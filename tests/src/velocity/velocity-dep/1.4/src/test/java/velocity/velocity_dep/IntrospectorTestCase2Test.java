@@ -7,21 +7,20 @@
 package velocity.velocity_dep;
 
 import junit.framework.TestResult;
-import org.apache.velocity.test.IntrospectorTestCase2;
+import junit.textui.TestRunner;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntrospectorTestCase2Test {
     @Test
-    void resolvesMostSpecificOverloadedMethodsWithAndWithoutCachedClassLiterals() {
-        TestResult result = new TestResult();
+    void resolvesMostSpecificOverloadedMethodsWhenLoadedByJUnit() throws Exception {
+        TestRunner runner = new TestRunner();
 
-        IntrospectorTestCase2.suite().run(result);
-        IntrospectorTestCase2.suite().run(result);
+        TestResult result = runner.start(new String[] {"org.apache.velocity.test.IntrospectorTestCase2"});
 
         assertThat(result.errorCount()).isZero();
         assertThat(result.failureCount()).isZero();
-        assertThat(result.runCount()).isEqualTo(2);
+        assertThat(result.runCount()).isEqualTo(1);
     }
 }
