@@ -10,9 +10,15 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+tasks.named('compileTestJava', JavaCompile) {
+    options.compilerArgs.addAll([
+            '-processor', 'org.immutables.processor.ProxyProcessor'
+    ])
+}
+
 dependencies {
     testImplementation "org.immutables:value:$libraryVersion"
-    testAnnotationProcessor "org.immutables:value:$libraryVersion"
+    testAnnotationProcessor "org.immutables:value-processor:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
