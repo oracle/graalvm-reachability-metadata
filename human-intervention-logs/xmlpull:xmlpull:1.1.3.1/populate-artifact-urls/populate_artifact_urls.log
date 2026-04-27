@@ -1,0 +1,1918 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dce70-3751-7333-99be-cfb55ad45f12
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xmlpull:xmlpull:1.1.3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.1.3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/metadata/xmlpull/xmlpull/index.json
+- Entry selector: "metadata-version" = "1.1.3.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.1.3.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: N/A
+- repository-url: https://github.com/xmlpull-org/xmlpull-api-v1
+- test-code-url: N/A
+- documentation-url: N/A
+- description: XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.1.3.1
+- Entry test-version: 1.1.3.1
+codex
+I’ll verify the existing entry first, then check Maven/source locations for version `1.1.3.1` before editing only fields that are actually missing.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/xmlpull/xmlpull/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.3.1",
+    "source-code-url" : "N/A",
+    "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract.",
+    "tested-versions" : [
+      "1.1.3.1"
+    ],
+    "allowed-packages" : [
+      "org.xmlpull.v1"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.1\\.3\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/xmlpull/xmlpull/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+4:    "metadata-version" : "1.1.3.1",
+5:    "source-code-url" : "N/A",
+6:    "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "N/A",
+9:    "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract.",
+
+web search: 
+web search: Maven xmlpull xmlpull 1.1.3.1 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/
+web search: 
+web search: 
+codex
+The index entry already has `N/A` strings for the three URL fields and a non-blank description, so I’m treating the edit rule carefully while still checking whether there are authoritative versioned URLs behind those placeholders.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.pom' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xmlpull</groupId>
+  <artifactId>xmlpull</artifactId>
+  <version>1.1.3.1</version>
+  <name>XML Pull Parsing API</name>
+  <url>http://www.xmlpull.org</url>
+
+  <licenses>
+    <license>
+      <name>Public Domain</name>
+      <url>http://www.xmlpull.org/v1/download/unpacked/LICENSE.txt</url>
+    </license>
+  </licenses>
+
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-sources.jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ exited 22 in 0ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 10:16:15 GMT
+content-type: text/html
+cf-ray: 9f2d1219bc1f9cec-ZRH
+cf-cache-status: HIT
+age: 2896
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-javadoc.jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ exited 22 in 0ms:
+curl: (22) The requested URL retuHTTP/2 404 
+date: Mon, 27 Apr 2026 10:16:15 GMT
+content-type: text/html
+cf-ray: 9f2d121a5f5f75ff-ZRH
+cf-cache-status: HIT
+age: 2169
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+rned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-test-sources.jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ exited 22 in 264ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 27 Apr 2026 10:16:15 GMT
+content-type: text/html
+cf-ray: 9f2d121a2c8fdc8b-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/xmlpull/xmlpull/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+?? metadata/xmlpull/xmlpull/index.json
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+<html>
+<head><title>Index of /maven2/xmlpull/xmlpull/1.1.3.1/</title></head>
+<body bgcolor=white>
+<h1>Index of /maven2/xmlpull/xmlpull/1.1.3.1/</h1>
+<hr>
+<pre>
+<a href=../>../</a>
+<a href="xmlpull-1.1.3.1.jar">xmlpull-1.1.3.1.jar</a>                                2003-06-16 19:03                 7188
+<a href="xmlpull-1.1.3.1.jar.md5">xmlpull-1.1.3.1.jar.md5</a>                            2007-03-19 20:18                   54
+<a href="xmlpull-1.1.3.1.jar.sha1">xmlpull-1.1.3.1.jar.sha1</a>                           2007-03-19 20:18                   62
+<a href="xmlpull-1.1.3.1.pom">xmlpull-1.1.3.1.pom</a>                                2007-03-19 19:18                  386
+<a href="xmlpull-1.1.3.1.pom.md5">xmlpull-1.1.3.1.pom.md5</a>                            2007-03-19 20:18                   54
+<a href="xmlpull-1.1.3.1.pom.sha1">xmlpull-1.1.3.1.pom.sha1</a>                           2007-03-19 20:18                   62
+</pre>
+<hr>
+</body>
+</html>
+
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/xmlpull-org/xmlpull-api-v1.git' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/xmlpull-org/xmlpull-api-v1.git' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 311ms:
+21127efba74f6f147e867e2bcf3e8b2a9624cc2c	refs/heads/master
+
+ succeeded in 320ms:
+web search: 
+web search: xmlpull_1_1_3_1_src.zip
+exec
+/usr/bin/bash -lc 'curl -fsSL http://www.xmlpull.org/ | head -n 120' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -fsSL http://www.xmlpull.org/v1/download/ | head -n 220' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 325ms:
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <title>XML Pull Parsing</title>
+  <link rel="SHORTCUT ICON" href="http://www.xmlpull.org/favicon.ico" />
+</head>
+
+<body>
+<!--#include file="header.html" -->
+
+
+  <!-- FOOTER START -->
+  <table cellpadding="7" summary="sideline">
+    <tr>
+      <td valign="top" bgcolor="#999999">
+        <center>
+          <a href="index.html"><img src="images/xmlpull_grey.gif" alt="[XMLPULL.ORG]" border="0" hspace="4" vspace="4"
+          width="87" height="83" /></a><br />
+        </center>
+
+        <table cellpadding="2" summary="menu">
+          <tr>
+            <td><b class="inv" style="color: rgb(255,255,255);">Common<br />
+            XML Pull API</b></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="index.html">Home<br /></a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/doc/changes.html">Changes<br /></a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/doc/faq.html">FAQ<br /></a></td>
+          </tr>
+
+          <tr>
+            <td><span style="color: #FFFFFF"><b>Learn API</b></span></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp;<span style="color: #FFFFFF"><a class="inv" style="color: #FFFFFF" href=
+            "v1/download/unpacked/doc/quick_intro.html">Introduction</a> to<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<a class="inv" style="color: #FFFFFF" href=
+            "v1/download/unpacked/doc/quick_intro.html">parsing</a> and<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<a class="inv" style="color: #FFFFFF" href=
+            "v1/download/unpacked/doc/quick_write.html">writing</a> XML</span></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href=
+            "v1/doc/api/org/xmlpull/v1/package-summary.html">Java API</a><br /></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/doc/features.html">Features</a><br /></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href=
+            "v1/doc/properties.html">Properties</a><br /></td>
+          </tr>
+
+          <tr>
+            <td><span style="color: #FFFFFF"><b>Use API</b></span></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href=
+            "https://github.com/xmlpull-org/xmlpull-api-v1/issues">Open issues</a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="impls.html">Download<br />
+            implementation</a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/doc/addons.html">Addons</a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="tests.html">Run tests<br /></a></td>
+          </tr>
+
+          <tr>
+            <td><span style="color: #FFFFFF"><b>API source</b></span></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href=
+            "https://github.com/xmlpull-org/xmlpull-api-v1/">Browse</a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/download/">Download</a></td>
+          </tr>
+
+          <tr>
+            <td><a class="inv" style="color: #FFFFFF" href="discussion.html">Discussion<br /></a></td>
+          </tr>
+        </table>
+
+        <center>
+          <br />
+        </center>
+      </td>
+
+
+
+     <td valign="top">
+
+<!-- HEADER END -->
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL http://www.xmlpull.org/v1/download/unpacked/ | head -n 220' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 242ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL http://www.xmlpull.org/v1/doc/changes.html | head -n 220' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -fsSL http://www.xmlpull.org/v1/doc/api/org/xmlpull/v1/package-summary.html | head -n 80' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -fsSL http://www.xmlpull.org/tests.html | head -n 220' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 231ms:
+<HTML>
+<HEAD>
+<TITLE>XMLPULL V1 API Changes
+</TITLE>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Aleksander Slominski [http://www.extreme.indiana.edu/~aslom]">
+</HEAD>
+<BODY BGCOLOR="white">
+
+<H1>Changes to XMLPULL V1 API</H1><P>
+
+<h3>2001-04 (XMLPULL_1_0_5)</h3>
+<ul>
+<li>
+changed features URI to point to actual documentation on www.xmlpull.org
+<li>
+automatic JUnit tests now covers whole API<li>
+clarified isWhitespace() can only be checked on TEXT, IGNORABLE_WHITESPACES,
+CDSECT<li>
+clarified what is attribute namespace for xmlns:ns='...' when
+FEATURE_REPORT_NAMESPACE_ATTRIBUTES is set<li>
+changed defineCharacterEntity() to defineEntityReplacementText() and described
+semantics of this function and its motivation in J2ME environments<li>
+clarified how nextToken() works: return un-normalized (no end-of-line
+normalization) parts of XML input<li>
+if additional feature i set then XML text of START_TAG and END_TAG token is
+available allowing to do full XML document roundtrip: reproduce on output
+exactly what was in input. However this works on level of UNICODE characters
+(UTF16 char in Java) and output will need to be converted into required encoding
+(like UTF8 or UTF16).<li>
+getNamespacesCount changed to getNamespaceCount for consistency<li>
+getAttributesCount changed to getAttributeCount for consistency</ul>
+
+<h3>2001-03-30 (XMLPULL_1_0_4)</h3>
+<ul>
+<li>
+added FEATURE_ prefix to all feature constants<li>
+changed function name getType() to getEventType()<li>
+clarified that getNamespacesCount() does not include default namespaces
+declarations (xmlns='...')<li>
+specified that attributes if has no namespace declared will have &quot;&quot; namespace
+(empty string)<li>
+clarified that when getTextCharacters&nbsp; returns null then holder MUST
+contain start and length will be set to -1]
+<li>added more comprehensive JUnit tests for API conformance
+</ul>
+
+<h3>2001-03-29 (XMLPULL_1_0_3)</h3>
+<ul>
+<li>
+changed getTextCharacters to use pass by reference two int parameters (char[]
+getTextCharacters (int [] holderForStartAndLength)<li>
+nextToken() is required to return actual input data with getText()&nbsp; (no
+end-of-line normalization) - this will allow to reconstruct input XML</ul>
+
+<h3>2001-03-28 (XMLPULL_1_0_2a)</h3>
+<ul>
+<li>
+fixed typos in getAttribute(s)* and getNamespace(s)* functions<li>
+numerous improvements to interface documentation<li>
+clarified PROCESS_DOCDECL and removed REPORT_DOCDECL
+<li>
+initial release of JUnit tests (very limited for now ...)</ul>
+
+<h3>2001-03-25 (XMLPULL_1_0_1)</h3>
+<ul>
+<li>first interim release of API and supporting files (incomplete)
+</ul>
+
+
+<HR>
+<address><a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a><address>
+</address>
+</BODY>
+</HTML>
+ succeeded in 234ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<!-- Generated by javadoc on Tue Apr 02 12:21:20 EST 2002 -->
+<TITLE>
+XMLPULL 1_0_5 API: Package org.xmlpull.v1
+</TITLE>
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../javadoc_stylesheet.css" TITLE="Style">
+</HEAD>
+<BODY BGCOLOR="white">
+
+<!-- ========== START OF NAVBAR ========== -->
+<A NAME="navbar_top"><!-- --></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Package</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <FONT CLASS="NavBarFont1">Class</FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-use.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;PREV PACKAGE&nbsp;
+&nbsp;NEXT PACKAGE</FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html" TARGET="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="package-summary.html" TARGET="_top"><B>NO FRAMES</B></A></FONT></TD>
+</TR>
+</TABLE>
+<!-- =========== END OF NAVBAR =========== -->
+
+<HR>
+<H2>
+Package org.xmlpull.v1
+</H2>
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN=2><FONT SIZE="+2">
+<B>Interface Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="XmlPullParser.html"><I>XmlPullParser</I></A></B></TD>
+<TD>XML Pull Parser is an interface that defines parsing functionlity provided
+ in <a href="http://www.xmlpull.org/">XMLPULL V1 API</a> (visit this website to
+ learn more about API and its implementations).</TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>
+
+<TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TD COLSPAN=2><FONT SIZE="+2">
+<B>Class Summary</B></FONT></TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="15%"><B><A HREF="XmlPullParserFactory.html">XmlPullParserFactory</A></B></TD>
+<TD>This class is used to create implementations of XML Pull Parser defined in XMPULL V1 API.</TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>
+
+ succeeded in 249ms:
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="SHORTCUT ICON" href="http://www.xmlpull.org/favicon.ico" />
+
+  <title>Common XML Pull Parsing API</title>
+</head>
+
+<body><!--#include file="header.html" -->
+
+  <!-- HEADER START -->
+  <table cellpadding="7" summary="sideline">
+    <tr>
+      <td valign="top" bgcolor="#999999">
+        <center>
+          <a href="index.html"><img src="images/xmlpull_grey.gif" alt="[XMLPULL.ORG]" border="0" hspace="4" vspace="4"
+          width="87" height="83" /></a><br />
+        </center>
+
+        <table cellpadding="2" summary="menu">
+          <tr>
+            <td><b class="inv" style="color: rgb(255,255,255);">Common<br />
+            XML Pull API</b></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="index.html">Home<br /></a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/doc/changes.html">Changes<br /></a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/doc/faq.html">FAQ<br /></a></td>
+          </tr>
+
+          <tr>
+            <td><span style="color: #FFFFFF"><b>Learn API</b></span></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp;<span style="color: #FFFFFF"><a class="inv" style="color: #FFFFFF" href=
+            "v1/download/unpacked/doc/quick_intro.html">Introduction</a> to<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<a class="inv" style="color: #FFFFFF" href=
+            "v1/download/unpacked/doc/quick_intro.html">parsing</a> and<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;<a class="inv" style="color: #FFFFFF" href=
+            "v1/download/unpacked/doc/quick_write.html">writing</a> XML</span></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href=
+            "v1/doc/api/org/xmlpull/v1/package-summary.html">Java API</a><br /></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/doc/features.html">Features</a><br /></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href=
+            "v1/doc/properties.html">Properties</a><br /></td>
+          </tr>
+
+          <tr>
+            <td><span style="color: #FFFFFF"><b>Use API</b></span></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href=
+            "https://github.com/xmlpull-org/xmlpull-api-v1/issues">Open issues</a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="impls.html">Download<br />
+            implementation</a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/doc/addons.html">Addons</a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="tests.html">Run tests<br /></a></td>
+          </tr>
+
+          <tr>
+            <td><span style="color: #FFFFFF"><b>API source</b></span></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href=
+            "https://github.com/xmlpull-org/xmlpull-api-v1/">Browse</a></td>
+          </tr>
+
+          <tr>
+            <td>&nbsp;&nbsp; <a class="inv" style="color: #FFFFFF" href="v1/download/">Download</a></td>
+          </tr>
+
+          <tr>
+            <td><a class="inv" style="color: #FFFFFF" href="discussion.html">Discussion<br /></a></td>
+          </tr>
+        </table>
+
+        <center>
+          <br />
+        </center>
+      </td>
+
+
+
+     <td valign="top">
+
+<!-- HEADER END -->
+
+
+  <h1 class="title">API Conformance Tests</h1>
+
+  <p>To ensure interoperability and make sure that users can easily switch between multiple implementations of XMLPULL
+  V1 API we have provided set of tests that must be passed by every implementation. The Java tests are <a href=
+  "v1/download/">available for download</a> and uses JUnit test framework. Read documentation included in download
+  (either ZIP or TAR) on how to execute tests.</p>
+
+  <p>If you are implementing XMLPULL V1 API please make sure that your implementation has passed all tests before it is
+  distributed. This will make end user experience with XMLPULL to be consistent. In case of problems with tests and/or
+  proposing new tests please post to <a href="discussion.shtml">xmlpull-dev mailing list</a>.</p>
+
+
+
+  <p>&nbsp;</p>
+  <hr />
+
+  <table width="100%" cellspacing="5" style="border-collapse: collapse" cellpadding="0" summary=
+  "where is website hosted/maintained">
+    <tr>
+      <td align="left" valign="top" width="75%">
+        <p><font style='font-size: 8pt; font-family: sans-serif'>maintained by <a href=
+        "http://www.extreme.indiana.edu/~aslom/">aleksander slominski</a></font><br />
+        <font style='font-size: 8pt; font-family: sans-serif'>last modified $Id: index.shtml,v 1.62 2005/03/20 02:37:45
+        aslom Exp $</font></p>
+      </td>
+
+      <td align="right" valign="top" width="25%"><font style='font-size: 8pt; font-family: sans-serif'><a href=
+      "http://www.extreme.indiana.edu"><img align="right" src="images/extreme_icon.gif" alt="Extreme! Lab Logo" height=
+      "32" width="32" border="0" /></a> this site is hosted<br />
+      in <a href="http://www.extreme.indiana.edu">Extreme! Lab</a></font></td>
+    </tr>
+  </table>
+
+
+
+
+  <!--#include file="footer.html" -->
+</td>
+</tr>
+</table>
+
+
+</body>
+</html>
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL http://www.xmlpull.org/v1/download/xmlpull_1_1_3_1_src.zip' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -fsSIL http://www.xmlpull.org/v1/download/xmlpull_1_1_3_1_src.tgz' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -fsSIL http://www.xmlpull.org/v1/download/xmlpull_1_1_3_1.zip' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -fsSIL http://www.xmlpull.org/v1/download/xmlpull_1_1_3_1.tgz' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ exited 22 in 137ms:
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 301 Moved Permanently
+Connection: keep-alive
+Content-Length: 162
+Server: GitHub.com
+Content-Type: text/html
+Location: https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1_src.zip
+X-GitHub-Request-Id: D18E:20BEB1:C5D6920:C78626F:69EF3786
+Accept-Ranges: bytes
+Age: 0
+Date: Mon, 27 Apr 2026 10:16:39 GMT
+Via: 1.1 varnish
+X-Served-By: cache-fra-eddf8230083-FRA
+X-Cache: MISS
+X-Cache-Hits: 0
+X-Timer: S1777284999.946875,VS0,VE98
+Vary: Accept-Encoding
+X-Fastly-Request-ID: e21a3c216c401ebea4efeb24a237a798c86611d3
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+x-origin-cache: HIT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: 9348:27D674:CB5FD38:CD1047D:69EF36F4
+accept-ranges: bytes
+age: 146
+date: Mon, 27 Apr 2026 10:16:39 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230114-FRA
+x-cache: HIT
+x-cache-hits: 0
+x-timer: S1777284999.091948,VS0,VE2
+vary: Accept-Encoding
+x-fastly-request-id: cecc7188252f1eb8de16e3d5cda9d8091532e77a
+content-length: 9379
+
+
+ exited 22 in 139ms:
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 301 Moved Permanently
+Connection: keep-alive
+Content-Length: 162
+Server: GitHub.com
+Content-Type: text/html
+Location: https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1.zip
+X-GitHub-Request-Id: C6CA:FAAFA:CBF9DEA:CDAA18D:69EF3787
+Accept-Ranges: bytes
+Age: 0
+Date: Mon, 27 Apr 2026 10:16:39 GMT
+Via: 1.1 varnish
+X-Served-By: cache-fra-eddf8230175-FRA
+X-Cache: MISS
+X-Cache-Hits: 0
+X-Timer: S1777284999.005987,VS0,VE98
+Vary: Accept-Encoding
+X-Fastly-Request-ID: b7bb6b04f51fff6f6b4dd49eb66bf6c3d20b2c07
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: B846:5D62C:C370FBE:C5200F9:69EF3715
+accept-ranges: bytes
+age: 113
+date: Mon, 27 Apr 2026 10:16:39 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230160-FRA
+x-cache: HIT
+x-cache-hits: 0
+x-timer: S1777284999.154243,VS0,VE4
+vary: Accept-Encoding
+x-fastly-request-id: 713b7f56f61337a93c337134435c3d9ccac98ed7
+content-length: 9379
+
+
+ exited 22 in 137ms:
+curl: (22) The requested URL returned error: 404
+HTTP/1.1 301 Moved Permanently
+Connection: keep-alive
+Content-Length: 162
+Server: GitHub.com
+Content-Type: text/html
+Location: https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1.tgz
+X-GitHub-Request-Id: 3760:67D67:CA9585E:CC46377:69EF3786
+Accept-Ranges: bytes
+Age: 0
+Date: Mon, 27 Apr 2026 10:16:39 GMT
+Via: 1.1 varnish
+X-Served-By: cache-fra-eddf8230118-FRA
+X-Cache: MISS
+X-Cache-Hits: 0
+X-Timer: S1777284999.042951,VS0,VE95
+Vary: Accept-Encoding
+X-Fastly-Request-ID: dd8814166d58939117dbb8681d7271ad93e976c9
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: C0E2:1501:9DE6C3B:9F4C2ED:69EF3715
+accept-ranges: bytes
+age: 113
+date: Mon, 27 Apr 2026 10:16:39 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230039-FRA
+x-cache: HIT
+x-cache-hits: 0
+x-timer: S1777284999.189928,VS0,VE3
+vary: Accept-Encoding
+x-fastly-request-id: ea7ce3a7bf19eadc1d9ed0f9e19bbaea4a519c95
+content-length: 9379
+
+
+ exited 22 in 237ms:
+HTTP/1.1 301 Moved Permanently
+Connection: keep-alive
+Content-Length: 162
+Server: GitHub.com
+Content-Type: text/html
+Location: https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1_src.tgz
+X-GitHub-Request-Id: 5758:1529:7E44863:7F60353:69EF3785
+Accept-Ranges: bytes
+Age: 0
+Date: Mon, 27 Apr 2026 10:16:39 GMT
+Via: 1.1 varnish
+X-Served-By: cache-fra-eddf8230126-FRA
+X-Cache: MISS
+X-Cache-Hits: 0
+X-Timer: S1777284999.979245,VS0,VE103
+Vary: Accept-Encoding
+X-Fastly-Request-ID: da2363dcdab0fd100ac7c596fec62ea201d18623
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: C420:27D674:CB6B7BA:CD1C10D:69EF3786
+accept-ranges: bytes
+age: 0
+date: Mon, 27 Apr 2026 10:16:39 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230020-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777284999.124311,VS0,VE108
+vary: Accept-Encoding
+x-fastly-request-id: c83b1037f9c3cf4ed2ee4cd91d0bc12c92a8eca2
+content-length: 9379
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/v1/download?ref=master' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents?ref=master' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 167ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "8073a97b3c2babc45c7eb2ada917d941e06160bb",
+    "size": 22,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/.gitignore?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/.gitignore",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/8073a97b3c2babc45c7eb2ada917d941e06160bb",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/.gitignore?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/8073a97b3c2babc45c7eb2ada917d941e06160bb",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "6e63d3339280874dc30aeac1d58f9be2095d0b4d",
+    "size": 386,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/LICENSE.txt?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/6e63d3339280874dc30aeac1d58f9be2095d0b4d",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/LICENSE.txt?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/6e63d3339280874dc30aeac1d58f9be2095d0b4d",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/LICENSE.txt"
+    }
+  },
+  {
+    "name": "LICENSE_TESTS.txt",
+    "path": "LICENSE_TESTS.txt",
+    "sha": "f24ae6a4ce2559e007cf1fd688942524c8be2f20",
+    "size": 25639,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/LICENSE_TESTS.txt?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/LICENSE_TESTS.txt",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/f24ae6a4ce2559e007cf1fd688942524c8be2f20",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/LICENSE_TESTS.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/LICENSE_TESTS.txt?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/f24ae6a4ce2559e007cf1fd688942524c8be2f20",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/LICENSE_TESTS.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "01519678fe2351294ba9d5a2a2b471e05915e78f",
+    "size": 985,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/README.md?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/README.md",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/01519678fe2351294ba9d5a2a2b471e05915e78f",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/README.md?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/01519678fe2351294ba9d5a2a2b471e05915e78f",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/README.md"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "ab86decf23ae2bdfca93031ed4450f9daf642b66",
+    "size": 427,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/SECURITY.md?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/SECURITY.md",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/ab86decf23ae2bdfca93031ed4450f9daf642b66",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/SECURITY.md?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/ab86decf23ae2bdfca93031ed4450f9daf642b66",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/SECURITY.md"
+    }
+  },
+  {
+    "name": "addons",
+    "path": "addons",
+    "sha": "598842d8a976d7371946d6eeab295a3b9d1d0851",
+    "size": 0,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/addons?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/addons",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/598842d8a976d7371946d6eeab295a3b9d1d0851",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/addons?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/598842d8a976d7371946d6eeab295a3b9d1d0851",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/addons"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "build.xml",
+    "sha": "be673137c2bfc1ccad57c0722102938a7a459c0f",
+    "size": 21540,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/build.xml?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/build.xml",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/be673137c2bfc1ccad57c0722102938a7a459c0f",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/build.xml?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/be673137c2bfc1ccad57c0722102938a7a459c0f",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/build.xml"
+    }
+  },
+  {
+    "name": "doc",
+    "path": "doc",
+    "sha": "536f903ffa1e5bb8954442c7057ccc81c38f353a",
+    "size": 0,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/doc?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/doc",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/536f903ffa1e5bb8954442c7057ccc81c38f353a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/doc?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/536f903ffa1e5bb8954442c7057ccc81c38f353a",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/doc"
+    }
+  },
+  {
+    "name": "lib",
+    "path": "lib",
+    "sha": "3cad63866bee61a34a579cad3a4c5e2de56bc578",
+    "size": 0,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/lib?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/lib",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/3cad63866bee61a34a579cad3a4c5e2de56bc578",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/lib?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/3cad63866bee61a34a579cad3a4c5e2de56bc578",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/lib"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "75431149dea880d32aef68ea00edfa84be09cba5",
+    "size": 1872,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/pom.xml?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/pom.xml",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/75431149dea880d32aef68ea00edfa84be09cba5",
+    "download_url": "https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/pom.xml?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/blobs/75431149dea880d32aef68ea00edfa84be09cba5",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/blob/master/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "04b543e2397911bce71991ac29221673846f9abb",
+    "size": 0,
+    "url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/src?ref=master",
+    "html_url": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/src",
+    "git_url": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/04b543e2397911bce71991ac29221673846f9abb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/contents/src?ref=master",
+      "git": "https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/04b543e2397911bce71991ac29221673846f9abb",
+      "html": "https://github.com/xmlpull-org/xmlpull-api-v1/tree/master/src"
+    }
+  }
+]
+
+ exited 22 in 183ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+
+ <groupId>org.xmlpull</groupId>
+ <artifactId>xmlpull</artifactId>
+ <version>1.1.3.4c-SNAPSHOT</version>
+ <packaging>jar</packaging>
+
+<name>XML Pull Parsing API</name>
+<url>http://www.xmlpull.org</url>
+ <licenses>
+  <license>
+    <name>Public Domain</name>
+    <url>
+    http://www.xmlpull.org/v1/download/unpacked/LICENSE.txt
+    </url>
+  </license>
+ </licenses>
+
+ <distributionManagement>
+  <snapshotRepository>
+   <id>ossrh</id>
+   <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+   <id>ossrh</id>
+   <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+ </distributionManagement>
+
+ <properties>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ </properties>
+
+ <dependencies>
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <version>3.8.1</version>
+   <scope>test</scope>
+  </dependency>
+ </dependencies>
+
+
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-source-plugin</artifactId>
+    <version>2.2.1</version>
+    <executions>
+     <execution>
+      <id>attach-sources</id>
+      <goals>
+       <goal>jar-no-fork</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>2.9.1</version>
+    <executions>
+     <execution>
+      <id>attach-javadocs</id>
+      <goals>
+       <goal>jar</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+  </plugins>
+ </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+# XMLPULL V1 API Documentation
+
+<p><a href="doc/quick_intro.html">Quick Introduction</a>
+
+<p><a href="doc/build.txt">How to build instructions API and automatic tests</a>.
+
+<p><a href="doc/run.txt">How to run instructions</a>.
+
+<p><a href="doc/faq.html">FAQ</a>
+
+<p><a href="doc/changes.html">List of changes</a>
+
+<p><a href="doc/api/org/xmlpull/v1/package-summary.html">API documentation</a>
+
+<p><a href="doc/features.html">list of XMLPULL API well-known URI features</a>.
+
+<p><b><a href="doc/THANKS.txt">Thanks!</a></b>
+
+
+<p>
+For the latest version and more information please see:
+<a href="http://www.xmlpull.org/">XMLPULL Home Page</a>
+<!-- and
+<a href="http://www.xmlpull.org/discussion.shtml">XMLPULL
+discussion list archives</a>.-->
+
+<p>
+
+
+<HR>
+
+
+<address><a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a><address>
+
+<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;
+</address>
+</body>
+</html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/git/trees/master?recursive=1 | rg '\"path\": \"(src|test|doc|.*1_1_3|.*1\\.1\\.3|.*VERSION|.*version)'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 245ms:
+      "path": "doc",
+      "path": "doc/ABOUT.txt",
+      "path": "doc/README_DOWNLOAD.html",
+      "path": "doc/THANKS.txt",
+      "path": "doc/addons.html",
+      "path": "doc/api",
+      "path": "doc/api/allclasses-frame.html",
+      "path": "doc/api/deprecated-list.html",
+      "path": "doc/api/help-doc.html",
+      "path": "doc/api/index-all.html",
+      "path": "doc/api/index.html",
+      "path": "doc/api/javadoc_stylesheet.css",
+      "path": "doc/api/org",
+      "path": "doc/api/org/xmlpull",
+      "path": "doc/api/org/xmlpull/v1",
+      "path": "doc/api/org/xmlpull/v1/XmlPullParser.html",
+      "path": "doc/api/org/xmlpull/v1/XmlPullParserException.html",
+      "path": "doc/api/org/xmlpull/v1/XmlPullParserFactory.html",
+      "path": "doc/api/org/xmlpull/v1/XmlSerializer.html",
+      "path": "doc/api/org/xmlpull/v1/class-use",
+      "path": "doc/api/org/xmlpull/v1/class-use/XmlPullParser.html",
+      "path": "doc/api/org/xmlpull/v1/class-use/XmlPullParserException.html",
+      "path": "doc/api/org/xmlpull/v1/class-use/XmlPullParserFactory.html",
+      "path": "doc/api/org/xmlpull/v1/class-use/XmlSerializer.html",
+      "path": "doc/api/org/xmlpull/v1/package-frame.html",
+      "path": "doc/api/org/xmlpull/v1/package-summary.html",
+      "path": "doc/api/org/xmlpull/v1/package-tree.html",
+      "path": "doc/api/org/xmlpull/v1/package-use.html",
+      "path": "doc/api/overview-tree.html",
+      "path": "doc/api/package-list",
+      "path": "doc/api/packages.html",
+      "path": "doc/api/serialized-form.html",
+      "path": "doc/api_impl",
+      "path": "doc/api_impl/allclasses-frame.html",
+      "path": "doc/api_impl/deprecated-list.html",
+      "path": "doc/api_impl/help-doc.html",
+      "path": "doc/api_impl/index-all.html",
+      "path": "doc/api_impl/index.html",
+      "path": "doc/api_impl/javadoc_stylesheet.css",
+      "path": "doc/api_impl/org",
+      "path": "doc/api_impl/org/xmlpull",
+      "path": "doc/api_impl/org/xmlpull/v1",
+      "path": "doc/api_impl/org/xmlpull/v1/XmlPullParser.html",
+      "path": "doc/api_impl/org/xmlpull/v1/XmlPullParserException.html",
+      "path": "doc/api_impl/org/xmlpull/v1/XmlPullParserFactory.html",
+      "path": "doc/api_impl/org/xmlpull/v1/class-use",
+      "path": "doc/api_impl/org/xmlpull/v1/class-use/XmlPullParser.html",
+      "path": "doc/api_impl/org/xmlpull/v1/class-use/XmlPullParserException.html",
+      "path": "doc/api_impl/org/xmlpull/v1/class-use/XmlPullParserFactory.html",
+      "path": "doc/api_impl/org/xmlpull/v1/package-frame.html",
+      "path": "doc/api_impl/org/xmlpull/v1/package-summary.html",
+      "path": "doc/api_impl/org/xmlpull/v1/package-tree.html",
+      "path": "doc/api_impl/org/xmlpull/v1/package-use.html",
+      "path": "doc/api_impl/overview-tree.html",
+      "path": "doc/api_impl/package-list",
+      "path": "doc/api_impl/packages.html",
+      "path": "doc/api_impl/serialized-form.html",
+      "path": "doc/build.txt",
+      "path": "doc/changes.html",
+      "path": "doc/design_notes.html",
+      "path": "doc/faq.html",
+      "path": "doc/features.html",
+      "path": "doc/javadoc_stylesheet.css",
+      "path": "doc/properties.html",
+      "path": "doc/quick_intro.html",
+      "path": "doc/quick_write.html",
+      "path": "doc/run.txt",
+      "path": "doc/unused_properties.html",
+      "path": "src",
+      "path": "src/java",
+      "path": "src/java/api",
+      "path": "src/java/api/org",
+      "path": "src/java/api/org/xmlpull",
+      "path": "src/java/api/org/xmlpull/v1",
+      "path": "src/java/api/org/xmlpull/v1/XmlPullParser.java",
+      "path": "src/java/api/org/xmlpull/v1/XmlPullParserException.java",
+      "path": "src/java/api/org/xmlpull/v1/XmlPullParserFactory.java",
+      "path": "src/java/api/org/xmlpull/v1/XmlSerializer.java",
+      "path": "src/java/samples",
+      "path": "src/java/samples/BestDeal.java",
+      "path": "src/java/samples/ChannelPullHandler.java",
+      "path": "src/java/samples/CloneParser.java",
+      "path": "src/java/samples/CloneableFileReader.java",
+      "path": "src/java/samples/ModifiedRSSReader.txt",
+      "path": "src/java/samples/MyXmlPullApp.java",
+      "path": "src/java/samples/MyXmlWriteApp.java",
+      "path": "src/java/samples/README.txt",
+      "path": "src/java/samples/RSSReader.java",
+      "path": "src/java/samples/Roundtrip.java",
+      "path": "src/java/samples/SimpleXmlPullApp.java",
+      "path": "src/java/samples/XMLRPCDecoder.java",
+      "path": "src/java/samples/XmlCompare.java",
+      "path": "src/java/samples/XmlPullCount.java",
+      "path": "src/java/samples/eventlist",
+      "path": "src/java/samples/eventlist/EventList.java",
+      "path": "src/java/samples/invalid_namespaces.xml",
+      "path": "src/java/samples/pricelist.xml",
+      "path": "src/java/samples/rss.xml",
+      "path": "src/java/tests",
+      "path": "src/java/tests/org",
+      "path": "src/java/tests/org/xmlpull",
+      "path": "src/java/tests/org/xmlpull/v1",
+      "path": "src/java/tests/org/xmlpull/v1/tests",
+      "path": "src/java/tests/org/xmlpull/v1/tests/PackageTests.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestAttributes.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestBootstrapXmlTests.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestCdsect.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestEntityReplacement.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestEolNormalization.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestEvent.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestFactory.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestMisc.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestProcessDocdecl.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestSerialize.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestSerializeWithNs.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestSetInput.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestSimple.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestSimpleProcessDocdecl.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestSimpleToken.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestSimpleValidation.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestSimpleWithNs.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestToken.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestXmlCdsect.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestXmlSimple.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/TestXmlTypical.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/UtilTestCase.java",
+      "path": "src/java/tests/org/xmlpull/v1/tests/XmlTestCase.java",
+      "path": "src/xml",
+      "path": "src/xml/tests",
+      "path": "src/xml/tests/cdsect.xml",
+      "path": "src/xml/tests/cdsect_eol.xml",
+      "path": "src/xml/tests/cdsect_mixed.xml",
+      "path": "src/xml/tests/cdsect_more.xml",
+      "path": "src/xml/tests/simple.xml",
+      "path": "src/xml/tests/simple2.xml",
+      "path": "src/xml/tests/typical.xml",
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.jar -o "$tmp/xmlpull.jar"; jar tf "$tmp/xmlpull.jar" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/xmlpull/
+org/xmlpull/v1/
+XMLPULL_1_1_3_1_VERSION
+org/xmlpull/v1/XmlPullParser.class
+org/xmlpull/v1/XmlPullParserException.class
+org/xmlpull/v1/XmlPullParserFactory.class
+org/xmlpull/v1/XmlSerializer.class
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://central.sonatype.com/artifact/xmlpull/xmlpull/1.1.3.1 | rg -n 'Repository|Project URL|Source|xmlpull|1\\.1\\.3\\.1|javadoc|sources' | head -n 80" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22xmlpull%22+AND+a:%22xmlpull%22+AND+v:%221.1.3.1%22&core=gav&rows=20&wt=json'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 163ms:
+{"responseHeader":{"status":0,"QTime":1,"params":{"q":"g:\"xmlpull\" AND a:\"xmlpull\" AND v:\"1.1.3.1\"","core":"gav","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"xmlpull:xmlpull:1.1.3.1","g":"xmlpull","a":"xmlpull","v":"1.1.3.1","p":"jar","timestamp":1174349911000,"ec":[".jar",".pom"]}]}}
+ succeeded in 1376ms:
+1:<!DOCTYPE html><html lang="en" class="nx-html nx-html--page-scrolling"><head><meta charSet="utf-8"/><meta charSet="utf-8"/><meta name="viewport" content="initial-scale=1, width=device-width"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/chunks/7e3e88e29a20ba42.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/32204ee6079875e1.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/8c0406260fdbe388.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/9081046f14a49fdb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/51ef267aa05bd38f.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/1deb7c57d32b741b.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/ced9f21470ab95fb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/4eb596bd6324dd5e.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/a5748c610fec802f.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/f7e2cfca66b95516.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/186bad8c212236ce.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/7dc6542cb616f016.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/c8d4bc0d7f9a9824.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/34607cd62ce05140.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/813162c4632647fb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/7ed5ecffc2f62eb9.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/5d5f0cf63561e2a5.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/76418237caa3e37a.js"/><script src="/_next/static/chunks/c1e46bf1da7ac198.js" async=""></script><script src="/_next/static/chunks/976a13be385354eb.js" async=""></script><script src="/_next/static/chunks/turbopack-b481cddba173e4d8.js" async=""></script><script src="/_next/static/chunks/55ce0c659f554151.js" async=""></script><script src="/_next/static/chunks/8470f6f33050dc1a.js" async=""></script><script src="/_next/static/chunks/051729d8fce77793.js" async=""></script><script src="/_next/static/chunks/ccd98df1b5858a96.js" async=""></script><script src="/_next/static/chunks/1c72bde1a0607731.js" async=""></script><script src="/_next/static/chunks/d5a7727462d482f9.js" async=""></script><script src="/_next/static/chunks/a56342ba7750290f.js" async=""></script><script src="/_next/static/chunks/00cddfb81128b1ae.js" async=""></script><script src="/_next/static/chunks/30deb0153bb50880.js" async=""></script><script src="/_next/static/chunks/19d5cfba024d9664.js" async=""></script><script src="/_next/static/chunks/9ccb4ff44c1651d3.js" async=""></script><script src="/_next/static/chunks/eb7371fbba2d646f.js" async=""></script><script src="/_next/static/chunks/266aff81c34c52d8.js" async=""></script><script src="/_next/static/chunks/e74bc7b807f472d5.js" async=""></script><script src="/_next/static/chunks/bff03ff048fb52fa.js" async=""></script><script src="/_next/static/chunks/f5f0db4ed8cc734f.js" async=""></script><script src="/_next/static/chunks/b2e2ccf4a15126ed.js" async=""></script><link rel="preload" href="/_next/static/chunks/d62ffb4503514735.css" as="style"/><link rel="preload" href="https://cdn.bizible.com/scripts/bizible.js" as="script"/><link rel="preload" href="https://static.zdassets.com/ekr/snippet.js?key=67cfc48f-e344-43ae-9fe7-46f37b7eaef6" as="script"/><title>Maven Central: xmlpull:xmlpull:1.1.3.1</title><meta name="description" content="Discover xmlpull in the xmlpull namespace. Explore metadata, contributors, the Maven POM file, and more."/><link rel="canonical" href="https://central.sonatype.com/artifact/xmlpull/xmlpull/1.1.3.1"/><meta property="og:title" content="Maven Central: xmlpull:xmlpull:1.1.3.1"/><meta property="og:description" content="Discover xmlpull in the xmlpull namespace. Explore metadata, contributors, the Maven POM file, and more."/><meta property="og:site_name" content="Maven Central"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="twitter:site" content="@sonatype"/><meta name="twitter:title" content="Maven Central: xmlpull:xmlpull:1.1.3.1"/><meta name="twitter:description" content="Discover xmlpull in the xmlpull namespace. Explore metadata, contributors, the Maven POM file, and more."/><meta name="next-size-adjust" content=""/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="nx-body"><div hidden=""><!--$--><!--/$--></div><!--$?--><template id="B:0"></template><!--/$--><div class="nx-page"><!--$?--><template id="B:1"></template><div class="nx-page-content"><main class="nx-page-main"><div class="nx-page-title SummaryView-module-scss-module__dDyj8W__pageTitle"><h1 class="nx-h1" data-test="header">xmlpull</h1><div class="SummaryView-module-scss-module__dDyj8W__metaWrapper"><div class="nx-page-title__tags"><div class="SummaryView-module-scss-module__dDyj8W__purlWrapper"><label class="nx-tag SummaryView-module-scss-module__dDyj8W__purl nx-selectable-color--yellow" data-test="component-purl"><span class="nx-tag__text">pkg:maven/xmlpull/xmlpull@1.1.3.1</span></label><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><button class="nx-btn nx-tile-button SummaryView-module-scss-module__dDyj8W__copyPurlBtn nx-btn nx-btn--icon-only" data-test="copy-purl-to-clipboard-btn" aria-label=""><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg></button><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></div></div></div><div class="SummaryView-module-scss-module__dDyj8W__usedInWrapper"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cube" class="svg-inline--fa fa-cube SummaryView-module-scss-module__dDyj8W__cubeIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M234.5 5.7c13.9-5 29.1-5 43.1 0l192 68.6C495 83.4 512 107.5 512 134.6V377.4c0 27-17 51.2-42.5 60.3l-192 68.6c-13.9 5-29.1 5-43.1 0l-192-68.6C17 428.6 0 404.5 0 377.4V134.6c0-27 17-51.2 42.5-60.3l192-68.6zM256 66L82.3 128 256 190l173.7-62L256 66zm32 368.6l160-57.1v-188L288 246.6v188z"></path></svg><span class="SummaryView-module-scss-module__dDyj8W__usedIn">Used in:</span> <div class="UsedIn-module-scss-module__7rfWDG__usedInLoaderContainer"><div class="UsedIn-module-scss-module__7rfWDG__usedInLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="var(--nx-swatch-grey-90)"><animate attributeName="fill" values="var(--nx-swatch-grey-90);#ecebeb;var(--nx-swatch-grey-90)" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><span>components</span></div></div></div><div id="tabs-id" class="nx-tabs ComponentDetailsPage-module-scss-module__nReE7W__tabs"><ul role="tablist" class="nx-tab-list"><li role="tab" id="tabs-id-tab-0" aria-controls="tabs-id-tabpanel-0" class="nx-tab Tab-module-scss-module__YrLTTG__tab active" aria-selected="true" tabindex="0" title="">Overview<div class="nx-tab__hidden-children">Overview</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-1" aria-controls="tabs-id-tabpanel-1" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Versions<div class="nx-tab__hidden-children">Versions</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-2" aria-controls="tabs-id-tabpanel-2" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Dependents<div class="nx-tab__hidden-children">Dependents</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-3" aria-controls="tabs-id-tabpanel-3" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Dependencies<div class="nx-tab__hidden-children">Dependencies</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></ul><div role="tabpanel" id="tabs-id-tabpanel-0" aria-labelledby="tabs-id-tab-0" class="nx-tab-panel" tabindex="0"><section class="Overview-module-scss-module__r-A2kW__overviewSection"><div class="Overview-module-scss-module__r-A2kW__overview"><div class="Overview-module-scss-module__r-A2kW__overviewHeaderLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__snippetLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__pomFileLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div></div><div class="Overview-module-scss-module__r-A2kW__metadata"><div class="Overview-module-scss-module__r-A2kW__ossIndexLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__metadataLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div></div></section></div></div></main></div><!--/$--></div><footer class="Footer-module-scss-module__yFPs5G__footer t-page-footer"><div class="Footer-module-scss-module__yFPs5G__footerInner"><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title"><a class="nx-text-link Footer-module-scss-module__yFPs5G__logoLink t-page-footer-sonatype" rel="" target="_blank" data-test="footer-logo-link" href="https://www.sonatype.com/" aria-disabled="false"><img alt="Sonatype" loading="lazy" width="121" height="21" decoding="async" data-nimg="1" style="color:transparent" src="/SON_logo_white_.svg"/></a></h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-company nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/company" aria-disabled="false"><span>Company</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-products nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/products/software-supply-chain-management" aria-disabled="false"><span>Products</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><span class="Footer-module-scss-module__yFPs5G__text">Copyright 2025</span></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Search</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-browse" rel="" target="" data-test="footer-link" href="/search" aria-disabled="false"><span>Browse</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Publish</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-namespace" rel="" target="" data-test="footer-link" href="/publishing/namespaces" aria-disabled="false"><span>Namespace</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Support</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-api-documents" rel="" target="" data-test="footer-link" href="/api-doc" aria-disabled="false"><span>API Documents</span></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-getting-started nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/publish-ea/publish-ea-guide/" aria-disabled="false"><span>Getting Started</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-help nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/pages/support/" aria-disabled="false"><span>Help</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Partners</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-eol-partners" rel="" target="" data-test="footer-link" href="/partners/eol/HeroDevs" aria-disabled="false"><span>End of Life Partners</span></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-become-a-partner" rel="" target="" data-test="footer-link" href="/partners" aria-disabled="false"><span>Become a Partner</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Validate</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-privacy-policy nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/privacy-policy" aria-disabled="false"><span>Privacy Policy</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-terms-of-service nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/terms.html" aria-disabled="false"><span>Terms of Service</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Log in</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-sign-in" rel="" target="" data-test="footer-link" href="/api/auth/login" aria-disabled="false"><span>Sign in</span></a></li></ul></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/76418237caa3e37a.js" id="_R_" async=""></script><div hidden id="S:0"><header class="nx-page-header Header-module-scss-module__C2D4eG__header"><div class="nx-page-header__inner"><div class="nx-product"><div class="nx-product__logo"><a class="nx-product__home-link" href="/" aria-label="Home"><img src="/maven-central-logo.svg" class="nx-product__logo-image nx-product__logo-image--light" alt="Logo"/><img src="/_next/static/media/sonatype-logo-with-hexagon-dark-mode.84574b4a.png" class="nx-product__logo-image nx-product__logo-image--dark" alt="Logo"/></a></div></div><div class="nx-page-header__extra-content"><div class="Header-module-scss-module__C2D4eG__headerSearch"></div><ul class="Header-module-scss-module__C2D4eG__menu"><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/api-doc" aria-disabled="false"><span>API Doc</span></a></li><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink nx-text-link--external" rel="noreferrer" target="_blank" data-test="text-link" href="https://central.sonatype.org/pages/support/" aria-disabled="false"><span>Help</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Header-module-scss-module__C2D4eG__browseLink"><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/search" aria-disabled="false"><span>Browse</span></a></li><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/api/auth/login" aria-disabled="false"><span>Sign In</span></a></li></ul></div></div></header></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+2:$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><div hidden id="S:1"><template id="P:2"></template><!--$--><!--/$--></div><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[39950,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n3:I[55009,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/ccd98df1b5858a96.js\",\"/_next/static/chunks/1c72bde1a0607731.js\",\"/_next/static/chunks/d5a7727462d482f9.js\",\"/_next/static/chunks/a56342ba7750290f.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\"],\"default\"]\n4:I[94594,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n5:I[52199,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/30deb0153bb50880.js\",\"/_next/static/chunks/1c72bde1a0607731.js\",\"/_next/static/chunks/d5a7727462d482f9.js\",\"/_next/static/chunks/a56342ba7750290f.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\"],\"default\"]\n22:I[38256,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n23:I[8399,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"UserProvider\"]\n24:\"$Sreact.suspense\"\n25:I[18835,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"Header\"]\n26:I[75896,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"LayoutPage\"]\n27:I[15370,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"Footer\"]\n28:I[44421,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"\"]\n2a:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"OutletBoundary\"]\n2c:I[55777,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/b2e2ccf4a15126ed.js\"],\"default\"]\n2d:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"ViewportBoundary\"]\n2f:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"MetadataBoundary\"]\n:HL[\"/_next/static/chunks/7e3e88e29a20ba42.css\",\"style\"]\n:HL[\"/_next/static/chunks/32204ee6079875e1.css\",\"style\"]\n:HL[\"/_next/static/chunks/8c0406260fdbe388.css\",\"style\"]\n:HL[\"/_next/static/chunks/9081046f14a49fdb.css\",\"style\"]\n:HL[\"/_next/static/chunks/51ef267aa05bd38f.css\",\"style\"]\n:HL[\"/_next/static/chunks/1deb7c57d32b741b.css\",\"style\"]\n:HL[\"/_next/static/chunks/ced9f21470ab95fb.css\",\"style\"]\n:HL[\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"style\"]\n:HL[\"/_next/static/chunks/a5748c610fec802f.css\",\"style\"]\n:HL[\"/_next/static/chunks/f7e2cfca66b95516.css\",\"style\"]\n:HL[\"/_next/static/chunks/186bad8c212236ce.css\",\"style\"]\n:HC[\"/\",\"\"]\n:HL[\"/_next/static/chunks/7dc6542cb616f016.css\",\""])</script><script>self.__next_f.push([1,"style\"]\n:HL[\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"style\"]\n:HL[\"/_next/static/chunks/34607cd62ce05140.css\",\"style\"]\n:HL[\"/_next/static/chunks/813162c4632647fb.css\",\"style\"]\n:HL[\"/_next/static/chunks/7ed5ecffc2f62eb9.css\",\"style\"]\n:HL[\"/_next/static/chunks/5d5f0cf63561e2a5.css\",\"style\"]\n:HL[\"/_next/static/chunks/d62ffb4503514735.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"Fjy4n5M6AWyOV088ruqQP\",\"c\":[\"\",\"artifact\",\"xmlpull\",\"xmlpull\",\"1.1.3.1\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"(default)\",{\"children\":[\"artifact\",{\"children\":[[\"namespace\",\"xmlpull\",\"d\"],{\"children\":[[\"name\",\"xmlpull\",\"d\"],{\"children\":[[\"paths\",\"1.1.3.1\",\"oc\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/051729d8fce77793.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"className\":\"nx-html nx-html--page-scrolling\",\"children\":[[\"$\",\"head\",null,{\"children\":[[\"$\",\"meta\",null,{\"name\":\"viewport\",\"content\":\"initial-scale=1, width=device-width\"}],[\"$\",\"meta\",null,{\"charSet\":\"utf-8\"}],\"\"]}],[\"$\",\"body\",null,{\"className\":\"nx-body\",\"children\":[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$3\",\"errorStyles\":[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],\"errorScripts\":[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/ccd98df1b5858a96.js\",\"async\":true}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/1c72bde1a0607731.js\",\"async\":true}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/d5a7727462d482f9.js\",\"async\":true}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/a56342ba7750290f.js\",\"async\":true}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/00cddfb81128b1ae.js\",\"async\":true}]],\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"$L5\",null,{}],[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]]}]]}],{\"children\":[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7e3e88e29a20ba42.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],\"$L6\",\"$L7\",\"$L8\",\"$L9\",\"$La\",\"$Lb\",\"$Lc\",\"$Ld\",\"$Le\",\"$Lf\",\"$L10\",\"$L11\",\"$L12\",\"$L13\"],\"$L14\"]}],{\"children\":[\"$L15\",{\"children\":[\"$L16\",{\"children\":[\"$L17\",{\"children\":[\"$L18\",{\"children\":[\"$L19\",{},null,false,false]},[\"$L1a\",[\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"],[\"$L1f\",\"$L20\"]],false,false]},null,false,false]},null,false,false]},null,false,false]},null,false,false]},null,false,false],\"$L21\",false]],\"m\":\"$undefined\",\"G\":[\"$22\",[]],\"S\":false}\n"])</script><script>self.__next_f.push([1,"6:[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n7:[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n8:[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n9:[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\na:[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nb:[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nc:[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/f7e2cfca66b95516.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nd:[\"$\",\"link\",\"10\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/186bad8c212236ce.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\ne:[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/19d5cfba024d9664.js\",\"async\":true,\"nonce\":\"$undefined\"}]\nf:[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n10:[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/eb7371fbba2d646f.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n11:[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/266aff81c34c52d8.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n12:[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/00cddfb81128b1ae.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n13:[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/e74bc7b807f472d5.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n14:[false,[\"$\",\"$L23\",null,{\"children\":[[\"$\",\"$24\",null,{\"fallback\":null,\"children\":[\"$\",\"$L25\",null,{}]}],[\"$\",\"$L26\",null,{\"children\":[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"$L5\",null,{}],[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"$L27\",null,{}]]}],[\"$\",\"$L28\",null,{\"src\":\"https://cdn.bizible.com/scripts/bizible.js\"}],[\"$\",\"$L28\",null,{\"id\":\"ze-snippet\",\"src\":\"https://static.zdassets.com/ekr/snippet.js?key=67cfc48f-e344-43ae-9fe7-46f37b7eaef6\"}]]\n15:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n16:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n17:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n18:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\""])</script><script>self.__next_f.push([1,",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n19:[\"$\",\"$1\",\"c\",{\"children\":[\"$L29\",[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7dc6542cb616f016.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/34607cd62ce05140.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/813162c4632647fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7ed5ecffc2f62eb9.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/5d5f0cf63561e2a5.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/bff03ff048fb52fa.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/f5f0db4ed8cc734f.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L2a\",null,{\"children\":[\"$\",\"$24\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@2b\"}]}]]}]\n1a:[\"$\",\"$L2c\",\"l\",{}]\n1b:[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/813162c4632647fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1c:[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7dc6542cb616f016.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1d:[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1e:[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/34607cd62ce05140.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1f:[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/bff03ff048fb52fa.js\",\"async\":true}]\n20:[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/b2e2ccf4a15126ed.js\",\"async\":true}]\n21:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L2d\",null,{\"children\":\"$L2e\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L2f\",null,{\"children\":[\"$\",\"$24\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L30\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n2e:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n2b:null\n30:[[\"$\",\"title\",\"0\",{\"children\":\"Maven Central: xmlpull:xmlpull:1.1.3.1\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Discover xmlpull in the xmlpull namespace. Explore metadata, contributors, the Maven POM file, and more.\"}],[\"$\",\"link\",\"2\",{\"rel\":\"canonical\",\"href\":\"https://central.sonatype.com/artifact/xmlpull/xmlpull/1.1.3.1\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:title\",\"content\":\"Maven Central: xmlpull:xmlpull:1.1.3.1\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:description\",\"content\":\"Discover xmlpull in the xmlpull namespace. Explore metadata, contributors, the Maven POM file, and more.\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:site_name\",\"content\":\"Maven Central\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"7\",{\"name\":\"twitter:card\",\"content\":\"summary\"}],[\"$\",\"meta\",\"8\",{\"name\":\"twitter:site\",\"content\":\"@sonatype\"}],[\"$\",\"meta\",\"9\",{\"name\":\"twitter:title\",\"content\":\"Maven Central: xmlpull:xmlpull:1.1.3.1\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:description\",\"content\":\"Discover xmlpull in the xmlpull namespace. Explore metadata, contributors, the Maven POM file, and more.\"}]]\n"])</script><script>self.__next_f.push([1,"31:I[5522,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"ComponentDetailsPage\"]\n32:I[3540,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"SummaryView\"]\n33:I[61932,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Tabs\"]\n34:I[99892,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Overview\"]\n35:I[28769,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Versions\"]\n36:I[11024,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"DependentsList\"]\n37:I[96599,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"DependenciesList\"]\n"])</script><script>self.__next_f.push([1,"29:[[\"$\",\"$L31\",null,{\"children\":[[\"$\",\"$L32\",null,{\"name\":\"xmlpull\",\"namespace\":\"xmlpull\",\"version\":\"1.1.3.1\",\"versions\":[\"1.1.3.4d_b4_min\",\"1.1.3.4a\",\"1.1.3.1\",\"1.1.2.1\"],\"tags\":[],\"usedIn\":238705,\"tab\":null}],[\"$\",\"$L33\",null,{\"className\":\"ComponentDetailsPage-module-scss-module__nReE7W__tabs\",\"path\":\"/artifact/xmlpull/xmlpull/1.1.3.1\",\"activeTab\":\"overview\",\"tabs\":[{\"name\":\"overview\",\"title\":\"Overview\",\"dataTest\":\"overview-tab\",\"content\":[\"$\",\"$L34\",null,{\"id\":\"pkg:maven/xmlpull/xmlpull@1.1.3.1\",\"name\":\"xmlpull\",\"namespace\":\"xmlpull\",\"version\":\"1.1.3.1\",\"description\":null,\"published\":1174349911000,\"licenses\":[\"Public Domain\"],\"url\":\"http://www.xmlpull.org\",\"contributors\":[],\"pomFile\":\"\u003cproject\u003e\\n  \u003cmodelVersion\u003e4.0.0\u003c/modelVersion\u003e\\n  \u003cgroupId\u003exmlpull\u003c/groupId\u003e\\n  \u003cartifactId\u003exmlpull\u003c/artifactId\u003e\\n  \u003cversion\u003e1.1.3.1\u003c/version\u003e\\n  \u003cname\u003eXML Pull Parsing API\u003c/name\u003e\\n  \u003curl\u003ehttp://www.xmlpull.org\u003c/url\u003e\\n\\n  \u003clicenses\u003e\\n    \u003clicense\u003e\\n      \u003cname\u003ePublic Domain\u003c/name\u003e\\n      \u003curl\u003ehttp://www.xmlpull.org/v1/download/unpacked/LICENSE.txt\u003c/url\u003e\\n    \u003c/license\u003e\\n  \u003c/licenses\u003e\\n\\n\u003c/project\u003e\",\"qualityScore\":null,\"scmUrl\":null,\"issueManagementUrl\":null,\"ciManagementUrl\":null,\"usedIn\":238705,\"ossIndexUrl\":\"https://guide.sonatype.com/component/maven/xmlpull:xmlpull/1.1.3.1\",\"packaging\":\"jar\"}]},{\"name\":\"versions\",\"title\":\"Versions\",\"dataTest\":\"versions-tab\",\"content\":[\"$\",\"$L35\",null,{\"namespace\":\"xmlpull\",\"name\":\"xmlpull\",\"binaryEndpointUrl\":\"https://repo1.maven.org/maven2\"}]},{\"name\":\"dependents\",\"title\":\"Dependents\",\"dataTest\":\"dependents-tab\",\"content\":[\"$\",\"$L36\",\"pkg:maven/xmlpull/xmlpull@1.1.3.1\",{\"componentId\":\"pkg:maven/xmlpull/xmlpull@1.1.3.1\"}]},{\"name\":\"dependencies\",\"title\":\"Dependencies\",\"dataTest\":\"dependencies-tab\",\"content\":[\"$\",\"$L37\",\"pkg:maven/xmlpull/xmlpull@1.1.3.1\",{\"componentId\":\"pkg:maven/xmlpull/xmlpull@1.1.3.1\"}]}]}]]}],[\"$\",\"$L28\",null,{\"data-test\":\"json-ld-script\",\"type\":\"application/ld+json\",\"dangerouslySetInnerHTML\":{\"__html\":\"{\\\"@context\\\":\\\"https://schema.org\\\",\\\"@type\\\":\\\"BreadcrumbList\\\",\\\"itemListElement\\\":[{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":1,\\\"name\\\":\\\"xmlpull\\\",\\\"item\\\":\\\"https://central.sonatype.com/namespace/xmlpull\\\"},{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":2,\\\"name\\\":\\\"xmlpull\\\",\\\"item\\\":\\\"https://central.sonatype.com/artifact/xmlpull/xmlpull\\\"},{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":3,\\\"name\\\":\\\"1.1.3.1\\\",\\\"item\\\":\\\"https://central.sonatype.com/artifact/xmlpull/xmlpull/1.1.3.1\\\"}]}\"}}],null]\n"])</script><div hidden id="S:2"><div class="nx-page-content"><main class="nx-page-main"><div class="nx-page-title SummaryView-module-scss-module__dDyj8W__pageTitle"><h1 class="nx-h1" data-test="header">xmlpull</h1><div class="SummaryView-module-scss-module__dDyj8W__metaWrapper"><div class="nx-page-title__tags"><div class="SummaryView-module-scss-module__dDyj8W__purlWrapper"><label class="nx-tag SummaryView-module-scss-module__dDyj8W__purl nx-selectable-color--yellow" data-test="component-purl"><span class="nx-tag__text">pkg:maven/xmlpull/xmlpull@1.1.3.1</span></label><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><button class="nx-btn nx-tile-button SummaryView-module-scss-module__dDyj8W__copyPurlBtn nx-btn nx-btn--icon-only" data-test="copy-purl-to-clipboard-btn" aria-label=""><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg></button><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></div></div></div><div class="SummaryView-module-scss-module__dDyj8W__usedInWrapper"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cube" class="svg-inline--fa fa-cube SummaryView-module-scss-module__dDyj8W__cubeIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M234.5 5.7c13.9-5 29.1-5 43.1 0l192 68.6C495 83.4 512 107.5 512 134.6V377.4c0 27-17 51.2-42.5 60.3l-192 68.6c-13.9 5-29.1 5-43.1 0l-192-68.6C17 428.6 0 404.5 0 377.4V134.6c0-27 17-51.2 42.5-60.3l192-68.6zM256 66L82.3 128 256 190l173.7-62L256 66zm32 368.6l160-57.1v-188L288 246.6v188z"></path></svg><span class="SummaryView-module-scss-module__dDyj8W__usedIn">Used in:</span> <span data-test="used-in-count">238705 components</span></div></div><div id="tabs-id" class="nx-tabs ComponentDetailsPage-module-scss-module__nReE7W__tabs"><ul role="tablist" class="nx-tab-list"><li role="tab" id="tabs-id-tab-0" aria-controls="tabs-id-tabpanel-0" class="nx-tab Tab-module-scss-module__YrLTTG__tab active" aria-selected="true" tabindex="0" data-test="overview-tab" title="">Overview<div class="nx-tab__hidden-children">Overview</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-1" aria-controls="tabs-id-tabpanel-1" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="versions-tab" title="">Versions<div class="nx-tab__hidden-children">Versions</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-2" aria-controls="tabs-id-tabpanel-2" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="dependents-tab" title="">Dependents<div class="nx-tab__hidden-children">Dependents</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-3" aria-controls="tabs-id-tabpanel-3" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="dependencies-tab" title="">Dependencies<div class="nx-tab__hidden-children">Dependencies</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></ul><div role="tabpanel" id="tabs-id-tabpanel-0" aria-labelledby="tabs-id-tab-0" class="nx-tab-panel" tabindex="0"><section class="Overview-module-scss-module__r-A2kW__overviewSection"><div class="Overview-module-scss-module__r-A2kW__overview"><h2 class="nx-h2">Overview</h2><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><h3 class="nx-h3" data-test="header-overview">Description</h3><div data-test="overview">No description provided</div></div><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><div class="Snippet-module-scss-module__IV1CpW__header"><h3 class="nx-h3 Snippet-module-scss-module__IV1CpW__title" data-test="header-snippets">Snippets</h3><!--$!--><template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"></template><!--/$--><button class="nx-btn nx-tile-button t-component-copy-snippet nx-btn nx-btn--tertiary" data-test="copy-to-clipboard-btn"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg><span>Copy to clipboard</span></button></div><pre class="nx-pre Snippet-module-scss-module__IV1CpW__snippetBody" data-test="snippet">&lt;dependency&gt;
+3:    &lt;groupId&gt;xmlpull&lt;/groupId&gt;
+4:    &lt;artifactId&gt;xmlpull&lt;/artifactId&gt;
+5:    &lt;version&gt;1.1.3.1&lt;/version&gt;
+8:  &lt;groupId&gt;xmlpull&lt;/groupId&gt;
+9:  &lt;artifactId&gt;xmlpull&lt;/artifactId&gt;
+10:  &lt;version&gt;1.1.3.1&lt;/version&gt;
+12:  &lt;url&gt;http://www.xmlpull.org&lt;/url&gt;
+17:      &lt;url&gt;http://www.xmlpull.org/v1/download/unpacked/LICENSE.txt&lt;/url&gt;
+21:&lt;/project&gt;</pre></div></div><div class="Overview-module-scss-module__r-A2kW__metadata"><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical Overview-module-scss-module__r-A2kW__cardMetaData"><div class="Overview-module-scss-module__r-A2kW__description"><h4 class="nx-h4" data-test="header-metadata">Metadata</h4><div class="Overview-module-scss-module__r-A2kW__metaDataContainer"><div class="Overview-module-scss-module__r-A2kW__descriptionItem" data-test="published-metadata"><span class="Overview-module-scss-module__r-A2kW__descriptionItemLabel">Age:</span><span>19 years ago</span></div><div class="Overview-module-scss-module__r-A2kW__descriptionItem"><span class="Overview-module-scss-module__r-A2kW__descriptionItemLabel">Licenses:</span><span><ul class="Overview-module-scss-module__r-A2kW__licensesContainer"><li data-test="license" class="Overview-module-scss-module__r-A2kW__license">Public Domain</li></ul></span></div></div></div><div class="Overview-module-scss-module__r-A2kW__description"><h4 class="nx-h4" data-test="header-organization">Organization</h4><div class="Overview-module-scss-module__r-A2kW__descriptionItem"><a class="nx-text-link Namespace-module-scss-module__vOKsWq__namespaceLink name-space-link" rel="" target="" href="/namespace/xmlpull" aria-disabled="false"><label class="nx-small-tag Namespace-module-scss-module__vOKsWq__namespace nx-small-tag--teal" data-test="component-namespace"><span class="nx-small-tag__text">xmlpull</span></label></a></div></div><div class="ExternalResources-module-scss-module__rlzQ7q__externalResourcesContainer"><h4 class="nx-h4" data-test="header-external-resources">External Resources</h4><div class="ExternalResources-module-scss-module__rlzQ7q__linkWrapper"><a class="nx-text-link nx-text-link--external" rel="noreferrer" target="_blank" data-test="project-url" href="http://www.xmlpull.org" aria-disabled="false"><span>Project URL</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></div></div><div class="Contributors-module-scss-module__QfFLJG__container"><h4 class="nx-h4" data-test="header-known-contributors">Known Contributors</h4><div data-test="no-contributors-found" class="Contributors-module-scss-module__QfFLJG__contributorsContainer">No contributors found</div></div></div><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><div class="OssIndex-module-scss-module__DZPPKq__container"><svg aria-hidden="true" focusable="false" data-prefix="sntp" data-icon="sntpGuideLogo" class="svg-inline--fa fa-sntpGuideLogo fa-fw OssIndex-module-scss-module__DZPPKq__sntpIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 175"><path fill="currentColor" d="M133.01,0v25.97l35.92,20.46v83.51l-35.92,20.41v24.34l58.05-33.04V32.98l-58.05-32.98ZM0,141.64l57.99,32.98v-24.29l-35.87-20.41V46.42l35.87-20.41V0L0,32.98v108.66ZM93.1,136.17c-8.03,0-14.34-1.56-18.93-4.67s-7.57-6.87-8.94-11.29l13.4-3.25c.9,1.84,2.47,3.62,4.69,5.35,2.22,1.73,5.56,2.59,10.03,2.59s7.75-1.03,10.51-3.08c2.75-2.06,4.13-5.4,4.13-10.03v-11.96h-.74c-.77,1.54-1.89,3.11-3.35,4.73-1.47,1.62-3.4,2.97-5.8,4.07-2.4,1.1-5.41,1.64-9.03,1.64-4.85,0-9.24-1.14-13.18-3.43s-7.06-5.72-9.37-10.3-3.47-10.29-3.47-17.15,1.16-12.79,3.47-17.58c2.32-4.78,5.45-8.41,9.4-10.9,3.95-2.48,8.35-3.72,13.2-3.72,3.73,0,6.79.62,9.19,1.87,2.4,1.25,4.3,2.74,5.72,4.48,1.41,1.74,2.49,3.38,3.23,4.91h.82v-10.44h14.68v64.18c0,5.37-1.29,9.83-3.87,13.38-2.58,3.55-6.09,6.2-10.55,7.96-4.45,1.75-9.53,2.63-15.23,2.63ZM93.23,98.59c4.74,0,8.4-1.71,10.98-5.12,2.58-3.41,3.86-8.13,3.86-14.16s-1.27-10.79-3.82-14.43c-2.55-3.65-6.22-5.47-11.02-5.47s-8.7,1.89-11.23,5.65c-2.52,3.77-3.78,8.52-3.78,14.25s1.28,10.48,3.82,14c2.55,3.52,6.28,5.28,11.18,5.28Z"></path></svg><span class="OssIndex-module-scss-module__DZPPKq__linkLabel">Sonatype Guide</span><div class="OssIndex-module-scss-module__DZPPKq__vulnerabilitiesLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="#f3f3f3"><animate attributeName="fill" values="#f3f3f3;#ecebeb;#f3f3f3" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><a class="nx-text-link nx-text-link--external" rel="" target="_blank" data-test="ossindex-metadata-link" href="https://guide.sonatype.com/component/maven/xmlpull:xmlpull/1.1.3.1" aria-disabled="false"><span>View</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></div></div></div></section></div></div></main></div></div><script>$RS=function(a,b){a=document.getElementById(a);b=document.getElementById(b);for(a.parentNode.removeChild(a);a.firstChild;)b.parentNode.insertBefore(a.firstChild,b);b.parentNode.removeChild(b)};$RS("S:2","P:2")</script><script>$RC("B:1","S:1")</script></body></html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/build.xml | rg -n 'VERSION|1_1|1\\.1|xmlpull' | head -n 80" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+14:  <property name="version" value="1_1_3_4b"/>
+15:  <property name="xmlpull_version" value="xmlpull_${version}"/>
+16:  <property name="xmlpull_tag" value="XMLPULL_${version}"/>
+18:    value="This XmlPull V1 API is free, enjoy! &lt;a href='http://www.xmlpull.org/'>http://www.xmlpull.org/&lt;/a>" />
+37:  <property name="build_tests_xml" value="${build_tests}/org/xmlpull/v1/tests/xml"/>  
+41:  <property name="apidoc_packages" value="org.xmlpull.v1.*"/>
+43:  <property name="javadoc_packages" value="org.xmlpull.v1.*"/>
+44:  <property name="dist" value="${build}/dist/${xmlpull_version}"/>
+47:  <property name="dist_lite" value="${build}/dist/${xmlpull_version}_${lite_suffix}"/>
+48:  <property name="dist_full" value="${build}/dist/${xmlpull_version}_${full_suffix}"/>
+55:  <property name="jar"  value="${build_lib}/${xmlpull_version}.jar"/>
+56:  <property name="tests_jar"  value="${build_lib}/xmlpull-tests_${version}.jar"/>
+67:  <property name="jar_dom2_builder"  value="${build_lib}/${xmlpull_version}-dom2_builder.jar"/>
+71:  <property name="jar_sax2"  value="${build_lib}/${xmlpull_version}-sax2.jar"/>
+76:  <property name="jar_parser_pool"  value="${build_lib}/${xmlpull_version}-parser_pool.jar"/>
+80:  <property name="jar_util"  value="${build_lib}/${xmlpull_version}-util.jar"/>
+85:  <property name="jar_wrapper"  value="${build_lib}/${xmlpull_version}-wrapper.jar"/>
+89:  <property name="jar_xmlrpc"  value="${build_lib}/${xmlpull_version}-xmlrpc.jar"/>
+91:  <property name="website"      value="../xmlpull-website/v1"/>
+119:    <touch file="${build_classes}/${xmlpull_tag}_VERSION"/>
+120:    <touch file="${build_tests}/${xmlpull_tag}_VERSION_TESTS"/>
+145:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+156:  <target name="xmlpull" depends="jar"/>
+158:  <target name="samples" depends="xmlpull">
+160:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+166:  <target name="compile" depends="xmlpull,tests,samples"/>
+177:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+187:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+197:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+213:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+222:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+231:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+238:    <javac debug="${debug}" deprecation="${deprecation}" target="1.1"
+258:  <target name="tests_junit" if="junit_present" depends="xmlpull,check_junit">
+284:    <java classname="org.xmlpull.v1.tests.PackageTests" fork="yes">
+300:      <test name="org.xmlpull.v1.tests.PackageTests" />
+309:  <target name="apidoc" depends="xmlpull">
+329:  <target name="javadoc" depends="xmlpull">
+358:        <include name="lib/${xmlpull_version}*.jar"/>
+359:        <include name="lib/xmlpull-tests_${version}*.jar"/>
+367:        <include name="${xmlpull_version}*.jar"/>
+460:      includes="${xmlpull_version}/**"
+461:      excludes="${xmlpull_version}/build/**,${xmlpull_version}/doc/api/**"/>
+467:              <include name="${xmlpull_version}/**/*.sh"/>
+468:              <exclude name="${xmlpull_version}/build/**"/>
+469:              <exclude name="${xmlpull_version}/doc/api/**"/>
+472:             <include name="${xmlpull_version}/**"/>
+473:             <exclude name="${xmlpull_version}/**/*.sh"/>
+474:              <exclude name="${xmlpull_version}/build/**"/>
+475:              <exclude name="${xmlpull_version}/doc/api/**"/>
+496:      includes="${xmlpull_version}/**"/>
+500:         includes="${xmlpull_version}/**" /-->
+506:              <include name="${xmlpull_version}/**/*.sh"/>
+509:             <include name="${xmlpull_version}/**"/>
+510:             <exclude name="${xmlpull_version}/**/*.sh"/>
+551:        <include name="${xmlpull_version}*.jar"/>
+552:        <include name="xmlpull-tests_${version}*.jar"/>
+558:        <include name="${xmlpull_version}_*.*"/>
+566:    <move file="${website}/download/${xmlpull_version}" todir="${website}/download/unpacked"/-->
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/src/java/api/org/xmlpull/v1/XmlPullParser.java | head -n 80' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/xmlpull-org/xmlpull-api-v1/commits?path=pom.xml\\&per_page=20 | rg -n '\"sha\"|\"date\"|\"message\"' | head -n 80" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 167ms:
+/* -*-             c-basic-offset: 4; indent-tabs-mode: nil; -*-  //------100-columns-wide------>|*/
+// for license please see accompanying LICENSE.txt file (available also at http://www.xmlpull.org/)
+
+package org.xmlpull.v1;
+
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.Reader;
+
+/**
+ * XML Pull Parser is an interface that defines parsing functionlity provided
+ * in <a href="http://www.xmlpull.org/">XMLPULL V1 API</a> (visit this website to
+ * learn more about API and its implementations).
+ *
+ * <p>There are following different
+ * kinds of parser depending on which features are set:<ul>
+ * <li><b>non-validating</b> parser as defined in XML 1.0 spec when
+ *   FEATURE_PROCESS_DOCDECL is set to true
+ * <li><b>validating parser</b> as defined in XML 1.0 spec when
+ *   FEATURE_VALIDATION is true (and that implies that FEATURE_PROCESS_DOCDECL is true)
+ * <li>when FEATURE_PROCESS_DOCDECL is false (this is default and
+ *   if different value is required necessary must be changed before parsing is started)
+ *   then parser behaves like XML 1.0 compliant non-validating parser under condition that
+ *  <em>no DOCDECL is present</em> in XML documents
+ *   (internal entites can still be defined with defineEntityReplacementText()).
+ *   This mode of operation is intened <b>for operation in constrained environments</b> such as J2ME.
+ * </ul>
+ *
+ *
+ * <p>There are two key methods: next() and nextToken(). While next() provides
+ * access to high level parsing events, nextToken() allows access to lower
+ * level tokens.
+ *
+ * <p>The current event state of the parser
+ * can be determined by calling the
+ * <a href="#getEventType()">getEventType()</a> method.
+ * Initially, the parser is in the <a href="#START_DOCUMENT">START_DOCUMENT</a>
+ * state.
+ *
+ * <p>The method <a href="#next()">next()</a> advances the parser to the
+ * next event. The int value returned from next determines the current parser
+ * state and is identical to the value returned from following calls to
+ * getEventType ().
+ *
+ * <p>Th following event types are seen by next()<dl>
+ * <dt><a href="#START_TAG">START_TAG</a><dd> An XML start tag was read.
+ * <dt><a href="#TEXT">TEXT</a><dd> Text content was read;
+ * the text content can be retreived using the getText() method.
+ *  (when in validating mode next() will not report ignorable whitespaces, use nextToken() instead)
+ * <dt><a href="#END_TAG">END_TAG</a><dd> An end tag was read
+ * <dt><a href="#END_DOCUMENT">END_DOCUMENT</a><dd> No more events are available
+ * </dl>
+ *
+ * <p>after first next() or nextToken() (or any other next*() method)
+ * is called user application can obtain
+ * XML version, standalone and encoding from XML declaration
+ * in following ways:<ul>
+ * <li><b>version</b>:
+ *  getProperty(&quot;<a href="http://xmlpull.org/v1/doc/properties.html#xmldecl-version">http://xmlpull.org/v1/doc/properties.html#xmldecl-version</a>&quot;)
+ *       returns String ("1.0") or null if XMLDecl was not read or if property is not supported
+ * <li><b>standalone</b>:
+ *  getProperty(&quot;<a href="http://xmlpull.org/v1/doc/features.html#xmldecl-standalone">http://xmlpull.org/v1/doc/features.html#xmldecl-standalone</a>&quot;)
+ *       returns Boolean: null if there was no standalone declaration
+ *  or if property is not supported
+ *         otherwise returns Boolean(true) if standalon="yes" and Boolean(false) when standalone="no"
+ * <li><b>encoding</b>: obtained from getInputEncoding()
+ *       null if stream had unknown encoding (not set in setInputStream)
+ *           and it was not declared in XMLDecl
+ * </ul>
+ *
+ * A minimal example for using this API may look as follows:
+ * <pre>
+ * import java.io.IOException;
+ * import java.io.StringReader;
+ *
+ * import org.xmlpull.v1.XmlPullParser;
+ * import org.xmlpull.v1.<a href="XmlPullParserException.html">XmlPullParserException.html</a>;
+ * import org.xmlpull.v1.<a href="XmlPullParserFactory.html">XmlPullParserFactory</a>;
+ *
+ * public class SimpleXmlPullApp
+curl: (23) Failure writing output to destination
+
+ succeeded in 227ms:
+3:    "sha": "2af59e67b637e7e7cbb063a123e8acee11d48213",
+9:        "date": "2017-11-09T03:01:54Z"
+14:        "date": "2017-11-09T03:01:54Z"
+16:      "message": "test publishing using maven",
+18:        "sha": "0f438654f846bd68827f9f407bff587cabf81a27",
+78:        "sha": "5974f00ed88e63e04dc186e93d1e952e9fdb230b",
+
+web search: 
+web search: "XMLPULL_1_1_3_1_VERSION"
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/doc/README_DOWNLOAD.html | sed -n '1,240p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/doc/build.txt | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/doc/run.txt | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 164ms:
+Building XMLPULL V1 API and tests
+---------------------------------
+
+
+XMLPULL uses simply scripted build system on top ANT
+that will work if ANT jar files are copied ot lib/ant direcotry
+(see this directory for instructions how to get ANT files).
+If ant is already available on CLASSPATH it can be used directly.
+
+First make sure that JAVA_HOME environment variable points
+to your installation of JDK version 1.3 or above.
+
+If you want to use other JAR files simply replace already existing
+files in lib subdirectory (check README.txt files there for description).
+
+To build everything (API, samples and tests) from scratch use build script 
+on UNIX it is ./build.sh and on WINDOWS build.bat refered here as "build":
+
+
+  build all
+
+to build just samples use:
+
+  build samples
+  
+  
+
+Building and executing automatic tests
+--------------------------------------
+
+NOTE: before executing tests an implementation of XMLPULL V1 API must
+be on CLASSPATH or JAR file with the implementation must be copied
+to lib/impl_xmlpull_v1_directory.
+
+when build finished execute automatic tests to verify XMLPULL integrity
+
+  build junit
+	
+
+
+NOTE: this will only succeed if optional JUnit tasks for ANT are 
+in lib/ant and if they are not available see run.txt to see how to execute 
+tests without use of ANT.
+
+and you should see all tests passed successfully, similarly to:
+
+junit:
+    [junit] Testsuite: org.xmlpull.v1.tests.PackageTests
+    [junit] Tests run: 14, Failures: 0, Errors: 0, Time elapsed: 1.632 sec
+    [junit]
+    ....
+
+
+Now check run.txt for details on how to run samples.
+
+ succeeded in 157ms:
+Running XMLPULL samples
+------------------------
+
+Make sure that API and (optionally) all automatic tests are build,
+see build.txt file in the same directory for details
+
+To run samples please use provided run script (on Windows run.bat and on UNIX run.sh).
+Samples can be run without run script but CLASSPATH needs to be 
+
+Before running make sure that JAVA_HOME environment variable points
+to your installation of JDK version 1.3 or above.
+
+Before running samples ...
+--------------------------
+
+
+Before running samples automatic tests should be executed using run script
+to verify that you have properly installed and running XMLPULL implementation,
+
+NOTE: Make sure to have a jar file with XML PULL API V1 implementation 
+in lib/impl_xmlpull_v1_api directory (and see build.txt instructions 
+on how to build tests and then execute) then execute (on Windows run.bat
+on UNIX use ./run.sh):
+
+	run junit
+
+and you should see output similar to:
+
+	..............
+	Time: 3.091
+
+	OK (14 tests)
+
+
+
+Running samples:
+-------------------------------------
+
+NOTE: Make sure to have a jar file with XML PULL API V1 implementation 
+in lib/impl_xmlpull_v1_api directory and follow build.txt instructions
+on how to build samples.
+
+Then you can run every sample using provided run script (run.bat on Windows
+and ./run.sh on UNIX), for example (uses XPP3 jar file):
+
+C:\Forge\xmlpull-api-v1>run MyXmlPullApp
+JAVA_HOME=c:\jdk1.3
+c:\jdk1.3\bin\java   -cp build\classes;build\samples;build\tests;lib\impl_xmlpull_v1_api\xpp3_1_0_5.
+jar;lib\junit\junit37.jar;  MyXmlPullApp
+parser implementation class is class org.xmlpull.xpp3.PullParser
+Parsing simple sample XML
+Start document
+Start element: {http://www.megginson.com/ns/exp/poetry}poem
+Characters:    "\n"
+Start element: {http://www.megginson.com/ns/exp/poetry}title
+Characters:    "Roses are Red"
+End element:   {http://www.megginson.com/ns/exp/poetry}title
+Characters:    "\n"
+Start element: {http://www.megginson.com/ns/exp/poetry}l
+Characters:    "Roses are red,"
+End element:   {http://www.megginson.com/ns/exp/poetry}l
+Characters:    "\n"
+Start element: {http://www.megginson.com/ns/exp/poetry}l
+Characters:    "Violets are blue;"
+End element:   {http://www.megginson.com/ns/exp/poetry}l
+Characters:    "\n"
+Start element: {http://www.megginson.com/ns/exp/poetry}l
+Characters:    "Sugar is sweet,"
+End element:   {http://www.megginson.com/ns/exp/poetry}l
+Characters:    "\n"
+Start element: {http://www.megginson.com/ns/exp/poetry}l
+Characters:    "And I love you."
+End element:   {http://www.megginson.com/ns/exp/poetry}l
+Characters:    "\n"
+End element:   {http://www.megginson.com/ns/exp/poetry}poem
+
+ succeeded in 178ms:
+<HTML>
+<HEAD>
+<TITLE>XMLPULL FAQ
+</TITLE>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Aleksander Slominski">
+</HEAD>
+<BODY BGCOLOR="white">
+
+<H1>XmlPull downloads</H2>
+<p>There are following file available for <a href="http://www.xmlpull.org/">
+XmlPull V1 API</a> that contains XMLPULL V1 API source, samples, JUnit tests, 
+documentation and required build scripts to rebuild API and TESTS jar and rerun 
+tests.</p>
+<ul>
+  <li><b>unpacked/</b> contains directory with unpacked current distribution 
+  tarball (<b>xmlpull_VERSION_all.tgz) </b>so you 
+  can browse its content before downloading (typically it is development branch, 
+  see ddescription of versions below)</li>
+  <li><b>xmlpull-tests_VERSION.jar</b>: pre-compiled .JAR files with JUnit API 
+  tests that can verify that XMLPULL implementation is conforming to API defined 
+  in <b>VERSION</b> of XMLPULL</li>
+  <li><b>xmlpull_VERSION.jar</b>: pre-compiled .JAR files with API (required if 
+  XMLPULL implementation did not provide it)</li>
+  <li><b>xmlpull_VERSION_all.tgz </b>and<b> xmlpull_VERSION_all.zip</b>: 
+  contains everything needed to regenerate XMLPULL V1 API distribution including 
+  all source files, documentation, build scripts, precompiled .class files and 
+  JAR files, and required ANT and JUnit .jar files</li>
+  <li><b>xmlpull_VERSION_src.tgz </b>and<b> xmlpull_VERSION_src.zip</b>: 
+  contains only API source, documentation and build scripts - it is necessary to 
+  download ANT to build source and JUnit to execute conformance tests</li>
+</ul>
+<p><b>NOTE:</b> version <b>1.0.x</b> (1_0_x) is current <b>stable</b> version of 
+API and <b>1.1.x</b> (1_1_x) is current <b>development</b> version</p>
+
+<p><b>NOTE:</b> tarball and ZIP download contains everything but actual XMLPULL 
+parser implementation that must be <a href="http://www.xmlpull.org/impls.shtml">
+downloaded separately</a>.</p>
+
+<p>For more information about XmlPull V1 API please visit
+<a href="http://www.xmlpull.org/">http://www.xmlpull.org/</a>. </p>
+
+<HR>
+<address><a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a><address>
+</address>
+</BODY>
+</HTML>
+codex
+Maven Central only publishes the `.jar` and `.pom` for this coordinate, with no `sources`, `test-sources`, or `javadoc` artifacts. The upstream GitHub repo has no version tags and its current branch is a later snapshot, so I don’t have a confidence-safe exact-version source/test/docs URL to replace the existing `N/A` values.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.1.3.1\")' metadata/xmlpull/xmlpull/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.1.3.1",
+  "source-code-url": "N/A",
+  "repository-url": "https://github.com/xmlpull-org/xmlpull-api-v1",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract.",
+  "tested-versions": [
+    "1.1.3.1"
+  ],
+  "allowed-packages": [
+    "org.xmlpull.v1"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/xmlpull/xmlpull/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+web search: 
+web search: https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/
+web search: 
+web search: https://github.com/xmlpull-org/xmlpull-api-v1/tags
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"N/A\"|\"documentation-url\" : \"N/A\"|\"test-code-url\" : \"N/A\"' metadata | head -n 30" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.woodstox/stax2-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.annotation/javax.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.el/javax.el-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.code.findbugs/jsr305/index.json:7:    "test-code-url" : "N/A",
+metadata/com.sun.activation/jakarta.activation/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:5:    "source-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:7:    "test-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:8:    "documentation-url" : "N/A",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:7:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:77:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:94:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:111:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:128:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-core/index.json:145:    "test-code-url" : "N/A",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:7:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-sqlserver/index.json:8:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-sqlserver/index.json:45:    "test-code-url" : "N/A",
+metadata/org.flywaydb/flyway-sqlserver/index.json:70:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:6:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:21:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"https://repo1.maven.org|\"source-code-url\" : \"https://search.maven.org|sources.jar|test-sources.jar|javadoc.jar' metadata | head -n 50" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-sources.jar",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://javadoc.io/doc|\"documentation-url\" : \"https://www.javadoc.io/doc' metadata | head -n 40" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/1.0.0.Beta1/index.html",
+metadata/io.opentelemetry/opentelemetry-context/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-context/1.19.0/index.html",
+
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://javadoc.io/doc/xmlpull/xmlpull/1.1.3.1/index.html' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -fsSIL https://www.javadoc.io/doc/xmlpull/xmlpull/1.1.3.1/index.html' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/xmlpull/xmlpull/1.1.3.1/index.html | rg -n 'javadoc|not found|xmlpull|1\\.1\\.3\\.1|No documentation' | head -n 80" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 242ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 10:17:48 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/xmlpull/xmlpull/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=7YNPDwchufaFEOMqry52qNkXzoIHKJgnPfCbP6gqSnbgtTTY0OcJLR%2BMStG1EXlpI9hrb6eN2jJZM%2Fro58lv2ZJMV6Bp1yroFHr6JmwKTKh2WQlJBpMRHoBhgkFAifivjFcwlOH4sgJI"}]}
+server: cloudflare
+cf-ray: 9f2d145cca52cb74-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 295ms:
+13:		<title>xmlpull 1.1.3.1 javadoc (xmlpull)</title>
+47:					<a class="nav-link" href="/doc/xmlpull">xmlpull</a>
+51:						xmlpull
+55:						<a href="/doc/xmlpull/xmlpull" class="dropdown-item">
+56:							xmlpull
+63:						1.1.3.1
+66:						<a href="/doc/xmlpull/xmlpull/latest/index.html" class="dropdown-item">
+71:						<a href="/doc/xmlpull/xmlpull/1.1.3.4a/index.html" class="dropdown-item">
+75:						<a href="/doc/xmlpull/xmlpull/1.1.3.1/index.html" class="dropdown-item">
+76:							1.1.3.1
+79:						<a href="/doc/xmlpull/xmlpull/1.1.2.1/index.html" class="dropdown-item">
+94:					<a class='nav-link' href='/task/sync_latest/xmlpull/xmlpull'
+106:						title="host javadoc for your own project"
+107:						data-content="If you want, you can easily host your own project with javadoc.io. Click to start." >
+123:					<div>Latest version of <span class="text-monospace">xmlpull:xmlpull</span></div>
+125:						https://javadoc.io/doc/xmlpull/xmlpull
+126:						<a href="/doc/xmlpull/xmlpull" target="_blank" class="float-right">
+130:					<div>Current version <span class="text-monospace">1.1.3.1</span></div>
+132:						https://javadoc.io/doc/xmlpull/xmlpull/1.1.3.1
+133:						<a href="/doc/xmlpull/xmlpull/1.1.3.1" target="_blank" class="float-right">
+137:					<div><span class="text-monospace">package-list</span> path (used for javadoc generation <span class="text-monospace">-link</span> option)</div>
+139:						https://javadoc.io/doc/xmlpull/xmlpull/1.1.3.1/package-list
+140:						<a href="/doc/xmlpull/xmlpull/1.1.3.1/package-list" target="_blank" class="float-right">
+153:		<v id="variables" isLatest="false" versionId="1.1.3.1"></v>
+157:  No JavaDoc is released for artifact <span class="font-italic">xmlpull:xmlpull:1.1.3.1</span>.
+165:      <a href='/retry/xmlpull/xmlpull/1.1.3.1'>Retry</a> this version.
+168:    <li>Is the <span class='font-italic'>xmlpull-1.1.3.1-javadoc.jar</span> actually distributed to either maven or bintray?</li>
+169:    <li>Does the <span class='font-italic'>xmlpull-1.1.3.1-javadoc.jar</span> file contains an <span class='font-italic'>index.html</span> in the extracted root folder? (you can rename .jar to .zip to extract the file)</li>
+172:  <a href='https://github.com/maxcellent/javadoc.io/issues' rel='nofollow'>
+
+ succeeded in 328ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 10:17:48 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/xmlpull/xmlpull/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=3Ox99RsIfo2WJ%2FZr%2FUGnOdxOthsNRQKOKFRYATcUMbBAf2ChYsG55NeR3Tob4FGwArz8XTlZxw7MaBJ814ZkkJ3nhBaf%2Flb8gHAnCWMcLnjyQ8lsQIdfbwLEDVwhu0iu9Gpas11v6h8IenCKWw%3D%3D"}]}
+server: cloudflare
+cf-ray: 9f2d145cdb5101fc-ZRH
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: javadoc.io xmlpull xmlpull 1.1.3.1 No JavaDoc is released
+web search: 
+web search: github xmlpull-org xmlpull-api-v1 tags releases 1.1.3.1
+codex
+No file changes were needed in [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/metadata/xmlpull/xmlpull/index.json:1).
+
+I verified `xmlpull:xmlpull:1.1.3.1`: Maven Central only exposes the `.jar` and `.pom`, with no sources, test-sources, or javadoc artifacts, and javadoc.io reports no JavaDoc for this exact artifact version. ([repo1.maven.org](https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/?utm_source=openai)) The existing `N/A` URL fields and two-sentence description are already non-blank, so I left them unchanged per the “fill only missing fields” rule.
+
+`language` remains absent: this is not a Kotlin or Scala-versioned artifact under the requested schema. JSON validity was checked with `jq`.
+2026-04-27T10:18:06.502808Z ERROR codex_core::session: failed to record rollout items: thread 019dce70-3751-7333-99be-cfb55ad45f12 not found
+tokens used
+95,441
+No file changes were needed in [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/metadata/xmlpull/xmlpull/index.json:1).
+
+I verified `xmlpull:xmlpull:1.1.3.1`: Maven Central only exposes the `.jar` and `.pom`, with no sources, test-sources, or javadoc artifacts, and javadoc.io reports no JavaDoc for this exact artifact version. ([repo1.maven.org](https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/?utm_source=openai)) The existing `N/A` URL fields and two-sentence description are already non-blank, so I left them unchanged per the “fill only missing fields” rule.
+
+`language` remains absent: this is not a Kotlin or Scala-versioned artifact under the requested schema. JSON validity was checked with `jq`.
+Ran agent for xmlpull:xmlpull:1.1.3.1 (exit 0). Log: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/build/agent-url-discovery-logs/xmlpull-xmlpull-1.1.3.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 13s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -1,0 +1,1145 @@
+Starting a Gradle Daemon, 2 busy and 4 incompatible and 14 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dce6e-3683-7773-910d-0d65b979b992
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xmlpull:xmlpull:1.1.3.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.1.3.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+- Set "coordinates" to "xmlpull:xmlpull:1.1.3.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven first, then cross-check any upstream repository/tag references before editing the JSON. After that I’ll validate the file format locally.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+{
+  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'xmlpull|xmlpull-xmlpull' || true" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\": \"xmlpull:xmlpull|xmlpull:xmlpull|xmlpull-xmlpull|xmlpull' build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json:2:  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
+
+web search: 
+web search: Maven Central xmlpull xmlpull 1.1.3.1 sources jar documentation repository
+web search: 
+web search: https://central.sonatype.com/artifact/xmlpull/xmlpull/1.1.3.1
+web search: 
+web search: https://www.xmlpull.org/
+web search: 
+web search: https://github.com/xmlpull-org/xmlpull-api-v1/
+web search: 
+web search: https://github.com/xmlpull-org/xmlpull-api-v1/tags
+web search: 
+web search: site:xmlpull.org/v1/download xmlpull_1_1_3_1
+web search: 
+web search: https://www.xmlpull.org/v1/doc/README_DOWNLOAD.html
+codex
+Maven Central has only the main jar and POM for this coordinate, with no sources, tests, or javadoc artifacts listed. I found the project’s maintained site and GitHub mirror, but I’m checking whether the downloadable/unpacked distribution corresponds exactly to `1.1.3.1` before choosing URLs.
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://www.xmlpull.org/v1/download/unpacked/build.xml | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://www.xmlpull.org/v1/download/unpacked/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://www.xmlpull.org/v1/download/unpacked/README.html | sed -n '1,120p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 109ms:
+<!--
+This is an ant build file compatible with ant version 1.3.
+
+All generated files are created under ${build} directory
+
+-->
+
+<project name="XMLPULL_V1" default="compile" basedir=".">
+
+  <!-- set global properties for this build -->
+
+  <property name="name" value="XMLPULL"/>
+  <property name="year" value="2002"/>
+  <property name="version" value="1_0_5"/>
+  <property name="xmlpull_version" value="xmlpull_${version}"/>
+  <property name="xmlpull_tag" value="XMLPULL_${version}"/>
+  <property name="copyright"
+    value="This XMLPULL V1 API is free, enjoy! &lt;a href='http://www.xmlpull.org/'>http://www.xmlpull.org/&lt;/a>" />
+
+  <property name="debug" value="on"/>
+  <property name="deprecation" value="off"/>
+
+  <property name="doc" value="doc"/>
+
+  <property name="src" value="src/java"/>
+
+  <property name="src_api" value="${src}/api"/>
+  <property name="src_tests" value="${src}/tests"/>
+  <property name="src_samples" value="${src}/samples"/>
+
+  <property name="build" value="build"/>
+  <property name="build_dist" value="${build}/dist"/>
+  <property name="build_lib" value="${build}/lib"/>
+  <property name="build_classes" value="${build}/classes"/>
+  <property name="build_tests" value="${build}/tests"/>
+  <property name="build_samples" value="${build}/samples"/>
+  <property name="build_apidoc" value="${doc}/api"/>
+  <property name="build_javadoc" value="${doc}/api_impl"/>
+  <property name="apidoc_packages" value="org.xmlpull.v1.*"/>
+  <property name="api_sourcepath" value="${src_api}"/>
+  <property name="javadoc_packages" value="org.xmlpull.v1.*"/>
+  <property name="dist" value="${build}/dist/${xmlpull_version}"/>
+  <property name="lite_suffix" value="src"/>
+  <property name="full_suffix" value="all"/>
+  <property name="dist_lite" value="${build}/dist/${xmlpull_version}_${lite_suffix}"/>
+  <property name="dist_full" value="${build}/dist/${xmlpull_version}_${full_suffix}"/>
+  <property name="dist_lite_zip" value="${dist_lite}.zip"/>
+  <property name="dist_full_zip" value="${dist_full}.zip"/>
+  <property name="dist_lite_tar" value="${dist_lite}.tar"/>
+  <property name="dist_full_tar" value="${dist_full}.tar"/>
+  <property name="dist_lite_tgz" value="${dist_lite}.tgz"/>
+  <property name="dist_full_tgz" value="${dist_full}.tgz"/>
+  <property name="jar"  value="${build_lib}/${xmlpull_version}.jar"/>
+  <property name="tests_jar"  value="${build_lib}/xmlpull-tests_${version}.jar"/>
+
+  <property name="website"      value="../xmlpull-website/v1"/>
+
+  <patternset id="all_source_files">
+        <exclude name="**/*-"/>
+        <exclude name="**/*~"/>
+        <exclude name="**/*.mcp"/>
+        <exclude name="**/*_Data/**"/>
+  </patternset>
+
+  <!-- =================================================================== -->
+  <!-- Preparing build environment                                         -->
+  <!-- =================================================================== -->
+  <target name="clean">
+    <delete dir="${build_classes}"/>
+    <delete dir="${build_lib}"/>
+    <delete dir="${build_tests}"/>
+    <delete dir="${build_samples}"/>
+    <delete file="${dist_zip}"/>
+    <delete file="${dist_tgz}"/>
+  </target>
+
+  <target name="prepare">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${build_dist}"/>
+    <mkdir dir="${build_tests}"/>
+    <mkdir dir="${build_classes}"/>
+    <touch file="${build_classes}/${xmlpull_tag}_VERSION"/>
+    <touch file="${build_tests}/${xmlpull_tag}_VERSION_TESTS"/>
+    <available property="junit_present" classname="junit.framework.TestCase" />
+    <uptodate property="build_notRequired" targetfile="${jar}">
+      <srcfiles dir="${src_api}" includes="**/*.java"/>
+    </uptodate>
+    <uptodate property="build_tests_jar_notRequired" targetfile="${tests_jar}">
+      <srcfiles dir="${src_tests}" includes="**/*.java"/>
+    </uptodate>
+  </target>
+
+  <target name="check_junit" unless="junit_present" depends="prepare">
+    <echo message="Warning: JUnit dependencies were not resolved."/>
+  </target>
+
+  <target name="dependencies" depends="prepare,check_junit"/>
+
+  <!-- =================================================================== -->
+  <!-- Compilation tasks                                                   -->
+  <!-- =================================================================== -->
+
+  <target name="api" depends="prepare">
+    <javac debug="${debug}" deprecation="${deprecation}"
+       srcdir="${src_api}" destdir="${build_classes}" classpath="${build_classes}"/>
+  </target>
+
+  <target name="jar" unless="build_notRequired" depends="api">
+    <mkdir dir="${build_lib}"/>
+    <jar jarfile="${jar}">
+      <fileset dir="${build_classes}"/>
+    </jar>
+  </target>
+
+  <target name="xmlpull" depends="jar"/>
+
+  <target name="samples" depends="xmlpull">
+    <mkdir dir="${build_samples}"/>
+    <javac debug="${debug}" deprecation="${deprecation}"
+      srcdir="${src_samples}" destdir="${build_samples}"
+      classpath="${build_classes}"/>
+    <javac debug="${debug}" deprecation="${deprecation}"
+      srcdir="${src_samples}" destdir="${build_samples}"
+      classpath="${build_classes}"/>
+  </target>
+
+
+  <target name="compile" depends="xmlpull,tests,samples"/>
+
+  <target name="all" depends="clean,compile"/>
+
+  <!-- =================================================================== -->
+  <!-- JUnit automatic tests                                               -->
+  <!-- =================================================================== -->
+
+  <path id="test-classpath">
+    <pathelement location="${build_classes}" />
+    <pathelement path="${java.class.path}" />
+  </path>
+
+  <target name="tests_junit" if="junit_present" depends="xmlpull,check_junit">
+    <mkdir dir="${build_tests}"/>
+    <javac debug="${debug}" deprecation="${deprecation}"
+      srcdir="${src_tests}"
+      destdir="${build_tests}">
+        <classpath refid="test-classpath" />
+    </javac>
+  </target>
+
+  <target name="tests_jar" unless="build_tests_jar_notRequired" depends="tests_junit">
+    <mkdir dir="${build_lib}"/>
+    <jar jarfile="${tests_jar}">
+      <fileset dir="${build_tests}"/>
+    </jar>
+  </target>
+
+  <target name="tests" depends="tests_jar"/>
+
+  <target name="junit" if="junit_present" depends="tests">
+    <junit haltonfailure="yes" fork="yes">
+      <classpath>
+        <path refid="test-classpath" />
+        <pathelement location="${build_tests}" />
+      </classpath>
+      <formatter type="plain" usefile="false" />
+      <test name="org.xmlpull.v1.tests.PackageTests" />
+
+      <!--batchtest>
+        <fileset dir="${build_tests}">
+          <include name="**/PackageTest.class" />
+        </fileset>
+      </batchtest-->
+    </junit>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="apidoc" depends="xmlpull">
+    <delete dir="${build_apidoc}"/>
+    <mkdir dir="${build_apidoc}"/>
+    <javadoc packagenames="${apidoc_packages}"
+             public="yes"
+             sourcepath="${api_sourcepath}"
+             destdir="${build_apidoc}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="${name} ${version} API"
+             doctitle="${name}"
+             bottom="${copyright}"
+             stylesheetfile="${doc}/javadoc_stylesheet.css"
+    />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Creates the JAVADOC documentation                                   -->
+  <!-- =================================================================== -->
+  <target name="javadoc" depends="xmlpull">
+    <delete dir="${build_javadoc}"/>
+    <mkdir dir="${build_javadoc}"/>
+    <javadoc packagenames="${javadoc_packages}"
+             sourcepath="${api_sourcepath}"
+             destdir="${build_javadoc}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="${name} ${version} Implementation API"
+             doctitle="Implementation ${name}"
+             bottom="${copyright}"
+             stylesheetfile="${doc}/javadoc_stylesheet.css"
+    />
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Creates the XMLPULL distribution                                    -->
+  <!-- =================================================================== -->
+  <target name="dist_lite" depends="compile, apidoc">
+    <delete dir="${dist}"/>
+
+exec
+/usr/bin/bash -lc 'curl -I -L --silent --show-error https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1_src.zip && curl -I -L --silent --show-error https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1_tests.jar && curl -I -L --silent --show-error https://www.xmlpull.org/v1/download/xmlpull-tests_1_1_3_1.jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 106ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 117ms:
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <title>XMLPULL V1 API Documentation</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Aleksander Slominski">
+</head>
+<body bgcolor="white">
+
+<H1>XMLPULL V1 API Documentation</H1><P>
+
+<p><a href="doc/quick_intro.html">Quick Introduction</a>
+
+<p><a href="doc/build.txt">How to build instructions API and automatic tests</a>.
+
+<p><a href="doc/run.txt">How to run instructions</a>.
+
+<p><a href="doc/faq.html">FAQ</a>
+
+<p><a href="doc/changes.html">List of changes</a>
+
+<p><a href="doc/api/org/xmlpull/v1/package-summary.html">API documentation</a>
+
+<p><a href="doc/features.html">list of XMLPULL API well-known URI features</a>.
+
+<p><b><a href="doc/THANKS.txt">Thanks!</a></b>
+
+
+<p>
+For the latest version and more information please see:
+<a href="http://www.xmlpull.org/">XMLPULL Home Page</a>
+<!-- and
+<a href="http://www.xmlpull.org/discussion.shtml">XMLPULL
+discussion list archives</a>.-->
+
+<p>
+
+
+<HR>
+
+
+<address><a href="http://www.extreme.indiana.edu/~aslom/">Aleksander Slominski</a><address>
+
+<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;<p>&nbsp;
+</address>
+</body>
+</html>
+
+ succeeded in 451ms:
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+x-origin-cache: HIT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: 9348:27D674:CB5FD38:CD1047D:69EF36F4
+accept-ranges: bytes
+age: 0
+date: Mon, 27 Apr 2026 10:14:13 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230044-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777284853.911176,VS0,VE102
+vary: Accept-Encoding
+x-fastly-request-id: 4b75b2634bb15f663515160a537fdccb1d030175
+content-length: 9379
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+x-origin-cache: HIT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: D068:111853:C611451:C7C0E7D:69EF36F5
+accept-ranges: bytes
+age: 0
+date: Mon, 27 Apr 2026 10:14:13 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230169-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777284853.076095,VS0,VE109
+vary: Accept-Encoding
+x-fastly-request-id: 7fdebd8102a5801e739d0ebae8eb33d6b881185b
+content-length: 9379
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+x-origin-cache: HIT
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: 86BA:8D944:C2F02DD:C49F18B:69EF36F5
+accept-ranges: bytes
+age: 0
+date: Mon, 27 Apr 2026 10:14:13 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230139-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777284853.245979,VS0,VE108
+vary: Accept-Encoding
+x-fastly-request-id: fb843003a2e561e4013fed877fa42bb14e7e14b7
+content-length: 9379
+
+
+exec
+/usr/bin/bash -lc 'curl -L --fail --silent --show-error https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.pom' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xmlpull</groupId>
+  <artifactId>xmlpull</artifactId>
+  <version>1.1.3.1</version>
+  <name>XML Pull Parsing API</name>
+  <url>http://www.xmlpull.org</url>
+
+  <licenses>
+    <license>
+      <name>Public Domain</name>
+      <url>http://www.xmlpull.org/v1/download/unpacked/LICENSE.txt</url>
+    </license>
+  </licenses>
+
+</project>
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/ | sed -n '1,200p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -I -L --silent --show-error https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-sources.jar && curl -I -L --silent --show-error https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-tests.jar && curl -I -L --silent --show-error https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-javadoc.jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 236ms:
+<html>
+<head><title>Index of /maven2/xmlpull/xmlpull/1.1.3.1/</title></head>
+<body bgcolor=white>
+<h1>Index of /maven2/xmlpull/xmlpull/1.1.3.1/</h1>
+<hr>
+<pre>
+<a href=../>../</a>
+<a href="xmlpull-1.1.3.1.jar">xmlpull-1.1.3.1.jar</a>                                2003-06-16 19:03                 7188
+<a href="xmlpull-1.1.3.1.jar.md5">xmlpull-1.1.3.1.jar.md5</a>                            2007-03-19 20:18                   54
+<a href="xmlpull-1.1.3.1.jar.sha1">xmlpull-1.1.3.1.jar.sha1</a>                           2007-03-19 20:18                   62
+<a href="xmlpull-1.1.3.1.pom">xmlpull-1.1.3.1.pom</a>                                2007-03-19 19:18                  386
+<a href="xmlpull-1.1.3.1.pom.md5">xmlpull-1.1.3.1.pom.md5</a>                            2007-03-19 20:18                   54
+<a href="xmlpull-1.1.3.1.pom.sha1">xmlpull-1.1.3.1.pom.sha1</a>                           2007-03-19 20:18                   62
+</pre>
+<hr>
+</body>
+</html>
+
+ succeeded in 333ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 10:14:22 GMT
+content-type: text/html
+cf-ray: 9f2d0f552cf49a60-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 27 Apr 2026 10:14:22 GMT
+content-type: text/html
+cf-ray: 9f2d0f56db3fbe7c-ZRH
+cf-cache-status: HIT
+age: 2056
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: "XML Pull Parsing API" "1.1.3.1"
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/xmlpull-org/xmlpull-api-v1.git | sed -n '1,120p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "git ls-remote --heads https://github.com/xmlpull-org/xmlpull-api-v1.git | sed -n '1,120p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/xmlpull-org/xmlpull-website.git | sed -n '1,120p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://raw.githubusercontent.com/xmlpull-org/xmlpull-api-v1/master/build.xml | rg -n 'version|xmlpull_version|tests_jar|src_tests|apidoc'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 169ms:
+2:This is an ant build file compatible with ant version 1.3.
+14:  <property name="version" value="1_1_3_4b"/>
+15:  <property name="xmlpull_version" value="xmlpull_${version}"/>
+16:  <property name="xmlpull_tag" value="XMLPULL_${version}"/>
+28:  <property name="src_tests" value="${src}/tests"/>
+29:  <property name="src_tests_xml" value="src/xml/tests"/>
+39:  <property name="build_apidoc" value="${doc}/api"/>
+41:  <property name="apidoc_packages" value="org.xmlpull.v1.*"/>
+44:  <property name="dist" value="${build}/dist/${xmlpull_version}"/>
+47:  <property name="dist_lite" value="${build}/dist/${xmlpull_version}_${lite_suffix}"/>
+48:  <property name="dist_full" value="${build}/dist/${xmlpull_version}_${full_suffix}"/>
+55:  <property name="jar"  value="${build_lib}/${xmlpull_version}.jar"/>
+56:  <property name="tests_jar"  value="${build_lib}/xmlpull-tests_${version}.jar"/>
+67:  <property name="jar_dom2_builder"  value="${build_lib}/${xmlpull_version}-dom2_builder.jar"/>
+71:  <property name="jar_sax2"  value="${build_lib}/${xmlpull_version}-sax2.jar"/>
+76:  <property name="jar_parser_pool"  value="${build_lib}/${xmlpull_version}-parser_pool.jar"/>
+80:  <property name="jar_util"  value="${build_lib}/${xmlpull_version}-util.jar"/>
+85:  <property name="jar_wrapper"  value="${build_lib}/${xmlpull_version}-wrapper.jar"/>
+89:  <property name="jar_xmlrpc"  value="${build_lib}/${xmlpull_version}-xmlrpc.jar"/>
+125:    <uptodate property="build_tests_jar_notRequired" targetfile="${tests_jar}">
+126:      <srcfiles dir="${src_tests}" includes="**/*.java"/>
+261:      srcdir="${src_tests}"
+267:      <fileset dir="${src_tests_xml}">
+273:  <target name="tests_jar" unless="build_tests_jar_notRequired" depends="tests_junit">
+275:    <jar jarfile="${tests_jar}">
+280:  <target name="tests" depends="tests_jar"/>
+309:  <target name="apidoc" depends="xmlpull">
+310:    <delete dir="${build_apidoc}"/>
+311:    <mkdir dir="${build_apidoc}"/>
+312:    <javadoc packagenames="${apidoc_packages}"
+315:             destdir="${build_apidoc}"
+317:             version="true"
+319:             windowtitle="${name} ${version} API"
+336:             version="true"
+338:             windowtitle="${name} ${version} Implementation API"
+349:  <target name="dist_lite" depends="compile, apidoc">
+358:        <include name="lib/${xmlpull_version}*.jar"/>
+359:        <include name="lib/xmlpull-tests_${version}*.jar"/>
+367:        <include name="${xmlpull_version}*.jar"/>
+382:    <mkdir dir="${dist}/${src_tests}"/>
+383:    <copy todir="${dist}/${src_tests}">
+384:      <fileset dir="${src_tests}">
+390:    <mkdir dir="${dist}/${src_tests_xml}"/>
+391:    <copy todir="${dist}/${src_tests_xml}">
+392:      <fileset dir="${src_tests_xml}">
+460:      includes="${xmlpull_version}/**"
+461:      excludes="${xmlpull_version}/build/**,${xmlpull_version}/doc/api/**"/>
+467:              <include name="${xmlpull_version}/**/*.sh"/>
+468:              <exclude name="${xmlpull_version}/build/**"/>
+469:              <exclude name="${xmlpull_version}/doc/api/**"/>
+472:             <include name="${xmlpull_version}/**"/>
+473:             <exclude name="${xmlpull_version}/**/*.sh"/>
+474:              <exclude name="${xmlpull_version}/build/**"/>
+475:              <exclude name="${xmlpull_version}/doc/api/**"/>
+496:      includes="${xmlpull_version}/**"/>
+500:         includes="${xmlpull_version}/**" /-->
+506:              <include name="${xmlpull_version}/**/*.sh"/>
+509:             <include name="${xmlpull_version}/**"/>
+510:             <exclude name="${xmlpull_version}/**/*.sh"/>
+528:  <target name="website_doc" depends="apidoc">
+551:        <include name="${xmlpull_version}*.jar"/>
+552:        <include name="xmlpull-tests_${version}*.jar"/>
+558:        <include name="${xmlpull_version}_*.*"/>
+566:    <move file="${website}/download/${xmlpull_version}" todir="${website}/download/unpacked"/-->
+
+ succeeded in 315ms:
+ succeeded in 317ms:
+21127efba74f6f147e867e2bcf3e8b2a9624cc2c	refs/heads/master
+
+ succeeded in 338ms:
+codex
+The GitHub mirror has no release tags, so I’m checking its history for the commit that actually declares `version=1_1_3_1`. If that exists, a commit permalink is the most precise version URL available for sources, tests, and docs.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); git clone --quiet https://github.com/xmlpull-org/xmlpull-api-v1.git "$tmpdir/xmlpull-api-v1" && cd "$tmpdir/xmlpull-api-v1" && git log --all --format='"'%H %ad %s' --date=short -- build.xml | sed -n '1,120p' && rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 650ms:
+6680828579fed9b013701c0fe870ac0e791c31fa 2016-04-05 import
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); cd "$tmpdir" && curl -L --fail --silent --show-error -O https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.jar && jar tf xmlpull-1.1.3.1.jar | sed -n '"'1,120p' && rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/xmlpull/
+org/xmlpull/v1/
+XMLPULL_1_1_3_1_VERSION
+org/xmlpull/v1/XmlPullParser.class
+org/xmlpull/v1/XmlPullParserException.class
+org/xmlpull/v1/XmlPullParserFactory.class
+org/xmlpull/v1/XmlSerializer.class
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://javadoc.io/doc/xmlpull/xmlpull/1.1.3.1/index.html | sed -n '1,120p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+exec
+/usr/bin/bash -lc 'curl -I -L --silent --show-error https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1.tgz && curl -I -L --silent --show-error https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1.zip && curl -I -L --silent --show-error https://www.xmlpull.org/v1/download/xmlpull_1_1_3_1_all.tgz' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 121ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>xmlpull 1.1.3.1 javadoc (xmlpull)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/xmlpull">xmlpull</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						xmlpull
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/xmlpull/xmlpull" class="dropdown-item">
+							xmlpull
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.1.3.1
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/xmlpull/xmlpull/latest/index.html" class="dropdown-item">
+							1.1.3.4d_b4_min
+						</a>
+
+						
+						<a href="/doc/xmlpull/xmlpull/1.1.3.4a/index.html" class="dropdown-item">
+							1.1.3.4a
+						</a>
+						
+						<a href="/doc/xmlpull/xmlpull/1.1.3.1/index.html" class="dropdown-item">
+							1.1.3.1
+						</a>
+						
+						<a href="/doc/xmlpull/xmlpull/1.1.2.1/index.html" class="dropdown-item">
+							1.1.2.1
+						</a>
+						
+					</div>
+				</li>
+				
+			</ul>
+			<ul class="navbar-nav">
+				<li class="nav-item mr-2">
+					<a id="bookmarkModal" class='nav-link' href='javascript:void(0)' data-toggle="modal" data-target="#bookmarksModal">
+						<i class="fa fa-bookmark"></i>
+					</a>
+				</li>
+				<li class="nav-item mr-2">
+					<a class='nav-link' href='/task/sync_latest/xmlpull/xmlpull'
+						data-toggle="popover" data-placement="bottom"
+						title="sync latest version"
+						data-content="By default, latest version will be picked up in one week.
+							You can click this button to force sync now.
+							This page will be redirect to the latest version if there is any." >
+						<i class="fa fa-sync" aria-hidden="true"></i>
+					</a>
+				</li>
+				<li class="nav-item mr-2">
+					<a class='nav-link' href='/'
+						data-toggle="popover" data-placement="bottom"
+						title="host javadoc for your own project"
+						data-content="If you want, you can easily host your own project with javadoc.io. Click to start." >
+						<i class="fa fa-plus" aria-hidden="true"></i>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="modal" id="bookmarksModal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Bookmarks</h5>
+					<button class="close" data-dismiss="modal">&times;</button>
+
+ succeeded in 441ms:
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: C0E2:1501:9DE6C3B:9F4C2ED:69EF3715
+accept-ranges: bytes
+age: 0
+date: Mon, 27 Apr 2026 10:14:45 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230161-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777284886.689996,VS0,VE109
+vary: Accept-Encoding
+x-fastly-request-id: c5967092ae8db1bc5cd73c1483c42efb881f1afc
+content-length: 9379
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: B846:5D62C:C370FBE:C5200F9:69EF3715
+accept-ranges: bytes
+age: 0
+date: Mon, 27 Apr 2026 10:14:45 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230037-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777284886.852293,VS0,VE107
+vary: Accept-Encoding
+x-fastly-request-id: 9661bedc010c4f9e2e835b849f6adda16d3d00ce
+content-length: 9379
+
+HTTP/2 404 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+access-control-allow-origin: *
+strict-transport-security: max-age=31556952
+etag: "64d39a40-24a3"
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'
+x-proxy-cache: MISS
+x-github-request-id: B8F6:1501:9DE6CB0:9F4C359:69EF3715
+accept-ranges: bytes
+age: 0
+date: Mon, 27 Apr 2026 10:14:46 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230160-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777284886.017832,VS0,VE105
+vary: Accept-Encoding
+x-fastly-request-id: 46d4671c7087a9d2acf1404cf473fa5292cdc9c4
+content-length: 9379
+
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://javadoc.io/doc/xmlpull/xmlpull/1.1.3.1/index.html | rg -n 'source|jar|download|scm|github|xmlpull-1.1.3.1'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 118ms:
+168:    <li>Is the <span class='font-italic'>xmlpull-1.1.3.1-javadoc.jar</span> actually distributed to either maven or bintray?</li>
+169:    <li>Does the <span class='font-italic'>xmlpull-1.1.3.1-javadoc.jar</span> file contains an <span class='font-italic'>index.html</span> in the extracted root folder? (you can rename .jar to .zip to extract the file)</li>
+172:  <a href='https://github.com/maxcellent/javadoc.io/issues' rel='nofollow'>
+
+exec
+/usr/bin/bash -lc "curl -L --fail --silent --show-error https://javadoc.io/doc/xmlpull/xmlpull/1.1.3.1/index.html | sed -n '140,180p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 117ms:
+						<a href="/doc/xmlpull/xmlpull/1.1.3.1/package-list" target="_blank" class="float-right">
+							<i class="fas fa-link"></i>
+						</a>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-gray" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="fill">
+		<v id="variables" isLatest="false" versionId="1.1.3.1"></v>
+
+		
+<div class="alert alert-info">
+  No JavaDoc is released for artifact <span class="font-italic">xmlpull:xmlpull:1.1.3.1</span>.
+  Please try other versions.
+
+  <br>
+  <br>
+  Owner of the project? Troubleshoot following things:
+  <ul>
+    <li>
+      <a href='/retry/xmlpull/xmlpull/1.1.3.1'>Retry</a> this version.
+      Sometimes it's just a matter of time to pick up new versions.
+    </li>
+    <li>Is the <span class='font-italic'>xmlpull-1.1.3.1-javadoc.jar</span> actually distributed to either maven or bintray?</li>
+    <li>Does the <span class='font-italic'>xmlpull-1.1.3.1-javadoc.jar</span> file contains an <span class='font-italic'>index.html</span> in the extracted root folder? (you can rename .jar to .zip to extract the file)</li>
+  </ul>
+
+  <a href='https://github.com/maxcellent/javadoc.io/issues' rel='nofollow'>
+    <i class="fas fa-link"></i>
+    report to us
+  </a>
+  if you tried everything but still doesn't work.
+</div>
+        
+	</div>
+
+
+web search: 
+web search: "XMLPULL_1_1_3_1_VERSION" source
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+{
+  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\" : \"N/A\"|\"test-code-url\" : \"N/A\"|\"documentation-url\" : \"N/A\"' build/discovered-artifact-metadata | head -30" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'javadoc.io/doc|repo1.maven.org|maven2' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"description\"' -g '*.json' metadata build | head -50" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+metadata/org.slf4j/slf4j-api/index.json:8:    "description" : "SLF4J defines a common logging API for Java applications and libraries. It lets code route log messages to different logging implementations without changing application code.",
+metadata/org.slf4j/slf4j-api/index.json:23:    "description" : "SLF4J defines a common logging API for Java applications and libraries. It lets code route log messages to different logging implementations without changing application code.",
+metadata/com.squareup.okio/okio/index.json:9:    "description" : "Okio complements java.io and java.nio to make it easier to access, store, and process data. It provides efficient byte strings, buffers, sources, and sinks for I/O operations.",
+metadata/org.apache.yetus/audience-annotations/index.json:16:    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience."
+metadata/org.apache.zookeeper/zookeeper/index.json:9:    "description" : "Apache ZooKeeper is a centralized coordination service for distributed applications. It provides primitives for configuration management, naming, distributed synchronization, and group services.",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:9:    "description" : "Apache ZooKeeper Jute provides ZooKeeper's binary serialization and code-generation layer. It defines and generates the record classes used to marshal and unmarshal ZooKeeper protocol messages and related data structures.",
+metadata/javax.activation/javax.activation-api/index.json:10:    "description": "JavaBeans Activation Framework API defines the javax.activation types for describing data sources, determining MIME types, and dispatching data to content handlers. It provides the standard activation API that other libraries use to work with arbitrary data without bundling the implementation classes.",
+metadata/com.sun.istack/istack-commons-runtime/index.json:8:    "description" : "Provides the runtime portion of iStack Commons, a small set of shared utility classes used by JAXB and related Java XML and web-services components. It includes reusable support for annotations, localization, logging, XML and SAX helpers, and other common infrastructure.",
+metadata/com.sun.istack/istack-commons-runtime/index.json:23:    "description" : "Provides the runtime portion of iStack Commons, a small set of shared utility classes used by JAXB and related Java XML and web-services components. It includes reusable support for annotations, localization, logging, XML and SAX helpers, and other common infrastructure.",
+metadata/javax.activation/activation/index.json:9:    "description" : "JavaBeans Activation Framework provides a standard API for detecting data types, accessing arbitrary data through DataSource abstractions, and locating content handlers for that data. It is commonly used by JavaMail to process MIME content and dispatch operations such as viewing, editing, or transferring data.",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:10:    "description": "This artifact provides the @IgnoreJRERequirement annotation used by Animal Sniffer to mark code that should be excluded from JRE API compatibility checks. It lets libraries document members that intentionally rely on newer JDK APIs while still validating their minimum runtime requirements.",
+metadata/com.google.guava/listenablefuture/index.json:10:    "description": "This artifact is an empty compatibility placeholder that Guava depends on so build tools prefer it over the standalone ListenableFuture artifact. It avoids duplicate ListenableFuture classes when applications depend on Guava and the older standalone coordinate at the same time.",
+metadata/com.google.guava/failureaccess/index.json:17:    "description" : "failureaccess provides Guava's internal classes for optionally exposing the cause of a failed Future through a fast path. It includes InternalFutureFailureAccess and InternalFutures for lightweight failure-cause access used by Guava concurrency utilities."
+metadata/com.sun.mail/jakarta.mail/index.json:13:    "description": "Jakarta Mail provides a Java API for composing, sending, receiving, and processing email messages. It models common mail concepts and includes protocol-specific support for internet mail standards such as SMTP, POP3, IMAP, and MIME.",
+metadata/com.google.auth/google-auth-library-credentials/index.json:9:    "description" : "This artifact provides the base classes and interfaces used to represent Google credentials in Java. It supports authorized identities, request metadata callbacks, and service account signing abstractions for authentication flows.",
+metadata/com.google.android/annotations/index.json:10:    "description": "This library provides the Android platform annotation types used by tools and code, including annotations such as @SuppressLint and @TargetApi. It supplies compile-time metadata for Android APIs without adding runtime implementation behavior.",
+metadata/org.jctools/jctools-core/index.json:12:    "description": "JCTools Core provides high-performance concurrent data structures for the JVM, especially lock-free and wait-free queues for different producer and consumer patterns. It extends the Java concurrency toolbox with queue APIs and implementations tuned for throughput, contention, allocation, and memory footprint.",
+metadata/org.postgresql/postgresql/index.json:12:    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+metadata/org.postgresql/postgresql/index.json:33:    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+metadata/javax.servlet/javax.servlet-api/index.json:17:    "description" : "Defines the Java Servlet 3.1 API for handling HTTP requests and responses in Java web applications. It provides the standard interfaces, classes, annotations, and asynchronous processing contracts used by servlet containers and web components."
+metadata/org.apache.commons/commons-compress/index.json:8:    "description" : "Apache Commons Compress provides APIs for reading and writing common archive and compression formats. It supports formats such as ZIP, TAR, 7z, AR, CPIO, GZIP, BZIP2, XZ, LZ4, Brotli, and Zstandard.",
+metadata/org.apache.commons/commons-compress/index.json:23:    "description" : "Apache Commons Compress provides APIs for reading and writing common archive and compression formats. It supports formats such as ZIP, TAR, 7z, AR, CPIO, GZIP, BZIP2, XZ, LZ4, Brotli, and Zstandard.",
+metadata/org.apache.commons/commons-dbcp2/index.json:12:    "description": "Apache Commons DBCP implements database connection pooling for Java applications. It manages and reuses JDBC connections to improve efficiency and resource usage.",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:10:    "description": "SpotBugs Annotations provides Java annotations that SpotBugs understands, such as nullness and warning-suppression markers. Libraries and applications add these annotations to code so SpotBugs can produce more precise static analysis results.",
+metadata/org.apache.commons/commons-text/index.json:9:    "description" : "Apache Commons Text provides reusable utilities and algorithms for processing and manipulating strings. It includes features such as string escaping, variable substitution, similarity and distance calculations, and text translation.",
+metadata/org.codehaus.woodstox/stax2-api/index.json:9:    "description" : "Stax2 API extends the standard StAX API for streaming XML processing with additional reader, writer, validation, and utility interfaces. It provides a common higher-level API for features such as typed access and XML validation used by StAX implementations like Woodstox.",
+metadata/org.apache.commons/commons-pool2/index.json:12:    "description": "Apache Commons Pool provides an object-pooling API and several pool implementations for managing reusable objects. It helps Java applications reduce the cost of creating expensive objects by controlling their lifecycle, validation, and reuse.",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:10:    "description": "HawtBuf is a rich byte buffer library for Java. It provides buffer types, streams, and codecs for efficiently working with binary data and encoded values.",
+metadata/org.apache.commons/commons-lang3/index.json:9:    "description" : "Apache Commons Lang provides reusable Java utility classes that extend core `java.lang` functionality with helpers for strings, numbers, objects, reflection, concurrency, and more. It helps Java applications avoid reimplementing common low-level programming tasks by packaging widely used language-level utilities.",
+metadata/jakarta.validation/jakarta.validation-api/index.json:20:    "description" : "Jakarta Validation defines a metadata model and API for JavaBean and method validation. It lets applications declare constraints on objects, method parameters, and return values and validate them through a standard Validator API."
+metadata/org.apache.commons/commons-collections4/index.json:9:    "description" : "Apache Commons Collections extends and augments the Java Collections Framework with additional collection types, decorators, iterators, and utilities. It provides richer data structures and algorithms for working with maps, sets, lists, bags, and related collection patterns.",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:12:    "description": "Microsoft JDBC Driver for SQL Server provides a Type 4 JDBC driver for connecting Java applications to Microsoft SQL Server and Azure SQL databases. It implements the JDBC API and supports SQL Server-specific connectivity features such as authentication, encryption, and data access.",
+metadata/javax.annotation/jsr250-api/index.json:10:    "description": "Provides the JSR-250 Common Annotations API for the Java platform, including lifecycle, resource injection, and security annotations. It defines annotations such as @Resource, @PostConstruct, @PreDestroy, and role-based security markers for use by compliant runtimes and applications.",
+metadata/org.example/library/index.json:13:    "description": "N/A",
+metadata/commons-logging/commons-logging/index.json:10:    "description": "Apache Commons Logging is a thin logging bridge for Java that provides a simple wrapper API over multiple logging implementations. It lets libraries use a common logging API while deferring the choice of concrete logging backend to runtime.",
+metadata/org.testcontainers/testcontainers/index.json:9:    "description" : "Testcontainers is a Java library for JUnit tests that provides lightweight, throwaway Docker containers for databases, web browsers, and other services. It helps integration tests run against real dependencies instead of mocks or in-memory substitutes.",
+metadata/org.testcontainers/testcontainers/index.json:40:    "description" : "Testcontainers is a Java library for tests that provides lightweight, throwaway instances of databases, web browsers, and other services running in Docker containers. It helps integration tests run against real dependencies instead of mocks or in-memory substitutes.",
+metadata/javax.annotation/javax.annotation-api/index.json:9:    "description" : "Provides the JSR-250 Common Annotations API for Java, including lifecycle, resource, security, and SQL data source annotations. It defines standard annotation types used by frameworks and containers without providing their runtime implementations.",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:36:    "description" : "Jackson Databind provides general-purpose data binding and tree-model APIs for Jackson on top of the core streaming API. It converts between JSON and Java objects and can also work with other data formats when compatible parsers and generators are available.",
+metadata/commons-codec/commons-codec/index.json:9:    "description" : "Apache Commons Codec provides implementations of common encoders and decoders such as Base64, hexadecimal, phonetic, and digest utilities. It helps Java applications transform binary and text data using standard encoding, hashing, and checksum algorithms.",
+metadata/io.nats/jnats/index.json:12:    "description": "jnats is the Java client for NATS, providing APIs to connect to NATS servers and publish, subscribe, and request messages. It also supports JetStream features such as streaming, key-value, and object store access for Java applications.",
+metadata/org.apache.santuario/xmlsec/index.json:12:    "description": "Apache Santuario XML Security for Java implements XML Signature and XML Encryption standards for Java applications. It provides the JSR-105 API along with DOM-based and StAX-based implementations for signing, encrypting, and processing XML security data.",
+metadata/io.projectreactor/reactor-core/index.json:9:    "description" : "Reactor Core provides a non-blocking reactive programming foundation for JVM applications, implementing Reactive Streams with Flux and Mono types for composing asynchronous data pipelines. It supplies operators, schedulers, backpressure support, and integrations that help build event-driven systems with predictable resource usage.",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:10:    "description": "FindBugs Annotations provides Java annotations used to describe nullness, obligations, and other code contracts recognized by the FindBugs static analysis tool. These annotations let developers mark APIs and implementations so FindBugs can detect likely defects more accurately.",
+metadata/org.glassfish.jaxb/txw2/index.json:9:    "description" : "TXW2 is a typed XML writer library that lets Java code generate XML documents through annotated writer interfaces. It provides runtime support for building structured XML output with SAX, StAX, DOM, and stream-based serializers.",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:42:    "description" : "Jackson Core provides the core abstractions and streaming JSON parser and generator implementation for Jackson. It lets Java applications read and write JSON incrementally with a low-level token-based API."
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:8:    "description" : "MariaDB Connector/J is a JDBC 4.2 compatible driver for connecting Java applications to MariaDB and MySQL databases. It provides the client library needed for standard JDBC access from Java code.",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:44:    "description" : "MariaDB Connector/J is a JDBC 4.2 compatible driver for connecting Java applications to MariaDB and MySQL databases. It provides the client library needed for standard JDBC access from Java code.",
+metadata/com.mchange/mchange-commons-java/index.json:9:    "description" : "mchange-commons-java is a general-purpose Java utility library that provides reusable support code for configuration, concurrency, I/O, logging, reflection, SQL, and related infrastructure tasks. It supplies low-level helper components used across mchange projects rather than a standalone end-user framework.",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:9:    "description" : "This artifact packages the Kotlin compiler daemon implementation for use with the embeddable compiler. It runs compilation work in a separate process so build tools and IDE integrations can invoke Kotlin compilation out of process.",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' -g '*.json' . | head -80" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:9:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:30:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:7:    "repository-url": "https://github.com/spotbugs/spotbugs",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:8:    "test-code-url": "N/A",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:6:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:7:    "repository-url": "https://github.com/fusesource/hawtbuf",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/3.0.0/src/test",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+./metadata/javax.annotation/jsr250-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0-sources.jar",
+./metadata/javax.annotation/jsr250-api/index.json:7:    "repository-url": "N/A",
+./metadata/javax.annotation/jsr250-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.annotation/jsr250-api/index.json:9:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+./metadata/javax.annotation/javax.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-sources.jar",
+./metadata/javax.annotation/javax.annotation-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.annotation",
+./metadata/javax.annotation/javax.annotation-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.annotation/javax.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-javadoc.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-sources.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:9:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+./metadata/org.apache.santuario/xmlsec/index.json:10:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-4.0.4/src/test",
+./metadata/org.apache.santuario/xmlsec/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:5:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:41:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+./metadata/org.jboss/jandex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jandex/2.4.2.Final/jandex-2.4.2.Final-sources.jar",
+./metadata/org.jboss/jandex/index.json:6:    "repository-url" : "https://github.com/smallrye/jandex",
+./metadata/org.jboss/jandex/index.json:7:    "test-code-url" : "https://github.com/smallrye/jandex/tree/2.4.2.Final/src/test/java",
+./metadata/org.jboss/jandex/index.json:8:    "documentation-url" : "https://github.com/smallrye/jandex/blob/2.4.2.Final/README.md",
+./metadata/com.h2database/h2/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-sources.jar",
+./metadata/com.h2database/h2/index.json:9:    "repository-url": "https://github.com/h2database/h2database",
+./metadata/com.h2database/h2/index.json:10:    "test-code-url": "https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test",
+./metadata/com.h2database/h2/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-javadoc.jar",
+
+web search: 
+web search: https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/
+web search: 
+web search: javadoc.io xmlpull xmlpull 1.1.3.1 No JavaDoc is released
+codex
+For the exact Maven version, Central only publishes the binary jar and POM, and javadoc.io reports that no JavaDoc was released for `xmlpull:xmlpull:1.1.3.1`. I’m going to use the public XMLPULL V1 GitHub repository as the repository URL, set exact-version source/test/documentation URLs to `N/A`, and leave `language` absent because this is not a Kotlin or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+diff --git a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+index 94ee97850bc6bdc80060a940298c8fb5a51f2f2b..b8784929b9622f32869e750708573471b4180280
+--- a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
++++ b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
++  "coordinates" : "xmlpull:xmlpull:1.1.3.1",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract."
+ }
+
+diff --git a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+index 94ee97850bc6bdc80060a940298c8fb5a51f2f2b..b8784929b9622f32869e750708573471b4180280
+--- a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
++++ b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
++  "coordinates" : "xmlpull:xmlpull:1.1.3.1",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+{
+  "coordinates": "xmlpull:xmlpull:1.1.3.1",
+  "source-code-url": "N/A",
+  "repository-url": "https://github.com/xmlpull-org/xmlpull-api-v1",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+index 94ee97850bc6bdc80060a940298c8fb5a51f2f2b..b8784929b9622f32869e750708573471b4180280
+--- a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
++++ b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
++  "coordinates" : "xmlpull:xmlpull:1.1.3.1",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+{
+  "coordinates" : "xmlpull:xmlpull:1.1.3.1",
+  "source-code-url" : "N/A",
+  "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
+  "test-code-url" : "N/A",
+  "documentation-url" : "N/A",
+  "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+index 94ee97850bc6bdc80060a940298c8fb5a51f2f2b..b8784929b9622f32869e750708573471b4180280
+--- a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
++++ b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
++  "coordinates" : "xmlpull:xmlpull:1.1.3.1",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract."
+ }
+
+web search: 
+web search: repo1.maven.org maven2 xmlpull xmlpull 1.1.3.1 xmlpull-1.1.3.1.jar pom
+web search: 
+web search: https://github.com/xmlpull-org/xmlpull-api-v1
+codex
+Updated [xmlpull-xmlpull-1.1.3.1.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json).
+
+I set exact-version `source-code-url`, `test-code-url`, and `documentation-url` to `N/A`: Maven Central only lists the jar and POM for `1.1.3.1`, and javadoc.io reports no JavaDoc for that artifact version. ([repo1.maven.org](https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/?utm_source=openai)) The repository URL is the public `xmlpull-org/xmlpull-api-v1` repository, and I left `language` absent because it is Java, not Kotlin or Scala-specific. ([github.com](https://github.com/xmlpull-org/xmlpull-api-v1))
+
+Validated the JSON with `jq .`.
+diff --git a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+index 94ee97850bc6bdc80060a940298c8fb5a51f2f2b..b8784929b9622f32869e750708573471b4180280
+--- a/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
++++ b/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "xmlpull:xmlpull:1.1.3.1"
++  "coordinates" : "xmlpull:xmlpull:1.1.3.1",
++  "source-code-url" : "N/A",
++  "repository-url" : "https://github.com/xmlpull-org/xmlpull-api-v1",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "XML Pull Parsing API defines a small Java API for streaming XML pull parsers and serializers. It supplies interfaces and factory classes that parser implementations use so applications can read and write XML through a common pull-based contract."
+ }
+
+2026-04-27T10:15:45.497151Z ERROR codex_core::session: failed to record rollout items: thread 019dce6e-3683-7773-910d-0d65b979b992 not found
+tokens used
+99,137
+Updated [xmlpull-xmlpull-1.1.3.1.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/build/discovered-artifact-metadata/xmlpull-xmlpull-1.1.3.1.json).
+
+I set exact-version `source-code-url`, `test-code-url`, and `documentation-url` to `N/A`: Maven Central only lists the jar and POM for `1.1.3.1`, and javadoc.io reports no JavaDoc for that artifact version. ([repo1.maven.org](https://repo1.maven.org/maven2/xmlpull/xmlpull/1.1.3.1/?utm_source=openai)) The repository URL is the public `xmlpull-org/xmlpull-api-v1` repository, and I left `language` absent because it is Java, not Kotlin or Scala-specific. ([github.com](https://github.com/xmlpull-org/xmlpull-api-v1))
+
+Validated the JSON with `jq .`.
+Ran agent for xmlpull:xmlpull:1.1.3.1 (exit 0). Log: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/build/agent-artifact-discovery-logs/xmlpull-xmlpull-1.1.3.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1389-02f9f27e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 8s
+9 actionable tasks: 4 executed, 5 from cache
