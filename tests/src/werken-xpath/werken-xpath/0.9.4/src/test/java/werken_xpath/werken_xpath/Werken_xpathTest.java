@@ -113,6 +113,22 @@ public class Werken_xpathTest {
     }
 
     @Test
+    void selectsTextNodesAndUsesStringLengthInPredicates() {
+        Element library = new Element("library");
+        library.addContent(new Element("book")
+                .setAttribute("id", "short-title")
+                .addContent(new Element("title").addContent("XPath")));
+        library.addContent(new Element("book")
+                .setAttribute("id", "long-title")
+                .addContent(new Element("title").addContent("Native Image")));
+        Document document = new Document(library);
+
+        assertThat(stringValues(select("/library/book/title/text()", document))).containsExactly("XPath", "Native Image");
+        assertThat(elementIds(select("/library/book[string-length(title/text()) > 5]", document)))
+                .containsExactly("long-title");
+    }
+
+    @Test
     void resolvesNamespacePrefixesFromElementNamespaceContext() {
         Namespace libraryNamespace = Namespace.getNamespace("lib", "urn:library");
         Element catalog = new Element("catalog");
@@ -179,6 +195,12 @@ public class Werken_xpathTest {
         return nodes.stream()
                 .map(Attribute.class::cast)
                 .map(Attribute::getValue)
+                .collect(Collectors.toList());
+    }
+
+    private static List<String> stringValues(List<?> nodes) {
+        return nodes.stream()
+                .map(String.class::cast)
                 .collect(Collectors.toList());
     }
 
