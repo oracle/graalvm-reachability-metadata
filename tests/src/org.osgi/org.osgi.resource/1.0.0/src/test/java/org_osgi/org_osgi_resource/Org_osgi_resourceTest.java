@@ -293,6 +293,43 @@ public class Org_osgi_resourceTest {
     }
 
     @Test
+    void wiringReturnedListsAreSnapshotsIndependentOfLaterResolutionChanges() {
+        SimpleResource provider = new SimpleResource("repository:provider");
+        SimpleResource consumer = new SimpleResource("repository:consumer");
+        SimpleCapability firstCapability = provider.addCapability(
+                PACKAGE_NAMESPACE,
+                Map.of(),
+                Map.of(PACKAGE_NAMESPACE, "com.acme.first"));
+        SimpleRequirement firstRequirement = consumer.addRequirement(
+                PACKAGE_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE, "(osgi.wiring.package=com.acme.first)"),
+                Map.of());
+        SimpleWire firstWire = new SimpleWire(firstCapability, firstRequirement, provider, consumer);
+        SimpleWiring providerWiring = new SimpleWiring(provider);
+        providerWiring.addProvidedWire(firstWire);
+
+        List<Capability> capabilitySnapshot = providerWiring.getResourceCapabilities(PACKAGE_NAMESPACE);
+        List<Wire> providedWireSnapshot = providerWiring.getProvidedResourceWires(PACKAGE_NAMESPACE);
+
+        SimpleCapability secondCapability = provider.addCapability(
+                PACKAGE_NAMESPACE,
+                Map.of(),
+                Map.of(PACKAGE_NAMESPACE, "com.acme.second"));
+        SimpleRequirement secondRequirement = consumer.addRequirement(
+                PACKAGE_NAMESPACE,
+                Map.of(Namespace.REQUIREMENT_FILTER_DIRECTIVE, "(osgi.wiring.package=com.acme.second)"),
+                Map.of());
+        SimpleWire secondWire = new SimpleWire(secondCapability, secondRequirement, provider, consumer);
+        providerWiring.addProvidedWire(secondWire);
+
+        assertThat(capabilitySnapshot).containsExactly(firstCapability);
+        assertThat(providedWireSnapshot).containsExactly(firstWire);
+        assertThat(providerWiring.getResourceCapabilities(PACKAGE_NAMESPACE))
+                .containsExactly(firstCapability, secondCapability);
+        assertThat(providerWiring.getProvidedResourceWires(PACKAGE_NAMESPACE)).containsExactly(firstWire, secondWire);
+    }
+
+    @Test
     void resourceDtoGraphRepresentsCapabilitiesAndRequirementsWithPublicFields() {
         CapabilityDTO capability = new CapabilityDTO();
         capability.id = 11;
