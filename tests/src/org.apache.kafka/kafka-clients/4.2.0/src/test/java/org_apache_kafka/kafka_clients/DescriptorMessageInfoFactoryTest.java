@@ -103,6 +103,16 @@ public class DescriptorMessageInfoFactoryTest {
         protected Message.Builder newBuilderForType(GeneratedMessageV3.BuilderParent parent) {
             throw new UnsupportedOperationException("Not needed for this test");
         }
+
+        @Override
+        public Message.Builder newBuilderForType() {
+            throw new UnsupportedOperationException("Not needed for this test");
+        }
+
+        @Override
+        public Message.Builder toBuilder() {
+            throw new UnsupportedOperationException("Not needed for this test");
+        }
     }
 
     public static final class HelperParentMessage extends GeneratedMessageV3 {
@@ -152,6 +162,16 @@ public class DescriptorMessageInfoFactoryTest {
 
         @Override
         protected Message.Builder newBuilderForType(GeneratedMessageV3.BuilderParent parent) {
+            throw new UnsupportedOperationException("Not needed for this test");
+        }
+
+        @Override
+        public Message.Builder newBuilderForType() {
+            throw new UnsupportedOperationException("Not needed for this test");
+        }
+
+        @Override
+        public Message.Builder toBuilder() {
             throw new UnsupportedOperationException("Not needed for this test");
         }
     }
