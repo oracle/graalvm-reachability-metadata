@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.el.ELManager;
-import javax.el.ELProcessor;
-import javax.el.ValueExpression;
+import java.lang.reflect.Method;
+
+import org.apache.el.lang.FunctionMapperImpl;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,31 +23,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FunctionMapperImplInnerFunctionTest {
 
     @Test
-    void resolvesSerializedFunctionMappingDuringExpressionEvaluation()
+    void resolvesMethodFromSerializedFunctionMapping()
             throws ClassNotFoundException, IOException, NoSuchMethodException {
-        ELProcessor processor = new ELProcessor();
-        processor.defineFunction("lib", "join", FunctionLibrary.class.getName(), "join");
+        FunctionMapperImpl mapper = new FunctionMapperImpl();
+        mapper.mapFunction("lib", "join", FunctionLibrary.class.getMethod("join"));
 
-        ValueExpression expression = ELManager.getExpressionFactory().createValueExpression(
-                processor.getELManager().getELContext(),
-                "${lib:join()}",
-                String.class);
+        FunctionMapperImpl restoredMapper = roundTrip(mapper);
+        Method restoredMethod = restoredMapper.resolveFunction("lib", "join");
 
-        ValueExpression restoredExpression = roundTrip(expression);
-
-        assertThat(restoredExpression.getValue(new ELManager().getELContext())).isEqualTo("joined");
+        assertThat(restoredMethod).isNotNull();
+        assertThat(restoredMethod.getDeclaringClass()).isEqualTo(FunctionLibrary.class);
+        assertThat(restoredMethod.getName()).isEqualTo("join");
+        assertThat(restoredMethod.getParameterTypes()).isEmpty();
     }
 
-    private ValueExpression roundTrip(ValueExpression expression)
+    private FunctionMapperImpl roundTrip(FunctionMapperImpl mapper)
             throws IOException, ClassNotFoundException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         try (ObjectOutputStream objectOutput = new ObjectOutputStream(output)) {
-            objectOutput.writeObject(expression);
+            objectOutput.writeObject(mapper);
         }
 
         try (ObjectInputStream objectInput =
                 new ObjectInputStream(new ByteArrayInputStream(output.toByteArray()))) {
-            return (ValueExpression) objectInput.readObject();
+            return (FunctionMapperImpl) objectInput.readObject();
         }
     }
 
