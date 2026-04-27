@@ -6,6 +6,10 @@
  */
 package log4j.log4j;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.CodeSource;
+
 import org.apache.log4j.EnhancedThrowableRenderer;
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +54,32 @@ public class EnhancedThrowableRendererTest {
     }
 
     @Test
+    void fallsBackToRendererClassLoaderWhenContextLoaderAndClassForNameFail() throws Exception {
+        StackTraceElement frame = new StackTraceElement(IsolatedFrameType.class.getName(), "call", "IsolatedFrameType.java", 31);
+        Thread thread = Thread.currentThread();
+        ClassLoader previousClassLoader = thread.getContextClassLoader();
+        thread.setContextClassLoader(new RejectingClassLoader(previousClassLoader, IsolatedFrameType.class.getName()));
+
+        try (URLClassLoader isolatedLoader = new FailOnceClassLoader(
+                new URL[] { codeSourceUrl(EnhancedThrowableRenderer.class), codeSourceUrl(EnhancedThrowableRendererTest.class) },
+                ClassLoader.getPlatformClassLoader(),
+                IsolatedFrameType.class.getName())) {
+            Class<?> rendererClass = Class.forName(EnhancedThrowableRenderer.class.getName(), true, isolatedLoader);
+            Object renderer = rendererClass.getConstructor().newInstance();
+            RuntimeException throwable = new RuntimeException("isolated");
+            throwable.setStackTrace(new StackTraceElement[] { frame });
+
+            String[] rendered = (String[]) rendererClass.getMethod("doRender", Throwable.class).invoke(renderer, throwable);
+
+            assertThat(rendered).hasSize(2);
+            assertThat(rendered[0]).isEqualTo(throwable.toString());
+            assertThat(rendered[1]).startsWith("\tat " + frame).contains("[").endsWith("]");
+        } finally {
+            thread.setContextClassLoader(previousClassLoader);
+        }
+    }
+
+    @Test
     void keepsOriginalStackTraceElementTextWhenClassCannotBeResolved() {
         EnhancedThrowableRenderer renderer = new EnhancedThrowableRenderer();
         RuntimeException throwable = new RuntimeException("missing");
@@ -61,10 +91,19 @@ public class EnhancedThrowableRendererTest {
         assertThat(rendered).containsExactly(throwable.toString(), "\tat " + frame);
     }
 
+    private static URL codeSourceUrl(Class<?> type) {
+        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
+        assertThat(codeSource).isNotNull();
+        return codeSource.getLocation();
+    }
+
     public static final class ResolvedFrameType {
     }
 
     public static final class FallbackFrameType {
+    }
+
+    public static final class IsolatedFrameType {
     }
 
     private static final class RejectingClassLoader extends ClassLoader {
@@ -78,6 +117,25 @@ public class EnhancedThrowableRendererTest {
         @Override
         public Class<?> loadClass(String name) throws ClassNotFoundException {
             if (rejectedClassName.equals(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name);
+        }
+    }
+
+    private static final class FailOnceClassLoader extends URLClassLoader {
+        private final String failOnceClassName;
+        private boolean failed;
+
+        private FailOnceClassLoader(URL[] urls, ClassLoader parent, String failOnceClassName) {
+            super(urls, parent);
+            this.failOnceClassName = failOnceClassName;
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (!failed && failOnceClassName.equals(name)) {
+                failed = true;
                 throw new ClassNotFoundException(name);
             }
             return super.loadClass(name);
