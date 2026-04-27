@@ -16,6 +16,12 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
