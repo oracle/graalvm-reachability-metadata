@@ -200,6 +200,37 @@ public class Opentelemetry_sdk_commonTest {
     }
 
     @Test
+    void resourceBuilderIgnoresNullInputsAndEmptyTypedKeys() {
+        AttributeKey<String> emptyKey = AttributeKey.stringKey("");
+        Resource resource = Resource.builder()
+                .put((String) null, "ignored")
+                .put("null.string", (String) null)
+                .put("null.string.array", (String[]) null)
+                .put("null.long.array", (long[]) null)
+                .put("null.double.array", (double[]) null)
+                .put("null.boolean.array", (boolean[]) null)
+                .put((AttributeKey<String>) null, "ignored")
+                .put(emptyKey, "ignored")
+                .put(AttributeKey.stringKey("null.typed.value"), null)
+                .putAll((Attributes) null)
+                .putAll((Resource) null)
+                .put(SERVICE_NAME, "checkout")
+                .setSchemaUrl("https://opentelemetry.io/schemas/current")
+                .build();
+
+        assertThat(resource.getSchemaUrl()).isEqualTo("https://opentelemetry.io/schemas/current");
+        assertThat(resource.getAttributes().size()).isEqualTo(1);
+        assertThat(resource.getAttribute(SERVICE_NAME)).isEqualTo("checkout");
+        assertThat(resource.getAttribute(emptyKey)).isNull();
+        assertThat(resource.getAttribute(AttributeKey.stringKey("null.string"))).isNull();
+        assertThat(resource.getAttribute(AttributeKey.stringArrayKey("null.string.array"))).isNull();
+        assertThat(resource.getAttribute(AttributeKey.longArrayKey("null.long.array"))).isNull();
+        assertThat(resource.getAttribute(AttributeKey.doubleArrayKey("null.double.array"))).isNull();
+        assertThat(resource.getAttribute(AttributeKey.booleanArrayKey("null.boolean.array"))).isNull();
+        assertThat(resource.getAttribute(AttributeKey.stringKey("null.typed.value"))).isNull();
+    }
+
+    @Test
     void resourceBuilderCopiesAndFiltersAttributesWithoutMutatingSourceResource() {
         Resource original = Resource.builder()
                 .put(SERVICE_NAME, "orders")
