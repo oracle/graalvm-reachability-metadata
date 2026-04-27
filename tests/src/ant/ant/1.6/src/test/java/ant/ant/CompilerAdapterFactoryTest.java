@@ -8,6 +8,9 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
@@ -34,6 +37,21 @@ public class CompilerAdapterFactoryTest {
         } catch (BuildException exception) {
             assertThat(exception).hasMessageContaining("Unable to find a javac compiler");
         }
+    }
+
+    @Test
+    void resolvesCompilerFactoryClassThroughLegacyClassLiteralHelper() throws Throwable {
+        MethodHandle classLiteralResolver = MethodHandles.privateLookupIn(
+                CompilerAdapterFactory.class,
+                MethodHandles.lookup())
+            .findStatic(
+                CompilerAdapterFactory.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class));
+
+        Object resolvedClass = classLiteralResolver.invoke(CompilerAdapterFactory.class.getName());
+
+        assertThat(resolvedClass).isSameAs(CompilerAdapterFactory.class);
     }
 
     private static Task newTask() {
