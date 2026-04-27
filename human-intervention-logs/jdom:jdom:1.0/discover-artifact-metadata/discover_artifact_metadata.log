@@ -1,0 +1,893 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcf95-8da5-79a2-b612-2a5d715afc14
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jdom:jdom:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+- Set "coordinates" to "jdom:jdom:1.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central first, then cross-check upstream tags so the version-specific URLs are defensible before editing the JSON.
+web search: 
+web search: Maven Central jdom jdom 1.0 sources javadoc jar tests
+web search: 
+web search: https://repo.maven.apache.org/maven2/jdom/jdom/1.0/
+codex
+Maven Central has a `jdom-1.0-sources.jar` for this exact version and no obvious test or javadoc jar in the artifact directory, so I’m going to inspect the POM/source artifact and then check the upstream tag for tests/docs.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/jdom-jdom-1.0.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+{
+  "coordinates" : "jdom:jdom:1.0"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0.pom' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jdom</groupId>
+  <artifactId>jdom</artifactId>
+  <version>1.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.6.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.0.b2</version>
+      <optional>true</optional>
+    </dependency>
+    <!-- should be replaced jaxen-jdom provided with jdom -->
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.0-FCS</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>saxpath</groupId>
+      <artifactId>saxpath</artifactId>
+      <version>1.0-FCS</version>
+      <optional>true</optional>
+    </dependency>
+    <!-- should be replaced by xalan.jar from jdom, their version was 2.5.D1 -->
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.5.0</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/jdom/jdom/1.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 177ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jdom/jdom/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jdom/jdom/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jdom-1.0-sources.jar" title="jdom-1.0-sources.jar">jdom-1.0-sources.jar</a>                              2005-09-20 05:48    229136      
+<a href="jdom-1.0-sources.jar.md5" title="jdom-1.0-sources.jar.md5">jdom-1.0-sources.jar.md5</a>                          2005-09-20 05:48        55      
+<a href="jdom-1.0-sources.jar.sha1" title="jdom-1.0-sources.jar.sha1">jdom-1.0-sources.jar.sha1</a>                         2005-09-20 05:48        63      
+<a href="jdom-1.0.jar" title="jdom-1.0.jar">jdom-1.0.jar</a>                                      2005-09-20 05:48    153253      
+<a href="jdom-1.0.jar.md5" title="jdom-1.0.jar.md5">jdom-1.0.jar.md5</a>                                  2005-09-20 05:48        32      
+<a href="jdom-1.0.jar.sha1" title="jdom-1.0.jar.sha1">jdom-1.0.jar.sha1</a>                                 2005-09-20 05:48        40      
+<a href="jdom-1.0.pom" title="jdom-1.0.pom">jdom-1.0.pom</a>                                      2005-09-20 05:48      1170      
+<a href="jdom-1.0.pom.md5" title="jdom-1.0.pom.md5">jdom-1.0.pom.md5</a>                                  2005-09-20 05:48       119      
+<a href="jdom-1.0.pom.sha1" title="jdom-1.0.pom.sha1">jdom-1.0.pom.sha1</a>                                 2005-09-20 05:48       127      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:48       105      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:48        69      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:48       124      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: site:github.com jdom 1.0 tag
+web search: 
+web search: https://github.com/hunterhacker/jdom/tags
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/tags?per_page=100' | jq -r '.[].name' | sed -n '1,120p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/branches?per_page=100' | jq -r '.[].name'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 185ms:
+gh-pages
+jdom-1.x
+jdom-1.0
+jdom-1.1
+jdom-2.0.x
+master
+pre-clean-master
+prologspace
+report-prolog-whitespace
+tmp-cleanup
+
+ succeeded in 206ms:
+jdom-1.1.3
+jdom-1.1.2
+jdom-1.1.1
+jdom2-epoch
+JDOM-2.0.6.1
+JDOM-2.0.6
+JDOM-2.0.5
+JDOM-2.0.4
+JDOM-2.0.3
+JDOM-2.0.2
+JDOM-2.0.1
+JDOM-2.0.0
+JDOM2Beta6
+JDOM2Beta5
+JDOM2Beta4
+
+codex
+The upstream GitHub repo has a `jdom-1.0` branch rather than a `1.0` tag. Since the request prefers Maven when available, I’ll use Maven Central for the source artifact and use that exact upstream branch for tests or docs only where Maven lacks those artifacts.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/contents?ref=jdom-1.0' | jq -r '.[] | [.type, .name, .html_url] | @tsv'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/hunterhacker/jdom/jdom-1.0/README.txt' | sed -n '1,80p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/hunterhacker/jdom/jdom-1.0/build.xml' | sed -n '1,160p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 149ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 172ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 200ms:
+dir	contrib	https://github.com/hunterhacker/jdom/tree/jdom-1.0/contrib
+dir	core	https://github.com/hunterhacker/jdom/tree/jdom-1.0/core
+dir	test	https://github.com/hunterhacker/jdom/tree/jdom-1.0/test
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/contents/core?ref=jdom-1.0' | jq -r '.[] | [.type, .name, .html_url] | @tsv'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/contents/contrib?ref=jdom-1.0' | jq -r '.[] | [.type, .name, .html_url] | @tsv'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/contents/test?ref=jdom-1.0' | jq -r '.[] | [.type, .name, .html_url] | @tsv'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 171ms:
+file	COMMITTERS.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/test/COMMITTERS.txt
+file	LICENSE.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/test/LICENSE.txt
+file	README.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/test/README.txt
+file	TODO.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/test/TODO.txt
+file	build.bat	https://github.com/hunterhacker/jdom/blob/jdom-1.0/test/build.bat
+file	build.sh	https://github.com/hunterhacker/jdom/blob/jdom-1.0/test/build.sh
+file	build.xml	https://github.com/hunterhacker/jdom/blob/jdom-1.0/test/build.xml
+dir	lib	https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/lib
+dir	resources	https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/resources
+dir	src	https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src
+
+ succeeded in 180ms:
+file	CHANGES.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/CHANGES.txt
+file	COMMITTERS.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/COMMITTERS.txt
+file	LICENSE.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/LICENSE.txt
+file	README.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/README.txt
+file	TODO.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/TODO.txt
+file	build.bat	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/build.bat
+file	build.sh	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/build.sh
+file	build.xml	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/build.xml
+dir	etc	https://github.com/hunterhacker/jdom/tree/jdom-1.0/core/etc
+dir	lib	https://github.com/hunterhacker/jdom/tree/jdom-1.0/core/lib
+dir	package	https://github.com/hunterhacker/jdom/tree/jdom-1.0/core/package
+dir	samples	https://github.com/hunterhacker/jdom/tree/jdom-1.0/core/samples
+dir	src	https://github.com/hunterhacker/jdom/tree/jdom-1.0/core/src
+
+ succeeded in 190ms:
+file	COMMITTERS.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/contrib/COMMITTERS.txt
+file	LICENSE.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/contrib/LICENSE.txt
+file	README.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/contrib/README.txt
+file	build.bat	https://github.com/hunterhacker/jdom/blob/jdom-1.0/contrib/build.bat
+file	build.sh	https://github.com/hunterhacker/jdom/blob/jdom-1.0/contrib/build.sh
+file	build.xml	https://github.com/hunterhacker/jdom/blob/jdom-1.0/contrib/build.xml
+dir	lib	https://github.com/hunterhacker/jdom/tree/jdom-1.0/contrib/lib
+dir	samples	https://github.com/hunterhacker/jdom/tree/jdom-1.0/contrib/samples
+dir	src	https://github.com/hunterhacker/jdom/tree/jdom-1.0/contrib/src
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/contents/core/package?ref=jdom-1.0' | jq -r '.[] | [.type, .name, .html_url] | @tsv'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/git/trees/jdom-1.0?recursive=1' | jq -r '.tree[].path' | rg -i 'doc|javadoc|site|readme|overview|package.html' | sed -n '1,200p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/hunterhacker/jdom/jdom-1.0/core/README.txt' | sed -n '1,160p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 221ms:
+Introduction to the JDOM project
+================================
+
+Please see the JDOM web site at http://jdom.org/.
+
+
+How to use JDOM
+===============
+
+Please see the web site http://jdom.org/downloads/docs.html.  It has links to
+numerous articles and books covering JDOM.
+
+
+Installing the build tools
+==========================
+
+The JDOM build system is based on Jakarta Ant, which is a Java building tool
+originally developed for the Jakarta Tomcat project but now used in many other
+Apache projects and extended by many developers.
+
+Ant is a little but very handy tool that uses a build file written in XML
+(build.xml) as building instructions. For more information refer to
+"http://ant.apache.org".
+
+The only thing that you have to make sure of is that the "JAVA_HOME"
+environment property is set to match the top level directory containing the
+JVM you want to use. For example:
+
+C:\> set JAVA_HOME=C:\jdk1.2.2
+  (or jdk1.3.1, etc.)
+
+or on Unix:
+
+% setenv JAVA_HOME /usr/local/java
+  (csh)
+> JAVA_HOME=/usr/java; export JAVA_HOME
+  (ksh, bash)
+
+That's it!
+
+
+Building instructions
+=====================
+
+Ok, let's build the code. First, make sure your current working directory is
+where the build.xml file is located. Then type
+
+  ./build.sh (unix)
+  .\build.bat (win32)
+
+if everything is right and all the required packages are visible, this action
+will generate a file called "jdom.jar" in the "./build" directory. Note, that
+if you do further development, compilation time is reduced since Ant is able
+to detect which files have changed and recompile them as needed.
+
+If for some crazy reason you're still using JDK 1.1, please note that JDOM no
+longer supports JDK 1.1 compiles.  If you're despreate for JDK 1.1 support,
+you can retrieve the CVS code from April 2nd, 2003, (use the -D flag).  This
+was the last day JDK 1.1 was supported.  Then run the "build11" scripts.
+
+If something went wrong, go to the FAQ at http://www.jdom.org/docs/faq.html.
+
+
+Build targets
+=============
+
+The build system is not only responsible for compiling JDOM into a jar file,
+but is also responsible for creating the HTML documentation in the form of
+javadocs.
+
+These are the meaningful targets for this build file:
+
+ - package [default] -> creates ./build/jdom.jar
+ - compile -> compiles the source code
+ - samples -> compiles example code
+ - javadoc -> generates the API documentation in ./build/javadocs
+ - clean -> restores the distribution to its original and clean state
+
+For example, to build the samples, type
+
+build samples
+(Windows)
+
+build.sh samples
+(Unix)
+
+To learn the details of what each target does, read the build.xml file.  It is
+quite understandable.
+
+
+Bug Reports
+===========
+
+Bug reports go to the jdom-interest list at jdom.org.  But *BEFORE YOU POST*
+make sure you've tested against the LATEST code available from CVS (or the
+daily snapshot).  Odds are good your bug has already been fixed.  If it hasn't
+been fixed in the latest version, then when posting *BE SURE TO SAY* which
+code version you tested against.  For example, "CVS from October 3rd".  Also
+be sure to include enough information to reproduce the bug and full exception
+stack traces.  You might also want to read the FAQ at http://jdom.org to find
+out if your problem is not really a bug and just a common misunderstanding
+about how XML or JDOM works.
+
+ succeeded in 354ms:
+file	JDOMAbout.java	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/package/JDOMAbout.java
+dir	META-INF	https://github.com/hunterhacker/jdom/tree/jdom-1.0/core/package/META-INF
+file	jdk-package-list.txt	https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/package/jdk-package-list.txt
+
+ succeeded in 328ms:
+contrib/README.txt
+contrib/lib/isorelax.readme
+contrib/lib/jakarta-regexp.readme
+contrib/src/java/org/jdom/contrib/beans/README
+contrib/src/java/org/jdom/contrib/helpers/README
+contrib/src/java/org/jdom/contrib/ids/IdDocument.java
+contrib/src/java/org/jdom/contrib/ids/README.txt
+contrib/src/java/org/jdom/contrib/ids/doc-files
+contrib/src/java/org/jdom/contrib/ids/doc-files/TestIds.java
+contrib/src/java/org/jdom/contrib/ids/doc-files/testIds.dtd
+contrib/src/java/org/jdom/contrib/ids/doc-files/testIds.xml
+contrib/src/java/org/jdom/contrib/ids/package.html
+contrib/src/java/org/jdom/contrib/input/README
+contrib/src/java/org/jdom/contrib/input/scanner/README.txt
+contrib/src/java/org/jdom/contrib/input/scanner/doc-files
+contrib/src/java/org/jdom/contrib/input/scanner/doc-files/ElementScannerTest.java
+contrib/src/java/org/jdom/contrib/input/scanner/doc-files/test.xml
+contrib/src/java/org/jdom/contrib/input/scanner/package.html
+contrib/src/java/org/jdom/contrib/output/README
+core/README.txt
+core/lib/README
+core/lib/ant.readme
+core/lib/jaxen.readme
+core/lib/xalan.readme
+core/lib/xerces.readme
+core/samples/sax/DocumentReader.java
+core/src/java/org/jdom/DocType.java
+core/src/java/org/jdom/Document.java
+core/src/java/org/jdom/adapters/package.html
+core/src/java/org/jdom/filter/package.html
+core/src/java/org/jdom/input/package.html
+core/src/java/org/jdom/output/package.html
+core/src/java/org/jdom/package.html
+core/src/java/org/jdom/transform/package.html
+core/src/java/org/jdom/xpath/package.html
+test/README.txt
+test/lib/junit.readme
+test/lib/optional.readme
+test/src/java/org/jdom/test/cases/TestDocType.java
+test/src/java/org/jdom/test/cases/TestDocument.java
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' build/discovered-artifact-metadata metadata -g '*.json' | sed -n '1,80p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+metadata/javax.activation/activation/index.json:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/log4j/log4j/index.json:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "documentation-url" : "N/A",
+metadata/com.itextpdf/kernel/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+metadata/com.itextpdf/io/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+metadata/org.jline/jline/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-javadoc.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:    "documentation-url": "N/A",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+metadata/org.jboss.resteasy/resteasy-client/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/6.2.12.Final/resteasy-client-6.2.12.Final-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/com.ecwid.consul/consul-api/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/ecwid/consul/consul-api/1.4.5/consul-api-1.4.5-javadoc.jar",
+metadata/io.dropwizard.metrics/metrics-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+metadata/org.fusesource.jansi/jansi/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/1.13/jansi-1.13-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/com.google.android/annotations/index.json:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+metadata/org.apache.commons/commons-pool2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+metadata/javax.annotation/jsr250-api/index.json:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+metadata/commons-codec/commons-codec/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-javadoc.jar",
+metadata/org.apache.commons/commons-collections4/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+metadata/org.apache.commons/commons-lang3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg 'repo.maven.apache.org.*javadoc|apidocs|tree/.*/docs|blob/.*/README' build/discovered-artifact-metadata metadata -g '*.json' | sed -n '1,160p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+metadata/org.fusesource.jansi/jansi/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/1.13/jansi-1.13-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+metadata/org.osgi/org.osgi.core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-javadoc.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/5.0.0/org.osgi.compendium-5.0.0-javadoc.jar",
+metadata/org.apache.commons/commons-text/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+metadata/org.apache.santuario/xmlsec/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+metadata/org.apache.commons/commons-pool2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+metadata/werken-xpath/werken-xpath/index.json:    "documentation-url" : "https://sources.debian.org/src/werken.xpath/0.9.4-16/apidocs/",
+metadata/org.apache.commons/commons-lang3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-javadoc.jar",
+metadata/org.objenesis/objenesis/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-javadoc.jar",
+metadata/org.jboss/jandex/index.json:    "documentation-url" : "https://github.com/smallrye/jandex/blob/2.4.2.Final/README.md",
+metadata/org.apache.commons/commons-collections4/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+metadata/com.atomikos/transactions-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/6.0.0/transactions-api-6.0.0-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-javadoc.jar",
+metadata/org.glassfish.jaxb/txw2/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-javadoc.jar",
+metadata/net.i2p.crypto/eddsa/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/net/i2p/crypto/eddsa/0.3.0/eddsa-0.3.0-javadoc.jar",
+metadata/org.jboss.resteasy/resteasy-client/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/6.2.12.Final/resteasy-client-6.2.12.Final-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
+metadata/io.undertow/undertow-parser-generator/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/2.2.19.Final/undertow-parser-generator-2.2.19.Final-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-javadoc.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+metadata/org.jooq/jooq/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-javadoc.jar",
+metadata/org.jooq/jooq/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-javadoc.jar",
+metadata/org.jooq/jooq/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-javadoc.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:    "documentation-url": "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/README.txt",
+metadata/org.thymeleaf/thymeleaf/index.json:    "documentation-url": "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.M2/README.txt",
+metadata/mysql/mysql-connector-java/index.json:    "documentation-url": "https://github.com/mysql/mysql-connector-j/blob/8.0.29/README.md",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:    "documentation-url" : "https://www.thymeleaf.org/apidocs/thymeleaf-spring6/3.1.0.RELEASE/",
+metadata/org.mariadb/r2dbc-mariadb/index.json:    "documentation-url": "https://github.com/mariadb-corporation/mariadb-connector-r2dbc/blob/1.1.3/README.md",
+metadata/io.netty/netty-common/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-javadoc.jar",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/alpn/alpn-api/1.1.3.v20160715/alpn-api-1.1.3.v20160715-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-jcache/7.2.1.Final/hibernate-jcache-7.2.1.Final-javadoc.jar",
+metadata/io.netty/netty-resolver/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-javadoc.jar",
+metadata/io.netty/netty-transport/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.115.Final/netty-transport-4.1.115.Final-javadoc.jar",
+metadata/io.netty/netty-transport/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.80.Final/netty-transport-4.1.80.Final-javadoc.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-javadoc.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.1.0/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/1.0.1.Final/jboss-interceptors-api_1.2_spec-1.0.1.Final-javadoc.jar",
+metadata/org.unbescape/unbescape/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/unbescape/unbescape/1.1.6.RELEASE/unbescape-1.1.6.RELEASE-javadoc.jar",
+metadata/org.ow2.asm/asm-tree/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-tree/9.7.1/asm-tree-9.7.1-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-javadoc.jar",
+metadata/org.ow2.asm/asm-analysis/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.7.1/asm-analysis-9.7.1-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-javadoc.jar",
+metadata/org.ow2.asm/asm/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.4/asm-9.4-javadoc.jar",
+metadata/com.mchange/mchange-commons-java/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15-javadoc.jar",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:    "documentation-url": "https://github.com/apache/tomcat/tree/10.1.7/webapps/docs",
+metadata/io.dropwizard.metrics/metrics-core/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:    "documentation-url": "https://github.com/mockito/mockito/blob/v4.8.1/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/org.rocksdb/rocksdbjni/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-javadoc.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/2.0.3/jakarta.jms-api-2.0.3-javadoc.jar",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/1.16.0/scalajs-javalib-intf-1.16.0-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.4-1/zstd-jni-1.5.4-1-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-1/zstd-jni-1.5.5-1-javadoc.jar",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs/annotationapi",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/org.hibernate.orm/hibernate-envers/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-envers/6.1.1.Final/hibernate-envers-6.1.1.Final-javadoc.jar",
+metadata/org.quartz-scheduler/quartz/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.3.2/quartz-2.3.2-javadoc.jar",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.12.7/README.adoc",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/commons-codec/commons-codec/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/8.0.0.Alpha1/hibernate-core-8.0.0.Alpha1-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.2.0.Final/hibernate-core-7.2.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.1.0.Final/hibernate-core-7.1.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.0.0.Final/hibernate-core-7.0.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.6.0.Final/hibernate-core-6.6.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.5.0.Final/hibernate-core-6.5.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.2.0.Final/hibernate-core-6.2.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.1.1.Final/hibernate-core-6.1.1.Final-javadoc.jar",
+metadata/io.jsonwebtoken/jjwt-api/index.json:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/io.jsonwebtoken/jjwt-api/index.json:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.12.3/README.md",
+metadata/library-and-framework-list.json:          "https://github.com/fugerit-org/fj-doc/blob/main/fj-doc-native-quarkus/README.md"
+metadata/library-and-framework-list.json:          "https://github.com/fugerit-org/fj-doc/blob/main/fj-doc-native-quarkus/README.md"
+metadata/library-and-framework-list.json:          "https://github.com/fugerit-org/fj-doc/blob/main/fj-doc-native-quarkus/README.md"
+metadata/io.opentelemetry/opentelemetry-exporter-otlp/index.json:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/exporters/otlp/all/README.md",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:    "documentation-url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/sdk/metrics/README.md",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/lib/thymeleaf-extras-springsecurity6/README.markdown",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.20.0/exporters/zipkin/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/exporters/zipkin/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.20.0/exporters/logging/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/exporters/logging/README.md",
+metadata/io.opentelemetry/opentelemetry-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api/1.19.0/opentelemetry-api-1.19.0-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/exporters/jaeger/README.md",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:    "documentation-url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/sdk/trace/README.md",
+
+exec
+/usr/bin/bash -lc "rg '\"coordinates\"\\s*:\\s*\"jdom:jdom' -n ." in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\".*jdom|\"repository-url\".*jdom|\"test-code-url\".*jdom' metadata build/discovered-artifact-metadata -g '*.json'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ exited 1 in 0ms:
+web search: 
+web search: 
+web search: 
+web search: javadoc.io jdom jdom 1.0
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/hunterhacker/jdom/jdom-1.0/core/build.xml' | rg -n 'javadoc|doc|package.html' -C 3" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/hunterhacker/jdom/jdom-1.0/core/src/java/org/jdom/package.html' | sed -n '1,160p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 170ms:
+50-    <property name="build.dir" value="./build"/>
+51-    <property name="build.src" value="./build/src"/>
+52-    <property name="build.dest" value="./build/classes"/>
+53:    <property name="build.javadocs" value="./build/apidocs"/>
+54-
+55-    <property name="dist.root" value="./dist"/>
+56-    <property name="dist.dir" value="${dist.root}/${name}-${version}"/>
+--
+107-    <echo message=""/>
+108-    <echo message="   package  --> generates the jdom.jar file (default)"/>
+109-    <echo message="   compile  --> compiles the source code"/>
+110:    <echo message="   javadoc  --> generates the API documentation"/>
+111-    <echo message="   clean    --> cleans up the directory"/>
+112-    <echo message=""/>
+113-    <echo message=" See the comments inside the build.xml file for more details."/>
+--
+227-  </target>
+228-
+229-  <!-- =================================================================== -->
+230:  <!-- Creates the API documentation                                       -->
+231-  <!-- =================================================================== -->
+232:  <target name="javadoc" depends="prepare-src"
+233:          description="Creates the API documentation">
+234:    <mkdir dir="${build.javadocs}"/>
+235:    <javadoc packagenames="${packages}"
+236-             sourcepath="${build.src}"
+237:             destdir="${build.javadocs}"
+238-             author="true"
+239-             version="true"
+240-             use="true"
+241-             splitindex="true"
+242-             noindex="false"
+243-             windowtitle="${Name} v${version}"
+244:             doctitle="${Name} v${version}&lt;br&gt;API Specification"
+245-             header="&lt;b&gt;${Name}&lt;br&gt;&lt;font size='-1'&gt;${version}&lt;/font&gt;&lt;/b&gt;"
+246-             bottom="Copyright &#169; ${year} Jason Hunter, Brett McLaughlin. All Rights Reserved.">
+247-      <classpath refid="run.class.path"/>
+248:    </javadoc>
+249-  </target>
+250-
+251-  <!-- =================================================================== -->
+252:  <!-- Creates the API documentation, with links to JDK 1.4 classes        -->
+253-  <!-- We can use linkoffline with a newer Ant and avoid this target       -->
+254-  <!-- =================================================================== -->
+255:  <target name="javadoc-link" depends="prepare-src"
+256:          description="Creates the API documentation with links to JDK 1.4 classes">
+257:    <mkdir dir="${build.javadocs}"/>
+258:    <javadoc packagenames="${packages}"
+259-             sourcepath="${build.src}"
+260:             destdir="${build.javadocs}"
+261-             author="true"
+262-             version="true"
+263-             use="true"
+264-             splitindex="true"
+265-             noindex="false"
+266-             windowtitle="${Name} v${version}"
+267:             doctitle="${Name} v${version}&lt;br&gt;API Specification"
+268-             header="&lt;b&gt;${Name}&lt;br&gt;&lt;font size='-1'&gt;${version}&lt;/font&gt;&lt;/b&gt;"
+269-             bottom="Copyright &#169; ${year} Jason Hunter, Brett McLaughlin. All Rights Reserved.">
+270-      <classpath refid="run.class.path"/>
+271-
+272:      <link href="http://java.sun.com/j2se/1.4/docs/api"/>
+273:    </javadoc>
+274-  </target>
+275-
+276-  <!-- =================================================================== -->
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/hunterhacker/jdom/jdom-1.0/test/README.txt' | sed -n '1,120p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 280ms:
+<body>
+
+Classes to represent the components of an XML document.  The Verifier is a
+special class useful in ensuring well-formedness of documents.  The Parent
+interface is implemented by Document and Element exposing their commonality.
+The Content abstract class is extended by all the node types of a document
+except Document itself.
+
+The JDOMFactory interface and DefaultJDOMFactory standard implementation
+provide advanced users with the ability to create subtypes of the org.jdom
+classes.
+
+</body>
+
+ succeeded in 184ms:
+Introduction
+============
+
+jdom-test is the home for a set of automated test cases covering all aspects
+of JDOM behavior, used to ensure the JDOM core library consistently behaves as
+documented.  My expectation is that we'll run these tests before every
+check-in.  Contributors with write access to the jdom-test module can be found
+in COMMITTERS.txt.  Currently the module includes a set of autogenerated
+classes (under the org.jdom.test package hierarchy) containing test hooks that
+will be fleshed out and run with the third party JUnit library.  Your help in
+fleshing out the test cases is most welcome.  Send patches to the
+jdom-interest list.
+
+Building instructions
+=====================
+
+Building jdom-test is the same as building jdom.  See the README.txt in the
+jdom module.
+
+
+codex
+I found version-specific upstream test sources at `jdom-1.0/test/src`. Maven has no test artifact and no javadoc artifact, so for documentation I’m using the versioned upstream package documentation that is part of the source tree and feeds the generated API docs.
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0-sources.jar \\
+  https://github.com/hunterhacker/jdom \\
+  https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src \\
+  https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html; do \\
+  status="'$(curl -L -o /dev/null -s -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$status" "$url"; '"\\
+done" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/hunterhacker/jdom/git/trees/jdom-1.0?recursive=1' | jq -r '.tree[].path' | rg '"'^test/src/java/.+'"\\.java"'$'"' | sed -n '1,20p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+test/src/java/org/jdom/test/cases/Alltests.java
+test/src/java/org/jdom/test/cases/TestAttribute.java
+test/src/java/org/jdom/test/cases/TestComment.java
+test/src/java/org/jdom/test/cases/TestDocType.java
+test/src/java/org/jdom/test/cases/TestDocument.java
+test/src/java/org/jdom/test/cases/TestElement.java
+test/src/java/org/jdom/test/cases/TestFilterList.java
+test/src/java/org/jdom/test/cases/TestNamespace.java
+test/src/java/org/jdom/test/cases/TestVerifier.java
+test/src/java/org/jdom/test/cases/input/TestSAXBuilder.java
+test/src/java/org/jdom/test/filterlist/FilterListIteratorRandomizer.java
+test/src/java/org/jdom/test/filterlist/FilterListRandomizer.java
+test/src/java/org/jdom/test/generate/ClassGenerator.java
+test/src/java/org/jdom/test/generate/GeneratorException.java
+test/src/java/org/jdom/test/generate/IndentWriter.java
+test/src/java/org/jdom/test/generate/Main.java
+test/src/java/org/jdom/test/generate/NameMangler.java
+test/src/java/org/jdom/test/generate/TestCaseClassWriter.java
+test/src/java/org/jdom/test/generate/TestCaseGenerator.java
+
+ succeeded in 3258ms:
+200 https://github.com/hunterhacker/jdom
+200 https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src
+200 https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html
+
+codex
+All selected URLs resolve. I’m updating the JSON now with Maven Central for sources, the upstream repository, versioned upstream tests, and versioned package-level API documentation.
+apply patch
+patch: completed
+/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+diff --git a/build/discovered-artifact-metadata/jdom-jdom-1.0.json b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+index e73df095007ccd1c65775bed79f35349dcdd68ed..2a72ee33f8e3adb403f031342d019be60c60c85e
+--- a/build/discovered-artifact-metadata/jdom-jdom-1.0.json
++++ b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jdom:jdom:1.0"
++  "coordinates" : "jdom:jdom:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0-sources.jar",
++  "repository-url" : "https://github.com/hunterhacker/jdom",
++  "test-code-url" : "https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src",
++  "documentation-url" : "https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html",
++  "description" : "JDOM is a Java-based document object model for representing, creating, and manipulating XML documents with Java collections-friendly APIs. It includes builders, outputters, filters, transforms, XPath integration, and adapters that let applications read, modify, and write XML using SAX, DOM, and related XML tooling."
+ }
+
+diff --git a/build/discovered-artifact-metadata/jdom-jdom-1.0.json b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+index e73df095007ccd1c65775bed79f35349dcdd68ed..2a72ee33f8e3adb403f031342d019be60c60c85e
+--- a/build/discovered-artifact-metadata/jdom-jdom-1.0.json
++++ b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jdom:jdom:1.0"
++  "coordinates" : "jdom:jdom:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0-sources.jar",
++  "repository-url" : "https://github.com/hunterhacker/jdom",
++  "test-code-url" : "https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src",
++  "documentation-url" : "https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html",
++  "description" : "JDOM is a Java-based document object model for representing, creating, and manipulating XML documents with Java collections-friendly APIs. It includes builders, outputters, filters, transforms, XPath integration, and adapters that let applications read, modify, and write XML using SAX, DOM, and related XML tooling."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/jdom-jdom-1.0.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+{
+  "coordinates": "jdom:jdom:1.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0-sources.jar",
+  "repository-url": "https://github.com/hunterhacker/jdom",
+  "test-code-url": "https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src",
+  "documentation-url": "https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html",
+  "description": "JDOM is a Java-based document object model for representing, creating, and manipulating XML documents with Java collections-friendly APIs. It includes builders, outputters, filters, transforms, XPath integration, and adapters that let applications read, modify, and write XML using SAX, DOM, and related XML tooling."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/jdom-jdom-1.0.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jdom-jdom-1.0.json b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+index e73df095007ccd1c65775bed79f35349dcdd68ed..2a72ee33f8e3adb403f031342d019be60c60c85e
+--- a/build/discovered-artifact-metadata/jdom-jdom-1.0.json
++++ b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jdom:jdom:1.0"
++  "coordinates" : "jdom:jdom:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0-sources.jar",
++  "repository-url" : "https://github.com/hunterhacker/jdom",
++  "test-code-url" : "https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src",
++  "documentation-url" : "https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html",
++  "description" : "JDOM is a Java-based document object model for representing, creating, and manipulating XML documents with Java collections-friendly APIs. It includes builders, outputters, filters, transforms, XPath integration, and adapters that let applications read, modify, and write XML using SAX, DOM, and related XML tooling."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/jdom-jdom-1.0.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+{
+  "coordinates" : "jdom:jdom:1.0",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0-sources.jar",
+  "repository-url" : "https://github.com/hunterhacker/jdom",
+  "test-code-url" : "https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src",
+  "documentation-url" : "https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html",
+  "description" : "JDOM is a Java-based document object model for representing, creating, and manipulating XML documents with Java collections-friendly APIs. It includes builders, outputters, filters, transforms, XPath integration, and adapters that let applications read, modify, and write XML using SAX, DOM, and related XML tooling."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/jdom-jdom-1.0.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jdom-jdom-1.0.json b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+index e73df095007ccd1c65775bed79f35349dcdd68ed..2a72ee33f8e3adb403f031342d019be60c60c85e
+--- a/build/discovered-artifact-metadata/jdom-jdom-1.0.json
++++ b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jdom:jdom:1.0"
++  "coordinates" : "jdom:jdom:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0-sources.jar",
++  "repository-url" : "https://github.com/hunterhacker/jdom",
++  "test-code-url" : "https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src",
++  "documentation-url" : "https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html",
++  "description" : "JDOM is a Java-based document object model for representing, creating, and manipulating XML documents with Java collections-friendly APIs. It includes builders, outputters, filters, transforms, XPath integration, and adapters that let applications read, modify, and write XML using SAX, DOM, and related XML tooling."
+ }
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/jdom/jdom/1.0/
+web search: 
+web search: https://github.com/hunterhacker/jdom
+codex
+Updated [jdom-jdom-1.0.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16/build/discovered-artifact-metadata/jdom-jdom-1.0.json) with the discovered metadata. I used the Maven Central `1.0` sources jar for `source-code-url`, and the upstream `jdom-1.0` GitHub branch for tests and documentation where Maven had no test/javadoc artifact. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/jdom/jdom/1.0/))
+
+No `language` field was added because this is not a Kotlin or Scala language-specific library. I also validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/jdom-jdom-1.0.json b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+index e73df095007ccd1c65775bed79f35349dcdd68ed..2a72ee33f8e3adb403f031342d019be60c60c85e
+--- a/build/discovered-artifact-metadata/jdom-jdom-1.0.json
++++ b/build/discovered-artifact-metadata/jdom-jdom-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jdom:jdom:1.0"
++  "coordinates" : "jdom:jdom:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/jdom/jdom/1.0/jdom-1.0-sources.jar",
++  "repository-url" : "https://github.com/hunterhacker/jdom",
++  "test-code-url" : "https://github.com/hunterhacker/jdom/tree/jdom-1.0/test/src",
++  "documentation-url" : "https://github.com/hunterhacker/jdom/blob/jdom-1.0/core/src/java/org/jdom/package.html",
++  "description" : "JDOM is a Java-based document object model for representing, creating, and manipulating XML documents with Java collections-friendly APIs. It includes builders, outputters, filters, transforms, XPath integration, and adapters that let applications read, modify, and write XML using SAX, DOM, and related XML tooling."
+ }
+
+2026-04-27T15:37:57.704568Z ERROR codex_core::session: failed to record rollout items: thread 019dcf95-8da5-79a2-b612-2a5d715afc14 not found
+tokens used
+60,085
+Updated [jdom-jdom-1.0.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16/build/discovered-artifact-metadata/jdom-jdom-1.0.json) with the discovered metadata. I used the Maven Central `1.0` sources jar for `source-code-url`, and the upstream `jdom-1.0` GitHub branch for tests and documentation where Maven had no test/javadoc artifact. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/jdom/jdom/1.0/))
+
+No `language` field was added because this is not a Kotlin or Scala language-specific library. I also validated the JSON with `jq`.
+Ran agent for jdom:jdom:1.0 (exit 0). Log: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16/build/agent-artifact-discovery-logs/jdom-jdom-1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2393-52f62a16/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 41s
+9 actionable tasks: 4 executed, 5 from cache
