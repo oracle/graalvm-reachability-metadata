@@ -1,0 +1,1030 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcf48-4919-7e81-9f6e-998db3f707f4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.objenesis:objenesis:1.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4/metadata/org.objenesis/objenesis/index.json
+- Entry selector: "metadata-version" = "1.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.2".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-sources.jar
+- repository-url: https://github.com/easymock/objenesis
+- test-code-url: https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/1.2/objenesis-tck-1.2-sources.jar
+- documentation-url: https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-javadoc.jar
+- description: Objenesis is a small Java library for instantiating objects without invoking their constructors. It provides a unified API over JVM-specific techniques used by serialization, mocking, and proxy frameworks when standard reflection is not enough.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.2
+- Entry test-version: 1.2
+codex
+I’ll verify the existing entry and the exact-version artifact URLs, then only edit the JSON if a field is truly missing under your rules. Since `language` is missing but Objenesis appears to be a Java library rather than Kotlin or Scala, I expect this may be a no-op.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"1\\.2\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.objenesis/objenesis/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+3:    "metadata-version" : "1.2",
+4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-sources.jar",
+5:    "repository-url" : "https://github.com/easymock/objenesis",
+6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/1.2/objenesis-tck-1.2-sources.jar",
+7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-javadoc.jar",
+8:    "description" : "Objenesis is a small Java library for instantiating objects without invoking their constructors. It provides a unified API over JVM-specific techniques used by serialization, mocking, and proxy frameworks when standard reflection is not enough.",
+19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar",
+20:    "repository-url" : "https://github.com/easymock/objenesis",
+21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/3.2/objenesis-tck-3.2-sources.jar",
+22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-javadoc.jar",
+23:    "description" : "Objenesis is a Java library for instantiating objects without invoking their constructors. It is commonly used by serialization, proxying, and mocking frameworks that need to create objects beyond standard reflection.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+ M metadata/org.objenesis/objenesis/index.json
+?? metadata/org.objenesis/objenesis/1.2/
+?? tests/src/org.objenesis/objenesis/1.2/
+
+web search: 
+web search: Maven org.objenesis objenesis 1.2 sources jar javadoc jar objenesis-tck 1.2 sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/
+web search: 
+web search: 
+codex
+The local `1.2` entry already has non-blank source, repository, test, documentation, and description values. I’m checking the Maven Central directories and project metadata now so I can decide whether the missing `language` field should remain absent rather than being populated.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.objenesis/objenesis/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+diff --git i/metadata/org.objenesis/objenesis/index.json w/metadata/org.objenesis/objenesis/index.json
+index 9eae899cfe..8e3d14309d 100644
+--- i/metadata/org.objenesis/objenesis/index.json
++++ w/metadata/org.objenesis/objenesis/index.json
+@@ -1,4 +1,18 @@
+ [
++  {
++    "metadata-version" : "1.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-sources.jar",
++    "repository-url" : "https://github.com/easymock/objenesis",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/1.2/objenesis-tck-1.2-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-javadoc.jar",
++    "description" : "Objenesis is a small Java library for instantiating objects without invoking their constructors. It provides a unified API over JVM-specific techniques used by serialization, mocking, and proxy frameworks when standard reflection is not enough.",
++    "tested-versions" : [
++      "1.2"
++    ],
++    "allowed-packages" : [
++      "org.objenesis"
++    ]
++  },
+   {
+     "latest" : true,
+     "metadata-version" : "3.2",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2.pom' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+Copyright 2006-2009 Henri Tremblay
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.objenesis</groupId>
+    <artifactId>objenesis-parent</artifactId>
+    <version>1.2</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <artifactId>objenesis</artifactId>
+  <name>Objenesis</name>
+  <description>A library for instantiating Java objects</description>
+  <url>http://objenesis.googlecode.com/svn/docs/index.html</url>
+
+  <dependencies />
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.keyboardsamurais.maven</groupId>
+        <artifactId>maven-timestamp-plugin</artifactId>
+      </plugin>      
+      <plugin>
+        <groupId>com.google.code.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+      </plugin>   
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>org.objenesis.*</Export-Package>
+            <Import-Package>org.objenesis.*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <!-- Activate to create the release bundle -->
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>      
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly.xml</descriptor>
+              </descriptors>          
+            </configuration>
+            <executions>
+              <execution>
+                <id>make-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>        
+          </plugin>
+        </plugins>        
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/1.2/objenesis-tck-1.2.pom' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>objenesis-parent</artifactId>
+    <groupId>org.objenesis</groupId>
+    <version>1.2</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>objenesis-tck</artifactId>
+  <name>Objenesis TCK</name>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.keyboardsamurais.maven</groupId>
+        <artifactId>maven-timestamp-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.google.code.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.objenesis.tck.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links>
+            <link>http://objenesis.googlecode.com/svn/docs/apidocs/</link>
+          </links>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>jvm-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>Sun 1.3</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <jvm>${sun_jdk1_3.jvm}</jvm>
+                </configuration>
+              </execution>
+              <execution>
+                <id>Sun 1.4</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <jvm>${sun_jdk1_4.jvm}</jvm>
+                </configuration>
+              </execution>
+              <execution>
+                <id>Sun 1.5</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <jvm>${sun_jdk1_5.jvm}</jvm>
+                </configuration>
+              </execution>
+              <execution>
+                <id>Sun 1.6</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <jvm>${sun_jdk1_6.jvm}</jvm>
+                </configuration>
+              </execution>
+              <execution>
+                <id>JRockit for Java 1.3</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <jvm>${jrockit1_3.jvm}</jvm>
+                </configuration>
+              </execution>
+              <execution>
+                <id>JRockit for Java 1.4</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <jvm>${jrockit1_4.jvm}</jvm>
+                </configuration>
+              </execution>
+              <execution>
+                <id>JRockit for Java 1.5</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <jvm>${jrockit1_5.jvm}</jvm>
+                </configuration>
+              </execution>
+              <execution>
+                <id>JRockit for Java 1.6</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <jvm>${jrockit1_6.jvm}</jvm>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>test-release</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <inherited>false</inherited>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-jar</argument>
+                <argument>${project.build.directory}\${project.build.finalName}.jar</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-test</artifactId>
+      <version>1.2.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>com.springsource.junit</artifactId>
+          <groupId>org.junit</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>org.springframework.test</artifactId>
+          <groupId>org.springframework</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>com.springsource.org.objectweb.asm</artifactId>
+          <groupId>org.objectweb.asm</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spring-osgi-core</artifactId>
+          <groupId>org.springframework.osgi</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-annotation</artifactId>
+      <version>1.2.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-extender</artifactId>
+      <version>1.2.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>spring-osgi-io</artifactId>
+          <groupId>org.springframework.osgi</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spring-osgi-core</artifactId>
+          <groupId>org.springframework.osgi</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
+      <version>1.5.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>com.springsource.slf4j.api</artifactId>
+      <version>1.5.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>com.springsource.slf4j.log4j</artifactId>
+      <version>1.5.0</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>log4j</artifactId>
+          <groupId>log4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>com.springsource.org.apache.log4j</artifactId>
+          <groupId>org.apache.log4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>log4j.osgi</artifactId>
+      <version>1.2.15-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.osgi</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>3.2.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+
+web search: 
+web search: site:github.com/easymock/objenesis objenesis 1.2 tag
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/1.2/
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/objenesis/objenesis-parent/1.2/objenesis-parent-1.2.pom' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+Copyright 2006-2009 Henri Tremblay
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <name>Objenesis parent project</name>
+  <groupId>org.objenesis</groupId>
+  <artifactId>objenesis-parent</artifactId>
+  <version>1.2</version>
+  <packaging>pom</packaging>
+  <inceptionYear>2006</inceptionYear>
+
+  <modules>
+    <module>main</module>
+    <module>tck</module>
+  </modules>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <!-- Used for the copyright -->
+  <organization>
+    <name>Joe Walnes, Henri Tremblay, Leonardo Mesquita</name>
+  </organization>
+
+  <scm>
+    <connection>scm:svn:http://objenesis.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://objenesis.googlecode.com/svn/trunk</developerConnection>
+    <url>http://objenesis.googlecode.com/svn/trunk</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>joe</id>
+      <name>Joe Walnes</name>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <id>henri</id>
+      <name>Henri Tremblay</name>
+      <organization>Ossia Conseil</organization>
+      <organizationUrl>http://www.ossia-conseil.com</organizationUrl>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>leonardo</id>
+      <name>Leonardo Mesquita</name>
+      <timezone>-5</timezone>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>${basedir}/src</sourceDirectory>
+    <resources>
+      <resource>
+        <!-- Test resources are in the test source directory -->
+        <directory>${basedir}/src</directory>
+        <excludes>
+          <!-- Everything except java files is considered to be a resource -->
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <testSourceDirectory>${basedir}/test</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <!-- Test resources are in the test source directory -->
+        <directory>${basedir}/test</directory>
+        <excludes>
+          <!-- Everything except java files is considered to be a resource -->
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.3</source>
+          <target>1.3</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <useDefaultManifestFile>true</useDefaultManifestFile>
+          <archive>
+            <index>true</index>
+            <addMavenDescriptor>false</addMavenDescriptor>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <inherited>false</inherited>
+        <configuration>
+          <siteDirectory>${basedir}/website</siteDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <downloadSources>true</downloadSources>
+        </configuration>
+      </plugin>
+    </plugins>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-beta-5</version>
+      </extension>
+    </extensions>     
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.0.0</version>        
+          <executions>
+            <execution>
+              <id>bundle-manifest</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>manifest</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>      
+        <plugin>
+          <groupId>com.keyboardsamurais.maven</groupId>
+          <artifactId>maven-timestamp-plugin</artifactId>
+          <version>1.0</version>
+          <executions>
+            <execution>
+              <id>year</id>
+              <goals>
+                <goal>create</goal>
+              </goals>
+              <configuration>
+                <propertyName>year</propertyName>
+                <timestampPattern>yyyy</timestampPattern>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>com.google.code.maven-license-plugin</groupId>
+          <artifactId>maven-license-plugin</artifactId>
+          <version>1.4.0</version>
+          <configuration>
+            <header>${basedir}/../header.txt</header>
+            <excludes>
+              <!-- Nothing is copyrighted in target -->
+              <exclude>target/**</exclude>
+              <!-- copyrights to BEA -->
+              <exclude>src/org/objenesis/instantiator/jrockit/*.java</exclude>
+              <!-- generated pom by maven-shade-plugin -->
+              <exclude>dependency-reduced-pom.xml</exclude>
+              <!-- generated by Equinox during OSGi test -->
+              <exclude>eclipse_config/**</exclude>
+            </excludes>
+            <properties>
+              <inceptionYear>${project.inceptionYear}</inceptionYear>
+              <year>${year}</year>
+            </properties>
+          </configuration>
+          <executions>
+            <execution>
+              <id>check</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.0</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>process</goal>
+              </goals>
+              <configuration>
+                <resourceBundles>
+                  <resourceBundle>org.apache:apache-jar-resource-bundle:1.3</resourceBundle>
+                </resourceBundles>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>        
+      </plugins>     
+    </pluginManagement>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <targetJdk>1.3</targetJdk>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <distributionManagement>
+    <repository>
+      <id>easymock-release</id>
+      <name>EasyMock Repository</name>
+      <url>scpexe://shell.sf.net/home/groups/e/ea/easymock/htdocs/maven/repository</url>
+    </repository>
+    <snapshotRepository>
+      <id>easymock-snapshot</id>
+      <name>EasyMock Snapshot Repository</name>
+      <url>scpexe://shell.sf.net/home/groups/e/ea/easymock/htdocs/maven/repository-snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
+  
+  <profiles>
+    <profile>
+      <!-- Activate to update the license -->
+      <id>license</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>com.google.code.maven-license-plugin</groupId>
+              <artifactId>maven-license-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>format</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                    <goal>format</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <!-- Activate to generate the website -->
+      <id>website</id>
+      <modules>
+        <module>website</module>
+      </modules>
+    </profile>    
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-sources.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 14:12:29 GMT
+content-type: application/java-archive
+content-length: 37786
+cf-ray: 9f2e6c22df73b571-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 375922
+etag: "6c11e0c560253237cc6052e6bc584a87"
+last-modified: Wed, 26 Aug 2009 22:50:53 GMT
+x-checksum-md5: 6c11e0c560253237cc6052e6bc584a87
+x-checksum-sha1: 71909ee0264af468fe26f0a2467d01bcb85f6fa9
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-javadoc.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 14:12:29 GMT
+content-type: application/java-archive
+content-length: 205838
+cf-ray: 9f2e6c22d81abe8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 37571
+etag: "a714facffda3757d48b71f0eb94214cb"
+last-modified: Wed, 26 Aug 2009 22:51:32 GMT
+x-checksum-md5: a714facffda3757d48b71f0eb94214cb
+x-checksum-sha1: bc451abf874805a956319dd0d5a79edaf4a092d6
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/1.2/objenesis-tck-1.2-sources.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 269ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 14:12:29 GMT
+content-type: application/java-archive
+content-length: 29148
+cf-ray: 9f2e6c22fd94bac6-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "753c23a1bdcc423d0ae8e6a1f3226184"
+last-modified: Wed, 26 Aug 2009 22:58:44 GMT
+x-checksum-md5: 753c23a1bdcc423d0ae8e6a1f3226184
+x-checksum-sha1: e5fc78034ef53acf707a6bc63761c8e2d2dbd6c1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.2\")' metadata/org.objenesis/objenesis/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+{
+  "metadata-version": "1.2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-sources.jar",
+  "repository-url": "https://github.com/easymock/objenesis",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/1.2/objenesis-tck-1.2-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-javadoc.jar",
+  "description": "Objenesis is a small Java library for instantiating objects without invoking their constructors. It provides a unified API over JVM-specific techniques used by serialization, mocking, and proxy frameworks when standard reflection is not enough.",
+  "tested-versions": [
+    "1.2"
+  ],
+  "allowed-packages": [
+    "org.objenesis"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'find metadata/org.objenesis/objenesis/1.2 tests/src/org.objenesis/objenesis/1.2 -maxdepth 3 -type f | sort' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+metadata/org.objenesis/objenesis/1.2/reachability-metadata.json
+tests/src/org.objenesis/objenesis/1.2/.gitignore
+tests/src/org.objenesis/objenesis/1.2/build.gradle
+tests/src/org.objenesis/objenesis/1.2/gradle.properties
+tests/src/org.objenesis/objenesis/1.2/settings.gradle
+tests/src/org.objenesis/objenesis/1.2/user-code-filter.json
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/objenesis/objenesis/1.2/objenesis-1.2-sources.jar -o /tmp/objenesis-1.2-sources.jar && jar tf /tmp/objenesis-1.2-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/objenesis/
+org/objenesis/instantiator/
+org/objenesis/instantiator/basic/
+org/objenesis/instantiator/gcj/
+org/objenesis/instantiator/jrockit/
+org/objenesis/instantiator/perc/
+org/objenesis/instantiator/sun/
+org/objenesis/strategy/
+META-INF/LICENSE
+META-INF/NOTICE
+org/objenesis/instantiator/basic/AccessibleInstantiator.java
+org/objenesis/instantiator/basic/ConstructorInstantiator.java
+org/objenesis/instantiator/basic/NewInstanceInstantiator.java
+org/objenesis/instantiator/basic/ObjectInputStreamInstantiator.java
+org/objenesis/instantiator/basic/ObjectStreamClassInstantiator.java
+org/objenesis/instantiator/gcj/GCJInstantiator.java
+org/objenesis/instantiator/gcj/GCJInstantiatorBase.java
+org/objenesis/instantiator/gcj/GCJSerializationInstantiator.java
+org/objenesis/instantiator/jrockit/JRockit131Instantiator.java
+org/objenesis/instantiator/jrockit/JRockitLegacyInstantiator.java
+org/objenesis/instantiator/NullInstantiator.java
+org/objenesis/instantiator/ObjectInstantiator.java
+org/objenesis/instantiator/perc/PercInstantiator.java
+org/objenesis/instantiator/perc/PercSerializationInstantiator.java
+org/objenesis/instantiator/SerializationInstantiatorHelper.java
+org/objenesis/instantiator/sun/Sun13Instantiator.java
+org/objenesis/instantiator/sun/Sun13InstantiatorBase.java
+org/objenesis/instantiator/sun/Sun13SerializationInstantiator.java
+org/objenesis/instantiator/sun/SunReflectionFactoryInstantiator.java
+org/objenesis/instantiator/sun/SunReflectionFactorySerializationInstantiator.java
+org/objenesis/Objenesis.java
+org/objenesis/ObjenesisBase.java
+org/objenesis/ObjenesisException.java
+org/objenesis/ObjenesisHelper.java
+org/objenesis/ObjenesisSerializer.java
+org/objenesis/ObjenesisStd.java
+org/objenesis/strategy/BaseInstantiatorStrategy.java
+org/objenesis/strategy/InstantiatorStrategy.java
+org/objenesis/strategy/SerializingInstantiatorStrategy.java
+org/objenesis/strategy/StdInstantiatorStrategy.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/1.2/objenesis-tck-1.2-sources.jar -o /tmp/objenesis-tck-1.2-sources.jar && jar tf /tmp/objenesis-tck-1.2-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/objenesis/
+org/objenesis/tck/
+org/objenesis/tck/candidates/
+META-INF/LICENSE
+META-INF/NOTICE
+org/objenesis/tck/CandidateLoader.java
+org/objenesis/tck/candidates/candidates.properties
+org/objenesis/tck/candidates/ConstructorThrowingException.java
+org/objenesis/tck/candidates/ConstructorWithArguments.java
+org/objenesis/tck/candidates/ConstructorWithMandatoryArguments.java
+org/objenesis/tck/candidates/DefaultPackageConstructor.java
+org/objenesis/tck/candidates/DefaultPrivateConstructor.java
+org/objenesis/tck/candidates/DefaultProtectedConstructor.java
+org/objenesis/tck/candidates/DefaultPublicConstructor.java
+org/objenesis/tck/candidates/NoConstructor.java
+org/objenesis/tck/candidates/serializable-candidates.properties
+org/objenesis/tck/candidates/SerializableConstructorThrowingException.java
+org/objenesis/tck/candidates/SerializableConstructorWithArguments.java
+org/objenesis/tck/candidates/SerializableConstructorWithMandatoryArguments.java
+org/objenesis/tck/candidates/SerializableDefaultPackageConstructor.java
+org/objenesis/tck/candidates/SerializableDefaultPrivateConstructor.java
+org/objenesis/tck/candidates/SerializableDefaultProtectedConstructor.java
+org/objenesis/tck/candidates/SerializableDefaultPublicConstructor.java
+org/objenesis/tck/candidates/SerializableNoConstructor.java
+org/objenesis/tck/candidates/SerializableReplacer.java
+org/objenesis/tck/candidates/SerializableResolver.java
+org/objenesis/tck/candidates/SerializableWithAncestorThrowingException.java
+org/objenesis/tck/Main.java
+org/objenesis/tck/Reporter.java
+org/objenesis/tck/TCK.java
+org/objenesis/tck/TextReporter.java
+
+codex
+The exact-version Maven artifacts resolve successfully, and the sources/test sources contain Java source trees only. The `1.2` JSON object is valid and already has every required non-language field populated, so I’m leaving `language` absent as required for a non-Kotlin/non-Scala library.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.objenesis/objenesis/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.objenesis/objenesis/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4
+ succeeded in 0ms:
+ M metadata/org.objenesis/objenesis/index.json
+
+codex
+No additional edit was needed in [index.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4/metadata/org.objenesis/objenesis/index.json): the `metadata-version: "1.2"` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`.
+
+I left `language` absent because `org.objenesis:objenesis:1.2` is a Java library, not Kotlin- or Scala-specific. Verified the JSON parses with `jq empty`, and the exact-version Maven source, TCK source, and javadoc artifacts resolve successfully.
+2026-04-27T14:12:58.345013Z ERROR codex_core::session: failed to record rollout items: thread 019dcf48-4919-7e81-9f6e-998db3f707f4 not found
+tokens used
+45,479
+No additional edit was needed in [index.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4/metadata/org.objenesis/objenesis/index.json): the `metadata-version: "1.2"` entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`.
+
+I left `language` absent because `org.objenesis:objenesis:1.2` is a Java library, not Kotlin- or Scala-specific. Verified the JSON parses with `jq empty`, and the exact-version Maven source, TCK source, and javadoc artifacts resolve successfully.
+Ran agent for org.objenesis:objenesis:1.2 (exit 0). Log: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4/build/agent-url-discovery-logs/org.objenesis-objenesis-1.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2443-21e29ed4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 5s
+9 actionable tasks: 1 executed, 8 up-to-date
