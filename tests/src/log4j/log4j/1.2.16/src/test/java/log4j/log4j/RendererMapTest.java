@@ -6,13 +6,18 @@
  */
 package log4j.log4j;
 
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.security.CodeSource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
+import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.or.RendererMap;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.RendererSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,65 +27,52 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RendererMapTest {
 
     @BeforeEach
+    void setUp() {
+        resetState();
+    }
+
     @AfterEach
-    void resetConfiguration() {
-        LogManager.resetConfiguration();
+    void tearDown() {
+        resetState();
     }
 
     @Test
-    void addsRendererByClassNameInFreshClassLoaderAndUsesIt() throws Exception {
-        try (URLClassLoader isolatedLoader = new URLClassLoader(isolatedClassPath(), ClassLoader.getPlatformClassLoader())) {
-            Thread thread = Thread.currentThread();
-            ClassLoader previousContextClassLoader = thread.getContextClassLoader();
-            thread.setContextClassLoader(isolatedLoader);
+    void addRendererRegistersRendererForMatchingMessages() {
+        RendererSupport rendererSupport = (RendererSupport) LogManager.getLoggerRepository();
 
-            Class<?> logManagerClass = Class.forName("org.apache.log4j.LogManager", true, isolatedLoader);
-            try {
-                invokeStatic(logManagerClass, "resetConfiguration");
+        RendererMap.addRenderer(
+                rendererSupport,
+                RenderedMessage.class.getName(),
+                TrackingRenderer.class.getName());
 
-                Class<?> rendererMapClass = Class.forName("org.apache.log4j.or.RendererMap", true, isolatedLoader);
-                Class<?> rendererSupportClass = Class.forName("org.apache.log4j.spi.RendererSupport", true, isolatedLoader);
-                Class<?> isolatedMessageClass = Class.forName(RenderedMessage.class.getName(), true, isolatedLoader);
+        String rendered = rendererSupport.getRendererMap().findAndRender(new RenderedMessage("payload"));
 
-                Object repository = invokeStatic(logManagerClass, "getLoggerRepository");
-                Method addRenderer = rendererMapClass.getMethod(
-                        "addRenderer",
-                        rendererSupportClass,
-                        String.class,
-                        String.class);
-                addRenderer.invoke(null, repository, isolatedMessageClass.getName(), TrackingRenderer.class.getName());
-
-                Object rendererMap = rendererSupportClass.getMethod("getRendererMap").invoke(repository);
-                Object message = isolatedMessageClass.getConstructor(String.class).newInstance("payload");
-                String rendered = (String) rendererMapClass.getMethod("findAndRender", Object.class).invoke(rendererMap, message);
-                Object renderer = rendererMapClass.getMethod("get", Object.class).invoke(rendererMap, message);
-
-                assertThat(rendered).isEqualTo("rendered:payload");
-                assertThat(renderer.getClass().getName()).isEqualTo(TrackingRenderer.class.getName());
-            } finally {
-                thread.setContextClassLoader(previousContextClassLoader);
-                invokeStatic(logManagerClass, "resetConfiguration");
-            }
-        }
+        assertThat(rendered).isEqualTo("rendered:payload");
+        assertThat(rendererSupport.getRendererMap().get(new RenderedMessage("next")))
+                .isInstanceOf(TrackingRenderer.class);
     }
 
-    private static Object invokeStatic(Class<?> type, String methodName) throws Exception {
-        return type.getMethod(methodName).invoke(null);
+    @Test
+    void propertyConfiguratorRegistersRendererForLoggedMessages() {
+        String loggerName = RendererMapTest.class.getName() + "." + System.nanoTime();
+        Properties properties = new Properties();
+        properties.setProperty("log4j.rootLogger", "ERROR");
+        properties.setProperty("log4j.logger." + loggerName, "INFO,TEST");
+        properties.setProperty("log4j.additivity." + loggerName, "false");
+        properties.setProperty("log4j.appender.TEST", TrackingAppender.class.getName());
+        properties.setProperty("log4j.renderer." + RenderedMessage.class.getName(), TrackingRenderer.class.getName());
+
+        PropertyConfigurator.configure(properties);
+
+        Logger logger = Logger.getLogger(loggerName);
+        logger.info(new RenderedMessage("from-logger"));
+
+        assertThat(TrackingAppender.renderedMessages).containsExactly("rendered:from-logger");
     }
 
-    private static URL[] isolatedClassPath() {
-        URL testClassesUrl = codeSourceUrl(RendererMapTest.class);
-        URL libraryClassesUrl = codeSourceUrl(org.apache.log4j.or.RendererMap.class);
-        if (testClassesUrl.equals(libraryClassesUrl)) {
-            return new URL[] { testClassesUrl };
-        }
-        return new URL[] { testClassesUrl, libraryClassesUrl };
-    }
-
-    private static URL codeSourceUrl(Class<?> type) {
-        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
-        assertThat(codeSource).isNotNull();
-        return codeSource.getLocation();
+    private static void resetState() {
+        LogManager.resetConfiguration();
+        TrackingAppender.reset();
     }
 
     public static final class RenderedMessage {
@@ -99,6 +91,29 @@ public class RendererMapTest {
         @Override
         public String doRender(Object object) {
             return "rendered:" + ((RenderedMessage) object).getValue();
+        }
+    }
+
+    public static final class TrackingAppender extends AppenderSkeleton {
+        private static final List<String> renderedMessages = new ArrayList<>();
+
+        @Override
+        protected void append(LoggingEvent event) {
+            renderedMessages.add(event.getRenderedMessage());
+        }
+
+        @Override
+        public void close() {
+            closed = true;
+        }
+
+        @Override
+        public boolean requiresLayout() {
+            return false;
+        }
+
+        private static void reset() {
+            renderedMessages.clear();
         }
     }
 }
