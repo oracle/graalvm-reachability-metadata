@@ -16,15 +16,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReportTest {
     @Test
-    void showVersionLoadsMessageBundleDuringReportInitialization() {
+    void publicReportMethodsLoadAndUseMessageBundle() {
         StringWriter output = new StringWriter();
         PrintWriter writer = new PrintWriter(output);
 
         Report.showVersion(writer);
+        Report.unknownOption(writer, 'x');
         writer.flush();
 
         assertThat(output.toString())
                 .contains("Java HTML Tidy release date:")
-                .contains("See http://www.w3.org/People/Raggett for details");
+                .contains("See http://www.w3.org/People/Raggett for details")
+                .contains("unrecognized option -x use -help to list options");
     }
 }
