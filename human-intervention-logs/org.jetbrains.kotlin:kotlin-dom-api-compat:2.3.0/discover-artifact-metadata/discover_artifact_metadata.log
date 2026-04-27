@@ -1,0 +1,357 @@
+Starting a Gradle Daemon, 2 busy and 2 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd149-8c5a-7a51-a3dc-cf0b59cced5d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.3.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.json
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+mcp startup: no servers
+codex
+I’ll inspect the existing metadata JSON and then resolve authoritative URLs from Maven Central and the artifact POM for `org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0`, prioritizing version-pinned Maven artifacts where available.
+exec
+/usr/bin/zsh -lc 'cd /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 && cat build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 51ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0"
+}
+exec
+/usr/bin/zsh -lc 'curl -sSfL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294exec
+/usr/bin/zsh -lc 'curl -sSfL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0.pom' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 51ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+ succeeded in 51ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-dom-api-compat</artifactId>
+  <version>2.3.0</version>
+  <packaging>klib</packaging>
+  <name>Kotlin Dom Api Compat</name>
+  <description>Kotlin DOM API compatibility library</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+codex
+I found exact-version Maven artifacts, including `-sources.jar` and `-javadoc.jar`. Next I’m checking the source JAR and module metadata to derive a reliable test-suite URL at the matching `v2.3.0` tag.
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && cd "$tmpdir" && curl -sSfLO https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-sources.jar && jar tf kotlin-dom-api-compat-2.3.0-sources.jar | head -n 200' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294exec
+/usr/bin/zsh -lc 'curl -sSfL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0.module' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 251ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.jetbrains.kotlin",
+    "module": "kotlin-dom-api-compat",
+    "version": "2.3.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.14"
+    }
+  },
+  "variants": [
+    {
+      "name": "jsApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+ succeeded in 347ms:
+META-INF/
+META-INF/MANIFEST.MF
+main/
+main/EventListener.kt
+main/deprecated.kt
+main/org.khronos.webgl.kt
+main/org.w3c.css.masking.kt
+main/org.w3c.dom.clipboard.kt
+main/org.w3c.dom.css.kt
+main/org.w3c.dom.encryptedmedia.kt
+main/org.w3c.dom.events.kt
+main/org.w3c.dom.kt
+main/org.w3c.dom.mediacapture.kt
+main/org.w3c.dom.mediasource.kt
+main/org.w3c.dom.parsing.kt
+main/org.w3c.dom.pointerevents.kt
+main/org.w3c.dom.svg.kt
+main/org.w3c.dom.url.kt
+main/org.w3c.fetch.kt
+main/org.w3c.files.kt
+exec
+/usr/bin/zsh -lc 'tmpdir=$(mktemp -d) && cd "$tmpdir" && curl -sSfLO https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-sources.jar && jar xf kotlin-dom-api-compat-2.3.0-sources.jar main/dom/Dom.kt && sed -n '"'1,120p' main/dom/Dom.kt" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 76ms:
+/*
+ * Copyright 2010-2018 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
+ */
+
+package kotlinx.dom
+
+import org.w3c.dom.*
+
+/**
+ * Gets a value indicating whether this node is a TEXT_NODE or a CDATA_SECTION_NODE.
+ */
+@SinceKotlin("1.4")
+public val Node.isText: Boolean
+    get() = nodeType == Node.TEXT_NODE || nodeType == Node.CDATA_SECTION_NODE
+
+/**
+ * Gets a value indicating whether this node is an [Element].
+ */
+@SinceKotlin("1.4")
+codex
+I confirmed Maven has source and javadoc artifacts for `2.3.0`; I’m now resolving the exact Git tag/path for this module so the repository and test URLs are tag-pinned with high confidence.
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/JetBrains/kotlin.git | rg \"2\\.3\\.0\" | tail -n 20" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294exec
+/usr/bin/zsh -lc "for p in \\
+  libraries/stdlib/js/src/kotlin/dom/Dom.kt \\
+  libraries/stdlib/js/src/kotlin/org.w3c.dom.kt \\
+  libraries/stdlib/js-ir/src/kotlin/dom/Dom.kt \\
+  libraries/stdlib/js-ir/src/kotlin/org.w3c.dom.kt \\
+  libraries/stdlib/api/js/org.w3c.dom.kt \\
+  libraries/stdlib/js/src/org.w3c.dom.kt; do \\
+  url=\"https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/"'$p"; '"\\
+  code="'$(curl -s -o /tmp/rawtest -w "%{http_code}" "$url"); '"\\
+  if [ \""'$code" = "200" ]; then echo "FOUND $url"; head -n 5 /tmp/rawtest; fi; '"\\
+done" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 1.12s:
+1bdcf073deaaee385cb70af9e3753f545fdbc5a7	refs/tags/build-2.3.0-dev-9971
+3bff8397cba1d9f687922b61c94960c78d237922	refs/tags/build-2.3.0-dev-9971^{}
+b0fb4cf5233565e9eb1deca635d4c8be26b9354d	refs/tags/build-2.3.0-dev-9979
+3fdb2a43e39b9ca6b4fdc813cac77a2b640470c8	refs/tags/build-2.3.0-dev-9979^{}
+dca7f7e869ce8caa354acb78a8705bad3f0a610e	refs/tags/build-2.3.0-dev-9981
+3fdb2a43e39b9ca6b4fdc813cac77a2b640470c8	refs/tags/build-2.3.0-dev-9981^{}
+dc209846d923cbca69d6795cd9bc72b63ab05609	refs/tags/build-2.3.0-dev-9985
+3fdb2a43e39b9ca6b4fdc813cac77a2b640470c8	refs/tags/build-2.3.0-dev-9985^{}
+f78c2fa4fd95182b9be45553eb5411ef41edf877	refs/tags/build-2.3.0-dev-9991
+5007cd4869df9fba304b98481d7dd06ee02c83b0	refs/tags/build-2.3.0-dev-9991^{}
+c3dbc804388f7535c84244be301038430a227de9	refs/tags/build-2.3.0-dev-9992
+5007cd4869df9fba304b98481d7dd06ee02c83b0	refs/tags/build-2.3.0-dev-9992^{}
+d43e685eeb48461b010dd7f8f93afabd2060c656	refs/tags/build-2.3.0-release-356
+f95cb2f7693a15966fd8fd9b1d78d440545e7b66	refs/tags/build-2.3.0-release-356^{}
+f95cb2f7693a15966fd8fd9b1d78d440545e7b66	refs/tags/v2.3.0
+8f08be628eb5bb1a4016a39f9eb89f1da513b1ef	refs/tags/v2.3.0-Beta1
+547eda83607402954731105d132a3a22655aa91a	refs/tags/v2.3.0-Beta2
+0b9b42d48a28ac62121b4313222f7d7505aa11c2	refs/tags/v2.3.0-RC
+e66298c5e9ee3def62d12f8bcb1bb8aea4b5270b	refs/tags/v2.3.0-RC2
+f95cb2f7693a15966fd8fd9b1d78d440545e7b66	refs/tags/v2.3.0-RC3
+ succeeded in 1.33s:
+FOUND https://raw.githubusercontent.com/JetBrains/kotlin/v2.3.0/libraries/stdlib/js/src/kotlin/dom/Dom.kt
+/*
+ * Copyright 2010-2022 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
+ */
+
+exec
+/usr/bin/zsh -lc 'sha=f95cb2f7693a15966fd8fd9b1d78d440545e7b66; curl -sSfL "https://api.github.com/repos/JetBrains/kotlin/git/trees/$sha?recursive=1" | rg '"'kotlin-dom-api-compat|libraries/stdlib/js/.*/[Tt]est|libraries/stdlib/js/test|libraries/stdlib/js/src/kotlin/dom/Dom.kt' | head -n 200" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 2.44s:
+
+exec
+/usr/bin/zsh -lc 'sha=f95cb2f7693a15966fd8fd9b1d78d440545e7b66; curl -sSfL "https://api.github.com/repos/JetBrains/kotlin/git/trees/$sha?recursive=1" | sed -n '"'1,60p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 1.08s:
+{
+  "sha": "f95cb2f7693a15966fd8fd9b1d78d440545e7b66",
+  "url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/f95cb2f7693a15966fd8fd9b1d78d440545e7b66",
+  "tree": [
+    {
+      "path": ".fleet",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5592924bff8be23432ce9f119cb1724dd7217c07",
+      "url": "https://api.github.com/repos/JetBrains/kotlin/git/trees/5592924bff8be23432ce9f119cb1724dd7217c07"
+    },
+    {
+      "path": ".fleet/settings.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dee0d89b8355f7ec02c171d7dcb7abaf6540a6b3",
+      "size": 214,
+      "url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/dee0d89b8355f7ec02c171d7dcb7abaf6540a6b3"
+    },
+    {
+exec
+/usr/bin/zsh -lc 'sha=f95cb2f7693a15966fd8fd9b1d78d440545e7b66; curl -sSfL "https://api.github.com/repos/JetBrains/kotlin/git/trees/$sha?recursive=1" | rg '"'libraries/stdlib/js/src/kotlin/dom/Dom.kt|kotlin-dom-api-compat|libraries/stdlib/js/test' | head" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 1.20s:
+
+exec
+/usr/bin/zsh -lc 'sha=f95cb2f7693a15966fd8fd9b1d78d440545e7b66; curl -sSfL "https://api.github.com/repos/JetBrains/kotlin/git/trees/$sha?recursive=1" | tail -n 40' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 1.55s:
+      "mode": "100644",
+      "type": "blob",
+      "sha": "49b668a9fd70280f5b45d3af68f2a220e1a2507c",
+      "size": 1236,
+      "url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/49b668a9fd70280f5b45d3af68f2a220e1a2507c"
+    },
+    {
+      "path": "compiler/testData/codegen/box/js/getOperatorOnDynamicThis.fir.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "47eaeb8a98cb588f1975bb264737d3f648eb36b4",
+      "size": 1109,
+      "url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/47eaeb8a98cb588f1975bb264737d3f648eb36b4"
+    },
+    {
+      "path": "compiler/testData/codegen/box/js/getOperatorOnDynamicThis.kt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3beb23421fe49078355a1ed889110960f80ff679",
+      "size": 331,
+codex
+I hit GitHub’s recursive tree truncation, so I’m switching to direct directory lookups at tag `v2.3.0` to pin down the module’s test location without guessing.
+exec
+/usr/bin/zsh -lc "paths='libraries/stdlib/js libraries/stdlib/js/src libraries/stdlib/js/src/kotlin libraries/stdlib/js/src/kotlin/dom libraries/stdlib/js/test libraries/stdlib/js/tests libraries/stdlib/js/test/dom'; for d in "'$paths; do code=$(curl -s -o /tmp/gh.json -w "%{http_code}" "https://api.github.com/repos/JetBrains/kotlin/contents/$d?ref=v2.3.0"); echo "=== $d [$code] ==="; if [ "$code" = "200" ]; then rg '"'\"name\"|\"path\"|\"type\"' /tmp/gh.json | head -n 40; else cat /tmp/gh.json; fi; done" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 exited 1 in 51ms:
+=== libraries/stdlib/js libraries/stdlib/js/src libraries/stdlib/js/src/kotlin libraries/stdlib/js/src/kotlin/dom libraries/stdlib/js/test libraries/stdlib/js/tests libraries/stdlib/js/test/dom [000] ===
+cat: /tmp/gh.json: No such file or directory
+exec
+/usr/bin/zsh -lc 'for d in libraries/stdlib/js libraries/stdlib/js/src libraries/stdlib/js/src/kotlin libraries/stdlib/js/test libraries/stdlib/js/tests; do echo "=== $d ==="; curl -s -o /tmp/ghdir.json -w "%{http_code}" "https://api.github.com/repos/JetBrains/kotlin/contents/$d?ref=v2.3.0"; code=$(tail -c 3 <<< "$(cat /tmp/ghdir.json >/dev/null 2>&1; echo)" ); done' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 1.40s:
+200=== libraries/stdlib/js/src ===
+200=== libraries/stdlib/js/src/kotlin ===
+200=== libraries/stdlib/js/test ===
+200=== libraries/stdlib/js/tests ===
+404
+exec
+/usr/bin/zsh -lc 'for d in "libraries/stdlib/js" "libraries/stdlib/js/src" "libraries/stdlib/js/src/kotlin" "libraries/stdlib/js/src/kotlin/dom" "libraries/stdlib/js/test" "libraries/stdlib/js/tests" "libraries/stdlib/js/test/dom"; do code=$(curl -s -o /tmp/gh.json -w "%{http_code}" "https://api.github.com/repos/JetBrains/kotlin/contents/$d?ref=v2.3.0"); echo "=== $d [$code] ==="; if [ "$code" = "200" ]; then rg '"'\"name\"|\"path\"|\"type\"' /tmp/gh.json | head -n 60; else cat /tmp/gh.json; fi; done" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 1.14s:
+=== libraries/stdlib/js/src [200] ===
+    "name": "function-type-interface",
+    "path": "libraries/stdlib/js/src/function-type-interface",
+    "type": "dir",
+    "name": "generated",
+    "path": "libraries/stdlib/js/src/generated",
+    "type": "dir",
+    "name": "kotlin",
+    "path": "libraries/stdlib/js/src/kotlin",
+    "type": "dir",
+    "name": "kotlinx",
+    "path": "libraries/stdlib/js/src/kotlinx",
+    "type": "dir",
+    "name": "org.w3c",
+    "path": "libraries/stdlib/js/src/org.w3c",
+    "type": "dir",
+=== libraries/stdlib/js/src/kotlin [200] ===
+    "name": "ArrayBuffer.kt",
+    "path": "libraries/stdlib/js/src/kotlin/ArrayBuffer.kt",
+    "type": "file",
+codex
+I’ve resolved the canonical SCM repo from the POM and verified exact `2.3.0` source/javadoc artifacts on Maven Central. I’m now updating the JSON with those URLs, a tag-pinned test suite path in the Kotlin repo, a two-sentence description, and the Kotlin language field.
+exec
+/usr/bin/zsh -lc "cat > /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.json <<'EOF'
+{
+  \"coordinates\": \"org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0\",
+  \"repository-url\": \"https://github.com/JetBrains/kotlin\",
+  \"source-code-url\": \"https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-sources.jar\",
+  \"test-code-url\": \"https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test\",
+  \"documentation-url\": \"https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-javadoc.jar\",
+  \"description\": \"Kotlin DOM API Compat provides Kotlin/JS DOM declarations and compatibility helpers so browser APIs can be used from Kotlin code. It packages the DOM-facing compatibility layer as a versioned Kotlin library artifact aligned with Kotlin 2.3.0.\",
+  \"language\": {
+    \"name\": \"kotlin\",
+    \"version\": \"2.3\"
+  }
+}
+EOF
+jq . /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294 succeeded in 51ms:
+{
+  "coordinates": "org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0",
+  "repository-url": "https://github.com/JetBrains/kotlin",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-sources.jar",
+  "test-code-url": "https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-javadoc.jar",
+  "description": "Kotlin DOM API Compat provides Kotlin/JS DOM declarations and compatibility helpers so browser APIs can be used from Kotlin code. It packages the DOM-facing compatibility layer as a versioned Kotlin library artifact aligned with Kotlin 2.3.0.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.3"
+  }
+}
+codex
+Updated [org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.json) with:
+
+- `coordinates`: `org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0`
+- `repository-url`: `https://github.com/JetBrains/kotlin`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-sources.jar`
+- `test-code-url`: `https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test`
+- `documentation-url`: `https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-javadoc.jar`
+- `description`: exactly two sentences
+- `language`: `{ "name": "kotlin", "version": "2.3" }` (language-specific)
+tokens used
+17,369
+Updated [org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.json) with:
+
+- `coordinates`: `org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0`
+- `repository-url`: `https://github.com/JetBrains/kotlin`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-sources.jar`
+- `test-code-url`: `https://github.com/JetBrains/kotlin/tree/v2.3.0/libraries/stdlib/js/test`
+- `documentation-url`: `https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-dom-api-compat/2.3.0/kotlin-dom-api-compat-2.3.0-javadoc.jar`
+- `description`: exactly two sentences
+- `language`: `{ "name": "kotlin", "version": "2.3" }` (language-specific)
+Ran agent for org.jetbrains.kotlin:kotlin-dom-api-compat:2.3.0 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-dom-api-compat-2.3.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2215-69d8e294/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 33s
+9 actionable tasks: 4 executed, 5 from cache
