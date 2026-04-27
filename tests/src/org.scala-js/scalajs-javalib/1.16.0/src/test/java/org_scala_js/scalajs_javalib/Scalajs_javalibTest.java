@@ -31,7 +31,9 @@ import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -176,6 +178,32 @@ public class Scalajs_javalibTest {
         assertThat(steps.get(2)).isEqualTo("publish");
         assertThat(completedTasks.sumThenReset()).isEqualTo(2);
         assertThat(completedTasks.sum()).isZero();
+    }
+
+    @Test
+    void supportsNavigableMapViewsAndSortedLookups() {
+        TreeMap<Integer, String> releaseStages = new TreeMap<>();
+        releaseStages.put(9, "resolve");
+        releaseStages.put(13, "compile");
+        releaseStages.put(18, "test");
+        releaseStages.put(21, "publish");
+
+        NavigableMap<Integer, String> afternoonStages = releaseStages.tailMap(13, true);
+
+        assertThat(releaseStages.firstEntry().getKey()).isEqualTo(9);
+        assertThat(releaseStages.firstEntry().getValue()).isEqualTo("resolve");
+        assertThat(releaseStages.floorKey(17)).isEqualTo(13);
+        assertThat(releaseStages.ceilingKey(17)).isEqualTo(18);
+        assertThat(releaseStages.subMap(9, true, 21, false).values())
+                .containsExactly("resolve", "compile", "test");
+        assertThat(releaseStages.descendingKeySet()).containsExactly(21, 18, 13, 9);
+
+        Map.Entry<Integer, String> removedStage = afternoonStages.pollFirstEntry();
+
+        assertThat(removedStage.getKey()).isEqualTo(13);
+        assertThat(removedStage.getValue()).isEqualTo("compile");
+        assertThat(releaseStages.keySet()).containsExactly(9, 18, 21);
+        assertThat(afternoonStages.values()).containsExactly("test", "publish");
     }
 
     @Test
