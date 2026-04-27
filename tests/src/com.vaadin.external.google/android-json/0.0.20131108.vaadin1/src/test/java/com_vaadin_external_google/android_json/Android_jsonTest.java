@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -187,6 +188,35 @@ public class Android_jsonTest {
         assertThatThrownBy(() -> new JSONStringer().value("orphan"))
                 .isInstanceOf(JSONException.class)
                 .hasMessageContaining("Nesting problem");
+    }
+
+    @Test
+    void buildsArraysFromCollectionsAndComparesNestedArrayContent() throws JSONException {
+        final List<Object> sourceValues = new ArrayList<>();
+        sourceValues.add("alpha");
+        sourceValues.add(null);
+        sourceValues.add(List.of(1, 2, 3));
+        sourceValues.add(List.of(true, false));
+
+        final JSONArray fromCollection = new JSONArray(sourceValues);
+        final JSONArray equivalent = new JSONArray("[\"alpha\",null,[1,2,3],[true,false]]");
+        final JSONArray different = new JSONArray("[\"alpha\",null,[1,2],[true,false]]");
+        final String prettyPrinted = fromCollection.toString(2);
+
+        assertThat(fromCollection.length()).isEqualTo(4);
+        assertThat(fromCollection.getString(0)).isEqualTo("alpha");
+        assertThat(fromCollection.isNull(1)).isTrue();
+        assertThat(fromCollection.getJSONArray(2).getInt(2)).isEqualTo(3);
+        assertThat(fromCollection.getJSONArray(3).getBoolean(0)).isTrue();
+        assertThat(fromCollection.getJSONArray(3).getBoolean(1)).isFalse();
+
+        assertThat(fromCollection).isEqualTo(equivalent);
+        assertThat(fromCollection.hashCode()).isEqualTo(equivalent.hashCode());
+        assertThat(fromCollection).isNotEqualTo(different);
+        assertThat(prettyPrinted)
+                .contains("\n  null,")
+                .contains("\n  [\n    1,")
+                .contains("\n  [\n    true,");
     }
 
     @Test
