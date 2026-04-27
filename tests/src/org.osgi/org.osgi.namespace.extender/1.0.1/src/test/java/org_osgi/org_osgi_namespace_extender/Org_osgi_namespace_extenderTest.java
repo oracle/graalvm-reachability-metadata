@@ -116,6 +116,23 @@ public class Org_osgi_namespace_extenderTest {
     }
 
     @Test
+    void activeExtenderCapabilityIsDistinguishedFromResolveTimeCapabilities() {
+        SyntheticResource resource = new SyntheticResource();
+        Capability resolveCapability = resource.addExtenderCapability(DECLARATIVE_SERVICES_EXTENDER, "1.5.0", Map.of());
+        Capability activeCapability = resource.addCapability(
+                ExtenderNamespace.EXTENDER_NAMESPACE,
+                Map.of(ExtenderNamespace.CAPABILITY_EFFECTIVE_DIRECTIVE, ExtenderNamespace.EFFECTIVE_ACTIVE),
+                Map.of(
+                        ExtenderNamespace.EXTENDER_NAMESPACE, BLUEPRINT_EXTENDER,
+                        ExtenderNamespace.CAPABILITY_VERSION_ATTRIBUTE, Version.parseVersion("1.0.0")));
+
+        assertThat(activeCapability.getDirectives())
+                .containsEntry(ExtenderNamespace.CAPABILITY_EFFECTIVE_DIRECTIVE, ExtenderNamespace.EFFECTIVE_ACTIVE);
+        assertThat(resolveTimeExtenderCapabilities(resource)).containsExactly(resolveCapability);
+        assertThat(activeExtenderCapabilities(resource)).containsExactly(activeCapability);
+    }
+
+    @Test
     void resourceLookupsAreScopedToExtenderNamespace() {
         SyntheticResource resource = new SyntheticResource();
         Capability declarativeServices = resource.addExtenderCapability(DECLARATIVE_SERVICES_EXTENDER, "1.4.0", Map.of());
@@ -228,6 +245,23 @@ public class Org_osgi_namespace_extenderTest {
         Object value = capability.getAttributes().get(ExtenderNamespace.CAPABILITY_VERSION_ATTRIBUTE);
         assertThat(value).isInstanceOf(Version.class);
         return (Version) value;
+    }
+
+    private static List<Capability> resolveTimeExtenderCapabilities(Resource resource) {
+        return resource.getCapabilities(ExtenderNamespace.EXTENDER_NAMESPACE).stream()
+                .filter(capability -> ExtenderNamespace.EFFECTIVE_RESOLVE.equals(capabilityEffectiveDirective(capability)))
+                .collect(Collectors.toList());
+    }
+
+    private static List<Capability> activeExtenderCapabilities(Resource resource) {
+        return resource.getCapabilities(ExtenderNamespace.EXTENDER_NAMESPACE).stream()
+                .filter(capability -> ExtenderNamespace.EFFECTIVE_ACTIVE.equals(capabilityEffectiveDirective(capability)))
+                .collect(Collectors.toList());
+    }
+
+    private static String capabilityEffectiveDirective(Capability capability) {
+        return capability.getDirectives()
+                .getOrDefault(ExtenderNamespace.CAPABILITY_EFFECTIVE_DIRECTIVE, ExtenderNamespace.EFFECTIVE_RESOLVE);
     }
 
     private static List<Requirement> activeExtenderRequirements(Resource resource) {
