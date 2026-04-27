@@ -22,17 +22,21 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PropertyConfiguratorTest {
+    private static final String FACTORY_CONSTRUCTED_PROPERTY = "propertyConfiguratorTest.factoryConstructed";
+    private static final String FACTORY_TAG_PROPERTY = "propertyConfiguratorTest.factoryTag";
+    private static final String FACTORY_LOGGER_NAME_PROPERTY = "propertyConfiguratorTest.factoryLoggerName";
+    private static final String FACTORY_CALL_COUNT_PROPERTY = "propertyConfiguratorTest.factoryCallCount";
 
     @BeforeEach
     void setUp() {
         LogManager.resetConfiguration();
-        TrackingLoggerFactory.reset();
+        clearTrackingProperties();
     }
 
     @AfterEach
     void tearDown() {
         LogManager.resetConfiguration();
-        TrackingLoggerFactory.reset();
+        clearTrackingProperties();
     }
 
     @Test
@@ -46,13 +50,11 @@ public class PropertyConfiguratorTest {
 
             try {
                 Class<?> propertyConfiguratorClass = Class.forName("org.apache.log4j.PropertyConfigurator", true, isolatedLoader);
-                Class<?> trackingLoggerFactoryClass = Class.forName(TrackingLoggerFactory.class.getName(), true, isolatedLoader);
-                Class<?> trackingLoggerClass = Class.forName(TrackingLogger.class.getName(), true, isolatedLoader);
                 Class<?> logManagerClass = Class.forName("org.apache.log4j.LogManager", true, isolatedLoader);
 
                 Properties properties = new Properties();
                 properties.setProperty("log4j.rootLogger", "ERROR");
-                properties.setProperty("log4j.loggerFactory", trackingLoggerFactoryClass.getName());
+                properties.setProperty("log4j.loggerFactory", TrackingLoggerFactory.class.getName());
                 properties.setProperty("log4j.factory.tag", "configured-by-property-configurator");
                 properties.setProperty("log4j.logger." + loggerName, "INFO");
                 properties.setProperty("log4j.additivity." + loggerName, "false");
@@ -60,14 +62,13 @@ public class PropertyConfiguratorTest {
                 Method configureMethod = propertyConfiguratorClass.getMethod("configure", Properties.class);
                 configureMethod.invoke(null, properties);
 
-                Object lastFactoryInstance = invokeStatic(trackingLoggerFactoryClass, "getLastInstance");
-                assertThat(lastFactoryInstance).isNotNull();
-                assertThat(invoke(lastFactoryInstance, "getTag")).isEqualTo("configured-by-property-configurator");
-                assertThat(invokeStatic(trackingLoggerFactoryClass, "getMakeNewLoggerInstanceCallCount")).isEqualTo(1);
-                assertThat(invokeStatic(trackingLoggerFactoryClass, "getLastLoggerName")).isEqualTo(loggerName);
+                assertThat(System.getProperty(FACTORY_CONSTRUCTED_PROPERTY)).isEqualTo(Boolean.TRUE.toString());
+                assertThat(System.getProperty(FACTORY_TAG_PROPERTY)).isEqualTo("configured-by-property-configurator");
+                assertThat(System.getProperty(FACTORY_CALL_COUNT_PROPERTY)).isEqualTo("1");
+                assertThat(System.getProperty(FACTORY_LOGGER_NAME_PROPERTY)).isEqualTo(loggerName);
 
                 Object configuredLogger = logManagerClass.getMethod("getLogger", String.class).invoke(null, loggerName);
-                assertThat(trackingLoggerClass.isInstance(configuredLogger)).isTrue();
+                assertThat(configuredLogger.getClass().getName()).isEqualTo(TrackingLogger.class.getName());
                 assertThat(invoke(configuredLogger, "getName")).isEqualTo(loggerName);
                 assertThat(String.valueOf(invoke(configuredLogger, "getLevel"))).isEqualTo("INFO");
                 assertThat(invoke(configuredLogger, "getAdditivity")).isEqualTo(false);
@@ -93,9 +94,11 @@ public class PropertyConfiguratorTest {
         return codeSource.getLocation();
     }
 
-    private static Object invokeStatic(Class<?> type, String methodName) throws Exception {
-        Method method = type.getMethod(methodName);
-        return method.invoke(null);
+    private static void clearTrackingProperties() {
+        System.clearProperty(FACTORY_CONSTRUCTED_PROPERTY);
+        System.clearProperty(FACTORY_TAG_PROPERTY);
+        System.clearProperty(FACTORY_LOGGER_NAME_PROPERTY);
+        System.clearProperty(FACTORY_CALL_COUNT_PROPERTY);
     }
 
     private static Object invoke(Object target, String methodName) throws Exception {
@@ -104,47 +107,26 @@ public class PropertyConfiguratorTest {
     }
 
     public static final class TrackingLoggerFactory implements LoggerFactory {
-        private static TrackingLoggerFactory lastInstance;
-        private static int makeNewLoggerInstanceCallCount;
-        private static String lastLoggerName;
-
         private String tag;
 
         public TrackingLoggerFactory() {
-            lastInstance = this;
+            System.setProperty(FACTORY_CONSTRUCTED_PROPERTY, Boolean.TRUE.toString());
         }
 
         @Override
         public Logger makeNewLoggerInstance(String name) {
-            makeNewLoggerInstanceCallCount++;
-            lastLoggerName = name;
+            System.setProperty(FACTORY_LOGGER_NAME_PROPERTY, name);
+            System.setProperty(FACTORY_CALL_COUNT_PROPERTY, Integer.toString(currentCallCount() + 1));
             return new TrackingLogger(name, tag);
-        }
-
-        public String getTag() {
-            return tag;
         }
 
         public void setTag(String tag) {
             this.tag = tag;
+            System.setProperty(FACTORY_TAG_PROPERTY, tag);
         }
 
-        public static TrackingLoggerFactory getLastInstance() {
-            return lastInstance;
-        }
-
-        public static int getMakeNewLoggerInstanceCallCount() {
-            return makeNewLoggerInstanceCallCount;
-        }
-
-        public static String getLastLoggerName() {
-            return lastLoggerName;
-        }
-
-        private static void reset() {
-            lastInstance = null;
-            makeNewLoggerInstanceCallCount = 0;
-            lastLoggerName = null;
+        private static int currentCallCount() {
+            return Integer.parseInt(System.getProperty(FACTORY_CALL_COUNT_PROPERTY, "0"));
         }
     }
 
