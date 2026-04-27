@@ -34,6 +34,7 @@ import org.snakeyaml.engine.v2.api.lowlevel.Present;
 import org.snakeyaml.engine.v2.api.lowlevel.Serialize;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.env.EnvConfig;
 import org.snakeyaml.engine.v2.events.Event;
 import org.snakeyaml.engine.v2.events.ScalarEvent;
 import org.snakeyaml.engine.v2.exceptions.DuplicateKeyException;
@@ -210,6 +211,32 @@ public class Snakeyaml_engineTest {
         assertThat(loaded).containsEntry("truth", "true");
         assertThat(loaded).containsEntry("count", "7");
         assertThat(loaded).containsEntry("empty", "null");
+    }
+
+    @Test
+    void resolvesEnvironmentVariableTagsWithConfiguredProvider() {
+        EnvConfig envConfig = new EnvConfig() {
+            @Override
+            public Optional<String> getValueFor(String name, String separator, String value, String environmentValue) {
+                if ("SERVICE_NAME".equals(name)) {
+                    return Optional.of("catalog");
+                }
+                if ("SERVICE_HOST".equals(name) && ":-".equals(separator)) {
+                    return Optional.of(value);
+                }
+                return Optional.empty();
+            }
+        };
+        LoadSettings settings = LoadSettings.builder().setEnvConfig(Optional.of(envConfig)).build();
+        String document = """
+                service: !ENV_VARIABLE ${SERVICE_NAME}
+                endpoint: !ENV_VARIABLE ${SERVICE_HOST:-localhost}
+                """;
+
+        Map<Object, Object> loaded = asMap(new Load(settings).loadFromString(document));
+
+        assertThat(loaded).containsEntry("service", "catalog");
+        assertThat(loaded).containsEntry("endpoint", "localhost");
     }
 
     @Test
