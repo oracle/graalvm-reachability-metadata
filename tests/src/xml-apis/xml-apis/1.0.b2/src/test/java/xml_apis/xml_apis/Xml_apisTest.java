@@ -42,6 +42,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.traversal.TreeWalker;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -193,6 +197,57 @@ public class Xml_apisTest {
         NodeList items = document.getElementsByTagNameNS("urn:item", "item");
         assertThat(items.getLength()).isEqualTo(2);
         assertThat(items.item(1).getTextContent()).isEqualTo("Generated");
+    }
+
+    @Test
+    void domTraversalFiltersAndWalksSelectedElements() throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        Document document = factory.newDocumentBuilder().parse(new InputSource(new StringReader("""
+                <catalog>
+                    <section name="fiction">
+                        <book id="b1" available="true"><title>Dune</title></book>
+                        <book id="b2" available="false"><title>Neuromancer</title></book>
+                    </section>
+                    <section name="reference">
+                        <book id="b3" available="true"><title>XML</title></book>
+                    </section>
+                </catalog>
+                """)));
+        DocumentTraversal traversal = (DocumentTraversal) document;
+
+        NodeIterator availableBooks = traversal.createNodeIterator(
+                document.getDocumentElement(),
+                NodeFilter.SHOW_ELEMENT,
+                node -> {
+                    Element element = (Element) node;
+                    if ("book".equals(element.getTagName()) && "true".equals(element.getAttribute("available"))) {
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                    return NodeFilter.FILTER_SKIP;
+                },
+                true);
+        List<String> availableBookIds = new ArrayList<>();
+        for (Node node = availableBooks.nextNode(); node != null; node = availableBooks.nextNode()) {
+            availableBookIds.add(((Element) node).getAttribute("id"));
+        }
+        availableBooks.detach();
+
+        TreeWalker sections = traversal.createTreeWalker(
+                document.getDocumentElement(),
+                NodeFilter.SHOW_ELEMENT,
+                node -> "section".equals(((Element) node).getTagName())
+                        ? NodeFilter.FILTER_ACCEPT
+                        : NodeFilter.FILTER_SKIP,
+                true);
+        Element firstSection = (Element) sections.firstChild();
+        Element secondSection = (Element) sections.nextSibling();
+
+        assertThat(availableBookIds).containsExactly("b1", "b3");
+        assertThat(firstSection.getAttribute("name")).isEqualTo("fiction");
+        assertThat(secondSection.getAttribute("name")).isEqualTo("reference");
+        assertThat(sections.nextSibling()).isNull();
     }
 
     @Test
