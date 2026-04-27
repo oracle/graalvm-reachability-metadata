@@ -15,6 +15,7 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.TypeReference;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -33,6 +34,7 @@ import org.objectweb.asm.tree.LookupSwitchInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.MultiANewArrayInsnNode;
+import org.objectweb.asm.tree.RecordComponentNode;
 import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -84,6 +86,56 @@ public class Asm_treeTest {
         MethodNode switchMethod = findMethod(parsedClass, "classify", "(I)I");
         assertThat(switchMethod.instructions.toArray())
                 .anySatisfy(node -> assertThat(node).isInstanceOf(TableSwitchInsnNode.class));
+    }
+
+    @Test
+    void preservesRecordComponentMetadataInClassTree() {
+        ClassNode recordClass = new ClassNode(Opcodes.ASM9);
+        recordClass.visit(
+                Opcodes.V17,
+                Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_SUPER | Opcodes.ACC_RECORD,
+                "generated/TreeRecord",
+                null,
+                "java/lang/Record",
+                null);
+        recordClass.visitSource("TreeRecord.java", null);
+
+        RecordComponentVisitor nameComponent = recordClass.visitRecordComponent("name", "Ljava/lang/String;", null);
+        AnnotationVisitor componentAnnotation = nameComponent.visitAnnotation("Lgenerated/Component;", true);
+        componentAnnotation.visit("role", "primary");
+        componentAnnotation.visitEnd();
+        nameComponent.visitAnnotation("Lgenerated/InternalComponent;", false).visitEnd();
+        nameComponent.visitEnd();
+        recordClass.visitRecordComponent(
+                "tags",
+                "Ljava/util/List;",
+                "Ljava/util/List<Ljava/lang/String;>;").visitEnd();
+        recordClass.visitEnd();
+        recordClass.check(Opcodes.ASM9);
+
+        ClassWriter classWriter = new ClassWriter(0);
+        recordClass.accept(classWriter);
+        ClassNode parsedClass = new ClassNode(Opcodes.ASM9);
+        new ClassReader(classWriter.toByteArray()).accept(parsedClass, 0);
+
+        assertThat(parsedClass.access & Opcodes.ACC_RECORD).isEqualTo(Opcodes.ACC_RECORD);
+        assertThat(parsedClass.superName).isEqualTo("java/lang/Record");
+        assertThat(parsedClass.recordComponents).hasSize(2);
+
+        RecordComponentNode parsedNameComponent = parsedClass.recordComponents.get(0);
+        assertThat(parsedNameComponent.name).isEqualTo("name");
+        assertThat(parsedNameComponent.descriptor).isEqualTo("Ljava/lang/String;");
+        assertThat(parsedNameComponent.signature).isNull();
+        assertThat(parsedNameComponent.visibleAnnotations).hasSize(1);
+        assertThat(parsedNameComponent.visibleAnnotations.get(0).desc).isEqualTo("Lgenerated/Component;");
+        assertThat(parsedNameComponent.visibleAnnotations.get(0).values).contains("role", "primary");
+        assertThat(parsedNameComponent.invisibleAnnotations).hasSize(1);
+        assertThat(parsedNameComponent.invisibleAnnotations.get(0).desc).isEqualTo("Lgenerated/InternalComponent;");
+
+        RecordComponentNode parsedTagsComponent = parsedClass.recordComponents.get(1);
+        assertThat(parsedTagsComponent.name).isEqualTo("tags");
+        assertThat(parsedTagsComponent.descriptor).isEqualTo("Ljava/util/List;");
+        assertThat(parsedTagsComponent.signature).isEqualTo("Ljava/util/List<Ljava/lang/String;>;");
     }
 
     @Test
