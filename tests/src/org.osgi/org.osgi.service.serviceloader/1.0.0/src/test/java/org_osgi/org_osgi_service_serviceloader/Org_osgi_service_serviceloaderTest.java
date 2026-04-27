@@ -97,6 +97,23 @@ public class Org_osgi_service_serviceloaderTest {
     }
 
     @Test
+    void serviceLoaderCapabilityCanUseInheritedCapabilityDirectives() {
+        Capability capability = serviceLoaderCapability(
+                Map.of(
+                        ServiceLoaderNamespace.CAPABILITY_USES_DIRECTIVE, "org.example.spi,org.example.model",
+                        ServiceLoaderNamespace.CAPABILITY_EFFECTIVE_DIRECTIVE, ServiceLoaderNamespace.EFFECTIVE_ACTIVE
+                ),
+                Map.of()
+        );
+
+        assertThat(capability.getDirectives())
+                .containsEntry(ServiceLoaderNamespace.CAPABILITY_USES_DIRECTIVE, "org.example.spi,org.example.model")
+                .containsEntry(ServiceLoaderNamespace.CAPABILITY_EFFECTIVE_DIRECTIVE, ServiceLoaderNamespace.EFFECTIVE_ACTIVE);
+        assertThat(capability.getAttributes())
+                .containsOnly(Map.entry(ServiceLoaderNamespace.SERVICELOADER_NAMESPACE, SERVICE_TYPE));
+    }
+
+    @Test
     void serviceLoaderRequirementUsesNamespaceAttributeInStandardRequirementDirectives() {
         Requirement requirement = serviceLoaderRequirement(
                 Namespace.RESOLUTION_OPTIONAL,
