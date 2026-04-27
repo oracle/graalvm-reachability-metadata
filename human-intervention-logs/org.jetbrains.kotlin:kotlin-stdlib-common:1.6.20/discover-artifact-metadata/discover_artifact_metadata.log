@@ -1,0 +1,815 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd00f-5da5-7c83-9700-53559917e487
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.6.20".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+- Set "coordinates" to "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and Kotlin’s tagged sources, then update the JSON in place. I’m starting by reading the current file shape so the edit matches the repository’s formatting.
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+exec
+/usr/bin/zsh -lc pwd in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20"
+}
+
+ succeeded in 0ms:
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+
+exec
+/usr/bin/zsh -lc 'rg -n "kotlin-stdlib-common|org.jetbrains.kotlin" build/discovered-artifact-metadata metadata repository || true' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+rg: repository: No such file or directory (os error 2)
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json:2:  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20"
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:4:    "allowed-packages": [ "org.jetbrains.kotlin" ],
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.31/kotlin-stdlib-common-1.5.31-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:18:      "org.jetbrains.kotlin.daemon"
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-javadoc.jar",
+
+codex
+The target file currently only has `coordinates`. I found an existing `kotlin-stdlib-common` metadata entry for an older version, so I’ll use that as a formatting and field-order cue while verifying 1.6.20-specific URLs.
+exec
+/usr/bin/zsh -lc "sed -n '1,120p' metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [ "org.jetbrains.kotlin" ],
+    "metadata-version": "1.5.31",
+    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.31/kotlin-stdlib-common-1.5.31-sources.jar",
+    "repository-url": "https://github.com/JetBrains/kotlin",
+    "test-code-url": "https://github.com/JetBrains/kotlin/tree/v1.5.31/libraries/stdlib/common/test",
+    "documentation-url": "https://github.com/JetBrains/kotlin/blob/v1.5.31/libraries/stdlib/ReadMe.md",
+    "description": "Kotlin Standard Library Common provides the platform-independent portion of Kotlin's standard library for multiplatform projects. It supplies common APIs and core language support that are shared across Kotlin/JVM, Kotlin/JS, and Kotlin/Native.",
+    "tested-versions": [
+      "1.5.31"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20.pom' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 125ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlin</groupId>
+  <artifactId>kotlin-stdlib-common</artifactId>
+  <version>1.6.20</version>
+  <name>Kotlin Stdlib Common</name>
+  <description>Kotlin Common Standard Library</description>
+  <url>https://kotlinlang.org/</url>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Kotlin Team</name>
+      <organization>JetBrains</organization>
+      <organizationUrl>https://www.jetbrains.com</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/JetBrains/kotlin.git</connection>
+    <developerConnection>scm:git:https://github.com/JetBrains/kotlin.git</developerConnection>
+    <url>https://github.com/JetBrains/kotlin</url>
+  </scm>
+</project>
+
+ succeeded in 147ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kotlin-stdlib-common-1.6.20-javadoc.jar" title="kotlin-stdlib-common-1.6.20-javadoc.jar">kotlin-stdlib-common-1.6.20-javadoc.jar</a>           2022-04-01 12:00       261      
+<a href="kotlin-stdlib-common-1.6.20-javadoc.jar.asc" title="kotlin-stdlib-common-1.6.20-javadoc.jar.asc">kotlin-stdlib-common-1.6.20-javadoc.jar.asc</a>       2022-04-01 12:00       679      
+<a href="kotlin-stdlib-common-1.6.20-javadoc.jar.asc.md5" title="kotlin-stdlib-common-1.6.20-javadoc.jar.asc.md5">kotlin-stdlib-common-1.6.20-javadoc.jar.asc.m...</a>  2022-04-01 12:00        32      
+<a href="kotlin-stdlib-common-1.6.20-javadoc.jar.asc.sha1" title="kotlin-stdlib-common-1.6.20-javadoc.jar.asc.sha1">kotlin-stdlib-common-1.6.20-javadoc.jar.asc.s...</a>  2022-04-01 12:00        40      
+<a href="kotlin-stdlib-common-1.6.20-javadoc.jar.md5" title="kotlin-stdlib-common-1.6.20-javadoc.jar.md5">kotlin-stdlib-common-1.6.20-javadoc.jar.md5</a>       2022-04-01 12:00        32      
+<a href="kotlin-stdlib-common-1.6.20-javadoc.jar.sha1" title="kotlin-stdlib-common-1.6.20-javadoc.jar.sha1">kotlin-stdlib-common-1.6.20-javadoc.jar.sha1</a>      2022-04-01 12:00        40      
+<a href="kotlin-stdlib-common-1.6.20-sources.jar" title="kotlin-stdlib-common-1.6.20-sources.jar">kotlin-stdlib-common-1.6.20-sources.jar</a>           2022-04-01 12:00    298256      
+<a href="kotlin-stdlib-common-1.6.20-sources.jar.asc" title="kotlin-stdlib-common-1.6.20-sources.jar.asc">kotlin-stdlib-common-1.6.20-sources.jar.asc</a>       2022-04-01 12:00       679      
+<a href="kotlin-stdlib-common-1.6.20-sources.jar.asc.md5" title="kotlin-stdlib-common-1.6.20-sources.jar.asc.md5">kotlin-stdlib-common-1.6.20-sources.jar.asc.m...</a>  2022-04-01 12:00        32      
+<a href="kotlin-stdlib-common-1.6.20-sources.jar.asc.sha1" title="kotlin-stdlib-common-1.6.20-sources.jar.asc.sha1">kotlin-stdlib-common-1.6.20-sources.jar.asc.s...</a>  2022-04-01 12:00        40      
+<a href="kotlin-stdlib-common-1.6.20-sources.jar.md5" title="kotlin-stdlib-common-1.6.20-sources.jar.md5">kotlin-stdlib-common-1.6.20-sources.jar.md5</a>       2022-04-01 12:00        32      
+<a href="kotlin-stdlib-common-1.6.20-sources.jar.sha1" title="kotlin-stdlib-common-1.6.20-sources.jar.sha1">kotlin-stdlib-common-1.6.20-sources.jar.sha1</a>      2022-04-01 12:00        40      
+<a href="kotlin-stdlib-common-1.6.20.jar" title="kotlin-stdlib-common-1.6.20.jar">kotlin-stdlib-common-1.6.20.jar</a>                   2022-04-01 12:00    200631      
+<a href="kotlin-stdlib-common-1.6.20.jar.asc" title="kotlin-stdlib-common-1.6.20.jar.asc">kotlin-stdlib-common-1.6.20.jar.asc</a>               2022-04-01 12:00       679      
+<a href="kotlin-stdlib-common-1.6.20.jar.asc.md5" title="kotlin-stdlib-common-1.6.20.jar.asc.md5">kotlin-stdlib-common-1.6.20.jar.asc.md5</a>           2022-04-01 12:00        32      
+<a href="kotlin-stdlib-common-1.6.20.jar.asc.sha1" title="kotlin-stdlib-common-1.6.20.jar.asc.sha1">kotlin-stdlib-common-1.6.20.jar.asc.sha1</a>          2022-04-01 12:00        40      
+<a href="kotlin-stdlib-common-1.6.20.jar.md5" title="kotlin-stdlib-common-1.6.20.jar.md5">kotlin-stdlib-common-1.6.20.jar.md5</a>               2022-04-01 12:00        32      
+<a href="kotlin-stdlib-common-1.6.20.jar.sha1" title="kotlin-stdlib-common-1.6.20.jar.sha1">kotlin-stdlib-common-1.6.20.jar.sha1</a>              2022-04-01 12:00        40      
+<a href="kotlin-stdlib-common-1.6.20.pom" title="kotlin-stdlib-common-1.6.20.pom">kotlin-stdlib-common-1.6.20.pom</a>                   2022-04-01 12:00      1162      
+<a href="kotlin-stdlib-common-1.6.20.pom.asc" title="kotlin-stdlib-common-1.6.20.pom.asc">kotlin-stdlib-common-1.6.20.pom.asc</a>               2022-04-01 12:00       679      
+<a href="kotlin-stdlib-common-1.6.20.pom.asc.md5" title="kotlin-stdlib-common-1.6.20.pom.asc.md5">kotlin-stdlib-common-1.6.20.pom.asc.md5</a>           2022-04-01 12:00        32      
+<a href="kotlin-stdlib-common-1.6.20.pom.asc.sha1" title="kotlin-stdlib-common-1.6.20.pom.asc.sha1">kotlin-stdlib-common-1.6.20.pom.asc.sha1</a>          2022-04-01 12:00        40      
+<a href="kotlin-stdlib-common-1.6.20.pom.md5" title="kotlin-stdlib-common-1.6.20.pom.md5">kotlin-stdlib-common-1.6.20.pom.md5</a>               2022-04-01 12:00        32      
+<a href="kotlin-stdlib-common-1.6.20.pom.sha1" title="kotlin-stdlib-common-1.6.20.pom.sha1">kotlin-stdlib-common-1.6.20.pom.sha1</a>              2022-04-01 12:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Maven Central has the exact 1.6.20 source and javadoc artifacts, and the POM points at `JetBrains/kotlin` as SCM. I’m checking the Kotlin 1.6.20 tag now for the stdlib common test directory and version-pinned documentation path.
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://github.com/JetBrains/kotlin/tree/v1.6.20/libraries/stdlib/common/test' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/ReadMe.md' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-javadoc.jar -o /tmp/kotlin-stdlib-common-1.6.20-javadoc.jar && jar tf /tmp/kotlin-stdlib-common-1.6.20-javadoc.jar' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-sources.jar -o /tmp/kotlin-stdlib-common-1.6.20-sources.jar && jar tf /tmp/kotlin-stdlib-common-1.6.20-sources.jar | sed -n '1,80p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 260ms:
+META-INF/
+META-INF/MANIFEST.MF
+
+ succeeded in 360ms:
+META-INF/
+META-INF/MANIFEST.MF
+generated/
+generated/_Arrays.kt
+generated/_Collections.kt
+generated/_Comparisons.kt
+generated/_Maps.kt
+generated/_OneToManyTitlecaseMappings.kt
+generated/_Ranges.kt
+generated/_Sequences.kt
+generated/_Sets.kt
+generated/_Strings.kt
+generated/_UArrays.kt
+generated/_UCollections.kt
+generated/_UComparisons.kt
+generated/_URanges.kt
+generated/_USequences.kt
+kotlin/
+kotlin/Comparator.kt
+kotlin/ExceptionsH.kt
+kotlin/JsAnnotationsH.kt
+kotlin/JvmAnnotationsH.kt
+kotlin/KotlinH.kt
+kotlin/MathH.kt
+kotlin/SequencesH.kt
+kotlin/TextH.kt
+kotlin/ioH.kt
+kotlin/collections/
+kotlin/collections/AbstractMutableCollection.kt
+kotlin/collections/AbstractMutableList.kt
+kotlin/collections/AbstractMutableMap.kt
+kotlin/collections/AbstractMutableSet.kt
+kotlin/collections/ArrayList.kt
+kotlin/collections/CollectionsH.kt
+kotlin/collections/HashMap.kt
+kotlin/collections/HashSet.kt
+kotlin/collections/LinkedHashMap.kt
+kotlin/collections/LinkedHashSet.kt
+Module.md
+kotlin/CharCode.kt
+kotlin/annotations/
+kotlin/annotations/Experimental.kt
+kotlin/annotations/ExperimentalStdlibApi.kt
+kotlin/annotations/Inference.kt
+kotlin/annotations/Multiplatform.kt
+kotlin/annotations/NativeAnnotations.kt
+kotlin/annotations/NativeConcurrentAnnotations.kt
+kotlin/annotations/OptIn.kt
+kotlin/annotations/Throws.kt
+kotlin/collections/AbstractCollection.kt
+kotlin/collections/AbstractIterator.kt
+kotlin/collections/AbstractList.kt
+kotlin/collections/AbstractMap.kt
+kotlin/collections/AbstractSet.kt
+kotlin/collections/ArrayDeque.kt
+kotlin/collections/Arrays.kt
+kotlin/collections/BrittleContainsOptimization.kt
+kotlin/collections/Collections.kt
+kotlin/collections/Grouping.kt
+kotlin/collections/IndexedValue.kt
+kotlin/collections/Iterables.kt
+kotlin/collections/Iterators.kt
+kotlin/collections/MapAccessors.kt
+kotlin/collections/MapWithDefault.kt
+kotlin/collections/Maps.kt
+kotlin/collections/MutableCollections.kt
+kotlin/collections/ReversedViews.kt
+kotlin/collections/Sequence.kt
+kotlin/collections/SequenceBuilder.kt
+kotlin/collections/Sequences.kt
+kotlin/collections/Sets.kt
+kotlin/collections/SlidingWindow.kt
+kotlin/collections/UArraySorting.kt
+kotlin/comparisons/
+kotlin/comparisons/Comparisons.kt
+kotlin/comparisons/compareTo.kt
+kotlin/contracts/
+kotlin/contracts/ContractBuilder.kt
+kotlin/contracts/Effect.kt
+kotlin/coroutines/
+
+ succeeded in 703ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 17:49:47 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b107226864a238407d44592c59e23b75"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=64A7JvKRSiMx6KuZqHAjqZgLXsr73HycLRuQ7681eVF6GTmzCaX847kgx5pLQ4p61VRJ0LKCWiXaONEgk61422SaFeonWmYQJPwv6OM6QxFwY%2BAm0OuBd%2FRjn1GWNoWmhIXZpnTS4MGMA9ob6rvRy%2FgP6%2F0dnKKWrTKs1rPIEekpMpc2L64H%2BldYysyz5wOwHCsWcJwJrp7G9u7n58eKdicTY4LLrx%2Fu66QHmlnu28FkWSIHhJg7ecuDMmsymKLGIzIPlx5ez6p6JPBcUC7CwA%3D%3D--RYGMkn%2BK0EsuW0ac--i1EkuenTrydTCIvzktIRMA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1128810934.1777312187; expires=Tue, 27 Apr 2027 17:49:47 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 17:49:47 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 1936:374FB0:1D21ED2:159D5B2:69EFA1BB
+
+
+ succeeded in 934ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 17:49:47 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/JetBrains/kotlin.git
+x-raw-download: https://raw.githubusercontent.com/JetBrains/kotlin/v1.6.20/libraries/stdlib/ReadMe.md
+etag: W/"afb15f7f039202cf09b53435e3c59946"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=tjmq85ebw4kFJF4yNJ9thmjxiFLjJsaAAnVzf%2FdfqNEdeRVrSE5Q9bulq4MJxRyjLBvDFzJQju4d949wPX8ypnN04o%2BoTKm9MnHdnweGT5vN6Q9s2VeUL%2B%2FBq6dDq7EoVkk7%2FpgrJT615oiSYzfRuM78EcgBikAGgZWsbjZdIJka69IJr1iJr9VcrvAVxZirWso%2BCA%2BuzqlRI0SQ3pQXUSDHZWGuk6Lk1DLKKJFJTOGyOsXT8KlLYwCaxVNVZIyFpQB6AqRopD5uradBZcSrDw%3D%3D--BnVIVMKE%2F1vz4rxx--g6uebaC9uDkkC0ZVjQBsrw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.414565058.1777312187; expires=Tue, 27 Apr 2027 17:49:47 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 17:49:47 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 1930:1341EA:1C9A5D9:1534283:69EFA1BB
+
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common/test?ref=v1.6.20' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ exited 1 in 0ms:
+zsh:1: no matches found: https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common/test?ref=v1.6.20
+
+exec
+/usr/bin/zsh -lc "rg -n '\"language\"' build/discovered-artifact-metadata metadata | sed -n '1,80p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/JetBrains/kotlin/v1.6.20/libraries/stdlib/ReadMe.md | sed -n '1,120p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+exec
+/usr/bin/zsh -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-test-sources.jar' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ exited 22 in 353ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 27 Apr 2026 17:49:58 GMT
+content-type: text/html
+cf-ray: 9f2faab64a8355ad-BEG
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 361ms:
+## The Kotlin Standard Library
+
+This module creates the [standard library for Kotlin](https://kotlinlang.org/api/latest/jvm/stdlib/index.html).
+
+### Notes for contributors
+
+We use code generation to generate utility extension functions for some collection-like types like arrays, strings, `Collection<T>`, `Sequence<T>`, `Map<K, V>` etc.
+
+These sources are placed into the `generated` folder and their names are prefixed with an underscore, for example, `generated/_Collections.kt`
+
+To run the code generator, use the following command in the root directory of the project:
+
+    ./gradlew :tools:kotlin-stdlib-gen:run
+
+> Note: on Windows type `gradlew` without the leading `./`
+
+This then runs the script which generates a significant part of stdlib sources from the [templates](../tools/kotlin-stdlib-gen/src/templates) written in a special Kotlin-based DSL.
+
+### Usage samples
+
+If you want to author samples for the standard library, please head to [the samples readme](samples/ReadMe.md).
+
+codex
+There is no Maven test-sources classifier for this artifact at 1.6.20, so the test suite has to come from the matching GitHub tag. I also confirmed the Maven javadoc artifact exists but is only a stub, so the version-tagged stdlib README is the better documentation URL here.
+exec
+/usr/bin/zsh -lc "sed -n '1,230p' metadata/schemas/metadata-library-index-schema-v2.0.1.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+{
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.0.1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each entry describes a metadata bundle for a range of library versions.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "allowed-packages",
+      "metadata-version",
+      "tested-versions"
+    ],
+    "properties": {
+      "metadata-version": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Subdirectory name where the metadata files for this entry reside, e.g. '7.1.0.Final'."
+      },
+      "tested-versions": {
+        "type": "array",
+        "description": "Explicitly tested upstream library versions that this metadata is known to support.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "test-version": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Overrides 'metadata-version' for use in test directories. This allows one metadata entry to share tests defined for a different version's metadata directory."
+      },
+      "source-code-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the metadata source code for this entry."
+      },
+      "repository-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the canonical project repository for this entry."
+      },
+      "documentation-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the project documentation for this entry."
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional two-sentence explanation of what the library does."
+      },
+      "language": {
+        "$ref": "#/$defs/libraryLanguage"
+      },
+      "test-code-url": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional URL pointing to the test source code for this entry."
+      },
+      "latest": {
+        "type": "boolean",
+        "description": "Marks this entry as the latest/default metadata for currently supported versions."
+      },
+      "default-for": {
+        "type": "string",
+        "description": "Java regular expression describing the version range for which this entry should be used by default (e.g. '7\\\\.1\\\\..*')."
+      },
+      "override": {
+        "type": "boolean",
+        "description": "When true, expresses the intent to exclude outdated built-in metadata shipped with Native Image for the matched versions."
+      },
+      "allowed-packages": {
+        "type": "array",
+        "description": "Packages expected to contain metadata entries for this library. Used by CI checks.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "skipped-versions": {
+        "type": "array",
+        "description": "Versions explicitly excluded from support, each with a reason.",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [ "version", "reason" ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      },
+      "requires": {
+        "type": "array",
+        "description": "List of dependent modules (group:artifact) whose metadata is required at runtime.",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "$ref": "#/$defs/moduleCoordinate"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "moduleCoordinate": {
+      "type": "string",
+      "pattern": "^[^:]+:[^:]+$"
+    },
+    "libraryLanguage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [ "name", "version" ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [ "kotlin", "scala" ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "scala"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "enum": [ "2", "3" ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "kotlin"
+              }
+            },
+            "required": [ "name" ]
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "examples": [
+    [
+      {
+        "metadata-version": "0.0.1",
+        "tested-versions": [ "0.0.1", "0.0.2" ],
+        "default-for": "0\\.0\\..*",
+        "test-version": "0.0.1",
+        "source-code-url": "https://github.com/example/project/tree/main/metadata/org.example/library/0.0.1",
+        "repository-url": "https://github.com/example/project",
+        "test-code-url": "https://github.com/example/project/tree/main/tests/src/org.example/library/0.0.1",
+        "documentation-url": "https://github.com/example/project/tree/main/README.md",
+        "description": "Example Library provides the core APIs for the example project. It focuses on simple integration points used by downstream applications.",
+        "language": {
+          "name": "kotlin",
+          "version": "2.0"
+        },
+        "allowed-packages": [ "org.example.library" ]
+      },
+      {
+        "latest": true,
+        "metadata-version": "1.0.0",
+        "tested-versions": [ "1.0.0", "1.1.0" , "1.2.0"],
+        "allowed-packages": [ "org.example.library" ]
+      },
+      {
+        "metadata-version": "1.19.0",
+        "tested-versions": [ "1.19.0" ],
+        "override": true,
+        "allowed-packages": [ "io.opentelemetry" ],
+        "skipped-versions": [
+          { "version": "1.34.0", "reason": "Dependency io.opentelemetry:opentelemetry-api:1.34.0 provides reflect-config.json which does not parse." }
+        ]
+      }
+    ]
+  ]
+}
+
+exec
+/usr/bin/zsh -lc "rg --files metadata build/discovered-artifact-metadata | rg '(scala|kotlin)' | sed -n '1,120p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+metadata/com.graphql-java/graphql-java-extended-scalars/19.0/reachability-metadata.json
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/reachability-metadata.json
+metadata/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/reachability-metadata.json
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/reachability-metadata.json
+metadata/org.jetbrains.kotlin/kotlin-reflect/1.7.10/reachability-metadata.json
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31/reachability-metadata.json
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/2.17.2/reachability-metadata.json
+
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common/test?ref=v1.6.20'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 358ms:
+[
+  {
+    "name": "jsCollectionFactories.kt",
+    "path": "libraries/stdlib/common/test/jsCollectionFactories.kt",
+    "sha": "47d5e8a665b82a827e306c11ef0cadf1eff08aee",
+    "size": 653,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common/test/jsCollectionFactories.kt?ref=v1.6.20",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/common/test/jsCollectionFactories.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/47d5e8a665b82a827e306c11ef0cadf1eff08aee",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v1.6.20/libraries/stdlib/common/test/jsCollectionFactories.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common/test/jsCollectionFactories.kt?ref=v1.6.20",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/47d5e8a665b82a827e306c11ef0cadf1eff08aee",
+      "html": "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/common/test/jsCollectionFactories.kt"
+    }
+  },
+  {
+    "name": "testUtils.kt",
+    "path": "libraries/stdlib/common/test/testUtils.kt",
+    "sha": "22c30e289d79f4ee7179565138dd909aecc27891",
+    "size": 735,
+    "url": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common/test/testUtils.kt?ref=v1.6.20",
+    "html_url": "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/common/test/testUtils.kt",
+    "git_url": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/22c30e289d79f4ee7179565138dd909aecc27891",
+    "download_url": "https://raw.githubusercontent.com/JetBrains/kotlin/v1.6.20/libraries/stdlib/common/test/testUtils.kt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/JetBrains/kotlin/contents/libraries/stdlib/common/test/testUtils.kt?ref=v1.6.20",
+      "git": "https://api.github.com/repos/JetBrains/kotlin/git/blobs/22c30e289d79f4ee7179565138dd909aecc27891",
+      "html": "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/common/test/testUtils.kt"
+    }
+  }
+]
+
+codex
+I have enough to make the edit: source will use the exact Maven sources JAR, repository and tests will use the `v1.6.20` Kotlin tag, documentation will use the tagged stdlib README, and the library will be marked as Kotlin `1.6`.
+apply patch
+patch: completed
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+index 69fab1c044dc84f16515d2c152ef4537c1a7b126..85eacad5e2ea51cc262276c14005fb772739414a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.6.20/libraries/stdlib/common/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/ReadMe.md",
++  "description" : "Kotlin Standard Library Common provides platform-independent core APIs for Kotlin multiplatform code. It contains common declarations and generated utilities for collections, ranges, text, coroutines, and other standard library features shared by Kotlin targets.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.6"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+index 69fab1c044dc84f16515d2c152ef4537c1a7b126..85eacad5e2ea51cc262276c14005fb772739414a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.6.20/libraries/stdlib/common/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/ReadMe.md",
++  "description" : "Kotlin Standard Library Common provides platform-independent core APIs for Kotlin multiplatform code. It contains common declarations and generated utilities for collections, ranges, text, coroutines, and other standard library features shared by Kotlin targets.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.6"
++  }
+ }
+
+codex
+The JSON is updated. I’m doing a quick parse check now so we don’t leave behind a formatting or syntax issue.
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+{
+  "coordinates": "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-sources.jar",
+  "repository-url": "https://github.com/JetBrains/kotlin",
+  "test-code-url": "https://github.com/JetBrains/kotlin/tree/v1.6.20/libraries/stdlib/common/test",
+  "documentation-url": "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/ReadMe.md",
+  "description": "Kotlin Standard Library Common provides platform-independent core APIs for Kotlin multiplatform code. It contains common declarations and generated utilities for collections, ranges, text, coroutines, and other standard library features shared by Kotlin targets.",
+  "language": {
+    "name": "kotlin",
+    "version": "1.6"
+  }
+}
+
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+index 69fab1c044dc84f16515d2c152ef4537c1a7b126..85eacad5e2ea51cc262276c14005fb772739414a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.6.20/libraries/stdlib/common/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/ReadMe.md",
++  "description" : "Kotlin Standard Library Common provides platform-independent core APIs for Kotlin multiplatform code. It contains common declarations and generated utilities for collections, ranges, text, coroutines, and other standard library features shared by Kotlin targets.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.6"
++  }
+ }
+
+exec
+/usr/bin/zsh -lc 'git ls-files --stage build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+ succeeded in 0ms:
+{
+  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-sources.jar",
+  "repository-url" : "https://github.com/JetBrains/kotlin",
+  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.6.20/libraries/stdlib/common/test",
+  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/ReadMe.md",
+  "description" : "Kotlin Standard Library Common provides platform-independent core APIs for Kotlin multiplatform code. It contains common declarations and generated utilities for collections, ranges, text, coroutines, and other standard library features shared by Kotlin targets.",
+  "language" : {
+    "name" : "kotlin",
+    "version" : "1.6"
+  }
+}
+
+exec
+/usr/bin/zsh -lc 'git status --short -- build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+index 69fab1c044dc84f16515d2c152ef4537c1a7b126..85eacad5e2ea51cc262276c14005fb772739414a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.6.20/libraries/stdlib/common/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/ReadMe.md",
++  "description" : "Kotlin Standard Library Common provides platform-independent core APIs for Kotlin multiplatform code. It contains common declarations and generated utilities for collections, ranges, text, coroutines, and other standard library features shared by Kotlin targets.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.6"
++  }
+ }
+
+ succeeded in 115ms:
+codex
+Updated [org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json) with the discovered URLs, two-sentence description, and Kotlin language metadata (`1.6`).
+
+Validation: `jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json` passed.
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+index 69fab1c044dc84f16515d2c152ef4537c1a7b126..85eacad5e2ea51cc262276c14005fb772739414a
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20"
++  "coordinates" : "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.20/kotlin-stdlib-common-1.6.20-sources.jar",
++  "repository-url" : "https://github.com/JetBrains/kotlin",
++  "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.6.20/libraries/stdlib/common/test",
++  "documentation-url" : "https://github.com/JetBrains/kotlin/blob/v1.6.20/libraries/stdlib/ReadMe.md",
++  "description" : "Kotlin Standard Library Common provides platform-independent core APIs for Kotlin multiplatform code. It contains common declarations and generated utilities for collections, ranges, text, coroutines, and other standard library features shared by Kotlin targets.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "1.6"
++  }
+ }
+
+2026-04-27T17:50:29.139958Z ERROR codex_core::session: failed to record rollout items: thread 019dd00f-5da5-7c83-9700-53559917e487 not found
+tokens used
+26,179
+Updated [org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e/build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json) with the discovered URLs, two-sentence description, and Kotlin language metadata (`1.6`).
+
+Validation: `jq . build/discovered-artifact-metadata/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.json` passed.
+Ran agent for org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e/build/agent-artifact-discovery-logs/org.jetbrains.kotlin-kotlin-stdlib-common-1.6.20.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2517-4b24971e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 12s
+9 actionable tasks: 4 executed, 5 from cache
