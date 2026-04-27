@@ -48,6 +48,8 @@ import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.Proxy;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
+import org.eclipse.aether.resolution.ArtifactDescriptorResult;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
@@ -241,6 +243,52 @@ public class Aether_apiTest {
         assertThat(artifactRequest.getArtifact()).isEqualTo(rootArtifact);
         assertThat(artifactRequest.getRepositories()).containsExactly(repository);
         assertThat(artifactRequest.getTrace().getParent()).isEqualTo(trace);
+    }
+
+    @Test
+    void artifactDescriptorRequestsAndResultsCapturePomModelRelocationsAliasesAndRepositories() {
+        Artifact requestedArtifact = new DefaultArtifact("org.acme:application:pom:1.0");
+        Artifact relocatedArtifact = new DefaultArtifact("org.example:application:pom:1.0");
+        Artifact aliasArtifact = new DefaultArtifact("org.legacy:application:pom:1.0");
+        Dependency directDependency = new Dependency(new DefaultArtifact("org.acme:library:jar:1.1"), "compile");
+        Dependency managedDependency = new Dependency(new DefaultArtifact("org.acme:managed:jar:2.0"), "runtime");
+        RemoteRepository repository = centralRepository();
+        RemoteRepository descriptorRepository = new RemoteRepository.Builder(
+                "descriptor-repo", "default", "https://descriptor.example.org/repository").build();
+        RequestTrace trace = new RequestTrace("artifact-descriptor");
+        RuntimeException warning = new RuntimeException("descriptor warning");
+
+        ArtifactDescriptorRequest request = new ArtifactDescriptorRequest()
+                .setArtifact(requestedArtifact)
+                .addRepository(repository)
+                .addRepository(descriptorRepository)
+                .setRequestContext("descriptor")
+                .setTrace(trace);
+        ArtifactDescriptorResult result = new ArtifactDescriptorResult(request)
+                .setArtifact(relocatedArtifact)
+                .setRepository(repository)
+                .addRelocation(relocatedArtifact)
+                .addAlias(aliasArtifact)
+                .addDependency(directDependency)
+                .addManagedDependency(managedDependency)
+                .addRepository(descriptorRepository)
+                .setProperties(Collections.singletonMap("packaging", "jar"))
+                .addException(warning);
+
+        assertThat(request.getArtifact()).isEqualTo(requestedArtifact);
+        assertThat(request.getRepositories()).containsExactly(repository, descriptorRepository);
+        assertThat(request.getRequestContext()).isEqualTo("descriptor");
+        assertThat(request.getTrace()).isEqualTo(trace);
+        assertThat(result.getRequest()).isEqualTo(request);
+        assertThat(result.getArtifact()).isEqualTo(relocatedArtifact);
+        assertThat(result.getRepository()).isEqualTo(repository);
+        assertThat(result.getRelocations()).containsExactly(relocatedArtifact);
+        assertThat(result.getAliases()).containsExactly(aliasArtifact);
+        assertThat(result.getDependencies()).containsExactly(directDependency);
+        assertThat(result.getManagedDependencies()).containsExactly(managedDependency);
+        assertThat(result.getRepositories()).containsExactly(descriptorRepository);
+        assertThat(result.getProperties()).containsEntry("packaging", "jar");
+        assertThat(result.getExceptions()).containsExactly(warning);
     }
 
     @Test
