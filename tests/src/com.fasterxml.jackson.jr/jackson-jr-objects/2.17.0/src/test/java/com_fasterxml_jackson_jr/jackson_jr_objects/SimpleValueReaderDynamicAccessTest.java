@@ -17,41 +17,44 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SimpleValueReaderDynamicAccessTest {
     @Test
     void resolvesTopLevelClassesFromStringValues() throws Exception {
-        String className = runtimeJdkClassName();
+        String className = loadableClassName();
 
         Class<?> resolved = JSON.std.beanFrom(Class.class, '"' + className + '"');
 
-        assertThat(resolved.getName()).isEqualTo(className);
+        assertThat(resolved).isEqualTo(LoadableType.class);
     }
 
     @Test
     void resolvesClassTypedBeanPropertiesFromStringValues() throws Exception {
-        String className = runtimeJdkClassName();
+        String className = loadableClassName();
 
         TypeHolder holder = JSON.std.beanFrom(TypeHolder.class,
                 "{\"type\":\"" + className + "\"}");
 
-        assertThat(holder.type.getName()).isEqualTo(className);
+        assertThat(holder.type).isEqualTo(LoadableType.class);
     }
 
     @Test
     void resolvesClassesInsideTypedMapsAndLists() throws Exception {
-        String className = runtimeJdkClassName();
+        String className = loadableClassName();
 
         Map<String, Class> classesByName = JSON.std.mapOfFrom(Class.class,
                 "{\"primary\":\"" + className + "\"}");
         List<Class> classes = JSON.std.listOfFrom(Class.class,
                 "[\"" + className + "\"]");
 
-        assertThat(classesByName.get("primary").getName()).isEqualTo(className);
-        assertThat(classes).singleElement().satisfies(type -> assertThat(type.getName()).isEqualTo(className));
+        assertThat(classesByName.get("primary")).isEqualTo(LoadableType.class);
+        assertThat(classes).singleElement().isEqualTo(LoadableType.class);
     }
 
-    private static String runtimeJdkClassName() {
-        return System.getProperty(TypeHolder.class.getName(), String.join(".", "java", "util", "LinkedHashMap"));
+    private static String loadableClassName() {
+        return LoadableType.class.getName();
     }
 
     public static final class TypeHolder {
         public Class<?> type;
+    }
+
+    public static final class LoadableType {
     }
 }
