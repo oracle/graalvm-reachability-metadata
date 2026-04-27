@@ -6,7 +6,9 @@
  */
 package org_objenesis.objenesis;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
 
 import org.assertj.core.api.Assertions;
@@ -23,6 +25,15 @@ public class GCJInstantiatorBaseTest {
         Assertions.assertThatThrownBy(() -> new TestGCJInstantiator(Object.class))
             .isInstanceOf(ObjenesisException.class)
             .hasCauseInstanceOf(NoSuchMethodException.class);
+    }
+
+    @Test
+    void resolvesLegacyClassLiteralByRuntimeName() throws Throwable {
+        String typeName = new String(RuntimeResolvedType.class.getName().toCharArray());
+
+        Class<?> resolvedType = TestGCJInstantiator.resolveLegacyClassLiteral(typeName);
+
+        Assertions.assertThat(resolvedType).isEqualTo(RuntimeResolvedType.class);
     }
 
     private static final class TestGCJInstantiator extends GCJInstantiatorBase {
@@ -44,18 +55,31 @@ public class GCJInstantiatorBaseTest {
             clearCachedClassLiteral("class$java$lang$Class");
         }
 
+        private static Class<?> resolveLegacyClassLiteral(String typeName) throws Throwable {
+            MethodHandle classLiteralResolver = gcjInstantiatorBaseLookup().findStatic(
+                GCJInstantiatorBase.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class)
+            );
+            return (Class<?>) classLiteralResolver.invoke(typeName);
+        }
+
         private static void clearCachedClassLiteral(String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
-            MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-                GCJInstantiatorBase.class,
-                MethodHandles.lookup()
-            );
-            VarHandle field = lookup.findStaticVarHandle(
+            VarHandle field = gcjInstantiatorBaseLookup().findStaticVarHandle(
                 GCJInstantiatorBase.class,
                 fieldName,
                 Class.class
             );
             field.set(null);
         }
+
+        private static MethodHandles.Lookup gcjInstantiatorBaseLookup()
+            throws IllegalAccessException {
+            return MethodHandles.privateLookupIn(GCJInstantiatorBase.class, MethodHandles.lookup());
+        }
+    }
+
+    public static final class RuntimeResolvedType {
     }
 }
