@@ -90,6 +90,11 @@ public class DescriptorMessageInfoFactoryTest {
         }
 
         @Override
+        public HelperChildMessage getDefaultInstanceForType() {
+            return DEFAULT_INSTANCE;
+        }
+
+        @Override
         public Descriptors.Descriptor getDescriptorForType() {
             return HelperDescriptors.HELPER_CHILD_DESCRIPTOR;
         }
@@ -129,6 +134,11 @@ public class DescriptorMessageInfoFactoryTest {
         }
 
         public static HelperParentMessage getDefaultInstance() {
+            return DEFAULT_INSTANCE;
+        }
+
+        @Override
+        public HelperParentMessage getDefaultInstanceForType() {
             return DEFAULT_INSTANCE;
         }
 
