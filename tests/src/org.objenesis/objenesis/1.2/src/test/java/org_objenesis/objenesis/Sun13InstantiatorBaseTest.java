@@ -6,7 +6,9 @@
  */
 package org_objenesis.objenesis;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
 
 import org.assertj.core.api.Assertions;
@@ -32,6 +34,15 @@ public class Sun13InstantiatorBaseTest {
         }
     }
 
+    @Test
+    void resolvesLegacyClassLiteralByRuntimeName() throws Throwable {
+        String typeName = new String(RuntimeResolvedType.class.getName().toCharArray());
+
+        Class<?> resolvedType = TestSun13Instantiator.resolveLegacyClassLiteral(typeName);
+
+        Assertions.assertThat(resolvedType).isEqualTo(RuntimeResolvedType.class);
+    }
+
     private static final class TestSun13Instantiator extends Sun13InstantiatorBase {
 
         private TestSun13Instantiator(Class<?> type) {
@@ -49,17 +60,35 @@ public class Sun13InstantiatorBaseTest {
             clearCachedClassLiteral("class$java$lang$Class");
         }
 
+        private static Class<?> resolveLegacyClassLiteral(String typeName) throws Throwable {
+            MethodHandle classLiteralResolver = sun13InstantiatorBaseLookup().findStatic(
+                Sun13InstantiatorBase.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class)
+            );
+            return (Class<?>) classLiteralResolver.invoke(typeName);
+        }
+
         private static void clearCachedClassLiteral(String fieldName)
             throws ReflectiveOperationException {
-            VarHandle field = MethodHandles.privateLookupIn(
+            VarHandle field = sun13InstantiatorBaseLookup()
+                .findStaticVarHandle(Sun13InstantiatorBase.class, fieldName, Class.class);
+            field.set(null);
+        }
+
+        private static MethodHandles.Lookup sun13InstantiatorBaseLookup()
+            throws IllegalAccessException {
+            return MethodHandles.privateLookupIn(
                 Sun13InstantiatorBase.class,
                 MethodHandles.lookup()
-            ).findStaticVarHandle(Sun13InstantiatorBase.class, fieldName, Class.class);
-            field.set(null);
+            );
         }
 
         private static boolean initialized() {
             return allocateNewObjectMethod != null;
         }
+    }
+
+    public static final class RuntimeResolvedType {
     }
 }
