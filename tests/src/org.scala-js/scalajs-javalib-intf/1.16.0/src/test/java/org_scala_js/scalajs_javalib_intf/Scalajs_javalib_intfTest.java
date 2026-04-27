@@ -72,6 +72,19 @@ public class Scalajs_javalib_intfTest {
         assertTypedArrayAccessorsAreStubs(LongBuffer.allocate(8));
     }
 
+    @Test
+    void arrayBufferAccessorsAreJvmStubsForDirectBufferViewsWithOffsets() {
+        ByteBuffer directBuffer = ByteBuffer.allocateDirect(32).order(ByteOrder.nativeOrder());
+        directBuffer.position(8);
+        directBuffer.limit(24);
+
+        ByteBuffer slicedBuffer = directBuffer.slice().order(ByteOrder.nativeOrder());
+        IntBuffer intView = slicedBuffer.asIntBuffer();
+
+        assertArrayBufferAccessorsAreStubs(slicedBuffer);
+        assertArrayBufferAccessorsAreStubs(intView);
+    }
+
     private static void assertArrayBufferAccessorsAreStubs(java.nio.Buffer buffer) {
         assertJvmStub("hasArrayBuffer", () -> TypedArrayBuffer.hasArrayBuffer(buffer));
         assertJvmStub("arrayBuffer", () -> TypedArrayBuffer.arrayBuffer(buffer));
