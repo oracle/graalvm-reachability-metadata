@@ -6,16 +6,21 @@
  */
 package velocity.velocity_dep;
 
+import junit.framework.TestResult;
 import org.apache.velocity.test.IntrospectorTestCase;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntrospectorTestCaseTest {
     @Test
     void resolvesPrimitiveArgumentMethodsWithVelocityIntrospector() {
-        IntrospectorTestCase testCase = new IntrospectorTestCase("runTest");
+        TestResult result = new TestResult();
 
-        assertThatCode(testCase::runTest).doesNotThrowAnyException();
+        IntrospectorTestCase.suite().run(result);
+
+        assertThat(result.errorCount()).isZero();
+        assertThat(result.failureCount()).isZero();
+        assertThat(result.runCount()).isEqualTo(1);
     }
 }
