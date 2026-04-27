@@ -7,6 +7,7 @@
 package ch_qos_logback.logback_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.conditional.IfAction;
@@ -19,6 +20,8 @@ public class PropertyEvalScriptBuilderTest {
 
     @Test
     void buildsConditionFromIfActionUsingLocalAndContextProperties() throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Janino runtime compilation is not supported in native-image tests");
+
         ContextBase context = new ContextBase();
         context.putProperty("contextFlag", "enabled");
         InterpretationContext interpretationContext = new InterpretationContext(context, null);
@@ -39,5 +42,9 @@ public class PropertyEvalScriptBuilderTest {
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "condition", "condition", "CDATA", condition);
         return attributes;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
