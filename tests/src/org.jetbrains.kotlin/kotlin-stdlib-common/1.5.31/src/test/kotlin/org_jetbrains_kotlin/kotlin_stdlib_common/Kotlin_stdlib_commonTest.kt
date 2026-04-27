@@ -210,6 +210,26 @@ public class Kotlin_stdlib_commonTest {
         assertEquals(TestSeverity.HIGH, enumValueOf<TestSeverity>("HIGH"))
     }
 
+    @Test
+    fun arrayDequeSupportsDoubleEndedMutationAndIterationOrder() {
+        val processingQueue = ArrayDeque<String>()
+
+        processingQueue.addLast("compile")
+        processingQueue.addLast("test")
+        processingQueue.addFirst("resolve")
+
+        assertEquals(listOf("resolve", "compile", "test"), processingQueue.toList())
+        assertEquals("resolve", processingQueue.removeFirst())
+
+        processingQueue.addLast("package")
+        processingQueue.addFirst("validate")
+
+        assertEquals("package", processingQueue.removeLast())
+        assertEquals(listOf("validate", "compile", "test"), processingQueue.toList())
+        assertEquals("validate", processingQueue.first())
+        assertEquals("test", processingQueue.last())
+    }
+
     private object KotlinCommonFixture {
         fun describe(features: List<String>): String = "common:${features.distinct().size}"
     }
