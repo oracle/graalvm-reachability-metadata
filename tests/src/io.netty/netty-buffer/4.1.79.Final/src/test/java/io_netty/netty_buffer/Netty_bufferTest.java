@@ -18,10 +18,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufHolder;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.CompositeByteBuf;
+import io.netty.buffer.DefaultByteBufHolder;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocatorMetric;
 import io.netty.buffer.Unpooled;
@@ -327,6 +329,55 @@ public class Netty_bufferTest {
             assertThat(multiSearch.getFoundNeedleId()).isEqualTo(1);
         } finally {
             haystack.release();
+        }
+    }
+
+    @Test
+    public void defaultByteBufHolderManagesContentCopiesReplacementsAndReferenceCounts() {
+        DefaultByteBufHolder holder = new DefaultByteBufHolder(Unpooled.copiedBuffer("request-body", UTF_8));
+        ByteBufHolder copy = null;
+        ByteBufHolder retainedDuplicate = null;
+        ByteBufHolder replacement = null;
+        try {
+            assertThat(holder.content().toString(UTF_8)).isEqualTo("request-body");
+            assertThat(holder.refCnt()).isEqualTo(1);
+
+            copy = holder.copy();
+            assertThat(copy.content().toString(UTF_8)).isEqualTo("request-body");
+            holder.content().setByte(0, 'R');
+            assertThat(holder.content().toString(UTF_8)).isEqualTo("Request-body");
+            assertThat(copy.content().toString(UTF_8)).isEqualTo("request-body");
+
+            ByteBufHolder duplicate = holder.duplicate();
+            duplicate.content().setByte(8, 'B');
+            assertThat(holder.content().toString(UTF_8)).isEqualTo("Request-Body");
+
+            replacement = holder.replace(Unpooled.copiedBuffer("response", UTF_8));
+            assertThat(replacement.content().toString(UTF_8)).isEqualTo("response");
+            assertThat(holder.content().toString(UTF_8)).isEqualTo("Request-Body");
+
+            retainedDuplicate = holder.retainedDuplicate();
+            assertThat(holder.refCnt()).isEqualTo(2);
+            retainedDuplicate.content().setByte(8, 'b');
+            assertThat(holder.content().toString(UTF_8)).isEqualTo("Request-body");
+            assertThat(holder.release()).isFalse();
+            holder = null;
+            assertThat(retainedDuplicate.content().toString(UTF_8)).isEqualTo("Request-body");
+            assertThat(retainedDuplicate.release()).isTrue();
+            retainedDuplicate = null;
+        } finally {
+            if (replacement != null) {
+                replacement.release();
+            }
+            if (retainedDuplicate != null) {
+                retainedDuplicate.release();
+            }
+            if (copy != null) {
+                copy.release();
+            }
+            if (holder != null) {
+                holder.release();
+            }
         }
     }
 
