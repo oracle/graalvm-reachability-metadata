@@ -53,6 +53,10 @@ public class DefaultLF5ConfiguratorTest {
         try (URLClassLoader isolatedLoader = new URLClassLoader(
                 new URL[] { codeSourceUrl(DefaultLF5Configurator.class) },
                 ClassLoader.getPlatformClassLoader())) {
+            Thread thread = Thread.currentThread();
+            ClassLoader previousClassLoader = thread.getContextClassLoader();
+            thread.setContextClassLoader(isolatedLoader);
+
             Class<?> configuratorClass = Class.forName(DefaultLF5Configurator.class.getName(), true, isolatedLoader);
             Class<?> logManagerClass = Class.forName(LogManager.class.getName(), true, isolatedLoader);
             Class<?> categoryClass = Class.forName("org.apache.log4j.Category", true, isolatedLoader);
@@ -66,6 +70,7 @@ public class DefaultLF5ConfiguratorTest {
                         .extracting(appender -> appender.getClass().getName())
                         .isEqualTo(LF5Appender.class.getName());
             } finally {
+                thread.setContextClassLoader(previousClassLoader);
                 disposeIsolatedLf5Monitor(logManagerClass, categoryClass);
                 logManagerClass.getMethod("resetConfiguration").invoke(null);
             }
