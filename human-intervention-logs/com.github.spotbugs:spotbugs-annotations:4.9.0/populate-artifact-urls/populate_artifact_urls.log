@@ -1,0 +1,408 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dce84-03e7-7691-b989-d8fa94ca6a85
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.github.spotbugs:spotbugs-annotations:4.9.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "4.9.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+- Entry selector: "metadata-version" = "4.9.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "4.9.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 4.9.0
+- Entry test-version: 4.9.0
+codex
+I’ll verify the existing metadata entry, then check Maven and the upstream SpotBugs tag so the URLs are version-specific before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.github.spotbugs/spotbugs-annotations/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.9.0",
+    "tested-versions" : [
+      "4.9.0"
+    ],
+    "allowed-packages" : [
+      "edu.umd.cs.findbugs.annotations"
+    ]
+  },
+  {
+    "metadata-version" : "4.8.6",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+    "repository-url" : "https://github.com/spotbugs/spotbugs",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, such as nullness and warning-suppression markers. Libraries and applications add these annotations to code so SpotBugs can produce more precise static analysis results.",
+    "tested-versions" : [
+      "4.8.6"
+    ],
+    "allowed-packages" : [
+      "edu.umd.cs.findbugs.annotations"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"4\\.9\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/com.github.spotbugs/spotbugs-annotations/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+ succeeded in 0ms:
+4:    "metadata-version" : "4.9.0",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+15:    "repository-url" : "https://github.com/spotbugs/spotbugs",
+16:    "test-code-url" : "N/A",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+18:    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, such as nullness and warning-suppression markers. Libraries and applications add these annotations to code so SpotBugs can produce more precise static analysis results.",
+
+web search: 
+web search: Maven Central com.github.spotbugs spotbugs-annotations 4.9.0 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/
+web search: 
+web search: site:github.com/spotbugs/spotbugs/releases 4.9.0 SpotBugs tag
+web search: 
+web search: https://github.com/spotbugs/spotbugs/releases
+web search: 
+web search: https://github.com/spotbugs/spotbugs/tree/4.9.0
+web search: 
+web search: https://github.com/spotbugs/spotbugs/tree/4.9.0/spotbugs-annotations
+codex
+The 4.9.0 entry is missing the fields. Maven Central has exact 4.9.0 sources and javadocs; I don’t see a test artifact for this annotation module, and the upstream tag is `4.9.0`, with the module containing only main sources.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+diff --git a/metadata/com.github.spotbugs/spotbugs-annotations/index.json b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+index bbba5e84886d5b7596345e62d825476af22ee35d..eb37a26ebe47eb49cfe1a20cb68f7357e09db3a8
+--- a/metadata/com.github.spotbugs/spotbugs-annotations/index.json
++++ b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "4.9.0"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
++    "repository-url" : "https://github.com/spotbugs/spotbugs",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
++    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+     "allowed-packages" : [
+       "edu.umd.cs.findbugs.annotations"
+     ]
+
+diff --git a/metadata/com.github.spotbugs/spotbugs-annotations/index.json b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+index bbba5e84886d5b7596345e62d825476af22ee35d..eb37a26ebe47eb49cfe1a20cb68f7357e09db3a8
+--- a/metadata/com.github.spotbugs/spotbugs-annotations/index.json
++++ b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "4.9.0"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
++    "repository-url" : "https://github.com/spotbugs/spotbugs",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
++    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+     "allowed-packages" : [
+       "edu.umd.cs.findbugs.annotations"
+     ]
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/
+codex
+I’ve updated the 4.9.0 entry and am doing a quick JSON/metadata validation now, focused on this coordinate.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"4.9.0\")' metadata/com.github.spotbugs/spotbugs-annotations/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "4.9.0",
+  "tested-versions": [
+    "4.9.0"
+  ],
+  "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
+  "repository-url": "https://github.com/spotbugs/spotbugs",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
+  "description": "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+  "allowed-packages": [
+    "edu.umd.cs.findbugs.annotations"
+  ]
+}
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.github.spotbugs:spotbugs-annotations:4.9.0' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+ exited 1 in 1066ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for com.github.spotbugs:spotbugs-annotations:4.9.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/metadata/com.github.spotbugs/spotbugs-annotations/4.9.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.github.spotbugs:spotbugs-annotations:4.9.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/metadata/com.github.spotbugs/spotbugs-annotations/4.9.0/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+diff --git a/metadata/com.github.spotbugs/spotbugs-annotations/index.json b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+index bbba5e84886d5b7596345e62d825476af22ee35d..eb37a26ebe47eb49cfe1a20cb68f7357e09db3a8
+--- a/metadata/com.github.spotbugs/spotbugs-annotations/index.json
++++ b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "4.9.0"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
++    "repository-url" : "https://github.com/spotbugs/spotbugs",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
++    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+     "allowed-packages" : [
+       "edu.umd.cs.findbugs.annotations"
+     ]
+
+codex
+The JSON parses correctly. The repository metadata check is blocked by an existing structural issue for this coordinate: `metadata/.../4.9.0/reachability-metadata.json` is missing, which is outside the requested URL/description update.
+exec
+/usr/bin/bash -lc "nl -ba metadata/com.github.spotbugs/spotbugs-annotations/index.json | sed -n '1,40p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "4.9.0",
+     5	    "tested-versions" : [
+     6	      "4.9.0"
+     7	    ],
+     8	    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
+     9	    "repository-url" : "https://github.com/spotbugs/spotbugs",
+    10	    "test-code-url" : "N/A",
+    11	    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
+    12	    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+    13	    "allowed-packages" : [
+    14	      "edu.umd.cs.findbugs.annotations"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "4.8.6",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+    20	    "repository-url" : "https://github.com/spotbugs/spotbugs",
+    21	    "test-code-url" : "N/A",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+    23	    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, such as nullness and warning-suppression markers. Libraries and applications add these annotations to code so SpotBugs can produce more precise static analysis results.",
+    24	    "tested-versions" : [
+    25	      "4.8.6"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "edu.umd.cs.findbugs.annotations"
+    29	    ]
+    30	  }
+    31	]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.github.spotbugs/spotbugs-annotations/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+ succeeded in 0ms:
+diff --git i/metadata/com.github.spotbugs/spotbugs-annotations/index.json w/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+index bbba5e8488..eb37a26ebe 100644
+--- i/metadata/com.github.spotbugs/spotbugs-annotations/index.json
++++ w/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "4.9.0"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
++    "repository-url" : "https://github.com/spotbugs/spotbugs",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
++    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+     "allowed-packages" : [
+       "edu.umd.cs.findbugs.annotations"
+     ]
+
+diff --git a/metadata/com.github.spotbugs/spotbugs-annotations/index.json b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+index bbba5e84886d5b7596345e62d825476af22ee35d..eb37a26ebe47eb49cfe1a20cb68f7357e09db3a8
+--- a/metadata/com.github.spotbugs/spotbugs-annotations/index.json
++++ b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "4.9.0"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
++    "repository-url" : "https://github.com/spotbugs/spotbugs",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
++    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+     "allowed-packages" : [
+       "edu.umd.cs.findbugs.annotations"
+     ]
+
+web search: 
+web search: repo1.maven.org maven2 com github spotbugs spotbugs-annotations 4.9.0 spotbugs-annotations-4.9.0-sources.jar spotbugs-annotations-4.9.0-javadoc.jar
+web search: 
+web search: https://github.com/spotbugs/spotbugs/tree/4.9.0/spotbugs-annotations
+web search: 
+web search: https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/com.github.spotbugs/spotbugs-annotations/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/com.github.spotbugs/spotbugs-annotations/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219
+ succeeded in 0ms:
+ M metadata/com.github.spotbugs/spotbugs-annotations/index.json
+
+diff --git a/metadata/com.github.spotbugs/spotbugs-annotations/index.json b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+index bbba5e84886d5b7596345e62d825476af22ee35d..eb37a26ebe47eb49cfe1a20cb68f7357e09db3a8
+--- a/metadata/com.github.spotbugs/spotbugs-annotations/index.json
++++ b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "4.9.0"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
++    "repository-url" : "https://github.com/spotbugs/spotbugs",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
++    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+     "allowed-packages" : [
+       "edu.umd.cs.findbugs.annotations"
+     ]
+
+web search: 
+web search: "spotbugs-annotations-4.9.0-sources.jar"
+web search: 
+web search: SpotBugs annotations documentation Nullness annotations suppress warnings edu.umd.cs.findbugs.annotations
+codex
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/metadata/com.github.spotbugs/spotbugs-annotations/index.json:8) for `metadata-version` `4.9.0`.
+
+I filled `source-code-url`, `repository-url`, `documentation-url`, `test-code-url`, and the exact two-sentence `description`. I left `language` absent because this is not a Kotlin or Scala-specific library. Maven Central has the exact 4.9.0 sources and javadocs, and I found no Maven test artifact for `spotbugs-annotations`, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/?utm_source=openai))
+
+Validation:
+- `jq` parsed the updated entry successfully.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.github.spotbugs:spotbugs-annotations:4.9.0` failed because `metadata/.../4.9.0/reachability-metadata.json` is missing, which is outside this URL/description update.
+diff --git a/metadata/com.github.spotbugs/spotbugs-annotations/index.json b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+index bbba5e84886d5b7596345e62d825476af22ee35d..eb37a26ebe47eb49cfe1a20cb68f7357e09db3a8
+--- a/metadata/com.github.spotbugs/spotbugs-annotations/index.json
++++ b/metadata/com.github.spotbugs/spotbugs-annotations/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "4.9.0"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-sources.jar",
++    "repository-url" : "https://github.com/spotbugs/spotbugs",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/spotbugs-annotations-4.9.0-javadoc.jar",
++    "description" : "SpotBugs Annotations provides Java annotations that SpotBugs understands, including nullness contracts and warning-suppression markers. Libraries and applications add these annotations so SpotBugs can produce more precise static analysis results.",
+     "allowed-packages" : [
+       "edu.umd.cs.findbugs.annotations"
+     ]
+
+2026-04-27T10:39:48.825381Z ERROR codex_core::session: failed to record rollout items: thread 019dce84-03e7-7691-b989-d8fa94ca6a85 not found
+tokens used
+71,017
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/metadata/com.github.spotbugs/spotbugs-annotations/index.json:8) for `metadata-version` `4.9.0`.
+
+I filled `source-code-url`, `repository-url`, `documentation-url`, `test-code-url`, and the exact two-sentence `description`. I left `language` absent because this is not a Kotlin or Scala-specific library. Maven Central has the exact 4.9.0 sources and javadocs, and I found no Maven test artifact for `spotbugs-annotations`, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.9.0/?utm_source=openai))
+
+Validation:
+- `jq` parsed the updated entry successfully.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.github.spotbugs:spotbugs-annotations:4.9.0` failed because `metadata/.../4.9.0/reachability-metadata.json` is missing, which is outside this URL/description update.
+Ran agent for com.github.spotbugs:spotbugs-annotations:4.9.0 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/build/agent-url-discovery-logs/com.github.spotbugs-spotbugs-annotations-4.9.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2116-ab17c219/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 18s
+9 actionable tasks: 1 executed, 8 up-to-date
