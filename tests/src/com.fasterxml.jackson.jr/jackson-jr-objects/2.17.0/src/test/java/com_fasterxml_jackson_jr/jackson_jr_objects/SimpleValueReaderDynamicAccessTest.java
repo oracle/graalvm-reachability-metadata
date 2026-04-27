@@ -48,7 +48,9 @@ public class SimpleValueReaderDynamicAccessTest {
     }
 
     private static String loadableClassName() {
-        return LoadableType.class.getName();
+        String propertyName = "simple.value.reader.class." + System.nanoTime();
+        System.setProperty(propertyName, LoadableType.class.getName());
+        return System.getProperty(propertyName);
     }
 
     public static final class TypeHolder {
