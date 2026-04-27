@@ -1,0 +1,324 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd14f-b7dc-7190-83da-e61cb6b7aad0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.9.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+- Set "coordinates" to "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+mcp startup: no servers
+codex
+I’ll inspect the target JSON file first, then verify authoritative URLs for `org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0` from Maven Central and the project repository tag so I can update it with exact-version links.
+exec
+/usr/bin/zsh -lc 'cat /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199exec
+/usr/bin/zsh -lc 'pwd && ls -la build/discovered-artifact-metadata | head' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199 succeeded in 51ms:
+{
+  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
+}
+ succeeded in 51ms:
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199
+total 12
+drwxrwxr-x 2 mihailo mihailo 4096 Apr 28 01:39 .
+drwxrwxr-x 4 mihailo mihailo 4096 Apr 28 01:39 ..
+-rw-rw-r-- 1 mihailo mihailo   83 Apr 28 01:39 org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+codex
+I found the file and it only has `coordinates`; next I’m checking Maven Central classifiers and project SCM/tag data to choose exact `1.9.0` URLs with confidence.
+exec
+/usr/bin/zsh -lc 'curl -sSfL https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0.pom' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199exec
+/usr/bin/zsh -lc "curl -sSfL https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/ | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199exec
+/usr/bin/zsh -lc "curl -sSfL \"https://api.github.com/repos/Kotlin/kotlinx.serialization/tags?per_page=100\" | rg -n '\"name\"\\s*:\\s*\"(v)?1\\.9\\.0\"|tarball_url|zipball_url' -n -C 1" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199 succeeded in 50ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jetbrains.kotlinx</groupId>
+  <artifactId>kotlinx-serialization-json-jvm</artifactId>
+  <version>1.9.0</version>
+  <name>kotlinx-serialization-json</name>
+  <description>Kotlin multiplatform serialization runtime library</description>
+  <url>https://github.com/Kotlin/kotlinx.serialization</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+ succeeded in 51ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+ succeeded in 248ms:
+3-    "name": "v1.11.0",
+4:    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx.serialization/zipball/refs/tags/v1.11.0",
+5:    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx.serialization/tarball/refs/tags/v1.11.0",
+6-    "commit": {
+--
+13-    "name": "v1.10.0",
+14:    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx.serialization/zipball/refs/tags/v1.10.0",
+15:    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx.serialization/tarball/refs/tags/v1.10.0",
+16-    "commit": {
+--
+23-    "name": "v1.10.0-RC",
+24:    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx.serialization/zipball/refs/tags/v1.10.0-RC",
+25:    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx.serialization/tarball/refs/tags/v1.10.0-RC",
+26-    "commit": {
+--
+32-  {
+33:    "name": "v1.9.0",
+34:    "zipball_url": "https://api.github.com/repos/Kotlin/kotlinx.serialization/zipball/refs/tags/v1.9.0",
+35:    "tarball_url": "https://api.github.com/repos/Kotlin/kotlinx.serialization/tarball/refs/tags/v1.9.0",
+36-    "commit": {
+codex
+I confirmed `v1.9.0` exists upstream and that Maven Central has `-sources`/`-javadoc` for this artifact. I’ll now verify the test and docs paths at that same tag and then patch the JSON.
+exec
+/usr/bin/zsh -lc "curl -sSfL https://api.github.com/repos/Kotlin/kotlinx.serialization/contents/formats?ref=v1.9.0 | jq -r '.[].name'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199exec
+/usr/bin/zsh -lc "curl -sSfL https://api.github.com/repos/Kotlin/kotlinx.serialization/contents?ref=v1.9.0 | jq -r '.[].name' | head -n 40" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199exec
+/usr/bin/zsh -lc "curl -sSfL https://api.github.com/repos/Kotlin/kotlinx.serialization/contents?ref=v1.9.0 | jq -r '.[] | select(.name==\"docs\") | .html_url'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199 succeeded in 51ms:
+zsh:1: no matches found: https://api.github.com/repos/Kotlin/kotlinx.serialization/contents/formats?ref=v1.9.0
+ succeeded in 51ms:
+zsh:1: no matches found: https://api.github.com/repos/Kotlin/kotlinx.serialization/contents?ref=v1.9.0
+ succeeded in 50ms:
+zsh:1: no matches found: https://api.github.com/repos/Kotlin/kotlinx.serialization/contents?ref=v1.9.0
+exec
+/usr/bin/zsh -lc "curl -sSfL 'https://api.github.com/repos/Kotlin/kotlinx.serialization/contents/formats?ref=v1.9.0' | jq -r '.[].name'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199exec
+/usr/bin/zsh -lc "curl -sSfL 'https://api.github.com/repos/Kotlin/kotlinx.serialization/contents?ref=v1.9.0' | jq -r '.[] | select(.name==\"docs\") | .html_url'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199exec
+/usr/bin/zsh -lc "curl -sSfL 'https://api.github.com/repos/Kotlin/kotlinx.serialization/contents?ref=v1.9.0' | jq -r '.[].name' | head -n 60" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199 succeeded in 222ms:
+README.md
+cbor
+hocon
+json-io
+json-okio
+json-tests
+json
+properties
+protobuf
+ succeeded in 228ms:
+https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs
+ succeeded in 228ms:
+.github
+.gitignore
+.idea
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE.txt
+README.md
+RELEASING.md
+benchmark
+bom
+build.gradle.kts
+buildSrc
+core
+docs
+dokka-templates
+dokka
+formats
+gradle.properties
+gradle
+codex
+I’ve validated tag `v1.9.0`, located tag-scoped docs/tests paths, and confirmed Maven Central hosts a `1.9.0` sources artifact. I’m now writing the JSON with those exact-version URLs plus a two-sentence description and Kotlin language metadata.
+file update
+M /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
++  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
++  "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/formats/json-tests",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
++  "description" : "Kotlinx Serialization JSON JVM is the JSON format module of kotlinx.serialization, providing Kotlin-first JSON encoding and decoding with generated serializers. It supports configurable parsing and serialization features for Kotlin/JVM applications, including polymorphism, default values, and streaming-friendly APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+apply_patch(auto_approved=true) exited 0 in 5ms:
+Success. Updated the following files:
+M /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+file update:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+index 62457574aa284472c793e31d59f4731a180f9f91..1b5cb6adbd20d7642114caeac49dd8e4bcc06eb9
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
++  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
++  "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/formats/json-tests",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
++  "description" : "Kotlinx Serialization JSON JVM is the JSON format module of kotlinx.serialization, providing Kotlin-first JSON encoding and decoding with generated serializers. It supports configurable parsing and serialization features for Kotlin/JVM applications, including polymorphism, default values, and streaming-friendly APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+file update:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+index 62457574aa284472c793e31d59f4731a180f9f91..1b5cb6adbd20d7642114caeac49dd8e4bcc06eb9
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
++  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
++  "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/formats/json-tests",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
++  "description" : "Kotlinx Serialization JSON JVM is the JSON format module of kotlinx.serialization, providing Kotlin-first JSON encoding and decoding with generated serializers. It supports configurable parsing and serialization features for Kotlin/JVM applications, including polymorphism, default values, and streaming-friendly APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199 succeeded in 51ms:
+{
+  "coordinates": "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0-sources.jar",
+  "repository-url": "https://github.com/Kotlin/kotlinx.serialization",
+  "test-code-url": "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/formats/json-tests",
+  "documentation-url": "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
+  "description": "Kotlinx Serialization JSON JVM is the JSON format module of kotlinx.serialization, providing Kotlin-first JSON encoding and decoding with generated serializers. It supports configurable parsing and serialization features for Kotlin/JVM applications, including polymorphism, default values, and streaming-friendly APIs.",
+  "language": {
+    "name": "kotlin",
+    "version": "2.2"
+  }
+}
+file update:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+index 62457574aa284472c793e31d59f4731a180f9f91..1b5cb6adbd20d7642114caeac49dd8e4bcc06eb9
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
++  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
++  "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/formats/json-tests",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
++  "description" : "Kotlinx Serialization JSON JVM is the JSON format module of kotlinx.serialization, providing Kotlin-first JSON encoding and decoding with generated serializers. It supports configurable parsing and serialization features for Kotlin/JVM applications, including polymorphism, default values, and streaming-friendly APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+codex
+Updated [org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json) with:
+
+- `coordinates`: `org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0`
+- `repository-url`: `https://github.com/Kotlin/kotlinx.serialization`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0-sources.jar` (preferred Maven source artifact)
+- `test-code-url`: `https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/formats/json-tests` (tag-specific)
+- `documentation-url`: `https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs` (tag-specific)
+- `description` (exactly 2 sentences)
+- `language`: `{ "name": "kotlin", "version": "2.2" }` (language-specific Kotlin library)
+file update:
+diff --git a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+index 62457574aa284472c793e31d59f4731a180f9f91..1b5cb6adbd20d7642114caeac49dd8e4bcc06eb9
+--- a/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
++++ b/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
++  "coordinates" : "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0-sources.jar",
++  "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
++  "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/formats/json-tests",
++  "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
++  "description" : "Kotlinx Serialization JSON JVM is the JSON format module of kotlinx.serialization, providing Kotlin-first JSON encoding and decoding with generated serializers. It supports configurable parsing and serialization features for Kotlin/JVM applications, including polymorphism, default values, and streaming-friendly APIs.",
++  "language" : {
++    "name" : "kotlin",
++    "version" : "2.2"
++  }
+ }
+
+tokens used
+23,433
+Updated [org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/discovered-artifact-metadata/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.json) with:
+
+- `coordinates`: `org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0`
+- `repository-url`: `https://github.com/Kotlin/kotlinx.serialization`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-json-jvm/1.9.0/kotlinx-serialization-json-jvm-1.9.0-sources.jar` (preferred Maven source artifact)
+- `test-code-url`: `https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/formats/json-tests` (tag-specific)
+- `documentation-url`: `https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs` (tag-specific)
+- `description` (exactly 2 sentences)
+- `language`: `{ "name": "kotlin", "version": "2.2" }` (language-specific Kotlin library)
+Ran agent for org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/agent-artifact-discovery-logs/org.jetbrains.kotlinx-kotlinx-serialization-json-jvm-1.9.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2199-53ad1199/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 44s
+9 actionable tasks: 4 executed, 5 from cache
