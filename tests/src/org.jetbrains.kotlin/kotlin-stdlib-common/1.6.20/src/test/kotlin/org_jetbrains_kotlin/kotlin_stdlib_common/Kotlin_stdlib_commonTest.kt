@@ -125,6 +125,29 @@ public class Kotlin_stdlib_commonTest {
     }
 
     @Test
+    fun arrayDequeSupportsBidirectionalConsumptionWithoutBreakingLogicalOrder() {
+        val releaseStages = ArrayDeque(listOf("alpha", "beta"))
+
+        releaseStages.addFirst("preview")
+        releaseStages.addLast("stable")
+
+        val promotedStages = listOf(
+            releaseStages.removeFirst(),
+            releaseStages.removeFirst(),
+        )
+        releaseStages.addFirst("candidate")
+        val rollbackOrder = listOf(
+            releaseStages.removeLast(),
+            releaseStages.removeLast(),
+            releaseStages.removeLast(),
+        )
+
+        assertThat(promotedStages).containsExactly("preview", "alpha")
+        assertThat(rollbackOrder).containsExactly("stable", "beta", "candidate")
+        assertThat(releaseStages.removeFirstOrNull()).isNull()
+    }
+
+    @Test
     fun durationArithmeticAndStringBuildersSummarizeTheTestMatrix() {
         val startupBudget = 750.milliseconds + 2.seconds
         val report = buildString {
