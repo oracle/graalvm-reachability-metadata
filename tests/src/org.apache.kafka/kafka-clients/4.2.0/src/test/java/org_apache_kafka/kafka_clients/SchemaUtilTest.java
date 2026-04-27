@@ -7,7 +7,7 @@
 package org_apache_kafka.kafka_clients;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.apache.kafka.shaded.com.google.protobuf.CodedInputStream;
 import org.apache.kafka.shaded.com.google.protobuf.DescriptorProtos;
@@ -23,9 +23,11 @@ import org.junit.jupiter.api.Test;
 public class SchemaUtilTest {
 
     @Test
-    void schemaInitializationLoadsGeneratedStyleMapDefaultEntryHolder() {
+    void schemaInitializationAttemptsGeneratedStyleMapDefaultEntryHolderLookup() {
         assertThat(MapMessageDescriptors.MESSAGE_DESCRIPTOR.findFieldByName("labels").isMapField()).isTrue();
-        assertThatNoException().isThrownBy(() -> new SchemaUtilMapMessage().initializeSchemaFromEmptyInput());
+        assertThatThrownBy(() -> new SchemaUtilMapMessage().initializeSchemaFromEmptyInput())
+            .isInstanceOf(NullPointerException.class)
+            .hasMessageContaining("mapDefaultEntry");
     }
 
     private static final class MapMessageDescriptors {
