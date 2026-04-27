@@ -39,11 +39,60 @@ public class LogFactoryImplTest {
             assertThat(((RecordingLog) secondLog).logFactory).isSameAs(factory);
             assertThat(factory.getInstance("first.logger")).isSameAs(firstLog);
         } finally {
-            if (factory != null) {
-                factory.release();
-            }
+            release(factory);
             Thread.currentThread().setContextClassLoader(previousContextClassLoader);
             restoreProperty(DIAGNOSTICS_DEST_PROPERTY, previousDiagnosticsDestination);
+        }
+    }
+
+    @Test
+    void createsUserSpecifiedLogAdapterFromContextClassLoader() {
+        String previousDiagnosticsDestination = System.getProperty(DIAGNOSTICS_DEST_PROPERTY);
+        ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
+        System.setProperty(DIAGNOSTICS_DEST_PROPERTY, "STDOUT");
+
+        LogFactoryImpl factory = null;
+        try {
+            factory = new LogFactoryImpl();
+            factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, RecordingLog.class.getName());
+
+            Log log = factory.getInstance("context.loader.logger");
+
+            assertThat(log).isInstanceOf(RecordingLog.class);
+            assertThat(((RecordingLog) log).name).isEqualTo("context.loader.logger");
+            assertThat(((RecordingLog) log).logFactory).isSameAs(factory);
+        } finally {
+            release(factory);
+            Thread.currentThread().setContextClassLoader(previousContextClassLoader);
+            restoreProperty(DIAGNOSTICS_DEST_PROPERTY, previousDiagnosticsDestination);
+        }
+    }
+
+    @Test
+    void discoversSimpleLogWithNullContextClassLoader() {
+        String previousDiagnosticsDestination = System.getProperty(DIAGNOSTICS_DEST_PROPERTY);
+        ClassLoader previousContextClassLoader = Thread.currentThread().getContextClassLoader();
+        System.setProperty(DIAGNOSTICS_DEST_PROPERTY, "STDOUT");
+        Thread.currentThread().setContextClassLoader(null);
+
+        LogFactoryImpl factory = null;
+        try {
+            factory = new LogFactoryImpl();
+            factory.setAttribute(LogFactoryImpl.LOG_PROPERTY, "org.apache.commons.logging.impl.SimpleLog");
+
+            Log log = factory.getInstance("null.context.loader.logger");
+
+            assertThat(log.getClass().getName()).isEqualTo("org.apache.commons.logging.impl.SimpleLog");
+        } finally {
+            release(factory);
+            Thread.currentThread().setContextClassLoader(previousContextClassLoader);
+            restoreProperty(DIAGNOSTICS_DEST_PROPERTY, previousDiagnosticsDestination);
+        }
+    }
+
+    private static void release(LogFactoryImpl factory) {
+        if (factory != null) {
+            factory.release();
         }
     }
 
