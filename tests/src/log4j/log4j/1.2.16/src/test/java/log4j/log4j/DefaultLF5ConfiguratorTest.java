@@ -6,7 +6,11 @@
  */
 package log4j.log4j;
 
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.CodeSource;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.log4j.Appender;
@@ -44,6 +48,30 @@ public class DefaultLF5ConfiguratorTest {
                 });
     }
 
+    @Test
+    void configuresTheRootLoggerWhenLoadedInAnIsolatedClassLoader() throws Exception {
+        try (URLClassLoader isolatedLoader = new URLClassLoader(
+                new URL[] { codeSourceUrl(DefaultLF5Configurator.class) },
+                ClassLoader.getPlatformClassLoader())) {
+            Class<?> configuratorClass = Class.forName(DefaultLF5Configurator.class.getName(), true, isolatedLoader);
+            Class<?> logManagerClass = Class.forName(LogManager.class.getName(), true, isolatedLoader);
+            Class<?> categoryClass = Class.forName("org.apache.log4j.Category", true, isolatedLoader);
+
+            try {
+                configuratorClass.getMethod("configure").invoke(null);
+
+                List<Object> appenders = getIsolatedRootAppenders(logManagerClass, categoryClass);
+                assertThat(appenders)
+                        .singleElement()
+                        .extracting(appender -> appender.getClass().getName())
+                        .isEqualTo(LF5Appender.class.getName());
+            } finally {
+                disposeIsolatedLf5Monitor(logManagerClass, categoryClass);
+                logManagerClass.getMethod("resetConfiguration").invoke(null);
+            }
+        }
+    }
+
     private static void resetConfiguration() {
         disposeLf5Monitor();
         LogManager.resetConfiguration();
@@ -56,5 +84,29 @@ public class DefaultLF5ConfiguratorTest {
                 lf5Appender.getLogBrokerMonitor().dispose();
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Object> getIsolatedRootAppenders(Class<?> logManagerClass, Class<?> categoryClass) throws Exception {
+        Object rootLogger = logManagerClass.getMethod("getRootLogger").invoke(null);
+        Enumeration<Object> appenders = (Enumeration<Object>) categoryClass.getMethod("getAllAppenders").invoke(rootLogger);
+        return Collections.list(appenders);
+    }
+
+    private static void disposeIsolatedLf5Monitor(Class<?> logManagerClass, Class<?> categoryClass) throws Exception {
+        for (Object appender : getIsolatedRootAppenders(logManagerClass, categoryClass)) {
+            if (LF5Appender.class.getName().equals(appender.getClass().getName())) {
+                Object monitor = appender.getClass().getMethod("getLogBrokerMonitor").invoke(appender);
+                if (monitor != null) {
+                    monitor.getClass().getMethod("dispose").invoke(monitor);
+                }
+            }
+        }
+    }
+
+    private static URL codeSourceUrl(Class<?> type) {
+        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
+        assertThat(codeSource).isNotNull();
+        return codeSource.getLocation();
     }
 }
