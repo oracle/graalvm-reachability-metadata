@@ -7,12 +7,32 @@
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyWriter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyWriterDynamicAccessTest {
     private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
+
+    @Test
+    void readsFieldBackedValuesThroughBeanPropertyWriter() throws Exception {
+        BeanPropertyWriter writer = new BeanPropertyWriter(0, "id",
+                FieldBackedWriterBean.class.getField("id"), null);
+        FieldBackedWriterBean bean = new FieldBackedWriterBean();
+
+        assertThat(writer.getValueFor(bean)).isEqualTo(3);
+    }
+
+    @Test
+    void invokesGetterBackedValuesThroughBeanPropertyWriter() throws Exception {
+        BeanPropertyWriter writer = new BeanPropertyWriter(0, "name", null,
+                GetterBackedWriterBean.class.getMethod("getName"));
+        GetterBackedWriterBean bean = new GetterBackedWriterBean("Ada");
+
+        assertThat(writer.getValueFor(bean)).isEqualTo("Ada");
+        assertThat(bean.getGetterCalls()).isEqualTo(1);
+    }
 
     @Test
     void serializesFieldBackedProperties() throws Exception {
@@ -23,9 +43,11 @@ public class BeanPropertyWriterDynamicAccessTest {
 
     @Test
     void serializesGetterBackedProperties() throws Exception {
-        String json = JSON_WITH_FORCE_ACCESS.asString(new GetterBackedWriterBean("Ada"));
+        GetterBackedWriterBean bean = new GetterBackedWriterBean("Ada");
+        String json = JSON_WITH_FORCE_ACCESS.asString(bean);
 
         assertThat(json).isEqualTo("{\"name\":\"Ada\"}");
+        assertThat(bean.getGetterCalls()).isEqualTo(1);
     }
 
     public static final class FieldBackedWriterBean {
@@ -33,13 +55,19 @@ public class BeanPropertyWriterDynamicAccessTest {
     }
 
     public static final class GetterBackedWriterBean {
+        private int getterCalls;
         private String name;
 
         public GetterBackedWriterBean(String name) {
             this.name = name;
         }
 
+        public int getGetterCalls() {
+            return getterCalls;
+        }
+
         public String getName() {
+            getterCalls++;
             return name;
         }
 
