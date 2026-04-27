@@ -23,10 +23,10 @@ public class IntrospectionHelperAnonymous13Test {
         IntrospectionHelper helper = IntrospectionHelper.getHelper(project, AddParent.class);
 
         IntrospectionHelper.Creator creator = helper.getElementCreator(project, "", parent, "recorded-child", null);
-        Object created = creator.create();
+        RecordedChild created = (RecordedChild) creator.create();
         creator.store();
 
-        assertThat(created).isInstanceOf(RecordedChild.class);
+        assertThat(created).isNotNull();
         assertThat(parent.children).containsExactly(created);
     }
 
@@ -39,9 +39,9 @@ public class IntrospectionHelperAnonymous13Test {
 
         IntrospectionHelper.Creator creator = helper.getElementCreator(
                 project, "", parent, "configured-recorded-child", null);
-        Object created = creator.create();
+        RecordedChild created = (RecordedChild) creator.create();
 
-        assertThat(created).isInstanceOf(RecordedChild.class);
+        assertThat(created).isNotNull();
         assertThat(parent.children).isEmpty();
 
         creator.store();
