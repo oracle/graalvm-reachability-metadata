@@ -26,6 +26,8 @@ import org.eclipse.aether.artifact.ArtifactProperties;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.artifact.DefaultArtifactType;
 import org.eclipse.aether.collection.DependencyCollectionContext;
+import org.eclipse.aether.collection.DependencyManagement;
+import org.eclipse.aether.collection.DependencyManager;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.collection.DependencyTraverser;
 import org.eclipse.aether.graph.DefaultDependencyNode;
@@ -48,6 +50,7 @@ import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.util.filter.DependencyFilterUtils;
 import org.eclipse.aether.util.filter.ExclusionsDependencyFilter;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
+import org.eclipse.aether.util.graph.manager.ClassicDependencyManager;
 import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
 import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
@@ -215,6 +218,36 @@ public class Aether_utilTest {
         Dependency allowedDependency = dependency("org.allowed", "blocked-artifact", JavaScopes.RUNTIME, false);
         assertThat(exclusionSelector.selectDependency(blockedDependency)).isFalse();
         assertThat(exclusionSelector.selectDependency(allowedDependency)).isTrue();
+    }
+
+    @Test
+    void dependencyManagerAppliesManagedTransitiveDependencyAttributes() {
+        Exclusion inheritedExclusion = new Exclusion("org.blocked", "blocked-transitive", "*", "*");
+        Dependency managedDependency = new Dependency(
+                artifact("org.example", "managed-module"),
+                JavaScopes.RUNTIME,
+                Boolean.TRUE,
+                Collections.singleton(inheritedExclusion));
+
+        DependencyManager dependencyManager = new ClassicDependencyManager()
+                .deriveChildManager(new ManagedDependenciesContext(Collections.singletonList(managedDependency)))
+                .deriveChildManager(new ManagedDependenciesContext(Collections.<Dependency>emptyList()));
+
+        Exclusion requestedExclusion = new Exclusion("org.request", "request-specific", "*", "*");
+        Dependency requestedDependency = new Dependency(
+                artifact("org.example", "managed-module"),
+                JavaScopes.COMPILE,
+                Boolean.FALSE,
+                Collections.singleton(requestedExclusion));
+        DependencyManagement management = dependencyManager.manageDependency(requestedDependency);
+
+        assertThat(management.getVersion()).isEqualTo("1.0.0");
+        assertThat(management.getScope()).isEqualTo(JavaScopes.RUNTIME);
+        assertThat(management.getOptional()).isTrue();
+        assertThat(management.getExclusions()).containsExactlyInAnyOrder(requestedExclusion, inheritedExclusion);
+        DependencyManagement unmanaged = dependencyManager.manageDependency(
+                dependency("org.example", "unmanaged-module", JavaScopes.COMPILE, false));
+        assertThat(unmanaged).isNull();
     }
 
     @Test
@@ -414,6 +447,34 @@ public class Aether_utilTest {
         @Override
         public List<Dependency> getManagedDependencies() {
             return Collections.emptyList();
+        }
+    }
+
+    private static final class ManagedDependenciesContext implements DependencyCollectionContext {
+        private final List<Dependency> managedDependencies;
+
+        private ManagedDependenciesContext(List<Dependency> managedDependencies) {
+            this.managedDependencies = managedDependencies;
+        }
+
+        @Override
+        public RepositorySystemSession getSession() {
+            return null;
+        }
+
+        @Override
+        public Artifact getArtifact() {
+            return null;
+        }
+
+        @Override
+        public Dependency getDependency() {
+            return null;
+        }
+
+        @Override
+        public List<Dependency> getManagedDependencies() {
+            return managedDependencies;
         }
     }
 
