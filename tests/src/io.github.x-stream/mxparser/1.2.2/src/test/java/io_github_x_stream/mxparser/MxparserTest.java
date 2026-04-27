@@ -164,4 +164,38 @@ public class MxparserTest {
         parser.require(XmlPullParser.END_TAG, null, "root");
         assertThat(parser.next()).isEqualTo(XmlPullParser.END_DOCUMENT);
     }
+
+    @Test
+    void parserCanDisableNamespaceProcessingAndExposeQualifiedNamesVerbatim() throws Exception {
+        MXParser parser = new MXParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+        parser.setInput(new StringReader(
+                "<root xmlns='urn:default' xmlns:ns='urn:extra' ns:flag='on'><ns:item id='7'>value</ns:item></root>"));
+
+        assertThat(parser.getFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES)).isFalse();
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.START_TAG);
+        parser.require(XmlPullParser.START_TAG, null, "root");
+        assertThat(parser.getNamespace()).isEmpty();
+        assertThat(parser.getPrefix()).isNull();
+        assertThat(parser.getAttributeCount()).isEqualTo(3);
+        assertThat(parser.getAttributeName(0)).isEqualTo("xmlns");
+        assertThat(parser.getAttributeValue(0)).isEqualTo("urn:default");
+        assertThat(parser.getAttributeName(1)).isEqualTo("xmlns:ns");
+        assertThat(parser.getAttributeValue(1)).isEqualTo("urn:extra");
+        assertThat(parser.getAttributeName(2)).isEqualTo("ns:flag");
+        assertThat(parser.getAttributeValue(2)).isEqualTo("on");
+        assertThat(parser.getAttributeValue(null, "ns:flag")).isEqualTo("on");
+
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.START_TAG);
+        parser.require(XmlPullParser.START_TAG, null, "ns:item");
+        assertThat(parser.getName()).isEqualTo("ns:item");
+        assertThat(parser.getPrefix()).isNull();
+        assertThat(parser.getNamespace()).isEmpty();
+        assertThat(parser.getAttributeValue(null, "id")).isEqualTo("7");
+        assertThat(parser.nextText()).isEqualTo("value");
+        parser.require(XmlPullParser.END_TAG, null, "ns:item");
+        assertThat(parser.nextTag()).isEqualTo(XmlPullParser.END_TAG);
+        parser.require(XmlPullParser.END_TAG, null, "root");
+        assertThat(parser.next()).isEqualTo(XmlPullParser.END_DOCUMENT);
+    }
 }
