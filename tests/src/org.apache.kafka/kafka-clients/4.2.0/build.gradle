@@ -10,12 +10,6 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
-tasks.withType(Test).configureEach {
-    jvmArgs += [
-        "--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED"
-    ]
-}
-
 dependencies {
     testImplementation "org.apache.kafka:kafka-clients:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
@@ -28,13 +22,6 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
-        }
-    }
-    binaries {
-        all {
-            buildArgs.addAll([
-                '--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED'
-            ])
         }
     }
 }

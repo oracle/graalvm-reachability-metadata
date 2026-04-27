@@ -8,6 +8,8 @@ package org_apache_kafka.kafka_clients;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.ibm.security.krb5.KrbException;
+
 import org.apache.kafka.common.security.kerberos.KerberosError;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -25,17 +27,12 @@ public class KerberosErrorTest {
 
             assertThat(KerberosError.values()).contains(KerberosError.REPLAY);
 
-            Exception wrapper = new Exception("outer", new RuntimeException(newKrbException(34)));
+            Exception wrapper = new Exception("outer", new RuntimeException(new KrbException(34)));
 
             assertThat(KerberosError.fromException(wrapper)).isEqualTo(KerberosError.REPLAY);
         } finally {
             restoreJavaVendor(originalJavaVendor);
         }
-    }
-
-    private static Throwable newKrbException(int errorCode) throws ReflectiveOperationException {
-        Class<?> krbExceptionClass = Class.forName("sun.security.krb5.KrbException");
-        return (Throwable) krbExceptionClass.getConstructor(int.class).newInstance(errorCode);
     }
 
     private static void restoreJavaVendor(String originalJavaVendor) {
