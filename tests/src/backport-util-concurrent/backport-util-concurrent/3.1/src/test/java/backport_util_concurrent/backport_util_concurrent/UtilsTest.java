@@ -6,6 +6,7 @@
  */
 package backport_util_concurrent.backport_util_concurrent;
 
+import edu.emory.mathcs.backport.java.util.concurrent.helpers.NanoTimer;
 import edu.emory.mathcs.backport.java.util.concurrent.helpers.Utils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,7 +19,7 @@ import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UtilsTest {
+public class UtilsTest implements NanoTimer {
     private static final String NANO_TIMER_PROVIDER_PROPERTY =
             "edu.emory.mathcs.backport.java.util.concurrent.NanoTimerProvider";
 
@@ -29,7 +30,7 @@ public class UtilsTest {
         previousNanoTimerProvider = System.getProperty(NANO_TIMER_PROVIDER_PROPERTY);
         System.setProperty(
                 NANO_TIMER_PROVIDER_PROPERTY,
-                edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap.class.getName());
+                UtilsTest.class.getName());
     }
 
     @AfterAll
@@ -67,6 +68,11 @@ public class UtilsTest {
 
         assertThat(contents).containsExactly("red", "green", "blue");
         assertThat(contents).isInstanceOf(String[].class);
+    }
+
+    @Override
+    public long nanoTime() {
+        return System.nanoTime();
     }
 
     private static <E> Collection<E> collectionWithReportedSize(Collection<E> elements, int reportedSize) {
