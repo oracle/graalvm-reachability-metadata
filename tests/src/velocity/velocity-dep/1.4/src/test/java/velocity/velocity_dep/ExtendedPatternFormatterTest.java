@@ -6,9 +6,15 @@
  */
 package velocity.velocity_dep;
 
+import java.io.ByteArrayOutputStream;
+
 import org.apache.log.ContextMap;
+import org.apache.log.Hierarchy;
 import org.apache.log.LogEvent;
+import org.apache.log.Logger;
+import org.apache.log.Priority;
 import org.apache.log.format.ExtendedPatternFormatter;
+import org.apache.log.output.io.StreamTarget;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +28,20 @@ public class ExtendedPatternFormatterTest {
         String formatted = formatter.format(event);
 
         assertThat(formatted).startsWith("caller=");
+    }
+
+    @Test
+    void logsMethodFromLoggerCallStackWhenContextDoesNotProvideIt() {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        StreamTarget target = new StreamTarget(output, new ExtendedPatternFormatter("%{method}"));
+        Hierarchy hierarchy = new Hierarchy();
+        hierarchy.setDefaultLogTarget(target);
+        hierarchy.setDefaultPriority(Priority.DEBUG);
+        Logger logger = hierarchy.getLoggerFor("coverage.extendedPatternFormatter");
+
+        logger.info("message");
+
+        assertThat(output.toString()).isNotEmpty();
     }
 
     @Test
