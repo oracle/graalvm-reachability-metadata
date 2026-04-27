@@ -11,6 +11,7 @@ import java.util.List;
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.CollectionBuilder;
 import com.fasterxml.jackson.jr.ob.api.MapBuilder;
+import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
 import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
 import com.fasterxml.jackson.jr.ob.impl.JSONReader;
 import com.fasterxml.jackson.jr.ob.impl.JSONWriter;
@@ -30,6 +31,7 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
     @Test
     void collectsDeclaredConstructorsForDeserialization() throws Exception {
         POJODefinition definition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER, IntrospectedBean.class);
+        POJODefinition libraryDefinition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER, POJODefinition.class);
 
         IntrospectedBean objectBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class,
                 "{\"name\":\"Ada\",\"active\":true,\"visible\":7}");
@@ -37,7 +39,9 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         IntrospectedBean longBean = JSON_WITH_FORCE_ACCESS.beanFrom(IntrospectedBean.class, "7");
 
         assertThat(definition.constructors()).isNotNull();
+        assertThat(libraryDefinition.constructors()).isNotNull();
         assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
+        assertThat(propertyNames(libraryDefinition)).contains("ignorableNames", "properties");
         assertThat(objectBean.getName()).isEqualTo("Ada");
         assertThat(objectBean.isActive()).isTrue();
         assertThat(objectBean.visible).isEqualTo(7);
@@ -48,9 +52,14 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
     @Test
     void collectsDeclaredFieldsAndMethodsForSerialization() throws Exception {
         POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, IntrospectedBean.class);
+        POJODefinition libraryDefinition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, POJODefinition.class);
+        POJODefinition beanConstructorsDefinition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER,
+                BeanConstructors.class);
         String json = JSON_WITH_FORCE_ACCESS.asString(IntrospectedBean.create("Ada", true, 7));
 
         assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
+        assertThat(propertyNames(libraryDefinition)).contains("ignorableNames", "properties");
+        assertThat(beanConstructorsDefinition.getProperties()).isEmpty();
         assertThat(json).contains("\"name\":\"Ada\"", "\"active\":true", "\"visible\":7");
 
         POJODefinition.Prop visible = property(definition, "visible");
