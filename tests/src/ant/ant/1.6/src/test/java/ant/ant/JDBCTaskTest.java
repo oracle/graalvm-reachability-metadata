@@ -8,6 +8,14 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverPropertyInfo;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.Properties;
+import java.util.logging.Logger;
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.JDBCTask;
 import org.apache.tools.ant.types.Path;
@@ -31,6 +39,16 @@ public class JDBCTaskTest {
         assertThatThrownBy(task::openConnection).isInstanceOf(ClassCastException.class);
     }
 
+    @Test
+    void instantiatesConfiguredJdbcDriver() {
+        ExposedJDBCTask task = newJDBCTask();
+        task.setDriver(UnavailableDriver.class.getName());
+
+        assertThatThrownBy(task::openConnection)
+                .isInstanceOf(BuildException.class)
+                .hasCauseInstanceOf(SQLException.class);
+    }
+
     private static ExposedJDBCTask newJDBCTask() {
         Project project = new Project();
         project.init();
@@ -47,6 +65,46 @@ public class JDBCTaskTest {
     private static final class ExposedJDBCTask extends JDBCTask {
         private void openConnection() {
             getConnection();
+        }
+    }
+
+    public static final class UnavailableDriver implements Driver {
+        public UnavailableDriver() {
+        }
+
+        @Override
+        public Connection connect(String url, Properties info) throws SQLException {
+            return null;
+        }
+
+        @Override
+        public boolean acceptsURL(String url) throws SQLException {
+            return false;
+        }
+
+        @Override
+        public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
+            return new DriverPropertyInfo[0];
+        }
+
+        @Override
+        public int getMajorVersion() {
+            return 1;
+        }
+
+        @Override
+        public int getMinorVersion() {
+            return 0;
+        }
+
+        @Override
+        public boolean jdbcCompliant() {
+            return false;
+        }
+
+        @Override
+        public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+            throw new SQLFeatureNotSupportedException("No parent logger is available");
         }
     }
 }
