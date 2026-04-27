@@ -11,11 +11,25 @@ import com.fasterxml.jackson.jr.type.TypeBindings;
 import com.fasterxml.jackson.jr.type.TypeResolver;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeResolverDynamicAccessTest {
+    @Test
+    void resolvesSyntheticGenericArrayTypesFromResolvedComponentTypes() {
+        TypeResolver resolver = new TypeResolver();
+        ResolvedType stringType = resolver.resolve(TypeBindings.emptyBindings(), String.class);
+        GenericArrayType genericArrayType = new SyntheticGenericArrayType(stringType);
+
+        ResolvedType resolvedArrayType = resolver.resolve(TypeBindings.emptyBindings(), genericArrayType);
+
+        assertThat(resolvedArrayType.isArray()).isTrue();
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(String[].class);
+        assertThat(resolvedArrayType.elementType()).isEqualTo(stringType);
+    }
+
     @Test
     void resolvesGenericArrayTypesFromBoundTypeVariables() throws Exception {
         TypeResolver resolver = new TypeResolver();
@@ -23,8 +37,8 @@ public class TypeResolverDynamicAccessTest {
                 TypeBindings.emptyBindings(),
                 StringArrayContainer.class.getGenericSuperclass());
         Type genericArrayType = GenericArrayContainer.class
-                .getDeclaredMethod("setValues", Object[].class)
-                .getGenericParameterTypes()[0];
+                .getDeclaredField("values")
+                .getGenericType();
 
         ResolvedType resolvedArrayType = resolver.resolve(declaringType.typeBindings(), genericArrayType);
 
@@ -46,5 +60,18 @@ public class TypeResolverDynamicAccessTest {
     }
 
     static final class StringArrayContainer extends GenericArrayContainer<String> {
+    }
+
+    static final class SyntheticGenericArrayType implements GenericArrayType {
+        private final Type componentType;
+
+        SyntheticGenericArrayType(Type componentType) {
+            this.componentType = componentType;
+        }
+
+        @Override
+        public Type getGenericComponentType() {
+            return componentType;
+        }
     }
 }
