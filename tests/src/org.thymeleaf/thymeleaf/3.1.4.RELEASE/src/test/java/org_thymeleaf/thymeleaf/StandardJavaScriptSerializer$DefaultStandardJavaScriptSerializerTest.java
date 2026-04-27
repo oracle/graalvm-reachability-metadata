@@ -30,12 +30,12 @@ public class StandardJavaScriptSerializer$DefaultStandardJavaScriptSerializerTes
                 .doesNotContain("\"class\"");
     }
 
-    private static final class JavaScriptBean {
+    public static final class JavaScriptBean {
 
         private final String library;
         private final boolean stable;
 
-        private JavaScriptBean(final String library, final boolean stable) {
+        public JavaScriptBean(final String library, final boolean stable) {
             this.library = library;
             this.stable = stable;
         }
