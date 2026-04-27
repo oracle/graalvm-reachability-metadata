@@ -8,6 +8,8 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -27,6 +29,21 @@ public class AntClassLoader2Test {
             + "B7AAAAABAAwAAAAGAAEAAAAEAAEADwAAAAIAEA==";
 
     @Test
+    void exposedDefineClassUsesProjectProtectionDomain(@TempDir Path temporaryDirectory) throws Exception {
+        ExposedAntClassLoader2 loader = new ExposedAntClassLoader2();
+        try {
+            Class<?> loadedClass = loader.defineFixtureClass(temporaryDirectory.toFile(),
+                    Base64.getDecoder().decode(FIXTURE_CLASS_BYTES));
+
+            assertThat(loadedClass.getName()).isEqualTo(FIXTURE_CLASS_NAME);
+            assertThat(loadedClass.getClassLoader()).isSameAs(loader);
+            assertThat(loadedClass.getPackage().getName()).isEqualTo("fixtures");
+        } finally {
+            loader.cleanup();
+        }
+    }
+
+    @Test
     void forceLoadClassDefinesFixtureWithProjectProtectionDomain(@TempDir Path temporaryDirectory) throws Exception {
         Path classesDirectory = temporaryDirectory.resolve("classes");
         Path fixtureClassFile = classesDirectory.resolve(FIXTURE_CLASS_RESOURCE);
@@ -43,10 +60,14 @@ public class AntClassLoader2Test {
             assertThat(loadedClass.getName()).isEqualTo(FIXTURE_CLASS_NAME);
             assertThat(loadedClass.getClassLoader()).isSameAs(loader);
             assertThat(loadedClass.getPackage().getName()).isEqualTo("fixtures");
-        } catch (ClassNotFoundException ex) {
-            assertThat(ex).hasMessage(FIXTURE_CLASS_NAME);
         } finally {
             loader.cleanup();
+        }
+    }
+
+    private static final class ExposedAntClassLoader2 extends AntClassLoader2 {
+        private Class<?> defineFixtureClass(File container, byte[] classData) throws IOException {
+            return defineClassFromData(container, classData, FIXTURE_CLASS_NAME);
         }
     }
 }
