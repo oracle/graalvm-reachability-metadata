@@ -9,6 +9,51 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+// Ant 1.6 probes the removed JDK encoder before falling back to its internal Base64 implementation.
+Provider<Directory> generatedSunMiscBase64EncoderSourceDirectory = layout.buildDirectory
+    .dir("generated/sources/sunMiscBase64Encoder/java")
+Provider<Directory> sunMiscBase64EncoderClassesDirectory = layout.buildDirectory
+    .dir("classes/java/sunMiscBase64Encoder")
+
+TaskProvider<Task> generateSunMiscBase64Encoder = tasks.register("generateSunMiscBase64Encoder") {
+    outputs.dir(generatedSunMiscBase64EncoderSourceDirectory)
+
+    doLast {
+        File sourceFile = generatedSunMiscBase64EncoderSourceDirectory.get()
+            .file("sun/misc/BASE64Encoder.java").asFile
+        sourceFile.parentFile.mkdirs()
+        sourceFile.text = """
+            package sun.misc;
+
+            public class BASE64Encoder {
+                public String encode(byte[] bytes) {
+                    return java.util.Base64.getEncoder().encodeToString(bytes);
+                }
+            }
+            """.stripIndent()
+    }
+}
+
+TaskProvider<JavaCompile> compileSunMiscBase64Encoder = tasks.register("compileSunMiscBase64Encoder", JavaCompile) {
+    dependsOn(generateSunMiscBase64Encoder)
+    source(generatedSunMiscBase64EncoderSourceDirectory)
+    destinationDirectory = sunMiscBase64EncoderClassesDirectory
+    classpath = files()
+    options.release = 8
+}
+
+sourceSets {
+    test {
+        output.dir(sunMiscBase64EncoderClassesDirectory, builtBy: compileSunMiscBase64Encoder)
+    }
+}
+
+tasks.withType(Test).configureEach {
+    dependsOn(compileSunMiscBase64Encoder)
+    doFirst {
+        jvmArgs "--patch-module", "jdk.unsupported=${sunMiscBase64EncoderClassesDirectory.get().asFile.absolutePath}"
+    }
+}
 
 dependencies {
     testImplementation "ant:ant:$libraryVersion"
