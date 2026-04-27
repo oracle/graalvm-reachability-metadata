@@ -40,33 +40,41 @@ public class PropertyConfiguratorTest {
         String loggerName = PropertyConfiguratorTest.class.getName() + "." + System.nanoTime();
 
         try (URLClassLoader isolatedLoader = new URLClassLoader(isolatedClassPath(), ClassLoader.getPlatformClassLoader())) {
-            Class<?> propertyConfiguratorClass = Class.forName("org.apache.log4j.PropertyConfigurator", true, isolatedLoader);
-            Class<?> trackingLoggerFactoryClass = Class.forName(TrackingLoggerFactory.class.getName(), true, isolatedLoader);
-            Class<?> trackingLoggerClass = Class.forName(TrackingLogger.class.getName(), true, isolatedLoader);
-            Class<?> logManagerClass = Class.forName("org.apache.log4j.LogManager", true, isolatedLoader);
+            Thread thread = Thread.currentThread();
+            ClassLoader previousContextClassLoader = thread.getContextClassLoader();
+            thread.setContextClassLoader(isolatedLoader);
 
-            Properties properties = new Properties();
-            properties.setProperty("log4j.rootLogger", "ERROR");
-            properties.setProperty("log4j.loggerFactory", trackingLoggerFactoryClass.getName());
-            properties.setProperty("log4j.factory.tag", "configured-by-property-configurator");
-            properties.setProperty("log4j.logger." + loggerName, "INFO");
-            properties.setProperty("log4j.additivity." + loggerName, "false");
+            try {
+                Class<?> propertyConfiguratorClass = Class.forName("org.apache.log4j.PropertyConfigurator", true, isolatedLoader);
+                Class<?> trackingLoggerFactoryClass = Class.forName(TrackingLoggerFactory.class.getName(), true, isolatedLoader);
+                Class<?> trackingLoggerClass = Class.forName(TrackingLogger.class.getName(), true, isolatedLoader);
+                Class<?> logManagerClass = Class.forName("org.apache.log4j.LogManager", true, isolatedLoader);
 
-            Method configureMethod = propertyConfiguratorClass.getMethod("configure", Properties.class);
-            configureMethod.invoke(null, properties);
+                Properties properties = new Properties();
+                properties.setProperty("log4j.rootLogger", "ERROR");
+                properties.setProperty("log4j.loggerFactory", trackingLoggerFactoryClass.getName());
+                properties.setProperty("log4j.factory.tag", "configured-by-property-configurator");
+                properties.setProperty("log4j.logger." + loggerName, "INFO");
+                properties.setProperty("log4j.additivity." + loggerName, "false");
 
-            Object lastFactoryInstance = invokeStatic(trackingLoggerFactoryClass, "getLastInstance");
-            assertThat(lastFactoryInstance).isNotNull();
-            assertThat(invoke(lastFactoryInstance, "getTag")).isEqualTo("configured-by-property-configurator");
-            assertThat(invokeStatic(trackingLoggerFactoryClass, "getMakeNewLoggerInstanceCallCount")).isEqualTo(1);
-            assertThat(invokeStatic(trackingLoggerFactoryClass, "getLastLoggerName")).isEqualTo(loggerName);
+                Method configureMethod = propertyConfiguratorClass.getMethod("configure", Properties.class);
+                configureMethod.invoke(null, properties);
 
-            Object configuredLogger = logManagerClass.getMethod("getLogger", String.class).invoke(null, loggerName);
-            assertThat(trackingLoggerClass.isInstance(configuredLogger)).isTrue();
-            assertThat(invoke(configuredLogger, "getName")).isEqualTo(loggerName);
-            assertThat(String.valueOf(invoke(configuredLogger, "getLevel"))).isEqualTo("INFO");
-            assertThat(invoke(configuredLogger, "getAdditivity")).isEqualTo(false);
-            assertThat(invoke(configuredLogger, "getFactoryTag")).isEqualTo("configured-by-property-configurator");
+                Object lastFactoryInstance = invokeStatic(trackingLoggerFactoryClass, "getLastInstance");
+                assertThat(lastFactoryInstance).isNotNull();
+                assertThat(invoke(lastFactoryInstance, "getTag")).isEqualTo("configured-by-property-configurator");
+                assertThat(invokeStatic(trackingLoggerFactoryClass, "getMakeNewLoggerInstanceCallCount")).isEqualTo(1);
+                assertThat(invokeStatic(trackingLoggerFactoryClass, "getLastLoggerName")).isEqualTo(loggerName);
+
+                Object configuredLogger = logManagerClass.getMethod("getLogger", String.class).invoke(null, loggerName);
+                assertThat(trackingLoggerClass.isInstance(configuredLogger)).isTrue();
+                assertThat(invoke(configuredLogger, "getName")).isEqualTo(loggerName);
+                assertThat(String.valueOf(invoke(configuredLogger, "getLevel"))).isEqualTo("INFO");
+                assertThat(invoke(configuredLogger, "getAdditivity")).isEqualTo(false);
+                assertThat(invoke(configuredLogger, "getFactoryTag")).isEqualTo("configured-by-property-configurator");
+            } finally {
+                thread.setContextClassLoader(previousContextClassLoader);
+            }
         }
     }
 
