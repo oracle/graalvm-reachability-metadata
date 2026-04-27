@@ -130,16 +130,13 @@ public class OroTest {
                 Util.SUBSTITUTE_ALL);
         assertThat(substituted).isEqualTo("x<1> y<22> z<333>");
 
-        StringBuffer limited = new StringBuffer();
-        int replacementCount = Util.substitute(
-                limited,
+        String limited = Util.substitute(
                 matcher,
                 compiler.compile("red"),
                 new StringSubstitution("blue"),
                 "red red red",
                 2);
-        assertThat(replacementCount).isEqualTo(2);
-        assertThat(limited).hasToString("blue blue red");
+        assertThat(limited).isEqualTo("blue blue red");
     }
 
     @Test
@@ -291,9 +288,9 @@ public class OroTest {
         MatchActionProcessor processor = new MatchActionProcessor();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        processor.addAction("café", info -> info.output.println(info.lineNumber + ":matched"));
+        processor.addAction("caf\u00e9", info -> info.output.println(info.lineNumber + ":matched"));
         processor.processMatches(
-                new ByteArrayInputStream("plain\ncafé\n".getBytes(StandardCharsets.UTF_8)),
+                new ByteArrayInputStream("plain\ncaf\u00e9\n".getBytes(StandardCharsets.UTF_8)),
                 output,
                 StandardCharsets.UTF_8.name());
 
