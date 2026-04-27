@@ -37,9 +37,11 @@ public class ExtensionRegistryLiteTest {
         ExtensionRegistry fullRegistry = (ExtensionRegistry) registry;
         Descriptors.FieldDescriptor expectedDescriptor =
             ExtensionDescriptorHolder.descriptor.findExtensionByName(EXTENSION_NAME);
-        ExtensionRegistry.ExtensionInfo extensionByName = fullRegistry.findExtensionByName(EXTENSION_NAME);
+        ExtensionRegistry.ExtensionInfo extensionByName = fullRegistry.findMutableExtensionByName(
+            expectedDescriptor.getFullName()
+        );
         ExtensionRegistry.ExtensionInfo extensionByNumber =
-            fullRegistry.findExtensionByNumber(DescriptorProtos.FileOptions.getDescriptor(), EXTENSION_NUMBER);
+            fullRegistry.findMutableExtensionByNumber(expectedDescriptor.getContainingType(), EXTENSION_NUMBER);
 
         assertThat(extensionByName).isNotNull();
         assertThat(extensionByName.descriptor).isSameAs(expectedDescriptor);
