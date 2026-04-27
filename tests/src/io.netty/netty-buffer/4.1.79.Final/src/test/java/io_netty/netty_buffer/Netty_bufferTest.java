@@ -188,6 +188,60 @@ public class Netty_bufferTest {
     }
 
     @Test
+    public void nioByteBufferInteropWrapsCopiesAndTransfersBytes() {
+        ByteBuffer source = ByteBuffer.allocateDirect(8);
+        source.put(new byte[] {1, 2, 3, 4, 5, 6, 7, 8});
+        source.flip();
+        source.position(2);
+        source.limit(6);
+
+        ByteBuf wrapped = Unpooled.wrappedBuffer(source);
+        ByteBuf copied = Unpooled.copiedBuffer(source);
+        ByteBuf destination = Unpooled.buffer(8);
+        try {
+            assertThat(wrapped.readableBytes()).isEqualTo(4);
+            assertThat(copied.readableBytes()).isEqualTo(4);
+            assertThat(source.position()).isEqualTo(2);
+            assertThat(source.limit()).isEqualTo(6);
+
+            source.put(2, (byte) 20);
+            assertThat(wrapped.getByte(0)).isEqualTo((byte) 20);
+            assertThat(copied.getByte(0)).isEqualTo((byte) 3);
+
+            ByteBuffer nioView = wrapped.nioBuffer(1, 2);
+            assertThat(nioView.remaining()).isEqualTo(2);
+            assertThat(nioView.get()).isEqualTo((byte) 4);
+            assertThat(nioView.get()).isEqualTo((byte) 5);
+            assertThat(wrapped.readerIndex()).isZero();
+
+            ByteBuffer randomAccessTarget = ByteBuffer.allocate(2);
+            wrapped.getBytes(2, randomAccessTarget);
+            assertThat(randomAccessTarget.position()).isEqualTo(2);
+            randomAccessTarget.flip();
+            assertThat(randomAccessTarget.get()).isEqualTo((byte) 5);
+            assertThat(randomAccessTarget.get()).isEqualTo((byte) 6);
+            assertThat(wrapped.readerIndex()).isZero();
+
+            ByteBuffer inbound = ByteBuffer.wrap(new byte[] {9, 10, 11});
+            destination.writeBytes(inbound);
+            assertThat(inbound.hasRemaining()).isFalse();
+            assertThat(ByteBufUtil.getBytes(destination)).containsExactly((byte) 9, (byte) 10, (byte) 11);
+
+            ByteBuffer sequentialTarget = ByteBuffer.allocate(2);
+            destination.readBytes(sequentialTarget);
+            assertThat(sequentialTarget.position()).isEqualTo(2);
+            assertThat(destination.readerIndex()).isEqualTo(2);
+            sequentialTarget.flip();
+            assertThat(sequentialTarget.get()).isEqualTo((byte) 9);
+            assertThat(sequentialTarget.get()).isEqualTo((byte) 10);
+        } finally {
+            destination.release();
+            copied.release();
+            wrapped.release();
+        }
+    }
+
+    @Test
     public void byteBufInputAndOutputStreamsRoundTripDataInputAndDataOutputValues() throws IOException {
         ByteBuf buffer = Unpooled.buffer();
         try {
