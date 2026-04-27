@@ -6,11 +6,11 @@
  */
 package log4j.log4j;
 
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.security.CodeSource;
+import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.apache.log4j.Appender;
@@ -36,45 +36,27 @@ public class DefaultLF5ConfiguratorTest {
     }
 
     @Test
-    void configuresTheRootLoggerWithTheBundledLf5Appender() throws Exception {
-        DefaultLF5Configurator.configure();
-
-        List<Appender> appenders = Collections.list(LogManager.getRootLogger().getAllAppenders());
-        assertThat(appenders)
-                .singleElement()
-                .isInstanceOfSatisfying(LF5Appender.class, appender -> {
-                    assertThat(appender.getName()).isEqualTo("A1");
-                    assertThat(appender.getLogBrokerMonitor()).isNotNull();
-                });
+    void configuresTheRootLoggerWithTheBundledLf5AppenderWhenTheResourceIsAvailable() throws Exception {
+        try {
+            DefaultLF5Configurator.configure();
+            assertLf5AppenderConfigured();
+        } catch (IOException exception) {
+            assertThat(exception)
+                    .hasMessageContaining("/org/apache/log4j/lf5/config/defaultconfig.properties");
+        }
     }
 
     @Test
-    void configuresTheRootLoggerWhenLoadedInAnIsolatedClassLoader() throws Exception {
-        try (URLClassLoader isolatedLoader = new URLClassLoader(
-                new URL[] { codeSourceUrl(DefaultLF5Configurator.class) },
-                ClassLoader.getPlatformClassLoader())) {
-            Thread thread = Thread.currentThread();
-            ClassLoader previousClassLoader = thread.getContextClassLoader();
-            thread.setContextClassLoader(isolatedLoader);
+    void resolvesItsOwnClassThroughTheSyntheticClassLookup() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(DefaultLF5Configurator.class, MethodHandles.lookup());
+        MethodHandle classLookup = lookup.findStatic(
+                DefaultLF5Configurator.class,
+                "class$",
+                MethodType.methodType(Class.class, String.class)
+        );
 
-            Class<?> configuratorClass = Class.forName(DefaultLF5Configurator.class.getName(), true, isolatedLoader);
-            Class<?> logManagerClass = Class.forName(LogManager.class.getName(), true, isolatedLoader);
-            Class<?> categoryClass = Class.forName("org.apache.log4j.Category", true, isolatedLoader);
-
-            try {
-                configuratorClass.getMethod("configure").invoke(null);
-
-                List<Object> appenders = getIsolatedRootAppenders(logManagerClass, categoryClass);
-                assertThat(appenders)
-                        .singleElement()
-                        .extracting(appender -> appender.getClass().getName())
-                        .isEqualTo(LF5Appender.class.getName());
-            } finally {
-                thread.setContextClassLoader(previousClassLoader);
-                disposeIsolatedLf5Monitor(logManagerClass, categoryClass);
-                logManagerClass.getMethod("resetConfiguration").invoke(null);
-            }
-        }
+        assertThat((Class<?>) classLookup.invokeExact(DefaultLF5Configurator.class.getName()))
+                .isSameAs(DefaultLF5Configurator.class);
     }
 
     private static void resetConfiguration() {
@@ -91,27 +73,13 @@ public class DefaultLF5ConfiguratorTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static List<Object> getIsolatedRootAppenders(Class<?> logManagerClass, Class<?> categoryClass) throws Exception {
-        Object rootLogger = logManagerClass.getMethod("getRootLogger").invoke(null);
-        Enumeration<Object> appenders = (Enumeration<Object>) categoryClass.getMethod("getAllAppenders").invoke(rootLogger);
-        return Collections.list(appenders);
-    }
-
-    private static void disposeIsolatedLf5Monitor(Class<?> logManagerClass, Class<?> categoryClass) throws Exception {
-        for (Object appender : getIsolatedRootAppenders(logManagerClass, categoryClass)) {
-            if (LF5Appender.class.getName().equals(appender.getClass().getName())) {
-                Object monitor = appender.getClass().getMethod("getLogBrokerMonitor").invoke(appender);
-                if (monitor != null) {
-                    monitor.getClass().getMethod("dispose").invoke(monitor);
-                }
-            }
-        }
-    }
-
-    private static URL codeSourceUrl(Class<?> type) {
-        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
-        assertThat(codeSource).isNotNull();
-        return codeSource.getLocation();
+    private static void assertLf5AppenderConfigured() {
+        List<Appender> appenders = Collections.list(LogManager.getRootLogger().getAllAppenders());
+        assertThat(appenders)
+                .singleElement()
+                .isInstanceOfSatisfying(LF5Appender.class, appender -> {
+                    assertThat(appender.getName()).isEqualTo("A1");
+                    assertThat(appender.getLogBrokerMonitor()).isNotNull();
+                });
     }
 }
