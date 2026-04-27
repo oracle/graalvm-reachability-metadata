@@ -8,7 +8,6 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,31 +22,25 @@ import org.xml.sax.InputSource;
 public class XMLCatalogInnerExternalResolverTest {
     private static final String MATCHING_PUBLIC_ID = "-//Example//DTD Inline Missing//EN";
     private static final String UNMATCHED_PUBLIC_ID = "-//Example//DTD Unmatched Missing//EN";
-    private static final String MATCHING_URI = "urn:example:inline-missing";
-    private static final String UNMATCHED_URI = "urn:example:unmatched-missing";
 
     @Test
     void delegatesUnresolvedCatalogLookupsToTheExternalResolver(@TempDir Path temporaryDirectory) throws Exception {
+        String matchingUri = temporaryDirectory.resolve("inline-missing.xml").toUri().toString();
+        String unmatchedUri = temporaryDirectory.resolve("unmatched-missing.xml").toUri().toString();
         XMLCatalog catalog = newCatalog(temporaryDirectory);
         addUnresolvableDtd(catalog, MATCHING_PUBLIC_ID, "inline-missing.dtd");
-        addUnresolvableEntity(catalog, MATCHING_URI, "inline-missing.xml");
+        addUnresolvableEntity(catalog, matchingUri, "inline-missing.xml");
         addExternalCatalogPath(catalog, temporaryDirectory);
 
         InputSource matchingEntity = catalog.resolveEntity(MATCHING_PUBLIC_ID, "urn:system:inline-missing");
         InputSource unmatchedEntity = catalog.resolveEntity(UNMATCHED_PUBLIC_ID, "urn:system:unmatched-missing");
+        Source unmatchedSource = catalog.resolve(unmatchedUri, null);
+        Source matchingSource = catalog.resolve(matchingUri, null);
 
         assertThat(matchingEntity).isNull();
         assertThat(unmatchedEntity).isNull();
-        assertExternalResolverAttempt(() -> catalog.resolve(UNMATCHED_URI, null));
-        assertExternalResolverAttempt(() -> catalog.resolve(MATCHING_URI, temporaryDirectory.toUri().toString()));
-    }
-
-    private static void assertExternalResolverAttempt(SourceLookup lookup) throws Exception {
-        try {
-            assertThat(lookup.resolve()).isNotNull();
-        } catch (RuntimeException ex) {
-            assertThat(ex).hasRootCauseInstanceOf(MalformedURLException.class);
-        }
+        assertThat(unmatchedSource).isNotNull();
+        assertThat(matchingSource).isNotNull();
     }
 
     private static XMLCatalog newCatalog(Path baseDirectory) {
@@ -82,9 +75,5 @@ public class XMLCatalogInnerExternalResolverTest {
     private static String externalCatalog() {
         return "PUBLIC \"-//Example//DTD External Missing//EN\" \"external-missing.dtd\"\n"
                 + "URI \"urn:example:external-missing\" \"external-missing.xml\"\n";
-    }
-
-    private interface SourceLookup {
-        Source resolve() throws Exception;
     }
 }
