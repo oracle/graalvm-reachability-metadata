@@ -1,0 +1,754 @@
+Starting a Gradle Daemon, 1 busy and 5 incompatible and 87 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd0cf-1aa5-7a60-ba86-6c5953674b1f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ch.qos.reload4j:reload4j:1.2.19
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2.19".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+- Set "coordinates" to "ch.qos.reload4j:reload4j:1.2.19".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven first, then cross-check the upstream tag so the exact-version source, tests, and documentation URLs are grounded before editing the JSON.
+web search: 
+web search: Maven Central ch.qos.reload4j reload4j 1.2.19 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/
+codex
+Maven Central has all three exact-version classifier artifacts for `1.2.19`: sources, tests, and javadoc. I’m checking the POM and the existing metadata file now so the repository URL follows the artifact’s own SCM/project metadata.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+ succeeded in 0ms:
+{
+  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19.pom' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+ succeeded in 0ms:
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ch.qos.reload4j</groupId>
+  <artifactId>reload4j</artifactId>
+  <packaging>jar</packaging>
+  <name>reload4j</name>
+  <version>1.2.19</version>
+  <description>Reload4j revives EOLed log4j 1.x</description> 
+
+  <url>https://reload4j.qos.ch</url>
+  <inceptionYear>1999</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>QOS.CH Sarl (Switzerland)</name>
+    <url>https://reload4j.qos.ch</url>
+  </organization>
+
+  <scm>
+    <url>https://github.com/qos-ch/reload4j</url>
+    <connection>scm:git@github.com:qos-ch/reload4j.git</connection>
+  </scm>
+
+  
+  <properties>
+    <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
+    <project.build.outputTimestamp>2022-02-08T08:07:00Z</project.build.outputTimestamp>    
+    <jdk.version>1.5</jdk.version>
+    <maven.compiler.source>${jdk.version}</maven.compiler.source>
+    <maven.compiler.target>${jdk.version}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <junit.version>4.13</junit.version>
+    <maven-toolchains-plugin.version>3.0.0</maven-toolchains-plugin.version>
+    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <maven-source-plugin.version>3.2.0</maven-source-plugin.version>
+    <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>    
+    <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+    <maven-bundle-plugin.version>5.1.4</maven-bundle-plugin.version>
+    <maven-release-plugin.version>3.0.0-M4</maven-release-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+  </properties>
+
+  <developers>
+
+    <developer>
+      <id>anders</id>
+      <name>Anders Kristensen</name>
+      <email>anders@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>ceki</id>
+      <name>Ceki Gulcu</name>
+      <email>ceki@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>grobmeier</id>
+      <name>Christian Grobmeier</name>
+      <email>grobmeier@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>carnold</id>
+      <name>Curtis William Arnold</name>
+      <email>carnold@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>eross</id>
+      <name>Elias Nathan Ross</name>
+      <email>eross@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>ggregory</id>
+      <name>Gary D. Gregory</name>
+      <email>ggregory@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>hoju</id>
+      <name>Jacob Kjome</name>
+      <email>hoju@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>jmoore</id>
+      <name>Jim Moore</name>
+      <email>jmoore@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>jon</id>
+      <name>Jon Scott Stevens</name>
+      <email>jon@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id></id>
+      <name>Mark Wayne Womack</name>
+      <email>mwomack@apache.org</email>
+    </developer>
+           
+
+    <developer>
+      <id>psmith</id>
+      <name>Paul Jeffrey Smith</name>
+      <email>psmith@apache.org</email>
+    </developer>
+
+    <developer>
+      <id>pier</id>
+      <name>Pier Fumagalli</name>
+      <email>pier@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>rgoers</id>
+      <name>Ralph Goers</name>
+      <email>rgoers@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>sdeboy</id>
+      <name>Scott Deboy</name>
+      <email>sdeboy@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>yoavs</id>
+      <name>Yoav Shapira</name>
+      <email>yoavs@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>bradm</id>
+      <name>bradm</name>
+      <email>bradm@apache.org</email>
+    </developer>
+
+
+    <developer>
+      <id>oburn</id>
+      <name>Oliver Bburn</name>
+      <email>oburn@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>pathos</id>
+      <name>Mathias Bogaert</name>
+      <email>pathos@apache.org</email>
+    </developer>
+    
+    <developer>
+      <id>pglezen</id>
+      <name>Paul Glezen</name>
+      <email>pglezen@apache.org</email>
+    </developer>
+
+  </developers>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+        <version>${maven-toolchains-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>        
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+        <configuration>
+          <archive>
+           <manifest>
+             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+           </manifest>
+            <manifestEntries>
+              <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>	
+              <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+            </manifestEntries>
+            <!-- Add to output produced by bundle-plugin -->
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>bundle-test-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+ 
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>        
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven-source-plugin.version}</version>
+        <configuration>
+          <archive>
+            <manifestSections>
+              <manifestSection>
+                <name>org.apache.log4j</name>
+                <manifestEntries>
+                  <DynamicImport-Package>*</DynamicImport-Package>
+                  <Implementation-Title>reload4j</Implementation-Title>
+                  <Implementation-Version>${project.version}</Implementation-Version>
+                  <Implementation-Vendor>"QOS.CH Sarl (Switzerland)"</Implementation-Vendor>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
+          </archive>
+        </configuration>          
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution> 
+        </executions>          
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <additionalOptions>
+            <additionalOption>-Xdoclint:none</additionalOption>
+          </additionalOptions>
+          <header><![CDATA[<a href="https://reload4j.qos.ch">
+          <img src="https://reload4j.qos.ch/images/logos/reload4j.jpg" height="40"/></a>]]></header>
+          <top><![CDATA[<b><span style="color: #ff8844">&nbsp;&nbsp;You can also support SLF4J/logback/reload4j projects via <a href="https://github.com/sponsors/qos-ch">Github donations and sponsorship</a>.<span></b>]]></top>
+          <notimestamp>true</notimestamp>
+          <failOnError>false</failOnError>
+          <failOnWarnings>false</failOnWarnings>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <reportFormat>plain</reportFormat>
+          <forkCount>1</forkCount>
+          <forkMode>pertest</forkMode><!-- deprecated, but tests fail when changing the setting -->
+          <!-- <argLine>-Djava.library.path=${project.basedir}</argLine> -->
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
+      </plugin>
+
+      
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-plugin.version}</version>        
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              <!-- omit chainsaw  -->
+              !org.apache.log4j.chainsaw.*,
+              org.apache.log4j.*;version=${project.version};-noimport:=true
+            </Export-Package>
+            <Import-Package>
+              javax.jmdns;resolution:=optional,
+              javax.jms;resolution:=optional,
+              javax.mail;version="[1.4,2)";resolution:=optional,
+              javax.mail.internet;version="[1.4,2)";resolution:=optional,
+              javax.naming,
+              <!-- swing packages are needed only by chainsaw -->
+              !javax.swing.*,
+              javax.xml.parsers,
+              org.w3c.dom,
+              org.xml.sax,
+              org.xml.sax.helpers
+            </Import-Package>
+            <Bundle-DocURL>https://reload4j.qos.ch/</Bundle-DocURL>
+            <Bundle-SymbolicName>org.apache.log4j</Bundle-SymbolicName>
+          </instructions>
+        </configuration>
+      </plugin>
+     
+    </plugins>
+  </build>
+
+
+  <reporting>
+    <plugins>
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>        
+        <configuration>                                
+          <linkJavadoc>true</linkJavadoc>
+          <linksource>true</linksource>
+          <failOnError>false</failOnError>
+          <links>
+            <link>
+              https://docs.oracle.com/javase/8/docs/api/
+            </link>
+          </links>
+        </configuration>
+      </plugin>
+      -->
+    </plugins>
+  </reporting>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.7</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jms_1.1_spec</artifactId>
+      <version>1.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.1.210</version>
+      <scope>test</scope>
+    </dependency>
+ </dependencies>
+
+ <distributionManagement>
+    <site>
+      <id>qos_ch</id>
+      <url>scp://yvo.qos.ch/var/www/reload4j.qos.ch/htdocs/</url>
+    </site>
+
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+
+  </distributionManagement>
+
+  <profiles>
+    <profile>
+      <id>javadocjar</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <configuration>
+              <doclint>none</doclint>
+              <links>
+                <link>
+                  https://docs.oracle.com/javase/8/docs/api/
+                </link>
+              </links>
+            </configuration>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>sign-artifacts</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>toolchains</id>
+      <activation>
+        <jdk>(8,]</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <!-- Ignore toolchains for test execution, so tests use Maven JVM -->
+                <jvm>${env.JAVA_HOME}/bin/java</jvm>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-toolchains-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>toolchain</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <toolchains>
+                <jdk>
+                  <version>[1.5, 8]</version>
+                </jdk>
+              </toolchains>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+
+
+</project>
+
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+ succeeded in 0ms:
+web search: 
+web search: https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com ch.qos.reload4j reload4j 1.2.19 scm github qos-ch reload4j
+codex
+The POM’s SCM URL is `https://github.com/qos-ch/reload4j`, and the version directory publishes `sources`, `tests`, and `javadoc` jars. I’m going to write those Maven artifact URLs into the discovered metadata and leave `language` absent because this is not a Kotlin or Scala-specific artifact.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -n 5' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+ succeeded in 0ms:
+{
+  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19"
+}
+
+ succeeded in 0ms:
+build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+diff --git a/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json b/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+index 7f7b9998ecfa3fc435b9fa01159dd16c8090e788..39dd50d352f499fbf14b2e018152732117c75ad5
+--- a/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
++++ b/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19"
++  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/reload4j",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-javadoc.jar",
++  "description" : "Reload4j is a revived fork and drop-in replacement for Apache Log4j 1.2.17, preserving the legacy Log4j 1.x API for existing Java applications. It provides logging infrastructure and maintenance fixes for projects that cannot migrate immediately to newer logging frameworks."
+ }
+
+diff --git a/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json b/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+index 7f7b9998ecfa3fc435b9fa01159dd16c8090e788..39dd50d352f499fbf14b2e018152732117c75ad5
+--- a/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
++++ b/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19"
++  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/reload4j",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-javadoc.jar",
++  "description" : "Reload4j is a revived fork and drop-in replacement for Apache Log4j 1.2.17, preserving the legacy Log4j 1.x API for existing Java applications. It provides logging infrastructure and maintenance fixes for projects that cannot migrate immediately to newer logging frameworks."
+ }
+
+codex
+The metadata file is updated. I’m doing a quick validation pass now: JSON parse, URL availability, and a focused diff so we catch formatting or typo issues before I wrap up.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+ succeeded in 0ms:
+{
+  "coordinates": "ch.qos.reload4j:reload4j:1.2.19",
+  "source-code-url": "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-sources.jar",
+  "repository-url": "https://github.com/qos-ch/reload4j",
+  "test-code-url": "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-javadoc.jar",
+  "description": "Reload4j is a revived fork and drop-in replacement for Apache Log4j 1.2.17, preserving the legacy Log4j 1.x API for existing Java applications. It provides logging infrastructure and maintenance fixes for projects that cannot migrate immediately to newer logging frameworks."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-javadoc.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 21:19:26 GMT
+content-type: application/java-archive
+content-length: 1173281
+cf-ray: 9f30dd8bed67931a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 522186
+etag: "766c599d30abf0d191705b58b0ac025c"
+last-modified: Tue, 08 Feb 2022 08:54:59 GMT
+x-checksum-md5: 766c599d30abf0d191705b58b0ac025c
+x-checksum-sha1: 8b89cf51d3b21028d3297079431bdc5a4909642e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-sources.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 21:19:26 GMT
+content-type: application/java-archive
+content-length: 382411
+cf-ray: 9f30dd8bef043dba-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 522186
+etag: "7cc5dcac7aa3f4a5046a89759ef7c185"
+last-modified: Tue, 08 Feb 2022 08:54:58 GMT
+x-checksum-md5: 7cc5dcac7aa3f4a5046a89759ef7c185
+x-checksum-sha1: 435055e6fec4dfaebf3f356c18246480e2157548
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-tests.jar' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d
+diff --git a/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json b/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+index 7f7b9998ecfa3fc435b9fa01159dd16c8090e788..39dd50d352f499fbf14b2e018152732117c75ad5
+--- a/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
++++ b/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19"
++  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/reload4j",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-javadoc.jar",
++  "description" : "Reload4j is a revived fork and drop-in replacement for Apache Log4j 1.2.17, preserving the legacy Log4j 1.x API for existing Java applications. It provides logging infrastructure and maintenance fixes for projects that cannot migrate immediately to newer logging frameworks."
+ }
+
+ succeeded in 188ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 21:19:26 GMT
+content-type: application/java-archive
+content-length: 228771
+cf-ray: 9f30dd8bd836265f-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "9a5819c6af3e373a2151cfd692c2b320"
+last-modified: Tue, 08 Feb 2022 08:54:57 GMT
+x-checksum-md5: 9a5819c6af3e373a2151cfd692c2b320
+x-checksum-sha1: c5c282b0072f17e40d5ead82ec6cfd0d773c4727
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: repo1.maven.org maven2 ch qos reload4j reload4j 1.2.19 sources tests javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/ch.qos.reload4j/reload4j/1.2.19
+web search: 
+web search: https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19
+codex
+Updated [ch.qos.reload4j-reload4j-1.2.19.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json:1) with the Maven Central `sources`, `tests`, and `javadoc` artifacts for exact version `1.2.19`, plus the SCM repository from the artifact POM. Maven Central lists those exact classifier jars, and the POM points SCM at `qos-ch/reload4j`. ([repo1.maven.org](https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19))
+
+I left `language` absent because this is not a Kotlin or Scala-specific library. Validation done: `jq .` passed, and the three Maven artifact URLs returned HTTP 200.
+diff --git a/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json b/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+index 7f7b9998ecfa3fc435b9fa01159dd16c8090e788..39dd50d352f499fbf14b2e018152732117c75ad5
+--- a/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
++++ b/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19"
++  "coordinates" : "ch.qos.reload4j:reload4j:1.2.19",
++  "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-sources.jar",
++  "repository-url" : "https://github.com/qos-ch/reload4j",
++  "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19/reload4j-1.2.19-javadoc.jar",
++  "description" : "Reload4j is a revived fork and drop-in replacement for Apache Log4j 1.2.17, preserving the legacy Log4j 1.x API for existing Java applications. It provides logging infrastructure and maintenance fixes for projects that cannot migrate immediately to newer logging frameworks."
+ }
+
+2026-04-27T21:19:43.915304Z ERROR codex_core::session: failed to record rollout items: thread 019dd0cf-1aa5-7a60-ba86-6c5953674b1f not found
+tokens used
+35,380
+Updated [ch.qos.reload4j-reload4j-1.2.19.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d/build/discovered-artifact-metadata/ch.qos.reload4j-reload4j-1.2.19.json:1) with the Maven Central `sources`, `tests`, and `javadoc` artifacts for exact version `1.2.19`, plus the SCM repository from the artifact POM. Maven Central lists those exact classifier jars, and the POM points SCM at `qos-ch/reload4j`. ([repo1.maven.org](https://repo1.maven.org/maven2/ch/qos/reload4j/reload4j/1.2.19))
+
+I left `language` absent because this is not a Kotlin or Scala-specific library. Validation done: `jq .` passed, and the three Maven artifact URLs returned HTTP 200.
+Ran agent for ch.qos.reload4j:reload4j:1.2.19 (exit 0). Log: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d/build/agent-artifact-discovery-logs/ch.qos.reload4j-reload4j-1.2.19.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2261-f32a443d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 4s
+9 actionable tasks: 4 executed, 5 from cache
