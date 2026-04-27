@@ -6,6 +6,9 @@
  */
 package org_objenesis.objenesis;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.objenesis.ObjenesisException;
@@ -14,7 +17,7 @@ import org.objenesis.instantiator.gcj.GCJInstantiatorBase;
 public class GCJInstantiatorBaseTest {
 
     @Test
-    void initializesGcjObjectInputStreamLookupWhenConstructed() {
+    void initializesGcjObjectInputStreamLookupWhenConstructed() throws Throwable {
         TestGCJInstantiator.resetInitializationState();
 
         Assertions.assertThatThrownBy(() -> new TestGCJInstantiator(Object.class))
@@ -33,9 +36,26 @@ public class GCJInstantiatorBaseTest {
             return null;
         }
 
-        private static void resetInitializationState() {
+        private static void resetInitializationState()
+            throws NoSuchFieldException, IllegalAccessException {
             newObjectMethod = null;
             dummyStream = null;
+            clearCachedClassLiteral("class$java$io$ObjectInputStream");
+            clearCachedClassLiteral("class$java$lang$Class");
+        }
+
+        private static void clearCachedClassLiteral(String fieldName)
+            throws NoSuchFieldException, IllegalAccessException {
+            MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+                GCJInstantiatorBase.class,
+                MethodHandles.lookup()
+            );
+            VarHandle field = lookup.findStaticVarHandle(
+                GCJInstantiatorBase.class,
+                fieldName,
+                Class.class
+            );
+            field.set(null);
         }
     }
 }
