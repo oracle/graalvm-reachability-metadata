@@ -51,6 +51,17 @@ public class Scalatest_compatibleTest {
                 .isEqualTo("first:passed,second:failed,enum:SUCCEEDED");
     }
 
+    @Test
+    void assertionCanBeSpecializedThroughCustomSubInterfaces() {
+        Assertion passing = evaluateDiagnostic(true, "all checks passed");
+        Assertion failing = evaluateDiagnostic(false, "missing expected field");
+
+        assertThat(passing).isInstanceOf(DiagnosticAssertion.class);
+        assertThat(failing).isInstanceOf(DiagnosticAssertion.class);
+        assertThat(renderDiagnostic(passing)).isEqualTo("PASS: all checks passed");
+        assertThat(renderDiagnostic(failing)).isEqualTo("FAIL: missing expected field");
+    }
+
     private static String joinDescriptions(List<? extends Assertion> assertions) {
         return assertions.stream()
                 .map(Scalatest_compatibleTest::describe)
@@ -85,7 +96,27 @@ public class Scalatest_compatibleTest {
         return assertion;
     }
 
+    private static Assertion evaluateDiagnostic(boolean passed, String detail) {
+        return new DiagnosticResult(passed, detail);
+    }
+
+    private static String renderDiagnostic(Assertion assertion) {
+        if (assertion instanceof DiagnosticAssertion diagnosticAssertion) {
+            return (diagnosticAssertion.passed() ? "PASS" : "FAIL") + ": " + diagnosticAssertion.detail();
+        }
+        return describe(assertion);
+    }
+
     private record NamedAssertion(String name, boolean passed) implements Assertion {
+    }
+
+    private interface DiagnosticAssertion extends Assertion {
+        boolean passed();
+
+        String detail();
+    }
+
+    private record DiagnosticResult(boolean passed, String detail) implements DiagnosticAssertion {
     }
 
     private enum OutcomeAssertion implements Assertion {
