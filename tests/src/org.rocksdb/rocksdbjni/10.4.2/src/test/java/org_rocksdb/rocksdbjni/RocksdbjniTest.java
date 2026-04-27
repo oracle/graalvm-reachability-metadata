@@ -33,7 +33,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RocksdbjniTest {
+public class RocksdbjniTest {
 
     @BeforeAll
     static void loadNative() {
