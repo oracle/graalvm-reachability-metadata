@@ -44,6 +44,16 @@ public class Org_osgi_annotation_versioningTest {
     }
 
     @Test
+    void providerTypeCanMarkAbstractClassesExtendedByProviders() {
+        ProviderTemplate provider = new GeneratedProvider();
+
+        assertThat(provider.provide("request"))
+                .isEqualTo("provider:request");
+        assertThat(provider.describeProvider())
+                .isEqualTo("generated-provider");
+    }
+
+    @Test
     void versionAnnotationExposesPackageVersionValueContract() {
         Version version = new FixedVersion("1.2.3.osgi");
 
@@ -104,6 +114,29 @@ public class Org_osgi_annotation_versioningTest {
 
         String describe() {
             return "default-provider";
+        }
+    }
+
+    @ProviderType
+    private abstract static class ProviderTemplate {
+        final String provide(String value) {
+            return providerPrefix() + ":" + value;
+        }
+
+        abstract String providerPrefix();
+
+        abstract String describeProvider();
+    }
+
+    private static final class GeneratedProvider extends ProviderTemplate {
+        @Override
+        String providerPrefix() {
+            return "provider";
+        }
+
+        @Override
+        String describeProvider() {
+            return "generated-provider";
         }
     }
 
