@@ -27,6 +27,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.artifact.DefaultArtifactType;
 import org.eclipse.aether.collection.DependencyCollectionContext;
 import org.eclipse.aether.collection.DependencySelector;
+import org.eclipse.aether.collection.DependencyTraverser;
 import org.eclipse.aether.graph.DefaultDependencyNode;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
@@ -51,6 +52,9 @@ import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
 import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
 import org.eclipse.aether.util.graph.selector.StaticDependencySelector;
+import org.eclipse.aether.util.graph.traverser.AndDependencyTraverser;
+import org.eclipse.aether.util.graph.traverser.FatArtifactTraverser;
+import org.eclipse.aether.util.graph.traverser.StaticDependencyTraverser;
 import org.eclipse.aether.util.graph.visitor.PathRecordingDependencyVisitor;
 import org.eclipse.aether.util.graph.visitor.PostorderNodeListGenerator;
 import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
@@ -211,6 +215,29 @@ public class Aether_utilTest {
         Dependency allowedDependency = dependency("org.allowed", "blocked-artifact", JavaScopes.RUNTIME, false);
         assertThat(exclusionSelector.selectDependency(blockedDependency)).isFalse();
         assertThat(exclusionSelector.selectDependency(allowedDependency)).isTrue();
+    }
+
+    @Test
+    void dependencyTraversersSkipFatArtifactsAndComposeTraversalRules() {
+        Dependency thinDependency = new Dependency(artifact("org.example", "thin-module"), JavaScopes.COMPILE);
+        Artifact fatArtifact = artifact("org.example", "fat-module")
+                .setProperties(Collections.singletonMap(ArtifactProperties.INCLUDES_DEPENDENCIES, "true"));
+        Dependency fatDependency = new Dependency(fatArtifact, JavaScopes.RUNTIME);
+
+        DependencyTraverser fatArtifactTraverser = new FatArtifactTraverser();
+        assertThat(fatArtifactTraverser.traverseDependency(thinDependency)).isTrue();
+        assertThat(fatArtifactTraverser.traverseDependency(fatDependency)).isFalse();
+
+        DependencyTraverser allowingChain = AndDependencyTraverser.newInstance(
+                fatArtifactTraverser, new StaticDependencyTraverser(true));
+        assertThat(allowingChain.traverseDependency(thinDependency)).isTrue();
+        assertThat(allowingChain.traverseDependency(fatDependency)).isFalse();
+        assertThat(allowingChain.deriveChildTraverser(new CollectionContext(thinDependency))).isSameAs(allowingChain);
+
+        DependencyTraverser blockingChain = AndDependencyTraverser.newInstance(
+                fatArtifactTraverser, new StaticDependencyTraverser(false));
+        assertThat(blockingChain.traverseDependency(thinDependency)).isFalse();
+        assertThat(AndDependencyTraverser.newInstance(fatArtifactTraverser, null)).isSameAs(fatArtifactTraverser);
     }
 
     @Test
