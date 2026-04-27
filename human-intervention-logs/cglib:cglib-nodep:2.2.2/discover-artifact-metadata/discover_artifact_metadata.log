@@ -1,0 +1,1445 @@
+Starting a Gradle Daemon, 6 busy and 3 incompatible and 156 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dcf05-bd18-79f2-bdc2-db1618636568
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: cglib:cglib-nodep:2.2.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.2.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+- Set "coordinates" to "cglib:cglib-nodep:2.2.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream repository, then patch the JSON directly with exact-version URLs where they’re defensible.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+{
+  "coordinates" : "cglib:cglib-nodep:2.2.2"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'cglib-nodep|cglib:cglib|source-code-url|documentation-url' build/discovered-artifact-metadata metadata repository -g '*.json' -g '*.xml' -g '*.properties'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ exited 2 in 0ms:
+rg: repository: No such file or directory (os error 2)
+build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json:2:  "coordinates" : "cglib:cglib-nodep:2.2.2"
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/org.apache.commons/commons-pool2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+metadata/org.apache.commons/commons-collections4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+metadata/org.example/library/index.json:9:    "source-code-url": "N/A",
+metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/3.0.1/findbugs-annotations-3.0.1-sources.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/3.0.1/findbugs-annotations-3.0.1-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1-sources.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+metadata/javax.annotation/jsr250-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0-sources.jar",
+metadata/javax.annotation/jsr250-api/index.json:9:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar",
+metadata/org.objenesis/objenesis/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-sources.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-javadoc.jar",
+metadata/org.hdrhistogram/HdrHistogram/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-sources.jar",
+metadata/org.hdrhistogram/HdrHistogram/index.json:16:    "documentation-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:8:    "documentation-url" : "https://github.com/JetBrains/kotlin/releases/tag/v2.3.20",
+metadata/javax.annotation/javax.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-sources.jar",
+metadata/javax.annotation/javax.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/10.1.0/tomcat-embed-core-10.1.0-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:9:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.1.0/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:85:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/10.0.20/tomcat-embed-core-10.0.20-sources.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:88:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-javadoc.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-sources.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-javadoc.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+metadata/org.apache.santuario/xmlsec/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-sources.jar",
+metadata/org.apache.santuario/xmlsec/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-sources.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-sources.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-javadoc.jar",
+metadata/org.hibernate/hibernate-core/index.json:16:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.0.0.Final/hibernate-core-6.0.0.Final-sources.jar",
+metadata/org.hibernate/hibernate-core/index.json:19:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.0.0.Final/hibernate-core-6.0.0.Final-javadoc.jar",
+metadata/org.hibernate/hibernate-core/index.json:40:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/hibernate-core/5.6.14.Final/hibernate-core-5.6.14.Final-sources.jar",
+metadata/org.hibernate/hibernate-core/index.json:43:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/hibernate-core/5.6.14.Final/hibernate-core-5.6.14.Final-javadoc.jar",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/alpn/alpn-api/1.1.3.v20160715/alpn-api-1.1.3.v20160715-sources.jar",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/alpn/alpn-api/1.1.3.v20160715/alpn-api-1.1.3.v20160715-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-javadoc.jar",
+metadata/org.flywaydb/flyway-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/11.14.1/flyway-core-11.14.1-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:8:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-11.14.1/documentation",
+metadata/org.flywaydb/flyway-core/index.json:75:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.20.1/flyway-core-10.20.1-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:78:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.20.1/documentation",
+metadata/org.flywaydb/flyway-core/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.20.0/flyway-core-10.20.0-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:95:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.20.0/documentation",
+metadata/org.flywaydb/flyway-core/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.15.0/flyway-core-10.15.0-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:112:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.15.0/documentation",
+metadata/org.flywaydb/flyway-core/index.json:126:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/10.10.0/flyway-core-10.10.0-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:129:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.10.0/documentation",
+metadata/org.flywaydb/flyway-core/index.json:143:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/9.0.1/flyway-core-9.0.1-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:146:    "documentation-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/9.0.1/flyway-core-9.0.1-javadoc.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.31/kotlin-stdlib-common-1.5.31-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:9:    "documentation-url": "https://github.com/JetBrains/kotlin/blob/v1.5.31/libraries/stdlib/ReadMe.md",
+metadata/org.freemarker/freemarker/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-sources.jar",
+metadata/org.freemarker/freemarker/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-javadoc.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-sources.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.0.GA/jboss-logmanager-1.2.0.GA-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:9:    "documentation-url": "N/A",
+metadata/org.flywaydb/flyway-sqlserver/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.19.0/flyway-sqlserver-10.19.0-sources.jar",
+metadata/org.flywaydb/flyway-sqlserver/index.json:9:    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-10.19.0/documentation/Flyway%20CLI%20and%20API/Supported%20Databases/SQL%20Server%20Database.md",
+metadata/org.flywaydb/flyway-sqlserver/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.13.0/flyway-sqlserver-10.13.0-sources.jar",
+metadata/org.flywaydb/flyway-sqlserver/index.json:46:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.13.0/documentation",
+metadata/org.flywaydb/flyway-sqlserver/index.json:68:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/10.10.0/flyway-sqlserver-10.10.0-sources.jar",
+metadata/org.flywaydb/flyway-sqlserver/index.json:71:    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-10.10.0/documentation",
+metadata/org.apache.kafka/kafka-streams/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-sources.jar",
+metadata/org.apache.kafka/kafka-streams/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-javadoc.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+metadata/javax.xml.bind/jaxb-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-sources.jar",
+metadata/javax.xml.bind/jaxb-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-javadoc.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-sources.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-sources.jar",
+metadata/io.netty/netty-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-sources.jar",
+metadata/io.netty/netty-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-sources.jar",
+metadata/io.netty/netty-common/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-javadoc.jar",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/10.13.0/flyway-database-postgresql-10.13.0-sources.jar",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:11:    "documentation-url": "https://github.com/flyway/flyway/tree/flyway-10.13.0/documentation",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:34:    "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/10.10.0/flyway-database-postgresql-10.10.0-sources.jar",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:37:    "documentation-url": "https://github.com/flyway/flyway/tree/flyway-10.10.0/documentation",
+metadata/org.jboss.narayana.jta/jta/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/5.12.4.Final/jta-5.12.4.Final-sources.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/narayana-jta/5.12.4.Final/narayana-jta-5.12.4.Final-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/io.netty/netty-transport/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.115.Final/netty-transport-4.1.115.Final-sources.jar",
+metadata/io.netty/netty-transport/index.json:12:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.115.Final/netty-transport-4.1.115.Final-javadoc.jar",
+metadata/io.netty/netty-transport/index.json:41:    "source-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.80.Final/netty-transport-4.1.80.Final-sources.jar",
+metadata/io.netty/netty-transport/index.json:44:    "documentation-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.80.Final/netty-transport-4.1.80.Final-javadoc.jar",
+metadata/org.mariadb/r2dbc-mariadb/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/mariadb/r2dbc-mariadb/1.1.3/r2dbc-mariadb-1.1.3-sources.jar",
+metadata/org.mariadb/r2dbc-mariadb/index.json:11:    "documentation-url": "https://github.com/mariadb-corporation/mariadb-connector-r2dbc/blob/1.1.3/README.md",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/2.0.3/jakarta.jms-api-2.0.3-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/2.0.3/jakarta.jms-api-2.0.3-javadoc.jar",
+metadata/org.hibernate/hibernate-spatial/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-spatial/7.2.0.Final/hibernate-spatial-7.2.0.Final-sources.jar",
+metadata/org.hibernate/hibernate-spatial/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-spatial/7.2.0.Final/hibernate-spatial-7.2.0.Final-javadoc.jar",
+metadata/org.hibernate/hibernate-spatial/index.json:27:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-spatial/6.5.0.Final/hibernate-spatial-6.5.0.Final-sources.jar",
+metadata/org.hibernate/hibernate-spatial/index.json:30:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-spatial/6.5.0.Final/hibernate-spatial-6.5.0.Final-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-sources.jar",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+metadata/io.netty/netty-resolver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-sources.jar",
+metadata/io.netty/netty-resolver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+metadata/com.fasterxml/classmate/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-sources.jar",
+metadata/com.fasterxml/classmate/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/com.atomikos/transactions-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/6.0.0/transactions-api-6.0.0-sources.jar",
+metadata/com.atomikos/transactions-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/atomikos/transactions-api/6.0.0/transactions-api-6.0.0-javadoc.jar",
+metadata/org.jboss.logging/jboss-logging/index.json:15:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.5.0.Final/jboss-logging-3.5.0.Final-sources.jar",
+metadata/org.jboss.logging/jboss-logging/index.json:18:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.5.0.Final/jboss-logging-3.5.0.Final-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.0-og/opengauss-jdbc-3.1.0-og-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:11:    "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+metadata/com.atomikos/transactions/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/atomikos/transactions/6.0.0/transactions-6.0.0-sources.jar",
+metadata/com.atomikos/transactions/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/atomikos/transactions/6.0.0/transactions-6.0.0-javadoc.jar",
+metadata/org.liquibase/liquibase-core/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.17.0/liquibase-core-4.17.0-sources.jar",
+metadata/org.liquibase/liquibase-core/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.17.0/liquibase-core-4.17.0-javadoc.jar",
+metadata/org.liquibase/liquibase-core/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.20.0/liquibase-core-4.20.0-sources.jar",
+metadata/org.liquibase/liquibase-core/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.20.0/liquibase-core-4.20.0-javadoc.jar",
+metadata/org.liquibase/liquibase-core/index.json:46:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.23.0/liquibase-core-4.23.0-sources.jar",
+metadata/org.liquibase/liquibase-core/index.json:49:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.23.0/liquibase-core-4.23.0-javadoc.jar",
+metadata/org.liquibase/liquibase-core/index.json:64:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.25.0/liquibase-core-4.25.0-sources.jar",
+metadata/org.liquibase/liquibase-core/index.json:67:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.25.0/liquibase-core-4.25.0-javadoc.jar",
+metadata/org.liquibase/liquibase-core/index.json:87:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.27.0/liquibase-core-4.27.0-sources.jar",
+metadata/org.liquibase/liquibase-core/index.json:90:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/4.27.0/liquibase-core-4.27.0-javadoc.jar",
+metadata/org.liquibase/liquibase-core/index.json:103:    "source-code-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/liquibase-core-5.0.1-sources.jar",
+metadata/org.liquibase/liquibase-core/index.json:106:    "documentation-url": "https://repo1.maven.org/maven2/org/liquibase/liquibase-core/5.0.1/liquibase-core-5.0.1-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-sources.jar",
+metadata/javax.cache/cache-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.1/cache-api-1.1.1-sources.jar",
+metadata/javax.cache/cache-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.1/cache-api-1.1.1-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+metadata/org.jboss/jandex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jandex/2.4.2.Final/jandex-2.4.2.Final-sources.jar",
+metadata/org.jboss/jandex/index.json:8:    "documentation-url" : "https://github.com/smallrye/jandex/blob/2.4.2.Final/README.md",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-sources.jar",
+metadata/com.itextpdf/io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+metadata/mysql/mysql-connector-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29-sources.jar",
+metadata/mysql/mysql-connector-java/index.json:11:    "documentation-url": "https://github.com/mysql/mysql-connector-j/blob/8.0.29/README.md",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-sources.jar",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-javadoc.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+metadata/org.quartz-scheduler/quartz/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.3.2/quartz-2.3.2-sources.jar",
+metadata/org.quartz-scheduler/quartz/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.3.2/quartz-2.3.2-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:46:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:49:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-javadoc.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-javadoc.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/23.0.0/annotations-java5-23.0.0-sources.jar",
+metadata/org.jetbrains/annotations-java5/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/23.0.0/annotations-java5-23.0.0-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+metadata/com.h2database/h2/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-sources.jar",
+metadata/com.h2database/h2/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/toolchain/jetty-jakarta-servlet-api/5.0.2/jetty-jakarta-servlet-api-5.0.2-sources.jar",
+metadata/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/toolchain/jetty-jakarta-servlet-api/5.0.2/jetty-jakarta-servlet-api-5.0.2-javadoc.jar",
+metadata/io.grpc/grpc-context/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-sources.jar",
+metadata/io.grpc/grpc-context/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-javadoc.jar",
+metadata/org.jetbrains/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0-sources.jar",
+metadata/org.jetbrains/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0-javadoc.jar",
+metadata/jline/jline/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-sources.jar",
+metadata/jline/jline/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:8:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+metadata/org.unbescape/unbescape/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/unbescape/unbescape/1.1.6.RELEASE/unbescape-1.1.6.RELEASE-sources.jar",
+metadata/org.unbescape/unbescape/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/unbescape/unbescape/1.1.6.RELEASE/unbescape-1.1.6.RELEASE-javadoc.jar",
+metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-sources.jar",
+metadata/commons-io/commons-io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-javadoc.jar",
+metadata/org.json/json/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/json/json/20220320/json-20220320-sources.jar",
+metadata/org.json/json/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/json/json/20220320/json-20220320-javadoc.jar",
+metadata/com.google.auto.value/auto-value-annotations/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.9/auto-value-annotations-1.9-sources.jar",
+metadata/com.google.auto.value/auto-value-annotations/index.json:12:    "documentation-url": "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.9/index.html",
+metadata/io.dropwizard.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1-sources.jar",
+metadata/io.dropwizard.metrics/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1-javadoc.jar",
+metadata/berkeleydb/je/index.json:7:    "source-code-url": "https://download.oracle.com/berkeley-db/je-3.2.76.tar.gz",
+metadata/berkeleydb/je/index.json:10:    "documentation-url": "https://download.oracle.com/berkeley-db/docs/je/3.2.76/index.html",
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-sources.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-sources.jar",
+metadata/org.mockito/mockito-core/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar",
+metadata/org.mockito/mockito-core/index.json:53:    "documentation-url": "https://github.com/mockito/mockito/blob/v4.8.1/README.md",
+metadata/ch.qos.logback/logback-core/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-javadoc.jar",
+metadata/ch.qos.logback/logback-core/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-javadoc.jar",
+metadata/org.immutables/value/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-sources.jar",
+metadata/org.immutables/value/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-javadoc.jar",
+metadata/io.grpc/grpc-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/1.69.0/grpc-core-1.69.0-sources.jar",
+metadata/io.grpc/grpc-core/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/1.69.0/grpc-core-1.69.0-javadoc.jar",
+metadata/com.ecwid.consul/consul-api/index.json:11:    "source-code-url": "https://repo1.maven.org/maven2/com/ecwid/consul/consul-api/1.4.5/consul-api-1.4.5-sources.jar",
+metadata/com.ecwid.consul/consul-api/index.json:14:    "documentation-url": "https://repo1.maven.org/maven2/com/ecwid/consul/consul-api/1.4.5/consul-api-1.4.5-javadoc.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-sources.jar",
+metadata/commons-cli/commons-cli/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/0.1.5/logback-jackson-0.1.5-sources.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/0.1.5/logback-jackson-0.1.5-javadoc.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/1.0.0/jakarta.mail-1.0.0-sources.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/1.0.0/jakarta.mail-1.0.0-javadoc.jar",
+metadata/org.checkerframework/checker-qual/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-sources.jar",
+metadata/org.checkerframework/checker-qual/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-javadoc.jar",
+metadata/org.checkerframework/checker-qual/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0-sources.jar",
+metadata/org.checkerframework/checker-qual/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-sources.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/0.1.5/logback-json-core-0.1.5-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-core/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-core/0.1.5/logback-json-core-0.1.5-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/0.1.5/logback-json-classic-0.1.5-sources.jar",
+metadata/ch.qos.logback.contrib/logback-json-classic/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-json-classic/0.1.5/logback-json-classic-0.1.5-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/7.4.0.202509020913-r/org.eclipse.jgit-7.4.0.202509020913-r-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:16:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/7.4.0.202509020913-r/org.eclipse.jgit-7.4.0.202509020913-r-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/6.5.0.202303070854-r/org.eclipse.jgit-6.5.0.202303070854-r-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:31:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/6.5.0.202303070854-r/org.eclipse.jgit-6.5.0.202303070854-r-javadoc.jar",
+metadata/commons-codec/commons-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-sources.jar",
+metadata/commons-codec/commons-codec/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-javadoc.jar",
+metadata/org.checkerframework/checker-compat-qual/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5-sources.jar",
+metadata/org.checkerframework/checker-compat-qual/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter/2.16.3/zipkin-reporter-2.16.3-sources.jar",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter/2.16.3/zipkin-reporter-2.16.3-javadoc.jar",
+metadata/ch.qos.logback/logback-classic/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-javadoc.jar",
+metadata/ch.qos.logback/logback-classic/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-javadoc.jar",
+metadata/ch.qos.logback/logback-classic/index.json:70:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:73:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-javadoc.jar",
+metadata/ch.qos.logback/logback-classic/index.json:85:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:88:    "documentation-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-javadoc.jar",
+metadata/org.jboss.resteasy/resteasy-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/6.2.12.Final/resteasy-client-6.2.12.Final-sources.jar",
+metadata/org.jboss.resteasy/resteasy-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/resteasy/resteasy-client/6.2.12.Final/resteasy-client-6.2.12.Final-javadoc.jar",
+metadata/at.yawk.lz4/lz4-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.10.4/lz4-java-1.10.4-sources.jar",
+metadata/at.yawk.lz4/lz4-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.10.4/lz4-java-1.10.4-javadoc.jar",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-sources.jar",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-javadoc.jar",
+metadata/com.mchange/mchange-commons-java/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15-sources.jar",
+metadata/com.mchange/mchange-commons-java/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-metrics/1.19.0/opentelemetry-sdk-metrics-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-metrics/index.json:12:    "documentation-url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/sdk/metrics/README.md",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/xml/fastinfoset/FastInfoset/1.2.15/FastInfoset-1.2.15-sources.jar",
+metadata/com.sun.xml.fastinfoset/FastInfoset/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/xml/fastinfoset/FastInfoset/1.2.15/FastInfoset-1.2.15-javadoc.jar",
+metadata/commons-logging/commons-logging/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar",
+metadata/commons-logging/commons-logging/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-javadoc.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf/3.1.0.RELEASE/thymeleaf-3.1.0.RELEASE-sources.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:11:    "documentation-url": "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/README.txt",
+metadata/org.thymeleaf/thymeleaf/index.json:25:    "source-code-url": "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf/3.1.0.M2/thymeleaf-3.1.0.M2-sources.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:28:    "documentation-url": "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.M2/README.txt",
+metadata/org.ow2.asm/asm/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.4/asm-9.4-sources.jar",
+metadata/org.ow2.asm/asm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.4/asm-9.4-javadoc.jar",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf-spring6/3.1.0.RELEASE/thymeleaf-spring6-3.1.0.RELEASE-sources.jar",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:8:    "documentation-url" : "https://www.thymeleaf.org/apidocs/thymeleaf-spring6/3.1.0.RELEASE/",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/1.0.1.Final/jboss-interceptors-api_1.2_spec-1.0.1.Final-source-release.zip",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.2_spec/1.0.1.Final/jboss-interceptors-api_1.2_spec-1.0.1.Final-javadoc.jar",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/10.1.7/tomcat-jdbc-10.1.7-sources.jar",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:11:    "documentation-url": "https://github.com/apache/tomcat/tree/10.1.7/webapps/docs",
+metadata/com.github.luben/zstd-jni/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.2-5/zstd-jni-1.5.2-5-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.2-5/zstd-jni-1.5.2-5-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.4-1/zstd-jni-1.5.4-1-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.4-1/zstd-jni-1.5.4-1-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:33:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.4-2/zstd-jni-1.5.4-2-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:36:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/luben/zstd-jni/1.5.4-2/zstd-jni-1.5.4-2-javadoc.jar",
+metadata/com.github.luben/zstd-jni/index.json:47:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-1/zstd-jni-1.5.5-1-sources.jar",
+metadata/com.github.luben/zstd-jni/index.json:50:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/luben/zstd-jni/1.5.5-1/zstd-jni-1.5.5-1-javadoc.jar",
+metadata/com.zaxxer/HikariCP-java7/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/zaxxer/HikariCP-java7/2.4.13/HikariCP-java7-2.4.13-sources.jar",
+metadata/com.zaxxer/HikariCP-java7/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/zaxxer/HikariCP-java7/2.4.13/HikariCP-java7-2.4.13-javadoc.jar",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/spec/javax/interceptor/jboss-interceptors-api_1.1_spec/1.0.0.Beta1/jboss-interceptors-api_1.1_spec-1.0.0.Beta1-sources.jar",
+metadata/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/1.0.0.Beta1/index.html",
+metadata/com.zaxxer/HikariCP/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3-sources.jar",
+metadata/com.zaxxer/HikariCP/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:18:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1-sources.jar",
+metadata/com.zaxxer/HikariCP/index.json:21:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/6.0.0/HikariCP-6.0.0-sources.jar",
+metadata/com.zaxxer/HikariCP/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/6.0.0/HikariCP-6.0.0-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-jcache/7.2.1.Final/hibernate-jcache-7.2.1.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-jcache/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-jcache/7.2.1.Final/hibernate-jcache-7.2.1.Final-javadoc.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/5.0.0/org.osgi.compendium-5.0.0-sources.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/5.0.0/org.osgi.compendium-5.0.0-javadoc.jar",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/tomcat-annotations-api/10.0.20/tomcat-annotations-api-10.0.20-sources.jar",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs/annotationapi",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:36:      "source-code-url": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:46:      "documentation-url": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:181:        "source-code-url": "https://github.com/example/project/tree/main/metadata/org.example/library/0.0.1",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:184:        "documentation-url": "https://github.com/example/project/tree/main/README.md",
+metadata/io.opentelemetry/opentelemetry-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-context/1.19.0/opentelemetry-context-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-context/index.json:8:    "documentation-url" : "https://javadoc.io/doc/io.opentelemetry/opentelemetry-context/1.19.0/index.html",
+metadata/io.perfmark/perfmark-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/perfmark/perfmark-api/0.25.0/perfmark-api-0.25.0-sources.jar",
+metadata/io.perfmark/perfmark-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/perfmark/perfmark-api/0.25.0/perfmark-api-0.25.0-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/1.3.3/jakarta.annotation-api-1.3.3-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/1.3.3/jakarta.annotation-api-1.3.3-javadoc.jar",
+metadata/com.mysql/mysql-connector-j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-sources.jar",
+metadata/com.mysql/mysql-connector-j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-javadoc.jar",
+metadata/org.jboss.jdeparser/jdeparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jdeparser/jdeparser/2.0.2.Final/jdeparser-2.0.2.Final-sources.jar",
+metadata/org.jboss.jdeparser/jdeparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/jdeparser/jdeparser/2.0.2.Final/jdeparser-2.0.2.Final-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-otlp/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-otlp/1.19.0/opentelemetry-exporter-otlp-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-otlp/index.json:9:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/exporters/otlp/all/README.md",
+metadata/javax.persistence/javax.persistence-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-javadoc.jar",
+metadata/net.i2p.crypto/eddsa/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/net/i2p/crypto/eddsa/0.3.0/eddsa-0.3.0-sources.jar",
+metadata/net.i2p.crypto/eddsa/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/net/i2p/crypto/eddsa/0.3.0/eddsa-0.3.0-javadoc.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-gson/0.12.0/jjwt-gson-0.12.0-sources.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:8:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-gson/0.11.5/jjwt-gson-0.11.5-sources.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:28:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/org.testcontainers/testcontainers/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8-sources.jar",
+metadata/org.testcontainers/testcontainers/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8-javadoc.jar",
+metadata/org.testcontainers/testcontainers/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.17.6/testcontainers-1.17.6-sources.jar",
+metadata/org.testcontainers/testcontainers/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.17.6/testcontainers-1.17.6-javadoc.jar",
+metadata/net.java.dev.jna/jna/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.8.0/jna-5.8.0-sources.jar",
+metadata/net.java.dev.jna/jna/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.8.0/jna-5.8.0-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/1.20.0/opentelemetry-exporter-logging-1.20.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:8:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.20.0/exporters/logging/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-logging/1.19.0/opentelemetry-exporter-logging-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-logging/index.json:40:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/exporters/logging/README.md",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-jackson/0.12.0/jjwt-jackson-0.12.0-sources.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:11:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-jackson/0.11.5/jjwt-jackson-0.11.5-sources.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:31:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/reactive/hibernate-reactive-core/2.0.0.Final/hibernate-reactive-core-2.0.0.Final-sources.jar",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/reactive/hibernate-reactive-core/2.0.0.Final/hibernate-reactive-core-2.0.0.Final-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-zipkin/1.20.0/opentelemetry-exporter-zipkin-1.20.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:8:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.20.0/exporters/zipkin/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-zipkin/1.19.0/opentelemetry-exporter-zipkin-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-zipkin/index.json:40:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/exporters/zipkin/README.md",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/0.4.0/jib-build-plan-0.4.0-sources.jar",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/0.4.0",
+metadata/org.osgi/org.osgi.core/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-javadoc.jar",
+metadata/org.jooq/jooq/index.json:6:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-sources.jar",
+metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-javadoc.jar",
+metadata/org.jooq/jooq/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-sources.jar",
+metadata/org.jooq/jooq/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-javadoc.jar",
+metadata/org.jooq/jooq/index.json:112:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-sources.jar",
+metadata/org.jooq/jooq/index.json:115:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-javadoc.jar",
+metadata/org.apache.openejb/javaee-api/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/openejb/javaee-api/5.0-2/javaee-api-5.0-2-sources.jar",
+metadata/org.apache.openejb/javaee-api/index.json:8:    "documentation-url": "N/A",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-sdk-trace/1.19.0/opentelemetry-sdk-trace-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json:12:    "documentation-url": "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/sdk/trace/README.md",
+metadata/io.nats/jnats/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/io/nats/jnats/2.16.11/jnats-2.16.11-sources.jar",
+metadata/io.nats/jnats/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/io/nats/jnats/2.16.11/jnats-2.16.11-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api/1.19.0/opentelemetry-api-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api/1.19.0/opentelemetry-api-1.19.0-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-semconv/1.19.0-alpha/opentelemetry-semconv-1.19.0-alpha-sources.jar",
+metadata/io.opentelemetry/opentelemetry-semconv/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-semconv/1.19.0-alpha/opentelemetry-semconv-1.19.0-alpha-javadoc.jar",
+metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-sources.jar",
+metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-docs.zip",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-orgjson/0.12.7/jjwt-orgjson-0.12.7-sources.jar",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:11:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.12.7/README.adoc",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:24:    "source-code-url": "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-orgjson/0.12.0/jjwt-orgjson-0.12.0-sources.jar",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:27:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:44:    "source-code-url": "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-orgjson/0.11.5/jjwt-orgjson-0.11.5-sources.jar",
+metadata/io.jsonwebtoken/jjwt-orgjson/index.json:47:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0-javadoc.jar",
+metadata/io.jsonwebtoken/jjwt-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-api/0.11.5/jjwt-api-0.11.5-sources.jar",
+metadata/io.jsonwebtoken/jjwt-api/index.json:7:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/io.jsonwebtoken/jjwt-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-api/0.12.3/jjwt-api-0.12.3-sources.jar",
+metadata/io.jsonwebtoken/jjwt-api/index.json:22:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.12.3/README.md",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-jaeger/1.20.0/opentelemetry-exporter-jaeger-1.20.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-jaeger/1.20.0/opentelemetry-exporter-jaeger-1.20.0-javadoc.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-jaeger/1.19.0/opentelemetry-exporter-jaeger-1.19.0-sources.jar",
+metadata/io.opentelemetry/opentelemetry-exporter-jaeger/index.json:40:    "documentation-url" : "https://github.com/open-telemetry/opentelemetry-java/blob/v1.19.0/exporters/jaeger/README.md",
+metadata/org.glassfish.jaxb/txw2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-sources.jar",
+metadata/org.glassfish.jaxb/txw2/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-javadoc.jar",
+metadata/com.hazelcast/hazelcast/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/5.2.1/hazelcast-5.2.1-sources.jar",
+metadata/com.hazelcast/hazelcast/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/5.2.1/hazelcast-5.2.1-javadoc.jar",
+metadata/com.hazelcast/hazelcast/index.json:26:    "source-code-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/5.5.0/hazelcast-5.5.0-sources.jar",
+metadata/com.hazelcast/hazelcast/index.json:29:    "documentation-url": "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/5.5.0/hazelcast-5.5.0-javadoc.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/2.0.0/jakarta.inject-api-2.0.0-sources.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/2.0.0/jakarta.inject-api-2.0.0-javadoc.jar",
+metadata/io.undertow/undertow-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.3.0.Final/undertow-core-2.3.0.Final-sources.jar",
+metadata/io.undertow/undertow-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.3.0.Final/undertow-core-2.3.0.Final-javadoc.jar",
+metadata/io.undertow/undertow-core/index.json:43:    "source-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.2.19.Final/undertow-core-2.2.19.Final-sources.jar",
+metadata/io.undertow/undertow-core/index.json:46:    "documentation-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.2.19.Final/undertow-core-2.2.19.Final-javadoc.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.mqttv5.client/1.2.5/org.eclipse.paho.mqttv5.client-1.2.5-sources.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv5.md",
+metadata/dev.langchain4j/langchain4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/1.9.0/langchain4j-1.9.0-sources.jar",
+metadata/dev.langchain4j/langchain4j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/1.9.0/langchain4j-1.9.0-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-envers/index.json:17:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-envers/6.1.1.Final/hibernate-envers-6.1.1.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-envers/index.json:20:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-envers/6.1.1.Final/hibernate-envers-6.1.1.Final-javadoc.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5-sources.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv3.md",
+metadata/org.glassfish.jaxb/jaxb-runtime/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/3.0.2/jaxb-runtime-3.0.2-sources.jar",
+metadata/org.glassfish.jaxb/jaxb-runtime/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/3.0.2/jaxb-runtime-3.0.2-javadoc.jar",
+metadata/com.baomidou/mybatis-plus/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/baomidou/mybatis-plus/3.5.3/mybatis-plus-3.5.3-sources.jar",
+metadata/com.baomidou/mybatis-plus/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/baomidou/mybatis-plus/3.5.3/mybatis-plus-3.5.3-javadoc.jar",
+metadata/io.undertow/undertow-parser-generator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/2.2.19.Final/undertow-parser-generator-2.2.19.Final-sources.jar",
+metadata/io.undertow/undertow-parser-generator/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/undertow/undertow-parser-generator/2.2.19.Final/undertow-parser-generator-2.2.19.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:19:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/8.0.0.Alpha1/hibernate-core-8.0.0.Alpha1-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:22:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/8.0.0.Alpha1/hibernate-core-8.0.0.Alpha1-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:65:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.2.0.Final/hibernate-core-7.2.0.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:68:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.2.0.Final/hibernate-core-7.2.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:99:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.1.0.Final/hibernate-core-7.1.0.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:102:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.1.0.Final/hibernate-core-7.1.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:132:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.0.0.Final/hibernate-core-7.0.0.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:135:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/7.0.0.Final/hibernate-core-7.0.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:157:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.6.0.Final/hibernate-core-6.6.0.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:160:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.6.0.Final/hibernate-core-6.6.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:180:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.5.0.Final/hibernate-core-6.5.0.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:183:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.5.0.Final/hibernate-core-6.5.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:204:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.2.0.Final/hibernate-core-6.2.0.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:207:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.2.0.Final/hibernate-core-6.2.0.Final-javadoc.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:227:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.1.1.Final/hibernate-core-6.1.1.Final-sources.jar",
+metadata/org.hibernate.orm/hibernate-core/index.json:230:    "documentation-url": "https://repo.maven.apache.org/maven2/org/hibernate/orm/hibernate-core/6.1.1.Final/hibernate-core-6.1.1.Final-javadoc.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-sources.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-javadoc.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/thymeleaf-extras-springsecurity6-3.1.0.RELEASE-sources.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:8:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/lib/thymeleaf-extras-springsecurity6/README.markdown",
+metadata/org.hibernate.validator/hibernate-validator/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/validator/hibernate-validator/7.0.4.Final/hibernate-validator-7.0.4.Final-sources.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:12:    "documentation-url": "https://github.com/hibernate/hibernate-validator/tree/7.0.4.Final/documentation",
+
+web search: 
+web search: cglib cglib-nodep 2.2.2 Maven Central sources javadoc tests
+web search: 
+web search: https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/
+codex
+Maven Central has both `-sources.jar` and `-javadoc.jar` for `cglib-nodep:2.2.2`, so those are the strongest exact-version source and documentation targets. I’m checking whether a Maven-published test artifact exists before deciding the test URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cglib</groupId>
+  <artifactId>cglib-nodep</artifactId>
+  <name>Code Generation Library</name>
+  <version>2.2.2</version>
+  <url>http://cglib.sourceforge.net/</url>
+  <description>Code generation library with shaded ASM dependecies</description>
+  <licenses>
+    <license>
+            <name>ASF 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:cvs:pserver:anonymous@cglib.cvs.sourceforge.net:/cvsroot/cglib:cglib</connection>
+    <url>http://cglib.cvs.sourceforge.net/cglib</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.6.2</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+  <developers>
+    <developer>
+      <id>baliuka</id>
+      <name>Juozas Baliuka</name>
+    </developer>
+    <developer>
+      <id>herbyderby</id>
+      <name>Chris Nokleberg</name>
+    </developer>
+    <developer>
+      <id>sameb</id>
+      <name>Sam Berlin</name>
+    </developer>
+  </developers>
+</project>
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+metadata/org.postgresql/postgresql/index.json:9:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+metadata/org.postgresql/postgresql/index.json:30:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+metadata/javax.servlet/javax.servlet-api/index.json:6:    "repository-url" : "https://github.com/javaee/servlet-spec",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:7:    "repository-url": "https://github.com/spotbugs/spotbugs",
+metadata/org.codehaus.woodstox/stax2-api/index.json:6:    "repository-url" : "https://github.com/FasterXML/stax2-api",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:7:    "repository-url": "https://github.com/fusesource/hawtbuf",
+metadata/jakarta.validation/jakarta.validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/javax.annotation/jsr250-api/index.json:7:    "repository-url": "N/A",
+metadata/javax.annotation/javax.annotation-api/index.json:6:    "repository-url" : "https://github.com/javaee/javax.annotation",
+metadata/org.apache.santuario/xmlsec/index.json:9:    "repository-url": "https://github.com/apache/santuario-xml-security-java",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:5:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:41:    "repository-url" : "https://github.com/mariadb-corporation/mariadb-connector-j",
+metadata/org.jboss/jandex/index.json:6:    "repository-url" : "https://github.com/smallrye/jandex",
+metadata/io.r2dbc/r2dbc-spi/index.json:6:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/com.h2database/h2/index.json:9:    "repository-url": "https://github.com/h2database/h2database",
+metadata/com.google.guava/listenablefuture/index.json:7:    "repository-url": "https://github.com/google/guava",
+metadata/com.squareup.okio/okio/index.json:6:    "repository-url" : "https://github.com/square/okio",
+metadata/io.netty/netty-transport-classes-epoll/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+metadata/com.google.guava/failureaccess/index.json:6:    "repository-url" : "https://github.com/google/guava",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:6:    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.android/annotations/index.json:7:    "repository-url": "https://android.googlesource.com/platform/sdk",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/org.apache.zookeeper/zookeeper/index.json:6:    "repository-url" : "https://github.com/apache/zookeeper",
+metadata/javax.el/javax.el-api/index.json:6:    "repository-url" : "https://github.com/javaee/el-spec",
+metadata/io.netty/netty-common/index.json:5:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-common/index.json:21:    "repository-url" : "https://github.com/netty/netty",
+metadata/io.netty/netty-common/index.json:37:    "repository-url" : "https://github.com/netty/netty",
+metadata/org.jctools/jctools-core/index.json:9:    "repository-url": "https://github.com/JCTools/JCTools",
+metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:6:    "repository-url" : "https://gitbox.apache.org/repos/asf/zookeeper.git",
+metadata/at.yawk.lz4/lz4-java/index.json:6:    "repository-url" : "https://github.com/yawkat/lz4-java/tree/v1.10.4",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:7:    "repository-url": "https://github.com/rnorth/duct-tape",
+metadata/com.itextpdf/layout/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-test-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-tests.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ exited 22 in 235ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 12:59:28 GMT
+content-type: text/html
+cf-ray: 9f2e012e8b02bc59-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/
+web search: 
+web search: github cglib cglib RELEASE_2_2_2
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar -o /tmp/cglib-nodep-2.2.2-sources.jar && unzip -l /tmp/cglib-nodep-2.2.2-sources.jar | rg '("'^|/)test|Test|src/test'"' | head -50" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-tests.jar ; curl -fsI https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-test-sources.jar ; curl -fsI https://repo.maven.apache.org/maven2/cglib/cglib/2.2.2/cglib-2.2.2-tests.jar ; curl -fsI https://repo.maven.apache.org/maven2/cglib/cglib/2.2.2/cglib-2.2.2-test-sources.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/cglib/cglib.git | rg '2_2_2|2.2.2|RELEASE_2'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 164ms:
+        0  2011-04-15 15:42   src/test/
+        0  2011-04-15 15:42   src/test/net/
+        0  2011-04-15 15:42   src/test/net/sf/
+        0  2011-04-15 15:42   src/test/net/sf/cglib/
+     4531  2005-09-28 05:37   src/test/net/sf/cglib/CodeGenTestCase.java
+     3377  2004-12-22 22:46   src/test/net/sf/cglib/TestAll.java
+     1293  2004-06-24 17:15   src/test/net/sf/cglib/TestGenerator.java
+        0  2011-04-15 15:42   src/test/net/sf/cglib/beans/
+     1717  2004-06-24 17:15   src/test/net/sf/cglib/beans/BeanMapProxy.java
+     2247  2004-03-16 14:35   src/test/net/sf/cglib/beans/MA.java
+     1970  2004-06-24 17:15   src/test/net/sf/cglib/beans/TestBeanCopier.java
+     1914  2004-06-24 17:15   src/test/net/sf/cglib/beans/TestBeanGenerator.java
+     5067  2004-06-24 17:15   src/test/net/sf/cglib/beans/TestBeanMap.java
+     1861  2004-06-24 17:15   src/test/net/sf/cglib/beans/TestBeanMapProxy.java
+    10515  2006-03-04 21:43   src/test/net/sf/cglib/beans/TestBulkBean.java
+     1507  2004-06-24 17:15   src/test/net/sf/cglib/beans/TestImmutableBean.java
+        0  2011-04-15 15:42   src/test/net/sf/cglib/core/
+     5629  2004-06-24 17:15   src/test/net/sf/cglib/core/TestKeyFactory.java
+     1931  2004-06-24 17:15   src/test/net/sf/cglib/core/TestTinyBitSet.java
+        0  2011-04-15 15:42   src/test/net/sf/cglib/proxy/
+      295  2003-10-28 22:45   src/test/net/sf/cglib/proxy/ArgInit.java
+      112  2003-10-28 22:45   src/test/net/sf/cglib/proxy/D1.java
+      112  2003-10-28 22:45   src/test/net/sf/cglib/proxy/D2.java
+      123  2003-10-28 22:45   src/test/net/sf/cglib/proxy/D3.java
+      237  2003-10-28 22:45   src/test/net/sf/cglib/proxy/D4.java
+      179  2004-01-25 17:19   src/test/net/sf/cglib/proxy/DBean1.java
+       97  2003-10-28 22:45   src/test/net/sf/cglib/proxy/DBean2.java
+      196  2003-10-28 22:45   src/test/net/sf/cglib/proxy/DBean3.java
+       81  2003-10-28 22:45   src/test/net/sf/cglib/proxy/DI1.java
+       81  2003-10-28 22:45   src/test/net/sf/cglib/proxy/DI2.java
+       86  2003-10-28 22:45   src/test/net/sf/cglib/proxy/DI3.java
+      532  2003-10-28 22:45   src/test/net/sf/cglib/proxy/EA.java
+      250  2003-10-28 22:45   src/test/net/sf/cglib/proxy/EB.java
+      334  2003-10-28 22:45   src/test/net/sf/cglib/proxy/EC1.java
+      211  2003-10-28 22:45   src/test/net/sf/cglib/proxy/EC2.java
+      297  2003-10-28 22:45   src/test/net/sf/cglib/proxy/ED.java
+     2703  2004-06-24 17:15   src/test/net/sf/cglib/proxy/Source.java
+     2865  2004-06-24 17:15   src/test/net/sf/cglib/proxy/TestDispatcher.java
+    37777  2011-04-20 12:16   src/test/net/sf/cglib/proxy/TestEnhancer.java
+     2474  2004-06-24 17:15   src/test/net/sf/cglib/proxy/TestInterceptor.java
+     2413  2006-03-04 21:43   src/test/net/sf/cglib/proxy/TestInterfaceMaker.java
+     1611  2004-06-24 17:15   src/test/net/sf/cglib/proxy/TestLazyLoader.java
+     4922  2004-06-24 17:15   src/test/net/sf/cglib/proxy/TestMixin.java
+     1511  2004-06-24 17:15   src/test/net/sf/cglib/proxy/TestNoOp.java
+     7048  2004-06-24 17:15   src/test/net/sf/cglib/proxy/TestProxy.java
+     3334  2004-12-10 03:48   src/test/net/sf/cglib/proxy/TestProxyRefDispatcher.java
+        0  2011-04-15 15:42   src/test/net/sf/cglib/proxysample/
+     1520  2004-06-24 17:15   src/test/net/sf/cglib/proxysample/InvocationHandlerSample.java
+     3253  2006-03-04 21:43   src/test/net/sf/cglib/proxysample/ProxySample.java
+      739  2004-06-24 17:15   src/test/net/sf/cglib/proxysample/ProxySampleInterface_ReturnsBasic.java
+
+ succeeded in 335ms:
+23f8908babaa132d0f11976a75cf5497b67a158a	refs/tags/RELEASE_2_0
+cb14e8311fed607d023d8e111b555cbaedc71e3b	refs/tags/RELEASE_2_0_1
+e91a8f7b15a7cff3d8f0c80f9727037fabe1433c	refs/tags/RELEASE_2_0_2
+31b1c85c7895a5839dfeb89d423ef3919cdbdc07	refs/tags/RELEASE_2_0_BETA_1
+c6b47ddacddac0d149ade2abcf8459a3f34e7fe4	refs/tags/RELEASE_2_0_RC2
+4cc06a72552a82133b3f0cf62973703867b918c1	refs/tags/RELEASE_2_0_RC_1
+aea70ea9f26cc8687e599d97d11f45054db01714	refs/tags/RELEASE_2_1
+53606cc7726718b7d1de05234bc4b2dd7d249d27	refs/tags/RELEASE_2_1_0
+45bff6423ab4bd28e3d772b01b974d582c63c47b	refs/tags/RELEASE_2_1_02
+8fd0ec8eb5e64c4adfe588bf4b204cb604580ff4	refs/tags/RELEASE_2_1_1
+078d4d703070d2ccaa242693c8e037c45dc70025	refs/tags/RELEASE_2_1_3
+2dc8a7ab9ed76e2f71b48672244ec78a56349816	refs/tags/RELEASE_2_2
+e90a0c98faaf4ae00d400360ecd67943778468cb	refs/tags/RELEASE_2_2_BETA_1
+b860d18fd03e99885876116ef01426fccfcf2daf	refs/tags/Root_RELEASE_2_2_3
+
+ exited 22 in 819ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 12:59:41 GMT
+content-type: text/html
+cf-ray: 9f2e017fbba2baba-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 27 Apr 2026 12:59:41 GMT
+content-type: text/html
+cf-ray: 9f2e01818e55039d-ZRH
+cf-cache-status: HIT
+age: 13
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 27 Apr 2026 12:59:41 GMT
+content-type: text/html
+cf-ray: 9f2e0181d893bc4e-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/cglib/cglib/2.2.2/cglib-2.2.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 27 Apr 2026 12:59:42 GMT
+content-type: text/html
+cf-ray: 9f2e01836e392ff1-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/cglib/cglib/2.2.2/cglib-2.2.2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" :? \"https://repo.*sources.jar\"|\"test-code-url\": \"https://repo.*sources.jar\"' metadata build/discovered-artifact-metadata -g '*.json' | head -20" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+metadata/commons-codec/commons-codec/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+metadata/org.objenesis/objenesis/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/3.2/objenesis-tck-3.2-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-test-sources.jar",
+metadata/commons-logging/commons-logging/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-test-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-test-sources.jar",
+metadata/org.apache.commons/commons-collections4/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-test-sources.jar",
+metadata/org.apache.commons/commons-pool2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-test-sources.jar",
+metadata/org.apache.commons/commons-lang3/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-test-sources.jar",
+metadata/io.netty/netty-common/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-test-sources.jar",
+metadata/io.netty/netty-common/index.json:22:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-test-sources.jar",
+metadata/io.netty/netty-common/index.json:38:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-test-sources.jar",
+metadata/io.netty/netty-transport/index.json:11:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.115.Final/netty-transport-4.1.115.Final-test-sources.jar",
+metadata/io.netty/netty-transport/index.json:43:    "test-code-url": "https://repo.maven.apache.org/maven2/io/netty/netty-transport/4.1.80.Final/netty-transport-4.1.80.Final-test-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-test-sources.jar",
+metadata/io.netty/netty-resolver/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-resolver/4.1.79.Final/netty-resolver-4.1.79.Final-test-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-test-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-test-sources.jar",
+
+exec
+/usr/bin/bash -lc "unzip -p /tmp/cglib-nodep-2.2.2-sources.jar META-INF/MANIFEST.MF | sed -n '1,120p'; unzip -l /tmp/cglib-nodep-2.2.2-sources.jar | rg 'src/test/net/sf/cglib/TestAll.java|src/main/net/sf/cglib/proxy/Enhancer.java|src/test/.+TestEnhancer.java'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Created-By: 16.0-b13 (Sun Microsystems Inc.)
+
+     3377  2004-12-22 22:46   src/test/net/sf/cglib/TestAll.java
+    37777  2011-04-20 12:16   src/test/net/sf/cglib/proxy/TestEnhancer.java
+
+exec
+/usr/bin/bash -lc 'curl -fsI http://cglib.cvs.sourceforge.net/cglib || true' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/cglib/cglib || true' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 379ms:
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Mon, 27 Apr 2026 12:59:54 GMT
+Content-Type: text/html
+Content-Length: 162
+Connection: keep-alive
+Location: https://sourceforge.net/projects/cglib/
+
+
+ succeeded in 492ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 12:59:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"243b2c78ce0c4c6b69a64ced311ff288"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ipvL7%2BW7R7lxz79R24%2BY8U6U7biRaFnmFTl%2B1FJPuMtHUwxa0rOSGnWUcMwjJHyX4gOmLpktXzW16jL1Otf9vyB3uyaSyssvxqZOrflxrv9TLwKtZXucDUSKkiTDCLGQMnF%2Ftu9xVQMRLZD94Xk53AywPI6EHJrNh2qRODbUTMufNhG5PVBNII9O%2Fl57kfnqa15kAjJjXxNTt9qJc0WfgncAORGKTz0TC3HgdrVHoPK6qfyS8eGLkG44q1LD6plbPmxl8YoOsDsz%2FF7u9CcaRg%3D%3D--A5O78FMObFNpzqMa--CYSXX3bBUu1BlBxHvNy5Ig%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.951852989.1777294794; expires=Tue, 27 Apr 2027 12:59:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 12:59:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 7209:446A2:1783C053:11A58636:69EF5DCA
+
+
+exec
+/usr/bin/bash -lc "sed -n '1,35p' metadata/org.objenesis/objenesis/index.json && sed -n '1,20p' metadata/org.ow2.asm/asm/index.json 2>/dev/null || true" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar",
+    "repository-url" : "https://github.com/easymock/objenesis",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/3.2/objenesis-tck-3.2-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-javadoc.jar",
+    "description" : "Objenesis is a Java library for instantiating objects without invoking their constructors. It is commonly used by serialization, proxying, and mocking frameworks that need to create objects beyond standard reflection.",
+    "tested-versions" : [
+      "3.2",
+      "3.3",
+      "3.4",
+      "3.5"
+    ],
+    "allowed-packages" : [
+      "org.objenesis"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "9.4",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.4/asm-9.4-sources.jar",
+    "repository-url" : "https://gitlab.ow2.org/asm/asm",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-test/9.4/asm-test-9.4-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.4/asm-9.4-javadoc.jar",
+    "tested-versions" : [
+      "9.4",
+      "9.5",
+      "9.6",
+      "9.7",
+      "9.7.1",
+      "9.8",
+      "9.9",
+      "9.9.1"
+    ],
+    "allowed-packages" : [
+      "org.objectweb.asm"
+
+web search: 
+web search: repo.maven.apache.org cglib-nodep 2.2.2 pom cglib-nodep-2.2.2-sources.jar javadoc
+web search: 
+web search: https://central.sonatype.com/artifact/cglib/cglib-nodep/2.2.2
+web search: 
+web search: https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/
+codex
+The Maven source JAR itself contains `src/test/...`, so I’ll use that same exact `2.2.2` source artifact as the test-suite URL instead of marking tests unavailable. The POM’s SCM metadata identifies the original SourceForge CVS source control URL for this release.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+{
+  "coordinates": "cglib:cglib-nodep:2.2.2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
+  "repository-url": "http://cglib.cvs.sourceforge.net/cglib",
+  "test-code-url": "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
+  "description": "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar ; curl -fsI https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 13:00:18 GMT
+content-type: application/java-archive
+content-length: 1534374
+cf-ray: 9f2e0266d88cdc8b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 493215
+etag: "4a9c754d16b0bb110030da5fbaf87c48"
+last-modified: Tue, 10 May 2011 13:55:01 GMT
+x-checksum-md5: 4a9c754d16b0bb110030da5fbaf87c48
+x-checksum-sha1: fc1558bebc50419cdb55fbffd81c290e21f058c1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 27 Apr 2026 13:00:18 GMT
+content-type: application/java-archive
+content-length: 389166
+cf-ray: 9f2e02672f2cbb0d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 33241
+etag: "ad0e543eda98665c6b4616005b4d3339"
+last-modified: Tue, 10 May 2011 13:55:01 GMT
+x-checksum-md5: ad0e543eda98665c6b4616005b4d3339
+x-checksum-sha1: a010f174e262c051011f3914faf971ce2413c68b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+web search: 
+web search: cglib GitHub repository official source code
+exec
+/usr/bin/bash -lc "rg -n 'sourceforge|cvs.sourceforge' metadata build/discovered-artifact-metadata -g '*.json' | head -40" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json:4:  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
+
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+exec
+/usr/bin/bash -lc "unzip -l /tmp/cglib-nodep-2.2.2-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+Archive:  /tmp/cglib-nodep-2.2.2-sources.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2011-04-20 12:30   META-INF/
+      102  2011-04-20 12:30   META-INF/MANIFEST.MF
+        0  2011-04-20 12:20   lib/
+    11357  2004-06-24 17:15   LICENSE
+      101  2004-06-24 17:15   NOTICE
+      490  2005-06-22 03:11   README
+    10166  2011-04-20 12:24   build.xml
+   999966  2004-12-10 03:56   lib/ant.jar
+    43579  2010-12-21 09:08   lib/asm-3.3.1.jar
+    38313  2010-12-21 09:08   lib/asm-commons-3.3.1.jar
+     1577  2003-11-13 15:53   lib/asm-license.txt
+    36961  2010-12-21 09:08   lib/asm-util-3.3.1.jar
+   137359  2006-02-27 19:30   lib/jarjar.jar
+    15048  2003-06-08 16:38   lib/junit-license.html
+   117522  2002-07-04 13:32   lib/junit.jar
+        0  2011-04-15 15:42   src/
+        0  2011-04-15 15:42   src/proxy/
+        0  2011-04-15 15:42   src/proxy/net/
+        0  2011-04-15 15:42   src/proxy/net/sf/
+        0  2011-04-15 15:42   src/proxy/net/sf/cglib/
+        0  2011-04-15 15:42   src/proxy/net/sf/cglib/beans/
+     6524  2006-03-04 21:43   src/proxy/net/sf/cglib/beans/BeanCopier.java
+     4706  2005-08-31 22:51   src/proxy/net/sf/cglib/beans/BeanGenerator.java
+    10026  2004-06-24 17:15   src/proxy/net/sf/cglib/beans/BeanMap.java
+     7621  2006-03-04 21:43   src/proxy/net/sf/cglib/beans/BeanMapEmitter.java
+     4342  2005-09-16 02:46   src/proxy/net/sf/cglib/beans/BulkBean.java
+     6437  2006-03-04 21:43   src/proxy/net/sf/cglib/beans/BulkBeanEmitter.java
+     1211  2004-06-24 17:15   src/proxy/net/sf/cglib/beans/BulkBeanException.java
+     1067  2004-06-24 17:15   src/proxy/net/sf/cglib/beans/FixedKeySet.java
+     4294  2006-03-04 21:43   src/proxy/net/sf/cglib/beans/ImmutableBean.java
+        0  2011-04-15 15:42   src/proxy/net/sf/cglib/core/
+     8223  2005-09-26 10:46   src/proxy/net/sf/cglib/core/AbstractClassGenerator.java
+     1213  2004-06-24 17:15   src/proxy/net/sf/cglib/core/Block.java
+     9175  2006-03-04 21:43   src/proxy/net/sf/cglib/core/ClassEmitter.java
+      778  2004-06-24 17:15   src/proxy/net/sf/cglib/core/ClassGenerator.java
+     1373  2004-06-24 17:15   src/proxy/net/sf/cglib/core/ClassInfo.java
+     2220  2008-05-26 00:06   src/proxy/net/sf/cglib/core/ClassNameReader.java
+      984  2004-06-24 17:15   src/proxy/net/sf/cglib/core/ClassesKey.java
+    27039  2006-03-04 21:43   src/proxy/net/sf/cglib/core/CodeEmitter.java
+     1061  2004-06-24 17:15   src/proxy/net/sf/cglib/core/CodeGenerationException.java
+     2376  2004-06-24 17:15   src/proxy/net/sf/cglib/core/CollectionUtils.java
+     3517  2006-03-04 21:43   src/proxy/net/sf/cglib/core/Constants.java
+      740  2004-06-24 17:15   src/proxy/net/sf/cglib/core/Converter.java
+      755  2004-06-24 17:15   src/proxy/net/sf/cglib/core/Customizer.java
+     4078  2008-05-26 00:06   src/proxy/net/sf/cglib/core/DebuggingClassWriter.java
+     1373  2008-05-26 00:06   src/proxy/net/sf/cglib/core/DefaultGeneratorStrategy.java
+     2358  2009-01-11 14:47   src/proxy/net/sf/cglib/core/DefaultNamingPolicy.java
+      908  2004-06-24 17:15   src/proxy/net/sf/cglib/core/DuplicatesPredicate.java
+    36595  2006-03-04 21:43   src/proxy/net/sf/cglib/core/EmitUtils.java
+     1802  2004-06-24 17:15   src/proxy/net/sf/cglib/core/GeneratorStrategy.java
+    10107  2006-03-04 21:43   src/proxy/net/sf/cglib/core/KeyFactory.java
+      969  2004-06-24 17:15   src/proxy/net/sf/cglib/core/Local.java
+     5395  2006-03-04 21:43   src/proxy/net/sf/cglib/core/LocalVariablesSorter.java
+     1405  2006-03-04 21:43   src/proxy/net/sf/cglib/core/MethodInfo.java
+     1299  2004-06-24 17:15   src/proxy/net/sf/cglib/core/MethodInfoTransformer.java
+     1621  2005-06-06 13:11   src/proxy/net/sf/cglib/core/MethodWrapper.java
+     1981  2004-06-24 17:15   src/proxy/net/sf/cglib/core/NamingPolicy.java
+      827  2004-06-24 17:15   src/proxy/net/sf/cglib/core/ObjectSwitchCallback.java
+      711  2004-06-24 17:15   src/proxy/net/sf/cglib/core/Predicate.java
+      755  2004-06-24 17:15   src/proxy/net/sf/cglib/core/ProcessArrayCallback.java
+      824  2004-06-24 17:15   src/proxy/net/sf/cglib/core/ProcessSwitchCallback.java
+    17441  2009-01-11 14:47   src/proxy/net/sf/cglib/core/ReflectUtils.java
+      976  2004-06-24 17:15   src/proxy/net/sf/cglib/core/RejectModifierPredicate.java
+     2013  2004-06-24 17:15   src/proxy/net/sf/cglib/core/Signature.java
+     1789  2004-06-24 17:15   src/proxy/net/sf/cglib/core/TinyBitSet.java
+      714  2004-06-24 17:15   src/proxy/net/sf/cglib/core/Transformer.java
+    12914  2011-04-20 11:53   src/proxy/net/sf/cglib/core/TypeUtils.java
+     1502  2004-06-24 17:15   src/proxy/net/sf/cglib/core/VisibilityPredicate.java
+        0  2011-04-20 11:53   src/proxy/net/sf/cglib/proxy/
+     6501  2011-04-20 11:53   src/proxy/net/sf/cglib/proxy/BridgeMethodResolver.java
+      881  2004-06-24 17:15   src/proxy/net/sf/cglib/proxy/Callback.java
+     1607  2004-06-24 17:15   src/proxy/net/sf/cglib/proxy/CallbackFilter.java
+     1311  2011-04-20 11:53   src/proxy/net/sf/cglib/proxy/CallbackGenerator.java
+     3439  2004-06-24 17:15   src/proxy/net/sf/cglib/proxy/CallbackHelper.java
+     3696  2004-12-10 03:48   src/proxy/net/sf/cglib/proxy/CallbackInfo.java
+     1157  2004-06-24 17:15   src/proxy/net/sf/cglib/proxy/Dispatcher.java
+     2515  2004-12-22 22:46   src/proxy/net/sf/cglib/proxy/DispatcherGenerator.java
+
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+web search: 
+web search: Maven cglib cglib-nodep 2.2.2
+web search: 
+web search: 
+web search: 
+web search: "cglib-nodep-2.2.2.pom" "cglib.cvs.sourceforge.net"
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff --check -- build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+{
+  "coordinates" : "cglib:cglib-nodep:2.2.2",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
+  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
+  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
+  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+exec
+/usr/bin/bash -lc "rg -n 'repository-url|source-code-url|documentation-url' build.gradle settings.gradle gradle src -g '*.java' -g '*.groovy' -g '*.kt'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ exited 2 in 0ms:
+rg: src: No such file or directory (os error 2)
+
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:\\s*\"http://' metadata build/discovered-artifact-metadata -g '*.json' | head -20" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json:4:  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
+
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..d9f62adfa7c2c057bed478c694f3bd5f62b5ec81
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "http://cglib.cvs.sourceforge.net/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+codex
+One adjustment: the POM’s original CVS URL now redirects away from a source browser, while the project’s GitHub repository is a stable source repository URL and matches this metadata file’s usual `repository-url` convention. I’m switching only that field to the canonical repository and keeping exact-version Maven URLs for source, tests, and Javadoc.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..0a176a00387f26617c486e4b13e6b409407dab78
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..0a176a00387f26617c486e4b13e6b409407dab78
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff --check -- build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+ succeeded in 0ms:
+ succeeded in 0ms:
+{
+  "coordinates": "cglib:cglib-nodep:2.2.2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
+  "repository-url": "https://github.com/cglib/cglib",
+  "test-code-url": "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
+  "description": "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/cglib/cglib' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..0a176a00387f26617c486e4b13e6b409407dab78
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+ succeeded in 578ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 13:01:11 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2ab3cbee472e161f3fefa8d0a06dd80d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=GaZz8Kn8VRmATIrNecxQn5hU%2Fjo1GDhhpFifyZKWjPgIOa5Tu%2BI7qeXuq5yAPJJQBQ%2FhBLEe%2Biou2sSkHgfA%2FyXpD0CNqBiprzuVy4jA%2BoODibYLXOpBO9t8HhiHdkUR%2F6UIcTzXzO6Gdp4W2gpaXQ9rfJUCoPH8qD7QEiIaOI%2Ff2zYz9c7NBimumHfEJ9Yx8hh4K1qnVBmmq%2B%2B1qrq%2FsMQvLCAYMAbF16Cl7lGMuwnXNNwjRud9f7tyCdU8m8DVxNFysvVIrpprINiklatvmA%3D%3D--c3JcYm6RFD%2FgE6yn--CPx%2Fpk2dezYsVTHlBjICfg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2119689929.1777294870; expires=Tue, 27 Apr 2027 13:01:10 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 13:01:10 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 72BA:99F96:180A8BA8:1208215B:69EF5E16
+
+
+codex
+Updated [cglib-cglib-nodep-2.2.2.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json) with the discovered URLs and two-sentence description.
+
+Validation done: `jq` parsed the file successfully, `git diff --check` passed, and the Maven source/Javadoc plus GitHub repository URLs returned HTTP 200. I left `language` absent because this is not Kotlin- or Scala-specific.
+diff --git a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+index 8d2318eaab94b2d855749c6dbbba2054fec04580..0a176a00387f26617c486e4b13e6b409407dab78
+--- a/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
++++ b/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "cglib:cglib-nodep:2.2.2"
++  "coordinates" : "cglib:cglib-nodep:2.2.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "repository-url" : "https://github.com/cglib/cglib",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/cglib/cglib-nodep/2.2.2/cglib-nodep-2.2.2-javadoc.jar",
++  "description" : "cglib-nodep is the no-dependency distribution of cglib, a Java bytecode generation library used to create proxies and transform classes at runtime. It bundles shaded ASM classes so applications can use cglib's proxy, enhancer, and callback APIs without declaring ASM separately."
+ }
+
+2026-04-27T13:01:17.238392Z ERROR codex_core::session: failed to record rollout items: thread 019dcf05-bd18-79f2-bdc2-db1618636568 not found
+tokens used
+78,078
+Updated [cglib-cglib-nodep-2.2.2.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e/build/discovered-artifact-metadata/cglib-cglib-nodep-2.2.2.json) with the discovered URLs and two-sentence description.
+
+Validation done: `jq` parsed the file successfully, `git diff --check` passed, and the Maven source/Javadoc plus GitHub repository URLs returned HTTP 200. I left `language` absent because this is not Kotlin- or Scala-specific.
+Ran agent for cglib:cglib-nodep:2.2.2 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e/build/agent-artifact-discovery-logs/cglib-cglib-nodep-2.2.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2442-37f7901e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 14s
+9 actionable tasks: 4 executed, 5 from cache
