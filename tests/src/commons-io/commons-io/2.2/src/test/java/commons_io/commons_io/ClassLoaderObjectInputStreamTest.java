@@ -34,6 +34,21 @@ public class ClassLoaderObjectInputStreamTest {
     }
 
     @Test
+    void fallsBackToObjectInputStreamClassResolutionWhenTheProvidedLoaderReturnsNull() throws Exception {
+        ObjectStreamClass objectStreamClass = ObjectStreamClass.lookup(String.class);
+        ClassLoader nullReturningClassLoader = new NullReturningClassLoader(
+                String.class.getName(),
+                ClassLoaderObjectInputStreamTest.class.getClassLoader());
+
+        try (ExposedClassLoaderObjectInputStream inputStream = new ExposedClassLoaderObjectInputStream(
+                nullReturningClassLoader)) {
+            Class<?> resolvedClass = inputStream.resolveClassDescriptor(objectStreamClass);
+
+            assertThat(resolvedClass).isEqualTo(String.class);
+        }
+    }
+
+    @Test
     void resolvesProxyClassesWithTheProvidedClassLoader() throws Exception {
         String[] interfaceNames = new String[] {NamedProxyContract.class.getName()};
 
@@ -107,6 +122,24 @@ public class ClassLoaderObjectInputStreamTest {
 
         private Class<?> resolveProxyType(String[] interfaces) throws IOException, ClassNotFoundException {
             return super.resolveProxyClass(interfaces);
+        }
+    }
+
+    private static final class NullReturningClassLoader extends ClassLoader {
+
+        private final String nullClassName;
+
+        private NullReturningClassLoader(String nullClassName, ClassLoader parent) {
+            super(parent);
+            this.nullClassName = nullClassName;
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (nullClassName.equals(name)) {
+                return null;
+            }
+            return super.loadClass(name, resolve);
         }
     }
 
