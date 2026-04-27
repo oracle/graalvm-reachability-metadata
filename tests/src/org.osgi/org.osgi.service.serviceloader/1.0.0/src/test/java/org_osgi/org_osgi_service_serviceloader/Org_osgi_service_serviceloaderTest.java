@@ -90,6 +90,28 @@ public class Org_osgi_service_serviceloaderTest {
                 .containsEntry(".osgi.serviceloader", "private-matching-attribute");
     }
 
+    @Test
+    void publicMatchingAttributesBecomeServicePropertiesForRegisteredProviders() {
+        Map<String, Object> serviceLoaderCapability = new LinkedHashMap<>();
+        serviceLoaderCapability.put(SERVICELOADER_NAMESPACE, EXAMPLE_SERVICE_TYPE);
+        serviceLoaderCapability.put(CAPABILITY_REGISTER_DIRECTIVE, providerNames(new FirstProvider()));
+        serviceLoaderCapability.put("service.scope", "application");
+        serviceLoaderCapability.put("service.ranking", 100L);
+        serviceLoaderCapability.put("supported.names", List.of("primary", "secondary"));
+        serviceLoaderCapability.put(".internal.selector", "native-image-only");
+
+        Map<String, Object> serviceProperties = servicePropertiesForRegisteredProvider(serviceLoaderCapability);
+
+        assertThat(serviceProperties)
+                .containsEntry("service.scope", "application")
+                .containsEntry("service.ranking", 100L)
+                .containsEntry("supported.names", List.of("primary", "secondary"))
+                .doesNotContainKeys(
+                        SERVICELOADER_NAMESPACE,
+                        CAPABILITY_REGISTER_DIRECTIVE,
+                        ".internal.selector");
+    }
+
     private static List<String> selectedProviders(
             List<String> advertisedProviders,
             Map<String, Object> capabilityDirectives) {
@@ -114,6 +136,22 @@ public class Org_osgi_service_serviceloaderTest {
             names.add(provider.providerType());
         }
         return names;
+    }
+
+    private static Map<String, Object> servicePropertiesForRegisteredProvider(
+            Map<String, Object> serviceLoaderCapability) {
+        Map<String, Object> serviceProperties = new LinkedHashMap<>();
+        for (Map.Entry<String, Object> attribute : serviceLoaderCapability.entrySet()) {
+            String attributeName = attribute.getKey();
+            if (!isSpecifiedAttributeOrDirective(attributeName) && !attributeName.startsWith(".")) {
+                serviceProperties.put(attributeName, attribute.getValue());
+            }
+        }
+        return serviceProperties;
+    }
+
+    private static boolean isSpecifiedAttributeOrDirective(String attributeName) {
+        return SERVICELOADER_NAMESPACE.equals(attributeName) || CAPABILITY_REGISTER_DIRECTIVE.equals(attributeName);
     }
 
     private interface ExampleService {
