@@ -75,13 +75,13 @@ public class Scalajs_javalibTest {
         try (DataOutputStream dataOutput = new DataOutputStream(binaryOutput)) {
             dataOutput.writeBoolean(true);
             dataOutput.writeInt(123456789);
-            dataOutput.writeUTF("héllo scala.js");
+            dataOutput.writeUTF("h\u00E9llo scala.js");
         }
 
         try (DataInputStream dataInput = new DataInputStream(new ByteArrayInputStream(binaryOutput.toByteArray()))) {
             assertThat(dataInput.readBoolean()).isTrue();
             assertThat(dataInput.readInt()).isEqualTo(123456789);
-            assertThat(dataInput.readUTF()).isEqualTo("héllo scala.js");
+            assertThat(dataInput.readUTF()).isEqualTo("h\u00E9llo scala.js");
         }
 
         StringWriter textOutput = new StringWriter();
@@ -120,7 +120,7 @@ public class Scalajs_javalibTest {
     void resolvesUrisAndEncodesFormParameters() {
         URI base = URI.create("https://example.com/a/b/");
         URI resolved = base.resolve("../c/%7Bvalue%7D?x=1").normalize();
-        String original = "scala js + native/测试";
+        String original = "scala js + native/\u6D4B\u8BD5";
         String encoded = URLEncoder.encode(original, StandardCharsets.UTF_8);
 
         assertThat(resolved).hasToString("https://example.com/a/c/%7Bvalue%7D?x=1");
