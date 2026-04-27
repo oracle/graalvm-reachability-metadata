@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
-import sun.security.krb5.KrbException;
-
 @ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class KerberosErrorTest {
 
@@ -27,12 +25,17 @@ public class KerberosErrorTest {
 
             assertThat(KerberosError.values()).contains(KerberosError.REPLAY);
 
-            Exception wrapper = new Exception("outer", new RuntimeException(new KrbException(34)));
+            Exception wrapper = new Exception("outer", new RuntimeException(newKrbException(34)));
 
             assertThat(KerberosError.fromException(wrapper)).isEqualTo(KerberosError.REPLAY);
         } finally {
             restoreJavaVendor(originalJavaVendor);
         }
+    }
+
+    private static Throwable newKrbException(int errorCode) throws ReflectiveOperationException {
+        Class<?> krbExceptionClass = Class.forName("sun.security.krb5.KrbException");
+        return (Throwable) krbExceptionClass.getConstructor(int.class).newInstance(errorCode);
     }
 
     private static void restoreJavaVendor(String originalJavaVendor) {

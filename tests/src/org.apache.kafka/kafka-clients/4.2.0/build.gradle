@@ -10,12 +10,6 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += [
-        "--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED"
-    ]
-}
-
 tasks.withType(Test).configureEach {
     jvmArgs += [
         "--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED"
