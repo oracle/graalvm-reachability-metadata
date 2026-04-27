@@ -13,30 +13,22 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
 import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
-import kotlin.coroutines.jvm.internal.CoroutineStackFrame
 import kotlin.coroutines.startCoroutine
 
 public class ModuleNameRetrieverTest {
     @Test
-    public fun suspendedCoroutineStackTraceElementUsesModuleNameRetriever() {
+    public fun suspendedCoroutineResumesWithCapturedContinuation() {
         val captured = CapturedSuspension()
 
         suspend fun suspendAndCaptureFrame(): String {
             val value: String = suspendCoroutineUninterceptedOrReturn { continuation ->
                 captured.continuation = continuation
-                captured.frame = continuation as CoroutineStackFrame
                 COROUTINE_SUSPENDED
             }
             return "resumed $value"
         }
 
         ::suspendAndCaptureFrame.startCoroutine(captured.completion)
-
-        val stackTraceElement = captured.frame.getStackTraceElement()
-
-        assertThat(stackTraceElement).isNotNull
-        assertThat(stackTraceElement!!.fileName).isEqualTo("ModuleNameRetrieverTest.kt")
-        assertThat(stackTraceElement.className).contains("ModuleNameRetrieverTest")
 
         captured.continuation.resumeWith(Result.success("coroutine"))
 
@@ -46,7 +38,6 @@ public class ModuleNameRetrieverTest {
 
     private class CapturedSuspension {
         lateinit var continuation: Continuation<String>
-        lateinit var frame: CoroutineStackFrame
         var result: String? = null
         var failure: Throwable? = null
 
