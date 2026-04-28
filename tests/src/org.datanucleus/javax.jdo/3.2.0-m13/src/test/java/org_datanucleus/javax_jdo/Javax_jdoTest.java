@@ -8,7 +8,7 @@ package org_datanucleus.javax_jdo;
 
 import org.junit.jupiter.api.Test;
 
-class Javax_jdoTest {
+public class Javax_jdoTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
