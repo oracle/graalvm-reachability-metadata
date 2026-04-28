@@ -1,0 +1,246 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd62e-721c-7112-a149-ef04c1adc2bb
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:osgi.cmpn:6.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "6.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/metadata/org.osgi/osgi.cmpn/index.json
+- Entry selector: "metadata-version" = "6.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "6.0.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar
+- repository-url: https://github.com/osgi/osgi
+- test-code-url: https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final
+- documentation-url: https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar
+- description: OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications.
+- language: <missing>
+
+Context:
+- Coordinate version: 6.0.0
+- Entry test-version: 6.0.0
+codex
+I’ll inspect the existing metadata entry first and only touch fields that are actually missing. Since the URL fields and description are shown as already populated, the likely decision point is whether `language` should remain absent.
+exec
+/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"6\\.0\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.osgi/osgi.cmpn/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+4:    "metadata-version" : "6.0.0",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
+6:    "repository-url" : "https://github.com/osgi/osgi",
+7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
+9:    "description" : "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications.",
+
+codex
+The entry already has non-blank values for all requested URL and description fields. I’m checking the artifact/tag evidence now so I can leave `language` absent with confidence instead of making a speculative edit.
+exec
+/bin/bash -lc "curl -sS -L --fail https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0.pom | sed -n '1,180p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>osgi.cmpn</artifactId>
+  <version>6.0.0</version>
+  <description>OSGi Compendium Release 6, Interfaces and Classes for use in compiling bundles.</description>
+  <name>org.osgi:osgi.cmpn</name>
+  <url>http://www.osgi.org/</url>
+  <organization>
+    <name>OSGi Alliance</name>
+    <url>http://www.osgi.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://opensource.org/licenses/apache2.0.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://osgi.org/git/build.git</url>
+    <connection>scm:git:https://osgi.org/git/build.git</connection>
+    <developerConnection>scm:git:https://osgi.org/git/build.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <id>osgi</id>
+      <email>info@osgi.org</email>
+      <name>OSGi Alliance</name>
+      <organization>OSGi Alliance</organization>
+    </developer>
+  </developers>
+</project>
+
+exec
+/bin/bash -lc 'curl -I -L --fail https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+exec
+/bin/bash -lc 'curl -I -L --fail https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Tue, 28 Apr 2026 22:21:13 GMT
+content-type: application/java-archive
+content-length: 2032924
+cf-ray: 9f39756f3a5396e0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 387577
+etag: "1dc1ae0fb2f797618f58edde2abb3028"
+last-modified: Wed, 05 Aug 2015 20:00:52 GMT
+x-checksum-md5: 1dc1ae0fb2f797618f58edde2abb3028
+x-checksum-sha1: 115f86ddf57c57ab018fa3f8e0b51f05df8571ee
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0 1985k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Tue, 28 Apr 2026 22:21:13 GMT
+content-type: application/java-archive
+content-length: 599600
+cf-ray: 9f39756f3fb555ad-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 769204
+etag: "94c1572c2828b217726cc6f6a2d3a265"
+last-modified: Wed, 05 Aug 2015 20:00:51 GMT
+x-checksum-md5: 94c1572c2828b217726cc6f6a2d3a265
+x-checksum-sha1: cf4d979984a597753bf7e7df18369ec60f09a7fc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  585k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/bin/bash -lc 'curl -I -L --fail https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 1142ms:
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0HTTP/2 200 
+date: Tue, 28 Apr 2026 22:21:14 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"898655181fad2f3d83c84658e34e0f5f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=w0s91DZeRgqXX0yL%2BPlpAre%2BxLmgsoAc7g0PZhKqxN%2Bter7HIHGoZb39Ly%2FnIBShKSm5LICGzj89yulU4r5ZGOMdk%2BRWd%2BTKntlSBQEOC%2BzSI2JHrxUujHFgvrBW7AqaAPP%2FxYTuTXCsjojynzBKC%2FhugdgGeUnh%2BQCINhhSLuakUmHrlHDBU%2B8eBsS%2BT3gf85hH99dNiVlXpalExB%2BzxOp%2Bwr4z6cDIEib2yzlfmnZeDhA%2FHO8LijXrO4Q69O4P1lsDUy5QZ86QXnJfKUqDog%3D%3D--D%2FJsnkYvf6mJ1KKV--GuyDzRpD%2Ff84A7CyuDyLDA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1922960963.1777414873; expires=Wed, 28 Apr 2027 22:21:13 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 22:21:13 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: B376:1BC970:3756FD2:295231C:69F132D9
+
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+
+codex
+The Maven source and Javadoc jars both resolve for `6.0.0`, and the GitHub tag URL resolves. The POM identifies this as an OSGi Java API artifact, not a Kotlin or Scala language-specific library, so there is no `language` field to add under the requested rules.
+exec
+/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"6.0.0\")' metadata/org.osgi/osgi.cmpn/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "6.0.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
+  "repository-url": "https://github.com/osgi/osgi",
+  "test-code-url": "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
+  "documentation-url": "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
+  "description": "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications.",
+  "tested-versions": [
+    "6.0.0"
+  ],
+  "allowed-packages": [
+    "org.osgi"
+  ]
+}
+
+exec
+/bin/bash -lc 'git diff -- metadata/org.osgi/osgi.cmpn/index.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+codex
+No changes were needed in [index.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/metadata/org.osgi/osgi.cmpn/index.json:4). The `6.0.0` entry already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the two-sentence `description`.
+
+I left `language` absent because `org.osgi:osgi.cmpn:6.0.0` is a Java/OSGi API artifact, not Kotlin- or Scala-specific under the requested schema. I verified the Maven source jar, Maven Javadoc jar, and GitHub tag URL resolve successfully; `git diff` is empty.
+2026-04-28T22:21:29.466372Z ERROR codex_core::session: failed to record rollout items: thread 019dd62e-721c-7112-a149-ef04c1adc2bb not found
+tokens used
+11,478
+No changes were needed in [index.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/metadata/org.osgi/osgi.cmpn/index.json:4). The `6.0.0` entry already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the two-sentence `description`.
+
+I left `language` absent because `org.osgi:osgi.cmpn:6.0.0` is a Java/OSGi API artifact, not Kotlin- or Scala-specific under the requested schema. I verified the Maven source jar, Maven Javadoc jar, and GitHub tag URL resolve successfully; `git diff` is empty.
+Ran agent for org.osgi:osgi.cmpn:6.0.0 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/build/agent-url-discovery-logs/org.osgi-osgi.cmpn-6.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 31s
+9 actionable tasks: 1 executed, 8 up-to-date

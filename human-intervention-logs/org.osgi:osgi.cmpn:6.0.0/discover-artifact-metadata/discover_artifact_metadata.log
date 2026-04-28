@@ -1,0 +1,1186 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd62c-2bac-7212-ad3f-14c02060113e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:osgi.cmpn:6.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "6.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+- Set "coordinates" to "org.osgi:osgi.cmpn:6.0.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from authoritative sources first, then update the JSON in place. I’m going to prefer Maven-hosted source/test/doc artifacts if they exist, as requested.
+exec
+/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json && sed -n '1,200p' build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+-rw-rw-r-- 1 jovan jovan 49 Apr 29 00:18 build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+{
+  "coordinates" : "org.osgi:osgi.cmpn:6.0.0"
+}
+
+exec
+/bin/bash -lc "rg -n 'org\\.osgi.*osgi\\.cmpn|osgi.cmpn' ." in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ exited 1 in 0ms:
+web search: 
+web search: Maven org.osgi osgi.cmpn 6.0.0 sources jar javadoc tests
+web search: 
+web search: https://docs.osgi.org/download/r6/osgi.cmpn-6.0.0.pdf
+codex
+The Maven directory is indexed, and it looks like the exact 6.0.0 artifact has Maven-hosted source and Javadoc jars. I’m checking whether there is a Maven-hosted test artifact before deciding whether `test-code-url` should be a URL or `N/A`.
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/osgi/osgi.cmpn/6.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/osgi/osgi.cmpn/6.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="osgi.cmpn-6.0.0-javadoc.jar" title="osgi.cmpn-6.0.0-javadoc.jar">osgi.cmpn-6.0.0-javadoc.jar</a>                       2015-08-05 20:00   2032924      
+<a href="osgi.cmpn-6.0.0-javadoc.jar.asc" title="osgi.cmpn-6.0.0-javadoc.jar.asc">osgi.cmpn-6.0.0-javadoc.jar.asc</a>                   2015-08-05 20:00       475      
+<a href="osgi.cmpn-6.0.0-javadoc.jar.asc.md5" title="osgi.cmpn-6.0.0-javadoc.jar.asc.md5">osgi.cmpn-6.0.0-javadoc.jar.asc.md5</a>               2015-08-05 20:00        32      
+<a href="osgi.cmpn-6.0.0-javadoc.jar.asc.sha1" title="osgi.cmpn-6.0.0-javadoc.jar.asc.sha1">osgi.cmpn-6.0.0-javadoc.jar.asc.sha1</a>              2015-08-05 20:00        40      
+<a href="osgi.cmpn-6.0.0-javadoc.jar.asc.sha256" title="osgi.cmpn-6.0.0-javadoc.jar.asc.sha256">osgi.cmpn-6.0.0-javadoc.jar.asc.sha256</a>            2015-08-05 20:00        64      
+<a href="osgi.cmpn-6.0.0-javadoc.jar.asc.sha512" title="osgi.cmpn-6.0.0-javadoc.jar.asc.sha512">osgi.cmpn-6.0.0-javadoc.jar.asc.sha512</a>            2015-08-05 20:00       128      
+<a href="osgi.cmpn-6.0.0-javadoc.jar.md5" title="osgi.cmpn-6.0.0-javadoc.jar.md5">osgi.cmpn-6.0.0-javadoc.jar.md5</a>                   2015-08-05 20:00        32      
+<a href="osgi.cmpn-6.0.0-javadoc.jar.sha1" title="osgi.cmpn-6.0.0-javadoc.jar.sha1">osgi.cmpn-6.0.0-javadoc.jar.sha1</a>                  2015-08-05 20:00        40      
+<a href="osgi.cmpn-6.0.0-sources.jar" title="osgi.cmpn-6.0.0-sources.jar">osgi.cmpn-6.0.0-sources.jar</a>                       2015-08-05 20:00    599600      
+<a href="osgi.cmpn-6.0.0-sources.jar.asc" title="osgi.cmpn-6.0.0-sources.jar.asc">osgi.cmpn-6.0.0-sources.jar.asc</a>                   2015-08-05 20:00       475      
+<a href="osgi.cmpn-6.0.0-sources.jar.asc.md5" title="osgi.cmpn-6.0.0-sources.jar.asc.md5">osgi.cmpn-6.0.0-sources.jar.asc.md5</a>               2015-08-05 20:00        32      
+<a href="osgi.cmpn-6.0.0-sources.jar.asc.sha1" title="osgi.cmpn-6.0.0-sources.jar.asc.sha1">osgi.cmpn-6.0.0-sources.jar.asc.sha1</a>              2015-08-05 20:00        40      
+<a href="osgi.cmpn-6.0.0-sources.jar.asc.sha256" title="osgi.cmpn-6.0.0-sources.jar.asc.sha256">osgi.cmpn-6.0.0-sources.jar.asc.sha256</a>            2015-08-05 20:00        64      
+<a href="osgi.cmpn-6.0.0-sources.jar.asc.sha512" title="osgi.cmpn-6.0.0-sources.jar.asc.sha512">osgi.cmpn-6.0.0-sources.jar.asc.sha512</a>            2015-08-05 20:00       128      
+<a href="osgi.cmpn-6.0.0-sources.jar.md5" title="osgi.cmpn-6.0.0-sources.jar.md5">osgi.cmpn-6.0.0-sources.jar.md5</a>                   2015-08-05 20:00        32      
+<a href="osgi.cmpn-6.0.0-sources.jar.sha1" title="osgi.cmpn-6.0.0-sources.jar.sha1">osgi.cmpn-6.0.0-sources.jar.sha1</a>                  2015-08-05 20:00        40      
+<a href="osgi.cmpn-6.0.0.jar" title="osgi.cmpn-6.0.0.jar">osgi.cmpn-6.0.0.jar</a>                               2015-08-05 20:00    958829      
+<a href="osgi.cmpn-6.0.0.jar.asc" title="osgi.cmpn-6.0.0.jar.asc">osgi.cmpn-6.0.0.jar.asc</a>                           2015-08-05 20:00       475      
+<a href="osgi.cmpn-6.0.0.jar.asc.md5" title="osgi.cmpn-6.0.0.jar.asc.md5">osgi.cmpn-6.0.0.jar.asc.md5</a>                       2015-08-05 20:00        32      
+<a href="osgi.cmpn-6.0.0.jar.asc.sha1" title="osgi.cmpn-6.0.0.jar.asc.sha1">osgi.cmpn-6.0.0.jar.asc.sha1</a>                      2015-08-05 20:00        40      
+<a href="osgi.cmpn-6.0.0.jar.asc.sha256" title="osgi.cmpn-6.0.0.jar.asc.sha256">osgi.cmpn-6.0.0.jar.asc.sha256</a>                    2015-08-05 20:00        64      
+<a href="osgi.cmpn-6.0.0.jar.asc.sha512" title="osgi.cmpn-6.0.0.jar.asc.sha512">osgi.cmpn-6.0.0.jar.asc.sha512</a>                    2015-08-05 20:00       128      
+<a href="osgi.cmpn-6.0.0.jar.md5" title="osgi.cmpn-6.0.0.jar.md5">osgi.cmpn-6.0.0.jar.md5</a>                           2015-08-05 20:00        32      
+<a href="osgi.cmpn-6.0.0.jar.sha1" title="osgi.cmpn-6.0.0.jar.sha1">osgi.cmpn-6.0.0.jar.sha1</a>                          2015-08-05 20:00        40      
+<a href="osgi.cmpn-6.0.0.pom" title="osgi.cmpn-6.0.0.pom">osgi.cmpn-6.0.0.pom</a>                               2015-08-05 20:00      1285      
+<a href="osgi.cmpn-6.0.0.pom.asc" title="osgi.cmpn-6.0.0.pom.asc">osgi.cmpn-6.0.0.pom.asc</a>                           2015-08-05 20:00       475      
+<a href="osgi.cmpn-6.0.0.pom.asc.md5" title="osgi.cmpn-6.0.0.pom.asc.md5">osgi.cmpn-6.0.0.pom.asc.md5</a>                       2015-08-05 20:00        32      
+<a href="osgi.cmpn-6.0.0.pom.asc.sha1" title="osgi.cmpn-6.0.0.pom.asc.sha1">osgi.cmpn-6.0.0.pom.asc.sha1</a>                      2015-08-05 20:00        40      
+<a href="osgi.cmpn-6.0.0.pom.asc.sha256" title="osgi.cmpn-6.0.0.pom.asc.sha256">osgi.cmpn-6.0.0.pom.asc.sha256</a>                    2015-08-05 20:00        64      
+<a href="osgi.cmpn-6.0.0.pom.asc.sha512" title="osgi.cmpn-6.0.0.pom.asc.sha512">osgi.cmpn-6.0.0.pom.asc.sha512</a>                    2015-08-05 20:00       128      
+<a href="osgi.cmpn-6.0.0.pom.md5" title="osgi.cmpn-6.0.0.pom.md5">osgi.cmpn-6.0.0.pom.md5</a>                           2015-08-05 20:00        32      
+<a href="osgi.cmpn-6.0.0.pom.sha1" title="osgi.cmpn-6.0.0.pom.sha1">osgi.cmpn-6.0.0.pom.sha1</a>                          2015-08-05 20:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0.pom' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>osgi.cmpn</artifactId>
+  <version>6.0.0</version>
+  <description>OSGi Compendium Release 6, Interfaces and Classes for use in compiling bundles.</description>
+  <name>org.osgi:osgi.cmpn</name>
+  <url>http://www.osgi.org/</url>
+  <organization>
+    <name>OSGi Alliance</name>
+    <url>http://www.osgi.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://opensource.org/licenses/apache2.0.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://osgi.org/git/build.git</url>
+    <connection>scm:git:https://osgi.org/git/build.git</connection>
+    <developerConnection>scm:git:https://osgi.org/git/build.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <id>osgi</id>
+      <email>info@osgi.org</email>
+      <name>OSGi Alliance</name>
+      <organization>OSGi Alliance</organization>
+    </developer>
+  </developers>
+</project>
+
+exec
+/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22org.osgi%22%20AND%20a:%22osgi.cmpn%22%20AND%20v:%226.0.0%22&core=gav&rows=20&wt=json'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 390ms:
+{"responseHeader":{"status":0,"QTime":2,"params":{"q":"g:\"org.osgi\" AND a:\"osgi.cmpn\" AND v:\"6.0.0\"","core":"gav","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"org.osgi:osgi.cmpn:6.0.0","g":"org.osgi","a":"osgi.cmpn","v":"6.0.0","p":"jar","timestamp":1438804852000,"ec":[".pom.asc.sha256",".pom.asc.sha512","-sources.jar","-javadoc.jar",".jar.asc.sha512",".jar","-sources.jar.asc.sha512","-javadoc.jar.asc.sha512","-javadoc.jar.asc.sha256",".pom","-sources.jar.asc.sha256",".jar.asc.sha256"],"tags":["classes","compiling","bundles","interfaces","compendium","osgi","release"]}]}}
+web search: 
+web search: org.osgi osgi.cmpn 6.0.0 source repository tag
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/osgi/osgi.git | rg -i 'r6|6\\.0|cmpn|osgi\\.cmpn|release' | head -100" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+exec
+/bin/bash -lc 'git ls-remote --heads https://github.com/osgi/osgi.git | head -50' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+exec
+/bin/bash -lc "git ls-remote --tags https://osgi.org/git/build.git | rg -i 'r6|6\\.0|cmpn|osgi\\.cmpn|release' | head -100" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 377ms:
+fc90876712407fb4cee223a2c6556f5643b4b235	refs/heads/cmpn
+9f8e4323a63f1192bb88c50983511109be70c8d1	refs/heads/core
+58f9d1f435bb8bc61e574ddf66e8d3e01b110a54	refs/heads/cziegeler-patch-1
+89db2ad692648676907b6097e4aee209958dd64c	refs/heads/design/168
+9b14b69ed6f492b75886ac28c9b9a0fa45079324	refs/heads/design/172
+ec5782be5198d2c1e47d7c7ff49a476a251a356e	refs/heads/design/372
+eb360277f633b7640c8c3752213775395b9edfa8	refs/heads/design/552
+dd06273354d98f4cb4a841d9df5ee73211d89d91	refs/heads/design/575
+bde596381fb95bf3d11f2a1e2c9b654f2595f987	refs/heads/design/587
+b4e2a9883534b4444642fb37fa06405140d24dd2	refs/heads/design/742
+afcfaf3768f74b98bf0fae3b1c8433f3026f1d50	refs/heads/design/892
+fc90876712407fb4cee223a2c6556f5643b4b235	refs/heads/enterprise
+36b8da2f163aba8629e3e8024d03fc3937b67c5d	refs/heads/gh-pages
+763ed7f1b55b43c6401e67c6b11b7a5b9bee7fc0	refs/heads/jakarta-ws/handler-ordering
+beacb96c3a82278b86f7466dc8302b5aa316f0c9	refs/heads/main
+8e96a2338c89bcf9976f71bd6f4fb3f5055f3f78	refs/heads/release
+92b7e0e9ab5647b59ae05385296dd6657c399a33	refs/heads/requirements/386
+a9dcd22545576260f3571c1db996a5b8d6548e55	refs/heads/requirements/575
+632562146ccacc971e734bb3141f515405f0aa78	refs/heads/requirements/587
+921538670832ad67815f78b583f2dfcf784bcd4f	refs/heads/requirements/696
+1ca722e7a314605f433d9253230731152959cc8d	refs/heads/residential
+f62fba38e9ba5cd1803b258829b6b69d9c6de7f4	refs/heads/tw/design/386
+
+ succeeded in 392ms:
+705eba1ba09abdaaab755aed9d7e5d3bd87aadf1	refs/tags/8.1.0.cmpn
+8e96a2338c89bcf9976f71bd6f4fb3f5055f3f78	refs/tags/8.1.0.cmpn^{}
+9e1c74c47197691eb3f85e1d8cc914a5b3b836e3	refs/tags/8.1.0.cmpn-RC1
+a50e1dbfe4c99fa93bce3df288fd774973e7f09b	refs/tags/8.1.0.cmpn-RC1^{}
+b39cb733f4468ca67ee6a7a8c82762023fd8e539	refs/tags/r401-cmpn-ri-tck-final
+ba77e1ad550137b416efaf5bae0d39530a7e46b0	refs/tags/r401-cmpn-ri-tck-final^{}
+bcb8a044f35859cf7b63120d62f029d17fddaf76	refs/tags/r401-cmpn-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r401-cmpn-spec-final^{}
+d90b46c492395793d004bcd02199038f8f3631ef	refs/tags/r4v41-cmpn-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-cmpn-ri-tck-final^{}
+0d9b2787fa8d341930d806f87aa2216bd041cb90	refs/tags/r4v42-cmpn-spec-final
+8b283d49469e805fd42dc8486416ff6d8e7359e3	refs/tags/r4v42-cmpn-spec-final^{}
+ec6b5ff8940c6a954a596f6b626233bcb671c299	refs/tags/r4v42-core-cmpn-final
+7f0db3bb6dfc444c2604b09e540f965df7ab8b29	refs/tags/r4v42-core-cmpn-final^{}
+74c035a17b9b4a2ec2935b5096f645d5c2f4711b	refs/tags/r4v43-cmpn-ri-ct-final
+b4bdf0b13eb363c03a297903efbdecb4ec68f3c8	refs/tags/r4v43-cmpn-ri-ct-final^{}
+72920c5b272795ec24c05b4a29b138a76f54a9ba	refs/tags/r4v43-cmpn-spec-final
+11b8e9cfce63e1ec92d567ca570528220513946a	refs/tags/r4v43-cmpn-spec-final^{}
+8f1f83c4ad1c427e0e10a1b9156dffef6711c4ba	refs/tags/r4v431-core-cmpn-spec-final
+c7da4c70103383ed4e94a520e8c337b441a512b3	refs/tags/r4v431-core-cmpn-spec-final^{}
+7db8eb64f579ccb2208add5e543149ad259ecf76	refs/tags/r5-cmpn-ri-ct-final
+a834984f32027b4041ba5192db5b324967088bb0	refs/tags/r5-cmpn-ri-ct-final^{}
+8a3d85bbe1d04ef79bda177255bae087236565a2	refs/tags/r5-cmpn-spec-final
+a834984f32027b4041ba5192db5b324967088bb0	refs/tags/r5-cmpn-spec-final^{}
+44369ee9127e86c27c1af59f1be763ecc263e34d	refs/tags/r6-cmpn-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-cmpn-ri-ct-final^{}
+482a684d7c95cdb8a7a308d9d12dcdded893fb34	refs/tags/r6-cmpn-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-cmpn-spec-final^{}
+2a11a3e5d8c60b50e4081343ebed6bcec311a598	refs/tags/r6-core-ri-ct-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-ri-ct-final^{}
+d8890daf8811f2c2c451a7ed793bac2d8dcce35a	refs/tags/r6-core-spec-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-spec-final^{}
+837e5d17769f3ef0646b913f1e02509291349d7f	refs/tags/r6-enterprise-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-enterprise-ri-ct-final^{}
+301ecbf2d2502438d34aeaedce156c45882ed856	refs/tags/r6-enterprise-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-enterprise-spec-final^{}
+234b425b53e5b3ef3e475750dc86561b81a7b1c2	refs/tags/r6-residential-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-residential-ri-ct-final^{}
+5655cfae7d61f051746213bab0f386423fa38d8e	refs/tags/r6-residential-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-residential-spec-final^{}
+b23a773251adfcd4e3f8248318a1262cb22ee7cb	refs/tags/r6-residential-supplement-ri-ct-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-ri-ct-final^{}
+7742076a96cb0f7cdd869f0d47ab11678fae7bdb	refs/tags/r6-residential-supplement-spec-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-spec-final^{}
+c27b1731cbca5a6b836195161c9330c8e395bafe	refs/tags/r7-cmpn-ri-ct-final
+c886e125edee3b79de55b0a2002e6ea61570b481	refs/tags/r7-cmpn-ri-ct-final^{}
+06a66f4bd61a26146a0fd8e9a9c44c25fe7d0256	refs/tags/r7-cmpn-spec-final
+ac877b9fdaa36e26adb939cf9dd425e77243f449	refs/tags/r7-cmpn-spec-final^{}
+148d6a318212c3e9e6f738563190d90c70815ff2	refs/tags/r8-cmpn-final
+db39ce672917cadce15aad14a33795cbed7e8791	refs/tags/r8-cmpn-final^{}
+4fd91a48643c84ab29ecb49ee9f42384f2b32fe5	refs/tags/r8-cmpn-spec-RC1
+b986b23c6429cf7bf0fa9079828cdcab15902325	refs/tags/r8-cmpn-spec-RC1^{}
+337beaf9a460f031c058c562d1a5004273c57902	refs/tags/r8-core-final-rerelease
+c7fbc4cc481f1a9a112b8dafce7de534999c3a10	refs/tags/r8-core-final-rerelease^{}
+
+ succeeded in 763ms:
+fatal: repository 'https://osgi.org/git/build.git/' not found
+
+codex
+Maven Central does not list a `tests` classifier for this artifact. I found the upstream Git tags for OSGi R6, so I’m checking whether the release tag contains an identifiable test suite path rather than guessing.
+exec
+/bin/bash -lc "rm -rf /tmp/osgi-r6-check && git clone --depth 1 --branch r6-cmpn-ri-ct-final https://github.com/osgi/osgi.git /tmp/osgi-r6-check && find /tmp/osgi-r6-check -maxdepth 3 -type d | sed 's#/tmp/osgi-r6-check/##' | head -200" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+exec
+/bin/bash -lc "rm -rf /tmp/osgi-r6-spec-check && git clone --depth 1 --branch r6-cmpn-spec-final https://github.com/osgi/osgi.git /tmp/osgi-r6-spec-check && find /tmp/osgi-r6-spec-check -maxdepth 3 -type d | sed 's#/tmp/osgi-r6-spec-check/##' | head -200" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 25935ms:
+Note: switching to 'b181066028a00e34c1e0291469a596d2fc9dac55'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Updating files:  47% (6927/14583)
+Updating files:  48% (7000/14583)
+Updating files:  49% (7146/14583)
+Updating files:  50% (7292/14583)
+Updating files:  51% (7438/14583)
+Updating files:  52% (7584/14583)
+Updating files:  53% (7729/14583)
+Updating files:  54% (7875/14583)
+Updating files:  55% (8021/14583)
+Updating files:  56% (8167/14583)
+Updating files:  57% (8313/14583)
+Updating files:  58% (8459/14583)
+Updating files:  59% (8604/14583)
+Updating files:  60% (8750/14583)
+Updating files:  61% (8896/14583)
+Updating files:  62% (9042/14583)
+Updating files:  63% (9188/14583)
+Updating files:  64% (9334/14583)
+Updating files:  65% (9479/14583)
+Updating files:  66% (9625/14583)
+Updating files:  67% (9771/14583)
+Updating files:  68% (9917/14583)
+Updating files:  69% (10063/14583)
+Updating files:  70% (10209/14583)
+Updating files:  71% (10354/14583)
+Updating files:  71% (10372/14583)
+Updating files:  72% (10500/14583)
+Updating files:  73% (10646/14583)
+Updating files:  74% (10792/14583)
+Updating files:  75% (10938/14583)
+Updating files:  76% (11084/14583)
+Updating files:  77% (11229/14583)
+Updating files:  78% (11375/14583)
+Updating files:  79% (11521/14583)
+Updating files:  80% (11667/14583)
+Updating files:  81% (11813/14583)
+Updating files:  82% (11959/14583)
+Updating files:  83% (12104/14583)
+Updating files:  84% (12250/14583)
+Updating files:  85% (12396/14583)
+Updating files:  86% (12542/14583)
+Updating files:  87% (12688/14583)
+Updating files:  88% (12834/14583)
+Updating files:  89% (12979/14583)
+Updating files:  90% (13125/14583)
+Updating files:  91% (13271/14583)
+Updating files:  92% (13417/14583)
+Updating files:  93% (13563/14583)
+Updating files:  94% (13709/14583)
+Updating files:  95% (13854/14583)
+Updating files:  96% (14000/14583)
+Updating files:  97% (14146/14583)
+Updating files:  98% (14292/14583)
+Updating files:  99% (14438/14583)
+Updating files: 100% (14583/14583)
+Updating files: 100% (14583/14583), done.
+/tmp/osgi-r6-check
+org.osgi.util.position
+org.osgi.util.position/.settings
+org.osgi.util.position/src
+org.osgi.util.position/src/org
+org.osgi.namespace.service
+org.osgi.namespace.service/.settings
+org.osgi.namespace.service/src
+org.osgi.namespace.service/src/org
+org.osgi.service.zigbee
+org.osgi.service.zigbee/.settings
+org.osgi.service.zigbee/src
+org.osgi.service.zigbee/src/org
+org.osgi.namespace.extender
+org.osgi.namespace.extender/.settings
+org.osgi.namespace.extender/src
+org.osgi.namespace.extender/src/org
+org.osgi.test.cases.rest.client.js
+org.osgi.test.cases.rest.client.js/.settings
+org.osgi.test.cases.rest.client.js/src
+org.osgi.test.cases.rest.client.js/src/org
+org.osgi.test.cases.rest.client.js/bnd
+org.osgi.service.serial
+org.osgi.service.serial/.settings
+org.osgi.service.serial/src
+org.osgi.service.serial/src/org
+org.osgi.namespace.contract
+org.osgi.namespace.contract/.settings
+org.osgi.namespace.contract/src
+org.osgi.namespace.contract/src/org
+org.osgi.framework
+org.osgi.framework/.settings
+org.osgi.framework/src
+org.osgi.framework/src/org
+org.osgi.test.cases.subsystem
+org.osgi.test.cases.subsystem/.settings
+org.osgi.test.cases.subsystem/src
+org.osgi.test.cases.subsystem/src/x
+org.osgi.test.cases.subsystem/src/org
+org.osgi.test.cases.subsystem/bnd
+org.osgi.test.cases.coordinator
+org.osgi.test.cases.coordinator/.settings
+org.osgi.test.cases.coordinator/src
+org.osgi.test.cases.coordinator/src/org
+org.osgi.test.cases.coordinator/bnd
+osgi.cmpn
+osgi.cmpn/.settings
+osgi.cmpn/src
+osgi.ct
+osgi.ct/.settings
+osgi.ct/src
+osgi.ct/legal
+org.osgi.impl.bundle.transaction
+org.osgi.impl.bundle.transaction/.settings
+org.osgi.impl.bundle.transaction/src
+org.osgi.impl.bundle.transaction/src/org
+org.osgi.service.blueprint
+org.osgi.service.blueprint/.settings
+org.osgi.service.blueprint/src
+org.osgi.service.blueprint/src/org
+org.osgi.test.cases.networkadapter
+org.osgi.test.cases.networkadapter/.settings
+org.osgi.test.cases.networkadapter/src
+org.osgi.test.cases.networkadapter/src/org
+org.osgi.test.cases.cm
+org.osgi.test.cases.cm/.settings
+org.osgi.test.cases.cm/src
+org.osgi.test.cases.cm/src/org
+org.osgi.test.cases.cm/perms
+org.osgi.test.cases.cm/bnd
+org.osgi.test.cases.remoteserviceadmin.secure
+org.osgi.test.cases.remoteserviceadmin.secure/.settings
+org.osgi.test.cases.remoteserviceadmin.secure/src
+org.osgi.test.cases.remoteserviceadmin.secure/src/org
+org.osgi.test.cases.remoteserviceadmin.secure/perms
+org.osgi.test.cases.remoteserviceadmin.secure/bnd
+org.osgi.service.event
+org.osgi.service.event/.settings
+org.osgi.service.event/src
+org.osgi.service.event/src/org
+org.osgi.test.cases.position
+org.osgi.test.cases.position/.settings
+org.osgi.test.cases.position/src
+org.osgi.test.cases.position/src/org
+org.osgi.impl.bundle.metatype.annotations
+org.osgi.impl.bundle.metatype.annotations/.settings
+org.osgi.impl.bundle.metatype.annotations/src
+org.osgi.impl.bundle.metatype.annotations/src/org
+org.osgi.test.cases.permissionadmin
+org.osgi.test.cases.permissionadmin/.settings
+org.osgi.test.cases.permissionadmin/src
+org.osgi.test.cases.permissionadmin/src/org
+org.osgi.test.cases.permissionadmin/perms
+org.osgi.test.cases.permissionadmin/bnd
+org.osgi.impl.service.upnp.cd
+org.osgi.impl.service.upnp.cd/.settings
+org.osgi.impl.service.upnp.cd/src
+org.osgi.impl.service.upnp.cd/src/org
+org.osgi.util.measurement
+org.osgi.util.measurement/.settings
+org.osgi.util.measurement/src
+org.osgi.util.measurement/src/org
+org.osgi.test.cases.http
+org.osgi.test.cases.http/.settings
+org.osgi.test.cases.http/src
+org.osgi.test.cases.http/src/org
+org.osgi.test.cases.http/bnd
+org.osgi.test.cases.http/doc
+org.osgi.test.cases.dmt.tc2
+org.osgi.test.cases.dmt.tc2/.settings
+org.osgi.test.cases.dmt.tc2/src
+org.osgi.test.cases.dmt.tc2/src/org
+org.osgi.test.cases.dmt.tc2/bnd
+org.osgi.service.jdbc
+org.osgi.service.jdbc/.settings
+org.osgi.service.jdbc/src
+org.osgi.service.jdbc/src/org
+osgi.enterprise
+osgi.enterprise/.settings
+osgi.enterprise/src
+org.osgi.test.cases.jmx.cm
+org.osgi.test.cases.jmx.cm/.settings
+org.osgi.test.cases.jmx.cm/src
+org.osgi.test.cases.jmx.cm/src/org
+org.osgi.test.cases.jmx.cm/bnd
+org.osgi.test.cases.dal
+org.osgi.test.cases.dal/.settings
+org.osgi.test.cases.dal/src
+org.osgi.test.cases.dal/src/org
+org.osgi.service.metatype.annotations
+org.osgi.service.metatype.annotations/.settings
+org.osgi.service.metatype.annotations/src
+org.osgi.service.metatype.annotations/src/org
+org.osgi.test.cases.repository
+org.osgi.test.cases.repository/.settings
+org.osgi.test.cases.repository/src
+org.osgi.test.cases.repository/src/org
+org.osgi.test.cases.repository/bnd
+org.osgi.test.cases.repository/resources
+org.osgi.test.cases.repository/resources/xmlresources
+org.osgi.test.cases.repository/resources/testresources
+org.osgi.service.jndi
+org.osgi.service.jndi/.settings
+org.osgi.service.jndi/src
+org.osgi.service.jndi/src/org
+org.osgi.service.cm
+org.osgi.service.cm/.settings
+org.osgi.service.cm/src
+org.osgi.service.cm/src/org
+templates
+templates/org.osgi.test.cases.template
+templates/org.osgi.test.cases.template/.settings
+templates/org.osgi.test.cases.template/src
+templates/org.osgi.service.template
+templates/org.osgi.service.template/.settings
+templates/org.osgi.service.template/src
+templates/org.osgi.impl.service.template
+templates/org.osgi.impl.service.template/.settings
+templates/org.osgi.impl.service.template/src
+org.osgi.test.cases.transaction
+org.osgi.test.cases.transaction/.settings
+org.osgi.test.cases.transaction/src
+org.osgi.test.cases.transaction/src/org
+org.osgi.service.monitor
+org.osgi.service.monitor/.settings
+org.osgi.service.monitor/src
+org.osgi.service.monitor/src/org
+org.osgi.service.subsystem
+org.osgi.service.subsystem/.settings
+org.osgi.service.subsystem/src
+org.osgi.service.subsystem/src/org
+org.osgi.service.permissionadmin
+org.osgi.service.permissionadmin/.settings
+org.osgi.service.permissionadmin/src
+org.osgi.service.permissionadmin/src/org
+org.osgi.service.io
+org.osgi.service.io/.settings
+org.osgi.service.io/src
+org.osgi.service.io/src/org
+org.osgi.test.cases.deploymentadmin.tc1
+org.osgi.test.cases.deploymentadmin.tc1/.settings
+org.osgi.test.cases.deploymentadmin.tc1/src
+org.osgi.test.cases.deploymentadmin.tc1/src/org
+org.osgi.test.cases.deploymentadmin.tc1/bnd
+org.osgi.test.cases.deploymentadmin.tc1/res
+org.osgi.test.cases.serviceloader.secure
+org.osgi.test.cases.serviceloader.secure/.settings
+org.osgi.test.cases.serviceloader.secure/src
+org.osgi.test.cases.serviceloader.secure/src/org
+org.osgi.test.cases.serviceloader.secure/perms
+org.osgi.test.cases.serviceloader.secure/bnd
+org.osgi.test.cases.serviceloader.secure/resources
+org.osgi.test.cases.serviceloader.secure/resources/spi
+org.osgi.test.cases.jndi
+org.osgi.test.cases.jndi/.settings
+org.osgi.test.cases.jndi/src
+org.osgi.test.cases.jndi/src/org
+org.osgi.test.cases.jndi/bnd
+org.osgi.test.cases.jndi/resources
+org.osgi.service.coordinator
+
+ succeeded in 29190ms:
+Note: switching to 'b0858c3b90a73ecc81055c7565fbbcbd4f76674e'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Updating files:  48% (7032/14393)
+Updating files:  49% (7053/14393)
+Updating files:  50% (7197/14393)
+Updating files:  51% (7341/14393)
+Updating files:  52% (7485/14393)
+Updating files:  53% (7629/14393)
+Updating files:  54% (7773/14393)
+Updating files:  55% (7917/14393)
+Updating files:  56% (8061/14393)
+Updating files:  57% (8205/14393)
+Updating files:  58% (8348/14393)
+Updating files:  59% (8492/14393)
+Updating files:  60% (8636/14393)
+Updating files:  61% (8780/14393)
+Updating files:  62% (8924/14393)
+Updating files:  63% (9068/14393)
+Updating files:  64% (9212/14393)
+Updating files:  65% (9356/14393)
+Updating files:  66% (9500/14393)
+Updating files:  67% (9644/14393)
+Updating files:  68% (9788/14393)
+Updating files:  69% (9932/14393)
+Updating files:  70% (10076/14393)
+Updating files:  71% (10220/14393)
+Updating files:  72% (10363/14393)
+Updating files:  73% (10507/14393)
+Updating files:  74% (10651/14393)
+Updating files:  75% (10795/14393)
+Updating files:  76% (10939/14393)
+Updating files:  76% (11067/14393)
+Updating files:  77% (11083/14393)
+Updating files:  78% (11227/14393)
+Updating files:  79% (11371/14393)
+Updating files:  80% (11515/14393)
+Updating files:  81% (11659/14393)
+Updating files:  82% (11803/14393)
+Updating files:  83% (11947/14393)
+Updating files:  84% (12091/14393)
+Updating files:  85% (12235/14393)
+Updating files:  86% (12378/14393)
+Updating files:  87% (12522/14393)
+Updating files:  88% (12666/14393)
+Updating files:  89% (12810/14393)
+Updating files:  90% (12954/14393)
+Updating files:  91% (13098/14393)
+Updating files:  92% (13242/14393)
+Updating files:  93% (13386/14393)
+Updating files:  94% (13530/14393)
+Updating files:  95% (13674/14393)
+Updating files:  96% (13818/14393)
+Updating files:  97% (13962/14393)
+Updating files:  98% (14106/14393)
+Updating files:  99% (14250/14393)
+Updating files: 100% (14393/14393)
+Updating files: 100% (14393/14393), done.
+/tmp/osgi-r6-spec-check
+org.osgi.util.position
+org.osgi.util.position/.settings
+org.osgi.util.position/src
+org.osgi.util.position/src/org
+org.osgi.namespace.service
+org.osgi.namespace.service/.settings
+org.osgi.namespace.service/src
+org.osgi.namespace.service/src/org
+org.osgi.service.zigbee
+org.osgi.service.zigbee/.settings
+org.osgi.service.zigbee/src
+org.osgi.service.zigbee/src/org
+org.osgi.namespace.extender
+org.osgi.namespace.extender/.settings
+org.osgi.namespace.extender/src
+org.osgi.namespace.extender/src/org
+org.osgi.service.serial
+org.osgi.service.serial/.settings
+org.osgi.service.serial/src
+org.osgi.service.serial/src/org
+org.osgi.namespace.contract
+org.osgi.namespace.contract/.settings
+org.osgi.namespace.contract/src
+org.osgi.namespace.contract/src/org
+org.osgi.framework
+org.osgi.framework/.settings
+org.osgi.framework/src
+org.osgi.framework/src/org
+org.osgi.test.cases.subsystem
+org.osgi.test.cases.subsystem/.settings
+org.osgi.test.cases.subsystem/src
+org.osgi.test.cases.subsystem/src/x
+org.osgi.test.cases.subsystem/src/org
+org.osgi.test.cases.subsystem/bnd
+org.osgi.test.cases.coordinator
+org.osgi.test.cases.coordinator/.settings
+org.osgi.test.cases.coordinator/src
+org.osgi.test.cases.coordinator/src/org
+org.osgi.test.cases.coordinator/bnd
+osgi.cmpn
+osgi.cmpn/.settings
+osgi.cmpn/src
+osgi.ct
+osgi.ct/.settings
+osgi.ct/src
+osgi.ct/legal
+org.osgi.impl.bundle.transaction
+org.osgi.impl.bundle.transaction/.settings
+org.osgi.impl.bundle.transaction/src
+org.osgi.impl.bundle.transaction/src/org
+org.osgi.service.blueprint
+org.osgi.service.blueprint/.settings
+org.osgi.service.blueprint/src
+org.osgi.service.blueprint/src/org
+org.osgi.test.cases.networkadapter
+org.osgi.test.cases.networkadapter/.settings
+org.osgi.test.cases.networkadapter/src
+org.osgi.test.cases.networkadapter/src/org
+org.osgi.test.cases.cm
+org.osgi.test.cases.cm/.settings
+org.osgi.test.cases.cm/src
+org.osgi.test.cases.cm/src/org
+org.osgi.test.cases.cm/perms
+org.osgi.test.cases.cm/bnd
+org.osgi.test.cases.remoteserviceadmin.secure
+org.osgi.test.cases.remoteserviceadmin.secure/.settings
+org.osgi.test.cases.remoteserviceadmin.secure/src
+org.osgi.test.cases.remoteserviceadmin.secure/src/org
+org.osgi.test.cases.remoteserviceadmin.secure/perms
+org.osgi.test.cases.remoteserviceadmin.secure/bnd
+org.osgi.service.event
+org.osgi.service.event/.settings
+org.osgi.service.event/src
+org.osgi.service.event/src/org
+org.osgi.test.cases.position
+org.osgi.test.cases.position/.settings
+org.osgi.test.cases.position/src
+org.osgi.test.cases.position/src/org
+org.osgi.test.cases.permissionadmin
+org.osgi.test.cases.permissionadmin/.settings
+org.osgi.test.cases.permissionadmin/src
+org.osgi.test.cases.permissionadmin/src/org
+org.osgi.test.cases.permissionadmin/perms
+org.osgi.test.cases.permissionadmin/bnd
+org.osgi.impl.service.upnp.cd
+org.osgi.impl.service.upnp.cd/.settings
+org.osgi.impl.service.upnp.cd/src
+org.osgi.impl.service.upnp.cd/src/org
+org.osgi.util.measurement
+org.osgi.util.measurement/.settings
+org.osgi.util.measurement/src
+org.osgi.util.measurement/src/org
+org.osgi.test.cases.http
+org.osgi.test.cases.http/.settings
+org.osgi.test.cases.http/src
+org.osgi.test.cases.http/src/org
+org.osgi.test.cases.http/bnd
+org.osgi.test.cases.http/doc
+org.osgi.test.cases.dmt.tc2
+org.osgi.test.cases.dmt.tc2/.settings
+org.osgi.test.cases.dmt.tc2/src
+org.osgi.test.cases.dmt.tc2/src/org
+org.osgi.test.cases.dmt.tc2/bnd
+org.osgi.service.jdbc
+org.osgi.service.jdbc/.settings
+org.osgi.service.jdbc/src
+org.osgi.service.jdbc/src/org
+osgi.enterprise
+osgi.enterprise/.settings
+osgi.enterprise/src
+org.osgi.test.cases.jmx.cm
+org.osgi.test.cases.jmx.cm/.settings
+org.osgi.test.cases.jmx.cm/src
+org.osgi.test.cases.jmx.cm/src/org
+org.osgi.test.cases.jmx.cm/bnd
+org.osgi.test.cases.dal
+org.osgi.test.cases.dal/.settings
+org.osgi.test.cases.dal/src
+org.osgi.test.cases.dal/src/org
+org.osgi.service.metatype.annotations
+org.osgi.service.metatype.annotations/.settings
+org.osgi.service.metatype.annotations/src
+org.osgi.service.metatype.annotations/src/org
+org.osgi.test.cases.repository
+org.osgi.test.cases.repository/.settings
+org.osgi.test.cases.repository/src
+org.osgi.test.cases.repository/src/org
+org.osgi.test.cases.repository/bnd
+org.osgi.test.cases.repository/resources
+org.osgi.test.cases.repository/resources/xmlresources
+org.osgi.test.cases.repository/resources/testresources
+org.osgi.service.jndi
+org.osgi.service.jndi/.settings
+org.osgi.service.jndi/src
+org.osgi.service.jndi/src/org
+org.osgi.service.cm
+org.osgi.service.cm/.settings
+org.osgi.service.cm/src
+org.osgi.service.cm/src/org
+templates
+templates/org.osgi.test.cases.template
+templates/org.osgi.test.cases.template/.settings
+templates/org.osgi.test.cases.template/src
+templates/org.osgi.service.template
+templates/org.osgi.service.template/.settings
+templates/org.osgi.service.template/src
+templates/org.osgi.impl.service.template
+templates/org.osgi.impl.service.template/.settings
+templates/org.osgi.impl.service.template/src
+org.osgi.test.cases.transaction
+org.osgi.test.cases.transaction/.settings
+org.osgi.test.cases.transaction/src
+org.osgi.test.cases.transaction/src/org
+org.osgi.service.monitor
+org.osgi.service.monitor/.settings
+org.osgi.service.monitor/src
+org.osgi.service.monitor/src/org
+org.osgi.service.subsystem
+org.osgi.service.subsystem/.settings
+org.osgi.service.subsystem/src
+org.osgi.service.subsystem/src/org
+org.osgi.service.permissionadmin
+org.osgi.service.permissionadmin/.settings
+org.osgi.service.permissionadmin/src
+org.osgi.service.permissionadmin/src/org
+org.osgi.service.io
+org.osgi.service.io/.settings
+org.osgi.service.io/src
+org.osgi.service.io/src/org
+org.osgi.test.cases.deploymentadmin.tc1
+org.osgi.test.cases.deploymentadmin.tc1/.settings
+org.osgi.test.cases.deploymentadmin.tc1/src
+org.osgi.test.cases.deploymentadmin.tc1/src/org
+org.osgi.test.cases.deploymentadmin.tc1/bnd
+org.osgi.test.cases.deploymentadmin.tc1/res
+org.osgi.test.cases.serviceloader.secure
+org.osgi.test.cases.serviceloader.secure/.settings
+org.osgi.test.cases.serviceloader.secure/src
+org.osgi.test.cases.serviceloader.secure/src/org
+org.osgi.test.cases.serviceloader.secure/perms
+org.osgi.test.cases.serviceloader.secure/bnd
+org.osgi.test.cases.serviceloader.secure/resources
+org.osgi.test.cases.serviceloader.secure/resources/spi
+org.osgi.test.cases.jndi
+org.osgi.test.cases.jndi/.settings
+org.osgi.test.cases.jndi/src
+org.osgi.test.cases.jndi/src/org
+org.osgi.test.cases.jndi/bnd
+org.osgi.test.cases.jndi/resources
+org.osgi.service.coordinator
+org.osgi.service.coordinator/.settings
+org.osgi.service.coordinator/src
+org.osgi.service.coordinator/src/org
+org.osgi.test.cases.log
+org.osgi.test.cases.log/.settings
+org.osgi.test.cases.log/src
+org.osgi.test.cases.log/src/org
+osgi.maven
+org.osgi.impl.bundle.midletcontainer
+
+codex
+The tagged upstream repository has many `org.osgi.test.cases.*` projects and an `osgi.ct` compliance-test harness for R6. Since there is no Maven test jar, I’ll point `test-code-url` at the R6 compendium RI/CT tag rather than inventing a narrower aggregate path that does not exist.
+exec
+/bin/bash -lc "find /tmp/osgi-r6-check -maxdepth 1 -type d -name 'org.osgi.test.cases*' -printf '%f\\n' | sort | head -100" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+exec
+/bin/bash -lc "find /tmp/osgi-r6-check/osgi.ct -maxdepth 3 -type f | sed 's#/tmp/osgi-r6-check/##' | head -80" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+org.osgi.test.cases.application
+org.osgi.test.cases.async
+org.osgi.test.cases.async.secure
+org.osgi.test.cases.blueprint
+org.osgi.test.cases.blueprint.java5
+org.osgi.test.cases.blueprint.secure
+org.osgi.test.cases.cm
+org.osgi.test.cases.component
+org.osgi.test.cases.component.annotations
+org.osgi.test.cases.condpermadmin
+org.osgi.test.cases.coordinator
+org.osgi.test.cases.coordinator.secure
+org.osgi.test.cases.dal
+org.osgi.test.cases.dal.functions
+org.osgi.test.cases.dal.secure
+org.osgi.test.cases.deploymentadmin.mo
+org.osgi.test.cases.deploymentadmin.tc1
+org.osgi.test.cases.deploymentadmin.tc2
+org.osgi.test.cases.device
+org.osgi.test.cases.dmt.tc1
+org.osgi.test.cases.dmt.tc2
+org.osgi.test.cases.dmt.tc3
+org.osgi.test.cases.dmt.tc4
+org.osgi.test.cases.enocean
+org.osgi.test.cases.event
+org.osgi.test.cases.event.secure
+org.osgi.test.cases.framework
+org.osgi.test.cases.framework.launch
+org.osgi.test.cases.framework.launch.secure
+org.osgi.test.cases.framework.secure
+org.osgi.test.cases.http
+org.osgi.test.cases.http.whiteboard
+org.osgi.test.cases.http.whiteboard.secure
+org.osgi.test.cases.io
+org.osgi.test.cases.jdbc
+org.osgi.test.cases.jmx.cm
+org.osgi.test.cases.jmx.framework
+org.osgi.test.cases.jmx.framework.secure
+org.osgi.test.cases.jmx.provisioning
+org.osgi.test.cases.jmx.useradmin
+org.osgi.test.cases.jndi
+org.osgi.test.cases.jndi.secure
+org.osgi.test.cases.jpa
+org.osgi.test.cases.log
+org.osgi.test.cases.measurement
+org.osgi.test.cases.metatype
+org.osgi.test.cases.metatype.annotations
+org.osgi.test.cases.monitor
+org.osgi.test.cases.networkadapter
+org.osgi.test.cases.permissionadmin
+org.osgi.test.cases.position
+org.osgi.test.cases.prefs
+org.osgi.test.cases.promise
+org.osgi.test.cases.provisioning
+org.osgi.test.cases.remoteserviceadmin
+org.osgi.test.cases.remoteserviceadmin.secure
+org.osgi.test.cases.remoteservices
+org.osgi.test.cases.repository
+org.osgi.test.cases.residentialmanagement
+org.osgi.test.cases.resolver
+org.osgi.test.cases.resourcemonitoring
+org.osgi.test.cases.rest
+org.osgi.test.cases.rest.client
+org.osgi.test.cases.rest.client.js
+org.osgi.test.cases.serial
+org.osgi.test.cases.serviceloader
+org.osgi.test.cases.serviceloader.secure
+org.osgi.test.cases.subsystem
+org.osgi.test.cases.subsystem.secure
+org.osgi.test.cases.tr069todmt
+org.osgi.test.cases.tracker
+org.osgi.test.cases.transaction
+org.osgi.test.cases.upnp
+org.osgi.test.cases.url
+org.osgi.test.cases.usbinfo
+org.osgi.test.cases.useradmin
+org.osgi.test.cases.webcontainer
+org.osgi.test.cases.wireadmin
+org.osgi.test.cases.xml
+org.osgi.test.cases.zigbee
+
+ succeeded in 0ms:
+osgi.ct/enterprise.bnd
+osgi.ct/.settings/org.eclipse.jdt.ui.prefs
+osgi.ct/.settings/org.eclipse.core.runtime.prefs
+osgi.ct/.settings/org.eclipse.core.resources.prefs
+osgi.ct/.settings/org.eclipse.jdt.core.prefs
+osgi.ct/src/.empty
+osgi.ct/layout.bnd
+osgi.ct/test.xml
+osgi.ct/legal/about.html
+osgi.ct/legal/NOTICE
+osgi.ct/cmpn.bnd
+osgi.ct/.project
+osgi.ct/core.bnd
+osgi.ct/build.gradle
+osgi.ct/.classpath
+osgi.ct/bnd.bnd
+osgi.ct/residential.bnd
+
+exec
+/bin/bash -lc "find /tmp/osgi-r6-check/osgi.cmpn -maxdepth 3 -type f | sed 's#/tmp/osgi-r6-check/##' | head -80" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+osgi.cmpn/.settings/org.eclipse.jdt.ui.prefs
+osgi.cmpn/.settings/org.eclipse.core.runtime.prefs
+osgi.cmpn/.settings/org.eclipse.core.resources.prefs
+osgi.cmpn/.settings/org.eclipse.jdt.core.prefs
+osgi.cmpn/src/.empty
+osgi.cmpn/layout.bnd
+osgi.cmpn/.project
+osgi.cmpn/.classpath
+osgi.cmpn/bnd.bnd
+
+exec
+/bin/bash -lc "sed -n '1,160p' /tmp/osgi-r6-check/osgi.cmpn/bnd.bnd" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+Bundle-License: http://opensource.org/licenses/apache2.0.php; \
+	link="http://www.apache.org/licenses/LICENSE-2.0"; \
+	description="Apache License, Version 2.0"
+Bundle-Description: \
+	OSGi Compendium Release ${version;=;${build.version}}, \
+	Interfaces and Classes for use in compiling bundles.
+Bundle-Name: ${groupid}:${p}
+-pom = \
+ groupid=${groupid}, \
+ version=${osgi.version}
+companion.code = true
+
+Import-Package					: *; resolution:=optional
+
+Export-Package 					: ${replace;${osgi.cmpn.packages};.+;$0\\;-split-package:=first}
+
+Include-Resource 				: ${osgi.cmpn.resources}
+
+Require-Capability: osgi.compile.time.only; filter:="(&(must.not.resolve=*)(!(must.not.resolve=*)))"
+
+-outputmask = ${@bsn}-${version;===;${@version}}.jar
+
+-dependson 					=  \
+	${osgi.cmpn.specs} 
+
+-buildpath 					= \
+	${replace;${osgi.cmpn.specs};.+;$0\\;version=project}, \
+    osgi.annotation;version=latest, \
+    osgi.core;version=latest, \
+    org.apache.geronimo.specs.geronimo-servlet_2.5_spec;version=latest, \
+    org.eclipse.persistence.jpa_spec;version=latest, \
+    com.icl.saxon;version=latest, \
+	ee.foundation;version=1.1
+
+-include : ${build}/eclipse/jdt.bnd, layout.bnd
+javadoc.title = Compendium
+
+exec
+/bin/bash -lc "sed -n '1,160p' /tmp/osgi-r6-check/osgi.ct/cmpn.bnd" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+exec
+/bin/bash -lc "sed -n '1,120p' /tmp/osgi-r6-check/osgi.ct/build.gradle" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+Bundle-Description: OSGi Compendium Release ${version;=;${build.version}} Compliance Tests
+
+-includeresource: {legal}
+
+-ctpack: ${build.cmpn.tests},${jar.cmpn.tests}
+
+ succeeded in 0ms:
+/*
+ * osgi.ct Gradle build script
+ */
+
+ext.riBuildDir = rootProject.file("osgi.ri/${bnd('target-dir')}")
+
+tasks.addRule('Pattern: prepct.<name>: Prepare the CT for <name>.') { taskName ->
+  if (taskName.startsWith('prepct.')) {
+    task(taskName) {
+      ext.book = taskName - 'prepct.'
+      description "Prepare the CT for ${book}."
+      group 'verification'
+      ext.destinationDir = new File(buildDir, "osgi.ct.${book}")
+      inputs.files fileTree(riBuildDir).include('osgi.ri.core*.jar', "osgi.ri.${book}*.jar")
+      inputs.files fileTree(buildDir).include("osgi.ct.${book}*.jar")
+      doFirst {
+        project.delete(destinationDir)
+        project.mkdir(destinationDir)
+      }
+      doLast {
+        inputs.files.each { jar ->
+          copy {
+            from zipTree(jar)
+            into destinationDir
+          }
+        }
+      }
+    }
+  }
+}
+
+tasks.addRule('Pattern: ct.<name>: Run the CT for <name>.') { taskName ->
+  if (taskName.startsWith('ct.')) {
+    task(taskName) {
+      ext.book = taskName - 'ct.'
+      description "Run the CT for ${book}."
+      group 'verification'
+      ext.destinationDir = new File(buildDir, "osgi.ct.${book}")
+      dependsOn "prepct.${book}"
+      doLast {
+        javaexec {
+          workingDir destinationDir
+          main = '-jar' // first arg must be the bnd jar
+          args new File(destinationDir, 'jar/bnd.jar')
+          args '--exceptions'
+          args 'runtests'
+          args '--title', "osgi.ct.${book}"
+        }.assertNormalExitValue()
+      }
+    }
+  }
+}
+
+task('ct') {
+  description 'Run all the CTs.'
+  group 'verification'
+  dependsOn 'ct.core', 'ct.cmpn', 'ct.enterprise', 'ct.residential'
+}
+
+codex
+I have enough confidence to update the metadata now: source and docs will use the exact Maven Central 6.0.0 source/Javadoc artifacts, and tests will use the upstream R6 compendium RI/CT tag because Maven has no test classifier for this artifact.
+apply patch
+patch: completed
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+index 0093b5347bda3bb8f01a5f43836890fe28f46bf7..39adc02f725aa0ab0257fbd3d8f865789ce8f23f
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.cmpn:6.0.0"
++  "coordinates" : "org.osgi:osgi.cmpn:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
++  "description" : "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+index 0093b5347bda3bb8f01a5f43836890fe28f46bf7..39adc02f725aa0ab0257fbd3d8f865789ce8f23f
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.cmpn:6.0.0"
++  "coordinates" : "org.osgi:osgi.cmpn:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
++  "description" : "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+{
+  "coordinates": "org.osgi:osgi.cmpn:6.0.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
+  "repository-url": "https://github.com/osgi/osgi",
+  "test-code-url": "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
+  "documentation-url": "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
+  "description": "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications."
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+index 0093b5347bda3bb8f01a5f43836890fe28f46bf7..39adc02f725aa0ab0257fbd3d8f865789ce8f23f
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.cmpn:6.0.0"
++  "coordinates" : "org.osgi:osgi.cmpn:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
++  "description" : "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications."
+ }
+
+exec
+/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:osgi.cmpn:6.0.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
+  "repository-url" : "https://github.com/osgi/osgi",
+  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
+  "description" : "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications."
+}
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+index 0093b5347bda3bb8f01a5f43836890fe28f46bf7..39adc02f725aa0ab0257fbd3d8f865789ce8f23f
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.cmpn:6.0.0"
++  "coordinates" : "org.osgi:osgi.cmpn:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
++  "description" : "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications."
+ }
+
+web search: 
+web search: Maven Central org.osgi osgi.cmpn 6.0.0 sources javadoc
+codex
+Updated [org.osgi-osgi.cmpn-6.0.0.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json).
+
+Set Maven-hosted exact-version source and Javadoc URLs, the upstream OSGi repository URL, and the R6 compendium RI/CT tag for tests. I left `language` absent because this is not a Kotlin- or Scala-specific library.
+
+Validated the file with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+index 0093b5347bda3bb8f01a5f43836890fe28f46bf7..39adc02f725aa0ab0257fbd3d8f865789ce8f23f
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.cmpn:6.0.0"
++  "coordinates" : "org.osgi:osgi.cmpn:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-cmpn-ri-ct-final",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.cmpn/6.0.0/osgi.cmpn-6.0.0-javadoc.jar",
++  "description" : "OSGi Compendium provides the Release 6 service, utility, and namespace APIs used to compile OSGi bundles. This artifact is a compile-time companion jar that packages interfaces and classes for the standardized compendium specifications."
+ }
+
+2026-04-28T22:20:30.723679Z ERROR codex_core::session: failed to record rollout items: thread 019dd62c-2bac-7212-ad3f-14c02060113e not found
+tokens used
+76,709
+Updated [org.osgi-osgi.cmpn-6.0.0.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/build/discovered-artifact-metadata/org.osgi-osgi.cmpn-6.0.0.json).
+
+Set Maven-hosted exact-version source and Javadoc URLs, the upstream OSGi repository URL, and the R6 compendium RI/CT tag for tests. I left `language` absent because this is not a Kotlin- or Scala-specific library.
+
+Validated the file with `jq`.
+Ran agent for org.osgi:osgi.cmpn:6.0.0 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/build/agent-artifact-discovery-logs/org.osgi-osgi.cmpn-6.0.0.log
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2986-1b9a96a2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 4s
+9 actionable tasks: 4 executed, 5 from cache
