@@ -103,6 +103,17 @@ public class Plexus_component_annotationsTest {
     }
 
     @Test
+    void requirementHintsAreReturnedAsDefensiveCopies() throws Exception {
+        Requirement requirement = MultiRepositoryHolder.class.getDeclaredField("repositories").getAnnotation(Requirement.class);
+
+        String[] hints = requirement.hints();
+        hints[0] = "mutated";
+
+        assertThat(requirement.hints()).containsExactly("snapshots", "releases");
+        assertThat(requirement.hints()).isNotSameAs(hints);
+    }
+
+    @Test
     void configurationAnnotationSupportsNamedAndDefaultNamedFieldValues() throws Exception {
         Field namedField = ConfigurationHolder.class.getDeclaredField("namedValue");
         Configuration namedConfiguration = namedField.getAnnotation(Configuration.class);
@@ -131,6 +142,9 @@ public class Plexus_component_annotationsTest {
     }
 
     interface Mirror {
+    }
+
+    interface PluginRepository {
     }
 
     @Component(
@@ -168,6 +182,11 @@ public class Plexus_component_annotationsTest {
         public void setMirrors(Mirror mirror) {
             this.requiredField = null;
         }
+    }
+
+    public static class MultiRepositoryHolder {
+        @Requirement(role = PluginRepository.class, hints = {"snapshots", "releases"})
+        public PluginRepository repositories;
     }
 
     public static class ConfigurationHolder {
