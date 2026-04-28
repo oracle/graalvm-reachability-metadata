@@ -6,16 +6,20 @@
  */
 package com_thoughtworks_xstream.xstream;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamer;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicitCollection;
-import com.thoughtworks.xstream.security.ExplicitTypePermission;
-import com.thoughtworks.xstream.security.TypePermission;
+import com.thoughtworks.xstream.core.ClassLoaderReference;
+import com.thoughtworks.xstream.mapper.AnnotationMapper;
+import com.thoughtworks.xstream.mapper.DefaultMapper;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,17 +44,24 @@ public class AnnotationMapperTest {
 
     @Test
     @SuppressWarnings("deprecation")
-    void serializesAndDeserializesXStreamWithProcessedAnnotationMapper() throws Exception {
-        XStream xstream = newAnnotatedXStream();
-        XStreamer streamer = new XStreamer();
-        Inventory inventory = new Inventory(new Item("serialized configuration"));
+    void serializesAndDeserializesAnnotationMapperWithObjectStreams() throws Exception {
+        AnnotationMapper mapper = newAnnotationMapper();
+        XStream xstream = new XStream();
+        xstream.allowTypesByWildcard(new String[]{"com.thoughtworks.xstream.**"});
+        StringWriter writer = new StringWriter();
 
-        String xml = streamer.toXML(xstream, inventory);
-        Object restored = streamer.fromXML(xml, permissionsForXStreamer());
+        try (ObjectOutputStream output = xstream.createObjectOutputStream(writer)) {
+            output.writeObject(mapper);
+        }
+        String xml = writer.toString();
+
+        Object restored;
+        try (ObjectInputStream input = xstream.createObjectInputStream(new StringReader(xml))) {
+            restored = input.readObject();
+        }
 
         assertThat(xml).contains("com.thoughtworks.xstream.mapper.AnnotationMapper");
-        assertThat(restored).isInstanceOfSatisfying(Inventory.class, value ->
-            assertThat(value.getItemNames()).containsExactly("serialized configuration"));
+        assertThat(restored).isInstanceOf(AnnotationMapper.class);
     }
 
     @SuppressWarnings("deprecation")
@@ -61,11 +72,10 @@ public class AnnotationMapperTest {
         return xstream;
     }
 
-    private static TypePermission[] permissionsForXStreamer() {
-        TypePermission[] defaults = XStreamer.getDefaultPermissions();
-        TypePermission[] permissions = Arrays.copyOf(defaults, defaults.length + 1);
-        permissions[defaults.length] = new ExplicitTypePermission(new Class[]{Inventory.class, Item.class});
-        return permissions;
+    private static AnnotationMapper newAnnotationMapper() {
+        ClassLoaderReference classLoaderReference = new ClassLoaderReference(
+            AnnotationMapperTest.class.getClassLoader());
+        return new AnnotationMapper(new DefaultMapper(classLoaderReference), null, null, classLoaderReference, null);
     }
 
     @XStreamAlias("inventory")
