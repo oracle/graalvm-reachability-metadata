@@ -76,7 +76,8 @@ public class BatchAnnotationProcessorManagerTest {
                 StandardCharsets.UTF_8)) {
             fileManager.setLocationFromPaths(StandardLocation.CLASS_OUTPUT, List.of(outputDirectory));
             JavaCompiler.CompilationTask task = compiler.getTask(compilerOutput, fileManager, diagnostics,
-                    compilerOptions(extraOptions), null, fileManager.getJavaFileObjectsFromPaths(fixtureSourceFile()));
+                    compilerOptions(extraOptions), null,
+                    fileManager.getJavaFileObjectsFromPaths(List.of(fixtureSourceFile())));
             return task.call();
         }
     }
