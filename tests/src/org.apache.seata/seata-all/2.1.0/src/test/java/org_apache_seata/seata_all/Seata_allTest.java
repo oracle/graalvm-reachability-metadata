@@ -8,7 +8,7 @@ package org_apache_seata.seata_all;
 
 import org.junit.jupiter.api.Test;
 
-class Seata_allTest {
+public class Seata_allTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
