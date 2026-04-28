@@ -65,56 +65,19 @@ public class AnnotationMirrorImplTest {
     }
 
     private List<Path> fixtureSourceFiles() throws IOException {
-        return List.of(
-                sourceFile("AnnotationMirrorImplAnnotations.java", """
-                        package org_eclipse_jdt.ecj;
+        return List.of(sourceFile("AnnotationMirrorImplFixture.java", """
+                package org_eclipse_jdt.ecj;
 
-                        import java.lang.annotation.ElementType;
-                        import java.lang.annotation.Retention;
-                        import java.lang.annotation.RetentionPolicy;
-                        import java.lang.annotation.Target;
-
-                        final class AnnotationMirrorImplAnnotations {
-                            enum AnnotationMirrorImplMode {
-                                FIRST,
-                                SECOND
-                            }
-
-                            @Retention(RetentionPolicy.RUNTIME)
-                            @interface AnnotationMirrorImplNested {
-                                String value();
-                            }
-
-                            @Retention(RetentionPolicy.RUNTIME)
-                            @Target(ElementType.TYPE)
-                            @interface AnnotationMirrorImplSample {
-                                int number();
-
-                                int[] numbers();
-
-                                AnnotationMirrorImplMode mode();
-
-                                AnnotationMirrorImplMode[] modes();
-
-                                AnnotationMirrorImplNested nested();
-
-                                AnnotationMirrorImplNested[] nestedArray();
-                            }
-                        }
-                        """),
-                sourceFile("AnnotationMirrorImplFixture.java", """
-                        package org_eclipse_jdt.ecj;
-
-                        @AnnotationMirrorImplAnnotations.AnnotationMirrorImplSample(
-                                number = 42,
-                                numbers = 7,
-                                mode = AnnotationMirrorImplAnnotations.AnnotationMirrorImplMode.SECOND,
-                                modes = AnnotationMirrorImplAnnotations.AnnotationMirrorImplMode.SECOND,
-                                nested = @AnnotationMirrorImplAnnotations.AnnotationMirrorImplNested("single"),
-                                nestedArray = @AnnotationMirrorImplAnnotations.AnnotationMirrorImplNested("array"))
-                        public class AnnotationMirrorImplFixture {
-                        }
-                        """));
+                @AnnotationMirrorImplTest.AnnotationMirrorImplSample(
+                        number = 42,
+                        numbers = 7,
+                        mode = AnnotationMirrorImplTest.AnnotationMirrorImplMode.SECOND,
+                        modes = AnnotationMirrorImplTest.AnnotationMirrorImplMode.SECOND,
+                        nested = @AnnotationMirrorImplTest.AnnotationMirrorImplNested("single"),
+                        nestedArray = @AnnotationMirrorImplTest.AnnotationMirrorImplNested("array"))
+                public class AnnotationMirrorImplFixture {
+                }
+                """));
     }
 
     private Path sourceFile(String fileName, String source) throws IOException {
@@ -126,7 +89,7 @@ public class AnnotationMirrorImplTest {
     }
 
     private static List<String> compilerOptions() {
-        return List.of("-proc:only");
+        return List.of("-proc:only", "-classpath", System.getProperty("java.class.path", ""));
     }
 
     private static String formatDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
@@ -138,6 +101,32 @@ public class AnnotationMirrorImplTest {
     private static String formatDiagnostic(Diagnostic<? extends JavaFileObject> diagnostic) {
         return diagnostic.getKind() + " line " + diagnostic.getLineNumber() + ": "
                 + diagnostic.getMessage(Locale.ROOT);
+    }
+
+    public enum AnnotationMirrorImplMode {
+        FIRST,
+        SECOND
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface AnnotationMirrorImplNested {
+        String value();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface AnnotationMirrorImplSample {
+        int number();
+
+        int[] numbers();
+
+        AnnotationMirrorImplMode mode();
+
+        AnnotationMirrorImplMode[] modes();
+
+        AnnotationMirrorImplNested nested();
+
+        AnnotationMirrorImplNested[] nestedArray();
     }
 
     private static final class AnnotationMirrorImplProcessor extends AbstractProcessor {
@@ -165,19 +154,18 @@ public class AnnotationMirrorImplTest {
             }
 
             this.processedFixture = true;
-            AnnotationMirrorImplAnnotations.AnnotationMirrorImplSample sample =
-                    fixture.getAnnotation(AnnotationMirrorImplAnnotations.AnnotationMirrorImplSample.class);
+            AnnotationMirrorImplSample sample = fixture.getAnnotation(AnnotationMirrorImplSample.class);
             try {
                 require(sample != null, "Expected ECJ to expose the fixture annotation as a proxy");
                 require(sample.number() == 42, "Expected primitive annotation member to be converted");
                 require(sample.numbers().length == 1,
                         "Expected single shorthand array element to become one array entry");
                 require(sample.numbers()[0] == 7, "Expected primitive array member to be converted");
-                require(sample.mode() == AnnotationMirrorImplAnnotations.AnnotationMirrorImplMode.SECOND,
+                require(sample.mode() == AnnotationMirrorImplMode.SECOND,
                         "Expected enum member to resolve by field name");
                 require(sample.modes().length == 1,
                         "Expected single enum shorthand array element to become one array entry");
-                require(sample.modes()[0] == AnnotationMirrorImplAnnotations.AnnotationMirrorImplMode.SECOND,
+                require(sample.modes()[0] == AnnotationMirrorImplMode.SECOND,
                         "Expected enum array member to resolve by field name");
                 require("single".equals(sample.nested().value()), "Expected nested annotation member to be proxied");
                 require(sample.nestedArray().length == 1, "Expected single nested annotation shorthand array element");
@@ -202,33 +190,5 @@ public class AnnotationMirrorImplTest {
                 throw new AssertionError(message);
             }
         }
-    }
-}
-
-final class AnnotationMirrorImplAnnotations {
-    enum AnnotationMirrorImplMode {
-        FIRST,
-        SECOND
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface AnnotationMirrorImplNested {
-        String value();
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    @interface AnnotationMirrorImplSample {
-        int number();
-
-        int[] numbers();
-
-        AnnotationMirrorImplMode mode();
-
-        AnnotationMirrorImplMode[] modes();
-
-        AnnotationMirrorImplNested nested();
-
-        AnnotationMirrorImplNested[] nestedArray();
     }
 }
