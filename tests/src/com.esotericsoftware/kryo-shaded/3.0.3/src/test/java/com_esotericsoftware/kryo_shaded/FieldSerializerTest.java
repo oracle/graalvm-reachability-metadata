@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 public class FieldSerializerTest {
     @Test
     void serializesAndCopiesFieldsDeclaredAcrossTheClassHierarchy() {
-        Kryo kryo = new Kryo();
+        Kryo kryo = newKryo();
         FieldSerializer<FieldSerializerSubject> serializer = new FieldSerializer<>(kryo, FieldSerializerSubject.class);
         FieldSerializerSubject original = FieldSerializerSubject.createSample();
 
@@ -42,7 +42,7 @@ public class FieldSerializerTest {
 
     @Test
     void rebuildsCachedFieldsWhenUsingPublicSerializerConfiguration() {
-        Kryo kryo = new Kryo();
+        Kryo kryo = newKryo();
         kryo.setAsmEnabled(false);
         FieldSerializer<FieldSerializerSubject> serializer = new FieldSerializer<>(kryo, FieldSerializerSubject.class);
 
@@ -58,6 +58,12 @@ public class FieldSerializerTest {
         assertThat(read.name).isEqualTo(original.name);
         assertThat(read.id).isEqualTo(original.id);
         assertThat(read.score).isEqualTo(original.score);
+    }
+
+    private static Kryo newKryo() {
+        Kryo kryo = new Kryo();
+        kryo.setReferences(false);
+        return kryo;
     }
 
     private static FieldSerializerSubject roundTrip(
