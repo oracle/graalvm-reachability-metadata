@@ -90,6 +90,39 @@ class Scala3_interfacesTest {
   }
 
   @Test
+  def sourcePositionCanRepresentUnknownLineAndColumnWhileKeepingContentOffsets(): Unit = {
+    val sourceText = """object Demo {
+                       |  val answer = 42
+                       |}
+                       |""".stripMargin
+    val sourceFile = TestSourceFile("Demo.scala", "memory:///Demo.scala", Optional.empty(), sourceText)
+    val startOffset = sourceText.indexOf("answer")
+    val endOffset = startOffset + "answer".length
+    val position = TestSourcePosition(
+      lineContentValue = "",
+      pointValue = startOffset,
+      lineValue = -1,
+      columnValue = -1,
+      startValue = startOffset,
+      startLineValue = -1,
+      startColumnValue = -1,
+      endValue = endOffset,
+      endLineValue = -1,
+      endColumnValue = -1,
+      sourceValue = sourceFile
+    )
+
+    assertThat(position.line()).isEqualTo(-1)
+    assertThat(position.column()).isEqualTo(-1)
+    assertThat(position.startLine()).isEqualTo(-1)
+    assertThat(position.startColumn()).isEqualTo(-1)
+    assertThat(position.endLine()).isEqualTo(-1)
+    assertThat(position.endColumn()).isEqualTo(-1)
+    assertThat(positionText(position)).isEqualTo("answer")
+    assertThat(position.source().content()(position.point())).isEqualTo('a')
+  }
+
+  @Test
   def diagnosticCapturesSeverityLocationAndRelatedInformation(): Unit = {
     val sourceFile = TestSourceFile("Main.scala", "memory:///Main.scala", Optional.empty(), "println(missing)")
     val primaryPosition = TestSourcePosition("println(missing)", 8, 1, 9, 8, 1, 9, 15, 1, 16, sourceFile)
@@ -152,6 +185,9 @@ class Scala3_interfacesTest {
     assertThat(callback.compiledSources).containsExactly(sourceFile)
     assertThat(callback.generatedClasses).containsExactly(GeneratedClass(sourceFile, generatedFile, "example.Service"))
   }
+
+  private def positionText(position: SourcePosition): String =
+    position.source().content().slice(position.start(), position.end()).mkString
 
   private def abstractFileDescriptions(files: JList[AbstractFile]): ArrayList[String] = {
     val descriptions = ArrayList[String]()
