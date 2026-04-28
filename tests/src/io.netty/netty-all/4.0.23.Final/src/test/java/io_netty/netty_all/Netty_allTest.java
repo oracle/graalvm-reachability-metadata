@@ -8,7 +8,7 @@ package io_netty.netty_all;
 
 import org.junit.jupiter.api.Test;
 
-class Netty_allTest {
+public class Netty_allTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
