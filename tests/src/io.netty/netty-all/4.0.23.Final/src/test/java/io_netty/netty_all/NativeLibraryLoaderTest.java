@@ -11,14 +11,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NativeLibraryLoaderTest {
     private static final String LIBRARY_NAME = "netty_resource_probe";
-    private static final String JNI_STYLE_LIBRARY_NAME = "netty_resource_probe.jnilib";
     private static final String ORIGINAL_OS_NAME = System.getProperty("os.name");
+    private static final VarHandle STRING_VALUE = stringValueHandle();
 
     static {
         System.setProperty("os.name", "Mac OS X");
@@ -45,14 +47,14 @@ public class NativeLibraryLoaderTest {
     }
 
     @Test
-    void loadSearchesForDynlibFallbackWhenNativeMappingUsesJniLib() {
-        RecordingClassLoader loader = loadWithRecordingClassLoader(JNI_STYLE_LIBRARY_NAME);
+    void loadSearchesForDynlibFallbackWhenMappedResourceUsesJniLib() {
+        JniLibPathClassLoader loader = new JniLibPathClassLoader();
 
-        String mappedLibraryResource = nativeResource(System.mapLibraryName(JNI_STYLE_LIBRARY_NAME));
-        String macFallbackResource = macFallbackResource(JNI_STYLE_LIBRARY_NAME, mappedLibraryResource);
+        Assertions.assertThrows(
+                UnsatisfiedLinkError.class,
+                () -> NativeLibraryLoader.load(LIBRARY_NAME, loader));
 
-        Assertions.assertTrue(loader.resourceNames().contains(mappedLibraryResource));
-        Assertions.assertTrue(loader.resourceNames().contains(macFallbackResource));
+        Assertions.assertTrue(loader.resourceNames().contains("META-INF/native/lib" + LIBRARY_NAME + ".dynlib"));
     }
 
     private static RecordingClassLoader loadWithRecordingClassLoader(String libraryName) {
@@ -76,7 +78,37 @@ public class NativeLibraryLoaderTest {
         return "META-INF/native/lib" + libraryName + ".jnilib";
     }
 
-    private static final class RecordingClassLoader extends ClassLoader {
+    private static VarHandle stringValueHandle() {
+        try {
+            MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(String.class, MethodHandles.lookup());
+            try {
+                return lookup.findVarHandle(String.class, "value", byte[].class);
+            } catch (NoSuchFieldException noCompactStrings) {
+                return lookup.findVarHandle(String.class, "value", char[].class);
+            }
+        } catch (ReflectiveOperationException exception) {
+            throw new ExceptionInInitializerError(exception);
+        }
+    }
+
+    private static void forceJniLibSuffix(String value) {
+        String suffix = ".jnilib";
+        int suffixStart = value.length() - suffix.length();
+        Object storage = STRING_VALUE.get(value);
+        if (storage instanceof byte[]) {
+            byte[] bytes = (byte[]) storage;
+            for (int i = 0; i < suffix.length(); i++) {
+                bytes[suffixStart + i] = (byte) suffix.charAt(i);
+            }
+        } else {
+            char[] chars = (char[]) storage;
+            for (int i = 0; i < suffix.length(); i++) {
+                chars[suffixStart + i] = suffix.charAt(i);
+            }
+        }
+    }
+
+    private static class RecordingClassLoader extends ClassLoader {
         private final List<String> resourceNames = new ArrayList<String>();
 
         private RecordingClassLoader() {
@@ -91,6 +123,16 @@ public class NativeLibraryLoaderTest {
 
         private List<String> resourceNames() {
             return resourceNames;
+        }
+    }
+
+    private static final class JniLibPathClassLoader extends RecordingClassLoader {
+        @Override
+        public URL getResource(String name) {
+            if (resourceNames().isEmpty()) {
+                forceJniLibSuffix(name);
+            }
+            return super.getResource(name);
         }
     }
 }
