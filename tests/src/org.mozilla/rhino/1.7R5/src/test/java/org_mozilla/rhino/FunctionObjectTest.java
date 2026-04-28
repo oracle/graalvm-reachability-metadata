@@ -12,6 +12,7 @@ import org.mozilla.javascript.FunctionObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
+import java.lang.reflect.Field;
 import java.security.Permission;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,26 +20,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FunctionObjectTest {
     @Test
     @SuppressWarnings("removal")
-    void definesFunctionPropertiesWhenDeclaredMemberAccessIsDenied() {
+    void definesFunctionPropertiesWhenDeclaredMemberAccessIsDenied() throws Exception {
         Context cx = Context.enter();
+        Field sawSecurityException = FunctionObject.class.getDeclaredField("sawSecurityException");
+        sawSecurityException.setAccessible(true);
+        boolean originalSawSecurityException = sawSecurityException.getBoolean(null);
+        boolean restoreSawSecurityException = true;
         SecurityManager previousSecurityManager = System.getSecurityManager();
+        boolean restoreSecurityManager = false;
         try {
             ScriptableObject scope = (ScriptableObject) cx.initStandardObjects();
-            System.setSecurityManager(new DenyDeclaredMemberAccessSecurityManager());
+            restoreSecurityManager = installSecurityManagerIfSupported(new DenyDeclaredMemberAccessSecurityManager());
+            if (!restoreSecurityManager) {
+                sawSecurityException.setBoolean(null, true);
+            }
 
             scope.defineFunctionProperties(
                     new String[] {"echo"},
                     PublicFunctionLibrary.class,
                     ScriptableObject.EMPTY);
 
-            System.setSecurityManager(previousSecurityManager);
-            previousSecurityManager = null;
+            if (restoreSecurityManager) {
+                System.setSecurityManager(previousSecurityManager);
+                restoreSecurityManager = false;
+            }
             Object result = ScriptableObject.callMethod(cx, scope, "echo", new Object[] {"fallback"});
 
             assertThat(result).isEqualTo("echo:fallback");
         } finally {
-            if (previousSecurityManager != null) {
+            if (restoreSecurityManager) {
                 System.setSecurityManager(previousSecurityManager);
+            }
+            if (restoreSawSecurityException) {
+                sawSecurityException.setBoolean(null, originalSawSecurityException);
             }
             Context.exit();
         }
@@ -93,6 +107,16 @@ public class FunctionObjectTest {
 
         public String getValue() {
             return value;
+        }
+    }
+
+    @SuppressWarnings("removal")
+    private static boolean installSecurityManagerIfSupported(SecurityManager securityManager) {
+        try {
+            System.setSecurityManager(securityManager);
+            return System.getSecurityManager() == securityManager;
+        } catch (UnsupportedOperationException unsupportedOperationException) {
+            return false;
         }
     }
 
