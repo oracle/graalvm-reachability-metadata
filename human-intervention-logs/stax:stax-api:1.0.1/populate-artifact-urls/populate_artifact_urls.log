@@ -1,0 +1,472 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd541-ed65-70c3-aa2c-00176b4e3fc6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: stax:stax-api:1.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c/metadata/stax/stax-api/index.json
+- Entry selector: "metadata-version" = "1.0.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.0.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: N/A
+- repository-url: N/A
+- test-code-url: N/A
+- documentation-url: N/A
+- description: StAX API defines the standard Java Streaming API for XML contracts from JSR-173. It provides the javax.xml.stream and javax.xml.namespace interfaces and supporting types used by XML stream readers, writers, factories, events, filters, and namespace handling.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0.1
+- Entry test-version: 1.0.1
+codex
+I’ll verify the artifact provenance before editing because these old StAX coordinates often predate modern source hosting conventions. I’ll use the local metadata first, then Maven/POM/source artifacts if available.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.0\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/stax/stax-api/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+4:    "metadata-version" : "1.0.1",
+5:    "source-code-url" : "N/A",
+6:    "repository-url" : "N/A",
+7:    "test-code-url" : "N/A",
+8:    "documentation-url" : "N/A",
+9:    "description" : "StAX API defines the standard Java Streaming API for XML contracts from JSR-173. It provides the javax.xml.stream and javax.xml.namespace interfaces and supporting types used by XML stream readers, writers, factories, events, filters, and namespace handling.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/stax/stax-api/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "source-code-url" : "N/A",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "StAX API defines the standard Java Streaming API for XML contracts from JSR-173. It provides the javax.xml.stream and javax.xml.namespace interfaces and supporting types used by XML stream readers, writers, factories, events, filters, and namespace handling.",
+    "tested-versions" : [
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "javax.xml"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central stax stax-api 1.0.1 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/stax/stax-api/1.0.1/
+web search: 
+web search: 
+codex
+The Maven Central directory for `1.0.1` only lists the binary jar and POM, so I’m checking the POM and jar contents next. If there is no published sources or javadoc artifact, I’ll avoid inventing tag URLs and leave those fields as `N/A` where confidence is low.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/stax/stax-api/1.0.1/stax-api-1.0.1.pom' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>stax</groupId>
+  <artifactId>stax-api</artifactId>
+  <name>StAX API</name>
+  <version>1.0.1</version>
+  <description>StAX API is the standard java XML processing API defined by JSR-173</description>
+  <url>http://stax.codehaus.org/</url>
+  <issueManagement>
+    <url>http://jira.codehaus.org/browse/STAX</url>
+  </issueManagement>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>dev@stax.codehaus.org</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <inceptionYear>2005</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <mailingLists>
+    <mailingList>
+      <name>StAX Builders List</name>
+      <subscribe>stax_builders-subscribe@yahoogroups.com</subscribe>
+      <unsubscribe>stax_builders-unsubscribe@yahoogroups.com</unsubscribe>
+      <archive>http://groups.yahoo.com/group/stax_builders/</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>aslom</id>
+      <name>Aleksander Slominski</name>
+      <email></email>
+      <organization>Indiana University</organization>
+    </developer>
+    <developer>
+      <id>chris</id>
+      <name>Chris Fry</name>
+      <email></email>
+      <organization></organization>
+    </developer>
+  </developers>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/stax/stax-api/1.0.1/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: stax/stax-api/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>stax/stax-api/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-03-14 05:31       111      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-03-14 05:31        75      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-03-14 05:31       130      
+<a href="stax-api-1.0.1.jar" title="stax-api-1.0.1.jar">stax-api-1.0.1.jar</a>                                2006-03-14 05:31     26514      
+<a href="stax-api-1.0.1.jar.md5" title="stax-api-1.0.1.jar.md5">stax-api-1.0.1.jar.md5</a>                            2006-03-14 05:31        32      
+<a href="stax-api-1.0.1.jar.sha1" title="stax-api-1.0.1.jar.sha1">stax-api-1.0.1.jar.sha1</a>                           2006-03-14 05:31        40      
+<a href="stax-api-1.0.1.pom" title="stax-api-1.0.1.pom">stax-api-1.0.1.pom</a>                                2006-03-14 05:31      1526      
+<a href="stax-api-1.0.1.pom.md5" title="stax-api-1.0.1.pom.md5">stax-api-1.0.1.pom.md5</a>                            2006-03-14 05:31        36      
+<a href="stax-api-1.0.1.pom.sha1" title="stax-api-1.0.1.pom.sha1">stax-api-1.0.1.pom.sha1</a>                           2006-03-14 05:31        44      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "jar tf ~/.m2/repository/stax/stax-api/1.0.1/stax-api-1.0.1.jar 2>/dev/null | sed -n '1,160p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"N/A\"|\"source-code-url\" : \"N/A\"' metadata/stax metadata/javax/xml metadata | head -80" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+rg: metadata/javax/xml: No such file or directory (os error 2)
+metadata/stax/stax-api/index.json:5:    "source-code-url" : "N/A",
+metadata/stax/stax-api/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:22:    "documentation-url" : "N/A",
+metadata/stax/stax-api/index.json:5:    "source-code-url" : "N/A",
+metadata/stax/stax-api/index.json:8:    "documentation-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:5:    "source-code-url" : "N/A",
+metadata/xmlpull/xmlpull/index.json:8:    "documentation-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\" : \"http://stax.codehaus.org|\"repository-url\" : \"N/A\"' metadata/stax metadata | head -50" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+metadata/stax/stax-api/index.json:6:    "repository-url" : "N/A",
+metadata/stax/stax-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.servlet.jsp/jsp-api/index.json:6:    "repository-url" : "N/A",
+metadata/javax.jcr/jcr/index.json:6:    "repository-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\" : \"1\\.0\\.1\"' metadata | head -80" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+metadata/stax/stax-api/index.json:4:    "metadata-version" : "1.0.1",
+metadata/com.google.guava/failureaccess/index.json:4:    "metadata-version" : "1.0.1",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:4:    "metadata-version" : "1.0.1",
+
+web search: 
+web search: site:mvnrepository.com/artifact/stax/stax-api/1.0.1 stax-api 1.0.1
+web search: 
+web search: "stax.codehaus.org" "stax-api" source
+web search: 
+web search: https://repo1.maven.org/maven2/stax/stax-api/1.0.1/
+codex
+The artifact POM only has a project homepage and no SCM section, and Maven Central has no `-sources`, `-javadoc`, or test artifact for `1.0.1`. The existing metadata already uses `N/A` for those unresolved fields and the description is non-blank, so the only remaining decision is language, which does not apply because this is a Java XML API, not a Kotlin/Groovy/Scala-specific library.
+exec
+/usr/bin/bash -lc 'jq . metadata/stax/stax-api/index.json >/dev/null && git diff -- metadata/stax/stax-api/index.json' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/stax/stax-api/1.0.1/stax-api-1.0.1-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 18:03:32 GMT
+content-type: text/html
+cf-ray: 9f37fbf96ef7be7f-ZRH
+cf-cache-status: HIT
+age: 2776
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/stax/stax-api/1.0.1/stax-api-1.0.1-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/stax/stax-api/1.0.1/stax-api-1.0.1-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 18:03:32 GMT
+content-type: text/html
+cf-ray: 9f37fbf96c43bc4d-ZRH
+cf-cache-status: HIT
+age: 2150
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/stax/stax-api/1.0.1/stax-api-1.0.1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+web search: 
+web search: repo1.maven.org maven2 stax stax-api 1.0.1 stax-api-1.0.1.pom
+web search: 
+web search: 
+web search: 
+web search: "StAX API is the standard java XML processing API defined by JSR-173"
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jboss.logmanager/jboss-logmanager/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.2.1.GA",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
+    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
+    "documentation-url" : "N/A",
+    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+    "tested-versions" : [
+      "1.2.1.GA"
+    ],
+    "allowed-packages" : [
+      "org.jboss.logmanager"
+    ]
+  },
+  {
+    "metadata-version" : "1.2.0.GA",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.0.GA/jboss-logmanager-1.2.0.GA-sources.jar",
+    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.0.GA/src/test",
+    "documentation-url" : "N/A",
+    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+    "tested-versions" : [
+      "1.2.0.GA"
+    ],
+    "allowed-packages" : [
+      "org.jboss.logmanager"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.osgi/org.osgi.namespace.extender/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/1.0.1/org.osgi.namespace.extender-1.0.1-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.namespace.extender/1.0.1/org.osgi.namespace.extender-1.0.1-javadoc.jar",
+    "description" : "org.osgi.namespace.extender provides the OSGi ExtenderNamespace constants used to declare and require extender capabilities in OSGi resource metadata. It is a small companion API package for naming the osgi.extender namespace and its version attribute, not an extender implementation.",
+    "tested-versions" : [
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "org.osgi.namespace.extender"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/com.google.guava/failureaccess/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+    "repository-url" : "https://github.com/google/guava",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+    "tested-versions" : [
+      "1.0.1",
+      "1.0.2",
+      "1.0.3"
+    ],
+    "allowed-packages" : [
+      "com.google.guava"
+    ],
+    "description" : "failureaccess provides Guava's internal classes for optionally exposing the cause of a failed Future through a fast path. It includes InternalFutureFailureAccess and InternalFutures for lightweight failure-cause access used by Guava concurrency utilities."
+  }
+]
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d) && curl -fsSL -o "$tmpdir/stax-api-1.0.1.jar" https://repo1.maven.org/maven2/stax/stax-api/1.0.1/stax-api-1.0.1.jar && jar tf "$tmpdir/stax-api-1.0.1.jar" | sed -n '"'1,180p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/xml/
+javax/xml/stream/
+javax/xml/stream/events/
+javax/xml/stream/util/
+javax/xml/namespace/
+javax/xml/stream/events/StartElement.class
+javax/xml/stream/events/XMLEvent.class
+javax/xml/stream/events/Attribute.class
+javax/xml/stream/events/EndElement.class
+javax/xml/stream/events/Characters.class
+javax/xml/stream/events/Comment.class
+javax/xml/stream/events/DTD.class
+javax/xml/stream/events/NotationDeclaration.class
+javax/xml/stream/events/EntityDeclaration.class
+javax/xml/stream/events/EndDocument.class
+javax/xml/stream/events/EntityReference.class
+javax/xml/stream/events/Namespace.class
+javax/xml/stream/events/StartDocument.class
+javax/xml/stream/events/ProcessingInstruction.class
+javax/xml/stream/XMLStreamConstants.class
+javax/xml/stream/Location.class
+javax/xml/stream/XMLStreamException.class
+javax/xml/stream/util/StreamReaderDelegate.class
+javax/xml/stream/util/EventReaderDelegate.class
+javax/xml/stream/util/XMLEventAllocator.class
+javax/xml/stream/util/XMLEventConsumer.class
+javax/xml/stream/XMLStreamReader.class
+javax/xml/stream/XMLEventReader.class
+javax/xml/stream/XMLEventWriter.class
+javax/xml/stream/FactoryFinder$ClassLoaderFinder.class
+javax/xml/stream/FactoryFinder$ClassLoaderFinderConcrete.class
+javax/xml/stream/FactoryFinder$1.class
+javax/xml/stream/FactoryFinder.class
+javax/xml/stream/FactoryConfigurationError.class
+javax/xml/stream/StreamFilter.class
+javax/xml/stream/XMLInputFactory.class
+javax/xml/stream/EventFilter.class
+javax/xml/stream/XMLResolver.class
+javax/xml/stream/XMLReporter.class
+javax/xml/stream/XMLOutputFactory.class
+javax/xml/stream/XMLStreamWriter.class
+javax/xml/stream/XMLEventFactory.class
+javax/xml/namespace/QName.class
+javax/xml/namespace/NamespaceContext.class
+javax/xml/XMLConstants.class
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/stax/stax-api/index.json' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c
+ succeeded in 0ms:
+?? metadata/stax/stax-api/index.json
+
+web search: 
+web search: "Central Repository: stax/stax-api/1.0.1"
+codex
+No file change was needed in [metadata/stax/stax-api/index.json](/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c/metadata/stax/stax-api/index.json:1). The existing `N/A` URL fields are non-blank, the description is already exactly two sentences, and `language` stays absent because `stax:stax-api:1.0.1` is a Java XML API, not a Kotlin/Groovy/Scala-specific library.
+
+Selected values:
+- `source-code-url`: `N/A`
+- `repository-url`: `N/A`
+- `test-code-url`: `N/A`
+- `documentation-url`: `N/A`
+- `description`: kept existing two-sentence value
+- `language`: absent
+
+Maven Central’s `1.0.1` directory lists only the jar, POM, metadata, and checksums, with no published sources, javadoc, or test artifact; the POM also provides only a project homepage and no SCM repository URL. ([repo1.maven.org](https://repo1.maven.org/maven2/stax/stax-api/1.0.1/?utm_source=openai))
+
+Validation: `jq` parsed the JSON successfully.
+2026-04-28T18:04:14.453404Z ERROR codex_core::session: failed to record rollout items: thread 019dd541-ed65-70c3-aa2c-00176b4e3fc6 not found
+tokens used
+69,225
+No file change was needed in [metadata/stax/stax-api/index.json](/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c/metadata/stax/stax-api/index.json:1). The existing `N/A` URL fields are non-blank, the description is already exactly two sentences, and `language` stays absent because `stax:stax-api:1.0.1` is a Java XML API, not a Kotlin/Groovy/Scala-specific library.
+
+Selected values:
+- `source-code-url`: `N/A`
+- `repository-url`: `N/A`
+- `test-code-url`: `N/A`
+- `documentation-url`: `N/A`
+- `description`: kept existing two-sentence value
+- `language`: absent
+
+Maven Central’s `1.0.1` directory lists only the jar, POM, metadata, and checksums, with no published sources, javadoc, or test artifact; the POM also provides only a project homepage and no SCM repository URL. ([repo1.maven.org](https://repo1.maven.org/maven2/stax/stax-api/1.0.1/?utm_source=openai))
+
+Validation: `jq` parsed the JSON successfully.
+Ran agent for stax:stax-api:1.0.1 (exit 0). Log: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c/build/agent-url-discovery-logs/stax-stax-api-1.0.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2853-9aa7728c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 34s
+9 actionable tasks: 1 executed, 8 up-to-date
