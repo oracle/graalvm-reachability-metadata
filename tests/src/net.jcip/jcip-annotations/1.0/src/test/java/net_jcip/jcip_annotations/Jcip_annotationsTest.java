@@ -132,6 +132,25 @@ public class Jcip_annotationsTest {
         assertThat(immutableAnnotationType.annotationType()).isSameAs(Immutable.class);
     }
 
+    @Test
+    void immutableAnnotationAppliesToRecordTypes() {
+        ImmutableCoordinates coordinates = new ImmutableCoordinates(4, -1);
+        ImmutableCoordinates translated = coordinates.translate(3, 2);
+        Immutable immutableRecord = ImmutableCoordinates.class.getAnnotation(Immutable.class);
+
+        assertThat(ImmutableCoordinates.class.isRecord()).isTrue();
+        assertThat(immutableRecord).isNotNull();
+        assertThat(immutableRecord.annotationType()).isSameAs(Immutable.class);
+
+        assertThat(coordinates.x()).isEqualTo(4);
+        assertThat(coordinates.y()).isEqualTo(-1);
+        assertThat(coordinates.asText()).isEqualTo("(4,-1)");
+        assertThat(translated).isEqualTo(new ImmutableCoordinates(7, 1));
+        assertThat(translated.asText()).isEqualTo("(7,1)");
+        assertThat(coordinates.manhattanDistance()).isEqualTo(5);
+        assertThat(translated.manhattanDistance()).isEqualTo(8);
+    }
+
     @SuppressWarnings("annotationAccess")
     private static void assertMarkerAnnotation(Class<? extends Annotation> annotationType, String expectedName) {
         Retention retention = annotationType.getAnnotation(Retention.class);
@@ -173,6 +192,21 @@ public class Jcip_annotationsTest {
 
     @Immutable
     private @interface SnapshotState {
+    }
+
+    @Immutable
+    private record ImmutableCoordinates(int x, int y) {
+        private ImmutableCoordinates translate(int dx, int dy) {
+            return new ImmutableCoordinates(x + dx, y + dy);
+        }
+
+        private int manhattanDistance() {
+            return Math.abs(x) + Math.abs(y);
+        }
+
+        private String asText() {
+            return "(" + x + "," + y + ")";
+        }
     }
 
     @ThreadSafe
