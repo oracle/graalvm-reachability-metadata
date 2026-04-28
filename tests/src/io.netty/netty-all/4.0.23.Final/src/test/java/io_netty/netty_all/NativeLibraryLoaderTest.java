@@ -17,6 +17,7 @@ import java.util.List;
 
 public class NativeLibraryLoaderTest {
     private static final String LIBRARY_NAME = "netty_resource_probe";
+    private static final String JNI_STYLE_LIBRARY_NAME = "netty_resource_probe.jnilib";
     private static final String ORIGINAL_OS_NAME = System.getProperty("os.name");
 
     static {
@@ -34,24 +35,45 @@ public class NativeLibraryLoaderTest {
 
     @Test
     void loadSearchesForPackagedNativeLibraryResourcesBeforeFallingBackToSystemLoader() {
-        RecordingClassLoader loader = new RecordingClassLoader();
+        RecordingClassLoader loader = loadWithRecordingClassLoader(LIBRARY_NAME);
 
-        Assertions.assertThrows(
-                UnsatisfiedLinkError.class,
-                () -> NativeLibraryLoader.load(LIBRARY_NAME, loader));
-
-        String mappedLibraryResource = "META-INF/native/" + System.mapLibraryName(LIBRARY_NAME);
-        String macFallbackResource = macFallbackResource(mappedLibraryResource);
+        String mappedLibraryResource = nativeResource(System.mapLibraryName(LIBRARY_NAME));
+        String macFallbackResource = macFallbackResource(LIBRARY_NAME, mappedLibraryResource);
 
         Assertions.assertTrue(loader.resourceNames().contains(mappedLibraryResource));
         Assertions.assertTrue(loader.resourceNames().contains(macFallbackResource));
     }
 
-    private static String macFallbackResource(String mappedLibraryResource) {
+    @Test
+    void loadSearchesForDynlibFallbackWhenNativeMappingUsesJniLib() {
+        RecordingClassLoader loader = loadWithRecordingClassLoader(JNI_STYLE_LIBRARY_NAME);
+
+        String mappedLibraryResource = nativeResource(System.mapLibraryName(JNI_STYLE_LIBRARY_NAME));
+        String macFallbackResource = macFallbackResource(JNI_STYLE_LIBRARY_NAME, mappedLibraryResource);
+
+        Assertions.assertTrue(loader.resourceNames().contains(mappedLibraryResource));
+        Assertions.assertTrue(loader.resourceNames().contains(macFallbackResource));
+    }
+
+    private static RecordingClassLoader loadWithRecordingClassLoader(String libraryName) {
+        RecordingClassLoader loader = new RecordingClassLoader();
+
+        Assertions.assertThrows(
+                UnsatisfiedLinkError.class,
+                () -> NativeLibraryLoader.load(libraryName, loader));
+
+        return loader;
+    }
+
+    private static String nativeResource(String mappedLibraryName) {
+        return "META-INF/native/" + mappedLibraryName;
+    }
+
+    private static String macFallbackResource(String libraryName, String mappedLibraryResource) {
         if (mappedLibraryResource.endsWith(".jnilib")) {
-            return "META-INF/native/lib" + LIBRARY_NAME + ".dynlib";
+            return "META-INF/native/lib" + libraryName + ".dynlib";
         }
-        return "META-INF/native/lib" + LIBRARY_NAME + ".jnilib";
+        return "META-INF/native/lib" + libraryName + ".jnilib";
     }
 
     private static final class RecordingClassLoader extends ClassLoader {
