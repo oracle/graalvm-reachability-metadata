@@ -187,9 +187,11 @@ class Jackson_annotationsTest {
                 JsonTypeInfo.As.PROPERTY,
                 JsonTypeInfo.As.WRAPPER_OBJECT,
                 JsonTypeInfo.As.WRAPPER_ARRAY,
-                JsonTypeInfo.As.EXTERNAL_PROPERTY
+                JsonTypeInfo.As.EXTERNAL_PROPERTY,
+                JsonTypeInfo.As.EXISTING_PROPERTY
         );
         assertThat(JsonTypeInfo.As.valueOf("WRAPPER_ARRAY")).isEqualTo(JsonTypeInfo.As.WRAPPER_ARRAY);
+        assertThat(JsonTypeInfo.As.valueOf("EXISTING_PROPERTY")).isEqualTo(JsonTypeInfo.As.EXISTING_PROPERTY);
 
         assertThat(JsonInclude.Include.values()).containsExactly(
                 JsonInclude.Include.ALWAYS,
