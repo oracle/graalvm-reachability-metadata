@@ -1,0 +1,253 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd60a-64b0-7a03-a2d4-243c026297c0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mongodb:mongo-java-driver:3.4.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.4.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/metadata/org.mongodb/mongo-java-driver/index.json
+- Entry selector: "metadata-version" = "3.4.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.4.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar
+- repository-url: https://github.com/mongodb/mongo-java-driver
+- test-code-url: https://github.com/mongodb/mongo-java-driver/tree/r3.4.0
+- documentation-url: https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar
+- description: MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.4.0
+- Entry test-version: 3.4.0
+codex
+I’ll inspect the target JSON entry first and only edit if one of the allowed fields is actually missing under the `3.4.0` entry. For confidence on the versioned URLs, I’ll also verify the Maven and repository/tag references before deciding whether the file needs a change.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"3\\.4\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.mongodb/mongo-java-driver/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+4:    "metadata-version" : "3.4.0",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
+6:    "repository-url" : "https://github.com/mongodb/mongo-java-driver",
+7:    "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
+9:    "description" : "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+?? metadata/org.mongodb/
+?? tests/src/org.mongodb/
+
+web search: 
+web search: org.mongodb mongo-java-driver 3.4.0 Maven sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/
+web search: 
+web search: https://mongodb.github.io/mongo-java-driver/3.4/
+codex
+The `3.4.0` entry already has non-blank values for every requested URL field and the two-sentence description. The only absent field is `language`; because `mongo-java-driver` is a Java artifact rather than a Kotlin, Groovy, or Scala-specific library, the requested behavior is to leave `language` absent.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.4.0\")' metadata/org.mongodb/mongo-java-driver/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.4.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
+  "repository-url": "https://github.com/mongodb/mongo-java-driver",
+  "test-code-url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
+  "documentation-url": "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
+  "description": "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0.",
+  "tested-versions": [
+    "3.4.0"
+  ],
+  "allowed-packages": [
+    "com.mongodb",
+    "org.bson"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.mongodb/mongo-java-driver/index.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 190ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.mongodb</groupId>
+  <artifactId>mongo-java-driver</artifactId>
+  <version>3.4.0</version>
+  <name>MongoDB Java Driver</name>
+  <description>The MongoDB Java Driver uber-artifact, containing mongodb-driver, mongodb-driver-core, and bson</description>
+  <url>http://www.mongodb.org</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Various</name>
+      <organization>MongoDB</organization>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:https://github.com/mongodb/mongo-java-driver.git</connection>
+    <developerConnection>scm:git@github.com:mongodb/mongo-java-driver.git</developerConnection>
+    <url>https://github.com/mongodb/mongo-java-driver</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+      <version>4.1.5.Final</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>4.1.5.Final</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+      <version>4.1.5.Final</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.6</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+web search: 
+web search: site:repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0 mongo-java-driver-3.4.0-sources.jar mongo-java-driver-3.4.0-javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.mongodb/mongo-java-driver/index.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.mongodb mongo-java-driver 3.4.0 sources javadoc
+web search: 
+web search: https://mongodb.github.io/mongo-java-driver/3.4/
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/
+web search: 
+web search: https://github.com/mongodb/mongo-java-driver/tree/r3.4.0
+web search: 
+web search: 
+codex
+No repository edit was needed. The target entry already had non-blank values for the requested URL and description fields, and `language` should remain absent because `org.mongodb:mongo-java-driver:3.4.0` is not a Kotlin, Groovy, or Scala-specific artifact.
+
+Validated values:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
+  "repository-url": "https://github.com/mongodb/mongo-java-driver",
+  "test-code-url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
+  "documentation-url": "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
+  "description": "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0."
+}
+```
+
+Maven Central lists both the `3.4.0` sources jar and javadoc jar, and the GitHub `r3.4.0` tag exists for the exact-version source/test tree. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/)) The versioned MongoDB Java Driver 3.4 documentation hub also exists for that release line. ([mongodb.github.io](https://mongodb.github.io/mongo-java-driver/3.4/))
+
+Verification: `jq empty metadata/org.mongodb/mongo-java-driver/index.json` passed, and `git diff -- metadata/org.mongodb/mongo-java-driver/index.json` is empty.
+2026-04-28T21:42:37.516224Z ERROR codex_core::session: failed to record rollout items: thread 019dd60a-64b0-7a03-a2d4-243c026297c0 not found
+tokens used
+56,842
+No repository edit was needed. The target entry already had non-blank values for the requested URL and description fields, and `language` should remain absent because `org.mongodb:mongo-java-driver:3.4.0` is not a Kotlin, Groovy, or Scala-specific artifact.
+
+Validated values:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
+  "repository-url": "https://github.com/mongodb/mongo-java-driver",
+  "test-code-url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
+  "documentation-url": "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
+  "description": "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0."
+}
+```
+
+Maven Central lists both the `3.4.0` sources jar and javadoc jar, and the GitHub `r3.4.0` tag exists for the exact-version source/test tree. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/)) The versioned MongoDB Java Driver 3.4 documentation hub also exists for that release line. ([mongodb.github.io](https://mongodb.github.io/mongo-java-driver/3.4/))
+
+Verification: `jq empty metadata/org.mongodb/mongo-java-driver/index.json` passed, and `git diff -- metadata/org.mongodb/mongo-java-driver/index.json` is empty.
+Ran agent for org.mongodb:mongo-java-driver:3.4.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/build/agent-url-discovery-logs/org.mongodb-mongo-java-driver-3.4.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 59s
+9 actionable tasks: 1 executed, 8 up-to-date

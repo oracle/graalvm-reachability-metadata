@@ -1,0 +1,2445 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd608-b315-7330-96e6-d08c651b67c2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mongodb:mongo-java-driver:3.4.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.4.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+- Set "coordinates" to "org.mongodb:mongo-java-driver:3.4.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the exact 3.4.0 artifact locations first, then patch the JSON in place with only confident values.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+{
+  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "org.mongodb:mongo-java-driver|mongo-java-driver" build/discovered-artifact-metadata metadata tests || true' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json:2:  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0"
+metadata/library-and-framework-list.json:1776:          "https://github.com/mongodb/mongo-java-driver/tree/main/bson/src/main/resources/META-INF/native-image"
+metadata/library-and-framework-list.json:1779:          "https://github.com/mongodb/mongo-java-driver/tree/main/graalvm-native-image-app",
+metadata/library-and-framework-list.json:1780:          "https://github.com/mongodb/mongo-java-driver/blob/main/.evergreen/run-graalvm-native-image-app.sh"
+metadata/library-and-framework-list.json:1793:          "https://github.com/mongodb/mongo-java-driver/tree/main/mongodb-crypt/src/main/resources/META-INF/native-image"
+metadata/library-and-framework-list.json:1796:          "https://github.com/mongodb/mongo-java-driver/tree/main/graalvm-native-image-app",
+metadata/library-and-framework-list.json:1797:          "https://github.com/mongodb/mongo-java-driver/blob/main/.evergreen/run-graalvm-native-image-app.sh"
+metadata/library-and-framework-list.json:1810:          "https://github.com/mongodb/mongo-java-driver/tree/main/driver-core/src/main/resources/META-INF/native-image"
+metadata/library-and-framework-list.json:1813:          "https://github.com/mongodb/mongo-java-driver/tree/main/graalvm-native-image-app",
+metadata/library-and-framework-list.json:1814:          "https://github.com/mongodb/mongo-java-driver/blob/main/.evergreen/run-graalvm-native-image-app.sh"
+metadata/library-and-framework-list.json:1828:          "https://github.com/mongodb/mongo-java-driver/tree/main/graalvm-native-image-app",
+metadata/library-and-framework-list.json:1829:          "https://github.com/mongodb/mongo-java-driver/blob/main/.evergreen/run-graalvm-native-image-app.sh"
+metadata/library-and-framework-list.json:1843:          "https://github.com/mongodb/mongo-java-driver/tree/main/graalvm-native-image-app",
+metadata/library-and-framework-list.json:1844:          "https://github.com/mongodb/mongo-java-driver/blob/main/.evergreen/run-graalvm-native-image-app.sh"
+
+web search: 
+web search: Maven Central org.mongodb mongo-java-driver 3.4.0 sources jar tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/
+web search: 
+web search: https://github.com/mongodb/mongo-java-driver/tree/r3.4.0
+web search: 
+web search: 
+codex
+Maven Central has the 3.4.0 binary, sources jar, and javadoc jar, but no test-sources/test jar in that directory. I’m checking the release tag now so the test URL can point at the exact version.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/mongodb/mongo-java-driver.git 'refs/tags/*3.4.0*'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0.pom' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 162ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.mongodb</groupId>
+  <artifactId>mongo-java-driver</artifactId>
+  <version>3.4.0</version>
+  <name>MongoDB Java Driver</name>
+  <description>The MongoDB Java Driver uber-artifact, containing mongodb-driver, mongodb-driver-core, and bson</description>
+  <url>http://www.mongodb.org</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Various</name>
+      <organization>MongoDB</organization>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:https://github.com/mongodb/mongo-java-driver.git</connection>
+    <developerConnection>scm:git@github.com:mongodb/mongo-java-driver.git</developerConnection>
+    <url>https://github.com/mongodb/mongo-java-driver</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+      <version>4.1.5.Final</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>4.1.5.Final</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport</artifactId>
+      <version>4.1.5.Final</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.6</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 175ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/mongodb/mongo-java-driver/3.4.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/mongodb/mongo-java-driver/3.4.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="mongo-java-driver-3.4.0-javadoc.jar" title="mongo-java-driver-3.4.0-javadoc.jar">mongo-java-driver-3.4.0-javadoc.jar</a>               2016-11-27 14:11   2825752      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.asc" title="mongo-java-driver-3.4.0-javadoc.jar.asc">mongo-java-driver-3.4.0-javadoc.jar.asc</a>           2016-11-27 14:11       475      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.asc.md5" title="mongo-java-driver-3.4.0-javadoc.jar.asc.md5">mongo-java-driver-3.4.0-javadoc.jar.asc.md5</a>       2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.asc.sha1" title="mongo-java-driver-3.4.0-javadoc.jar.asc.sha1">mongo-java-driver-3.4.0-javadoc.jar.asc.sha1</a>      2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.md5" title="mongo-java-driver-3.4.0-javadoc.jar.md5">mongo-java-driver-3.4.0-javadoc.jar.md5</a>           2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.sha1" title="mongo-java-driver-3.4.0-javadoc.jar.sha1">mongo-java-driver-3.4.0-javadoc.jar.sha1</a>          2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0-sources.jar" title="mongo-java-driver-3.4.0-sources.jar">mongo-java-driver-3.4.0-sources.jar</a>               2016-11-27 14:11   1154627      
+<a href="mongo-java-driver-3.4.0-sources.jar.asc" title="mongo-java-driver-3.4.0-sources.jar.asc">mongo-java-driver-3.4.0-sources.jar.asc</a>           2016-11-27 14:11       475      
+<a href="mongo-java-driver-3.4.0-sources.jar.asc.md5" title="mongo-java-driver-3.4.0-sources.jar.asc.md5">mongo-java-driver-3.4.0-sources.jar.asc.md5</a>       2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0-sources.jar.asc.sha1" title="mongo-java-driver-3.4.0-sources.jar.asc.sha1">mongo-java-driver-3.4.0-sources.jar.asc.sha1</a>      2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0-sources.jar.md5" title="mongo-java-driver-3.4.0-sources.jar.md5">mongo-java-driver-3.4.0-sources.jar.md5</a>           2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0-sources.jar.sha1" title="mongo-java-driver-3.4.0-sources.jar.sha1">mongo-java-driver-3.4.0-sources.jar.sha1</a>          2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0.jar" title="mongo-java-driver-3.4.0.jar">mongo-java-driver-3.4.0.jar</a>                       2016-11-27 14:11   1672899      
+<a href="mongo-java-driver-3.4.0.jar.asc" title="mongo-java-driver-3.4.0.jar.asc">mongo-java-driver-3.4.0.jar.asc</a>                   2016-11-27 14:11       475      
+<a href="mongo-java-driver-3.4.0.jar.asc.md5" title="mongo-java-driver-3.4.0.jar.asc.md5">mongo-java-driver-3.4.0.jar.asc.md5</a>               2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0.jar.asc.sha1" title="mongo-java-driver-3.4.0.jar.asc.sha1">mongo-java-driver-3.4.0.jar.asc.sha1</a>              2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0.jar.md5" title="mongo-java-driver-3.4.0.jar.md5">mongo-java-driver-3.4.0.jar.md5</a>                   2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0.jar.sha1" title="mongo-java-driver-3.4.0.jar.sha1">mongo-java-driver-3.4.0.jar.sha1</a>                  2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0.pom" title="mongo-java-driver-3.4.0.pom">mongo-java-driver-3.4.0.pom</a>                       2016-11-27 14:11      2081      
+<a href="mongo-java-driver-3.4.0.pom.asc" title="mongo-java-driver-3.4.0.pom.asc">mongo-java-driver-3.4.0.pom.asc</a>                   2016-11-27 14:11       475      
+<a href="mongo-java-driver-3.4.0.pom.asc.md5" title="mongo-java-driver-3.4.0.pom.asc.md5">mongo-java-driver-3.4.0.pom.asc.md5</a>               2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0.pom.asc.sha1" title="mongo-java-driver-3.4.0.pom.asc.sha1">mongo-java-driver-3.4.0.pom.asc.sha1</a>              2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0.pom.md5" title="mongo-java-driver-3.4.0.pom.md5">mongo-java-driver-3.4.0.pom.md5</a>                   2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0.pom.sha1" title="mongo-java-driver-3.4.0.pom.sha1">mongo-java-driver-3.4.0.pom.sha1</a>                  2016-11-27 14:11        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 507ms:
+b257eb455c6951c57aa1713f9d3beb49362bebbf	refs/tags/r3.4.0
+f81ad4104d67bd28a18c4f31e8f6a1fb99abfd3e	refs/tags/r3.4.0^{}
+6e828426a3bb6627555bc84ed11a5bbeb0629fee	refs/tags/r3.4.0-beta1
+6bad3b327921cf54382c5105c96e439f55d48fb9	refs/tags/r3.4.0-beta1^{}
+dc15d68954e78ccb6041b65635eb311bbccdc4d5	refs/tags/r3.4.0-rc1
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mongodb/mongo-java-driver/contents?ref=r3.4.0' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mongodb/mongo-java-driver/contents/mongo-java-driver?ref=r3.4.0' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver?ref=r3.4.0' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 366ms:
+[
+  {
+    "name": "build.gradle",
+    "path": "driver/build.gradle",
+    "sha": "43391f8fd667d545b50a40cfbb509f4f48382da5",
+    "size": 1529,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver/build.gradle?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/driver/build.gradle",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/43391f8fd667d545b50a40cfbb509f4f48382da5",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/driver/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver/build.gradle?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/43391f8fd667d545b50a40cfbb509f4f48382da5",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/driver/build.gradle"
+    }
+  },
+  {
+    "name": "src",
+    "path": "driver/src",
+    "sha": "f9c49a0fd160f378fc90ffa2fddc2b5160389f80",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver/src?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/driver/src",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/f9c49a0fd160f378fc90ffa2fddc2b5160389f80",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver/src?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/f9c49a0fd160f378fc90ffa2fddc2b5160389f80",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/driver/src"
+    }
+  }
+]
+
+ succeeded in 370ms:
+[
+  {
+    "name": "build.gradle",
+    "path": "mongo-java-driver/build.gradle",
+    "sha": "336db8c66413f34a29334291d0a757d1f979f42a",
+    "size": 2234,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/mongo-java-driver/build.gradle?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/mongo-java-driver/build.gradle",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/336db8c66413f34a29334291d0a757d1f979f42a",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/mongo-java-driver/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/mongo-java-driver/build.gradle?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/336db8c66413f34a29334291d0a757d1f979f42a",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/mongo-java-driver/build.gradle"
+    }
+  }
+]
+
+ succeeded in 417ms:
+[
+  {
+    "name": ".evg.yml",
+    "path": ".evg.yml",
+    "sha": "41ae40c5a0785238640a8a3918bebe5febe292df",
+    "size": 8103,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/.evg.yml?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/.evg.yml",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/41ae40c5a0785238640a8a3918bebe5febe292df",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/.evg.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/.evg.yml?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/41ae40c5a0785238640a8a3918bebe5febe292df",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/.evg.yml"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "16dec8d22f4c38958c8cd33bf66298888633dc26",
+    "size": 80,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/.gitattributes?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/.gitattributes",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/16dec8d22f4c38958c8cd33bf66298888633dc26",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/.gitattributes?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/16dec8d22f4c38958c8cd33bf66298888633dc26",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/.gitattributes"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "db821035a65a0edc6d12c6d0d94593ee18db9b9c",
+    "size": 386,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/.gitignore?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/.gitignore",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/db821035a65a0edc6d12c6d0d94593ee18db9b9c",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/.gitignore?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/db821035a65a0edc6d12c6d0d94593ee18db9b9c",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/.gitignore"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "7eca32b76739032295e0b2694a8868478ccfdf0c",
+    "size": 1320,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/.travis.yml?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/.travis.yml",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/7eca32b76739032295e0b2694a8868478ccfdf0c",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/.travis.yml?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/7eca32b76739032295e0b2694a8868478ccfdf0c",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/.travis.yml"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "d1cc14bd4fcf3c2cab67a85b802e01466b0b95ed",
+    "size": 1813,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/CONTRIBUTING.md?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/d1cc14bd4fcf3c2cab67a85b802e01466b0b95ed",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/CONTRIBUTING.md?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/d1cc14bd4fcf3c2cab67a85b802e01466b0b95ed",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "History.md",
+    "path": "History.md",
+    "sha": "863790fb5b7ae55099f3aee68210dd5cf7a29e0b",
+    "size": 5400,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/History.md?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/History.md",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/863790fb5b7ae55099f3aee68210dd5cf7a29e0b",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/History.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/History.md?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/863790fb5b7ae55099f3aee68210dd5cf7a29e0b",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/History.md"
+    }
+  },
+  {
+    "name": "Issues.txt",
+    "path": "Issues.txt",
+    "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/Issues.txt?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/Issues.txt",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/Issues.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/Issues.txt?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/Issues.txt"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "2f44352e735319f56e8d1eaf9777e4bcba5e3896",
+    "size": 3651,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/LICENSE.txt?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/2f44352e735319f56e8d1eaf9777e4bcba5e3896",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/LICENSE.txt?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/2f44352e735319f56e8d1eaf9777e4bcba5e3896",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "0ac060c2da026c494becb42c62a06a98fad414a2",
+    "size": 5919,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/README.md?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/README.md",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/0ac060c2da026c494becb42c62a06a98fad414a2",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/README.md?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/0ac060c2da026c494becb42c62a06a98fad414a2",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/README.md"
+    }
+  },
+  {
+    "name": "bson",
+    "path": "bson",
+    "sha": "ced122df5e926381cc61652c658003a28dd777df",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/bson?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/bson",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/ced122df5e926381cc61652c658003a28dd777df",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/bson?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/ced122df5e926381cc61652c658003a28dd777df",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/bson"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "f45b52c5cb75376d9f550f995aa9996af814f91c",
+    "size": 10458,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/build.gradle?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/build.gradle",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/f45b52c5cb75376d9f550f995aa9996af814f91c",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/build.gradle?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/f45b52c5cb75376d9f550f995aa9996af814f91c",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/build.gradle"
+    }
+  },
+  {
+    "name": "config",
+    "path": "config",
+    "sha": "7fdc38503702399f2107ec4bfa6c1b5d7a022527",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/config?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/config",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/7fdc38503702399f2107ec4bfa6c1b5d7a022527",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/config?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/7fdc38503702399f2107ec4bfa6c1b5d7a022527",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/config"
+    }
+  },
+  {
+    "name": "docs",
+    "path": "docs",
+    "sha": "2d74d0342dfaaff8c0d1e07bc95d982b4d21cd89",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/docs",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/2d74d0342dfaaff8c0d1e07bc95d982b4d21cd89",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/2d74d0342dfaaff8c0d1e07bc95d982b4d21cd89",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/docs"
+    }
+  },
+  {
+    "name": "driver-async",
+    "path": "driver-async",
+    "sha": "38a20db4b6f9686ac9bbee2c618b8fc65f3f4bb9",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver-async?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/driver-async",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/38a20db4b6f9686ac9bbee2c618b8fc65f3f4bb9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver-async?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/38a20db4b6f9686ac9bbee2c618b8fc65f3f4bb9",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/driver-async"
+    }
+  },
+  {
+    "name": "driver-core",
+    "path": "driver-core",
+    "sha": "f96d5ebb6e3296754963173ada2e221689d5732b",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver-core?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/driver-core",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/f96d5ebb6e3296754963173ada2e221689d5732b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver-core?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/f96d5ebb6e3296754963173ada2e221689d5732b",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/driver-core"
+    }
+  },
+  {
+    "name": "driver",
+    "path": "driver",
+    "sha": "52ccac705b367391b060351a837de8b30c88ad03",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/driver",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/52ccac705b367391b060351a837de8b30c88ad03",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/driver?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/52ccac705b367391b060351a837de8b30c88ad03",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/driver"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "gradle.properties",
+    "sha": "b9e4f00dbfffd94cb40247d0bcb1914d4e936b6a",
+    "size": 612,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/gradle.properties?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/gradle.properties",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/b9e4f00dbfffd94cb40247d0bcb1914d4e936b6a",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/gradle.properties?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/b9e4f00dbfffd94cb40247d0bcb1914d4e936b6a",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/gradle.properties"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "cd5646504cf8e32691204a4f82c805b36a6e1a46",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/gradle?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/gradle",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/cd5646504cf8e32691204a4f82c805b36a6e1a46",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/gradle?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/cd5646504cf8e32691204a4f82c805b36a6e1a46",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "91a7e269e19dfc62e27137a0b57ef3e430cee4fd",
+    "size": 5080,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/gradlew?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/gradlew",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/91a7e269e19dfc62e27137a0b57ef3e430cee4fd",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/gradlew?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/91a7e269e19dfc62e27137a0b57ef3e430cee4fd",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "gradlew.bat",
+    "sha": "8a0b282aa6885fb573c106b3551f7275c5f17e8e",
+    "size": 2314,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/gradlew.bat?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/gradlew.bat",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/8a0b282aa6885fb573c106b3551f7275c5f17e8e",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/gradlew.bat?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/8a0b282aa6885fb573c106b3551f7275c5f17e8e",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/gradlew.bat"
+    }
+  },
+  {
+    "name": "mongo-java-driver",
+    "path": "mongo-java-driver",
+    "sha": "1fc9fe0d6b56dcc3424e9a9bfd0b09e269856002",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/mongo-java-driver?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/mongo-java-driver",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/1fc9fe0d6b56dcc3424e9a9bfd0b09e269856002",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/mongo-java-driver?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/1fc9fe0d6b56dcc3424e9a9bfd0b09e269856002",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/mongo-java-driver"
+    }
+  },
+  {
+    "name": "settings.gradle",
+    "path": "settings.gradle",
+    "sha": "818a10b6e73de1693b4460b2f3373cf36cc8264a",
+    "size": 690,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/settings.gradle?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/settings.gradle",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/818a10b6e73de1693b4460b2f3373cf36cc8264a",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/settings.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/settings.gradle?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/818a10b6e73de1693b4460b2f3373cf36cc8264a",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/settings.gradle"
+    }
+  },
+  {
+    "name": "settings.jar",
+    "path": "settings.jar",
+    "sha": "95dfd1b03c998a0c7e94f83f69e8564f36d74a97",
+    "size": 59704,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/settings.jar?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/settings.jar",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/95dfd1b03c998a0c7e94f83f69e8564f36d74a97",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/settings.jar",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/settings.jar?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/95dfd1b03c998a0c7e94f83f69e8564f36d74a97",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/settings.jar"
+    }
+  },
+  {
+    "name": "util",
+    "path": "util",
+    "sha": "b59269cd370072d017781ed609e9af183d4d6f2e",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/util?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/util",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/b59269cd370072d017781ed609e9af183d4d6f2e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/util?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/b59269cd370072d017781ed609e9af183d4d6f2e",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/util"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/r3.4.0?recursive=1 | rg '\"path\": \".*/src/test|\"path\": \"src/test|\"path\": \"docs|\"path\": \"driver/src/test|\"path\": \"driver-core/src/test|\"path\": \"bson/src/test'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs?ref=r3.4.0' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-test-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 308ms:
+[
+  {
+    "name": "README.md",
+    "path": "docs/README.md",
+    "sha": "883ef64b28a3c11d34e7b856eb975ceaa3d13a0b",
+    "size": 162,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs/README.md?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/docs/README.md",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/883ef64b28a3c11d34e7b856eb975ceaa3d13a0b",
+    "download_url": "https://raw.githubusercontent.com/mongodb/mongo-java-driver/r3.4.0/docs/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs/README.md?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/blobs/883ef64b28a3c11d34e7b856eb975ceaa3d13a0b",
+      "html": "https://github.com/mongodb/mongo-java-driver/blob/r3.4.0/docs/README.md"
+    }
+  },
+  {
+    "name": "landing",
+    "path": "docs/landing",
+    "sha": "ee62e75d3f7e09dab42e1b288a899b58ea933f05",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs/landing?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/docs/landing",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/ee62e75d3f7e09dab42e1b288a899b58ea933f05",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs/landing?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/ee62e75d3f7e09dab42e1b288a899b58ea933f05",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/docs/landing"
+    }
+  },
+  {
+    "name": "reference",
+    "path": "docs/reference",
+    "sha": "736f8617b1c38a97c9a21da0f1864d58144ca1e6",
+    "size": 0,
+    "url": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs/reference?ref=r3.4.0",
+    "html_url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/docs/reference",
+    "git_url": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/736f8617b1c38a97c9a21da0f1864d58144ca1e6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mongodb/mongo-java-driver/contents/docs/reference?ref=r3.4.0",
+      "git": "https://api.github.com/repos/mongodb/mongo-java-driver/git/trees/736f8617b1c38a97c9a21da0f1864d58144ca1e6",
+      "html": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0/docs/reference"
+    }
+  }
+]
+
+ succeeded in 313ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 21:40:26 GMT
+content-type: text/html
+cf-ray: 9f3939af4af603b1-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 801ms:
+      "path": "bson/src/test",
+      "path": "bson/src/test/resources",
+      "path": "bson/src/test/resources/bson",
+      "path": "bson/src/test/resources/bson/array.json",
+      "path": "bson/src/test/resources/bson/binary.json",
+      "path": "bson/src/test/resources/bson/boolean.json",
+      "path": "bson/src/test/resources/bson/code.json",
+      "path": "bson/src/test/resources/bson/code_w_scope.json",
+      "path": "bson/src/test/resources/bson/datetime.json",
+      "path": "bson/src/test/resources/bson/dbpointer.json",
+      "path": "bson/src/test/resources/bson/document.json",
+      "path": "bson/src/test/resources/bson/double.json",
+      "path": "bson/src/test/resources/bson/int32.json",
+      "path": "bson/src/test/resources/bson/int64.json",
+      "path": "bson/src/test/resources/bson/maxkey.json",
+      "path": "bson/src/test/resources/bson/minkey.json",
+      "path": "bson/src/test/resources/bson/null.json",
+      "path": "bson/src/test/resources/bson/oid.json",
+      "path": "bson/src/test/resources/bson/regex.json",
+      "path": "bson/src/test/resources/bson/string.json",
+      "path": "bson/src/test/resources/bson/symbol.json",
+      "path": "bson/src/test/resources/bson/timestamp.json",
+      "path": "bson/src/test/resources/bson/top.json",
+      "path": "bson/src/test/resources/bson/undefined.json",
+      "path": "bson/src/test/resources/decimal128",
+      "path": "bson/src/test/resources/decimal128/decimal128-1.json",
+      "path": "bson/src/test/resources/decimal128/decimal128-2.json",
+      "path": "bson/src/test/resources/decimal128/decimal128-3.json",
+      "path": "bson/src/test/resources/decimal128/decimal128-4.json",
+      "path": "bson/src/test/resources/decimal128/decimal128-5.json",
+      "path": "bson/src/test/resources/decimal128/decimal128-6.json",
+      "path": "bson/src/test/resources/decimal128/decimal128-7.json",
+      "path": "bson/src/test/unit",
+      "path": "bson/src/test/unit/org",
+      "path": "bson/src/test/unit/org/bson",
+      "path": "bson/src/test/unit/org/bson/BsonArraySpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonBinaryReaderSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonBinaryReaderTest.java",
+      "path": "bson/src/test/unit/org/bson/BsonBinarySubTypeSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonBinaryWriterTest.java",
+      "path": "bson/src/test/unit/org/bson/BsonDocumentReaderSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonDocumentSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonDocumentTest.java",
+      "path": "bson/src/test/unit/org/bson/BsonDocumentWrapperSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonDocumentWriterSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonHelper.java",
+      "path": "bson/src/test/unit/org/bson/BsonNumberSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonRegularExpressionSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonValueSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/BsonWriterSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/DocumentTest.java",
+      "path": "bson/src/test/unit/org/bson/GenericBsonDecimal128Test.java",
+      "path": "bson/src/test/unit/org/bson/GenericBsonTest.java",
+      "path": "bson/src/test/unit/org/bson/LimitedLookaheadMarkSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/RawBsonDocumentSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs",
+      "path": "bson/src/test/unit/org/bson/codecs/AtomicCodecSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/BsonDocumentCodecSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/BsonDocumentSubclass.java",
+      "path": "bson/src/test/unit/org/bson/codecs/BsonValueCodecProviderSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/CharacterCodecSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/CodeWithScopeSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/CodecTestUtil.java",
+      "path": "bson/src/test/unit/org/bson/codecs/DocumentCodecSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/DocumentCodecTest.java",
+      "path": "bson/src/test/unit/org/bson/codecs/IterableCodecProviderSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/IterableCodecSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/RawBsonDocumentCodecSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/UndefinedCodecSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/UuidCodecSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/ValueCodecProviderSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/configuration",
+      "path": "bson/src/test/unit/org/bson/codecs/configuration/CodeRegistriesSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/configuration/CodecCacheSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/codecs/configuration/ProvidersCodecRegistrySpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/io",
+      "path": "bson/src/test/unit/org/bson/io/BasicOutputBufferSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/io/BasicOutputBufferTest.java",
+      "path": "bson/src/test/unit/org/bson/io/ByteBufferBsonInputSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/json",
+      "path": "bson/src/test/unit/org/bson/json/JsonBufferTest.java",
+      "path": "bson/src/test/unit/org/bson/json/JsonReaderSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/json/JsonReaderTest.java",
+      "path": "bson/src/test/unit/org/bson/json/JsonScannerTest.java",
+      "path": "bson/src/test/unit/org/bson/json/JsonWriterSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/json/JsonWriterTest.java",
+      "path": "bson/src/test/unit/org/bson/types",
+      "path": "bson/src/test/unit/org/bson/types/Decimal128Specification.groovy",
+      "path": "bson/src/test/unit/org/bson/types/DocumentSpecification.groovy",
+      "path": "bson/src/test/unit/org/bson/types/ObjectIdTest.java",
+      "path": "bson/src/test/unit/util",
+      "path": "bson/src/test/unit/util/GroovyHelpers.java",
+      "path": "bson/src/test/unit/util/JsonPoweredTestHelper.java",
+      "path": "docs",
+      "path": "docs/README.md",
+      "path": "docs/landing",
+      "path": "docs/landing/README.md",
+      "path": "docs/landing/config.toml",
+      "path": "docs/landing/content",
+      "path": "docs/landing/content/.readme",
+      "path": "docs/landing/data",
+      "path": "docs/landing/data/releases.toml",
+      "path": "docs/landing/layouts",
+      "path": "docs/landing/layouts/.readme",
+      "path": "docs/landing/layouts/404.html",
+      "path": "docs/landing/layouts/index.html",
+      "path": "docs/landing/layouts/partials",
+      "path": "docs/landing/layouts/partials/assets",
+      "path": "docs/landing/layouts/partials/assets/analytics.html",
+      "path": "docs/landing/layouts/partials/assets/css.html",
+      "path": "docs/landing/layouts/partials/assets/javascripts.html",
+      "path": "docs/landing/layouts/partials/features.html",
+      "path": "docs/landing/layouts/partials/footer.html",
+      "path": "docs/landing/layouts/partials/header",
+      "path": "docs/landing/layouts/partials/header/main.html",
+      "path": "docs/landing/layouts/partials/header/topRight.html",
+      "path": "docs/landing/layouts/partials/hero.html",
+      "path": "docs/landing/layouts/partials/introduction.html",
+      "path": "docs/landing/layouts/partials/meta.html",
+      "path": "docs/landing/layouts/partials/mongodbUniversity.html",
+      "path": "docs/landing/layouts/partials/quickStart.html",
+      "path": "docs/landing/layouts/partials/releases.html",
+      "path": "docs/landing/static",
+      "path": "docs/landing/static/.nojekyll",
+      "path": "docs/landing/static/apple-touch-icon.png",
+      "path": "docs/landing/static/favicon.ico",
+      "path": "docs/landing/static/s",
+      "path": "docs/landing/static/s/css",
+      "path": "docs/landing/static/s/css/frontpage.css",
+      "path": "docs/landing/static/s/img",
+      "path": "docs/landing/static/s/img/24px-baseline-overlay.png",
+      "path": "docs/landing/static/s/img/back-body.png",
+      "path": "docs/landing/static/s/img/code-block-bg.png",
+      "path": "docs/landing/static/s/img/code-block-bg@2x.png",
+      "path": "docs/landing/static/s/img/favicon.png",
+      "path": "docs/landing/static/s/img/gray.png",
+      "path": "docs/landing/static/s/img/logo-mongodb-header.png",
+      "path": "docs/landing/static/s/img/mongoJVMlogo.png",
+      "path": "docs/landing/static/s/img/mongodb-university-logo.png",
+      "path": "docs/landing/static/s/img/social-facebook.png",
+      "path": "docs/landing/static/s/img/social-facebook@2x.png",
+      "path": "docs/landing/static/s/img/social-gplus.png",
+      "path": "docs/landing/static/s/img/social-gplus@2x.png",
+      "path": "docs/landing/static/s/img/social-twitter.png",
+      "path": "docs/landing/static/s/img/social-twitter@2x.png",
+      "path": "docs/landing/static/s/img/social-youtube.png",
+      "path": "docs/landing/static/s/img/social-youtube@2x.png",
+      "path": "docs/landing/static/s/img/trans-user-back.png",
+      "path": "docs/landing/static/s/img/trans-user-left.png",
+      "path": "docs/landing/static/s/img/trans-user-right.png",
+      "path": "docs/landing/static/s/js",
+      "path": "docs/landing/static/s/js/frontpage.js",
+      "path": "docs/landing/static/s/js/jquery.js",
+      "path": "docs/landing/static/s/js/searchtools.js",
+      "path": "docs/landing/static/s/lib",
+      "path": "docs/landing/static/s/lib/bootstrap-select",
+      "path": "docs/landing/static/s/lib/bootstrap-select/bootstrap-select.js",
+      "path": "docs/landing/static/s/lib/bootstrap-select/bootstrap-select.js.map",
+      "path": "docs/landing/static/s/lib/bootstrap-select/bootstrap-select.min.css",
+      "path": "docs/landing/static/s/lib/bootstrap-select/bootstrap-select.min.js",
+      "path": "docs/landing/static/s/lib/bootstrap-theme.css",
+      "path": "docs/landing/static/s/lib/bootstrap-theme.min.css",
+      "path": "docs/landing/static/s/lib/bootstrap-toggle",
+      "path": "docs/landing/static/s/lib/bootstrap-toggle/bootstrap-toggle.min.css",
+      "path": "docs/landing/static/s/lib/bootstrap-toggle/bootstrap-toggle.min.js",
+      "path": "docs/landing/static/s/lib/bootstrap-toggle/bootstrap-toggle.min.js.map",
+      "path": "docs/landing/static/s/lib/bootstrap-toggle/bootstrap2-toggle.min.js.map",
+      "path": "docs/landing/static/s/lib/bootstrap.css",
+      "path": "docs/landing/static/s/lib/bootstrap.js",
+      "path": "docs/landing/static/s/lib/bootstrap.min.css",
+      "path": "docs/landing/static/s/lib/bootstrap.min.js",
+      "path": "docs/landing/static/s/lib/font-awesome",
+      "path": "docs/landing/static/s/lib/font-awesome/css",
+      "path": "docs/landing/static/s/lib/font-awesome/css/font-awesome.css",
+      "path": "docs/landing/static/s/lib/font-awesome/css/font-awesome.min.css",
+      "path": "docs/landing/static/s/lib/font-awesome/fonts",
+      "path": "docs/landing/static/s/lib/font-awesome/fonts/FontAwesome.otf",
+      "path": "docs/landing/static/s/lib/font-awesome/fonts/fontawesome-webfont.eot",
+      "path": "docs/landing/static/s/lib/font-awesome/fonts/fontawesome-webfont.svg",
+      "path": "docs/landing/static/s/lib/font-awesome/fonts/fontawesome-webfont.ttf",
+      "path": "docs/landing/static/s/lib/font-awesome/fonts/fontawesome-webfont.woff",
+      "path": "docs/landing/static/s/lib/font-awesome/less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/bordered-pulled.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/core.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/fixed-width.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/font-awesome.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/icons.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/larger.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/list.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/mixins.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/path.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/rotated-flipped.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/spinning.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/stacked.less",
+      "path": "docs/landing/static/s/lib/font-awesome/less/variables.less",
+      "path": "docs/landing/static/s/lib/font-awesome/scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_bordered-pulled.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_core.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_fixed-width.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_icons.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_larger.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_list.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_mixins.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_path.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_rotated-flipped.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_spinning.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_stacked.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/_variables.scss",
+      "path": "docs/landing/static/s/lib/font-awesome/scss/font-awesome.scss",
+      "path": "docs/landing/static/s/lib/highlight",
+      "path": "docs/landing/static/s/lib/highlight/CHANGES.md",
+      "path": "docs/landing/static/s/lib/highlight/LICENSE",
+      "path": "docs/landing/static/s/lib/highlight/README.md",
+      "path": "docs/landing/static/s/lib/highlight/highlight.pack.js",
+      "path": "docs/landing/static/s/lib/highlight/styles",
+      "path": "docs/landing/static/s/lib/highlight/styles/arta.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/ascetic.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-dune.dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-dune.light.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-forest.dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-forest.light.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-heath.dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-heath.light.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-lakeside.dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-lakeside.light.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-seaside.dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/atelier-seaside.light.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/brown_paper.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/brown_papersq.png",
+      "path": "docs/landing/static/s/lib/highlight/styles/codepen-embed.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/color-brewer.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/default.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/docco.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/far.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/foundation.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/github.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/googlecode.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/hybrid.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/idea.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/ir_black.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/kimbie.dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/kimbie.light.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/magula.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/mono-blue.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/monokai.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/monokai_sublime.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/obsidian.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/paraiso.dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/paraiso.light.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/pojoaque.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/pojoaque.jpg",
+      "path": "docs/landing/static/s/lib/highlight/styles/railscasts.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/rainbow.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/school_book.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/school_book.png",
+      "path": "docs/landing/static/s/lib/highlight/styles/solarized_dark.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/solarized_light.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/sunburst.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/tomorrow-night-blue.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/tomorrow-night-bright.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/tomorrow-night-eighties.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/tomorrow-night.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/tomorrow.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/vs.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/xcode.css",
+      "path": "docs/landing/static/s/lib/highlight/styles/zenburn.css",
+      "path": "docs/landing/static/s/lib/jquery.tipsy.js",
+      "path": "docs/landing/static/s/lib/tipsy.css",
+      "path": "docs/landing/static/s/lib/underscore-min.js",
+      "path": "docs/landing/static/s/lib/zeroclipboard",
+      "path": "docs/landing/static/s/lib/zeroclipboard/.jshintrc",
+      "path": "docs/landing/static/s/lib/zeroclipboard/ZeroClipboard.Core.js",
+      "path": "docs/landing/static/s/lib/zeroclipboard/ZeroClipboard.Core.min.js",
+      "path": "docs/landing/static/s/lib/zeroclipboard/ZeroClipboard.Core.min.map",
+      "path": "docs/landing/static/s/lib/zeroclipboard/ZeroClipboard.js",
+      "path": "docs/landing/static/s/lib/zeroclipboard/ZeroClipboard.min.js",
+      "path": "docs/landing/static/s/lib/zeroclipboard/ZeroClipboard.min.map",
+      "path": "docs/landing/static/s/lib/zeroclipboard/ZeroClipboard.swf",
+      "path": "docs/landing/static/versions.json",
+      "path": "docs/reference",
+      "path": "docs/reference/README.md",
+      "path": "docs/reference/config.toml",
+      "path": "docs/reference/content",
+      "path": "docs/reference/content/bson",
+      "path": "docs/reference/content/bson/codecs.md",
+      "path": "docs/reference/content/bson/documents.md",
+      "path": "docs/reference/content/bson/extended-json.md",
+      "path": "docs/reference/content/bson/index.md",
+      "path": "docs/reference/content/bson/installation-guide.md",
+      "path": "docs/reference/content/bson/readers-and-writers.md",
+      "path": "docs/reference/content/builders",
+      "path": "docs/reference/content/builders/aggregation.md",
+      "path": "docs/reference/content/builders/filters.md",
+      "path": "docs/reference/content/builders/index.md",
+      "path": "docs/reference/content/builders/indexes.md",
+      "path": "docs/reference/content/builders/projections.md",
+      "path": "docs/reference/content/builders/sorts.md",
+      "path": "docs/reference/content/builders/updates.md",
+      "path": "docs/reference/content/driver-async",
+      "path": "docs/reference/content/driver-async/getting-started",
+      "path": "docs/reference/content/driver-async/getting-started/installation.md",
+      "path": "docs/reference/content/driver-async/getting-started/quick-start.md",
+      "path": "docs/reference/content/driver-async/index.md",
+      "path": "docs/reference/content/driver-async/reference",
+      "path": "docs/reference/content/driver-async/reference/index.md",
+      "path": "docs/reference/content/driver-async/reference/logging.md",
+      "path": "docs/reference/content/driver-async/reference/monitoring.md",
+      "path": "docs/reference/content/driver-async/reference/observables.md",
+      "path": "docs/reference/content/driver-async/tutorials",
+      "path": "docs/reference/content/driver-async/tutorials/aggregation.md",
+      "path": "docs/reference/content/driver-async/tutorials/authentication.md",
+      "path": "docs/reference/content/driver-async/tutorials/bulk-writes.md",
+      "path": "docs/reference/content/driver-async/tutorials/commands.md",
+      "path": "docs/reference/content/driver-async/tutorials/connect-to-mongodb.md",
+      "path": "docs/reference/content/driver-async/tutorials/databases-collections.md",
+      "path": "docs/reference/content/driver-async/tutorials/geospatial-search.md",
+      "path": "docs/reference/content/driver-async/tutorials/gridfs.md",
+      "path": "docs/reference/content/driver-async/tutorials/index.md",
+      "path": "docs/reference/content/driver-async/tutorials/indexes.md",
+      "path": "docs/reference/content/driver-async/tutorials/perform-read-operations.md",
+      "path": "docs/reference/content/driver-async/tutorials/perform-write-operations.md",
+      "path": "docs/reference/content/driver-async/tutorials/ssl.md",
+      "path": "docs/reference/content/driver-async/tutorials/text-search.md",
+      "path": "docs/reference/content/driver",
+      "path": "docs/reference/content/driver/getting-started",
+      "path": "docs/reference/content/driver/getting-started/installation.md",
+      "path": "docs/reference/content/driver/getting-started/quick-start.md",
+      "path": "docs/reference/content/driver/getting-started/quick-tour.md",
+      "path": "docs/reference/content/driver/index.md",
+      "path": "docs/reference/content/driver/reference",
+      "path": "docs/reference/content/driver/reference/index.md",
+      "path": "docs/reference/content/driver/reference/logging.md",
+      "path": "docs/reference/content/driver/reference/monitoring.md",
+      "path": "docs/reference/content/driver/tutorials",
+      "path": "docs/reference/content/driver/tutorials/aggregation.md",
+      "path": "docs/reference/content/driver/tutorials/authentication.md",
+      "path": "docs/reference/content/driver/tutorials/bulk-writes.md",
+      "path": "docs/reference/content/driver/tutorials/commands.md",
+      "path": "docs/reference/content/driver/tutorials/connect-to-mongodb.md",
+      "path": "docs/reference/content/driver/tutorials/databases-collections.md",
+      "path": "docs/reference/content/driver/tutorials/geospatial-search.md",
+      "path": "docs/reference/content/driver/tutorials/gridfs.md",
+      "path": "docs/reference/content/driver/tutorials/index.md",
+      "path": "docs/reference/content/driver/tutorials/indexes.md",
+      "path": "docs/reference/content/driver/tutorials/jndi.md",
+      "path": "docs/reference/content/driver/tutorials/perform-read-operations.md",
+      "path": "docs/reference/content/driver/tutorials/perform-write-operations.md",
+      "path": "docs/reference/content/driver/tutorials/ssl.md",
+      "path": "docs/reference/content/driver/tutorials/text-search.md",
+      "path": "docs/reference/content/index.md",
+      "path": "docs/reference/content/issues-help.md",
+      "path": "docs/reference/content/upgrading.md",
+      "path": "docs/reference/content/whats-new.md",
+      "path": "docs/reference/data",
+      "path": "docs/reference/data/.readme",
+      "path": "docs/reference/data/mongodb.toml",
+      "path": "docs/reference/layouts",
+      "path": "docs/reference/layouts/.readme",
+      "path": "docs/reference/layouts/partials",
+      "path": "docs/reference/layouts/partials/assets",
+      "path": "docs/reference/layouts/partials/assets/cssExtras.html",
+      "path": "docs/reference/layouts/partials/assets/javascriptExtras.html",
+      "path": "docs/reference/layouts/shortcodes",
+      "path": "docs/reference/layouts/shortcodes/apiref.html",
+      "path": "docs/reference/layouts/shortcodes/distroPicker.html",
+      "path": "docs/reference/layouts/shortcodes/install.html",
+      "path": "docs/reference/static",
+      "path": "docs/reference/static/.readme",
+      "path": "docs/reference/static/css",
+      "path": "docs/reference/static/css/java.css",
+      "path": "docs/reference/static/js",
+      "path": "docs/reference/static/js/java.js",
+      "path": "docs/reference/static/lib",
+      "path": "docs/reference/static/lib/bootstrap-toggle",
+      "path": "docs/reference/static/lib/bootstrap-toggle/bootstrap-toggle.min.css",
+      "path": "docs/reference/static/lib/bootstrap-toggle/bootstrap-toggle.min.js",
+      "path": "docs/reference/static/lib/bootstrap-toggle/bootstrap-toggle.min.js.map",
+      "path": "docs/reference/static/lib/bootstrap-toggle/bootstrap2-toggle.min.js.map",
+      "path": "docs/reference/themes",
+      "path": "docs/reference/themes/mongodb",
+      "path": "docs/reference/themes/mongodb/LICENSE.md",
+      "path": "docs/reference/themes/mongodb/README.md",
+      "path": "docs/reference/themes/mongodb/archetypes",
+      "path": "docs/reference/themes/mongodb/archetypes/default.md",
+      "path": "docs/reference/themes/mongodb/data",
+      "path": "docs/reference/themes/mongodb/data/mongodb.toml",
+      "path": "docs/reference/themes/mongodb/layouts",
+      "path": "docs/reference/themes/mongodb/layouts/_default",
+      "path": "docs/reference/themes/mongodb/layouts/_default/li.html",
+      "path": "docs/reference/themes/mongodb/layouts/_default/list.html",
+      "path": "docs/reference/themes/mongodb/layouts/_default/single.html",
+      "path": "docs/reference/themes/mongodb/layouts/index.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials",
+      "path": "docs/reference/themes/mongodb/layouts/partials/assets",
+      "path": "docs/reference/themes/mongodb/layouts/partials/assets/analytics.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/assets/css.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/assets/cssExtras.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/assets/javascriptExtras.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/assets/javascripts.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/footer.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/header.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/header",
+      "path": "docs/reference/themes/mongodb/layouts/partials/header/contentHeader.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/header/main.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/header/search.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/header/topRight.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/menu.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/menu",
+      "path": "docs/reference/themes/mongodb/layouts/partials/menu/currentItem.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/menu/footer.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/menu/item.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/menu/options.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/meta.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/rightColumn.html",
+      "path": "docs/reference/themes/mongodb/layouts/partials/welcome.html",
+      "path": "docs/reference/themes/mongodb/layouts/shortcodes",
+      "path": "docs/reference/themes/mongodb/layouts/shortcodes/docsref.html",
+      "path": "docs/reference/themes/mongodb/layouts/shortcodes/note.html",
+      "path": "docs/reference/themes/mongodb/layouts/shortcodes/srcref.html",
+      "path": "docs/reference/themes/mongodb/static",
+      "path": "docs/reference/themes/mongodb/static/.nojekyll",
+      "path": "docs/reference/themes/mongodb/static/apple-touch-icon.png",
+      "path": "docs/reference/themes/mongodb/static/css",
+      "path": "docs/reference/themes/mongodb/static/css/basic.css",
+      "path": "docs/reference/themes/mongodb/static/css/bootstrap-custom.css",
+      "path": "docs/reference/themes/mongodb/static/css/mongodb-docs.css",
+      "path": "docs/reference/themes/mongodb/static/css/overrides.css",
+      "path": "docs/reference/themes/mongodb/static/css/reset.css",
+      "path": "docs/reference/themes/mongodb/static/favicon.ico",
+      "path": "docs/reference/themes/mongodb/static/img",
+      "path": "docs/reference/themes/mongodb/static/img/24px-baseline-overlay.png",
+      "path": "docs/reference/themes/mongodb/static/img/back-body.png",
+      "path": "docs/reference/themes/mongodb/static/img/code-block-bg.png",
+      "path": "docs/reference/themes/mongodb/static/img/code-block-bg@2x.png",
+      "path": "docs/reference/themes/mongodb/static/img/favicon.png",
+      "path": "docs/reference/themes/mongodb/static/img/gray.png",
+      "path": "docs/reference/themes/mongodb/static/img/logo-mongodb-header.png",
+      "path": "docs/reference/themes/mongodb/static/img/social-facebook.png",
+      "path": "docs/reference/themes/mongodb/static/img/social-facebook@2x.png",
+      "path": "docs/reference/themes/mongodb/static/img/social-gplus.png",
+      "path": "docs/reference/themes/mongodb/static/img/social-gplus@2x.png",
+      "path": "docs/reference/themes/mongodb/static/img/social-twitter.png",
+      "path": "docs/reference/themes/mongodb/static/img/social-twitter@2x.png",
+      "path": "docs/reference/themes/mongodb/static/img/social-youtube.png",
+      "path": "docs/reference/themes/mongodb/static/img/social-youtube@2x.png",
+      "path": "docs/reference/themes/mongodb/static/img/trans-user-back.png",
+      "path": "docs/reference/themes/mongodb/static/img/trans-user-left.png",
+      "path": "docs/reference/themes/mongodb/static/img/trans-user-right.png",
+      "path": "docs/reference/themes/mongodb/static/js",
+      "path": "docs/reference/themes/mongodb/static/js/doctools.js",
+      "path": "docs/reference/themes/mongodb/static/js/jquery.js",
+      "path": "docs/reference/themes/mongodb/static/js/navbar.js",
+      "path": "docs/reference/themes/mongodb/static/js/scripts.js",
+      "path": "docs/reference/themes/mongodb/static/js/searchtools.js",
+      "path": "docs/reference/themes/mongodb/static/js/underscore.js",
+      "path": "docs/reference/themes/mongodb/static/lib",
+      "path": "docs/reference/themes/mongodb/static/lib/bootstrap-theme.css",
+      "path": "docs/reference/themes/mongodb/static/lib/bootstrap-theme.min.css",
+      "path": "docs/reference/themes/mongodb/static/lib/bootstrap.css",
+      "path": "docs/reference/themes/mongodb/static/lib/bootstrap.js",
+      "path": "docs/reference/themes/mongodb/static/lib/bootstrap.min.css",
+      "path": "docs/reference/themes/mongodb/static/lib/bootstrap.min.js",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/css",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/css/font-awesome.css",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/css/font-awesome.min.css",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/fonts",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/fonts/FontAwesome.otf",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/fonts/fontawesome-webfont.eot",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/fonts/fontawesome-webfont.svg",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/fonts/fontawesome-webfont.ttf",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/fonts/fontawesome-webfont.woff",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/bordered-pulled.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/core.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/fixed-width.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/font-awesome.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/icons.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/larger.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/list.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/mixins.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/path.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/rotated-flipped.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/spinning.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/stacked.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/less/variables.less",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_bordered-pulled.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_core.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_fixed-width.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_icons.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_larger.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_list.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_mixins.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_path.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_rotated-flipped.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_spinning.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_stacked.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/_variables.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/font-awesome/scss/font-awesome.scss",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/CHANGES.md",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/LICENSE",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/README.md",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/highlight.pack.js",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/arta.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/ascetic.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-dune.dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-dune.light.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-forest.dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-forest.light.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-heath.dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-heath.light.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-lakeside.dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-lakeside.light.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-seaside.dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/atelier-seaside.light.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/brown_paper.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/brown_papersq.png",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/codepen-embed.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/color-brewer.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/default.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/docco.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/far.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/foundation.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/github.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/googlecode.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/hybrid.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/idea.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/ir_black.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/kimbie.dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/kimbie.light.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/magula.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/mono-blue.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/monokai.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/monokai_sublime.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/obsidian.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/paraiso.dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/paraiso.light.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/pojoaque.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/pojoaque.jpg",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/railscasts.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/rainbow.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/school_book.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/school_book.png",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/solarized_dark.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/solarized_light.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/sunburst.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/tomorrow-night-blue.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/tomorrow-night-bright.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/tomorrow-night-eighties.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/tomorrow-night.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/tomorrow.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/vs.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/xcode.css",
+      "path": "docs/reference/themes/mongodb/static/lib/highlight/styles/zenburn.css",
+      "path": "docs/reference/themes/mongodb/static/lib/jquery.tipsy.js",
+      "path": "docs/reference/themes/mongodb/static/lib/tipsy.css",
+      "path": "docs/reference/themes/mongodb/static/lib/underscore-min.js",
+      "path": "docs/reference/themes/mongodb/theme.toml",
+      "path": "driver-async/src/test",
+      "path": "driver-async/src/test/functional",
+      "path": "driver-async/src/test/functional/com",
+      "path": "driver-async/src/test/functional/com/mongodb",
+      "path": "driver-async/src/test/functional/com/mongodb/async",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/CrudTest.java",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/DatabaseTestCase.java",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/Fixture.java",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/ForEachSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/FunctionalSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/MapSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/MongoClientListenerRegistrationSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/MongoClientsSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/NettyStreamFactoryFactorySmokeTestSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/SmokeTestSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/TargetDocument.java",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/TestHelper.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/gridfs",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/gridfs/GridFSBucketSmokeTestSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/gridfs/GridFSTest.java",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/gridfs/helpers",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/gridfs/helpers/AsyncStreamHelperTestSpecification.groovy",
+      "path": "driver-async/src/test/functional/com/mongodb/async/client/gridfs/helpers/AsynchronousChannelHelperSmokeTestSpecification.groovy",
+      "path": "driver-async/src/test/resources",
+      "path": "driver-async/src/test/resources/GridFSAsync",
+      "path": "driver-async/src/test/resources/GridFSAsync/GridFSTestFile.txt",
+      "path": "driver-async/src/test/resources/logback-test.xml",
+      "path": "driver-async/src/test/unit",
+      "path": "driver-async/src/test/unit/com",
+      "path": "driver-async/src/test/unit/com/mongodb",
+      "path": "driver-async/src/test/unit/com/mongodb/async",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/AggregateIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/AwaitingWriteOperationIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/DistinctIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/FindIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/FlatteningSingleResultCallbackSubscriptionSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/ListCollectionsIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/ListDatabasesIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/ListIndexesIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/MapReduceIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/MappingAsyncBatchCursorSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/MongoClientSettingsSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/MongoClientSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/MongoCollectionSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/MongoDatabaseSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/MongoIterableSubscriptionSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/SingleResultCallbackSubscriptionSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/TestObserver.java",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/TestOperationExecutor.java",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/gridfs",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/gridfs/GridFSBucketSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/gridfs/GridFSDownloadStreamSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/gridfs/GridFSFindIterableSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/gridfs/GridFSIndexCheckSpecification.groovy",
+      "path": "driver-async/src/test/unit/com/mongodb/async/client/gridfs/GridFSUploadStreamSpecification.groovy",
+      "path": "driver-core/src/test",
+      "path": "driver-core/src/test/functional",
+      "path": "driver-core/src/test/functional/com",
+      "path": "driver-core/src/test/functional/com/mongodb",
+      "path": "driver-core/src/test/functional/com/mongodb/ClusterFixture.java",
+      "path": "driver-core/src/test/functional/com/mongodb/FunctionalTest.java",
+      "path": "driver-core/src/test/functional/com/mongodb/OperationFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/binding",
+      "path": "driver-core/src/test/functional/com/mongodb/binding/AsyncSingleConnectionBinding.java",
+      "path": "driver-core/src/test/functional/com/mongodb/binding/AsyncSingleConnectionBindingTest.java",
+      "path": "driver-core/src/test/functional/com/mongodb/binding/SingleConnectionBinding.java",
+      "path": "driver-core/src/test/functional/com/mongodb/binding/SingleConnectionBindingTest.java",
+      "path": "driver-core/src/test/functional/com/mongodb/client",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/AggregatesFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/ArrayUpdatesFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/BitwiseUpdatesFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/FieldSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/FiltersFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/GeoFiltersFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/GeoJsonFiltersFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/IndexesFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/ProjectionFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/SortsFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/model/UpdatesFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/client/test",
+      "path": "driver-core/src/test/functional/com/mongodb/client/test/CollectionHelper.java",
+      "path": "driver-core/src/test/functional/com/mongodb/client/test/Worker.java",
+      "path": "driver-core/src/test/functional/com/mongodb/client/test/WorkerCodec.java",
+      "path": "driver-core/src/test/functional/com/mongodb/client/test/WorkerCodecProvider.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/AsyncStreamTimeoutsSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/AuthenticatingConnectionTest.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/CommandHelperSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/CommandProtocolCommandEventSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/ConnectionSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/DefaultConnectionPoolTest.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/GSSAPIAuthenticationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/GetMoreProtocolCommandEventSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/KillCursorProtocolCommandEventSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/PlainAuthenticationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/PlainAuthenticatorTest.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/ProtocolTestHelper.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/QueryProtocolCommandEventSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/QueueEventsConnectionPoolListener.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/ReplyHeaderSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/ServerHelper.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/ServerMonitorSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/SingleServerClusterTest.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/SocketStreamHelperSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/TestCommandListener.java",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/WriteCommandProtocolCommandEventSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/WriteCommandProtocolSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/WriteProtocolCommandEventSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/connection/WriteProtocolSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/AggregateOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/AggregateToCollectionOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/AsyncQueryBatchCursorFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/CommandOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/CountOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/CreateCollectionOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/CreateIndexesOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/CreateViewOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/CurrentOpOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/DeleteOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/DistinctOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/DropCollectionOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/DropDatabaseOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/DropIndexOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/DropUserOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/FindAndDeleteOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/FindAndReplaceOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/FindAndUpdateOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/FindOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/FsyncUnlockOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/GroupOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/InsertOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/ListCollectionsOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/ListDatabasesOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/ListIndexesOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/MapReduceToCollectionOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/MapReduceWithInlineResultsOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/MixedBulkWriteOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/ParallelCollectionScanOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/QueryBatchCursorFunctionalSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/RenameCollectionOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/UpdateOperationForReplacementSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/UpdateOperationSpecification.groovy",
+      "path": "driver-core/src/test/functional/com/mongodb/operation/UserOperationsSpecification.groovy",
+      "path": "driver-core/src/test/resources",
+      "path": "driver-core/src/test/resources/command-monitoring",
+      "path": "driver-core/src/test/resources/command-monitoring/bulkWrite.json",
+      "path": "driver-core/src/test/resources/command-monitoring/command.json",
+      "path": "driver-core/src/test/resources/command-monitoring/deleteMany.json",
+      "path": "driver-core/src/test/resources/command-monitoring/deleteOne.json",
+      "path": "driver-core/src/test/resources/command-monitoring/find.json",
+      "path": "driver-core/src/test/resources/command-monitoring/insertMany.json",
+      "path": "driver-core/src/test/resources/command-monitoring/insertOne.json",
+      "path": "driver-core/src/test/resources/command-monitoring/updateMany.json",
+      "path": "driver-core/src/test/resources/command-monitoring/updateOne.json",
+      "path": "driver-core/src/test/resources/connection-string",
+      "path": "driver-core/src/test/resources/connection-string/invalid-uris.json",
+      "path": "driver-core/src/test/resources/connection-string/valid-auth.json",
+      "path": "driver-core/src/test/resources/connection-string/valid-host_identifiers.json",
+      "path": "driver-core/src/test/resources/connection-string/valid-options.json",
+      "path": "driver-core/src/test/resources/connection-string/valid-unix_socket-absolute.json",
+      "path": "driver-core/src/test/resources/connection-string/valid-unix_socket-relative.json",
+      "path": "driver-core/src/test/resources/connection-string/valid-warnings.json",
+      "path": "driver-core/src/test/resources/crud",
+      "path": "driver-core/src/test/resources/crud/read",
+      "path": "driver-core/src/test/resources/crud/read/aggregate-collation.json",
+      "path": "driver-core/src/test/resources/crud/read/aggregate-out.json",
+      "path": "driver-core/src/test/resources/crud/read/aggregate.json",
+      "path": "driver-core/src/test/resources/crud/read/count-collation.json",
+      "path": "driver-core/src/test/resources/crud/read/count.json",
+      "path": "driver-core/src/test/resources/crud/read/distinct-collation.json",
+      "path": "driver-core/src/test/resources/crud/read/distinct.json",
+      "path": "driver-core/src/test/resources/crud/read/find-collation.json",
+      "path": "driver-core/src/test/resources/crud/read/find.json",
+      "path": "driver-core/src/test/resources/crud/write",
+      "path": "driver-core/src/test/resources/crud/write/deleteMany-collation.json",
+      "path": "driver-core/src/test/resources/crud/write/deleteMany.json",
+      "path": "driver-core/src/test/resources/crud/write/deleteOne-collation.json",
+      "path": "driver-core/src/test/resources/crud/write/deleteOne.json",
+      "path": "driver-core/src/test/resources/crud/write/findOneAndDelete-collation.json",
+      "path": "driver-core/src/test/resources/crud/write/findOneAndDelete.json",
+      "path": "driver-core/src/test/resources/crud/write/findOneAndReplace-collation.json",
+      "path": "driver-core/src/test/resources/crud/write/findOneAndReplace-upsert.json",
+      "path": "driver-core/src/test/resources/crud/write/findOneAndReplace.json",
+      "path": "driver-core/src/test/resources/crud/write/findOneAndUpdate-collation.json",
+      "path": "driver-core/src/test/resources/crud/write/findOneAndUpdate.json",
+      "path": "driver-core/src/test/resources/crud/write/insertMany.json",
+      "path": "driver-core/src/test/resources/crud/write/insertOne.json",
+      "path": "driver-core/src/test/resources/crud/write/replaceOne-collation.json",
+      "path": "driver-core/src/test/resources/crud/write/replaceOne-upsert.json",
+      "path": "driver-core/src/test/resources/crud/write/replaceOne.json",
+      "path": "driver-core/src/test/resources/crud/write/updateMany-collation.json",
+      "path": "driver-core/src/test/resources/crud/write/updateMany.json",
+      "path": "driver-core/src/test/resources/crud/write/updateOne-collation.json",
+      "path": "driver-core/src/test/resources/crud/write/updateOne.json",
+      "path": "driver-core/src/test/resources/gridfs-tests",
+      "path": "driver-core/src/test/resources/gridfs-tests/delete.json",
+      "path": "driver-core/src/test/resources/gridfs-tests/download.json",
+      "path": "driver-core/src/test/resources/gridfs-tests/download_by_name.json",
+      "path": "driver-core/src/test/resources/gridfs-tests/upload.json",
+      "path": "driver-core/src/test/resources/logback-test.xml",
+      "path": "driver-core/src/test/resources/max-staleness",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/README.rst",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/DefaultNoMaxStaleness.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/Incompatible.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/LastUpdateTime.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/Nearest.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/Nearest2.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/NoKnownServers.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/PrimaryPreferred.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/PrimaryPreferred_tags.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/Secondary.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/SecondaryPreferred_tags.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetNoPrimary/ZeroMaxStaleness.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/DefaultNoMaxStaleness.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/Incompatible.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/LastUpdateTime.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/LongHeartbeat.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/LongHeartbeat2.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/MaxStalenessTooSmall.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/MaxStalenessWithModePrimary.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/Nearest.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/Nearest2.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/Nearest_tags.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/PrimaryPreferred.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/PrimaryPreferred_incompatible.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/SecondaryPreferred_tags.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/SecondaryPreferred_tags2.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/Secondary_tags.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/Secondary_tags2.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/ReplicaSetWithPrimary/ZeroMaxStaleness.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/Sharded",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/Sharded/Incompatible.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/Sharded/SmallMaxStaleness.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/Single",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/Single/Incompatible.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/Single/SmallMaxStaleness.json",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/Unknown",
+      "path": "driver-core/src/test/resources/max-staleness/server_selection/Unknown/SmallMaxStaleness.json",
+      "path": "driver-core/src/test/resources/read-concern",
+      "path": "driver-core/src/test/resources/read-concern/read-concern.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring-monitoring",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring-monitoring/replica_set_with_no_primary.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring-monitoring/replica_set_with_primary.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring-monitoring/replica_set_with_removal.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring-monitoring/required_replica_set.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring-monitoring/standalone.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/discover_arbiters.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/discover_passives.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/discover_primary.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/discover_secondary.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/discovery.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/equal_electionids.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/ghost_discovered.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/hosts_differ_from_seeds.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/ignore_secondary_electionid.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/member_reconfig.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/member_standalone.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/new_primary.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/new_primary_new_electionid.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/new_primary_new_setversion.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/new_primary_wrong_set_name.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/non_rs_member.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/normalize_case.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/null_election_id.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_becomes_standalone.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_changes_set_name.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_disconnect.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_disconnect_electionid.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_disconnect_setversion.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_mismatched_me.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_reports_new_member.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_to_no_primary_mismatched_me.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/primary_wrong_set_name.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/response_from_removed.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/rsother_discovered.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/sec_not_auth.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/secondary_mismatched_me.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/secondary_wrong_set_name.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/secondary_wrong_set_name_with_primary.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/setversion_without_electionid.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/stepdown_change_set_name.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/unexpected_mongos.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/use_setversion_without_electionid.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/rs/wrong_set_name.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/sharded",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/sharded/mongos_disconnect.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/sharded/multiple_mongoses.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/sharded/non_mongos_removed.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/sharded/normalize_uri_case.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/direct_connection_external_ip.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/direct_connection_mongos.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/direct_connection_rsarbiter.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/direct_connection_rsprimary.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/direct_connection_rssecondary.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/direct_connection_slave.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/direct_connection_standalone.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/not_ok_response.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/standalone_removed.json",
+      "path": "driver-core/src/test/resources/server-discovery-and-monitoring/single/unavailable_seed.json",
+      "path": "driver-core/src/test/resources/server-selection",
+      "path": "driver-core/src/test/resources/server-selection/rtt",
+      "path": "driver-core/src/test/resources/server-selection/rtt/first_value.json",
+      "path": "driver-core/src/test/resources/server-selection/rtt/first_value_zero.json",
+      "path": "driver-core/src/test/resources/server-selection/rtt/value_test_1.json",
+      "path": "driver-core/src/test/resources/server-selection/rtt/value_test_2.json",
+      "path": "driver-core/src/test/resources/server-selection/rtt/value_test_3.json",
+      "path": "driver-core/src/test/resources/server-selection/rtt/value_test_4.json",
+      "path": "driver-core/src/test/resources/server-selection/rtt/value_test_5.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/Nearest.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/Nearest_multiple.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/Nearest_non_matching.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/Primary.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/PrimaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/PrimaryPreferred_non_matching.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/Secondary.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/SecondaryPreferred_non_matching.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/Secondary_multi_tags.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/Secondary_multi_tags2.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/read/Secondary_non_matching.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/write",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetNoPrimary/write/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/Nearest.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/Nearest_multiple.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/Nearest_non_matching.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/Primary.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/PrimaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/PrimaryPreferred_non_matching.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/Secondary.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/SecondaryPreferred_non_matching.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/SecondaryPreferred_tags.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/read/Secondary_non_matching.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/write",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/ReplicaSetWithPrimary/write/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Sharded",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Sharded/read",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Sharded/read/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Sharded/write",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Sharded/write/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Single",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Single/read",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Single/read/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Single/write",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Single/write/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Unknown",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Unknown/read",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Unknown/read/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Unknown/write",
+      "path": "driver-core/src/test/resources/server-selection/server_selection/Unknown/write/SecondaryPreferred.json",
+      "path": "driver-core/src/test/resources/write-concern",
+      "path": "driver-core/src/test/resources/write-concern/connection-string",
+      "path": "driver-core/src/test/resources/write-concern/connection-string/write-concern.json",
+      "path": "driver-core/src/test/resources/write-concern/document",
+      "path": "driver-core/src/test/resources/write-concern/document/write-concern.json",
+      "path": "driver-core/src/test/unit",
+      "path": "driver-core/src/test/unit/com",
+      "path": "driver-core/src/test/unit/com/mongodb",
+      "path": "driver-core/src/test/unit/com/mongodb/ConnectionStringSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/ConnectionStringTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/CustomMatchers.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/ErrorCategorySpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/IndexRequestSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/MongoCommandExceptionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/MongoCredentialSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/MongoNamespaceSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/ReadConcernLevelSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/ReadConcernSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/ReadConcernTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/ReadPreferenceChooseServersTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/ReadPreferenceSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/ServerAddressSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/TagSetSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/WriteConcernConnectionStringTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/WriteConcernDocumentTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/WriteConcernSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/async",
+      "path": "driver-core/src/test/unit/com/mongodb/async/CallbackResultHolder.java",
+      "path": "driver-core/src/test/unit/com/mongodb/async/FutureResultCallback.java",
+      "path": "driver-core/src/test/unit/com/mongodb/binding",
+      "path": "driver-core/src/test/unit/com/mongodb/binding/AsyncSingleConnectionReadBindingSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/binding/SingleConnectionReadBindingSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client",
+      "path": "driver-core/src/test/unit/com/mongodb/client/ImmutableDocument.java",
+      "path": "driver-core/src/test/unit/com/mongodb/client/ImmutableDocumentCodec.java",
+      "path": "driver-core/src/test/unit/com/mongodb/client/ImmutableDocumentCodecProvider.java",
+      "path": "driver-core/src/test/unit/com/mongodb/client/MongoDriverInformationSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/async",
+      "path": "driver-core/src/test/unit/com/mongodb/client/async/FutureResultCallbackSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/gridfs",
+      "path": "driver-core/src/test/unit/com/mongodb/client/gridfs/codecs",
+      "path": "driver-core/src/test/unit/com/mongodb/client/gridfs/codecs/GridFSFileCodecProviderSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/gridfs/codecs/GridFSFileCodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/gridfs/model",
+      "path": "driver-core/src/test/unit/com/mongodb/client/gridfs/model/GridFSFileSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/AggregatesSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/BucketAutoOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/BucketGranularitySpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/BucketOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/BulkWriteOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/CollationAlternateSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/CollationCaseFirstSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/CollationMaxVariableSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/CollationSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/CollationStrengthSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/CountOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/CreateCollectionOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/DeleteOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/FiltersSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/FindOneAndDeleteOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/FindOneAndReplaceOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/FindOneAndUpdateOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/FindOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/GraphLookupOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/IndexOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/IndexesSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/InsertManyOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/InsertOneOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/ProjectionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/SortsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/UpdateOptionsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/UpdatesSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/ValidationActionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/ValidationLevelSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/GeometryCollectionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/LineStringSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/MultiLineStringSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/MultiPointSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/MultiPolygonSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/PointSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/PolygonSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/PositionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/codecs",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/codecs/GeometryCollectionCodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/codecs/LineStringCodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/codecs/MultiLineStringCodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/codecs/MultiPointCodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/codecs/MultiPolygonCodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/codecs/PointCodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/client/model/geojson/codecs/PolygonCodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/AbstractServerDiscoveryAndMonitoringTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/Base64CodecSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/BaseClusterSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/BulkWriteBatchCombinerSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ByteBufBsonDocumentSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ByteBufSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ByteBufferBsonOutputSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ChangeEventTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ClientMetadataHelperSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ClusterDescriptionTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ClusterIdSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ClusterSettingsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/CommandEventOnConnectionFailureSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/CommandProtocolCommandEventElisionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/CompositeByteBufSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ConnectionDescriptionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ConnectionIdSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ConnectionPoolSettingsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/DefaultConnectionPoolSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/DefaultServerConnectionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/DefaultServerMonitorSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/DefaultServerSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/DefaultTestClusterableServerFactory.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/DescriptionHelperSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ExponentiallyWeightedMovingAverageSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/GetMoreProtocolSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/InternalStreamConnectionInitializerSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/InternalStreamConnectionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/JMXConnectionPoolListenerSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/MaxDocumentSizeTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/MaxMessageSizeTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/MessageHelper.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/MultiServerClusterSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/NativeAuthenticatorUnitTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/PlainAuthenticatorUnitTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ProtocolHelperSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ReplyMessageTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ScramSha1SaslAuthenticatorTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerDescriptionTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerDiscoveryAndMonitoringMonitoringTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerDiscoveryAndMonitoringTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerIdSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerListenerFactory.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerSelectionRttTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerSelectionSelectionTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerSettingsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/ServerVersionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/SimpleBufferProvider.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/SingleServerClusterSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/SocketSettingsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/SslSettingsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestClusterListener.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestClusterableServerFactory.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestConnection.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestConnectionFactory.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestConnectionPool.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestInternalConnection.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestInternalConnectionFactory.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestServer.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestServerListener.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestServerMonitor.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TestServerMonitorFactory.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TimeSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/TimeoutTrackingConnectionGetter.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/UsageTrackingConnectionSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/WriteCommandHelperSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/WriteCommandLimitsSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/WriteResultProtocolHelperSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/X509AuthenticatorNoUserNameTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/X509AuthenticatorUnitTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/netty",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/netty/ByteBufSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/netty/NettyStreamFactoryFactorySpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/connection/netty/NettyStreamFactorySpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/event",
+      "path": "driver-core/src/test/unit/com/mongodb/event/CommandEventMulticasterSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/event/CommandEventSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/event/CommandListenerMulticasterSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/event/ServerHeartbeatEventSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/internal",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/SslHelperSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/connection",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/connection/ConcurrentPoolTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/connection/IndexMapSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/connection/PowerOfTwoBufferPoolTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/thread",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/thread/DaemonThreadFactorySpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/validator",
+      "path": "driver-core/src/test/unit/com/mongodb/internal/validator/CollectibleDocumentFieldNameValidatorTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/operation",
+      "path": "driver-core/src/test/unit/com/mongodb/operation/AsyncQueryBatchCursorSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/operation/CommandOperationHelperSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/operation/CursorHelperTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/operation/QueryBatchCursorSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/selector",
+      "path": "driver-core/src/test/unit/com/mongodb/selector/CompositeServerSelectorTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/selector/LatencyMinimizingServerSelectorTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/selector/PrimaryServerSelectorSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/selector/ReadPreferenceServerSelectorSpecification.groovy",
+      "path": "driver-core/src/test/unit/com/mongodb/selector/ServerAddressSelectorTest.java",
+      "path": "driver-core/src/test/unit/com/mongodb/selector/WritableServerSelectorSpecification.groovy",
+      "path": "driver/src/test",
+      "path": "driver/src/test/acceptance",
+      "path": "driver/src/test/acceptance/com",
+      "path": "driver/src/test/acceptance/com/mongodb",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/atomicoperations",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/atomicoperations/FindAndDeleteAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/atomicoperations/FindAndReplaceAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/atomicoperations/FindAndUpdateAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/core",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/core/ClientAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/core/CollectionAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/core/DatabaseAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud/DeleteAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud/InsertAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud/ReplaceAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud/UpdateAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud/pojo",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud/pojo/Address.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud/pojo/Person.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/crud/pojo/Postcode.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/index",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/index/AddIndexAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/index/DropIndexAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/querying",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/querying/FilterAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/querying/MapReduceAcceptanceTest.java",
+      "path": "driver/src/test/acceptance/com/mongodb/acceptancetest/querying/QueryAcceptanceTest.java",
+      "path": "driver/src/test/functional",
+      "path": "driver/src/test/functional/com",
+      "path": "driver/src/test/functional/com/mongodb",
+      "path": "driver/src/test/functional/com/mongodb/ClassA.java",
+      "path": "driver/src/test/functional/com/mongodb/ClassB.java",
+      "path": "driver/src/test/functional/com/mongodb/DBCollectionAggregationTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DBCollectionFunctionalSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/DBCollectionOldTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DBCollectionSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/DBCollectionTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DBCursorFunctionalSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/DBCursorOldTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DBCursorTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DBFunctionalSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/DBObjectCodecReflectionTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DBObjectCodecTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DBRefTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DBTest.java",
+      "path": "driver/src/test/functional/com/mongodb/DatabaseTestCase.java",
+      "path": "driver/src/test/functional/com/mongodb/DefaultDBDecoderTest.java",
+      "path": "driver/src/test/functional/com/mongodb/Fixture.java",
+      "path": "driver/src/test/functional/com/mongodb/FunctionalSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/MapReduceOutputSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/MapReduceTest.java",
+      "path": "driver/src/test/functional/com/mongodb/MongoClientListenerRegistrationSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/MongoClientsSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/MongoMethodsTest.java",
+      "path": "driver/src/test/functional/com/mongodb/QueryBuilderTest.java",
+      "path": "driver/src/test/functional/com/mongodb/QueryTest.java",
+      "path": "driver/src/test/functional/com/mongodb/client",
+      "path": "driver/src/test/functional/com/mongodb/client/CommandMonitoringTest.java",
+      "path": "driver/src/test/functional/com/mongodb/client/Concrete.java",
+      "path": "driver/src/test/functional/com/mongodb/client/ConcreteCodec.java",
+      "path": "driver/src/test/functional/com/mongodb/client/ConcreteCodecProvider.java",
+      "path": "driver/src/test/functional/com/mongodb/client/CrudTest.java",
+      "path": "driver/src/test/functional/com/mongodb/client/DatabaseTestCase.java",
+      "path": "driver/src/test/functional/com/mongodb/client/JsonPoweredCrudTestHelper.java",
+      "path": "driver/src/test/functional/com/mongodb/client/MongoCollectionTest.java",
+      "path": "driver/src/test/functional/com/mongodb/client/Name.java",
+      "path": "driver/src/test/functional/com/mongodb/client/NameCodec.java",
+      "path": "driver/src/test/functional/com/mongodb/client/NameCodecProvider.java",
+      "path": "driver/src/test/functional/com/mongodb/client/gridfs",
+      "path": "driver/src/test/functional/com/mongodb/client/gridfs/GridFSBucketSmokeTestSpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/client/gridfs/GridFSTest.java",
+      "path": "driver/src/test/functional/com/mongodb/client/jndi",
+      "path": "driver/src/test/functional/com/mongodb/client/jndi/MongoClientFactorySpecification.groovy",
+      "path": "driver/src/test/functional/com/mongodb/gridfs",
+      "path": "driver/src/test/functional/com/mongodb/gridfs/GridFSTest.java",
+      "path": "driver/src/test/resources",
+      "path": "driver/src/test/resources/GridFSLegacy",
+      "path": "driver/src/test/resources/GridFSLegacy/GridFSTestFile.txt",
+      "path": "driver/src/test/unit",
+      "path": "driver/src/test/unit/com",
+      "path": "driver/src/test/unit/com/mongodb",
+      "path": "driver/src/test/unit/com/mongodb/AggregateIterableSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/AggregationOptionsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/BasicDBObjectTest.java",
+      "path": "driver/src/test/unit/com/mongodb/CommandResultTest.java",
+      "path": "driver/src/test/unit/com/mongodb/DBAddressTest.java",
+      "path": "driver/src/test/unit/com/mongodb/DBCollectionObjectFactoryTest.java",
+      "path": "driver/src/test/unit/com/mongodb/DBCursorSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/DBObjectCodecSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/DBObjectCollationHelperSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/DBObjectMatchers.java",
+      "path": "driver/src/test/unit/com/mongodb/DBRefCodecSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/DBRefSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/DBSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/DistinctIterableSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/DocumentToDBRefTransformerSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/FindIterableSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/GroupCommandSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/LazyDBEncoderTest.java",
+      "path": "driver/src/test/unit/com/mongodb/LazyDBObjectSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/ListCollectionsIterableSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/ListDatabasesIterableSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/ListIndexesIterableSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MapReduceCommandSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MapReduceIterableSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MongoBatchCursorAdapterSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MongoClientOptionsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MongoClientSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MongoClientURISpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MongoCollectionSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MongoConstructorsTest.java",
+      "path": "driver/src/test/unit/com/mongodb/MongoDatabaseSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MongoMappingCursorSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/MongoOptionsTest.java",
+      "path": "driver/src/test/unit/com/mongodb/MongoSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/ReplicaSetStatusSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/TestOperationExecutor.java",
+      "path": "driver/src/test/unit/com/mongodb/client",
+      "path": "driver/src/test/unit/com/mongodb/client/gridfs",
+      "path": "driver/src/test/unit/com/mongodb/client/gridfs/GridFSBucketSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/gridfs/GridFSBucketsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/gridfs/GridFSDownloadStreamSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/gridfs/GridFSFindIterableSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/gridfs/GridFSUploadStreamSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/model",
+      "path": "driver/src/test/unit/com/mongodb/client/model/DBCollectionCountOptionsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/model/DBCollectionDistinctOptionsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/model/DBCollectionFindAndModifyOptionsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/model/DBCollectionFindOptionsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/model/DBCollectionRemoveOptionsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/client/model/DBCollectionUpdateOptionsSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/operation",
+      "path": "driver/src/test/unit/com/mongodb/operation/DeleteRequestSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/operation/InsertRequestSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/operation/UpdateRequestSpecification.groovy",
+      "path": "driver/src/test/unit/com/mongodb/util",
+      "path": "driver/src/test/unit/com/mongodb/util/JSONCallbackTest.java",
+      "path": "driver/src/test/unit/com/mongodb/util/JSONSerializersTest.java",
+      "path": "driver/src/test/unit/com/mongodb/util/JSONTest.java",
+      "path": "driver/src/test/unit/org",
+      "path": "driver/src/test/unit/org/bson",
+      "path": "driver/src/test/unit/org/bson/BSONTest.java",
+      "path": "driver/src/test/unit/org/bson/BasicBSONDecoderSpecification.groovy",
+      "path": "driver/src/test/unit/org/bson/BasicBSONEncoderSpecification.groovy",
+      "path": "driver/src/test/unit/org/bson/LazyBSONDecoderTest.java",
+      "path": "driver/src/test/unit/org/bson/LazyBSONListTest.java",
+      "path": "driver/src/test/unit/org/bson/LazyBSONObjectSpecification.groovy",
+      "path": "driver/src/test/unit/org/bson/io",
+      "path": "driver/src/test/unit/org/bson/io/BitsTest.java",
+      "path": "driver/src/test/unit/org/bson/types",
+      "path": "driver/src/test/unit/org/bson/types/BSONBsonTimestampTest.java",
+      "path": "driver/src/test/unit/org/bson/types/BasicBSONListSpecification.groovy",
+      "path": "driver/src/test/unit/org/bson/types/StringRangeSetSpecification.groovy",
+      "path": "driver/src/test/unit/org/bson/util",
+      "path": "driver/src/test/unit/org/bson/util/ClassMapSpecification.groovy",
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -10 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+{
+  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' build/discovered-artifact-metadata metadata | head -40" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"https://repo1.maven.org|\"test-code-url\"\\s*:\\s*\"https://repo1.maven.org|\"documentation-url\"\\s*:\\s*\"https://repo1.maven.org' build/discovered-artifact-metadata metadata | head -50" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.31/kotlin-stdlib-common-1.5.31-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-sources.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-javadoc.jar",
+metadata/org.eclipse.aether/aether-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+metadata/org.eclipse.aether/aether-util/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+metadata/org.eclipse.aether/aether-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-javadoc.jar",
+metadata/org.eclipse.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+metadata/org.eclipse.aether/aether-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.postgresql/postgresql/index.json && sed -n '1,40p' metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.postgresql"
+    ],
+    "metadata-version": "42.7.3",
+    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+    "tested-versions": [
+      "42.7.3",
+      "42.7.4",
+      "42.7.5",
+      "42.7.6",
+      "42.7.7",
+      "42.7.8",
+      "42.7.9",
+      "42.7.10"
+    ]
+  },
+  {
+    "allowed-packages": [
+      "org.postgresql"
+    ],
+    "metadata-version": "42.3.4",
+    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+    "tested-versions": [
+      "42.3.4"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.9.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.9.0/kotlinx-serialization-core-jvm-1.9.0-sources.jar",
+    "repository-url" : "https://github.com/Kotlin/kotlinx.serialization",
+    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/core/jvmTest",
+    "documentation-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/docs",
+    "description" : "kotlinx-serialization-core-jvm is the JVM runtime core for Kotlin serialization, providing serializers, descriptors, encoding and decoding abstractions, and module support used by format implementations. It supports Kotlin multiplatform serialization on the JVM and is used together with format modules such as JSON, CBOR, ProtoBuf, and Properties.",
+    "language" : {
+      "name" : "kotlin",
+      "version" : "2.2"
+    },
+    "tested-versions" : [
+      "1.9.0",
+      "1.10.0",
+      "1.11.0"
+    ],
+    "allowed-packages" : [
+      "kotlinx.serialization"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar -o /tmp/mongo-java-driver-3.4.0-javadoc.jar && jar tf /tmp/mongo-java-driver-3.4.0-javadoc.jar | sed -n '1,40p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar -o /tmp/mongo-java-driver-3.4.0-sources.jar && jar tf /tmp/mongo-java-driver-3.4.0-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 717ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/mongodb/
+com/mongodb/AcknowledgedBulkWriteResult.java
+com/mongodb/AggregateIterableImpl.java
+com/mongodb/AggregationOptions.java
+com/mongodb/AggregationOutput.java
+com/mongodb/BasicDBList.java
+com/mongodb/BasicDBObject.java
+com/mongodb/BasicDBObjectBuilder.java
+com/mongodb/BasicDBObjectFactory.java
+com/mongodb/BSONTimestampCodec.java
+com/mongodb/BulkUpdateRequestBuilder.java
+com/mongodb/BulkWriteError.java
+com/mongodb/BulkWriteException.java
+com/mongodb/BulkWriteHelper.java
+com/mongodb/BulkWriteOperation.java
+com/mongodb/BulkWriteRequestBuilder.java
+com/mongodb/BulkWriteResult.java
+com/mongodb/BulkWriteUpsert.java
+com/mongodb/Bytes.java
+com/mongodb/CommandResult.java
+com/mongodb/CompoundDBObjectCodec.java
+com/mongodb/Cursor.java
+com/mongodb/DB.java
+com/mongodb/DBAddress.java
+com/mongodb/DBCallback.java
+com/mongodb/DBCallbackFactory.java
+com/mongodb/DBCollection.java
+com/mongodb/DBCollectionObjectFactory.java
+com/mongodb/DBCursor.java
+com/mongodb/DBDecoder.java
+com/mongodb/DBDecoderAdapter.java
+com/mongodb/DBDecoderFactory.java
+com/mongodb/DBEncoder.java
+com/mongodb/DBEncoderAdapter.java
+com/mongodb/DBEncoderFactory.java
+com/mongodb/DBEncoderFactoryAdapter.java
+com/mongodb/DBObject.java
+com/mongodb/DBObjectCodec.java
+com/mongodb/DBObjectCodecProvider.java
+com/mongodb/DBObjectCollationHelper.java
+com/mongodb/DBObjectFactory.java
+com/mongodb/DBObjects.java
+com/mongodb/DBRef.java
+com/mongodb/DBRefCodec.java
+com/mongodb/DBRefCodecProvider.java
+com/mongodb/DefaultDBCallback.java
+com/mongodb/DefaultDBDecoder.java
+com/mongodb/DefaultDBEncoder.java
+com/mongodb/DistinctIterableImpl.java
+com/mongodb/DocumentToDBRefTransformer.java
+com/mongodb/FindIterableImpl.java
+com/mongodb/GroupCommand.java
+com/mongodb/InsertOptions.java
+com/mongodb/InsertRequest.java
+com/mongodb/LazyDBCallback.java
+com/mongodb/LazyDBDecoder.java
+com/mongodb/LazyDBEncoder.java
+com/mongodb/LazyDBList.java
+com/mongodb/LazyDBObject.java
+com/mongodb/ListCollectionsIterableImpl.java
+com/mongodb/ListDatabasesIterableImpl.java
+com/mongodb/ListIndexesIterableImpl.java
+com/mongodb/MappingIterable.java
+com/mongodb/MapReduceCommand.java
+com/mongodb/MapReduceIterableImpl.java
+com/mongodb/MapReduceOutput.java
+com/mongodb/Mongo.java
+com/mongodb/MongoBatchCursorAdapter.java
+com/mongodb/MongoClient.java
+com/mongodb/MongoClientOptions.java
+com/mongodb/MongoClientURI.java
+com/mongodb/MongoCollectionImpl.java
+com/mongodb/MongoCursorAdapter.java
+com/mongodb/MongoDatabaseImpl.java
+com/mongodb/MongoMappingCursor.java
+com/mongodb/MongoOptions.java
+com/mongodb/MongoURI.java
+
+ succeeded in 807ms:
+META-INF/
+META-INF/MANIFEST.MF
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+help-doc.html
+index-all.html
+index.html
+overview-frame.html
+overview-summary.html
+overview-tree.html
+package-list
+script.js
+serialized-form.html
+stylesheet.css
+com/
+com/mongodb/
+com/mongodb/AggregationOptions.Builder.html
+com/mongodb/AggregationOptions.html
+com/mongodb/AggregationOptions.OutputMode.html
+com/mongodb/AggregationOutput.html
+com/mongodb/AuthenticationMechanism.html
+com/mongodb/BasicDBList.html
+com/mongodb/BasicDBObject.html
+com/mongodb/BasicDBObjectBuilder.html
+com/mongodb/Block.html
+com/mongodb/BSONTimestampCodec.html
+com/mongodb/BulkUpdateRequestBuilder.html
+com/mongodb/BulkWriteError.html
+com/mongodb/BulkWriteException.html
+com/mongodb/BulkWriteOperation.html
+com/mongodb/BulkWriteRequestBuilder.html
+com/mongodb/BulkWriteResult.html
+com/mongodb/BulkWriteUpsert.html
+com/mongodb/Bytes.html
+com/mongodb/CommandResult.html
+com/mongodb/ConnectionString.html
+com/mongodb/Cursor.html
+com/mongodb/CursorType.html
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\".*mongo-java-driver|mongodb-driver|driver-core|bson' metadata build/discovered-artifact-metadata || true" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+metadata/library-and-framework-list.json:3:    "artifact": "com.datastax.oss:java-driver-core",
+metadata/library-and-framework-list.json:1770:    "artifact": "org.mongodb:bson",
+metadata/library-and-framework-list.json:1776:          "https://github.com/mongodb/mongo-java-driver/tree/main/bson/src/main/resources/META-INF/native-image"
+metadata/library-and-framework-list.json:1804:    "artifact": "org.mongodb:mongodb-driver-core",
+metadata/library-and-framework-list.json:1810:          "https://github.com/mongodb/mongo-java-driver/tree/main/driver-core/src/main/resources/META-INF/native-image"
+metadata/library-and-framework-list.json:1821:    "artifact": "org.mongodb:mongodb-driver-reactivestreams",
+metadata/library-and-framework-list.json:1836:    "artifact": "org.mongodb:mongodb-driver-sync",
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"\\s*:\\s*\"https://github.com/.*/tree/["'^/]+"'"' metadata build/discovered-artifact-metadata | head -30" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.21.0",
+metadata/org.osgi/org.osgi.compendium/index.json:8:    "test-code-url": "https://github.com/osgi/osgi/tree/r5-cmpn-ri-ct-final",
+metadata/org.osgi/org.osgi.core/index.json:21:    "test-code-url" : "https://github.com/osgi/osgi/tree/r4v43-core-ri-ct-final",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/ | rg 'test|src|source|javadoc'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+<a href="mongo-java-driver-3.4.0-javadoc.jar" title="mongo-java-driver-3.4.0-javadoc.jar">mongo-java-driver-3.4.0-javadoc.jar</a>               2016-11-27 14:11   2825752      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.asc" title="mongo-java-driver-3.4.0-javadoc.jar.asc">mongo-java-driver-3.4.0-javadoc.jar.asc</a>           2016-11-27 14:11       475      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.asc.md5" title="mongo-java-driver-3.4.0-javadoc.jar.asc.md5">mongo-java-driver-3.4.0-javadoc.jar.asc.md5</a>       2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.asc.sha1" title="mongo-java-driver-3.4.0-javadoc.jar.asc.sha1">mongo-java-driver-3.4.0-javadoc.jar.asc.sha1</a>      2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.md5" title="mongo-java-driver-3.4.0-javadoc.jar.md5">mongo-java-driver-3.4.0-javadoc.jar.md5</a>           2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0-javadoc.jar.sha1" title="mongo-java-driver-3.4.0-javadoc.jar.sha1">mongo-java-driver-3.4.0-javadoc.jar.sha1</a>          2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0-sources.jar" title="mongo-java-driver-3.4.0-sources.jar">mongo-java-driver-3.4.0-sources.jar</a>               2016-11-27 14:11   1154627      
+<a href="mongo-java-driver-3.4.0-sources.jar.asc" title="mongo-java-driver-3.4.0-sources.jar.asc">mongo-java-driver-3.4.0-sources.jar.asc</a>           2016-11-27 14:11       475      
+<a href="mongo-java-driver-3.4.0-sources.jar.asc.md5" title="mongo-java-driver-3.4.0-sources.jar.asc.md5">mongo-java-driver-3.4.0-sources.jar.asc.md5</a>       2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0-sources.jar.asc.sha1" title="mongo-java-driver-3.4.0-sources.jar.asc.sha1">mongo-java-driver-3.4.0-sources.jar.asc.sha1</a>      2016-11-27 14:11        40      
+<a href="mongo-java-driver-3.4.0-sources.jar.md5" title="mongo-java-driver-3.4.0-sources.jar.md5">mongo-java-driver-3.4.0-sources.jar.md5</a>           2016-11-27 14:11        32      
+<a href="mongo-java-driver-3.4.0-sources.jar.sha1" title="mongo-java-driver-3.4.0-sources.jar.sha1">mongo-java-driver-3.4.0-sources.jar.sha1</a>          2016-11-27 14:11        40      
+
+codex
+I found no Maven test artifact for this coordinate, so I’m using Maven for the exact source and javadoc artifacts and the r3.4.0 GitHub tag for the test suite. The library itself is a Java driver, not one of the Kotlin/Groovy/Scala language-specific artifacts that require a `language` field here.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+diff --git a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+index d46f085490ae442b94925d8b02bee1e79c0c81f1..b3d6b49c0f6f730857064260767db6c5790a3c21
+--- a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
++++ b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0"
++  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
++  "description" : "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+index d46f085490ae442b94925d8b02bee1e79c0c81f1..b3d6b49c0f6f730857064260767db6c5790a3c21
+--- a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
++++ b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0"
++  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
++  "description" : "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+{
+  "coordinates": "org.mongodb:mongo-java-driver:3.4.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
+  "repository-url": "https://github.com/mongodb/mongo-java-driver",
+  "test-code-url": "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
+  "documentation-url": "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
+  "description": "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+index d46f085490ae442b94925d8b02bee1e79c0c81f1..b3d6b49c0f6f730857064260767db6c5790a3c21
+--- a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
++++ b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0"
++  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
++  "description" : "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+index d46f085490ae442b94925d8b02bee1e79c0c81f1..b3d6b49c0f6f730857064260767db6c5790a3c21
+--- a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
++++ b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0"
++  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
++  "description" : "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0."
+ }
+
+web search: 
+web search: repo1.maven.org org mongodb mongo-java-driver 3.4.0 sources javadoc
+web search: 
+web search: https://github.com/mongodb/mongo-java-driver/tree/r3.4.0
+codex
+Updated [org.mongodb-mongo-java-driver-3.4.0.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json).
+
+Used Maven Central for the exact `3.4.0` sources and javadoc artifacts, and the GitHub `r3.4.0` tree for tests since no Maven test artifact exists. The `language` field was left absent because this is the Java driver artifact, not Kotlin/Groovy/Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/?utm_source=openai))
+
+Verified the JSON parses with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+index d46f085490ae442b94925d8b02bee1e79c0c81f1..b3d6b49c0f6f730857064260767db6c5790a3c21
+--- a/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
++++ b/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0"
++  "coordinates" : "org.mongodb:mongo-java-driver:3.4.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r3.4.0",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/mongo-java-driver-3.4.0-javadoc.jar",
++  "description" : "MongoDB Java Driver provides Java APIs for connecting to MongoDB and working with databases, collections, queries, and BSON documents. The mongo-java-driver artifact is the legacy uber-artifact that bundles the synchronous driver, core driver, and BSON components for version 3.4.0."
+ }
+
+2026-04-28T21:41:30.855329Z ERROR codex_core::session: failed to record rollout items: thread 019dd608-b315-7330-96e6-d08c651b67c2 not found
+tokens used
+122,243
+Updated [org.mongodb-mongo-java-driver-3.4.0.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/build/discovered-artifact-metadata/org.mongodb-mongo-java-driver-3.4.0.json).
+
+Used Maven Central for the exact `3.4.0` sources and javadoc artifacts, and the GitHub `r3.4.0` tree for tests since no Maven test artifact exists. The `language` field was left absent because this is the Java driver artifact, not Kotlin/Groovy/Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/mongodb/mongo-java-driver/3.4.0/?utm_source=openai))
+
+Verified the JSON parses with `jq`.
+Ran agent for org.mongodb:mongo-java-driver:3.4.0 (exit 0). Log: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/build/agent-artifact-discovery-logs/org.mongodb-mongo-java-driver-3.4.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/2779-cd246b24/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 44s
+9 actionable tasks: 4 executed, 5 from cache
