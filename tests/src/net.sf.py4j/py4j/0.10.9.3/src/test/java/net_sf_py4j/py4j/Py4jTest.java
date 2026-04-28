@@ -8,7 +8,7 @@ package net_sf_py4j.py4j;
 
 import org.junit.jupiter.api.Test;
 
-class Py4jTest {
+public class Py4jTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
