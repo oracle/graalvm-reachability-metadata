@@ -8,7 +8,7 @@ package org_eclipse_jdt.ecj;
 
 import org.junit.jupiter.api.Test;
 
-class EcjTest {
+public class EcjTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
