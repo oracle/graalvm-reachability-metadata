@@ -1,0 +1,361 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd3dc-3086-7922-aa90-fcd720800674
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.fasterxml.jackson.core:jackson-core:2.6.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.6.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+- Entry selector: "metadata-version" = "2.6.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.6.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.6.0
+- Entry test-version: 2.6.0
+mcp startup: no servers
+codex
+I’ll inspect the `jackson-core` metadata entry for `2.6.0`, then verify exact versioned source/test/docs URLs (preferring Maven-hosted artifacts where available) before patching only missing fields.
+exec
+/usr/bin/zsh -lc "sed -n '1,260p' /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605bexec
+/usr/bin/zsh -lc "rg -n '\"metadata-version\"\\s*:\\s*\"2\\.6\\.0\"|\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"' /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b succeeded in 51ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.6.0",
+    "tested-versions" : [
+      "2.6.0"
+    ],
+    "allowed-packages" : [
+      "com.fasterxml.jackson.core"
+    ]
+  },
+  {
+    "metadata-version" : "2.1.3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/jackson-core",
+    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.1.3/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+    "description" : "Jackson Core provides the core abstractions and streaming JSON parser and generator implementation for Jackson. It lets Java applications read and write JSON incrementally with a low-level token-based API.",
+    "tested-versions" : [
+      "2.1.3",
+ succeeded in 51ms:
+4:    "metadata-version" : "2.6.0",
+14:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+15:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+16:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.1.3/src/test",
+17:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+18:    "description" : "Jackson Core provides the core abstractions and streaming JSON parser and generator implementation for Jackson. It lets Java applications read and write JSON incrementally with a low-level token-based API.",
+codex
+I found the `2.6.0` entry is missing all requested fields, while an older `2.1.3` entry already has the same field set pattern. Next I’m verifying the exact `2.6.0` Maven and tag URLs so I can populate the missing values confidently.
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/ | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b succeeded in 51ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/fasterxml/jackson/core/jackson-core/2.6.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/fasterxml/jackson/core/jackson-core/2.6.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+exec
+/usr/bin/zsh -lc "curl -fsSLI https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar | sed -n '1,20p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605bexec
+/usr/bin/zsh -lc "curl -fsSLI https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar | sed -n '1,20p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b succeeded in 50ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 11:32:09 GMT
+content-type: application/java-archive
+content-length: 915556
+cf-ray: 9f35bea5eae61f09-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 113931
+etag: "dd8070c602747e2246c2f78f8d407114"
+last-modified: Fri, 17 Jul 2015 00:14:02 GMT
+x-checksum-md5: dd8070c602747e2246c2f78f8d407114
+x-checksum-sha1: 862653221732bf58c17ffb0bd747544a073e30ce
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+ succeeded in 51ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 11:32:09 GMT
+content-type: application/java-archive
+content-length: 271510
+cf-ray: 9f35bea5f8a9e297-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1148873
+etag: "1ea1b3ae1ca48b90e23cf7570263a9ae"
+last-modified: Fri, 17 Jul 2015 00:14:02 GMT
+x-checksum-md5: 1ea1b3ae1ca48b90e23cf7570263a9ae
+x-checksum-sha1: fbde2571c075a5314fe49fce4044779f4b51627c
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+exec
+/usr/bin/zsh -lc "curl -fsSLI https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test | sed -n '1,30p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b succeeded in 585ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 11:32:09 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"2475cc177247551d0b88a3a0b571e559"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=LrfbWQ07nNjqeLVFVxgo%2FNNE8XGfxxrFErRYPRs3Z%2BBweDE8ZH2eJrwAgPN79YX%2BfrVo%2FExGctZpELv8tyNwQnjPpOi7a1u5vwUkCEv4mJCbF6%2FhKnT0hWOy2WtvL%2BH66QHqqfy71fZ7zxPOG3yn33OZin7L15oElPkFRQWfIhPrDLWOHnck8QVLmOjjA31WWfDaxUYhbWYna63SqOflgiQk4AYeNiJPQAjdsTrqZtcB%2BJIZDIK%2BjlpYmpWC%2BQtrihJ7XLnfRkQwOEjFXbw8QQ%3D%3D--oBv51KqCGAG1Qpg4--fBPf7USaGm0pIAX5Kbk4Ig%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1761154265.1777375929; expires=Wed, 28 Apr 2027 11:32:09 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 11:32:09 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 19A6:1341EA:BCDA593:91B8D51:69F09AB9
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0.pom | sed -n '1,260p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b succeeded in 51ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion> 
+  <parent>
+    <groupId>com.fasterxml.jackson</groupId>
+    <artifactId>jackson-parent</artifactId>
+    <version>2.6.1</version>
+  </parent>
+
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-core</artifactId>
+  <name>Jackson-core</name>
+  <version>2.6.0</version>
+  <packaging>bundle</packaging>
+  <description>Core Jackson abstractions, basic JSON streaming API implementation
+  </description>
+
+  <url>https://github.com/FasterXML/jackson-core</url>
+  <scm>
+    <connection>scm:git:git@github.com:FasterXML/jackson-core.git</connection>
+    <developerConnection>scm:git:git@github.com:FasterXML/jackson-core.git</developerConnection>
+codex
+I confirmed `2.6.0` has Maven-hosted `-sources.jar` and `-javadoc.jar`, and the POM declares SCM tag `jackson-core-2.6.0`; tests are not published to Maven for this artifact, so the tagged GitHub `src/test` path is the best exact-version test URL. I’ll now patch only the missing fields in the `2.6.0` entry and keep `language` absent because this is not Kotlin/Scala-specific.
+file update
+M /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+@@ -4,2 +4,7 @@
+     "metadata-version" : "2.6.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-core",
++    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
++    "description" : "Jackson Core provides the core streaming JSON parser and generator APIs used by the Jackson ecosystem. It lets Java applications process JSON incrementally with a low-level token-based model.",
+     "tested-versions" : [
+apply_patch(auto_approved=true) exited 0 in 5ms:
+Success. Updated the following files:
+M /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+file update:
+diff --git a/metadata/com.fasterxml.jackson.core/jackson-core/index.json b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+index d293a3fbb5b7ec26f8243b077182365a6e30121e..482f1efea6e4ee517e3eff1ec05ae877ae1bb150
+--- a/metadata/com.fasterxml.jackson.core/jackson-core/index.json
++++ b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.6.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-core",
++    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
++    "description" : "Jackson Core provides the core streaming JSON parser and generator APIs used by the Jackson ecosystem. It lets Java applications process JSON incrementally with a low-level token-based model.",
+     "tested-versions" : [
+       "2.6.0"
+     ],
+
+file update:
+diff --git a/metadata/com.fasterxml.jackson.core/jackson-core/index.json b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+index d293a3fbb5b7ec26f8243b077182365a6e30121e..482f1efea6e4ee517e3eff1ec05ae877ae1bb150
+--- a/metadata/com.fasterxml.jackson.core/jackson-core/index.json
++++ b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.6.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-core",
++    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
++    "description" : "Jackson Core provides the core streaming JSON parser and generator APIs used by the Jackson ecosystem. It lets Java applications process JSON incrementally with a low-level token-based model.",
+     "tested-versions" : [
+       "2.6.0"
+     ],
+
+exec
+/usr/bin/zsh -lc "sed -n '1,70p' /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605bexec
+/usr/bin/zsh -lc 'jq . /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json >/dev/null && echo OK_JSON' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b succeeded in 51ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.6.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/jackson-core",
+    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
+    "description" : "Jackson Core provides the core streaming JSON parser and generator APIs used by the Jackson ecosystem. It lets Java applications process JSON incrementally with a low-level token-based model.",
+    "tested-versions" : [
+      "2.6.0"
+    ],
+    "allowed-packages" : [
+      "com.fasterxml.jackson.core"
+    ]
+  },
+  {
+    "metadata-version" : "2.1.3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/jackson-core",
+ succeeded in 51ms:
+OK_JSON
+file update:
+diff --git a/metadata/com.fasterxml.jackson.core/jackson-core/index.json b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+index d293a3fbb5b7ec26f8243b077182365a6e30121e..482f1efea6e4ee517e3eff1ec05ae877ae1bb150
+--- a/metadata/com.fasterxml.jackson.core/jackson-core/index.json
++++ b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.6.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-core",
++    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
++    "description" : "Jackson Core provides the core streaming JSON parser and generator APIs used by the Jackson ecosystem. It lets Java applications process JSON incrementally with a low-level token-based model.",
+     "tested-versions" : [
+       "2.6.0"
+     ],
+
+codex
+Updated the `2.6.0` entry with all missing fields in [index.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json).
+
+Set values:
+- `source-code-url`: `https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar`
+- `repository-url`: `https://github.com/FasterXML/jackson-core`
+- `test-code-url`: `https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test`
+- `documentation-url`: `https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar`
+- `description`: `Jackson Core provides the core streaming JSON parser and generator APIs used by the Jackson ecosystem. It lets Java applications process JSON incrementally with a low-level token-based model.`
+
+Language-specific check:
+- `jackson-core` is a general Java library, not Kotlin/Scala-specific, so `language` was left absent.
+
+Validation:
+- JSON is valid (`jq` check passed).
+file update:
+diff --git a/metadata/com.fasterxml.jackson.core/jackson-core/index.json b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+index d293a3fbb5b7ec26f8243b077182365a6e30121e..482f1efea6e4ee517e3eff1ec05ae877ae1bb150
+--- a/metadata/com.fasterxml.jackson.core/jackson-core/index.json
++++ b/metadata/com.fasterxml.jackson.core/jackson-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.6.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-core",
++    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar",
++    "description" : "Jackson Core provides the core streaming JSON parser and generator APIs used by the Jackson ecosystem. It lets Java applications process JSON incrementally with a low-level token-based model.",
+     "tested-versions" : [
+       "2.6.0"
+     ],
+
+tokens used
+12,510
+Updated the `2.6.0` entry with all missing fields in [index.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/metadata/com.fasterxml.jackson.core/jackson-core/index.json).
+
+Set values:
+- `source-code-url`: `https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-sources.jar`
+- `repository-url`: `https://github.com/FasterXML/jackson-core`
+- `test-code-url`: `https://github.com/FasterXML/jackson-core/tree/jackson-core-2.6.0/src/test`
+- `documentation-url`: `https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0-javadoc.jar`
+- `description`: `Jackson Core provides the core streaming JSON parser and generator APIs used by the Jackson ecosystem. It lets Java applications process JSON incrementally with a low-level token-based model.`
+
+Language-specific check:
+- `jackson-core` is a general Java library, not Kotlin/Scala-specific, so `language` was left absent.
+
+Validation:
+- JSON is valid (`jq` check passed).
+Ran agent for com.fasterxml.jackson.core:jackson-core:2.6.0 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/build/agent-url-discovery-logs/com.fasterxml.jackson.core-jackson-core-2.6.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1807-9105605b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 37s
+9 actionable tasks: 1 executed, 8 up-to-date
