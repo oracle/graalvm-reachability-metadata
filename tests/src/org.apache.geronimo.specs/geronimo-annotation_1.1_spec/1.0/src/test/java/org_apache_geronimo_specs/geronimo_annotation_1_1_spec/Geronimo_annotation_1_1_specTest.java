@@ -7,6 +7,7 @@
 package org_apache_geronimo_specs.geronimo_annotation_1_1_spec;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
@@ -14,6 +15,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Generated;
@@ -22,6 +24,12 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.annotation.Resources;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Completion;
+import javax.annotation.processing.Completions;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
@@ -29,6 +37,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.RunAs;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.annotation.sql.DataSourceDefinitions;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.TypeElement;
 
 import org.junit.jupiter.api.Test;
 
@@ -218,6 +228,38 @@ public class Geronimo_annotation_1_1_specTest {
                 .isNull();
     }
 
+    @Test
+    void abstractProcessorReadsSupportedProcessingConfigurationFromPublicAnnotations() {
+        ConfiguredProcessor processor = new ConfiguredProcessor();
+
+        assertThat(processor.isReady()).isFalse();
+        assertThat(processor.getSupportedOptions()).containsExactlyInAnyOrder("org.example.mode", "debug");
+        assertThat(processor.getSupportedAnnotationTypes())
+                .containsExactlyInAnyOrder("org.example.components.*", "org.example.Generated");
+        assertThat(processor.getSupportedSourceVersion()).isEqualTo(SourceVersion.RELEASE_8);
+        assertThat(processor.getCompletions(null, null, null, "org.example")).isEmpty();
+    }
+
+    @Test
+    void completionFactoryProducesSuggestionsWithOptionalMessages() {
+        Completion describedCompletion = Completions.of("analytics", "analytics datasource");
+        Completion plainCompletion = Completions.of("archive");
+
+        assertThat(describedCompletion.getValue()).isEqualTo("analytics");
+        assertThat(describedCompletion.getMessage()).isEqualTo("analytics datasource");
+        assertThat(describedCompletion.toString()).contains("analytics").contains("analytics datasource");
+
+        assertThat(plainCompletion.getValue()).isEqualTo("archive");
+        assertThat(plainCompletion.getMessage()).isEmpty();
+
+        assertThatThrownBy(() -> Completions.of(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Null completion strings not accepted.");
+        assertThatThrownBy(() -> Completions.of("archive", null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("Null completion strings not accepted.");
+    }
+
     private static <A extends Annotation> A annotationOnField(Class<?> declaringType, String fieldName,
             Class<A> annotationType) throws NoSuchFieldException {
         return declaringType.getDeclaredField(fieldName).getAnnotation(annotationType);
@@ -344,6 +386,21 @@ public class Geronimo_annotation_1_1_specTest {
         @Generated("generated-method")
         private String generatedMethod() {
             return generatedField;
+        }
+    }
+
+    @SupportedOptions({ "org.example.mode", "debug" })
+    @SupportedAnnotationTypes({ "org.example.components.*", "org.example.Generated" })
+    @SupportedSourceVersion(SourceVersion.RELEASE_8)
+    private static final class ConfiguredProcessor extends AbstractProcessor {
+        boolean isReady() {
+            return isInitialized();
+        }
+
+        @Override
+        public boolean process(Set<? extends TypeElement> annotations,
+                javax.annotation.processing.RoundEnvironment roundEnvironment) {
+            return false;
         }
     }
 }
