@@ -17,12 +17,45 @@ public class BshClassLoaderTest {
 
     @Test
     public void loadClassDelegatesToClassManagerBaseLoaderWhenNoLocalUrlMatches() throws ClassNotFoundException {
-        ClassManagerImpl classManager = new ClassManagerImpl();
-        classManager.setClassPath(new URL[0]);
+        RecordingClassLoader baseLoader = new RecordingClassLoader();
+        ClassManagerImpl classManager = new RecordingBaseLoaderClassManager(baseLoader);
         BshClassLoader classLoader = new BshClassLoader(classManager, new URL[0]);
 
-        Class<?> loadedClass = classLoader.loadClass(BshClassLoaderTest.class.getName(), false);
+        Class<?> loadedClass = classLoader.loadClass(BshClassLoaderTest.class.getName());
 
         assertThat(loadedClass).isEqualTo(BshClassLoaderTest.class);
+        assertThat(baseLoader.loadedClassName).isEqualTo(BshClassLoaderTest.class.getName());
+    }
+
+    private static class RecordingBaseLoaderClassManager extends ClassManagerImpl {
+
+        private final ClassLoader baseLoader;
+
+        RecordingBaseLoaderClassManager(ClassLoader baseLoader) {
+            this.baseLoader = baseLoader;
+        }
+
+        @Override
+        public ClassLoader getBaseLoader() {
+            return baseLoader;
+        }
+    }
+
+    private static class RecordingClassLoader extends ClassLoader {
+
+        private String loadedClassName;
+
+        RecordingClassLoader() {
+            super(BshClassLoaderTest.class.getClassLoader());
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            loadedClassName = name;
+            if (BshClassLoaderTest.class.getName().equals(name)) {
+                return BshClassLoaderTest.class;
+            }
+            return super.loadClass(name);
+        }
     }
 }
