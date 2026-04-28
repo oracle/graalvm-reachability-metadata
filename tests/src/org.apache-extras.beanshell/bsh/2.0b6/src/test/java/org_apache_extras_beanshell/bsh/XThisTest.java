@@ -7,6 +7,7 @@
 package org_apache_extras_beanshell.bsh;
 
 import bsh.Interpreter;
+import bsh.This;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,13 +25,14 @@ public class XThisTest {
     @Test
     public void scriptedThisCanBeExposedAsRunnableProxy() throws Exception {
         Interpreter interpreter = new Interpreter();
-
-        Object scriptedObject = interpreter.eval("""
+        interpreter.eval("""
                 run() {
                     java.lang.System.setProperty("%s", "true");
                 }
-                return (Runnable)this;
                 """.formatted(RUN_PROPERTY));
+        This scriptedThis = interpreter.getNameSpace().getThis(interpreter);
+
+        Object scriptedObject = scriptedThis.getInterface(Runnable.class);
 
         assertThat(scriptedObject).isInstanceOf(Runnable.class);
         Runnable scriptedRunnable = (Runnable) scriptedObject;
