@@ -128,6 +128,26 @@ public class Javax_transactionTest {
     }
 
     @Test
+    void transactionSynchronizationRegistryInterposedSynchronizationsRunAfterRegularSynchronizationsOnCommit()
+            throws Exception {
+        RecordingTransactionManager transactionManager = new RecordingTransactionManager();
+        TransactionSynchronizationRegistry registry = transactionManager;
+        List<String> events = new ArrayList<>();
+
+        transactionManager.begin();
+
+        transactionManager.getTransaction().registerSynchronization(new OrderedSynchronization("regular", events));
+        registry.registerInterposedSynchronization(new OrderedSynchronization("interposed", events));
+        transactionManager.commit();
+
+        assertThat(events).containsExactly(
+                "regular:beforeCompletion",
+                "interposed:beforeCompletion",
+                "regular:afterCompletion:3",
+                "interposed:afterCompletion:3");
+    }
+
+    @Test
     void transactionManagerSupportsSuspendResumeAndTimeoutConfiguration() throws Exception {
         RecordingTransactionManager transactionManager = new RecordingTransactionManager();
 
@@ -453,6 +473,26 @@ public class Javax_transactionTest {
 
         List<String> events() {
             return events;
+        }
+    }
+
+    private static final class OrderedSynchronization implements Synchronization {
+        private final String name;
+        private final List<String> events;
+
+        private OrderedSynchronization(String name, List<String> events) {
+            this.name = name;
+            this.events = events;
+        }
+
+        @Override
+        public void beforeCompletion() {
+            events.add(name + ":beforeCompletion");
+        }
+
+        @Override
+        public void afterCompletion(int status) {
+            events.add(name + ":afterCompletion:" + status);
         }
     }
 
