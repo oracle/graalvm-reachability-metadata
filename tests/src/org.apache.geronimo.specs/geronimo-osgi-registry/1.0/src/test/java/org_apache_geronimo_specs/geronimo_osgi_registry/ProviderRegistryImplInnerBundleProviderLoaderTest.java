@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,10 +70,49 @@ public class ProviderRegistryImplInnerBundleProviderLoaderTest {
         }
     }
 
+    private static final class MapDictionary<K, V> extends Dictionary<K, V> {
+        private final Map<K, V> values = new HashMap<>();
+
+        @Override
+        public int size() {
+            return values.size();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return values.isEmpty();
+        }
+
+        @Override
+        public Enumeration<K> keys() {
+            return Collections.enumeration(values.keySet());
+        }
+
+        @Override
+        public Enumeration<V> elements() {
+            return Collections.enumeration(values.values());
+        }
+
+        @Override
+        public V get(Object key) {
+            return values.get(key);
+        }
+
+        @Override
+        public V put(K key, V value) {
+            return values.put(key, value);
+        }
+
+        @Override
+        public V remove(Object key) {
+            return values.remove(key);
+        }
+    }
+
     private static final class TestBundle implements Bundle {
         private final long bundleId;
         private final String symbolicName;
-        private final Dictionary<String, String> headers = new Hashtable<>();
+        private final Dictionary<String, String> headers = new MapDictionary<>();
         private final URL serviceDefinition;
 
         private TestBundle(long bundleId, String symbolicName, URL serviceDefinition) {
