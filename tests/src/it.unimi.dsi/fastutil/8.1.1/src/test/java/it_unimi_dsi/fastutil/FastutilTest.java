@@ -8,6 +8,7 @@ package it_unimi_dsi.fastutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import it.unimi.dsi.fastutil.Hash.Strategy;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
@@ -27,7 +28,9 @@ import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -185,6 +188,35 @@ public class FastutilTest {
         assertThat(cache.removeLast()).isEqualTo("THREE");
         assertThat(cache.keySet().toIntArray()).containsExactly(1);
         assertThat(cache.values()).containsExactly("one");
+    }
+
+    @Test
+    void objectOpenCustomHashSetUsesCallerProvidedHashStrategy() {
+        Strategy<String> caseInsensitiveStrategy = new Strategy<>() {
+            @Override
+            public int hashCode(String value) {
+                return value.toLowerCase(Locale.ROOT).hashCode();
+            }
+
+            @Override
+            public boolean equals(String left, String right) {
+                return left.equalsIgnoreCase(right);
+            }
+        };
+        ObjectOpenCustomHashSet<String> headers = new ObjectOpenCustomHashSet<>(caseInsensitiveStrategy);
+        String canonicalContentType = "Content-Type";
+
+        assertThat(headers.add(canonicalContentType)).isTrue();
+        assertThat(headers.add("content-type")).isFalse();
+        assertThat(headers.addOrGet("CONTENT-TYPE")).isSameAs(canonicalContentType);
+        assertThat(headers.contains("CoNtEnT-TyPe")).isTrue();
+        assertThat(headers.size()).isEqualTo(1);
+
+        assertThat(headers.addOrGet("Accept")).isEqualTo("Accept");
+        assertThat(headers).containsExactlyInAnyOrder("Content-Type", "Accept");
+        assertThat(headers.remove("accept")).isTrue();
+        assertThat(headers.contains("ACCEPT")).isFalse();
+        assertThat(headers).containsExactly("Content-Type");
     }
 
     @Test
