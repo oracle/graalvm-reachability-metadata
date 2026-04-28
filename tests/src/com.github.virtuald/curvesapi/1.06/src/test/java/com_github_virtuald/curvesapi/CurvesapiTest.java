@@ -350,7 +350,7 @@ public class CurvesapiTest {
         assertThat(bag.remove(0)).isEqualTo("b");
         assertThat(bag.get(0)).isEqualTo("d");
 
-        Stack stack = new Stack();
+        Stack stack = new com.graphbuilder.struc.Stack();
         assertThat(stack.isEmpty()).isTrue();
         stack.push("first");
         stack.push("second");
