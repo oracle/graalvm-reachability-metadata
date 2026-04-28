@@ -10,6 +10,7 @@ import com.fasterxml.jackson.jr.ob.JacksonJrExtension;
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.ExtensionContext;
 import com.fasterxml.jackson.jr.ob.api.ReaderWriterModifier;
+import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
 import com.fasterxml.jackson.jr.ob.impl.JSONReader;
 import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,16 @@ public class ValueReaderLocatorDynamicAccessTest {
         assertThat(direction).isEqualTo(Direction.SOUTH);
     }
 
+    @Test
+    void readsRecordComponentsUsingDeclaredFieldsAndModifierProvidedEnumDefinitions() throws Exception {
+        TravelPlan plan = enumAwareJson().beanFrom(TravelPlan.class, """
+                {"direction":"go-south","steps":5}
+                """);
+
+        assertThat(plan.direction()).isEqualTo(Direction.SOUTH);
+        assertThat(plan.steps()).isEqualTo(5);
+    }
+
     private static JSON enumAwareJson(JSON.Feature... features) {
         return JSON.builder()
                 .enable(features)
@@ -44,6 +55,9 @@ public class ValueReaderLocatorDynamicAccessTest {
     public enum Direction {
         NORTH,
         SOUTH
+    }
+
+    public record TravelPlan(Direction direction, int steps) {
     }
 
     public static class EnumDefinitionExtension extends JacksonJrExtension {
@@ -59,7 +73,7 @@ public class ValueReaderLocatorDynamicAccessTest {
             if (pojoType != Direction.class) {
                 return null;
             }
-            return new POJODefinition(Direction.class, enumProps(), null, null, null);
+            return new POJODefinition(Direction.class, enumProps(), new BeanConstructors(Direction.class));
         }
 
         private static POJODefinition.Prop[] enumProps() {
@@ -70,7 +84,7 @@ public class ValueReaderLocatorDynamicAccessTest {
         }
 
         private static POJODefinition.Prop enumProp(String externalName, String enumConstantName) {
-            return new POJODefinition.Prop(externalName, enumField(enumConstantName), null, null, null, null);
+            return new POJODefinition.Prop(externalName, enumConstantName, enumField(enumConstantName), null, null, null, null);
         }
 
         private static Field enumField(String enumConstantName) {
