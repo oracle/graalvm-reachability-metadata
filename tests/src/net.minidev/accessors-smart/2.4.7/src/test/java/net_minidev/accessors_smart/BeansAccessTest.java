@@ -29,7 +29,8 @@ public class BeansAccessTest {
         assertThat(firstAccess.getIndex("message")).isZero();
         assertThatThrownBy(() -> firstAccess.set(bean, "missing", "value"))
                 .isInstanceOf(net.minidev.asm.ex.NoSuchFieldException.class)
-                .hasMessageContaining("failed to map field:missing");
+                .hasMessageContaining("missing in class")
+                .hasMessageContaining("to put value : value");
     }
 
     public static final class PreGeneratedBean {
