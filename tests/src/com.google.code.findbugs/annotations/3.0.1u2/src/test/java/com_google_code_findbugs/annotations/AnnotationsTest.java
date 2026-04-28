@@ -72,6 +72,20 @@ public class AnnotationsTest {
     }
 
     @Test
+    void findbugsOverrideTimingEnumExposesStableOrderingAndLookup() {
+        assertThat(edu.umd.cs.findbugs.annotations.When.values()).containsExactly(
+                edu.umd.cs.findbugs.annotations.When.FIRST,
+                edu.umd.cs.findbugs.annotations.When.ANYTIME,
+                edu.umd.cs.findbugs.annotations.When.LAST);
+        assertThat(edu.umd.cs.findbugs.annotations.When.valueOf("FIRST"))
+                .isSameAs(edu.umd.cs.findbugs.annotations.When.FIRST);
+        assertThat(edu.umd.cs.findbugs.annotations.When.valueOf("ANYTIME"))
+                .isSameAs(edu.umd.cs.findbugs.annotations.When.ANYTIME);
+        assertThat(edu.umd.cs.findbugs.annotations.When.valueOf("LAST"))
+                .isSameAs(edu.umd.cs.findbugs.annotations.When.LAST);
+    }
+
+    @Test
     void publicAnnotationInterfacesExposeConfiguredMembersWithoutReflection() {
         CleanupObligation cleanupObligation = cleanupObligation();
         CreatesObligation createsObligation = createsObligation();
