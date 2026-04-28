@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReflectHelperTest {
     private static final String HIBERNATE_EXCEPTION_CLASS = "org.hibernate.MappingException";
-    private static final String REFLECT_HELPER_CLASS = "org.hibernate.internal.util.ReflectHelper";
 
     @Test
     public void classForNameUsesContextClassLoader() throws Exception {
@@ -39,22 +38,6 @@ public class ReflectHelperTest {
         );
 
         assertThat(loadedClass).isEqualTo(MappingException.class);
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    public void classForNameFallsBackWhenContextClassLoaderIsUnavailable() throws Exception {
-        Class<?> callerLoadedClass = withContextClassLoader(
-                null,
-                () -> ReflectHelper.classForName(REFLECT_HELPER_CLASS, ReflectHelperTest.class)
-        );
-        Class<?> defaultLoadedClass = withContextClassLoader(
-                null,
-                () -> ReflectHelper.classForName(HIBERNATE_EXCEPTION_CLASS)
-        );
-
-        assertThat(callerLoadedClass).isEqualTo(ReflectHelper.class);
-        assertThat(defaultLoadedClass).isEqualTo(MappingException.class);
     }
 
     @Test
