@@ -115,6 +115,22 @@ public class Apiguardian_apiTest {
         assertThat(annotation.annotationType()).isSameAs(API.class);
     }
 
+    @Test
+    void apiAnnotationRetainsConfiguredInterfaceMetadataAtRuntime() {
+        API annotation = PublishedExtensionPoint.class.getAnnotation(API.class);
+
+        assertThat(annotation).isNotNull();
+        assertThat(annotation.status()).isSameAs(API.Status.EXPERIMENTAL);
+        assertThat(annotation.since()).isEqualTo("initial-public-contract");
+        assertThat(annotation.consumers()).containsExactly("library-authors", "extension-authors");
+        assertThat(annotation.annotationType()).isSameAs(API.class);
+
+        String[] consumers = annotation.consumers();
+        consumers[0] = "changed";
+
+        assertThat(annotation.consumers()).containsExactly("library-authors", "extension-authors");
+    }
+
     private static API api(API.Status status, String since, String... consumers) {
         return new API() {
             @Override
@@ -176,6 +192,13 @@ public class Apiguardian_apiTest {
 
     @API(status = API.Status.MAINTAINED)
     private static final class DefaultAudienceApi {
+    }
+
+    @API(status = API.Status.EXPERIMENTAL, since = "initial-public-contract", consumers = {
+            "library-authors", "extension-authors"
+    })
+    private interface PublishedExtensionPoint {
+        String configure(String option);
     }
 
     @API(status = API.Status.STABLE, since = "1.1.2", consumers = "annotation-authors")
