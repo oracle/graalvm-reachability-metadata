@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,8 +25,9 @@ import sun.tools.javac.Main;
 
 public class Javac12Test {
     @BeforeEach
-    void resetClassicCompiler() {
+    void resetClassicCompiler() throws ReflectiveOperationException {
         Main.reset();
+        resetLegacyClassLiteralCache();
     }
 
     @Test
@@ -70,6 +72,18 @@ public class Javac12Test {
         javac.setIncludejavaruntime(false);
         javac.setCompileList(sourceFile);
         return javac;
+    }
+
+    private static void resetLegacyClassLiteralCache() throws ReflectiveOperationException {
+        clearClassLiteralCache("class$java$io$OutputStream");
+        clearClassLiteralCache("class$java$lang$String");
+        clearClassLiteralCache("array$Ljava$lang$String");
+    }
+
+    private static void clearClassLiteralCache(String fieldName) throws ReflectiveOperationException {
+        Field field = Javac12.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(null, null);
     }
 
     private static String classicGreetingSource() {
