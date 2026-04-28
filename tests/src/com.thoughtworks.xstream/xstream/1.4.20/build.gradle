@@ -18,6 +18,7 @@ dependencies {
 tasks.withType(Test).configureEach {
     jvmArgs += [
         "--add-opens=java.base/java.io=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
         "--add-opens=java.base/java.util=ALL-UNNAMED"
     ]
 }
@@ -35,6 +36,7 @@ graalvmNative {
         all {
             buildArgs.addAll([
                 '--add-opens=java.base/java.io=ALL-UNNAMED',
+                '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
                 '--add-opens=java.base/java.util=ALL-UNNAMED',
                 '--initialize-at-run-time=com.thoughtworks.xstream.core.JVM'
             ])
