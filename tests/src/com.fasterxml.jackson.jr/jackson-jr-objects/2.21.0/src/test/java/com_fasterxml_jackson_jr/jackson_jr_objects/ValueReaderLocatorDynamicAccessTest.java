@@ -10,12 +10,17 @@ import com.fasterxml.jackson.jr.ob.JacksonJrExtension;
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.ExtensionContext;
 import com.fasterxml.jackson.jr.ob.api.ReaderWriterModifier;
+import com.fasterxml.jackson.jr.ob.api.ValueReader;
 import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
+import com.fasterxml.jackson.jr.ob.impl.BeanReader;
 import com.fasterxml.jackson.jr.ob.impl.JSONReader;
 import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
+import com.fasterxml.jackson.jr.ob.impl.ValueReaderLocator;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,6 +50,22 @@ public class ValueReaderLocatorDynamicAccessTest {
         assertThat(plan.steps()).isEqualTo(5);
     }
 
+    @Test
+    void resolvesRecordReadersUsingDeclaredRecordFields() {
+        BeanReader beanReader = new InspectableValueReaderLocator(new EnumDefinitionModifier())
+                .resolveBeanForDeser(TravelPlan.class, travelPlanDefinition());
+
+        assertThat(beanReader.propertiesByName()).containsOnlyKeys("direction", "steps");
+    }
+
+    @Test
+    void createsEnumReadersFromModifierProvidedDefinitionsDirectly() {
+        ValueReader enumReader = new InspectableValueReaderLocator(new EnumDefinitionModifier())
+                .createEnumReader(Direction.class);
+
+        assertThat(enumReader).isNotNull();
+    }
+
     private static JSON enumAwareJson(JSON.Feature... features) {
         return JSON.builder()
                 .enable(features)
@@ -65,6 +86,16 @@ public class ValueReaderLocatorDynamicAccessTest {
         protected void register(ExtensionContext ctxt) {
             ctxt.insertModifier(new EnumDefinitionModifier());
         }
+    }
+
+    private static POJODefinition travelPlanDefinition() {
+        BeanConstructors constructors = new BeanConstructors(TravelPlan.class)
+                .addRecordConstructor(BeanPropertyIntrospector.derivePropertiesFromRecordConstructor(
+                        TravelPlan.class, new LinkedHashMap<String, String>(), name -> name));
+        return new POJODefinition(TravelPlan.class, new POJODefinition.Prop[] {
+                new POJODefinition.Prop("direction", "direction", null, null, null, null, null),
+                new POJODefinition.Prop("steps", "steps", null, null, null, null, null)
+        }, constructors);
     }
 
     public static class EnumDefinitionModifier extends ReaderWriterModifier {
@@ -93,6 +124,20 @@ public class ValueReaderLocatorDynamicAccessTest {
             } catch (NoSuchFieldException ex) {
                 throw new IllegalStateException(ex);
             }
+        }
+    }
+
+    public static final class InspectableValueReaderLocator extends ValueReaderLocator {
+        public InspectableValueReaderLocator(ReaderWriterModifier readerModifier) {
+            super(null, readerModifier);
+        }
+
+        public BeanReader resolveBeanForDeser(Class<?> raw, POJODefinition beanDef) {
+            return _resolveBeanForDeser(raw, beanDef);
+        }
+
+        public ValueReader createEnumReader(Class<?> enumType) {
+            return enumReader(enumType);
         }
     }
 }
