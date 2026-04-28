@@ -6,86 +6,95 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import java.util.List;
-
-import com.fasterxml.jackson.jr.ob.api.CollectionBuilder;
-import com.fasterxml.jackson.jr.ob.api.MapBuilder;
-import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
-import com.fasterxml.jackson.jr.ob.impl.JSONReader;
-import com.fasterxml.jackson.jr.ob.impl.JSONWriter;
-import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
+import com.fasterxml.jackson.jr.ob.JSON;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyIntrospectorDynamicAccessTest {
-    private static final BeanPropertyIntrospector INTROSPECTOR = BeanPropertyIntrospector.instance();
-    private static final JSONReader JSON_READER = new JSONReader(CollectionBuilder.defaultImpl(), MapBuilder.defaultImpl());
-    private static final JSONWriter JSON_WRITER = new JSONWriter();
+    private static final JSON JSON_WITH_FIELD_MATCHING_GETTERS = JSON.builder()
+            .enable(JSON.Feature.USE_FIELD_MATCHING_GETTERS)
+            .build();
 
     @Test
-    void collectsDeclaredConstructorsForDeserialization() {
-        POJODefinition definition = INTROSPECTOR.pojoDefinitionForDeserialization(JSON_READER, IntrospectedBean.class);
+    void deserializesBeansUsingDeclaredConstructors() throws Exception {
+        ConstructorIntrospectedBean fromObject = JSON.std.beanFrom(ConstructorIntrospectedBean.class, "{\"count\":4}");
+        ConstructorIntrospectedBean fromString = JSON.std.beanFrom(ConstructorIntrospectedBean.class, "\"Ada\"");
+        ConstructorIntrospectedBean fromNumber = JSON.std.beanFrom(ConstructorIntrospectedBean.class, "7");
 
-        assertThat(definition.defaultCtor).isNotNull();
-        assertThat(definition.stringCtor).isNotNull();
-        assertThat(definition.longCtor).isNotNull();
-        assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
+        assertThat(fromObject.getCreationPath()).isEqualTo("default");
+        assertThat(fromObject.count).isEqualTo(4);
+        assertThat(fromString.getCreationPath()).isEqualTo("string");
+        assertThat(fromString.getName()).isEqualTo("Ada");
+        assertThat(fromNumber.getCreationPath()).isEqualTo("long");
+        assertThat(fromNumber.count).isEqualTo(7);
     }
 
     @Test
-    void collectsDeclaredFieldsAndMethodsForSerialization() {
-        POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, IntrospectedBean.class);
+    void serializesAndDeserializesBeansUsingDeclaredFieldsAndMethods() throws Exception {
+        FieldAndMethodIntrospectedBean bean = JSON_WITH_FIELD_MATCHING_GETTERS.beanFrom(
+                FieldAndMethodIntrospectedBean.class,
+                "{\"visible\":5,\"nickname\":\"Bob\",\"active\":false}");
 
-        assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
+        assertThat(bean.visible).isEqualTo(5);
+        assertThat(bean.nickname()).isEqualTo("Bob");
+        assertThat(bean.isActive()).isFalse();
 
-        POJODefinition.Prop visible = property(definition, "visible");
-        POJODefinition.Prop name = property(definition, "name");
-        POJODefinition.Prop active = property(definition, "active");
+        String json = JSON_WITH_FIELD_MATCHING_GETTERS.asString(bean);
 
-        assertThat(visible.field).isNotNull();
-        assertThat(name.getter).isNotNull();
-        assertThat(name.setter).isNotNull();
-        assertThat(active.isGetter).isNotNull();
-        assertThat(active.setter).isNotNull();
+        assertThat(json).isEqualTo("{\"active\":false,\"nickname\":\"Bob\",\"visible\":5}");
+        assertThat(json).doesNotContain("ignoredStatic", "IGNORED_CONSTANT");
     }
 
-    private static List<String> propertyNames(POJODefinition definition) {
-        return definition.getProperties().stream().map(prop -> prop.name).toList();
-    }
+    public static final class ConstructorIntrospectedBean {
+        public int count;
 
-    private static POJODefinition.Prop property(POJODefinition definition, String name) {
-        return definition.getProperties().stream()
-                .filter(prop -> prop.name.equals(name))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    static class BaseBean {
-        public int visible;
-    }
-
-    static final class IntrospectedBean extends BaseBean {
+        private final String creationPath;
         private String name;
-        private boolean active;
 
-        private IntrospectedBean() {
+        public ConstructorIntrospectedBean() {
+            creationPath = "default";
         }
 
-        private IntrospectedBean(String name) {
+        public ConstructorIntrospectedBean(String name) {
+            creationPath = "string";
             this.name = name;
         }
 
-        private IntrospectedBean(long visible) {
-            this.visible = (int) visible;
+        public ConstructorIntrospectedBean(long count) {
+            creationPath = "long";
+            this.count = (int) count;
+        }
+
+        public String getCreationPath() {
+            return creationPath;
         }
 
         public String getName() {
             return name;
         }
+    }
 
-        private void setName(String name) {
-            this.name = name;
+    public static class FieldBaseBean {
+        public int visible;
+    }
+
+    public static final class FieldAndMethodIntrospectedBean extends FieldBaseBean {
+        public static int ignoredStatic = 12;
+        public static final int IGNORED_CONSTANT = 13;
+
+        private String nickname;
+        private boolean active;
+
+        public FieldAndMethodIntrospectedBean() {
+        }
+
+        public String nickname() {
+            return nickname;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
         }
 
         public boolean isActive() {
