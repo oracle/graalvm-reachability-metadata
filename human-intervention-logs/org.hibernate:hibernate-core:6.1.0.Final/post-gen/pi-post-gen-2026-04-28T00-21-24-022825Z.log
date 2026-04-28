@@ -1,0 +1,13 @@
+Done.
+
+Changed:
+- `tests/src/org.hibernate/hibernate-core/6.1.0.Final/src/test/java/org_hibernate/hibernate_core/ReflectHelperTest.java`
+- `post-gen-interventions/org.hibernate_hibernate-core_6.1.0.Final.md`
+
+What I found:
+- Removed `classForNameFallsBackWhenContextClassLoaderIsUnavailable()` as a non-metadata failure. It depends on JVM-style fallback class loading with a `null` context class loader, which fails in native-image with `ClassNotFoundException`, not a metadata error.
+- Kept `StatefulPersistenceContextTest.serializesPopulatedPersistenceContextSections()` because it is still metadata-related. The original failure showed missing serialization reflection for `java.lang.Long.serialVersionUID`, and after removing the non-metadata test, rerunning still leaves that test failing deeper in deserialization with `ClassNotFoundException: org.hibernate.collection.spi.PersistentBag`.
+
+Verification:
+- Ran `./gradlew test -Pcoordinates=org.hibernate:hibernate-core:6.1.0.Final --stacktrace`
+- Result: only `StatefulPersistenceContextTest.serializesPopulatedPersistenceContextSections()` remains failing.
