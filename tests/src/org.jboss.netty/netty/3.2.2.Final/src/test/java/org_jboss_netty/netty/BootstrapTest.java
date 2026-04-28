@@ -23,24 +23,27 @@ public class BootstrapTest {
     void acceptsOrderedMapImplementationsWithPublicNoArgConstructors() {
         ClientBootstrap bootstrap = new ClientBootstrap();
         InsertionOrderPipelineMap pipelineMap = new InsertionOrderPipelineMap();
-        pipelineMap.put("first", new NoopHandler());
-        pipelineMap.put("second", new NoopHandler());
+        pipelineMap.delegate.put("first", new NoopHandler());
+        pipelineMap.delegate.put("second", new NoopHandler());
 
-        bootstrap.setPipelineAsMap(pipelineMap);
+        @SuppressWarnings("unchecked")
+        Map<String, ChannelHandler> typedPipelineMap = (Map<String, ChannelHandler>) (Map<?, ?>) pipelineMap;
+        bootstrap.setPipelineAsMap(typedPipelineMap);
 
         assertThat(bootstrap.getPipelineAsMap()).containsOnlyKeys("first", "second");
     }
 
-    public static final class InsertionOrderPipelineMap extends AbstractMap<String, ChannelHandler> {
-        private final LinkedHashMap<String, ChannelHandler> delegate = new LinkedHashMap<String, ChannelHandler>();
+    @SuppressWarnings("rawtypes")
+    public static final class InsertionOrderPipelineMap extends AbstractMap {
+        private final LinkedHashMap<Object, Object> delegate = new LinkedHashMap<Object, Object>();
 
         @Override
-        public ChannelHandler put(String key, ChannelHandler value) {
+        public Object put(Object key, Object value) {
             return delegate.put(key, value);
         }
 
         @Override
-        public Set<Map.Entry<String, ChannelHandler>> entrySet() {
+        public Set<Map.Entry<Object, Object>> entrySet() {
             return delegate.entrySet();
         }
     }
