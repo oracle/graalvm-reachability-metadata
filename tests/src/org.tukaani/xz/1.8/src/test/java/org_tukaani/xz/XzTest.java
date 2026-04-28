@@ -38,6 +38,7 @@ import org.tukaani.xz.X86Options;
 import org.tukaani.xz.XZ;
 import org.tukaani.xz.XZInputStream;
 import org.tukaani.xz.XZOutputStream;
+import org.tukaani.xz.check.Check;
 
 public class XzTest {
     @Test
@@ -237,6 +238,50 @@ public class XzTest {
                 ArrayCache.getDummyCache())) {
             assertThat(readWithSmallBuffers(decoded)).containsExactly(machineCode);
         }
+    }
+
+    @Test
+    void standaloneIntegrityChecksProduceStandardValuesAndCanBeReused() throws Exception {
+        byte[] data = "123456789".getBytes(StandardCharsets.US_ASCII);
+
+        Check noCheck = Check.getInstance(XZ.CHECK_NONE);
+        assertThat(noCheck.getName()).isEqualTo("None");
+        assertThat(noCheck.getSize()).isZero();
+        noCheck.update(data);
+        assertThat(noCheck.finish()).isEmpty();
+
+        Check crc32 = Check.getInstance(XZ.CHECK_CRC32);
+        assertThat(crc32.getName()).isEqualTo("CRC32");
+        assertThat(crc32.getSize()).isEqualTo(4);
+        crc32.update(data, 0, 4);
+        crc32.update(data, 4, data.length - 4);
+        assertThat(crc32.finish()).containsExactly(0x26, 0x39, (byte) 0xF4, (byte) 0xCB);
+        crc32.update(data);
+        assertThat(crc32.finish()).containsExactly(0x26, 0x39, (byte) 0xF4, (byte) 0xCB);
+
+        Check crc64 = Check.getInstance(XZ.CHECK_CRC64);
+        assertThat(crc64.getName()).isEqualTo("CRC64");
+        assertThat(crc64.getSize()).isEqualTo(8);
+        crc64.update(data, 0, 5);
+        crc64.update(data, 5, data.length - 5);
+        assertThat(crc64.finish()).containsExactly(
+                (byte) 0xFA, 0x39, 0x19, (byte) 0xDF,
+                (byte) 0xBB, (byte) 0xC9, 0x5D, (byte) 0x99);
+
+        Check sha256 = Check.getInstance(XZ.CHECK_SHA256);
+        assertThat(sha256.getName()).isEqualTo("SHA-256");
+        assertThat(sha256.getSize()).isEqualTo(32);
+        sha256.update(data, 0, 6);
+        sha256.update(data, 6, data.length - 6);
+        assertThat(sha256.finish()).containsExactly(
+                0x15, (byte) 0xE2, (byte) 0xB0, (byte) 0xD3,
+                (byte) 0xC3, 0x38, (byte) 0x91, (byte) 0xEB,
+                (byte) 0xB0, (byte) 0xF1, (byte) 0xEF, 0x60,
+                (byte) 0x9E, (byte) 0xC4, 0x19, 0x42,
+                0x0C, 0x20, (byte) 0xE3, 0x20,
+                (byte) 0xCE, (byte) 0x94, (byte) 0xC6, 0x5F,
+                (byte) 0xBC, (byte) 0x8C, 0x33, 0x12,
+                0x44, (byte) 0x8E, (byte) 0xB2, 0x25);
     }
 
     @Test
