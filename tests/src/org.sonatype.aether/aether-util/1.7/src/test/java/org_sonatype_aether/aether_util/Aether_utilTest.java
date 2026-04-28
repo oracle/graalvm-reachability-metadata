@@ -37,6 +37,8 @@ import org.sonatype.aether.repository.Authentication;
 import org.sonatype.aether.repository.Proxy;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.repository.RepositoryPolicy;
+import org.sonatype.aether.repository.WorkspaceReader;
+import org.sonatype.aether.repository.WorkspaceRepository;
 import org.sonatype.aether.transfer.TransferEvent;
 import org.sonatype.aether.util.ChecksumUtils;
 import org.sonatype.aether.util.DefaultRepositoryCache;
@@ -67,6 +69,7 @@ import org.sonatype.aether.util.listener.DefaultRepositoryEvent;
 import org.sonatype.aether.util.listener.DefaultTransferEvent;
 import org.sonatype.aether.util.listener.DefaultTransferResource;
 import org.sonatype.aether.util.metadata.DefaultMetadata;
+import org.sonatype.aether.util.repository.ChainedWorkspaceReader;
 import org.sonatype.aether.util.repository.DefaultAuthenticationSelector;
 import org.sonatype.aether.util.repository.DefaultMirrorSelector;
 import org.sonatype.aether.util.repository.DefaultProxySelector;
@@ -376,6 +379,27 @@ public class Aether_utilTest {
     }
 
     @Test
+    void chainedWorkspaceReaderFindsArtifactsAndVersionsAcrossReaders() {
+        Artifact artifact = new DefaultArtifact("org.example:workspace-demo:jar:1.0");
+        File primaryFile = new File("target/workspace/primary-demo.jar");
+        File secondaryFile = new File("target/workspace/secondary-demo.jar");
+        WorkspaceReader missing = new TestWorkspaceReader("missing", null, Collections.singletonList("0.9"));
+        WorkspaceReader primary = new TestWorkspaceReader("primary", primaryFile, Arrays.asList("1.0", "1.1"));
+        WorkspaceReader secondary = new TestWorkspaceReader("secondary", secondaryFile, Arrays.asList("1.1", "2.0"));
+        ChainedWorkspaceReader chain = new ChainedWorkspaceReader(missing, primary, secondary);
+        List<String> versions = chain.findVersions(artifact);
+
+        assertThat(chain.findArtifact(artifact)).isEqualTo(primaryFile);
+        assertThat(versions).containsExactly("0.9", "1.0", "1.1", "2.0");
+        assertThatThrownBy(() -> versions.add("3.0")).isInstanceOf(UnsupportedOperationException.class);
+        assertThat(chain.getRepository().getId()).isEqualTo("workspace");
+        assertThat(chain.getRepository().getContentType()).isEqualTo("missing+primary+secondary");
+        assertThat(ChainedWorkspaceReader.newInstance(primary, null)).isSameAs(primary);
+        assertThat(ChainedWorkspaceReader.newInstance(null, secondary)).isSameAs(secondary);
+        assertThat(ChainedWorkspaceReader.newInstance(primary, secondary).findArtifact(artifact)).isEqualTo(primaryFile);
+    }
+
+    @Test
     void listenersEventsAndChecksumUtilitiesExposeTransferRepositoryAndDigestState() throws IOException {
         Path payload = Files.createTempFile("aether-util-payload", ".txt");
         Path checksum = Files.createTempFile("aether-util-checksum", ".sha1");
@@ -440,6 +464,33 @@ public class Aether_utilTest {
 
     private static RemoteRepository centralRepository() {
         return new RemoteRepository("central", "default", "https://repo1.maven.org/maven2");
+    }
+
+    private static final class TestWorkspaceReader implements WorkspaceReader {
+        private final WorkspaceRepository repository;
+        private final File artifactFile;
+        private final List<String> versions;
+
+        private TestWorkspaceReader(String contentType, File artifactFile, List<String> versions) {
+            this.repository = new WorkspaceRepository(contentType, contentType);
+            this.artifactFile = artifactFile;
+            this.versions = versions;
+        }
+
+        @Override
+        public WorkspaceRepository getRepository() {
+            return repository;
+        }
+
+        @Override
+        public File findArtifact(Artifact artifact) {
+            return artifactFile;
+        }
+
+        @Override
+        public List<String> findVersions(Artifact artifact) {
+            return versions;
+        }
     }
 
     private static final class TestCollectionContext implements DependencyCollectionContext {
