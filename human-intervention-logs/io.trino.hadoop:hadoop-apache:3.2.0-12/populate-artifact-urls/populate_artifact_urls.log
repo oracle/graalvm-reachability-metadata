@@ -1,0 +1,475 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd5a4-e1e5-7f90-abfd-59d9e09fe0da
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.trino.hadoop:hadoop-apache:3.2.0-12
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.2.0-12".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f/metadata/io.trino.hadoop/hadoop-apache/index.json
+- Entry selector: "metadata-version" = "3.2.0-12"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.2.0-12".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-sources.jar
+- repository-url: https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12
+- test-code-url: https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12/src/test
+- documentation-url: https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-javadoc.jar
+- description: hadoop-apache is Trino's shaded distribution of Apache Hadoop. It packages Hadoop 3.2.0 and relocates selected transitive dependencies under Trino's internal namespace to reduce dependency conflicts for Trino integrations.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.2.0-12
+- Entry test-version: 3.2.0-12
+codex
+I’ll inspect the existing metadata entry first so I can respect the “fill only missing fields” rule and avoid changing populated values.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.2.0-12\")' metadata/io.trino.hadoop/hadoop-apache/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.2.0-12",
+  "source-code-url": "https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-sources.jar",
+  "repository-url": "https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12",
+  "test-code-url": "https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-javadoc.jar",
+  "description": "hadoop-apache is Trino's shaded distribution of Apache Hadoop. It packages Hadoop 3.2.0 and relocates selected transitive dependencies under Trino's internal namespace to reduce dependency conflicts for Trino integrations.",
+  "tested-versions": [
+    "3.2.0-12"
+  ],
+  "allowed-packages": [
+    "io.trino.hadoop",
+    "org.apache.hadoop"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 0ms:
+?? metadata/io.trino.hadoop/
+?? tests/src/io.trino.hadoop/
+
+web search: 
+web search: io.trino.hadoop hadoop-apache 3.2.0-12 Maven Central sources javadoc repository
+web search: 
+web search: https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/io.trino.hadoop/hadoop-apache
+web search: 
+web search: central.sonatype.com artifact io.trino.hadoop hadoop-apache 3.2.0-12
+codex
+The entry is already populated for every requested URL and the description; only `language` is absent. I’m checking the published POM/source metadata now to decide whether that absence should remain.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12.pom | sed -n '1,220p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>oss-parent</artifactId>
+    <groupId>org.sonatype.oss</groupId>
+    <version>7</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.trino.hadoop</groupId>
+  <artifactId>hadoop-apache</artifactId>
+  <name>hadoop-apache</name>
+  <version>3.2.0-12</version>
+  <description>Shaded version of Apache Hadoop for Trino</description>
+  <url>https://github.com/trinodb/trino-hadoop-apache</url>
+  <inceptionYear>2013</inceptionYear>
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git://github.com/trinodb/trino-hadoop-apache.git</connection>
+    <developerConnection>scm:git:git://github.com/trinodb/trino-hadoop-apache.git</developerConnection>
+    <tag>3.2.0-12</tag>
+    <url>https://github.com/trinodb/trino-hadoop-apache</url>
+  </scm>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.0.0-M1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+          <configuration>
+            <mavenExecutorId>forked-path</mavenExecutorId>
+            <pushChanges>false</pushChanges>
+            <localCheckout>true</localCheckout>
+            <useReleaseProfile>false</useReleaseProfile>
+            <preparationGoals>clean install</preparationGoals>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <tagNameFormat>@{project.version}</tagNameFormat>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M2</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <rules>
+            <requireUpperBoundDeps />
+            <banDuplicatePomDependencyVersions />
+            <requireMavenVersion>
+              <version>3.5.0</version>
+            </requireMavenVersion>
+            <requireJavaVersion>
+              <version>${project.build.targetJdk}</version>
+            </requireJavaVersion>
+          </rules>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <source>${project.build.targetJdk}</source>
+          <target>${project.build.targetJdk}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <configuration>
+          <trimStackTrace>false</trimStackTrace>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <source>${project.build.targetJdk}</source>
+          <quiet>true</quiet>
+          <doclint>-missing</doclint>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.6</version>
+        <configuration>
+          <useAgent>true</useAgent>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createSourcesJar>true</createSourcesJar>
+              <shadeSourcesContent>true</shadeSourcesContent>
+              <dependencyReducedPomLocation>${project.build.directory}/pom.xml</dependencyReducedPomLocation>
+              <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+              <transformers>
+                <transformer />
+              </transformers>
+              <relocations>
+                <relocation>
+                  <pattern>org.iq80.leveldb</pattern>
+                  <shadedPattern>${shadeBase}.org.iq80.leveldb</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.http</pattern>
+                  <shadedPattern>${shadeBase}.org.apache.http</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>mozilla</pattern>
+                  <shadedPattern>${shadeBase}.org.apache.http.mozilla</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>io.netty</pattern>
+                  <shadedPattern>${shadeBase}.io.netty</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.eclipse.jetty</pattern>
+                  <shadedPattern>${shadeBase}.org.eclipse.jetty</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.microsoft.azure</pattern>
+                  <shadedPattern>${shadeBase}.com.microsoft.azure</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.avro</pattern>
+                  <shadedPattern>${shadeBase}.org.apache.avro</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.commons</pattern>
+                  <shadedPattern>${shadeBase}.org.apache.commons</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.kerby</pattern>
+                  <shadedPattern>${shadeBase}.org.apache.kerby</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.htrace</pattern>
+                  <shadedPattern>${shadeBase}.htrace</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.wildfly.openssl</pattern>
+                  <shadedPattern>${shadeBase}.org.wildfly.openssl</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.common</pattern>
+                  <shadedPattern>${shadeBase}.com.google.common</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.protobuf</pattern>
+                  <shadedPattern>${shadeBase}.com.google.protobuf</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.gson</pattern>
+                  <shadedPattern>${shadeBase}.com.google.gson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.re2j</pattern>
+                  <shadedPattern>${shadeBase}.com.google.re2j</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.fasterxml.jackson</pattern>
+                  <shadedPattern>${shadeBase}.com.fasterxml.jackson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.jackson</pattern>
+                  <shadedPattern>${shadeBase}.org.codehaus.jackson</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.ctc.wstx</pattern>
+                  <shadedPattern>${shadeBase}.com.ctc.wstx</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.codehaus.stax2</pattern>
+                  <shadedPattern>${shadeBase}.org.codehaus.stax2</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.log4j</pattern>
+                  <shadedPattern>${shadeBase}.org.apache.log4j</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.slf4j</pattern>
+                  <shadedPattern>${shadeBase}.org.slf4j</shadedPattern>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-sources.jar' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 19:51:13 GMT
+content-type: application/java-archive
+content-length: 23644181
+cf-ray: 9f3899b4ab70df5e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 46262
+etag: "7351d23b5f6cc49d4ec5cc0cf67dcbab"
+last-modified: Tue, 08 Jun 2021 01:59:27 GMT
+x-checksum-md5: 7351d23b5f6cc49d4ec5cc0cf67dcbab
+x-checksum-sha1: d251d74a9b46c63bf59fdc32c965e0e29437f642
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-javadoc.jar' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 19:51:13 GMT
+content-type: application/java-archive
+content-length: 588247
+cf-ray: 9f3899b4e9a72ff1-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 47
+etag: "bd36be2a463119b7b19174b05267e146"
+last-modified: Tue, 08 Jun 2021 01:59:26 GMT
+x-checksum-md5: bd36be2a463119b7b19174b05267e146
+x-checksum-sha1: 431dc696a912a7b30ce5256d76c8952718e194ef
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12.pom | rg -i "kotlin|scala|maven.compiler|targetJdk|project.build.targetJdk|language" -n' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/ | rg "(sources|javadoc|test|tests).*jar|pom" -n' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 0ms:
+22:<a href="hadoop-apache-3.2.0-12-javadoc.jar" title="hadoop-apache-3.2.0-12-javadoc.jar">hadoop-apache-3.2.0-12-javadoc.jar</a>                2021-06-08 01:59    588247      
+23:<a href="hadoop-apache-3.2.0-12-javadoc.jar.asc" title="hadoop-apache-3.2.0-12-javadoc.jar.asc">hadoop-apache-3.2.0-12-javadoc.jar.asc</a>            2021-06-08 01:59       488      
+24:<a href="hadoop-apache-3.2.0-12-javadoc.jar.md5" title="hadoop-apache-3.2.0-12-javadoc.jar.md5">hadoop-apache-3.2.0-12-javadoc.jar.md5</a>            2021-06-08 01:59        32      
+25:<a href="hadoop-apache-3.2.0-12-javadoc.jar.sha1" title="hadoop-apache-3.2.0-12-javadoc.jar.sha1">hadoop-apache-3.2.0-12-javadoc.jar.sha1</a>           2021-06-08 01:59        40      
+26:<a href="hadoop-apache-3.2.0-12-sources.jar" title="hadoop-apache-3.2.0-12-sources.jar">hadoop-apache-3.2.0-12-sources.jar</a>                2021-06-08 01:59  23644181      
+27:<a href="hadoop-apache-3.2.0-12-sources.jar.asc" title="hadoop-apache-3.2.0-12-sources.jar.asc">hadoop-apache-3.2.0-12-sources.jar.asc</a>            2021-06-08 01:59       488      
+28:<a href="hadoop-apache-3.2.0-12-sources.jar.md5" title="hadoop-apache-3.2.0-12-sources.jar.md5">hadoop-apache-3.2.0-12-sources.jar.md5</a>            2021-06-08 01:59        32      
+29:<a href="hadoop-apache-3.2.0-12-sources.jar.sha1" title="hadoop-apache-3.2.0-12-sources.jar.sha1">hadoop-apache-3.2.0-12-sources.jar.sha1</a>           2021-06-08 01:59        40      
+34:<a href="hadoop-apache-3.2.0-12.pom" title="hadoop-apache-3.2.0-12.pom">hadoop-apache-3.2.0-12.pom</a>                        2021-06-08 01:59     14392      
+35:<a href="hadoop-apache-3.2.0-12.pom.asc" title="hadoop-apache-3.2.0-12.pom.asc">hadoop-apache-3.2.0-12.pom.asc</a>                    2021-06-08 01:59       488      
+36:<a href="hadoop-apache-3.2.0-12.pom.md5" title="hadoop-apache-3.2.0-12.pom.md5">hadoop-apache-3.2.0-12.pom.md5</a>                    2021-06-08 01:59        32      
+37:<a href="hadoop-apache-3.2.0-12.pom.sha1" title="hadoop-apache-3.2.0-12.pom.sha1">hadoop-apache-3.2.0-12.pom.sha1</a>                   2021-06-08 01:59        40      
+
+ succeeded in 0ms:
+72:              <version>${project.build.targetJdk}</version>
+78:        <artifactId>maven-compiler-plugin</artifactId>
+81:          <source>${project.build.targetJdk}</source>
+82:          <target>${project.build.targetJdk}</target>
+108:          <source>${project.build.targetJdk}</source>
+341:    <project.build.targetJdk>1.8</project.build.targetJdk>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12/src/test' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 415ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 19:51:18 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"07dace26fbcd5080375f8072531583f3"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=0G1NxsxlHIAdnIBYvwf8p1VoV0KeqP245vOxo1d%2FhR2%2FhII3VCzjcl2pBXWXUW70tDyHMlRlcl3d20LTM4YsdsOuP0v%2FmvEr%2FnFuPlaTkbKY32GwoYcbvBDLOih0pP041LlycHawy%2BkhybbAoyciqPuhVV6B8kR3tk3iB7xB3hTYfvwe4WSAZph3Wnsb4SkdWvZCJZdp92bZvmNrpVempUmQcZdIMBQZZrBp%2F6EnEaDnHhWZHrivnAarikGBoUrssy1XCJjFuF4p5ODQV0Uu0A%3D%3D--9DSH6iu2bb4yCcK0--HOIzEPyQynJuUaxePqwbog%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.491505640.1777405878; expires=Wed, 28 Apr 2027 19:51:18 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 19:51:18 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:1ABF9C:22CB521:198A098:69F10FB6
+
+
+web search: 
+web search: repo1.maven.org io.trino.hadoop hadoop-apache 3.2.0-12 sources javadoc POM
+web search: 
+web search: https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/
+codex
+The published POM identifies this as a Java 8 Maven artifact and does not indicate Kotlin or Scala, so the missing `language` field should stay absent. Maven Central has the versioned sources and javadoc jars, and there is no Maven test jar listed for this version, so the existing GitHub tag test URL is the right fallback.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.trino.hadoop/hadoop-apache/index.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.2.0-12\") | {\"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", description, language}' metadata/io.trino.hadoop/hadoop-apache/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f
+ succeeded in 0ms:
+{
+  "source-code-url": "https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-sources.jar",
+  "repository-url": "https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12",
+  "test-code-url": "https://github.com/trinodb/trino-hadoop-apache/tree/3.2.0-12/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/hadoop-apache-3.2.0-12-javadoc.jar",
+  "description": "hadoop-apache is Trino's shaded distribution of Apache Hadoop. It packages Hadoop 3.2.0 and relocates selected transitive dependencies under Trino's internal namespace to reduce dependency conflicts for Trino integrations.",
+  "language": null
+}
+
+web search: 
+web search: Maven Central io.trino.hadoop hadoop-apache 3.2.0-12
+web search: 
+web search: https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/
+web search: 
+web search: 
+web search: 
+web search: "Shaded version of Apache Hadoop for Trino" "3.2.0-12"
+codex
+Checked and made no changes to [index.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f/metadata/io.trino.hadoop/hadoop-apache/index.json). The selected entry already has nonblank values for the requested URL and description fields, and `language` should remain absent because this is not a Kotlin or Scala-specific library.
+
+I also confirmed Maven Central provides the exact-version sources and javadoc jars for `3.2.0-12`, with no Maven test jar listed; the existing GitHub tag test URL is therefore the appropriate fallback. ([repo1.maven.org](https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/))
+2026-04-28T19:51:57.789452Z ERROR codex_core::session: failed to record rollout items: thread 019dd5a4-e1e5-7f90-abfd-59d9e09fe0da not found
+tokens used
+64,318
+Checked and made no changes to [index.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f/metadata/io.trino.hadoop/hadoop-apache/index.json). The selected entry already has nonblank values for the requested URL and description fields, and `language` should remain absent because this is not a Kotlin or Scala-specific library.
+
+I also confirmed Maven Central provides the exact-version sources and javadoc jars for `3.2.0-12`, with no Maven test jar listed; the existing GitHub tag test URL is therefore the appropriate fallback. ([repo1.maven.org](https://repo1.maven.org/maven2/io/trino/hadoop/hadoop-apache/3.2.0-12/))
+Ran agent for io.trino.hadoop:hadoop-apache:3.2.0-12 (exit 0). Log: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f/build/agent-url-discovery-logs/io.trino.hadoop-hadoop-apache-3.2.0-12.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3017-c8158e9f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 12s
+9 actionable tasks: 1 executed, 8 up-to-date
