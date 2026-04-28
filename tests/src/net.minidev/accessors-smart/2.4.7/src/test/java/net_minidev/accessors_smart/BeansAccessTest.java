@@ -28,7 +28,7 @@ public class BeansAccessTest {
         assertThat(firstAccess.get(bean, "message")).isEqualTo("ready");
         assertThat(firstAccess.getIndex("message")).isZero();
         assertThatThrownBy(() -> firstAccess.set(bean, "missing", "value"))
-                .isInstanceOf(java.lang.NoSuchFieldException.class)
+                .isInstanceOf(net.minidev.asm.ex.NoSuchFieldException.class)
                 .hasMessageContaining("failed to map field:missing");
     }
 
