@@ -50,7 +50,8 @@ class Java_dataloaderTest {
 
         DataLoaderOptions options = DataLoaderOptions.newOptions()
             .setMaxBatchSize(2)
-            .setStatisticsCollector(SimpleStatisticsCollector::new);
+            .setStatisticsCollector(SimpleStatisticsCollector::new)
+            .build();
         DataLoader<Integer, String> dataLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
 
         dataLoader.prime(99, "primed-value");
@@ -105,7 +106,8 @@ class Java_dataloaderTest {
         };
 
         DataLoaderOptions options = DataLoaderOptions.newOptions()
-            .setCacheKeyFunction((CacheKey<String>) key -> key.toLowerCase(Locale.ROOT));
+            .setCacheKeyFunction((CacheKey<String>) key -> key.toLowerCase(Locale.ROOT))
+            .build();
         DataLoader<String, String> dataLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
 
         CompletableFuture<String> mixedCase = dataLoader.load("Alpha");
@@ -141,7 +143,8 @@ class Java_dataloaderTest {
         };
 
         DataLoaderOptions options = DataLoaderOptions.newOptions()
-            .setBatchLoaderContextProvider(() -> "tenant-a");
+            .setBatchLoaderContextProvider(() -> "tenant-a")
+            .build();
         DataLoader<String, String> dataLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
 
         CompletableFuture<String> alpha = dataLoader.load("alpha", "ctx-1");
@@ -216,7 +219,8 @@ class Java_dataloaderTest {
         };
 
         DataLoaderOptions options = DataLoaderOptions.newOptions()
-            .setValueCache(valueCache);
+            .setValueCache(valueCache)
+            .build();
 
         DataLoader<String, String> firstLoader = DataLoaderFactory.newDataLoader(batchLoader, options);
         CompletableFuture<String> alpha = firstLoader.load("alpha");
@@ -244,7 +248,8 @@ class Java_dataloaderTest {
     @Test
     void registryDispatchesAllLoadersAndAggregatesStatistics() {
         DataLoaderOptions options = DataLoaderOptions.newOptions()
-            .setStatisticsCollector(SimpleStatisticsCollector::new);
+            .setStatisticsCollector(SimpleStatisticsCollector::new)
+            .build();
         DataLoader<Integer, String> numbers = DataLoaderFactory.newDataLoader(keys -> CompletableFuture.completedFuture(keys.stream()
             .map(key -> "n" + key)
             .toList()), options);
