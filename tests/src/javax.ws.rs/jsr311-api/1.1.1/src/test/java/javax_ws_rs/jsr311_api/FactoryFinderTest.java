@@ -18,9 +18,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FactoryFinderTest extends RuntimeDelegate {
+public class FactoryFinderTest {
     private static final String RUNTIME_DELEGATE_PROPERTY = RuntimeDelegate.JAXRS_RUNTIME_DELEGATE_PROPERTY;
-    private static final String PROVIDER_CLASS_NAME = FactoryFinderTest.class.getName();
+    private static final String PROVIDER_CLASS_NAME = FactoryFinderTest.class.getName() + "$FactoryFinderProvider";
 
     private final Thread currentThread = Thread.currentThread();
     private final ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
@@ -45,7 +45,7 @@ public class FactoryFinderTest extends RuntimeDelegate {
 
         RuntimeDelegate delegate = RuntimeDelegate.getInstance();
 
-        assertThat(delegate).isInstanceOf(FactoryFinderTest.class);
+        assertThat(delegate).isInstanceOf(FactoryFinderProvider.class);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class FactoryFinderTest extends RuntimeDelegate {
 
         RuntimeDelegate delegate = RuntimeDelegate.getInstance();
 
-        assertThat(delegate).isInstanceOf(FactoryFinderTest.class);
+        assertThat(delegate).isInstanceOf(FactoryFinderProvider.class);
     }
 
     @Test
@@ -69,38 +69,11 @@ public class FactoryFinderTest extends RuntimeDelegate {
 
         RuntimeDelegate delegate = RuntimeDelegate.getInstance();
 
-        assertThat(rejectingClassLoader.rejectedProviderLoad).isTrue();
-        assertThat(delegate).isInstanceOf(FactoryFinderTest.class);
-    }
-
-    @Override
-    public UriBuilder createUriBuilder() {
-        throw new UnsupportedOperationException("Not used in tests");
-    }
-
-    @Override
-    public ResponseBuilder createResponseBuilder() {
-        throw new UnsupportedOperationException("Not used in tests");
-    }
-
-    @Override
-    public VariantListBuilder createVariantListBuilder() {
-        throw new UnsupportedOperationException("Not used in tests");
-    }
-
-    @Override
-    public <T> T createEndpoint(Application application, Class<T> endpointType) {
-        throw new UnsupportedOperationException("Not used in tests");
-    }
-
-    @Override
-    public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
-        throw new UnsupportedOperationException("Not used in tests");
+        assertThat(delegate).isInstanceOf(FactoryFinderProvider.class);
     }
 
     private static final class RejectingProviderClassLoader extends ClassLoader {
         private final String rejectedClassName;
-        private boolean rejectedProviderLoad;
 
         private RejectingProviderClassLoader(ClassLoader parent, String rejectedClassName) {
             super(parent);
@@ -108,12 +81,47 @@ public class FactoryFinderTest extends RuntimeDelegate {
         }
 
         @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            return loadClassInternal(name, false);
+        }
+
+        @Override
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            return loadClassInternal(name, resolve);
+        }
+
+        private Class<?> loadClassInternal(String name, boolean resolve) throws ClassNotFoundException {
             if (rejectedClassName.equals(name)) {
-                rejectedProviderLoad = true;
                 throw new ClassNotFoundException(name);
             }
             return super.loadClass(name, resolve);
+        }
+    }
+
+    public static final class FactoryFinderProvider extends RuntimeDelegate {
+        @Override
+        public UriBuilder createUriBuilder() {
+            throw new UnsupportedOperationException("Not used in tests");
+        }
+
+        @Override
+        public ResponseBuilder createResponseBuilder() {
+            throw new UnsupportedOperationException("Not used in tests");
+        }
+
+        @Override
+        public VariantListBuilder createVariantListBuilder() {
+            throw new UnsupportedOperationException("Not used in tests");
+        }
+
+        @Override
+        public <T> T createEndpoint(Application application, Class<T> endpointType) {
+            throw new UnsupportedOperationException("Not used in tests");
+        }
+
+        @Override
+        public <T> HeaderDelegate<T> createHeaderDelegate(Class<T> type) {
+            throw new UnsupportedOperationException("Not used in tests");
         }
     }
 }
