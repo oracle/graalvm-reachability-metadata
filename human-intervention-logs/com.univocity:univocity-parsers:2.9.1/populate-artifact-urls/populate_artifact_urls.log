@@ -1,0 +1,178 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd5f8-0524-7643-802a-898e4a0073ed
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.univocity:univocity-parsers:2.9.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.9.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456/metadata/com.univocity/univocity-parsers/index.json
+- Entry selector: "metadata-version" = "2.9.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.9.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-sources.jar
+- repository-url: https://github.com/univocity/univocity-parsers
+- test-code-url: https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-tests.jar
+- documentation-url: https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-javadoc.jar
+- description: univocity-parsers is a Java library for parsing and writing structured text formats such as CSV, TSV, fixed-width, and other delimited files through a consistent API. It focuses on fast, reliable, configurable text processing for applications that need to read, transform, or generate tabular data.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.9.1
+- Entry test-version: 2.9.1
+codex
+I’ll inspect the existing metadata entry first, then verify which fields are actually missing so I only touch blank or absent values.
+exec
+/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.9.1\")' metadata/com.univocity/univocity-parsers/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.9.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-sources.jar",
+  "repository-url": "https://github.com/univocity/univocity-parsers",
+  "test-code-url": "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-javadoc.jar",
+  "description": "univocity-parsers is a Java library for parsing and writing structured text formats such as CSV, TSV, fixed-width, and other delimited files through a consistent API. It focuses on fast, reliable, configurable text processing for applications that need to read, transform, or generate tabular data.",
+  "tested-versions": [
+    "2.9.1"
+  ],
+  "allowed-packages": [
+    "com.univocity.parsers"
+  ]
+}
+
+codex
+The target entry already has non-blank values for every URL and the two-sentence description. The only absent field is `language`, and this artifact is a plain Java library rather than a Kotlin or Scala library, so I’ll leave that field absent as requested.
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-tests.jar' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-sources.jar' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456
+exec
+/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/com/univocity/univocity-parsers/2.9.1/univocity-parsers-2.9.1-javadoc.jar' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 21:21:44 GMT
+content-type: application/java-archive
+content-length: 1510116
+cf-ray: 9f391e4cdbfd96e0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 356245
+etag: "8a6c84ecd309c722e8e2d71e4b97aedd"
+last-modified: Mon, 18 Jan 2021 04:16:31 GMT
+x-checksum-md5: 8a6c84ecd309c722e8e2d71e4b97aedd
+x-checksum-sha1: 47fe2978a8d7ae262a29da57d95e8727ce023b73
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 21:21:44 GMT
+content-type: application/java-archive
+content-length: 626674
+cf-ray: 9f391e4cdaa40db0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 850264
+etag: "c1156737f95b73b7cba3e20f373bd86c"
+last-modified: Mon, 18 Jan 2021 04:16:39 GMT
+x-checksum-md5: c1156737f95b73b7cba3e20f373bd86c
+x-checksum-sha1: bd956804ee764a7e8b2af01aaea50ff031b78f41
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 21:21:44 GMT
+content-type: application/java-archive
+content-length: 411929
+cf-ray: 9f391e4cde85dfc0-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 906756
+etag: "ee9839b504f9acb9bc5d3f1b3c9ce030"
+last-modified: Mon, 18 Jan 2021 04:16:37 GMT
+x-checksum-md5: ee9839b504f9acb9bc5d3f1b3c9ce030
+x-checksum-sha1: 5be7a41a5ecf4777dcf547126376808e165930d1
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc 'git diff -- metadata/com.univocity/univocity-parsers/index.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456
+ succeeded in 0ms:
+codex
+No file changes were needed. The `2.9.1` entry in [index.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456/metadata/com.univocity/univocity-parsers/index.json) already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`.
+
+I verified the Maven source, tests, and javadoc artifacts all return `HTTP 200`. `language` remains absent because `com.univocity:univocity-parsers` is a Java library, not a Kotlin or Scala-specific library.
+2026-04-28T21:21:55.778338Z ERROR codex_core::session: failed to record rollout items: thread 019dd5f8-0524-7643-802a-898e4a0073ed not found
+tokens used
+7,486
+No file changes were needed. The `2.9.1` entry in [index.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456/metadata/com.univocity/univocity-parsers/index.json) already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`.
+
+I verified the Maven source, tests, and javadoc artifacts all return `HTTP 200`. `language` remains absent because `com.univocity:univocity-parsers` is a Java library, not a Kotlin or Scala-specific library.
+Ran agent for com.univocity:univocity-parsers:2.9.1 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456/build/agent-url-discovery-logs/com.univocity-univocity-parsers-2.9.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2996-f5e81456/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 24s
+9 actionable tasks: 1 executed, 8 up-to-date
