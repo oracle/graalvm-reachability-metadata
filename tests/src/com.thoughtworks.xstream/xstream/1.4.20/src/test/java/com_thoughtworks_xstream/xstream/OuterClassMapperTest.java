@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OuterClassMapperTest {
-    private final String owner = "owner";
+    private String owner = "owner";
 
     @Test
     void mapsSyntheticOuterReferenceFieldToStableAlias() {
