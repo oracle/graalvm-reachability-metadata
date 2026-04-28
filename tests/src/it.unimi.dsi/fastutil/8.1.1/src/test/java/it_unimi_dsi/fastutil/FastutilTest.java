@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -159,6 +160,31 @@ public class FastutilTest {
         assertThat(entries).containsEntry(1, "ONE").containsEntry(2, "two-2!");
         assertThat(labels.remove(2, "two-2!")).isTrue();
         assertThat(labels.values()).containsExactly("ONE");
+    }
+
+    @Test
+    void intToObjectLinkedOpenHashMapMaintainsInsertionOrderAndCanMoveEntries() {
+        Int2ObjectLinkedOpenHashMap<String> cache = new Int2ObjectLinkedOpenHashMap<>();
+        cache.defaultReturnValue("missing");
+
+        assertThat(cache.putAndMoveToLast(3, "three")).isEqualTo("missing");
+        assertThat(cache.putAndMoveToLast(1, "one")).isEqualTo("missing");
+        assertThat(cache.putAndMoveToLast(2, "two")).isEqualTo("missing");
+        assertThat(cache.keySet().toIntArray()).containsExactly(3, 1, 2);
+        assertThat(cache.firstIntKey()).isEqualTo(3);
+        assertThat(cache.lastIntKey()).isEqualTo(2);
+
+        assertThat(cache.getAndMoveToFirst(2)).isEqualTo("two");
+        assertThat(cache.keySet().toIntArray()).containsExactly(2, 3, 1);
+        assertThat(cache.firstIntKey()).isEqualTo(2);
+        assertThat(cache.lastIntKey()).isEqualTo(1);
+
+        assertThat(cache.putAndMoveToLast(3, "THREE")).isEqualTo("three");
+        assertThat(cache.keySet().toIntArray()).containsExactly(2, 1, 3);
+        assertThat(cache.removeFirst()).isEqualTo("two");
+        assertThat(cache.removeLast()).isEqualTo("THREE");
+        assertThat(cache.keySet().toIntArray()).containsExactly(1);
+        assertThat(cache.values()).containsExactly("one");
     }
 
     @Test
