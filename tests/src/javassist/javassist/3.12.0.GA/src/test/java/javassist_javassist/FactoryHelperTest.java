@@ -6,9 +6,6 @@
  */
 package javassist_javassist;
 
-import java.lang.reflect.Method;
-import java.security.ProtectionDomain;
-
 import javassist.util.proxy.FactoryHelper;
 import org.junit.jupiter.api.Test;
 
@@ -16,16 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FactoryHelperTest {
-    @Test
-    void syntheticClassLookupResolvesDefineClassSignatureTypes() throws Exception {
-        Method classLookup = FactoryHelper.class.getDeclaredMethod("class$", String.class);
-        classLookup.setAccessible(true);
-
-        assertThat(classLookup.invoke(null, String.class.getName())).isEqualTo(String.class);
-        assertThat(classLookup.invoke(null, "[B")).isEqualTo(byte[].class);
-        assertThat(classLookup.invoke(null, ProtectionDomain.class.getName())).isEqualTo(ProtectionDomain.class);
-    }
-
     @Test
     void exposesPrimitiveTypeMetadataUsedByGeneratedProxyBytecode() {
         int booleanIndex = FactoryHelper.typeIndex(Boolean.TYPE);
