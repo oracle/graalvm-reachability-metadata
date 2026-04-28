@@ -8,6 +8,7 @@ package org_hamcrest.hamcrest;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.beans.HasPropertyWithValue;
 import org.junit.jupiter.api.Test;
 
 public class HasPropertyWithValueAnonymous1Test {
@@ -18,7 +19,7 @@ public class HasPropertyWithValueAnonymous1Test {
         PersonBean bean = new PersonBean("Ada", address);
 
         MatcherAssert.assertThat(bean, Matchers.hasProperty("name", Matchers.equalTo("Ada")));
-        MatcherAssert.assertThat(bean, Matchers.hasPropertyAtPath("address.city", Matchers.equalTo("London")));
+        MatcherAssert.assertThat(bean, HasPropertyWithValue.hasPropertyAtPath("address.city", Matchers.equalTo("London")));
     }
 
     public static final class PersonBean {
