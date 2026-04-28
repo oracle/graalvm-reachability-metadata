@@ -37,7 +37,10 @@ import javax.xml.stream.events.Comment;
 import javax.xml.stream.events.DTD;
 import javax.xml.stream.events.EndDocument;
 import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.EntityDeclaration;
+import javax.xml.stream.events.EntityReference;
 import javax.xml.stream.events.Namespace;
+import javax.xml.stream.events.NotationDeclaration;
 import javax.xml.stream.events.ProcessingInstruction;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
@@ -181,6 +184,52 @@ public class Stax_apiTest {
         filtered.close();
 
         assertThat(events).containsExactly("START:root", "START:a", "TEXT:A", "START:b", "TEXT:B");
+    }
+
+    @Test
+    void eventReaderExposesDtdDeclarationsAndEntityReferences() throws Exception {
+        XMLInputFactory factory = XMLInputFactory.newFactory();
+        assertThat(factory.isPropertySupported(XMLInputFactory.SUPPORT_DTD)).isTrue();
+        assertThat(factory.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES)).isTrue();
+        factory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
+        factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);
+
+        String xml = "<!DOCTYPE root ["
+                + "<!NOTATION plain SYSTEM 'text/plain'>"
+                + "<!ENTITY logo SYSTEM 'logo.txt' NDATA plain>"
+                + "<!ENTITY author 'Ada'>"
+                + "]><root>&author;</root>";
+        XMLEventReader reader = factory.createXMLEventReader(new StringReader(xml));
+
+        DTD dtd = null;
+        EntityReference reference = null;
+        while (reader.hasNext()) {
+            XMLEvent event = reader.nextEvent();
+            if (event.getEventType() == XMLStreamConstants.DTD) {
+                dtd = (DTD) event;
+            } else if (event.isEntityReference()) {
+                reference = (EntityReference) event;
+            }
+        }
+        reader.close();
+
+        assertThat(dtd).isNotNull();
+        assertThat(dtd.getDocumentTypeDeclaration()).contains("ENTITY author", "NOTATION plain");
+        List<EntityDeclaration> entities = dtd.getEntities();
+        EntityDeclaration author = findEntity(entities, "author");
+        EntityDeclaration logo = findEntity(entities, "logo");
+        assertThat(author.getReplacementText()).isEqualTo("Ada");
+        assertThat(author.getNotationName()).isNull();
+        assertThat(logo.getSystemId()).isEqualTo("logo.txt");
+        assertThat(logo.getNotationName()).isEqualTo("plain");
+
+        List<NotationDeclaration> notations = dtd.getNotations();
+        assertThat(notations).hasSize(1);
+        assertThat(notations.get(0).getName()).isEqualTo("plain");
+        assertThat(notations.get(0).getSystemId()).isEqualTo("text/plain");
+        assertThat(reference).isNotNull();
+        assertThat(reference.getName()).isEqualTo("author");
+        assertThat(reference.getDeclaration().getReplacementText()).isEqualTo("Ada");
     }
 
     @Test
@@ -412,6 +461,13 @@ public class Stax_apiTest {
             return "END";
         }
         return "OTHER";
+    }
+
+    private static EntityDeclaration findEntity(List<EntityDeclaration> entities, String name) {
+        return entities.stream()
+                .filter(entity -> name.equals(entity.getName()))
+                .findFirst()
+                .orElseThrow();
     }
 
     private static <T> List<T> toList(Iterator<T> iterator) {
