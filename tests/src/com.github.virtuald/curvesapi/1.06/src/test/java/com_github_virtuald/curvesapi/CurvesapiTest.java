@@ -10,6 +10,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Rectangle2D;
+
 import com.graphbuilder.curve.BSpline;
 import com.graphbuilder.curve.BezierCurve;
 import com.graphbuilder.curve.CardinalSpline;
@@ -24,6 +29,7 @@ import com.graphbuilder.curve.NURBSpline;
 import com.graphbuilder.curve.NaturalCubicSpline;
 import com.graphbuilder.curve.Point;
 import com.graphbuilder.curve.Polyline;
+import com.graphbuilder.curve.ShapeMultiPath;
 import com.graphbuilder.curve.ValueVector;
 import com.graphbuilder.geom.Geom;
 import com.graphbuilder.geom.Point2d;
@@ -248,6 +254,39 @@ public class CurvesapiTest {
         assertThat(lagrange.getInterpolateLast()).isTrue();
         assertCurveAppendsFinitePath(lagrange);
         lagrange.resetMemory();
+    }
+
+    @Test
+    void shapeMultiPathExposesAwtShapeBoundsContainmentAndIteration() {
+        ShapeMultiPath shape = new ShapeMultiPath(2);
+        shape.setWindingRule(PathIterator.WIND_NON_ZERO);
+        shape.moveTo(new double[] {0.0, 0.0});
+        shape.lineTo(new double[] {4.0, 0.0});
+        shape.lineTo(new double[] {4.0, 3.0});
+        shape.lineTo(new double[] {0.0, 3.0});
+        shape.lineTo(new double[] {0.0, 0.0});
+
+        assertThat(shape.getWindingRule()).isEqualTo(PathIterator.WIND_NON_ZERO);
+        assertThat(shape.contains(2.0, 1.5)).isTrue();
+        assertThat(shape.contains(-1.0, 1.5)).isFalse();
+        assertThat(shape.contains(new Rectangle2D.Double(1.0, 1.0, 2.0, 1.0))).isTrue();
+        assertThat(shape.intersects(new Rectangle2D.Double(3.5, 1.0, 2.0, 1.0))).isTrue();
+        assertThat(shape.intersects(new Rectangle2D.Double(5.0, 5.0, 1.0, 1.0))).isFalse();
+        assertThat(shape.getDistSq(2.0, 1.5)).isCloseTo(2.25, within(TOLERANCE));
+
+        Rectangle bounds = shape.getBounds();
+        assertThat(bounds.getX()).isCloseTo(0.0, within(TOLERANCE));
+        assertThat(bounds.getY()).isCloseTo(0.0, within(TOLERANCE));
+        assertThat(bounds.getWidth()).isCloseTo(4.0, within(TOLERANCE));
+        assertThat(bounds.getHeight()).isCloseTo(3.0, within(TOLERANCE));
+
+        PathIterator iterator = shape.getPathIterator(AffineTransform.getTranslateInstance(1.0, 2.0));
+        double[] segment = new double[6];
+        assertThat(iterator.currentSegment(segment)).isEqualTo(PathIterator.SEG_MOVETO);
+        assertPoint(segment, 1.0, 2.0);
+        iterator.next();
+        assertThat(iterator.currentSegment(segment)).isEqualTo(PathIterator.SEG_LINETO);
+        assertPoint(segment, 5.0, 2.0);
     }
 
     @Test
