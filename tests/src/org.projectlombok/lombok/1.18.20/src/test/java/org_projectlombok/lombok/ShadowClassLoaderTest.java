@@ -25,7 +25,7 @@ public class ShadowClassLoaderTest {
         ClassLoader shadowLoader = newShadowClassLoader();
 
         assertThat(shadowLoader.getResource("java/lang/String.class")).isNotNull();
-        assertThat(Collections.list(shadowLoader.getResources("java/lang/String.class"))).isNotEmpty();
+        assertThat(Collections.list(shadowLoader.getResources("lombok/core/Main.class"))).isNotEmpty();
         assertThat(shadowLoader.loadClass("java.lang.String")).isSameAs(String.class);
 
         Method addOverrideClasspathEntry = declaredMethod(shadowLoader.getClass(), "addOverrideClasspathEntry", String.class);
