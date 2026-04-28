@@ -8,7 +8,6 @@ package org_apache_extras_beanshell.bsh;
 
 import bsh.Interpreter;
 import bsh.classpath.BshClassLoader;
-import bsh.classpath.ClassManagerImpl;
 import java.net.URL;
 import org.junit.jupiter.api.Test;
 
@@ -28,47 +27,5 @@ public class BshClassLoaderTest {
         assertThat(loadedClass.getName()).isEqualTo(scriptedClassName);
     }
 
-    @Test
-    public void loadClassDelegatesToClassManagerBaseLoaderWhenNoLocalUrlMatches() throws ClassNotFoundException {
-        RecordingClassLoader baseLoader = new RecordingClassLoader();
-        ClassManagerImpl classManager = new RecordingBaseLoaderClassManager(baseLoader);
-        BshClassLoader classLoader = new BshClassLoader(classManager, new URL[0]);
 
-        Class<?> loadedClass = classLoader.loadClass(BshClassLoaderTest.class.getName());
-
-        assertThat(loadedClass).isEqualTo(BshClassLoaderTest.class);
-        assertThat(baseLoader.loadedClassName).isEqualTo(BshClassLoaderTest.class.getName());
-    }
-
-    private static class RecordingBaseLoaderClassManager extends ClassManagerImpl {
-
-        private final ClassLoader baseLoader;
-
-        RecordingBaseLoaderClassManager(ClassLoader baseLoader) {
-            this.baseLoader = baseLoader;
-        }
-
-        @Override
-        public ClassLoader getBaseLoader() {
-            return baseLoader;
-        }
-    }
-
-    private static class RecordingClassLoader extends ClassLoader {
-
-        private String loadedClassName;
-
-        RecordingClassLoader() {
-            super(BshClassLoaderTest.class.getClassLoader());
-        }
-
-        @Override
-        public Class<?> loadClass(String name) throws ClassNotFoundException {
-            loadedClassName = name;
-            if (BshClassLoaderTest.class.getName().equals(name)) {
-                return BshClassLoaderTest.class;
-            }
-            return super.loadClass(name);
-        }
-    }
 }

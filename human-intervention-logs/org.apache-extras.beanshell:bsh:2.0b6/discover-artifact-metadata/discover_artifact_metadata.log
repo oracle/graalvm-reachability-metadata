@@ -1,0 +1,1063 @@
+Starting a Gradle Daemon, 2 busy and 12 incompatible Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd2e5-552b-76e1-a6b4-dbf33fc47ceb
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache-extras.beanshell:bsh:2.0b6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.0b6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+- Set "coordinates" to "org.apache-extras.beanshell:bsh:2.0b6".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream tag before editing the JSON, since the version-specific source and test URLs need to be exact.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+{
+  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.apache-extras\\.beanshell|beanshell|bsh:2\\.0b6|apache-extras\" ." in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ exited 1 in 0ms:
+web search: 
+web search: Maven Central org.apache-extras.beanshell bsh 2.0b6 pom scm url sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/
+web search: 
+web search: https://github.com/beanshell/beanshell
+codex
+Maven Central does publish both `bsh-2.0b6-sources.jar` and `bsh-2.0b6-src.zip`; I’m checking the source ZIP contents now because it may be the best exact-version URL for both source and tests.
+exec
+/usr/bin/bash -lc "curl -L -s https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6.pom | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   ====================================================================
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+   ====================================================================
+
+   This software consists of voluntary contributions made by many
+   individuals on behalf of the Apache Software Foundation.  For more
+   information on the Apache Software Foundation, please see
+   <http://www.apache.org />.
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.apache-extras.beanshell</groupId>
+  <artifactId>bsh</artifactId>
+  <version>2.0b6</version>
+  <packaging>jar</packaging>
+
+  <name>BeanShell</name>
+  <description>BeanShell is a small, free, embeddable Java source interpreter
+    with object scripting language features, written in Java. BeanShell
+    dynamically executes standard Java syntax and extends it with common
+    scripting conveniences such as loose types, commands, and method closures
+    like those in Perl and JavaScript. 
+  </description>
+  <url>https://github.com/beanshell/beanshell/</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <scm>
+    <connection>scm:git:git://github.com/beanshell/beanshell.git</connection>
+    <developerConnection>scm:git:git@github.com:beanshell/beanshell.git</developerConnection>
+    <url>https://github.com/beanshell/beanshell/</url>
+    <tag>HEAD</tag>
+  </scm>
+  <developers>
+    <!-- Current maintainers according to 
+         https://github.com/beanshell/
+    -->
+    <developer>
+      <name>Patrick Niemeyer</name>
+      <email>patniemeyer@gmail.com</email>
+      <organization>Apache Extras</organization>
+      <organizationUrl>http://www.apache-extras.org/</organizationUrl>
+    </developer>
+    <developer>
+      <name>Daniel Leuck</name>
+      <email>dan@ikayzo.com</email>
+      <organization>Apache Extras</organization>
+      <organizationUrl>http://www.apache-extras.org/</organizationUrl>
+    </developer>
+    <developer>
+      <name>Simone Tripodi</name>
+      <email>simonetripodi@apache.org</email>
+      <organization>Apache Extras</organization>
+      <organizationUrl>http://www.apache-extras.org/</organizationUrl>
+    </developer>
+    <developer>
+      <name>Pedro Giffuni</name>
+      <email>pfg@apache.org</email>
+      <organization>Apache Extras</organization>
+      <organizationUrl>http://www.apache-extras.org/</organizationUrl>
+    </developer>
+    <developer>
+      <name>Peter Jodeleit</name>
+      <email>pejobo70@gmail.com</email>
+      <organization>Apache Extras</organization>
+      <organizationUrl>http://www.apache-extras.org/</organizationUrl>
+    </developer>
+    <developer>
+      <name>Stian Soiland-Reyes</name>
+      <email>stain@apache.org</email>
+      <organization>Apache Extras</organization>
+      <organizationUrl>http://www.apache-extras.org/</organizationUrl>
+    </developer>
+    <developer>
+      <name>Alan R Williams</name>
+      <email>alaninmcr@apache.org</email>
+      <organization>Apache Extras</organization>
+      <organizationUrl>http://www.apache-extras.org/</organizationUrl>
+    </developer>
+  </developers>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/beanshell/beanshell/issues</url>
+  </issueManagement>
+
+  <distributionManagement>
+    <repository>
+    <id>bintray-beanshell-Beanshell-bsh</id>
+    <name>beanshell-Beanshell-bsh</name>
+    <url>https://api.bintray.com/maven/beanshell/Beanshell/bsh</url>
+    </repository>
+  </distributionManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -L -s -o "$tmp/bsh-2.0b6-src.zip" https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-src.zip; unzip -l "$tmp/bsh-2.0b6-src.zip" | sed -n '"'1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 908ms:
+Archive:  /tmp/tmp.vuLFVnWM21/bsh-2.0b6-src.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2016-02-05 17:16   BeanShell-2.0b6/
+        0  2016-02-02 02:27   BeanShell-2.0b6/asm/
+        0  2016-02-02 02:27   BeanShell-2.0b6/asm/src/
+        0  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/
+        0  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/
+        0  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/
+        0  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/
+        0  2016-02-02 02:27   BeanShell-2.0b6/bsf/
+        0  2016-02-02 02:27   BeanShell-2.0b6/bsf/src/
+        0  2016-02-02 02:27   BeanShell-2.0b6/bsf/src/bsh/
+        0  2016-02-02 02:27   BeanShell-2.0b6/bsf/src/bsh/util/
+        0  2015-09-23 16:36   BeanShell-2.0b6/docs/
+        0  2015-09-23 16:36   BeanShell-2.0b6/docs/faq/
+        0  2015-09-24 09:22   BeanShell-2.0b6/docs/images/
+        0  2016-02-05 17:16   BeanShell-2.0b6/docs/manual/
+        0  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/
+        0  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/
+        0  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/xsl/
+        0  2016-02-05 17:16   BeanShell-2.0b6/engine/
+        0  2016-02-02 02:27   BeanShell-2.0b6/engine/config/
+        0  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/
+        0  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/
+        0  2016-02-01 23:12   BeanShell-2.0b6/engine/javax-src/javax/script/
+        0  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/http/
+        0  2016-02-02 02:27   BeanShell-2.0b6/engine/src/
+        0  2016-02-02 02:27   BeanShell-2.0b6/engine/src/bsh/
+        0  2016-02-02 02:27   BeanShell-2.0b6/engine/src/bsh/engine/
+        0  2016-02-02 02:27   BeanShell-2.0b6/lib/
+        0  2016-02-02 02:27   BeanShell-2.0b6/license-scripts/
+        0  2016-02-02 00:49   BeanShell-2.0b6/scripts/
+        0  2016-02-02 02:27   BeanShell-2.0b6/src/
+        0  2016-02-05 17:16   BeanShell-2.0b6/src/bsh/
+        0  2016-02-02 02:27   BeanShell-2.0b6/src/bsh/classpath/
+        0  2016-02-02 02:27   BeanShell-2.0b6/src/bsh/collection/
+        0  2016-02-02 02:27   BeanShell-2.0b6/src/bsh/commands/
+        0  2016-02-02 02:27   BeanShell-2.0b6/src/bsh/reflect/
+        0  2016-02-02 02:27   BeanShell-2.0b6/src/bsh/servlet/
+        0  2016-02-02 02:27   BeanShell-2.0b6/src/bsh/util/
+        0  2016-02-02 02:27   BeanShell-2.0b6/src/bsh/util/lib/
+        0  2016-02-03 01:00   BeanShell-2.0b6/target/
+        0  2016-02-03 01:00   BeanShell-2.0b6/target/maven-archiver/
+        0  2016-02-03 01:02   BeanShell-2.0b6/tests/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/junitTests/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/junitTests/src/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/junitTests/src/bsh/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/src/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/src/InheritanceTest/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/src/ambiguous/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/src/ambiguous/pkg1/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/src/ambiguous/pkg2/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/src/mypackage/
+        0  2016-02-03 01:01   BeanShell-2.0b6/tests/test-scripts/
+        0  2016-02-02 02:27   BeanShell-2.0b6/tests/test-scripts/Data/
+       80  2016-02-02 02:12   BeanShell-2.0b6/.travis.yml
+     1020  2015-09-23 16:36   BeanShell-2.0b6/BeanShell.iml
+    25043  2015-09-23 16:36   BeanShell-2.0b6/BeanShell.ipr
+    63705  2015-09-23 16:36   BeanShell-2.0b6/BeanShell.iws
+    11359  2015-09-23 16:36   BeanShell-2.0b6/LICENSE
+      446  2016-02-02 02:27   BeanShell-2.0b6/LICENSE-TODO.txt
+      161  2016-02-02 02:12   BeanShell-2.0b6/NOTICE
+     5695  2016-02-05 17:16   BeanShell-2.0b6/README.md
+     1512  2016-02-02 02:27   BeanShell-2.0b6/asm/LICENSE
+      519  2016-02-02 02:27   BeanShell-2.0b6/asm/README-asm.txt
+     8109  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/ByteVector.java
+     5902  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/ClassVisitor.java
+    25801  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/ClassWriter.java
+    11382  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/CodeVisitor.java
+    60388  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/CodeWriter.java
+    10295  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/Constants.java
+     2549  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/Edge.java
+     7127  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/Item.java
+    10600  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/Label.java
+    19951  2016-02-02 02:27   BeanShell-2.0b6/asm/src/bsh/org/objectweb/asm/Type.java
+      551  2015-09-23 16:36   BeanShell-2.0b6/bsf/README
+     1546  2016-02-02 02:27   BeanShell-2.0b6/bsf/src/TestBshBSF.java
+     7475  2016-02-02 02:27   BeanShell-2.0b6/bsf/src/bsh/util/BeanShellBSFEngine.java
+    21803  2016-02-05 17:16   BeanShell-2.0b6/build.xml
+     1053  2015-09-23 16:36   BeanShell-2.0b6/docs/faq/build.xml
+    10996  2015-09-23 16:36   BeanShell-2.0b6/docs/faq/faq.html
+    10191  2015-09-23 16:36   BeanShell-2.0b6/docs/faq/faq.xml
+     1980  2015-09-23 16:36   BeanShell-2.0b6/docs/faq/faq.xsl
+     1768  2015-09-23 16:36   BeanShell-2.0b6/docs/images/appletmode.gif
+     1388  2015-09-23 16:36   BeanShell-2.0b6/docs/images/backbutton.gif
+     4528  2015-09-24 09:22   BeanShell-2.0b6/docs/images/beanshell-logo.png
+     6702  2015-09-24 09:22   BeanShell-2.0b6/docs/images/beanshell-logo.xcf
+    14201  2015-09-23 16:36   BeanShell-2.0b6/docs/images/bshclassbrowser.gif
+     2173  2015-09-23 16:36   BeanShell-2.0b6/docs/images/bshclassloading.gif
+    20715  2015-09-23 16:36   BeanShell-2.0b6/docs/images/bshmodes.obj
+     2631  2015-09-23 16:36   BeanShell-2.0b6/docs/images/caller.gif
+      963  2015-09-23 16:36   BeanShell-2.0b6/docs/images/caller.obj
+    25319  2015-09-23 16:36   BeanShell-2.0b6/docs/images/colorconsole.jpg
+     7173  2015-09-23 16:36   BeanShell-2.0b6/docs/images/editorwindow.gif
+     2654  2015-09-23 16:36   BeanShell-2.0b6/docs/images/embeddedmode.gif
+     1393  2015-09-23 16:36   BeanShell-2.0b6/docs/images/forwardbutton.gif
+     1762  2015-09-23 16:36   BeanShell-2.0b6/docs/images/homebutton.gif
+     4880  2015-09-23 16:36   BeanShell-2.0b6/docs/images/lj.gif
+    35230  2015-09-23 16:36   BeanShell-2.0b6/docs/images/remoteconsole.gif
+     3973  2015-09-23 16:36   BeanShell-2.0b6/docs/images/remotemode.gif
+     2172  2015-09-23 16:36   BeanShell-2.0b6/docs/images/scriptmode.gif
+     5037  2015-09-23 16:36   BeanShell-2.0b6/docs/images/servletmode.gif
+    31176  2015-09-23 16:36   BeanShell-2.0b6/docs/images/splash1.jpg
+     1393  2015-09-23 16:36   BeanShell-2.0b6/docs/images/upbutton.gif
+     1510  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/appletmode.xml
+     2566  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/bsf.xml
+      292  2015-09-24 09:38   BeanShell-2.0b6/docs/manual/bshcommands.xml
+     5151  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/bshdoc.xml
+   231281  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/bshmanual.html
+     1917  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/build.xml
+     8801  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/classpath.xml
+     5657  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/commands.xml
+      136  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/contents.xml
+     1594  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/credit.xml
+      670  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/desktop.xml
+    16422  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/embeddedmode.xml
+     1049  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/execscripts.xml
+     1914  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/foo.rng
+     2719  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/appletmode.html
+     4009  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/bsf.html
+    40894  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/bshcommands.html
+     7148  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/bshdoc.html
+    11402  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/classpath.html
+    18330  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/commands.html
+    11013  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/contents.html
+     2774  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/credit.html
+     1967  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/desktop.html
+    19629  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/embeddedmode.html
+     2513  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/execscripts.html
+    11013  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/index.html
+    15913  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/interfaces.html
+     9250  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/intro.html
+     4352  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/jconsole.html
+     9672  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/methods.html
+     3969  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/more.html
+     7378  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/objects.html
+     6024  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/parser.html
+    12689  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/quickstart.html
+     7272  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/reflectivestyle.html
+     5632  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/remotemode.html
+     5954  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/scope.html
+     9224  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/servletmode.html
+     6760  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/specialvarsvalues.html
+     6895  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/standalonemode.html
+     2098  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/strictjava.html
+    17140  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/html/syntax.html
+     1768  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/appletmode.gif
+     1388  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/backbutton.gif
+    14201  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/bshclassbrowser.gif
+     2173  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/bshclassloading.gif
+    20715  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/bshmodes.obj
+     2631  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/caller.gif
+      963  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/caller.obj
+    25319  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/colorconsole.jpg
+     7173  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/editorwindow.gif
+     2654  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/embeddedmode.gif
+     1393  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/forwardbutton.gif
+     1762  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/homebutton.gif
+     4880  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/lj.gif
+    35230  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/remoteconsole.gif
+     3973  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/remotemode.gif
+     2172  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/scriptmode.gif
+     5037  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/servletmode.gif
+    31176  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/splash1.jpg
+     1393  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/images/upbutton.gif
+    13047  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/interfaces.xml
+     7883  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/intro.xml
+     2792  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/jconsole.xml
+     2047  2016-02-02 00:53   BeanShell-2.0b6/docs/manual/manual.xml
+     7316  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/methods.xml
+     2827  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/more.xml
+     5515  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/objects.xml
+     4276  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/parser.xml
+     1300  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/paths.xml
+     9828  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/quickstart.xml
+     5008  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/reflectivestyle.xml
+     3961  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/remotemode.xml
+     4180  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/scope.xml
+     6810  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/servletmode.xml
+     5059  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/specialvarsvalues.xml
+     4983  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/standalonemode.xml
+      878  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/strictjava.xml
+    13487  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/syntax.xml
+      390  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/title.xml
+    14138  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/usercommands.xml
+     1430  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/xsl/anchor.xsl
+     3123  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/xsl/bshcommands.xsl
+      461  2016-02-02 02:12   BeanShell-2.0b6/docs/manual/xsl/example.xsl
+      289  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/xsl/identity.xsl
+      388  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/xsl/imagelist.xsl
+      350  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/xsl/img.xsl
+     6083  2015-09-24 09:43   BeanShell-2.0b6/docs/manual/xsl/manual.xsl
+      377  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/xsl/note.xsl
+      324  2015-09-23 16:36   BeanShell-2.0b6/docs/manual/xsl/tip.xsl
+      481  2016-02-05 17:16   BeanShell-2.0b6/engine/README.txt
+       98  2016-02-02 02:27   BeanShell-2.0b6/engine/config/README.txt
+       34  2016-02-02 02:27   BeanShell-2.0b6/engine/config/javax.script.ScriptEngineFactory
+     9164  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/AbstractScriptEngine.java
+     1350  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/Bindings.java
+     1815  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/Compilable.java
+     3794  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/CompiledScript.java
+     4222  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/Invocable.java
+     6226  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/ScriptContext.java
+    12989  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/ScriptEngine.java
+    12927  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/ScriptEngine.last
+     8564  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/ScriptEngineFactory.java
+    19879  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/ScriptEngineManager.java
+     4219  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/ScriptException.java
+     3921  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/SimpleBindings.java
+     6608  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/SimpleScriptContext.java
+     9910  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/http/HttpScriptContext.java
+      432  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/http/HttpScriptRequest.java
+      436  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/http/HttpScriptResponse.java
+     7713  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/http/HttpScriptServlet.java
+    10688  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/http/SimpleHttpScriptContext.java
+     3783  2015-09-23 16:36   BeanShell-2.0b6/engine/javax-src/javax/script/package.html
+     3723  2016-02-02 02:27   BeanShell-2.0b6/engine/src/TestBshScriptEngine.java
+    10801  2016-02-02 02:27   BeanShell-2.0b6/engine/src/bsh/engine/BshScriptEngine.java
+     2723  2016-02-02 02:27   BeanShell-2.0b6/engine/src/bsh/engine/BshScriptEngineFactory.java
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/
+exec
+/usr/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\"' . | head -40" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:354:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:168:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:221:                    "test-code-url": "https://example.com/tests-a",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+./metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.eclipse.aether/aether-util/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:8:    "test-code-url": "N/A",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/3.0.0/src/test",
+./metadata/javax.annotation/jsr250-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.annotation/javax.annotation-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.santuario/xmlsec/index.json:10:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-4.0.4/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+./metadata/com.vaadin.external.google/android-json/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss/jandex/index.json:7:    "test-code-url" : "https://github.com/smallrye/jandex/tree/2.4.2.Final/src/test/java",
+./metadata/com.h2database/h2/index.json:10:    "test-code-url": "https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test",
+./metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+./metadata/org.apache.httpcomponents/httpclient/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-tests.jar",
+./metadata/org.apache.httpcomponents/httpclient/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-tests.jar",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/core/jvmTest",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"' . | head -40" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.9.0/kotlinx-serialization-core-jvm-1.9.0-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+./metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-sources.jar",
+./metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.slf4j/slf4j-nop/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:351:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:364:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:168:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/thymeleaf-extras-springsecurity6-3.1.0.RELEASE-sources.jar",
+./metadata/commons-logging/commons-logging/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar",
+./metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-sources.jar",
+./metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+./metadata/org.hibernate.validator/hibernate-validator/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/validator/hibernate-validator/7.0.4.Final/hibernate-validator-7.0.4.Final-sources.jar",
+./metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/io.nats/jnats/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/io/nats/jnats/2.16.11/jnats-2.16.11-sources.jar",
+./metadata/org.hdrhistogram/HdrHistogram/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+./metadata/io.grpc/grpc-context/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-sources.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-sources.jar",
+./metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-sources.jar",
+./metadata/com.google.code.findbugs/findbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/3.0.1/findbugs-annotations-3.0.1-sources.jar",
+./metadata/werken-xpath/werken-xpath/index.json:5:    "source-code-url" : "https://sources.debian.org/src/werken.xpath/0.9.4-16/",
+./metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,60p' metadata/org.postgresql/postgresql/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.postgresql"
+    ],
+    "metadata-version": "42.7.3",
+    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+    "tested-versions": [
+      "42.7.3",
+      "42.7.4",
+      "42.7.5",
+      "42.7.6",
+      "42.7.7",
+      "42.7.8",
+      "42.7.9",
+      "42.7.10"
+    ]
+  },
+  {
+    "allowed-packages": [
+      "org.postgresql"
+    ],
+    "metadata-version": "42.3.4",
+    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+    "description": "PostgreSQL JDBC Driver lets Java applications connect to PostgreSQL databases through the standard JDBC API. It is a pure Java Type 4 driver that communicates using PostgreSQL's native network protocol.",
+    "tested-versions": [
+      "42.3.4"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.eclipse.aether/aether-util/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.2.v20150114",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+    "description" : "Aether Util provides utility classes that make it easier to work with the Eclipse Aether repository system. It includes helpers for artifacts, dependency graph filtering and transformation, listeners, repository authentication, proxy selection, and version handling.",
+    "tested-versions" : [
+      "1.0.2.v20150114"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.aether.util"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://repo1.maven|\"documentation-url\": \"https://repo1.maven' metadata | head -40" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/org.eclipse.aether/aether-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:21:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/6.0.0/HikariCP-6.0.0-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/3.0.1/findbugs-annotations-3.0.1-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+metadata/com.zaxxer/HikariCP-java7/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/zaxxer/HikariCP-java7/2.4.13/HikariCP-java7-2.4.13-javadoc.jar",
+metadata/org.glassfish.jaxb/jaxb-runtime/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/3.0.2/jaxb-runtime-3.0.2-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+metadata/javax.annotation/javax.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+metadata/org.checkerframework/checker-qual/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-javadoc.jar",
+metadata/org.checkerframework/checker-qual/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-javadoc.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-javadoc.jar",
+metadata/org.checkerframework/checker-compat-qual/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5-javadoc.jar",
+metadata/org.hdrhistogram/HdrHistogram/index.json:16:    "documentation-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/23.0.0/annotations-java5-23.0.0-javadoc.jar",
+metadata/commons-logging/commons-logging/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/ | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache-extras/beanshell/bsh/2.0b6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache-extras/beanshell/bsh/2.0b6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="bsh-2.0b6-javadoc.jar" title="bsh-2.0b6-javadoc.jar">bsh-2.0b6-javadoc.jar</a>                             2016-02-18 15:14    485841      
+<a href="bsh-2.0b6-javadoc.jar.asc" title="bsh-2.0b6-javadoc.jar.asc">bsh-2.0b6-javadoc.jar.asc</a>                         2016-02-18 15:14       173      
+<a href="bsh-2.0b6-javadoc.jar.md5" title="bsh-2.0b6-javadoc.jar.md5">bsh-2.0b6-javadoc.jar.md5</a>                         2016-02-18 15:14        32      
+<a href="bsh-2.0b6-javadoc.jar.sha1" title="bsh-2.0b6-javadoc.jar.sha1">bsh-2.0b6-javadoc.jar.sha1</a>                        2016-02-18 15:14        40      
+<a href="bsh-2.0b6-sources.jar" title="bsh-2.0b6-sources.jar">bsh-2.0b6-sources.jar</a>                             2016-02-18 15:14    302799      
+<a href="bsh-2.0b6-sources.jar.asc" title="bsh-2.0b6-sources.jar.asc">bsh-2.0b6-sources.jar.asc</a>                         2016-02-18 15:14       173      
+<a href="bsh-2.0b6-sources.jar.md5" title="bsh-2.0b6-sources.jar.md5">bsh-2.0b6-sources.jar.md5</a>                         2016-02-18 15:14        32      
+<a href="bsh-2.0b6-sources.jar.sha1" title="bsh-2.0b6-sources.jar.sha1">bsh-2.0b6-sources.jar.sha1</a>                        2016-02-18 15:14        40      
+<a href="bsh-2.0b6-src.zip" title="bsh-2.0b6-src.zip">bsh-2.0b6-src.zip</a>                                 2016-02-18 15:14   1997625      
+<a href="bsh-2.0b6-src.zip.asc" title="bsh-2.0b6-src.zip.asc">bsh-2.0b6-src.zip.asc</a>                             2016-02-18 15:14       173      
+<a href="bsh-2.0b6-src.zip.md5" title="bsh-2.0b6-src.zip.md5">bsh-2.0b6-src.zip.md5</a>                             2016-02-18 15:14        32      
+<a href="bsh-2.0b6-src.zip.sha1" title="bsh-2.0b6-src.zip.sha1">bsh-2.0b6-src.zip.sha1</a>                            2016-02-18 15:14        40      
+<a href="bsh-2.0b6.jar" title="bsh-2.0b6.jar">bsh-2.0b6.jar</a>                                     2016-02-18 15:14    389033      
+<a href="bsh-2.0b6.jar.asc" title="bsh-2.0b6.jar.asc">bsh-2.0b6.jar.asc</a>                                 2016-02-18 15:14       173      
+<a href="bsh-2.0b6.jar.md5" title="bsh-2.0b6.jar.md5">bsh-2.0b6.jar.md5</a>                                 2016-02-18 15:14        32      
+<a href="bsh-2.0b6.jar.sha1" title="bsh-2.0b6.jar.sha1">bsh-2.0b6.jar.sha1</a>                                2016-02-18 15:14        40      
+<a href="bsh-2.0b6.pom" title="bsh-2.0b6.pom">bsh-2.0b6.pom</a>                                     2016-02-18 15:14      4989      
+<a href="bsh-2.0b6.pom.asc" title="bsh-2.0b6.pom.asc">bsh-2.0b6.pom.asc</a>                                 2016-02-18 15:14       173      
+<a href="bsh-2.0b6.pom.md5" title="bsh-2.0b6.pom.md5">bsh-2.0b6.pom.md5</a>                                 2016-02-18 15:14        32      
+<a href="bsh-2.0b6.pom.sha1" title="bsh-2.0b6.pom.sha1">bsh-2.0b6.pom.sha1</a>                                2016-02-18 15:14        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -L -s -o "$tmp/bsh-2.0b6-javadoc.jar" https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-javadoc.jar; jar tf "$tmp/bsh-2.0b6-javadoc.jar" | sed -n '"'1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -L -s -o "$tmp/bsh-2.0b6-sources.jar" https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-sources.jar; jar tf "$tmp/bsh-2.0b6-sources.jar" | sed -n '"'1,160p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 120ms:
+bsh/
+bsh/BSHAllocationExpression.java
+bsh/BSHAmbiguousName.java
+bsh/BSHArguments.java
+bsh/BSHArrayDimensions.java
+bsh/BSHArrayInitializer.java
+bsh/BSHAssignment.java
+bsh/BSHBinaryExpression.java
+bsh/BSHBlock.java
+bsh/BSHCastExpression.java
+bsh/BSHClassDeclaration.java
+bsh/BSHEnhancedForStatement.java
+bsh/BSHForStatement.java
+bsh/BSHFormalComment.java
+bsh/BSHFormalParameter.java
+bsh/BSHFormalParameters.java
+bsh/BSHIfStatement.java
+bsh/BSHImportDeclaration.java
+bsh/BSHLiteral.java
+bsh/BSHMethodDeclaration.java
+bsh/BSHMethodInvocation.java
+bsh/BSHPackageDeclaration.java
+bsh/BSHPrimaryExpression.java
+bsh/BSHPrimarySuffix.java
+bsh/BSHPrimitiveType.java
+bsh/BSHReturnStatement.java
+bsh/BSHReturnType.java
+bsh/BSHStatementExpressionList.java
+bsh/BSHSwitchLabel.java
+bsh/BSHSwitchStatement.java
+bsh/BSHTernaryExpression.java
+bsh/BSHThrowStatement.java
+bsh/BSHTryStatement.java
+bsh/BSHType.java
+bsh/BSHTypedVariableDeclaration.java
+bsh/BSHUnaryExpression.java
+bsh/BSHVariableDeclarator.java
+bsh/BSHWhileStatement.java
+bsh/BlockNameSpace.java
+bsh/BshClassManager.java
+bsh/BshIterator.java
+bsh/BshMethod.java
+bsh/CallStack.java
+bsh/Capabilities.java
+bsh/ClassGenerator.java
+bsh/ClassGeneratorImpl.java
+bsh/ClassGeneratorUtil.java
+bsh/ClassIdentifier.java
+bsh/ClassPathException.java
+bsh/CollectionManager.java
+bsh/CommandLineReader.java
+bsh/Console.java
+bsh/ConsoleInterface.java
+bsh/DelayedEvalBshMethod.java
+bsh/EvalError.java
+bsh/ExternalNameSpace.java
+bsh/Interpreter.java
+bsh/InterpreterError.java
+bsh/JJTParserState.java
+bsh/JThis.java
+bsh/JavaCharStream.java
+bsh/LHS.java
+bsh/Modifiers.java
+bsh/Name.java
+bsh/NameSource.java
+bsh/NameSpace.java
+bsh/Node.java
+bsh/ParseException.java
+bsh/Parser.java
+bsh/ParserConstants.java
+bsh/ParserTokenManager.java
+bsh/ParserTreeConstants.java
+bsh/Primitive.java
+bsh/Reflect.java
+bsh/ReflectError.java
+bsh/ReflectManager.java
+bsh/Remote.java
+bsh/ReturnControl.java
+bsh/SimpleNode.java
+bsh/StringUtil.java
+bsh/TargetError.java
+bsh/This.java
+bsh/Token.java
+bsh/TokenMgrError.java
+bsh/Types.java
+bsh/UtilEvalError.java
+bsh/UtilTargetError.java
+bsh/Variable.java
+bsh/XThis.java
+bsh/classpath/
+bsh/classpath/BshClassLoader.java
+bsh/classpath/BshClassPath.java
+bsh/classpath/ClassManagerImpl.java
+bsh/classpath/ClassPathListener.java
+bsh/classpath/DiscreteFilesClassLoader.java
+bsh/collection/
+bsh/collection/CollectionIterator.java
+bsh/collection/CollectionManagerImpl.java
+bsh/commands/
+bsh/commands/dir.java
+bsh/reflect/
+bsh/reflect/ReflectManagerImpl.java
+bsh/servlet/
+bsh/servlet/BshServlet.java
+bsh/servlet/SimpleTemplate.java
+bsh/util/
+bsh/util/AWTConsole.java
+bsh/util/AWTDemoApplet.java
+bsh/util/AWTRemoteApplet.java
+bsh/util/BshCanvas.java
+bsh/util/ClassBrowser.java
+bsh/util/GUIConsoleInterface.java
+bsh/util/Httpd.java
+bsh/util/JConsole.java
+bsh/util/JDemoApplet.java
+bsh/util/JRemoteApplet.java
+bsh/util/NameCompletion.java
+bsh/util/NameCompletionTable.java
+bsh/util/Sessiond.java
+bsh/util/Util.java
+
+ succeeded in 130ms:
+bsh/
+bsh/class-use/
+bsh/classpath/
+bsh/classpath/class-use/
+bsh/reflect/
+bsh/reflect/class-use/
+bsh/util/
+bsh/util/class-use/
+allclasses-frame.html
+allclasses-noframe.html
+bsh/BSHFormalComment.html
+bsh/BSHPackageDeclaration.html
+bsh/BshClassManager.Listener.html
+bsh/BshClassManager.html
+bsh/BshIterator.html
+bsh/BshMethod.html
+bsh/CallStack.html
+bsh/Capabilities.Unavailable.html
+bsh/Capabilities.html
+bsh/ClassGenerator.html
+bsh/ClassGeneratorImpl.html
+bsh/ClassGeneratorUtil.ConstructorArgs.html
+bsh/ClassGeneratorUtil.html
+bsh/ClassIdentifier.html
+bsh/ClassPathException.html
+bsh/CollectionManager.BasicBshIterator.html
+bsh/CollectionManager.html
+bsh/Console.html
+bsh/ConsoleInterface.html
+bsh/DelayedEvalBshMethod.html
+bsh/EvalError.html
+bsh/ExternalNameSpace.html
+bsh/Interpreter.html
+bsh/InterpreterError.html
+bsh/JavaCharStream.html
+bsh/Modifiers.html
+bsh/NameSource.Listener.html
+bsh/NameSource.html
+bsh/NameSpace.html
+bsh/ParseException.html
+bsh/Parser.html
+bsh/ParserConstants.html
+bsh/ParserTokenManager.html
+bsh/ParserTreeConstants.html
+bsh/Primitive.html
+bsh/ReflectManager.html
+bsh/Remote.html
+bsh/StringUtil.html
+bsh/TargetError.html
+bsh/This.html
+bsh/Token.html
+bsh/TokenMgrError.html
+bsh/UtilEvalError.html
+bsh/UtilTargetError.html
+bsh/Variable.html
+bsh/XThis.html
+bsh/class-use/BSHFormalComment.html
+bsh/class-use/BSHPackageDeclaration.html
+bsh/class-use/BshClassManager.Listener.html
+bsh/class-use/BshClassManager.html
+bsh/class-use/BshIterator.html
+bsh/class-use/BshMethod.html
+bsh/class-use/CallStack.html
+bsh/class-use/Capabilities.Unavailable.html
+bsh/class-use/Capabilities.html
+bsh/class-use/ClassGenerator.html
+bsh/class-use/ClassGeneratorImpl.html
+bsh/class-use/ClassGeneratorUtil.ConstructorArgs.html
+bsh/class-use/ClassGeneratorUtil.html
+bsh/class-use/ClassIdentifier.html
+bsh/class-use/ClassPathException.html
+bsh/class-use/CollectionManager.BasicBshIterator.html
+bsh/class-use/CollectionManager.html
+bsh/class-use/Console.html
+bsh/class-use/ConsoleInterface.html
+bsh/class-use/DelayedEvalBshMethod.html
+bsh/class-use/EvalError.html
+bsh/class-use/ExternalNameSpace.html
+bsh/class-use/Interpreter.html
+bsh/class-use/InterpreterError.html
+bsh/class-use/JavaCharStream.html
+bsh/class-use/Modifiers.html
+bsh/class-use/NameSource.Listener.html
+bsh/class-use/NameSource.html
+bsh/class-use/NameSpace.html
+bsh/class-use/ParseException.html
+bsh/class-use/Parser.html
+bsh/class-use/ParserConstants.html
+bsh/class-use/ParserTokenManager.html
+bsh/class-use/ParserTreeConstants.html
+bsh/class-use/Primitive.html
+bsh/class-use/ReflectManager.html
+bsh/class-use/Remote.html
+bsh/class-use/StringUtil.html
+bsh/class-use/TargetError.html
+bsh/class-use/This.html
+bsh/class-use/Token.html
+bsh/class-use/TokenMgrError.html
+bsh/class-use/UtilEvalError.html
+bsh/class-use/UtilTargetError.html
+bsh/class-use/Variable.html
+bsh/class-use/XThis.html
+bsh/classpath/BshClassLoader.html
+bsh/classpath/BshClassPath.AmbiguousName.html
+bsh/classpath/BshClassPath.ClassSource.html
+bsh/classpath/BshClassPath.DirClassSource.html
+bsh/classpath/BshClassPath.GeneratedClassSource.html
+bsh/classpath/BshClassPath.JarClassSource.html
+bsh/classpath/BshClassPath.MappingFeedback.html
+bsh/classpath/BshClassPath.html
+bsh/classpath/ClassManagerImpl.html
+bsh/classpath/ClassPathListener.html
+bsh/classpath/DiscreteFilesClassLoader.ClassSourceMap.html
+bsh/classpath/DiscreteFilesClassLoader.html
+bsh/classpath/class-use/BshClassLoader.html
+bsh/classpath/class-use/BshClassPath.AmbiguousName.html
+bsh/classpath/class-use/BshClassPath.ClassSource.html
+bsh/classpath/class-use/BshClassPath.DirClassSource.html
+bsh/classpath/class-use/BshClassPath.GeneratedClassSource.html
+bsh/classpath/class-use/BshClassPath.JarClassSource.html
+
+codex
+The source ZIP contains `tests/` and `docs/`, while Maven also has dedicated `sources.jar` and `javadoc.jar` artifacts. I’m going to use Maven URLs for the version-specific source, tests, and docs, and the SCM repository URL from the published POM.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+diff --git a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+index cef0bd01246b39c380de33b25005142621b5456c..2eed0a0a6bcb5788e37ed559f336532124dbca66
+--- a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
++++ b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6"
++  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-sources.jar",
++  "repository-url" : "https://github.com/beanshell/beanshell/",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-javadoc.jar",
++  "description" : "BeanShell is an embeddable Java source interpreter that executes standard Java syntax at runtime. It also adds scripting conveniences such as loose typing, commands, and method closures for use in applications, scripts, and interactive shells."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+index cef0bd01246b39c380de33b25005142621b5456c..2eed0a0a6bcb5788e37ed559f336532124dbca66
+--- a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
++++ b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6"
++  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-sources.jar",
++  "repository-url" : "https://github.com/beanshell/beanshell/",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-javadoc.jar",
++  "description" : "BeanShell is an embeddable Java source interpreter that executes standard Java syntax at runtime. It also adds scripting conveniences such as loose typing, commands, and method closures for use in applications, scripts, and interactive shells."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache-extras.beanshell:bsh:2.0b6",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-sources.jar",
+  "repository-url": "https://github.com/beanshell/beanshell/",
+  "test-code-url": "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-src.zip",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-javadoc.jar",
+  "description": "BeanShell is an embeddable Java source interpreter that executes standard Java syntax at runtime. It also adds scripting conveniences such as loose typing, commands, and method closures for use in applications, scripts, and interactive shells."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+index cef0bd01246b39c380de33b25005142621b5456c..2eed0a0a6bcb5788e37ed559f336532124dbca66
+--- a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
++++ b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6"
++  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-sources.jar",
++  "repository-url" : "https://github.com/beanshell/beanshell/",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-javadoc.jar",
++  "description" : "BeanShell is an embeddable Java source interpreter that executes standard Java syntax at runtime. It also adds scripting conveniences such as loose typing, commands, and method closures for use in applications, scripts, and interactive shells."
+ }
+
+codex
+The JSON parses cleanly. I’m checking the worktree state because this file appears to live under `build/`, so it may not be tracked by Git diff.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git check-ignore -v build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json || true' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa
+ succeeded in 0ms:
+.gitignore:33:**/build	build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+
+diff --git a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+index cef0bd01246b39c380de33b25005142621b5456c..2eed0a0a6bcb5788e37ed559f336532124dbca66
+--- a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
++++ b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6"
++  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-sources.jar",
++  "repository-url" : "https://github.com/beanshell/beanshell/",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-javadoc.jar",
++  "description" : "BeanShell is an embeddable Java source interpreter that executes standard Java syntax at runtime. It also adds scripting conveniences such as loose typing, commands, and method closures for use in applications, scripts, and interactive shells."
+ }
+
+web search: 
+web search: repo1.maven.org org apache-extras beanshell bsh 2.0b6 sources jar javadoc jar src zip
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/
+codex
+Updated [org.apache-extras.beanshell-bsh-2.0b6.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json) with Maven Central URLs for `sources.jar`, `src.zip` tests, and `javadoc.jar`, plus the GitHub repository URL from the published POM. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/))
+
+I left `language` absent because this is not a Kotlin or Scala-specific library. Verified the JSON parses with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+index cef0bd01246b39c380de33b25005142621b5456c..2eed0a0a6bcb5788e37ed559f336532124dbca66
+--- a/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
++++ b/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6"
++  "coordinates" : "org.apache-extras.beanshell:bsh:2.0b6",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-sources.jar",
++  "repository-url" : "https://github.com/beanshell/beanshell/",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-src.zip",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6-javadoc.jar",
++  "description" : "BeanShell is an embeddable Java source interpreter that executes standard Java syntax at runtime. It also adds scripting conveniences such as loose typing, commands, and method closures for use in applications, scripts, and interactive shells."
+ }
+
+2026-04-28T07:03:26.810456Z ERROR codex_core::session: failed to record rollout items: thread 019dd2e5-552b-76e1-a6b4-dbf33fc47ceb not found
+tokens used
+60,790
+Updated [org.apache-extras.beanshell-bsh-2.0b6.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa/build/discovered-artifact-metadata/org.apache-extras.beanshell-bsh-2.0b6.json) with Maven Central URLs for `sources.jar`, `src.zip` tests, and `javadoc.jar`, plus the GitHub repository URL from the published POM. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache-extras/beanshell/bsh/2.0b6/))
+
+I left `language` absent because this is not a Kotlin or Scala-specific library. Verified the JSON parses with `jq`.
+Ran agent for org.apache-extras.beanshell:bsh:2.0b6 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa/build/agent-artifact-discovery-logs/org.apache-extras.beanshell-bsh-2.0b6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2369-09df0baa/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 14s
+9 actionable tasks: 4 executed, 5 from cache
