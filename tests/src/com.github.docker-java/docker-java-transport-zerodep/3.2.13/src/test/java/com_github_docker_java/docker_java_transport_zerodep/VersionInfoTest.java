@@ -23,8 +23,8 @@ public class VersionInfoTest {
         assertThat(versionInfo).isNotNull();
         assertThat(versionInfo.getPackage()).isEqualTo(CORE5_PACKAGE);
         assertThat(versionInfo.getModule()).isEqualTo("httpcore5");
-        assertThat(versionInfo.getRelease()).isEqualTo(VersionInfo.UNAVAILABLE);
-        assertThat(versionInfo.getTimestamp()).isEqualTo(VersionInfo.UNAVAILABLE);
+        assertThat(versionInfo.getRelease()).isNotEmpty().isNotEqualTo("${pom.version}");
+        assertThat(versionInfo.getTimestamp()).isNotEmpty().isNotEqualTo("${mvn.timestamp}");
         assertThat(versionInfo.getClassloader()).isEqualTo(classLoader.toString());
         assertThat(versionInfo.toString()).contains(CORE5_PACKAGE, "httpcore5");
     }
@@ -43,8 +43,14 @@ public class VersionInfoTest {
 
     @Test
     void getSoftwareInfoUsesAvailableVersionMetadata() {
+        VersionInfo versionInfo = VersionInfo.loadVersionInfo(CORE5_PACKAGE, VersionInfo.class.getClassLoader());
         String softwareInfo = VersionInfo.getSoftwareInfo("docker-java-zerodep", CORE5_PACKAGE, VersionInfo.class);
 
-        assertThat(softwareInfo).isEqualTo("docker-java-zerodep (Java/" + System.getProperty("java.version") + ")");
+        assertThat(versionInfo).isNotNull();
+        String expectedNameAndRelease = VersionInfo.UNAVAILABLE.equals(versionInfo.getRelease())
+                ? "docker-java-zerodep"
+                : "docker-java-zerodep/" + versionInfo.getRelease();
+        assertThat(softwareInfo)
+                .isEqualTo(expectedNameAndRelease + " (Java/" + System.getProperty("java.version") + ")");
     }
 }
