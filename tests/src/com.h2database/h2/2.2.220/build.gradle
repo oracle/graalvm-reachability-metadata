@@ -15,7 +15,17 @@ dependencies {
 	testImplementation("org.assertj:assertj-core:3.22.0")
 }
 
+test {
+    systemProperty 'h2.javaObjectSerializer', 'h2.JdbcUtilsTest$PassThroughJavaObjectSerializer'
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('-Dh2.javaObjectSerializer=h2.JdbcUtilsTest$PassThroughJavaObjectSerializer')
+            runtimeArgs('-Dh2.javaObjectSerializer=h2.JdbcUtilsTest$PassThroughJavaObjectSerializer')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
