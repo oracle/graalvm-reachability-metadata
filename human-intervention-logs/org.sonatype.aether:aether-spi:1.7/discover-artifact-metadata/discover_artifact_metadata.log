@@ -1,0 +1,1200 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd1d1-531e-7473-9839-cc71fbdef9a1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sonatype.aether:aether-spi:1.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+- Set "coordinates" to "org.sonatype.aether:aether-spi:1.7".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central first, then check the existing JSON shape before editing the discovered metadata file.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+{
+  "coordinates" : "org.sonatype.aether:aether-spi:1.7"
+}
+
+exec
+/usr/bin/bash -lc 'rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+
+exec
+/usr/bin/bash -lc 'find . -name AGENTS.md -print' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+./AGENTS.md
+./tests/src/AGENTS.md
+
+codex
+The target file currently only has coordinates, so this is a direct metadata fill-in. I’m checking Maven Central for sources, test artifacts, Javadocs, and the POM SCM links to avoid guessing old Aether URLs.
+web search: 
+web search: Maven Central org.sonatype.aether aether-spi 1.7 sources javadoc tests
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-test-sources.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 132ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2008 Sonatype, Inc. All rights reserved.
+
+This program is licensed to you under the Apache License Version 2.0, 
+and you may not use this file except in compliance with the Apache License Version 2.0. 
+You may obtain a copy of the Apache License Version 2.0 at http://www.apache.org/licenses/LICENSE-2.0.
+
+Unless required by applicable law or agreed to in writing, 
+software distributed under the Apache License Version 2.0 is distributed on an 
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.aether</groupId>
+    <artifactId>aether-parent</artifactId>
+    <version>1.7</version>
+  </parent>
+
+  <artifactId>aether-spi</artifactId>
+
+  <name>Aether :: SPI</name>
+  <description>
+    The service provider interface for repository system implementations and repository connectors.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ exited 22 in 314ms:
+HTTP/2 404 
+date: Tue, 28 Apr 2026 02:01:04 GMT
+content-type: text/html
+cf-ray: 9f327a18cb863b64-GVA
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-tests.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ exited 22 in 243ms:
+HTTP/2 404 
+date: Tue, 28 Apr 2026 02:01:16 GMT
+content-type: text/html
+cf-ray: 9f327a677a906aa0-GVA
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-parent/1.7/aether-parent-1.7.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2008 Sonatype, Inc. All rights reserved.
+
+This program is licensed to you under the Apache License Version 2.0,
+and you may not use this file except in compliance with the Apache License Version 2.0.
+You may obtain a copy of the Apache License Version 2.0 at http://www.apache.org/licenses/LICENSE-2.0.
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the Apache License Version 2.0 is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.forge</groupId>
+    <artifactId>forge-parent</artifactId>
+    <version>6</version>
+  </parent>
+
+  <groupId>org.sonatype.aether</groupId>
+  <artifactId>aether-parent</artifactId>
+  <version>1.7</version>
+  <packaging>pom</packaging>
+
+  <name>Aether</name>
+  <description>
+    The parent and aggregator for the repository system.
+  </description>
+  <url>http://aether.sonatype.org/</url>
+  <inceptionYear>2010</inceptionYear>
+
+  <organization>
+    <name>Sonatype, Inc.</name>
+    <url>http://www.sonatype.com</url>
+  </organization>
+
+  <mailingLists>
+    <mailingList>
+      <name>Aether Developers List</name>
+      <subscribe>aether-dev-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-dev-unsubscribe@sonatype.org</unsubscribe>
+      <post>aether-dev@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Aether Users List</name>
+      <subscribe>aether-user-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-user-unsubscribe@sonatype.org</unsubscribe>
+      <post>aether-user@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Aether Commits List</name>
+      <subscribe>aether-scm-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-scm-unsubscribe@sonatype.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/sonatype-aether.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/sonatype-aether.git</developerConnection>
+    <url>git@github.com:sonatype/sonatype-aether.git</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.sonatype.org/browse/AETHER</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Hudson</system>
+    <url>https://grid.sonatype.org/ci/job/Aether/</url>
+  </ciManagement>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>aether-api</module>
+    <module>aether-spi</module>
+    <module>aether-util</module>
+    <module>aether-impl</module>
+    <module>aether-test-util</module>
+    <module>aether-connector-file</module>
+    <module>aether-connector-wagon</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8.1</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <links>
+              <link>http://java.sun.com/javase/6/docs/api/</link>
+            </links>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.6</version>
+          <configuration>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java15</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+          <executions>
+            <execution>
+              <id>check-java-1.5-compat</id>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>1.5.5</version>
+          <executions>
+            <execution>
+              <id>generate-components-xml</id>
+              <goals>
+                <goal>generate-metadata</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>demo</id>
+      <modules>
+        <module>aether-demo</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.apache.resources</groupId>
+                <artifactId>apache-source-release-assembly-descriptor</artifactId>
+                <version>1.0.2</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>attach-source-release-distro</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                  <descriptorRefs>
+                    <descriptorRef>source-release</descriptorRef>
+                  </descriptorRefs>
+                  <tarLongFileFormat>gnu</tarLongFileFormat>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/aether/aether-spi/1.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/aether/aether-spi/1.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="aether-spi-1.7-javadoc.jar" title="aether-spi-1.7-javadoc.jar">aether-spi-1.7-javadoc.jar</a>                        2010-10-04 09:01    122435      
+<a href="aether-spi-1.7-javadoc.jar.asc" title="aether-spi-1.7-javadoc.jar.asc">aether-spi-1.7-javadoc.jar.asc</a>                    2010-10-04 09:01       194      
+<a href="aether-spi-1.7-javadoc.jar.asc.md5" title="aether-spi-1.7-javadoc.jar.asc.md5">aether-spi-1.7-javadoc.jar.asc.md5</a>                2010-10-04 09:01        32      
+<a href="aether-spi-1.7-javadoc.jar.asc.sha1" title="aether-spi-1.7-javadoc.jar.asc.sha1">aether-spi-1.7-javadoc.jar.asc.sha1</a>               2010-10-04 09:01        40      
+<a href="aether-spi-1.7-javadoc.jar.md5" title="aether-spi-1.7-javadoc.jar.md5">aether-spi-1.7-javadoc.jar.md5</a>                    2010-10-04 09:01        32      
+<a href="aether-spi-1.7-javadoc.jar.sha1" title="aether-spi-1.7-javadoc.jar.sha1">aether-spi-1.7-javadoc.jar.sha1</a>                   2010-10-04 09:01        40      
+<a href="aether-spi-1.7-sources.jar" title="aether-spi-1.7-sources.jar">aether-spi-1.7-sources.jar</a>                        2010-10-04 09:01     18055      
+<a href="aether-spi-1.7-sources.jar.asc" title="aether-spi-1.7-sources.jar.asc">aether-spi-1.7-sources.jar.asc</a>                    2010-10-04 09:01       194      
+<a href="aether-spi-1.7-sources.jar.asc.md5" title="aether-spi-1.7-sources.jar.asc.md5">aether-spi-1.7-sources.jar.asc.md5</a>                2010-10-04 09:01        32      
+<a href="aether-spi-1.7-sources.jar.asc.sha1" title="aether-spi-1.7-sources.jar.asc.sha1">aether-spi-1.7-sources.jar.asc.sha1</a>               2010-10-04 09:01        40      
+<a href="aether-spi-1.7-sources.jar.md5" title="aether-spi-1.7-sources.jar.md5">aether-spi-1.7-sources.jar.md5</a>                    2010-10-04 09:01        32      
+<a href="aether-spi-1.7-sources.jar.sha1" title="aether-spi-1.7-sources.jar.sha1">aether-spi-1.7-sources.jar.sha1</a>                   2010-10-04 09:01        40      
+<a href="aether-spi-1.7.jar" title="aether-spi-1.7.jar">aether-spi-1.7.jar</a>                                2010-10-04 09:01     13549      
+<a href="aether-spi-1.7.jar.asc" title="aether-spi-1.7.jar.asc">aether-spi-1.7.jar.asc</a>                            2010-10-04 09:01       194      
+<a href="aether-spi-1.7.jar.asc.md5" title="aether-spi-1.7.jar.asc.md5">aether-spi-1.7.jar.asc.md5</a>                        2010-10-04 09:01        32      
+<a href="aether-spi-1.7.jar.asc.sha1" title="aether-spi-1.7.jar.asc.sha1">aether-spi-1.7.jar.asc.sha1</a>                       2010-10-04 09:01        40      
+<a href="aether-spi-1.7.jar.md5" title="aether-spi-1.7.jar.md5">aether-spi-1.7.jar.md5</a>                            2010-10-04 09:01        32      
+<a href="aether-spi-1.7.jar.sha1" title="aether-spi-1.7.jar.sha1">aether-spi-1.7.jar.sha1</a>                           2010-10-04 09:01        40      
+<a href="aether-spi-1.7.pom" title="aether-spi-1.7.pom">aether-spi-1.7.pom</a>                                2010-10-04 09:01      1741      
+<a href="aether-spi-1.7.pom.asc" title="aether-spi-1.7.pom.asc">aether-spi-1.7.pom.asc</a>                            2010-10-04 09:01       194      
+<a href="aether-spi-1.7.pom.asc.md5" title="aether-spi-1.7.pom.asc.md5">aether-spi-1.7.pom.asc.md5</a>                        2010-10-04 09:01        32      
+<a href="aether-spi-1.7.pom.asc.sha1" title="aether-spi-1.7.pom.asc.sha1">aether-spi-1.7.pom.asc.sha1</a>                       2010-10-04 09:01        40      
+<a href="aether-spi-1.7.pom.md5" title="aether-spi-1.7.pom.md5">aether-spi-1.7.pom.md5</a>                            2010-10-04 09:01        32      
+<a href="aether-spi-1.7.pom.sha1" title="aether-spi-1.7.pom.sha1">aether-spi-1.7.pom.sha1</a>                           2010-10-04 09:01        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 128ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:01:20 GMT
+content-type: application/java-archive
+content-length: 122435
+cf-ray: 9f327a819f0e3b58-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 18301
+etag: "f57593188ef3510a525ddc3875f5abda"
+last-modified: Mon, 04 Oct 2010 09:01:13 GMT
+x-checksum-md5: f57593188ef3510a525ddc3875f5abda
+x-checksum-sha1: cd44a360628c0717c0b55c01c4df8bddda377cd7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: site:github.com/sonatype/sonatype-aether aether-1.7 tag
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url' -n . | head -80" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:242:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:243:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:244:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:245:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:28:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:32:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:67:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:68:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:168:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:194:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:303:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - repository-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:351:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:352:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:353:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:354:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:361:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:364:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:365:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:366:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+./docs/CONTRIBUTING.md:108:* `source-code-url`: URL to the metadata source code location for this index entry.
+./docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+./docs/CONTRIBUTING.md:110:* `test-code-url`: URL to the test source code location for this index entry.
+./docs/CONTRIBUTING.md:111:* `documentation-url`: URL to the project documentation for this index entry.
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:179:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:181:                .containsEntry("documentation-url", "https://example.com/docs")
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:57:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Set missing \"repository-url\" to the selected repository URL.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:59:                .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:60:                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:65:                .contains("- source-code-url: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:120:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:149:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:219:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:220:                    "repository-url": "https://example.com/repository-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:221:                    "test-code-url": "https://example.com/tests-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:222:                    "documentation-url": "https://example.com/docs-a",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' AGENTS.md" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+# Development Cheat Sheet
+
+## Prerequisites (assume exists)
+- JAVA_HOME set to JDK 21 (GraalVM recommended to match CI)
+- Docker
+- grype v0.104.0 (install: curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin)
+
+## Setup
+- Always use Gradle wrapper from repo root:
+  - Unix: ./gradlew <task> [options]
+  - Windows: gradlew.bat <task> [options]
+- Tip: add --stacktrace for debugging
+
+## One command for complete infrastructure testing
+./gradlew testAllInfra -Pparallelism=4 --stacktrace
+
+Run the future-defaults lane locally with:
+GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew testAllInfra -Pparallelism=4 --stacktrace
+
+## Code Style
+- Always try to reuse existing code.
+- Be assertive in code.
+- Write type annotations in all functions and most variables.
+- Document code without being too verbose.
+- In Java and Groovy, always import classes and use them without qualified names.
+- In Java use multi-line strings where possible.
+- In Java use the markdown style for comments.
+
+## Testing individual components
+
+- Clean previous build outputs for the selected coordinates: ./gradlew clean -Pcoordinates=[group:artifact:version|k/n|all]
+- Pre-fetch Docker images allowed by metadata (used in tests) for the selected coordinates: ./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]
+- Validate reachability metadata files for the selected coordinates: ./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]
+- Run Checkstyle for the selected coordinates: ./gradlew checkstyle -Pcoordinates=[group:artifact:version|k/n|all]
+- Compile test sources for the selected coordinates: ./gradlew compileTestJava -Pcoordinates=[group:artifact:version|k/n|all]
+- Run JVM-based tests for the selected coordinates: ./gradlew javaTest -Pcoordinates=[group:artifact:version|k/n|all]
+- Build native images used by native tests (compile-only) for the selected coordinates: ./gradlew nativeTestCompile -Pcoordinates=[group:artifact:version|k/n|all]
+- Run all tests for the selected coordinates: ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
+
+
+## Check style and formatting
+- Style check: ./gradlew checkstyle
+- Format check: ./gradlew spotlessCheck
+
+## Testing the metadata
+- Single library (replace with group:artifact:version):
+  - ./gradlew pullAllowedDockerImages -Pcoordinates=group:artifact:version
+  - ./gradlew checkMetadataFiles -Pcoordinates=group:artifact:version
+  - ./gradlew test -Pcoordinates=group:artifact:version
+  - GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test -Pcoordinates=group:artifact:version
+- Sharded example (1/64):
+  - ./gradlew pullAllowedDockerImages -Pcoordinates=1/64
+  - ./gradlew checkMetadataFiles -Pcoordinates=1/64
+  - ./gradlew test -Pcoordinates=1/64
+
+Metadata CI currently runs both `current-defaults` and `future-defaults-all`.
+
+### Generating Metadata
+- Generate metadata for a certain library version:
+   - ./gradlew generateMetadata -Pcoordinates=com.hazelcast:hazelcast:5.2.1
+- Generate metadata for a certain library version and derive `user-code-filter.json` from the resolved library JAR:
+   - ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=fromJar
+- Generate metadata for a certain library version and create or update the user-code-filter.json:
+   - ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=org.example.app,com.acme.service
+
+### Fix failing tasks
+
+- Generates new metadata for library's new version which is failing native-image run:
+  - ./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=org.postgresql:postgresql:42.7.3 -PnewLibraryVersion=42.7.4
+
+## Docker Image Vulnerability Scanning
+- Changed images between commits:
+  - ./gradlew checkAllowedDockerImages --baseCommit=$(git rev-parse origin/master) --newCommit=$(git rev-parse HEAD)
+- All allowed images:
+  - ./gradlew checkAllowedDockerImages
+
+## Compatibility Automation (latest library versions)
+- List libs with newer upstream versions:
+  - ./gradlew fetchExistingLibrariesWithNewerVersions --quiet
+- Record a newly tested version:
+  - ./gradlew addTestedVersion -Pcoordinates="group:artifact:newVersion" --lastSupportedVersion="oldVersion"
+  - Example: ./gradlew addTestedVersion -Pcoordinates="org.postgresql:postgresql:42.7.4" --lastSupportedVersion="42.7.3"
+
+## Releases and Packaging
+- Package artifacts: ./gradlew package
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-parent/1.7/ | rg 'source|test|javadoc|tar|zip'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+<a href="aether-parent-1.7-source-release.zip" title="aether-parent-1.7-source-release.zip">aether-parent-1.7-source-release.zip</a>              2010-10-04 09:00    501412      
+<a href="aether-parent-1.7-source-release.zip.asc" title="aether-parent-1.7-source-release.zip.asc">aether-parent-1.7-source-release.zip.asc</a>          2010-10-04 09:00       194      
+<a href="aether-parent-1.7-source-release.zip.asc.md5" title="aether-parent-1.7-source-release.zip.asc.md5">aether-parent-1.7-source-release.zip.asc.md5</a>      2010-10-04 09:00        32      
+<a href="aether-parent-1.7-source-release.zip.asc.sha1" title="aether-parent-1.7-source-release.zip.asc.sha1">aether-parent-1.7-source-release.zip.asc.sha1</a>     2010-10-04 09:00        40      
+<a href="aether-parent-1.7-source-release.zip.md5" title="aether-parent-1.7-source-release.zip.md5">aether-parent-1.7-source-release.zip.md5</a>          2010-10-04 09:00        32      
+<a href="aether-parent-1.7-source-release.zip.sha1" title="aether-parent-1.7-source-release.zip.sha1">aether-parent-1.7-source-release.zip.sha1</a>         2010-10-04 09:00        40      
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/sonatype/sonatype-aether.git | rg '1\\.7|aether'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sonatype/sonatype-aether/tags?per_page=100' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 191ms:
+[
+  {
+    "name": "aether-1.13.1",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.13.1",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.13.1",
+    "commit": {
+      "sha": "50983e14b99ff694cbb150612352c621b3d7d695",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/50983e14b99ff694cbb150612352c621b3d7d695"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4xMy4x"
+  },
+  {
+    "name": "aether-1.13",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.13",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.13",
+    "commit": {
+      "sha": "ad94c23417e8dac7859abcc02bba4384dad4efb6",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/ad94c23417e8dac7859abcc02bba4384dad4efb6"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4xMw=="
+  },
+  {
+    "name": "aether-1.12",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.12",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.12",
+    "commit": {
+      "sha": "1adb762cd909d153ee88c505e45955cb62c271a8",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/1adb762cd909d153ee88c505e45955cb62c271a8"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4xMg=="
+  },
+  {
+    "name": "aether-1.11",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.11",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.11",
+    "commit": {
+      "sha": "fe0c31efdceef5cbf27e1916a82e5fe98717004f",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/fe0c31efdceef5cbf27e1916a82e5fe98717004f"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4xMQ=="
+  },
+  {
+    "name": "aether-1.10.1",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.10.1",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.10.1",
+    "commit": {
+      "sha": "76f98140fc1f16b7fcc9159c8735606fc4292a65",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/76f98140fc1f16b7fcc9159c8735606fc4292a65"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4xMC4x"
+  },
+  {
+    "name": "aether-1.10",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.10",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.10",
+    "commit": {
+      "sha": "d71c5197d2e20a2c316b287dfc982554a8cb20fa",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/d71c5197d2e20a2c316b287dfc982554a8cb20fa"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4xMA=="
+  },
+  {
+    "name": "aether-1.9",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.9",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.9",
+    "commit": {
+      "sha": "23f7474dd2de47a67484c10f74b44b6e2dc9b85f",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/23f7474dd2de47a67484c10f74b44b6e2dc9b85f"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS45"
+  },
+  {
+    "name": "aether-1.8.1",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.8.1",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.8.1",
+    "commit": {
+      "sha": "0688bc7895319a8547ab93ff21c2db4ae9e942ce",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/0688bc7895319a8547ab93ff21c2db4ae9e942ce"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS44LjE="
+  },
+  {
+    "name": "aether-1.8",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.8",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.8",
+    "commit": {
+      "sha": "af9a0611350ecf4aa835c97f5c97411811db62fe",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/af9a0611350ecf4aa835c97f5c97411811db62fe"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS44"
+  },
+  {
+    "name": "aether-1.7",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.7",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.7",
+    "commit": {
+      "sha": "6ef7c0475459b9204bea7370ae97c6ea2921f0f4",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/6ef7c0475459b9204bea7370ae97c6ea2921f0f4"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS43"
+  },
+  {
+    "name": "aether-1.6",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.6",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.6",
+    "commit": {
+      "sha": "77bd2525a90e1e5d4dbdf419de1c5d708e21186d",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/77bd2525a90e1e5d4dbdf419de1c5d708e21186d"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS42"
+  },
+  {
+    "name": "aether-1.5",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.5",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.5",
+    "commit": {
+      "sha": "91fe6f1329eab38c269d206388875af104fefaaf",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/91fe6f1329eab38c269d206388875af104fefaaf"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS41"
+  },
+  {
+    "name": "aether-1.4",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.4",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.4",
+    "commit": {
+      "sha": "cc08b07360bb850e166733a4d5461bf2e11387bd",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/cc08b07360bb850e166733a4d5461bf2e11387bd"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS40"
+  },
+  {
+    "name": "aether-1.3",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.3",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.3",
+    "commit": {
+      "sha": "f24b8f3c7a9276d58f03d0fad9a5af106810d9dc",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/f24b8f3c7a9276d58f03d0fad9a5af106810d9dc"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4z"
+  },
+  {
+    "name": "aether-1.2",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.2",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.2",
+    "commit": {
+      "sha": "f95e3e6c52d348493a8856543e87614526d6219c",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/f95e3e6c52d348493a8856543e87614526d6219c"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4y"
+  },
+  {
+    "name": "aether-1.1.1",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.1.1",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.1.1",
+    "commit": {
+      "sha": "fe17a2ba82cde9df247fe1ddebadc7f5fd107d3b",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/fe17a2ba82cde9df247fe1ddebadc7f5fd107d3b"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4xLjE="
+  },
+  {
+    "name": "aether-1.1",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.1",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.1",
+    "commit": {
+      "sha": "98c954e1862c944e3948a7e60e060f46bbdc2671",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/98c954e1862c944e3948a7e60e060f46bbdc2671"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4x"
+  },
+  {
+    "name": "aether-1.0",
+    "zipball_url": "https://api.github.com/repos/sonatype/sonatype-aether/zipball/refs/tags/aether-1.0",
+    "tarball_url": "https://api.github.com/repos/sonatype/sonatype-aether/tarball/refs/tags/aether-1.0",
+    "commit": {
+      "sha": "efa59b797625d22c8a534cf82c9ded5011e166bc",
+      "url": "https://api.github.com/repos/sonatype/sonatype-aether/commits/efa59b797625d22c8a534cf82c9ded5011e166bc"
+    },
+    "node_id": "MDM6UmVmNTkxNzg0OnJlZnMvdGFncy9hZXRoZXItMS4w"
+  }
+]
+
+ succeeded in 330ms:
+65b1adf4ebdcf54782f68def6661450d3fe3fa68	refs/tags/aether-1.0
+efa59b797625d22c8a534cf82c9ded5011e166bc	refs/tags/aether-1.0^{}
+e232a5dfd16fee712ac6ae065145e260df8d0132	refs/tags/aether-1.1
+98c954e1862c944e3948a7e60e060f46bbdc2671	refs/tags/aether-1.1^{}
+067f7a2049a23856bda88916f8efdacf1da03cc1	refs/tags/aether-1.1.1
+fe17a2ba82cde9df247fe1ddebadc7f5fd107d3b	refs/tags/aether-1.1.1^{}
+167930e0ad2f31741bbfb7b4fd39acd724bbdcac	refs/tags/aether-1.10
+d71c5197d2e20a2c316b287dfc982554a8cb20fa	refs/tags/aether-1.10^{}
+a656249f119581df50acc0528f8d2510c89d8547	refs/tags/aether-1.10.1
+76f98140fc1f16b7fcc9159c8735606fc4292a65	refs/tags/aether-1.10.1^{}
+5fdaf8ad32b374619fa4ebb03230b06467fafdd9	refs/tags/aether-1.11
+fe0c31efdceef5cbf27e1916a82e5fe98717004f	refs/tags/aether-1.11^{}
+e54745906a2072052fd42a5719f7c91963408e28	refs/tags/aether-1.12
+1adb762cd909d153ee88c505e45955cb62c271a8	refs/tags/aether-1.12^{}
+d842d0e2fe0fad6df396873f4939edc45fd3ea0d	refs/tags/aether-1.13
+ad94c23417e8dac7859abcc02bba4384dad4efb6	refs/tags/aether-1.13^{}
+d2c4b5c5e2bb3d5cb46dca694e3f6c355b8df750	refs/tags/aether-1.13.1
+50983e14b99ff694cbb150612352c621b3d7d695	refs/tags/aether-1.13.1^{}
+3310c1ff32811f8909d6d0c9ad160f7245644ca2	refs/tags/aether-1.2
+f95e3e6c52d348493a8856543e87614526d6219c	refs/tags/aether-1.2^{}
+05dc9fa24e4161c791badf25e1b3247cb5098f82	refs/tags/aether-1.3
+f24b8f3c7a9276d58f03d0fad9a5af106810d9dc	refs/tags/aether-1.3^{}
+797f3680f5a9ab0cffb857ddfc99bdbca21d6f3f	refs/tags/aether-1.4
+cc08b07360bb850e166733a4d5461bf2e11387bd	refs/tags/aether-1.4^{}
+cda45110d0252e3eb89d50d60afa50ef7b1367e1	refs/tags/aether-1.5
+91fe6f1329eab38c269d206388875af104fefaaf	refs/tags/aether-1.5^{}
+74f8754e096da3384b18d588c715572bfaeb7196	refs/tags/aether-1.6
+77bd2525a90e1e5d4dbdf419de1c5d708e21186d	refs/tags/aether-1.6^{}
+074c2fb83fb0bd88d7bfe4db80f9fec35c97edcb	refs/tags/aether-1.7
+6ef7c0475459b9204bea7370ae97c6ea2921f0f4	refs/tags/aether-1.7^{}
+52629b29b3920dd2d76b0b8c95a2834a94a0106a	refs/tags/aether-1.8
+af9a0611350ecf4aa835c97f5c97411811db62fe	refs/tags/aether-1.8^{}
+1b7a5bf7f3e9e181fde132e7ff319dde8ad23e3c	refs/tags/aether-1.8.1
+0688bc7895319a8547ab93ff21c2db4ae9e942ce	refs/tags/aether-1.8.1^{}
+333a9442d170baa4f6ad27bcf77c46d39946aab9	refs/tags/aether-1.9
+23f7474dd2de47a67484c10f74b44b6e2dc9b85f	refs/tags/aether-1.9^{}
+
+codex
+Maven Central has the `aether-spi-1.7-sources.jar` and `aether-spi-1.7-javadoc.jar`, and it does not publish `tests` or `test-sources` classifiers for this artifact. The parent release does publish a full source-release ZIP, so I’m checking whether that includes any `aether-spi` tests before deciding between a versioned test path and `N/A`.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether-parent/1.7/aether-parent-1.7-source-release.zip -o "$tmp/src.zip"; unzip -l "$tmp/src.zip" | rg '"'aether-spi/.*/test|aether-spi/src/test|aether-spi/.+Test|aether-spi/pom.xml|README|site|doc'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+     1741  2010-10-04 11:00   aether-parent-1.7/aether-spi/pom.xml
+      573  2010-10-04 11:00   aether-parent-1.7/README.md
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi?ref=aether-1.7' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/sonatype/sonatype-aether/contents?ref=aether-1.7 | rg 'README|site|src|aether-spi|doc|wiki|name|html_url'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 160ms:
+    "name": ".gitignore",
+    "html_url": "https://github.com/sonatype/sonatype-aether/blob/aether-1.7/.gitignore",
+    "name": "README.md",
+    "path": "README.md",
+    "url": "https://api.github.com/repos/sonatype/sonatype-aether/contents/README.md?ref=aether-1.7",
+    "html_url": "https://github.com/sonatype/sonatype-aether/blob/aether-1.7/README.md",
+    "download_url": "https://raw.githubusercontent.com/sonatype/sonatype-aether/aether-1.7/README.md",
+      "self": "https://api.github.com/repos/sonatype/sonatype-aether/contents/README.md?ref=aether-1.7",
+      "html": "https://github.com/sonatype/sonatype-aether/blob/aether-1.7/README.md"
+    "name": "aether-api",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api",
+    "name": "aether-connector-file",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-connector-file",
+    "name": "aether-connector-wagon",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-connector-wagon",
+    "name": "aether-demo",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-demo",
+    "name": "aether-impl",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-impl",
+    "name": "aether-spi",
+    "path": "aether-spi",
+    "url": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi?ref=aether-1.7",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-spi",
+      "self": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi?ref=aether-1.7",
+      "html": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-spi"
+    "name": "aether-test-util",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-test-util",
+    "name": "aether-util",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-util",
+    "name": "pom.xml",
+    "html_url": "https://github.com/sonatype/sonatype-aether/blob/aether-1.7/pom.xml",
+
+ succeeded in 163ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "aether-spi/pom.xml",
+    "sha": "ba5e3df13233fa4ac9c7db6a26263a9dd80f558e",
+    "size": 1693,
+    "url": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/pom.xml?ref=aether-1.7",
+    "html_url": "https://github.com/sonatype/sonatype-aether/blob/aether-1.7/aether-spi/pom.xml",
+    "git_url": "https://api.github.com/repos/sonatype/sonatype-aether/git/blobs/ba5e3df13233fa4ac9c7db6a26263a9dd80f558e",
+    "download_url": "https://raw.githubusercontent.com/sonatype/sonatype-aether/aether-1.7/aether-spi/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/pom.xml?ref=aether-1.7",
+      "git": "https://api.github.com/repos/sonatype/sonatype-aether/git/blobs/ba5e3df13233fa4ac9c7db6a26263a9dd80f558e",
+      "html": "https://github.com/sonatype/sonatype-aether/blob/aether-1.7/aether-spi/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "aether-spi/src",
+    "sha": "29a5af8512aae912f448d58e26737f83e938b631",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src?ref=aether-1.7",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-spi/src",
+    "git_url": "https://api.github.com/repos/sonatype/sonatype-aether/git/trees/29a5af8512aae912f448d58e26737f83e938b631",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src?ref=aether-1.7",
+      "git": "https://api.github.com/repos/sonatype/sonatype-aether/git/trees/29a5af8512aae912f448d58e26737f83e938b631",
+      "html": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-spi/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src/test?ref=aether-1.7' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src?ref=aether-1.7' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/sonatype/sonatype-aether/git/trees/aether-1.7?recursive=1 | rg 'aether-spi/.*/test|aether-spi/src/test|aether-spi/.+Test'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 149ms:
+[
+  {
+    "name": "main",
+    "path": "aether-spi/src/main",
+    "sha": "db66112325cca01b0a71f45b3faf6764ffd50354",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src/main?ref=aether-1.7",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-spi/src/main",
+    "git_url": "https://api.github.com/repos/sonatype/sonatype-aether/git/trees/db66112325cca01b0a71f45b3faf6764ffd50354",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src/main?ref=aether-1.7",
+      "git": "https://api.github.com/repos/sonatype/sonatype-aether/git/trees/db66112325cca01b0a71f45b3faf6764ffd50354",
+      "html": "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-spi/src/main"
+    }
+  }
+]
+
+ exited 22 in 156ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 1 in 302ms:
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-spi/src/main && curl -I -fsSL https://github.com/sonatype/sonatype-aether' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar && curl -I -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 134ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:01:54 GMT
+content-type: application/java-archive
+content-length: 122435
+cf-ray: 9f327b53f9513b57-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 297906
+etag: "f57593188ef3510a525ddc3875f5abda"
+last-modified: Mon, 04 Oct 2010 09:01:13 GMT
+x-checksum-md5: f57593188ef3510a525ddc3875f5abda
+x-checksum-sha1: cd44a360628c0717c0b55c01c4df8bddda377cd7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 1150ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:01:54 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bc536e60bc2c1eba21e342dfd4c74a2a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=KSLw9xchBvU%2FsLZyklLYuUWTr3ArIX6NJrRIA3H1ZW75qbc8tDLyRH%2F1u9uAUY5rfJaLkIS81ei%2BWIY7wGvrs6xuU58hu573tDn4qryV4i0cS0ifR5AvgEJmmOudLHT8reVSxewPsi2S57N6dLtjpOGUWfmgRq0ZccByl%2FKIZ6lZa60LW5CtFgnvoGVZdPKkdHUnSVRcODSBcqo6Rr%2FxHR0EC2raMskcujrFsdz6tZz%2BRQ37dIyLU95cxqx%2BjJqU1a4JdYijruxFyzjCPudfig%3D%3D--Wdw4I%2FMN7xs2PK3q--el%2FjtiFnrhvQcSIGD4vfGg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1578682684.1777341714; expires=Wed, 28 Apr 2027 02:01:54 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 02:01:54 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FD:1341EA:5CAB94E:46A6CD2:69F01512
+
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:01:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"4cf2de775d6d0776a66212245cb90455"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ID9NXuzRDVV6UX%2BQWdz0lMeY3LQm77PXYPk0n25mdBKOzDoivO4d1aHod4y50W55sgFZ0GJa9q4MWPM0DTtoOQusMUOwWKQUWEpiI2uZ8n97%2BoJJ0RxMQWD6KXFxSUMrz1oSsm%2BFWyqAj7na2uFt9NMK2sVY8xPAg8DZGl%2F8orEXIPxZl%2BEnD2JatlNfFirB2KAwdSXFlEwseAvhVCKHwOfaVJ2SGriktGCH64Y4EOtYgiE5sO0FkeUri6PXUz3I5pYTdxAKq0ZjkrpdVnK93g%3D%3D--6JVgMKaSQzfCgfvJ--wA4gxW%2BvY9Y123%2FN3qwp1w%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.104465028.1777341715; expires=Wed, 28 Apr 2027 02:01:55 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 02:01:55 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FE:123742:5FE354A:491851D:69F01513
+
+
+codex
+The `aether-spi` tag contains only `src/main` for that module, and the Maven artifact has no published test classifiers, so I’ll set `test-code-url` to `N/A`. I’m using the Maven sources and Javadoc JARs for the exact `1.7` version and the GitHub repository root from the POM SCM.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+index 498a0fccfab08c21baa9a9cd29e671491caf6b46..833566023fb38b9c9a1dde7c58d69daf38a730f8
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-spi:1.7"
++  "coordinates" : "org.sonatype.aether:aether-spi:1.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
++  "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+index 498a0fccfab08c21baa9a9cd29e671491caf6b46..833566023fb38b9c9a1dde7c58d69daf38a730f8
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-spi:1.7"
++  "coordinates" : "org.sonatype.aether:aether-spi:1.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
++  "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+{
+  "coordinates": "org.sonatype.aether:aether-spi:1.7",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+  "repository-url": "https://github.com/sonatype/sonatype-aether",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+  "description": "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+index 498a0fccfab08c21baa9a9cd29e671491caf6b46..833566023fb38b9c9a1dde7c58d69daf38a730f8
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-spi:1.7"
++  "coordinates" : "org.sonatype.aether:aether-spi:1.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
++  "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API."
+ }
+
+web search: 
+web search: https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-spi
+web search: 
+web search: repo.maven.apache.org maven2 org sonatype aether aether-spi 1.7 aether-spi-1.7-sources.jar javadoc
+exec
+/usr/bin/bash -lc 'nl -ba build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.sonatype.aether:aether-spi:1.7",
+     3	  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+     4	  "repository-url" : "https://github.com/sonatype/sonatype-aether",
+     5	  "test-code-url" : "N/A",
+     6	  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+     7	  "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API."
+     8	}
+
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+index 498a0fccfab08c21baa9a9cd29e671491caf6b46..833566023fb38b9c9a1dde7c58d69daf38a730f8
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-spi:1.7"
++  "coordinates" : "org.sonatype.aether:aether-spi:1.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
++  "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API."
+ }
+
+web search: 
+web search: Maven Central org.sonatype.aether aether-spi 1.7
+web search: 
+web search: github sonatype sonatype-aether aether-1.7 aether-spi
+web search: 
+web search: https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/
+web search: 
+web search: https://central.sonatype.com/artifact/org.sonatype.aether/aether-spi/1.7
+web search: 
+web search: https://central.sonatype.com/artifact/org.sonatype.aether/aether-spi/git%40github.com%3Asonatype/sonatype-aether.git/aether-spi
+web search: 
+web search: https://github.com/sonatype/sonatype-aether
+codex
+Updated [org.sonatype.aether-aether-spi-1.7.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json:1).
+
+I used Maven Central’s exact `1.7` sources and Javadoc artifacts, and set `test-code-url` to `N/A` because no test classifier is published for the artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/)) The repository is `sonatype/sonatype-aether`, and no `language` field was added because this is not a Kotlin or Scala-specific library. ([github.com](https://github.com/sonatype/sonatype-aether))
+
+Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+index 498a0fccfab08c21baa9a9cd29e671491caf6b46..833566023fb38b9c9a1dde7c58d69daf38a730f8
+--- a/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
++++ b/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.sonatype.aether:aether-spi:1.7"
++  "coordinates" : "org.sonatype.aether:aether-spi:1.7",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
++  "repository-url" : "https://github.com/sonatype/sonatype-aether",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
++  "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API."
+ }
+
+2026-04-28T02:02:50.506997Z ERROR codex_core::session: failed to record rollout items: thread 019dd1d1-531e-7473-9839-cc71fbdef9a1 not found
+tokens used
+88,581
+Updated [org.sonatype.aether-aether-spi-1.7.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d/build/discovered-artifact-metadata/org.sonatype.aether-aether-spi-1.7.json:1).
+
+I used Maven Central’s exact `1.7` sources and Javadoc artifacts, and set `test-code-url` to `N/A` because no test classifier is published for the artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/org/sonatype/aether/aether-spi/1.7/)) The repository is `sonatype/sonatype-aether`, and no `language` field was added because this is not a Kotlin or Scala-specific library. ([github.com](https://github.com/sonatype/sonatype-aether))
+
+Validated the JSON with `jq`.
+Ran agent for org.sonatype.aether:aether-spi:1.7 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d/build/agent-artifact-discovery-logs/org.sonatype.aether-aether-spi-1.7.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2280-a461942d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 2s
+9 actionable tasks: 4 executed, 5 from cache
