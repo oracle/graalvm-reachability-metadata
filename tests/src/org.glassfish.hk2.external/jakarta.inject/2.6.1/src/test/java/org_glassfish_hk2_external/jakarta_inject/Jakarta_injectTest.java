@@ -136,6 +136,16 @@ public class Jakarta_injectTest {
     }
 
     @Test
+    void providerInjectedCollaboratorsCanResolveCircularServiceGraphs() {
+        CircularServices services = new CircularServices();
+        services.orderService = new OrderService(() -> services.invoiceService);
+        services.invoiceService = new InvoiceService(() -> services.orderService);
+
+        assertThat(services.orderService.submit("A-100")).isEqualTo("order A-100 -> invoice for accepted A-100");
+        assertThat(services.invoiceService.describe("A-101")).isEqualTo("invoice for pending A-101");
+    }
+
+    @Test
     void singletonScopedProviderSharesOneLazyInstanceAcrossConsumers() {
         AtomicInteger createdInstances = new AtomicInteger();
         Provider<SharedCounter> counterProvider = new SharedCounterProvider(createdInstances);
@@ -311,6 +321,43 @@ public class Jakarta_injectTest {
 
         private String greet(String audience) {
             return greetingProvider.get().get() + ", " + audience;
+        }
+    }
+
+    private static final class CircularServices {
+        private OrderService orderService;
+        private InvoiceService invoiceService;
+    }
+
+    private static final class OrderService {
+        private final Provider<InvoiceService> invoiceServiceProvider;
+        private String acceptedOrderId;
+
+        @Inject
+        private OrderService(Provider<InvoiceService> invoiceServiceProvider) {
+            this.invoiceServiceProvider = invoiceServiceProvider;
+        }
+
+        private String submit(String orderId) {
+            acceptedOrderId = orderId;
+            return "order " + orderId + " -> " + invoiceServiceProvider.get().describe(orderId);
+        }
+
+        private String status(String orderId) {
+            return orderId.equals(acceptedOrderId) ? "accepted" : "pending";
+        }
+    }
+
+    private static final class InvoiceService {
+        private final Provider<OrderService> orderServiceProvider;
+
+        @Inject
+        private InvoiceService(Provider<OrderService> orderServiceProvider) {
+            this.orderServiceProvider = orderServiceProvider;
+        }
+
+        private String describe(String orderId) {
+            return "invoice for " + orderServiceProvider.get().status(orderId) + " " + orderId;
         }
     }
 
