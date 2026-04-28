@@ -14,25 +14,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CollectionBuilderDynamicAccessTest {
     @Test
     void readsEmptyTypedArrays() throws Exception {
-        String[] values = JSON.std.arrayOfFrom(String.class, "[]");
+        ArrayElement[] values = JSON.std.arrayOfFrom(ArrayElement.class, "[]");
 
         assertThat(values).isEmpty();
-        assertThat(values.getClass().getComponentType()).isSameAs(String.class);
+        assertThat(values.getClass().getComponentType()).isSameAs(ArrayElement.class);
     }
 
     @Test
     void readsSingletonTypedArrays() throws Exception {
-        String[] values = JSON.std.arrayOfFrom(String.class, "[\"solo\"]");
+        ArrayElement[] values = JSON.std.arrayOfFrom(ArrayElement.class, "[{\"name\":\"solo\"}]");
 
-        assertThat(values).containsExactly("solo");
-        assertThat(values.getClass().getComponentType()).isSameAs(String.class);
+        assertThat(values).singleElement().extracting(element -> element.name).isEqualTo("solo");
+        assertThat(values.getClass().getComponentType()).isSameAs(ArrayElement.class);
     }
 
     @Test
     void readsMultiValueTypedArrays() throws Exception {
-        String[] values = JSON.std.arrayOfFrom(String.class, "[\"left\",\"right\"]");
+        ArrayElement[] values = JSON.std.arrayOfFrom(ArrayElement.class,
+                "[{\"name\":\"left\"},{\"name\":\"right\"}]");
 
-        assertThat(values).containsExactly("left", "right");
-        assertThat(values.getClass().getComponentType()).isSameAs(String.class);
+        assertThat(values).extracting(element -> element.name).containsExactly("left", "right");
+        assertThat(values.getClass().getComponentType()).isSameAs(ArrayElement.class);
+    }
+
+    public static final class ArrayElement {
+        public String name;
     }
 }
