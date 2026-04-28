@@ -1,0 +1,1449 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd660-23ac-7ff1-8a10-780037f0a590
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jspapi:jsp-api:2.0-20040521
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.0-20040521".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+- Set "coordinates" to "jspapi:jsp-api:2.0-20040521".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream sources, then update the JSON in place with only fields I can support for the exact `2.0-20040521` version.
+web search: 
+web search: jspapi jsp-api 2.0-20040521 maven sources
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/
+codex
+Maven Central has the exact artifact directory, but it only exposes the binary JAR and POM for this coordinate, so I’m checking the artifact contents and upstream lineage before deciding whether exact-version source/test/doc URLs can be set confidently.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+{
+  "coordinates" : "jspapi:jsp-api:2.0-20040521"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.pom' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jspapi</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0-20040521</version>
+</project>
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/jsp-api.jar" https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.jar; jar tf "$tmp/jsp-api.jar" | sed -n '"'1,120p'; jar xf \""'$tmp/jsp-api.jar" META-INF/MANIFEST.MF 2>/dev/null || true; if [ -f META-INF/MANIFEST.MF ]; then sed -n '"'1,120p' META-INF/MANIFEST.MF; rm -rf META-INF; fi; rm -rf \""'$tmp"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+javax/
+javax/servlet/
+javax/servlet/jsp/
+javax/servlet/jsp/el/
+javax/servlet/jsp/resources/
+javax/servlet/jsp/tagext/
+javax/servlet/jsp/el/ELException.class
+javax/servlet/jsp/el/ELParseException.class
+javax/servlet/jsp/el/Expression.class
+javax/servlet/jsp/el/ExpressionEvaluator.class
+javax/servlet/jsp/el/FunctionMapper.class
+javax/servlet/jsp/el/VariableResolver.class
+javax/servlet/jsp/ErrorData.class
+javax/servlet/jsp/HttpJspPage.class
+javax/servlet/jsp/JspContext.class
+javax/servlet/jsp/JspEngineInfo.class
+javax/servlet/jsp/JspException.class
+javax/servlet/jsp/JspFactory.class
+javax/servlet/jsp/JspPage.class
+javax/servlet/jsp/JspTagException.class
+javax/servlet/jsp/JspWriter.class
+javax/servlet/jsp/PageContext.class
+javax/servlet/jsp/resources/jspxml.dtd
+javax/servlet/jsp/resources/jspxml.xsd
+javax/servlet/jsp/resources/jsp_2_0.xsd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_1.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_1_2.dtd
+javax/servlet/jsp/resources/web-jsptaglibrary_2_0.xsd
+javax/servlet/jsp/SkipPageException.class
+javax/servlet/jsp/tagext/BodyContent.class
+javax/servlet/jsp/tagext/BodyTag.class
+javax/servlet/jsp/tagext/BodyTagSupport.class
+javax/servlet/jsp/tagext/DynamicAttributes.class
+javax/servlet/jsp/tagext/FunctionInfo.class
+javax/servlet/jsp/tagext/IterationTag.class
+javax/servlet/jsp/tagext/JspFragment.class
+javax/servlet/jsp/tagext/JspTag.class
+javax/servlet/jsp/tagext/PageData.class
+javax/servlet/jsp/tagext/SimpleTag.class
+javax/servlet/jsp/tagext/SimpleTagSupport.class
+javax/servlet/jsp/tagext/Tag.class
+javax/servlet/jsp/tagext/TagAdapter.class
+javax/servlet/jsp/tagext/TagAttributeInfo.class
+javax/servlet/jsp/tagext/TagData.class
+javax/servlet/jsp/tagext/TagExtraInfo.class
+javax/servlet/jsp/tagext/TagFileInfo.class
+javax/servlet/jsp/tagext/TagInfo.class
+javax/servlet/jsp/tagext/TagLibraryInfo.class
+javax/servlet/jsp/tagext/TagLibraryValidator.class
+javax/servlet/jsp/tagext/TagSupport.class
+javax/servlet/jsp/tagext/TagVariableInfo.class
+javax/servlet/jsp/tagext/TryCatchFinally.class
+javax/servlet/jsp/tagext/ValidationMessage.class
+javax/servlet/jsp/tagext/VariableInfo.class
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: 1.4.2_01-b06 (Sun Microsystems Inc.)
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.public_draft
+Implementation-Vendor: Apache Software Foundation
+
+
+web search: 
+web search: 
+web search: 
+web search: jspapi jsp-api 2.0-20040521 maven sources
+web search: 
+web search: "Implementation-Version: 2.0.public_draft" "jsp-api"
+web search: 
+web search: "jsp-api-2.0-20040521.jar"
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/ | sed -n '1,200p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jspapi/jsp-api/2.0-20040521</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jspapi/jsp-api/2.0-20040521</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0-20040521.jar" title="jsp-api-2.0-20040521.jar">jsp-api-2.0-20040521.jar</a>                          2005-09-20 05:49     51279      
+<a href="jsp-api-2.0-20040521.jar.md5" title="jsp-api-2.0-20040521.jar.md5">jsp-api-2.0-20040521.jar.md5</a>                      2005-09-20 05:49        32      
+<a href="jsp-api-2.0-20040521.jar.sha1" title="jsp-api-2.0-20040521.jar.sha1">jsp-api-2.0-20040521.jar.sha1</a>                     2005-09-20 05:49        40      
+<a href="jsp-api-2.0-20040521.pom" title="jsp-api-2.0-20040521.pom">jsp-api-2.0-20040521.pom</a>                          2005-09-20 05:49       154      
+<a href="jsp-api-2.0-20040521.pom.md5" title="jsp-api-2.0-20040521.pom.md5">jsp-api-2.0-20040521.pom.md5</a>                      2005-09-20 05:49       145      
+<a href="jsp-api-2.0-20040521.pom.sha1" title="jsp-api-2.0-20040521.pom.sha1">jsp-api-2.0-20040521.pom.sha1</a>                     2005-09-20 05:49       153      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:49       119      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:49        83      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:49       138      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.jar.sha1; printf '\\n'; curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar.sha1; printf '\\n'; curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar.sha1; printf '\\n'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLO https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/jsp-api-2.0-20040521.jar; curl -fsSLO https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.jar; curl -fsSLO https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar -o jsp-api-2.0-flat.jar || true; sha1sum *.jar; rm -rf "$tmp"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 131ms:
+8d48cb70875a67782b1b80556bb28df5cf605b99  jsp-api-2.0-20040521.jar
+e6def06602b51b1d9be51f6c3fcdf163ecd01644  jsp-api-2.0.jar
+
+ succeeded in 300ms:
+8d48cb70875a67782b1b80556bb28df5cf605b99
+e749de55a88f61457866d80da527f5a01bc9c6f3
+e6def06602b51b1d9be51f6c3fcdf163ecd01644
+
+web search: 
+web search: https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/
+web search: 
+web search: "jsp-api-2.0-20040521-sources.jar"
+web search: 
+web search: "javax.servlet.jsp" "2.0.public_draft"
+web search: 
+web search: "jspapi" "jsp-api" "maven2"
+web search: 
+web search: https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0.public_draft/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0.public_draft/jsp-api-2.0.public_draft.pom' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0.public_draft</version>
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4.public_draft</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0.public_draft/ | sed -n '1,200p'; printf '\\nsha: '; curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp-api/2.0.public_draft/jsp-api-2.0.public_draft.jar.sha1; printf '\\n'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 478ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp-api/2.0.public_draft</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp-api/2.0.public_draft</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0.public_draft.pom" title="jsp-api-2.0.public_draft.pom">jsp-api-2.0.public_draft.pom</a>                      2006-11-06 01:08       388      
+<a href="jsp-api-2.0.public_draft.pom.md5" title="jsp-api-2.0.public_draft.pom.md5">jsp-api-2.0.public_draft.pom.md5</a>                  2006-11-06 01:08       160      
+<a href="jsp-api-2.0.public_draft.pom.sha1" title="jsp-api-2.0.public_draft.pom.sha1">jsp-api-2.0.public_draft.pom.sha1</a>                 2006-11-06 01:08       168      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-11-06 01:08       185      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-11-06 01:08        94      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-11-06 01:08       149      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+sha: curl: (22) The requested URL returned error: 404
+
+
+codex
+The binary identifies itself as the Java API for JSP 2.0 with Apache as implementation vendor, but the published POM has no SCM/project metadata. I’m checking whether an Apache Tomcat tag matches the binary closely enough to use as the exact source/test/documentation reference; if that chain is weak, I’ll mark those fields `N/A` per your instruction.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/jsp-api-2.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.servlet.jsp</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: javax/servlet/jsp/jsp-api/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>javax/servlet/jsp/jsp-api/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0-sources.jar" title="jsp-api-2.0-sources.jar">jsp-api-2.0-sources.jar</a>                           2006-07-17 11:09    118348      
+<a href="jsp-api-2.0-sources.jar.md5" title="jsp-api-2.0-sources.jar.md5">jsp-api-2.0-sources.jar.md5</a>                       2006-07-17 11:09        32      
+<a href="jsp-api-2.0-sources.jar.sha1" title="jsp-api-2.0-sources.jar.sha1">jsp-api-2.0-sources.jar.sha1</a>                      2006-07-17 11:09        40      
+<a href="jsp-api-2.0.jar" title="jsp-api-2.0.jar">jsp-api-2.0.jar</a>                                   2006-07-17 11:09     48457      
+<a href="jsp-api-2.0.jar.md5" title="jsp-api-2.0.jar.md5">jsp-api-2.0.jar.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.0.jar.sha1" title="jsp-api-2.0.jar.sha1">jsp-api-2.0.jar.sha1</a>                              2006-07-17 11:09        40      
+<a href="jsp-api-2.0.pom" title="jsp-api-2.0.pom">jsp-api-2.0.pom</a>                                   2006-07-17 11:09       157      
+<a href="jsp-api-2.0.pom.md5" title="jsp-api-2.0.pom.md5">jsp-api-2.0.pom.md5</a>                               2006-07-17 11:09        32      
+<a href="jsp-api-2.0.pom.sha1" title="jsp-api-2.0.pom.sha1">jsp-api-2.0.pom.sha1</a>                              2006-07-17 11:09        40      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-07-17 11:09       121      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-07-17 11:09        85      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-07-17 11:09        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/tomcat.git 'refs/tags/TOMCAT_5*' | sed -n '1,120p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 354ms:
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/tomcat.git | rg 'refs/tags/(5\\.|TOMCAT_5|TOMCAT_5_0|TOMCAT_5_5)' | sed -n '1,120p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/tomcat/tags?per_page=100 | sed -n '1,200p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-5/ | sed -n '1,160p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 158ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/tomcat/tomcat-5</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                        <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/tomcat/">Parent Directory</a>                                 -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="archive/">archive/</a>                    2006-04-14 18:34    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.28/">v5.0.28/</a>                    2004-08-29 01:00    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.30/">v5.0.30/</a>                    2004-11-24 17:46    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.12/">v5.5.12/</a>                    2005-09-23 14:03    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.16/">v5.5.16/</a>                    2006-03-16 13:53    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.17/">v5.5.17/</a>                    2006-04-14 18:34    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.20-copyforpermissions/">v5.5.20-copyforpermissions/</a> 2006-12-24 21:51    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.20-original/">v5.5.20-original/</a>           2007-01-02 12:15    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.20/">v5.5.20/</a>                    2006-09-30 16:06    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.23/">v5.5.23/</a>                    2007-03-08 21:15    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.25/">v5.5.25/</a>                    2007-09-07 17:40    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.26/">v5.5.26/</a>                    2008-02-04 21:21    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.27/">v5.5.27/</a>                    2008-09-05 22:09    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.28/">v5.5.28/</a>                    2010-04-20 16:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.29/">v5.5.29/</a>                    2010-04-20 15:48    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.30/">v5.5.30/</a>                    2010-07-08 18:24    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.31/">v5.5.31/</a>                    2010-09-16 12:59    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.32/">v5.5.32/</a>                    2011-01-23 20:54    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.33/">v5.5.33/</a>                    2011-02-08 13:25    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.34/">v5.5.34/</a>                    2011-09-18 19:25    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.35/">v5.5.35/</a>                    2012-06-13 23:11    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.36/">v5.5.36/</a>                    2012-10-09 17:19    -   
+<img src="/icons/unknown.gif" alt="[   ]"> <a href="KEYS">KEYS</a>                        2021-09-16 09:09   76K  
+<hr></pre>
+</body></html>
+
+ succeeded in 227ms:
+[
+  {
+    "name": "11.0.21",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.21",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.21",
+    "commit": {
+      "sha": "1d6b501b493c11ee6fdebae911c67ca214e28c82",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/1d6b501b493c11ee6fdebae911c67ca214e28c82"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4yMQ=="
+  },
+  {
+    "name": "11.0.20",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.20",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.20",
+    "commit": {
+      "sha": "1c65de6f27a3bac481514e56e3637785b65a4f2c",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/1c65de6f27a3bac481514e56e3637785b65a4f2c"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4yMA=="
+  },
+  {
+    "name": "11.0.19",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.19",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.19",
+    "commit": {
+      "sha": "e1e70900e6b28375510af3cf22956d274737634c",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/e1e70900e6b28375510af3cf22956d274737634c"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xOQ=="
+  },
+  {
+    "name": "11.0.18",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.18",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.18",
+    "commit": {
+      "sha": "27c50670878728255730533129c4a53344191605",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/27c50670878728255730533129c4a53344191605"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xOA=="
+  },
+  {
+    "name": "11.0.17",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.17",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.17",
+    "commit": {
+      "sha": "c4ac38afc5edd64a71a000955fee47ee6f9c0e27",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/c4ac38afc5edd64a71a000955fee47ee6f9c0e27"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xNw=="
+  },
+  {
+    "name": "11.0.16",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.16",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.16",
+    "commit": {
+      "sha": "f2a18d2aa892941e91e214f954a5ee31d60093ed",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/f2a18d2aa892941e91e214f954a5ee31d60093ed"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xNg=="
+  },
+  {
+    "name": "11.0.15",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.15",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.15",
+    "commit": {
+      "sha": "692d6ffc5aa75d6804749ffcc14353c6b046fd92",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/692d6ffc5aa75d6804749ffcc14353c6b046fd92"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xNQ=="
+  },
+  {
+    "name": "11.0.14",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.14",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.14",
+    "commit": {
+      "sha": "fb4c518b886e07c9c101b8036eb857f4c7af2510",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/fb4c518b886e07c9c101b8036eb857f4c7af2510"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xNA=="
+  },
+  {
+    "name": "11.0.13",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.13",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.13",
+    "commit": {
+      "sha": "51fd0788b401d589acb9bede8cbd6a495a9ca943",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/51fd0788b401d589acb9bede8cbd6a495a9ca943"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xMw=="
+  },
+  {
+    "name": "11.0.12",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.12",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.12",
+    "commit": {
+      "sha": "7be88ea333d4b1f0ff75b8f4bc743f7f25262886",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/7be88ea333d4b1f0ff75b8f4bc743f7f25262886"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xMg=="
+  },
+  {
+    "name": "11.0.11",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.11",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.11",
+    "commit": {
+      "sha": "c5f2266f27baa5148df29cd3c4139d2450e1019c",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/c5f2266f27baa5148df29cd3c4139d2450e1019c"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xMQ=="
+  },
+  {
+    "name": "11.0.10",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.10",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.10",
+    "commit": {
+      "sha": "ea5f6b9485a94ca2fa86415b834a1a6c49a01f60",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/ea5f6b9485a94ca2fa86415b834a1a6c49a01f60"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4xMA=="
+  },
+  {
+    "name": "11.0.9",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.9",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.9",
+    "commit": {
+      "sha": "2640cdf945fd8b715cec93e6c7840970a13634a0",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/2640cdf945fd8b715cec93e6c7840970a13634a0"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC45"
+  },
+  {
+    "name": "11.0.8",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.8",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.8",
+    "commit": {
+      "sha": "8a48dcb90f13f1670632e763e945f4cc9ef869e6",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/8a48dcb90f13f1670632e763e945f4cc9ef869e6"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC44"
+  },
+  {
+    "name": "11.0.7",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.7",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.7",
+    "commit": {
+      "sha": "975b37687cf3985b006ed92aeaca69ae79595147",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/975b37687cf3985b006ed92aeaca69ae79595147"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC43"
+  },
+  {
+    "name": "11.0.6",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.6",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.6",
+    "commit": {
+      "sha": "872451298e20bb77ea95c499e6866b1e32b337e0",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/872451298e20bb77ea95c499e6866b1e32b337e0"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC42"
+  },
+  {
+    "name": "11.0.5",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.5",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.5",
+    "commit": {
+      "sha": "1ba1f9061e49ce03c77b57beff3d50e5c2c3ee29",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/1ba1f9061e49ce03c77b57beff3d50e5c2c3ee29"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC41"
+  },
+  {
+    "name": "11.0.4",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.4",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.4",
+    "commit": {
+      "sha": "41f56e094dc101d787016fe0a100210f108e6f51",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/41f56e094dc101d787016fe0a100210f108e6f51"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC40"
+  },
+  {
+    "name": "11.0.3",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.3",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.3",
+    "commit": {
+      "sha": "6e6ddf18b5dd4baadd4470f2f48a71b9c4185122",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/6e6ddf18b5dd4baadd4470f2f48a71b9c4185122"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4z"
+  },
+  {
+    "name": "11.0.2",
+    "zipball_url": "https://api.github.com/repos/apache/tomcat/zipball/refs/tags/11.0.2",
+    "tarball_url": "https://api.github.com/repos/apache/tomcat/tarball/refs/tags/11.0.2",
+    "commit": {
+      "sha": "d428a82c122c86e64aa4ffc4a515aee31ba7a51e",
+      "url": "https://api.github.com/repos/apache/tomcat/commits/d428a82c122c86e64aa4ffc4a515aee31ba7a51e"
+    },
+    "node_id": "MDM6UmVmMjQ5MzkwNDpyZWZzL3RhZ3MvMTEuMC4y"
+
+ succeeded in 324ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLO https://archive.apache.org/dist/tomcat/tomcat-5/v5.0.28/src/jakarta-tomcat-5.0.28-src.tar.gz || curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-5/v5.0.28/src/ | sed -n '"'1,160p'; ls -l; rm -rf \""'$tmp"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 907ms:
+total 3484
+-rw-rw-r-- 1 vjovanov vjovanov 3565766 Apr 29 01:16 jakarta-tomcat-5.0.28-src.tar.gz
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLO https://archive.apache.org/dist/tomcat/tomcat-5/v5.0.28/src/jakarta-tomcat-5.0.28-src.tar.gz; tar -tzf jakarta-tomcat-5.0.28-src.tar.gz | rg '"'javax/servlet/jsp|jsr152|jsp-api|test' | sed -n '1,200p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 737ms:
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/cal/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/checkbox/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/colors/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/compressionFilters/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/dates/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/error/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/examples/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/filters/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/el/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/simpletag/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/listeners/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/num/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/sessions/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/util/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/validators/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/jsp/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/jsp2/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/jsp/applet/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/lib/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/tags/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/cal/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/checkbox/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/colors/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/dates/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/error/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/forward/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/images/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/include/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/el/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/jspattribute/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/jspx/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/misc/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/simpletag/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/tagfiles/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsptoserv/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/num/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/plugin/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/plugin/applet/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/security/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/security/protected/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/sessions/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/simpletag/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/snp/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/tagplugin/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/xml/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/ant/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/ant/task/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/etc/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/dtd/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/javax/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/javax/servlet/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/javax/servlet/jsp/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/javax/servlet/jsp/el/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/javax/servlet/jsp/tagext/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/javax/servlet/jsp/tagext/doc-files/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/catalina/src/test/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/catalina/src/test/org/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/catalina/src/test/org/apache/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/catalina/src/test/org/apache/catalina/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/catalina/src/test/org/apache/catalina/util/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/catalina/src/test/org/apache/naming/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/catalina/src/test/org/apache/naming/resources/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/bin/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/conf/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/tester/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/tester/org/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/tester/org/apache/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/tester/org/apache/tester/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/tester/org/apache/tester/shared/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/tester/org/apache/tester/unpshared/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/src/tester/org/apache/tester/unshared/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/web/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/web/WEB-INF/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/web/WEB-INF/cgi/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/web/golden/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-catalina/tester/web/ssidir/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/coyote/src/test/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/coyote/src/test/org/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/coyote/src/test/org/apache/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/coyote/src/test/org/apache/coyote/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/http11/src/test/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/http11/src/test/java/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/http11/src/test/java/org/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/http11/src/test/java/org/apache/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/http11/src/test/java/org/apache/coyote/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/http11/src/test/java/org/apache/coyote/http11/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/http11/src/test/tests/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/jk/native2/server/dsapi/test/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/jk/test/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/jk/test/org/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/jk/test/org/apache/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/jk/test/org/apache/ajp/
+jakarta-tomcat-5.0.28-src/jakarta-tomcat-connectors/jk/test/org/apache/ajp/test/
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/BUILDING.txt
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/LICENSE
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/README.txt
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/cal/Entries.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/cal/Entry.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/cal/JspCalendar.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/cal/TableBean.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/checkbox/CheckTest.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/colors/ColorGameBean.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/compressionFilters/CompressionFilter.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/compressionFilters/CompressionFilterTestServlet.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/compressionFilters/CompressionResponseStream.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/compressionFilters/CompressionServletResponseWrapper.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/dates/JspCalendar.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/error/Smart.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/examples/ExampleTagBase.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/examples/FooTag.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/examples/FooTagExtraInfo.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/examples/LogTag.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/examples/ShowSource.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/filters/ExampleFilter.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/filters/RequestDumperFilter.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/filters/SetCharacterEncodingFilter.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/BookBean.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/FooBean.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/el/Functions.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/simpletag/EchoAttributesTag.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/simpletag/FindBookSimpleTag.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/simpletag/HelloWorldSimpleTag.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/simpletag/RepeatSimpleTag.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/simpletag/ShuffleSimpleTag.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/jsp2/examples/simpletag/TileSimpleTag.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/listeners/ContextListener.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/listeners/SessionListener.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/num/NumberGuessBean.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/servletToJsp.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/sessions/DummyCart.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/util/HTMLFilter.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/classes/validators/DebugValidator.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/jsp2/jsp2-example-taglib.tld
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/jsp/applet/Clock2.java
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/jsp/debug-taglib.tld
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/jsp/example-taglib.tld
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/lib/jstl.jar
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/lib/standard.jar
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/tagPlugins.xml
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/tags/displayProducts.tag
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/tags/helloWorld.tag
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/tags/panel.tag
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/tags/xhtmlbasic.tag
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/WEB-INF/web.xml
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/cal/cal1.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/cal/cal2.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/cal/calendar.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/cal/login.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/checkbox/CheckTest.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/checkbox/check.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/checkbox/checkresult.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/checkbox/cresult.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/colors/ColorGameBean.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/colors/clr.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/colors/colors.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/colors/colrs.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/dates/date.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/dates/date.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/error/er.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/error/err.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/error/error.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/error/errorpge.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/forward/forward.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/forward/fwd.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/forward/one.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/forward/two.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/images/code.gif
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/images/execute.gif
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/images/read.gif
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/images/return.gif
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/include/foo.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/include/foo.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/include/inc.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/include/include.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/index.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/el/basic-arithmetic.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/el/basic-arithmetic.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/el/basic-comparisons.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/el/basic-comparisons.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/el/functions.html
+jakarta-tomcat-5.0.28-src/jaktar: A lone zero block at 39280
+arta-servletapi-5/jsr152/examples/jsp2/el/functions.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/el/implicit-objects.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/el/implicit-objects.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/jspattribute/jspattribute.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/jspattribute/jspattribute.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/jspattribute/shuffle.html
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/jspattribute/shuffle.jsp
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/examples/jsp2/jspx/basic.html
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; curl -fsSLO https://archive.apache.org/dist/tomcat/tomcat-5/v5.0.28/src/jakarta-tomcat-5.0.28-src.tar.gz; tar -xzf jakarta-tomcat-5.0.28-src.tar.gz jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152 >/dev/null 2>&1 || true; rg -n "public_draft|Specification-Version|Implementation-Version|version|tests|javadoc|doc" jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/README.txt jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/BUILDING.txt | sed -n '"'1,220p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 735ms:
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/README.txt:14:  README.txt                  This document
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/README.txt:15:  docs/                       Documentation for this release
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/README.txt:16:      api/                    Javadocs for Servlet and JSP API classes
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/README.txt:27:subproject separately unless you wish to utilize the Javadocs, or peruse the
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:14:  <property name="implementation.revision" value="public_draft"/>
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:33:    <mkdir dir="${jsp-api.build}/docs"/>
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:34:    <mkdir dir="${jsp-api.build}/docs/api"/>
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:40:    <mkdir dir="${jsp-api.dist}/docs"/>
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:41:    <mkdir dir="${jsp-api.dist}/docs/api"/>
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:46:    <uptodate property="docs.uptodate" targetfile="${jsp-api.build}/docs/api/index.html">
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:96:  <target name="javadoc" depends="prepare" unless="docs.uptodate">
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:98:    <javadoc packagenames="javax.servlet.jsp.*"
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:101:             destdir="${jsp-api.build}/docs/api"
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:104:             doctitle="JavaServer Pages API Documentation"
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:246:  <target name="dist" depends="compile,examples,javadoc,jar"
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:249:    <!-- Copy Javadocs -->
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:250:    <copy todir="${jsp-api.dist}/docs/api">
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:251:        <fileset dir="${jsp-api.build}/docs/api"/>
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/BUILDING.txt:16:Procedures for Ant 1.4 and later versions should be similar, but have not
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/BUILDING.txt:33:  "jakarta-ant-1.3").  For the purposes of the remainder of this document,
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/BUILDING.txt:51:required are documented here.
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/BUILDING.txt:59:  "jaxp-1.1".  For the purposes of the remainder of this document, the
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/BUILDING.txt:88:  from the same directory as you find a released version of Tomcat 4.
+jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/BUILDING.txt:94:  "jakarta-servletapi-4").  For the purposes of the remainder of this document,
+
+exec
+/usr/bin/bash -lc "svn ls https://svn.apache.org/repos/asf/tomcat/archive/tc5.0.x/tags/ | sed -n '1,160p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+/usr/bin/bash: line 1: svn: command not found
+
+web search: 
+web search: https://svn.apache.org/repos/asf/tomcat/archive/tc5.0.x/tags/
+web search: 
+web search: Tomcat 5.0.25 release date May 2004
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-5/archive/ | sed -n '1,140p'; printf '\\n--- v5.0.25 src ---\\n'; curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-5/archive/v5.0.25/src/ | sed -n '1,100p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 270ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/tomcat/tomcat-5/archive</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                    <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/tomcat/tomcat-5/">Parent Directory</a>                             -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.0/">v5.0.0/</a>                 2003-09-06 19:52    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.1/">v5.0.1/</a>                 2003-09-06 19:52    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.10-alpha/">v5.0.10-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.11-alpha/">v5.0.11-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.12-alpha/">v5.0.12-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.12-beta/">v5.0.12-beta/</a>           2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.13-alpha/">v5.0.13-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.14-alpha/">v5.0.14-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.14-beta/">v5.0.14-beta/</a>           2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.15-alpha/">v5.0.15-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.16-alpha/">v5.0.16-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.16/">v5.0.16/</a>                2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.17-alpha/">v5.0.17-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.18-alpha/">v5.0.18-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.18/">v5.0.18/</a>                2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.19-alpha/">v5.0.19-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.19/">v5.0.19/</a>                2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.2/">v5.0.2/</a>                 2003-09-06 19:52    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.20-alpha/">v5.0.20-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.21-alpha/">v5.0.21-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.22-alpha/">v5.0.22-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.23-alpha/">v5.0.23-alpha/</a>          2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.24/">v5.0.24/</a>                2004-08-28 14:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.25/">v5.0.25/</a>                2004-08-28 14:18    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.26-beta/">v5.0.26-beta/</a>           2004-08-28 14:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.27/">v5.0.27/</a>                2004-08-29 01:03    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.29/">v5.0.29/</a>                2005-02-19 20:45    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.3/">v5.0.3/</a>                 2003-09-06 19:52    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.4/">v5.0.4/</a>                 2003-09-06 19:52    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.5/">v5.0.5/</a>                 2003-09-06 19:52    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.6-alpha/">v5.0.6-alpha/</a>           2004-08-28 14:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.7-alpha/">v5.0.7-alpha/</a>           2004-08-28 14:16    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.8-alpha/">v5.0.8-alpha/</a>           2005-09-23 14:08    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.9-alpha/">v5.0.9-alpha/</a>           2004-08-28 14:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.0.9-beta/">v5.0.9-beta/</a>            2004-08-28 14:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.0/">v5.5.0/</a>                 2004-09-14 17:01    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.1/">v5.5.1/</a>                 2004-10-05 18:17    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.10/">v5.5.10/</a>                2005-09-23 14:08    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.11/">v5.5.11/</a>                2005-09-23 14:08    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.13/">v5.5.13/</a>                2006-01-03 15:36    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.14/">v5.5.14/</a>                2006-04-14 18:34    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.15/">v5.5.15/</a>                2006-04-14 18:34    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.2/">v5.5.2/</a>                 2004-11-24 17:49    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.3/">v5.5.3/</a>                 2004-11-24 17:49    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.4/">v5.5.4/</a>                 2005-02-19 20:45    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.5/">v5.5.5/</a>                 2005-02-19 20:45    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.6/">v5.5.6/</a>                 2005-02-19 20:46    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.7/">v5.5.7/</a>                 2005-07-23 18:54    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.8/">v5.5.8/</a>                 2005-07-23 18:54    -   
+<img src="/icons/folder.gif" alt="[DIR]"> <a href="v5.5.9/">v5.5.9/</a>                 2005-10-14 03:47    -   
+<hr></pre>
+</body></html>
+
+--- v5.0.25 src ---
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/tomcat/tomcat-5/archive/v5.0.25/src</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                   <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/tomcat/tomcat-5/archive/v5.0.25/">Parent Directory</a>                                            -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="jakarta-tomcat-5.0.25-src.tar.gz">jakarta-tomcat-5.0.25-src.tar.gz</a>       2004-05-18 03:21  3.4M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.25-src.tar.gz.asc">jakarta-tomcat-5.0.25-src.tar.gz.asc</a>   2004-05-18 01:42  174   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.25-src.tar.gz.md5">jakarta-tomcat-5.0.25-src.tar.gz.md5</a>   2004-05-18 01:43   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="jakarta-tomcat-5.0.25-src.zip">jakarta-tomcat-5.0.25-src.zip</a>          2004-05-18 03:20  5.2M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.25-src.zip.asc">jakarta-tomcat-5.0.25-src.zip.asc</a>      2004-05-18 01:42  174   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.25-src.zip.md5">jakarta-tomcat-5.0.25-src.zip.md5</a>      2004-05-18 01:43   33   
+<hr></pre>
+</body></html>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-5/archive/v5.0.26-beta/src/ | sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-5/archive/v5.0.27/src/ | sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+exec
+/usr/bin/bash -lc "curl -fsSL https://archive.apache.org/dist/tomcat/tomcat-5/v5.0.28/src/ | sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/tomcat/tomcat-5/v5.0.28/src</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                 <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/tomcat/tomcat-5/v5.0.28/">Parent Directory</a>                                          -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="jakarta-tomcat-5.0.28-src.tar.gz">jakarta-tomcat-5.0.28-src.tar.gz</a>     2004-08-29 03:15  3.4M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.28-src.tar.gz.asc">jakarta-tomcat-5.0.28-src.tar.gz.asc</a> 2004-08-29 01:02  174   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.28-src.tar.gz.md5">jakarta-tomcat-5.0.28-src.tar.gz.md5</a> 2004-08-29 01:02   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="jakarta-tomcat-5.0.28-src.zip">jakarta-tomcat-5.0.28-src.zip</a>        2004-08-29 03:13  5.2M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.28-src.zip.asc">jakarta-tomcat-5.0.28-src.zip.asc</a>    2004-08-29 01:02  174   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.28-src.zip.md5">jakarta-tomcat-5.0.28-src.zip.md5</a>    2004-08-29 01:02   33   
+<hr></pre>
+</body></html>
+
+ succeeded in 119ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/tomcat/tomcat-5/archive/v5.0.26-beta/src</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                        <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/tomcat/tomcat-5/archive/v5.0.26-beta/">Parent Directory</a>                                                 -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="jakarta-tomcat-5.0.26-src.tar.gz">jakarta-tomcat-5.0.26-src.tar.gz</a>            2004-06-02 03:28  3.4M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.26-src.tar.gz.asc">jakarta-tomcat-5.0.26-src.tar.gz.asc</a>        2004-06-02 17:30  174   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.26-src.tar.gz.md5">jakarta-tomcat-5.0.26-src.tar.gz.md5</a>        2004-06-02 17:30   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="jakarta-tomcat-5.0.26-src.zip">jakarta-tomcat-5.0.26-src.zip</a>               2004-06-02 03:27  5.2M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.26-src.zip.asc">jakarta-tomcat-5.0.26-src.zip.asc</a>           2004-06-02 17:30  174   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.26-src.zip.md5">jakarta-tomcat-5.0.26-src.zip.md5</a>           2004-06-02 17:30   33   
+<hr></pre>
+</body></html>
+
+ succeeded in 117ms:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /dist/tomcat/tomcat-5/archive/v5.0.27/src</title>
+ </head>
+ <body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+  <body style="background: #3333; font-family: Montserrat, Sans-Serif;">
+    <div style="padding: 6px; background: #FFF; max-width: 780px; margin: 0 auto; min-height: 500px;  border-radius: 4px; border: 1.25px solid #3333:">
+	    <h1>Apache Archive Distribution Directory</h1>
+      <hr/>
+<p>The directories and files linked below are a historical archive of software released by
+Apache Software Foundation projects. <br/><br/>
+<b style='color: maroon;'>THEY MAY BE UNSUPPORTED AND UNSAFE TO USE</b><br/>
+Current releases can be found on our <a href="http://downloads.apache.org/">download server</a>.</p>
+
+<script> document.title = "Apache Archive Distribution Directory"; </script>
+<pre>
+<pre><img src="/icons/blank.gif" alt="Icon "> <a href="?C=N;O=D">Name</a>                                   <a href="?C=M;O=A">Last modified</a>      <a href="?C=S;O=A">Size</a>  <a href="?C=D;O=A">Description</a><hr><img src="/icons/back.gif" alt="[PARENTDIR]"> <a href="/dist/tomcat/tomcat-5/archive/v5.0.27/">Parent Directory</a>                                            -   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="jakarta-tomcat-5.0.27-src.tar.gz">jakarta-tomcat-5.0.27-src.tar.gz</a>       2004-06-18 04:12  3.4M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.27-src.tar.gz.asc">jakarta-tomcat-5.0.27-src.tar.gz.asc</a>   2004-06-18 01:59  174   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.27-src.tar.gz.md5">jakarta-tomcat-5.0.27-src.tar.gz.md5</a>   2004-06-18 01:59   33   
+<img src="/icons/compressed.gif" alt="[   ]"> <a href="jakarta-tomcat-5.0.27-src.zip">jakarta-tomcat-5.0.27-src.zip</a>          2004-06-18 04:11  5.2M  
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.27-src.zip.asc">jakarta-tomcat-5.0.27-src.zip.asc</a>      2004-06-18 01:59  174   
+<img src="/icons/text.gif" alt="[TXT]"> <a href="jakarta-tomcat-5.0.27-src.zip.md5">jakarta-tomcat-5.0.27-src.zip.md5</a>      2004-06-18 01:59   33   
+<hr></pre>
+</body></html>
+
+web search: 
+web search: "20040521" "jakarta-servletapi-5"
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/maven-metadata.xml && printf '\\n--- central metadata ---\\n' && curl -fsSL https://central.sonatype.com/artifact/jspapi/jsp-api/2.0-20040521/pom | sed -n '1,120p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 1071ms:
+<!DOCTYPE html><html lang="en" class="nx-html nx-html--page-scrolling"><head><meta charSet="utf-8"/><meta charSet="utf-8"/><meta name="viewport" content="initial-scale=1, width=device-width"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/chunks/7e3e88e29a20ba42.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/32204ee6079875e1.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/8c0406260fdbe388.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/9081046f14a49fdb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/51ef267aa05bd38f.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/1deb7c57d32b741b.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/ced9f21470ab95fb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/4eb596bd6324dd5e.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/a5748c610fec802f.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/f7e2cfca66b95516.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/186bad8c212236ce.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/7dc6542cb616f016.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/c8d4bc0d7f9a9824.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/34607cd62ce05140.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/813162c4632647fb.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/7ed5ecffc2f62eb9.css" data-precedence="next"/><link rel="stylesheet" href="/_next/static/chunks/5d5f0cf63561e2a5.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/76418237caa3e37a.js"/><script src="/_next/static/chunks/c1e46bf1da7ac198.js" async=""></script><script src="/_next/static/chunks/976a13be385354eb.js" async=""></script><script src="/_next/static/chunks/turbopack-b481cddba173e4d8.js" async=""></script><script src="/_next/static/chunks/55ce0c659f554151.js" async=""></script><script src="/_next/static/chunks/8470f6f33050dc1a.js" async=""></script><script src="/_next/static/chunks/051729d8fce77793.js" async=""></script><script src="/_next/static/chunks/ccd98df1b5858a96.js" async=""></script><script src="/_next/static/chunks/1c72bde1a0607731.js" async=""></script><script src="/_next/static/chunks/d5a7727462d482f9.js" async=""></script><script src="/_next/static/chunks/a56342ba7750290f.js" async=""></script><script src="/_next/static/chunks/00cddfb81128b1ae.js" async=""></script><script src="/_next/static/chunks/30deb0153bb50880.js" async=""></script><script src="/_next/static/chunks/19d5cfba024d9664.js" async=""></script><script src="/_next/static/chunks/9ccb4ff44c1651d3.js" async=""></script><script src="/_next/static/chunks/eb7371fbba2d646f.js" async=""></script><script src="/_next/static/chunks/266aff81c34c52d8.js" async=""></script><script src="/_next/static/chunks/e74bc7b807f472d5.js" async=""></script><script src="/_next/static/chunks/bff03ff048fb52fa.js" async=""></script><script src="/_next/static/chunks/f5f0db4ed8cc734f.js" async=""></script><script src="/_next/static/chunks/b2e2ccf4a15126ed.js" async=""></script><link rel="preload" href="/_next/static/chunks/d62ffb4503514735.css" as="style"/><link rel="preload" href="https://cdn.bizible.com/scripts/bizible.js" as="script"/><link rel="preload" href="https://static.zdassets.com/ekr/snippet.js?key=67cfc48f-e344-43ae-9fe7-46f37b7eaef6" as="script"/><title>Maven Central: jspapi:jsp-api:2.0-20040521</title><meta name="description" content="Discover jsp-api in the jspapi namespace. Explore metadata, contributors, the Maven POM file, and more."/><link rel="canonical" href="https://central.sonatype.com/artifact/jspapi/jsp-api/2.0-20040521/pom"/><meta property="og:title" content="Maven Central: jspapi:jsp-api:2.0-20040521"/><meta property="og:description" content="Discover jsp-api in the jspapi namespace. Explore metadata, contributors, the Maven POM file, and more."/><meta property="og:site_name" content="Maven Central"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="twitter:site" content="@sonatype"/><meta name="twitter:title" content="Maven Central: jspapi:jsp-api:2.0-20040521"/><meta name="twitter:description" content="Discover jsp-api in the jspapi namespace. Explore metadata, contributors, the Maven POM file, and more."/><meta name="next-size-adjust" content=""/><script src="/_next/static/chunks/a6dad97d9634a72d.js" noModule=""></script></head><body class="nx-body"><div hidden=""><!--$--><!--/$--></div><!--$?--><template id="B:0"></template><!--/$--><div class="nx-page"><!--$?--><template id="B:1"></template><div class="nx-page-content"><main class="nx-page-main"><div class="nx-page-title SummaryView-module-scss-module__dDyj8W__pageTitle"><h1 class="nx-h1" data-test="header">jsp-api</h1><div class="SummaryView-module-scss-module__dDyj8W__metaWrapper"><div class="nx-page-title__tags"><div class="SummaryView-module-scss-module__dDyj8W__purlWrapper"><label class="nx-tag SummaryView-module-scss-module__dDyj8W__purl nx-selectable-color--yellow" data-test="component-purl"><span class="nx-tag__text">pkg:maven/jspapi/jsp-api@2.0-20040521</span></label><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><button class="nx-btn nx-tile-button SummaryView-module-scss-module__dDyj8W__copyPurlBtn nx-btn nx-btn--icon-only" data-test="copy-purl-to-clipboard-btn" aria-label=""><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg></button><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></div></div></div><div class="SummaryView-module-scss-module__dDyj8W__usedInWrapper"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cube" class="svg-inline--fa fa-cube SummaryView-module-scss-module__dDyj8W__cubeIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M234.5 5.7c13.9-5 29.1-5 43.1 0l192 68.6C495 83.4 512 107.5 512 134.6V377.4c0 27-17 51.2-42.5 60.3l-192 68.6c-13.9 5-29.1 5-43.1 0l-192-68.6C17 428.6 0 404.5 0 377.4V134.6c0-27 17-51.2 42.5-60.3l192-68.6zM256 66L82.3 128 256 190l173.7-62L256 66zm32 368.6l160-57.1v-188L288 246.6v188z"></path></svg><span class="SummaryView-module-scss-module__dDyj8W__usedIn">Used in:</span> <div class="UsedIn-module-scss-module__7rfWDG__usedInLoaderContainer"><div class="UsedIn-module-scss-module__7rfWDG__usedInLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="var(--nx-swatch-grey-90)"><animate attributeName="fill" values="var(--nx-swatch-grey-90);#ecebeb;var(--nx-swatch-grey-90)" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><span>components</span></div></div></div><div id="tabs-id" class="nx-tabs ComponentDetailsPage-module-scss-module__nReE7W__tabs"><ul role="tablist" class="nx-tab-list"><li role="tab" id="tabs-id-tab-0" aria-controls="tabs-id-tabpanel-0" class="nx-tab Tab-module-scss-module__YrLTTG__tab active" aria-selected="true" tabindex="0" title="">Overview<div class="nx-tab__hidden-children">Overview</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-1" aria-controls="tabs-id-tabpanel-1" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Versions<div class="nx-tab__hidden-children">Versions</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-2" aria-controls="tabs-id-tabpanel-2" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Dependents<div class="nx-tab__hidden-children">Dependents</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-3" aria-controls="tabs-id-tabpanel-3" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" title="">Dependencies<div class="nx-tab__hidden-children">Dependencies</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></ul><div role="tabpanel" id="tabs-id-tabpanel-0" aria-labelledby="tabs-id-tab-0" class="nx-tab-panel" tabindex="0"><section class="Overview-module-scss-module__r-A2kW__overviewSection"><div class="Overview-module-scss-module__r-A2kW__overview"><div class="Overview-module-scss-module__r-A2kW__overviewHeaderLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__snippetLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__pomFileLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div></div><div class="Overview-module-scss-module__r-A2kW__metadata"><div class="Overview-module-scss-module__r-A2kW__ossIndexLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><div class="Overview-module-scss-module__r-A2kW__metadataLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="white"><animate attributeName="fill" values="white;#ecebeb;white" dur="2s" repeatCount="indefinite"></animate></rect></svg></div></div></section></div></div></main></div><!--/$--></div><footer class="Footer-module-scss-module__yFPs5G__footer t-page-footer"><div class="Footer-module-scss-module__yFPs5G__footerInner"><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title"><a class="nx-text-link Footer-module-scss-module__yFPs5G__logoLink t-page-footer-sonatype" rel="" target="_blank" data-test="footer-logo-link" href="https://www.sonatype.com/" aria-disabled="false"><img alt="Sonatype" loading="lazy" width="121" height="21" decoding="async" data-nimg="1" style="color:transparent" src="/SON_logo_white_.svg"/></a></h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-company nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/company" aria-disabled="false"><span>Company</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-products nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/products/software-supply-chain-management" aria-disabled="false"><span>Products</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><span class="Footer-module-scss-module__yFPs5G__text">Copyright 2025</span></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Search</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-browse" rel="" target="" data-test="footer-link" href="/search" aria-disabled="false"><span>Browse</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Publish</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-namespace" rel="" target="" data-test="footer-link" href="/publishing/namespaces" aria-disabled="false"><span>Namespace</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Support</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-api-documents" rel="" target="" data-test="footer-link" href="/api-doc" aria-disabled="false"><span>API Documents</span></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-getting-started nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/publish-ea/publish-ea-guide/" aria-disabled="false"><span>Getting Started</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-help nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/pages/support/" aria-disabled="false"><span>Help</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Partners</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-eol-partners" rel="" target="" data-test="footer-link" href="/partners/eol/HeroDevs" aria-disabled="false"><span>End of Life Partners</span></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-become-a-partner" rel="" target="" data-test="footer-link" href="/partners" aria-disabled="false"><span>Become a Partner</span></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Validate</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-privacy-policy nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://www.sonatype.com/privacy-policy" aria-disabled="false"><span>Privacy Policy</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-terms-of-service nx-text-link--external" rel="noreferrer" target="_blank" data-test="footer-link" href="https://central.sonatype.org/terms.html" aria-disabled="false"><span>Terms of Service</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li></ul></div><div><h3 class="nx-h3 Footer-module-scss-module__yFPs5G__footerListTitle" data-test="footer-column-title">Log in</h3><ul><li class="Footer-module-scss-module__yFPs5G__footerListItem"><a class="nx-text-link Footer-module-scss-module__yFPs5G__footerListLink t-page-footer-sign-in" rel="" target="" data-test="footer-link" href="/api/auth/login" aria-disabled="false"><span>Sign in</span></a></li></ul></div></div></footer><script>requestAnimationFrame(function(){$RT=performance.now()});</script><script src="/_next/static/chunks/76418237caa3e37a.js" id="_R_" async=""></script><div hidden id="S:0"><header class="nx-page-header Header-module-scss-module__C2D4eG__header"><div class="nx-page-header__inner"><div class="nx-product"><div class="nx-product__logo"><a class="nx-product__home-link" href="/" aria-label="Home"><img src="/maven-central-logo.svg" class="nx-product__logo-image nx-product__logo-image--light" alt="Logo"/><img src="/_next/static/media/sonatype-logo-with-hexagon-dark-mode.84574b4a.png" class="nx-product__logo-image nx-product__logo-image--dark" alt="Logo"/></a></div></div><div class="nx-page-header__extra-content"><div class="Header-module-scss-module__C2D4eG__headerSearch"></div><ul class="Header-module-scss-module__C2D4eG__menu"><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/api-doc" aria-disabled="false"><span>API Doc</span></a></li><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink nx-text-link--external" rel="noreferrer" target="_blank" data-test="text-link" href="https://central.sonatype.org/pages/support/" aria-disabled="false"><span>Help</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></li><li class="Header-module-scss-module__C2D4eG__browseLink"><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/search" aria-disabled="false"><span>Browse</span></a></li><li><a class="nx-text-link TextLink-module-scss-module__3d3A4a__textLink" rel="" target="" data-test="text-link" href="/api/auth/login" aria-disabled="false"><span>Sign In</span></a></li></ul></div></div></header></div><script>$RB=[];$RV=function(a){$RT=performance.now();for(var b=0;b<a.length;b+=2){var c=a[b],e=a[b+1];null!==e.parentNode&&e.parentNode.removeChild(e);var f=c.parentNode;if(f){var g=c.previousSibling,h=0;do{if(c&&8===c.nodeType){var d=c.data;if("/$"===d||"/&"===d)if(0===h)break;else h--;else"$"!==d&&"$?"!==d&&"$~"!==d&&"$!"!==d&&"&"!==d||h++}d=c.nextSibling;f.removeChild(c);c=d}while(c);for(;e.firstChild;)f.insertBefore(e.firstChild,c);g.data="$";g._reactRetry&&requestAnimationFrame(g._reactRetry)}}a.length=0};
+$RC=function(a,b){if(b=document.getElementById(b))(a=document.getElementById(a))?(a.previousSibling.data="$~",$RB.push(a,b),2===$RB.length&&("number"!==typeof $RT?requestAnimationFrame($RV.bind(null,$RB)):(a=performance.now(),setTimeout($RV.bind(null,$RB),2300>a&&2E3<a?2300-a:$RT+300-a)))):b.parentNode.removeChild(b)};$RC("B:0","S:0")</script><div hidden id="S:1"><template id="P:2"></template><!--$--><!--/$--></div><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[39950,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n3:I[55009,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/ccd98df1b5858a96.js\",\"/_next/static/chunks/1c72bde1a0607731.js\",\"/_next/static/chunks/d5a7727462d482f9.js\",\"/_next/static/chunks/a56342ba7750290f.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\"],\"default\"]\n4:I[94594,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n5:I[52199,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/30deb0153bb50880.js\",\"/_next/static/chunks/1c72bde1a0607731.js\",\"/_next/static/chunks/d5a7727462d482f9.js\",\"/_next/static/chunks/a56342ba7750290f.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\"],\"default\"]\n22:I[38256,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"default\"]\n23:I[8399,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"UserProvider\"]\n24:\"$Sreact.suspense\"\n25:I[18835,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"Header\"]\n26:I[75896,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"LayoutPage\"]\n27:I[15370,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\"],\"Footer\"]\n28:I[44421,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"\"]\n2a:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"OutletBoundary\"]\n2c:I[55777,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/b2e2ccf4a15126ed.js\"],\"default\"]\n2d:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"ViewportBoundary\"]\n2f:I[57653,[\"/_next/static/chunks/55ce0c659f554151.js\",\"/_next/static/chunks/8470f6f33050dc1a.js\"],\"MetadataBoundary\"]\n:HL[\"/_next/static/chunks/7e3e88e29a20ba42.css\",\"style\"]\n:HL[\"/_next/static/chunks/32204ee6079875e1.css\",\"style\"]\n:HL[\"/_next/static/chunks/8c0406260fdbe388.css\",\"style\"]\n:HL[\"/_next/static/chunks/9081046f14a49fdb.css\",\"style\"]\n:HL[\"/_next/static/chunks/51ef267aa05bd38f.css\",\"style\"]\n:HL[\"/_next/static/chunks/1deb7c57d32b741b.css\",\"style\"]\n:HL[\"/_next/static/chunks/ced9f21470ab95fb.css\",\"style\"]\n:HL[\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"style\"]\n:HL[\"/_next/static/chunks/a5748c610fec802f.css\",\"style\"]\n:HL[\"/_next/static/chunks/f7e2cfca66b95516.css\",\"style\"]\n:HL[\"/_next/static/chunks/186bad8c212236ce.css\",\"style\"]\n:HC[\"/\",\"\"]\n:HL[\"/_next/static/chunks/7dc6542cb616f016.css\",\""])</script><script>self.__next_f.push([1,"style\"]\n:HL[\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"style\"]\n:HL[\"/_next/static/chunks/34607cd62ce05140.css\",\"style\"]\n:HL[\"/_next/static/chunks/813162c4632647fb.css\",\"style\"]\n:HL[\"/_next/static/chunks/7ed5ecffc2f62eb9.css\",\"style\"]\n:HL[\"/_next/static/chunks/5d5f0cf63561e2a5.css\",\"style\"]\n:HL[\"/_next/static/chunks/d62ffb4503514735.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"Fjy4n5M6AWyOV088ruqQP\",\"c\":[\"\",\"artifact\",\"jspapi\",\"jsp-api\",\"2.0-20040521\",\"pom\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"(default)\",{\"children\":[\"artifact\",{\"children\":[[\"namespace\",\"jspapi\",\"d\"],{\"children\":[[\"name\",\"jsp-api\",\"d\"],{\"children\":[[\"paths\",\"2.0-20040521/pom\",\"oc\"],{\"children\":[\"__PAGE__\",{}]}]}]}]}]}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/051729d8fce77793.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"className\":\"nx-html nx-html--page-scrolling\",\"children\":[[\"$\",\"head\",null,{\"children\":[[\"$\",\"meta\",null,{\"name\":\"viewport\",\"content\":\"initial-scale=1, width=device-width\"}],[\"$\",\"meta\",null,{\"charSet\":\"utf-8\"}],\"\"]}],[\"$\",\"body\",null,{\"className\":\"nx-body\",\"children\":[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$3\",\"errorStyles\":[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],\"errorScripts\":[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/ccd98df1b5858a96.js\",\"async\":true}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/1c72bde1a0607731.js\",\"async\":true}],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/d5a7727462d482f9.js\",\"async\":true}],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/a56342ba7750290f.js\",\"async\":true}],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/00cddfb81128b1ae.js\",\"async\":true}]],\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"$L5\",null,{}],[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]]}]]}],{\"children\":[[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7e3e88e29a20ba42.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/32204ee6079875e1.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/8c0406260fdbe388.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],\"$L6\",\"$L7\",\"$L8\",\"$L9\",\"$La\",\"$Lb\",\"$Lc\",\"$Ld\",\"$Le\",\"$Lf\",\"$L10\",\"$L11\",\"$L12\",\"$L13\"],\"$L14\"]}],{\"children\":[\"$L15\",{\"children\":[\"$L16\",{\"children\":[\"$L17\",{\"children\":[\"$L18\",{\"children\":[\"$L19\",{},null,false,false]},[\"$L1a\",[\"$L1b\",\"$L1c\",\"$L1d\",\"$L1e\"],[\"$L1f\",\"$L20\"]],false,false]},null,false,false]},null,false,false]},null,false,false]},null,false,false]},null,false,false],\"$L21\",false]],\"m\":\"$undefined\",\"G\":[\"$22\",[]],\"S\":false}\n"])</script><script>self.__next_f.push([1,"6:[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/9081046f14a49fdb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n7:[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/51ef267aa05bd38f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n8:[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/1deb7c57d32b741b.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n9:[\"$\",\"link\",\"6\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/ced9f21470ab95fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\na:[\"$\",\"link\",\"7\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/4eb596bd6324dd5e.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nb:[\"$\",\"link\",\"8\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/a5748c610fec802f.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nc:[\"$\",\"link\",\"9\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/f7e2cfca66b95516.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\nd:[\"$\",\"link\",\"10\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/186bad8c212236ce.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\ne:[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/19d5cfba024d9664.js\",\"async\":true,\"nonce\":\"$undefined\"}]\nf:[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n10:[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/eb7371fbba2d646f.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n11:[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/266aff81c34c52d8.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n12:[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/00cddfb81128b1ae.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n13:[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/e74bc7b807f472d5.js\",\"async\":true,\"nonce\":\"$undefined\"}]\n14:[false,[\"$\",\"$L23\",null,{\"children\":[[\"$\",\"$24\",null,{\"fallback\":null,\"children\":[\"$\",\"$L25\",null,{}]}],[\"$\",\"$L26\",null,{\"children\":[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"$L5\",null,{}],[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/d62ffb4503514735.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}],[\"$\",\"$L27\",null,{}]]}],[\"$\",\"$L28\",null,{\"src\":\"https://cdn.bizible.com/scripts/bizible.js\"}],[\"$\",\"$L28\",null,{\"id\":\"ze-snippet\",\"src\":\"https://static.zdassets.com/ekr/snippet.js?key=67cfc48f-e344-43ae-9fe7-46f37b7eaef6\"}]]\n15:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n16:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n17:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n18:[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\""])</script><script>self.__next_f.push([1,",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}]\n19:[\"$\",\"$1\",\"c\",{\"children\":[\"$L29\",[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7dc6542cb616f016.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/34607cd62ce05140.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/813162c4632647fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"4\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7ed5ecffc2f62eb9.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"link\",\"5\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/5d5f0cf63561e2a5.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/bff03ff048fb52fa.js\",\"async\":true,\"nonce\":\"$undefined\"}],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/f5f0db4ed8cc734f.js\",\"async\":true,\"nonce\":\"$undefined\"}]],[\"$\",\"$L2a\",null,{\"children\":[\"$\",\"$24\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@2b\"}]}]]}]\n1a:[\"$\",\"$L2c\",\"l\",{}]\n1b:[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/813162c4632647fb.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1c:[\"$\",\"link\",\"1\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/7dc6542cb616f016.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1d:[\"$\",\"link\",\"2\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/c8d4bc0d7f9a9824.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1e:[\"$\",\"link\",\"3\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/34607cd62ce05140.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]\n1f:[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/bff03ff048fb52fa.js\",\"async\":true}]\n20:[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/b2e2ccf4a15126ed.js\",\"async\":true}]\n21:[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$L2d\",null,{\"children\":\"$L2e\"}],[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L2f\",null,{\"children\":[\"$\",\"$24\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L30\"}]}]}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}]\n2e:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n2b:null\n30:[[\"$\",\"title\",\"0\",{\"children\":\"Maven Central: jspapi:jsp-api:2.0-20040521\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Discover jsp-api in the jspapi namespace. Explore metadata, contributors, the Maven POM file, and more.\"}],[\"$\",\"link\",\"2\",{\"rel\":\"canonical\",\"href\":\"https://central.sonatype.com/artifact/jspapi/jsp-api/2.0-20040521/pom\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:title\",\"content\":\"Maven Central: jspapi:jsp-api:2.0-20040521\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:description\",\"content\":\"Discover jsp-api in the jspapi namespace. Explore metadata, contributors, the Maven POM file, and more.\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:site_name\",\"content\":\"Maven Central\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"7\",{\"name\":\"twitter:card\",\"content\":\"summary\"}],[\"$\",\"meta\",\"8\",{\"name\":\"twitter:site\",\"content\":\"@sonatype\"}],[\"$\",\"meta\",\"9\",{\"name\":\"twitter:title\",\"content\":\"Maven Central: jspapi:jsp-api:2.0-20040521\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:description\",\"content\":\"Discover jsp-api in the jspapi namespace. Explore metadata, contributors, the Maven POM file, and more.\"}]]\n"])</script><script>self.__next_f.push([1,"31:I[5522,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"ComponentDetailsPage\"]\n32:I[3540,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"SummaryView\"]\n33:I[61932,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Tabs\"]\n34:I[99892,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Overview\"]\n35:I[28769,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"Versions\"]\n36:I[11024,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"DependentsList\"]\n37:I[96599,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"DependenciesList\"]\n38:I[10312,[\"/_next/static/chunks/051729d8fce77793.js\",\"/_next/static/chunks/19d5cfba024d9664.js\",\"/_next/static/chunks/9ccb4ff44c1651d3.js\",\"/_next/static/chunks/eb7371fbba2d646f.js\",\"/_next/static/chunks/266aff81c34c52d8.js\",\"/_next/static/chunks/00cddfb81128b1ae.js\",\"/_next/static/chunks/e74bc7b807f472d5.js\",\"/_next/static/chunks/bff03ff048fb52fa.js\",\"/_next/static/chunks/f5f0db4ed8cc734f.js\"],\"CanonicalVersionSetter\"]\n"])</script><script>self.__next_f.push([1,"29:[[\"$\",\"$L31\",null,{\"children\":[[\"$\",\"$L32\",null,{\"name\":\"jsp-api\",\"namespace\":\"jspapi\",\"version\":\"2.0-20040521\",\"versions\":[\"2.0-20040521\",\"2.0.public_draft\",\"2.0\"],\"tags\":[],\"usedIn\":31,\"tab\":\"pom\"}],[\"$\",\"$L33\",null,{\"className\":\"ComponentDetailsPage-module-scss-module__nReE7W__tabs\",\"path\":\"/artifact/jspapi/jsp-api/2.0-20040521\",\"activeTab\":\"overview\",\"tabs\":[{\"name\":\"overview\",\"title\":\"Overview\",\"dataTest\":\"overview-tab\",\"content\":[\"$\",\"$L34\",null,{\"id\":\"pkg:maven/jspapi/jsp-api@2.0-20040521\",\"name\":\"jsp-api\",\"namespace\":\"jspapi\",\"version\":\"2.0-20040521\",\"description\":null,\"published\":1131488258000,\"licenses\":[],\"url\":null,\"contributors\":[],\"pomFile\":\"\u003cproject\u003e\\n  \u003cmodelVersion\u003e4.0.0\u003c/modelVersion\u003e\\n  \u003cgroupId\u003ejspapi\u003c/groupId\u003e\\n  \u003cartifactId\u003ejsp-api\u003c/artifactId\u003e\\n  \u003cversion\u003e2.0-20040521\u003c/version\u003e\\n\u003c/project\u003e\",\"qualityScore\":10,\"scmUrl\":null,\"issueManagementUrl\":null,\"ciManagementUrl\":null,\"usedIn\":31,\"ossIndexUrl\":\"https://guide.sonatype.com/component/maven/jspapi:jsp-api/2.0-20040521\",\"packaging\":\"jar\"}]},{\"name\":\"versions\",\"title\":\"Versions\",\"dataTest\":\"versions-tab\",\"content\":[\"$\",\"$L35\",null,{\"namespace\":\"jspapi\",\"name\":\"jsp-api\",\"binaryEndpointUrl\":\"https://repo1.maven.org/maven2\"}]},{\"name\":\"dependents\",\"title\":\"Dependents\",\"dataTest\":\"dependents-tab\",\"content\":[\"$\",\"$L36\",\"pkg:maven/jspapi/jsp-api@2.0-20040521\",{\"componentId\":\"pkg:maven/jspapi/jsp-api@2.0-20040521\"}]},{\"name\":\"dependencies\",\"title\":\"Dependencies\",\"dataTest\":\"dependencies-tab\",\"content\":[\"$\",\"$L37\",\"pkg:maven/jspapi/jsp-api@2.0-20040521\",{\"componentId\":\"pkg:maven/jspapi/jsp-api@2.0-20040521\"}]}]}]]}],[\"$\",\"$L28\",null,{\"data-test\":\"json-ld-script\",\"type\":\"application/ld+json\",\"dangerouslySetInnerHTML\":{\"__html\":\"{\\\"@context\\\":\\\"https://schema.org\\\",\\\"@type\\\":\\\"BreadcrumbList\\\",\\\"itemListElement\\\":[{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":1,\\\"name\\\":\\\"jspapi\\\",\\\"item\\\":\\\"https://central.sonatype.com/namespace/jspapi\\\"},{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":2,\\\"name\\\":\\\"jsp-api\\\",\\\"item\\\":\\\"https://central.sonatype.com/artifact/jspapi/jsp-api\\\"},{\\\"@type\\\":\\\"ListItem\\\",\\\"position\\\":3,\\\"name\\\":\\\"2.0-20040521\\\",\\\"item\\\":\\\"https://central.sonatype.com/artifact/jspapi/jsp-api/2.0-20040521\\\"}]}\"}}],[\"$\",\"$L38\",null,{\"url\":\"https://central.sonatype.com/artifact/jspapi/jsp-api/pom\"}]]\n"])</script><div hidden id="S:2"><div class="nx-page-content"><main class="nx-page-main"><div class="nx-page-title SummaryView-module-scss-module__dDyj8W__pageTitle"><h1 class="nx-h1" data-test="header">jsp-api</h1><div class="SummaryView-module-scss-module__dDyj8W__metaWrapper"><div class="nx-page-title__tags"><div class="SummaryView-module-scss-module__dDyj8W__purlWrapper"><label class="nx-tag SummaryView-module-scss-module__dDyj8W__purl nx-selectable-color--yellow" data-test="component-purl"><span class="nx-tag__text">pkg:maven/jspapi/jsp-api@2.0-20040521</span></label><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><button class="nx-btn nx-tile-button SummaryView-module-scss-module__dDyj8W__copyPurlBtn nx-btn nx-btn--icon-only" data-test="copy-purl-to-clipboard-btn" aria-label=""><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg></button><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></div></div></div><div class="SummaryView-module-scss-module__dDyj8W__usedInWrapper"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cube" class="svg-inline--fa fa-cube SummaryView-module-scss-module__dDyj8W__cubeIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M234.5 5.7c13.9-5 29.1-5 43.1 0l192 68.6C495 83.4 512 107.5 512 134.6V377.4c0 27-17 51.2-42.5 60.3l-192 68.6c-13.9 5-29.1 5-43.1 0l-192-68.6C17 428.6 0 404.5 0 377.4V134.6c0-27 17-51.2 42.5-60.3l192-68.6zM256 66L82.3 128 256 190l173.7-62L256 66zm32 368.6l160-57.1v-188L288 246.6v188z"></path></svg><span class="SummaryView-module-scss-module__dDyj8W__usedIn">Used in:</span> <span data-test="used-in-count">31 components</span></div></div><div id="tabs-id" class="nx-tabs ComponentDetailsPage-module-scss-module__nReE7W__tabs"><ul role="tablist" class="nx-tab-list"><li role="tab" id="tabs-id-tab-0" aria-controls="tabs-id-tabpanel-0" class="nx-tab Tab-module-scss-module__YrLTTG__tab active" aria-selected="true" tabindex="0" data-test="overview-tab" title="">Overview<div class="nx-tab__hidden-children">Overview</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-1" aria-controls="tabs-id-tabpanel-1" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="versions-tab" title="">Versions<div class="nx-tab__hidden-children">Versions</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-2" aria-controls="tabs-id-tabpanel-2" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="dependents-tab" title="">Dependents<div class="nx-tab__hidden-children">Dependents</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><li role="tab" id="tabs-id-tab-3" aria-controls="tabs-id-tabpanel-3" class="nx-tab Tab-module-scss-module__YrLTTG__tab" aria-selected="false" tabindex="-1" data-test="dependencies-tab" title="">Dependencies<div class="nx-tab__hidden-children">Dependencies</div></li><style data-emotion="css 1f5p11z">.css-1f5p11z{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style><style data-emotion="css 1vxh2dt">.css-1vxh2dt{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}</style></ul><div role="tabpanel" id="tabs-id-tabpanel-0" aria-labelledby="tabs-id-tab-0" class="nx-tab-panel" tabindex="0"><section class="Overview-module-scss-module__r-A2kW__overviewSection"><div class="Overview-module-scss-module__r-A2kW__overview"><h2 class="nx-h2">Overview</h2><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><h3 class="nx-h3" data-test="header-overview">Description</h3><div data-test="overview">No description provided</div></div><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><div class="Snippet-module-scss-module__IV1CpW__header"><h3 class="nx-h3 Snippet-module-scss-module__IV1CpW__title" data-test="header-snippets">Snippets</h3><!--$!--><template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"></template><!--/$--><button class="nx-btn nx-tile-button t-component-copy-snippet nx-btn nx-btn--tertiary" data-test="copy-to-clipboard-btn"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg><span>Copy to clipboard</span></button></div><pre class="nx-pre Snippet-module-scss-module__IV1CpW__snippetBody" data-test="snippet">&lt;dependency&gt;
+    &lt;groupId&gt;jspapi&lt;/groupId&gt;
+    &lt;artifactId&gt;jsp-api&lt;/artifactId&gt;
+    &lt;version&gt;2.0-20040521&lt;/version&gt;
+&lt;/dependency&gt;</pre></div><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><div class="POMFile-module-scss-module__rH_pIG__header"><h3 class="nx-h3 POMFile-module-scss-module__rH_pIG__title" data-test="header-pom-file">Maven POM File</h3><button class="nx-btn nx-tile-button t-component-copy-maven-pom nx-btn nx-btn--tertiary" data-test="copy-to-clipboard-btn"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"></path></svg><span>Copy to clipboard</span></button></div><pre class="nx-pre POMFile-module-scss-module__rH_pIG__pomFileBody" data-test="pom-file">&lt;project&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;jspapi&lt;/groupId&gt;
+  &lt;artifactId&gt;jsp-api&lt;/artifactId&gt;
+  &lt;version&gt;2.0-20040521&lt;/version&gt;
+&lt;/project&gt;</pre></div></div><div class="Overview-module-scss-module__r-A2kW__metadata"><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical Overview-module-scss-module__r-A2kW__cardMetaData"><div class="Overview-module-scss-module__r-A2kW__description"><h4 class="nx-h4" data-test="header-metadata">Metadata</h4><div class="Overview-module-scss-module__r-A2kW__metaDataContainer"><div class="Overview-module-scss-module__r-A2kW__descriptionItem" data-test="published-metadata"><span class="Overview-module-scss-module__r-A2kW__descriptionItemLabel">Age:</span><span>20 years ago</span></div><div class="Overview-module-scss-module__r-A2kW__descriptionItem"><span class="Overview-module-scss-module__r-A2kW__descriptionItemLabel">Licenses:</span><span><ul class="Overview-module-scss-module__r-A2kW__licensesContainer"></ul></span></div></div></div><div class="Overview-module-scss-module__r-A2kW__description"><h4 class="nx-h4" data-test="header-organization">Organization</h4><div class="Overview-module-scss-module__r-A2kW__descriptionItem"><a class="nx-text-link Namespace-module-scss-module__vOKsWq__namespaceLink name-space-link" rel="" target="" href="/namespace/jspapi" aria-disabled="false"><label class="nx-small-tag Namespace-module-scss-module__vOKsWq__namespace nx-small-tag--teal" data-test="component-namespace"><span class="nx-small-tag__text">jspapi</span></label></a></div></div><div class="Contributors-module-scss-module__QfFLJG__container"><h4 class="nx-h4" data-test="header-known-contributors">Known Contributors</h4><div data-test="no-contributors-found" class="Contributors-module-scss-module__QfFLJG__contributorsContainer">No contributors found</div></div></div><div class="Card-module-scss-module__ivjD6a__card Card-module-scss-module__ivjD6a__vertical"><div class="OssIndex-module-scss-module__DZPPKq__container"><svg aria-hidden="true" focusable="false" data-prefix="sntp" data-icon="sntpGuideLogo" class="svg-inline--fa fa-sntpGuideLogo fa-fw OssIndex-module-scss-module__DZPPKq__sntpIcon nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 175"><path fill="currentColor" d="M133.01,0v25.97l35.92,20.46v83.51l-35.92,20.41v24.34l58.05-33.04V32.98l-58.05-32.98ZM0,141.64l57.99,32.98v-24.29l-35.87-20.41V46.42l35.87-20.41V0L0,32.98v108.66ZM93.1,136.17c-8.03,0-14.34-1.56-18.93-4.67s-7.57-6.87-8.94-11.29l13.4-3.25c.9,1.84,2.47,3.62,4.69,5.35,2.22,1.73,5.56,2.59,10.03,2.59s7.75-1.03,10.51-3.08c2.75-2.06,4.13-5.4,4.13-10.03v-11.96h-.74c-.77,1.54-1.89,3.11-3.35,4.73-1.47,1.62-3.4,2.97-5.8,4.07-2.4,1.1-5.41,1.64-9.03,1.64-4.85,0-9.24-1.14-13.18-3.43s-7.06-5.72-9.37-10.3-3.47-10.29-3.47-17.15,1.16-12.79,3.47-17.58c2.32-4.78,5.45-8.41,9.4-10.9,3.95-2.48,8.35-3.72,13.2-3.72,3.73,0,6.79.62,9.19,1.87,2.4,1.25,4.3,2.74,5.72,4.48,1.41,1.74,2.49,3.38,3.23,4.91h.82v-10.44h14.68v64.18c0,5.37-1.29,9.83-3.87,13.38-2.58,3.55-6.09,6.2-10.55,7.96-4.45,1.75-9.53,2.63-15.23,2.63ZM93.23,98.59c4.74,0,8.4-1.71,10.98-5.12,2.58-3.41,3.86-8.13,3.86-14.16s-1.27-10.79-3.82-14.43c-2.55-3.65-6.22-5.47-11.02-5.47s-8.7,1.89-11.23,5.65c-2.52,3.77-3.78,8.52-3.78,14.25s1.28,10.48,3.82,14c2.55,3.52,6.28,5.28,11.18,5.28Z"></path></svg><span class="OssIndex-module-scss-module__DZPPKq__linkLabel">Sonatype Guide</span><div class="OssIndex-module-scss-module__DZPPKq__vulnerabilitiesLoader"><svg viewBox="0 0 100 100" preserveAspectRatio="none" class="ContentLoaderItem-module-scss-module__U2ZGna__itemSVG" role="presentation" aria-hidden="true"><rect x="0" y="0" width="100%" height="100%" fill="#f3f3f3"><animate attributeName="fill" values="#f3f3f3;#ecebeb;#f3f3f3" dur="2s" repeatCount="indefinite"></animate></rect></svg></div><a class="nx-text-link nx-text-link--external" rel="" target="_blank" data-test="ossindex-metadata-link" href="https://guide.sonatype.com/component/maven/jspapi:jsp-api/2.0-20040521" aria-disabled="false"><span>View</span><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="up-right-from-square" class="svg-inline--fa fa-up-right-from-square fa-sm nx-icon--colorful nx-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M352 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9L370.7 96 201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L416 141.3l41.4 41.4c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V32c0-17.7-14.3-32-32-32H352zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"></path></svg></a></div></div></div></section></div></div></main></div></div><script>$RS=function(a,b){a=document.getElementById(a);b=document.getElementById(b);for(a.parentNode.removeChild(a);a.firstChild;)b.parentNode.insertBefore(a.firstChild,b);b.parentNode.removeChild(b)};$RS("S:2","P:2")</script><script>$RC("B:1","S:1")</script></body></html>
+web search: 
+web search: https://svn.apache.org/repos/asf/tomcat/archive/tc5.0.x/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/tomcat/archive/tc5.0.x/tags/TOMCAT_5_0_26/
+web search: 
+web search: 
+web search: 
+web search: https://svn.apache.org/repos/asf/tomcat/archive/tc5.0.x/tags/TOMCAT_5_0_26/servletapi/
+web search: 
+web search: https://svn.apache.org/repos/asf/tomcat/archive/tc5.0.x/tags/TOMCAT_5_0_26/servletapi/jsr152/
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; for v in 25 26 27 28; do url="https://archive.apache.org/dist/tomcat/tomcat-5/archive/v5.0.$v/src/jakarta-tomcat-5.0.$v-src.tar.gz"; [ "$v" = 28 ] && url="https://archive.apache.org/dist/tomcat/tomcat-5/v5.0.28/src/jakarta-tomcat-5.0.28-src.tar.gz"; curl -fsSL -o t$v.tgz "$url"; mkdir d$v; tar -xzf t$v.tgz -C d$v --wildcards '"'*/jakarta-servletapi-5/jsr152/src/share/javax/servlet/jsp/JspFactory.java' '*/jakarta-servletapi-5/jsr152/build.xml' >/dev/null 2>&1 || true; echo \"--- "'$v"; rg -n "implementation.revision|abstract JspFactory|getDefaultFactory" d$v || true; done; rm -rf "$tmp"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 4980ms:
+--- 25
+d25/jakarta-tomcat-5.0.25-src/jakarta-servletapi-5/jsr152/build.xml:14:  <property name="implementation.revision" value="public_draft"/>
+d25/jakarta-tomcat-5.0.25-src/jakarta-servletapi-5/jsr152/build.xml:232:        <filter token="implementation.revision"
+d25/jakarta-tomcat-5.0.25-src/jakarta-servletapi-5/jsr152/build.xml:233:                value="${implementation.revision}"/>
+d25/jakarta-tomcat-5.0.25-src/jakarta-servletapi-5/jsr152/src/share/javax/servlet/jsp/JspFactory.java:72:    public static synchronized JspFactory getDefaultFactory() {
+curl: (22) The requested URL returned error: 404
+--- 26
+--- 27
+d27/jakarta-tomcat-5.0.27-src/jakarta-servletapi-5/jsr152/build.xml:14:  <property name="implementation.revision" value="public_draft"/>
+d27/jakarta-tomcat-5.0.27-src/jakarta-servletapi-5/jsr152/build.xml:232:        <filter token="implementation.revision"
+d27/jakarta-tomcat-5.0.27-src/jakarta-servletapi-5/jsr152/build.xml:233:                value="${implementation.revision}"/>
+d27/jakarta-tomcat-5.0.27-src/jakarta-servletapi-5/jsr152/src/share/javax/servlet/jsp/JspFactory.java:72:    public static synchronized JspFactory getDefaultFactory() {
+--- 28
+d28/jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:14:  <property name="implementation.revision" value="public_draft"/>
+d28/jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:232:        <filter token="implementation.revision"
+d28/jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/build.xml:233:                value="${implementation.revision}"/>
+d28/jakarta-tomcat-5.0.28-src/jakarta-servletapi-5/jsr152/src/share/javax/servlet/jsp/JspFactory.java:72:    public static synchronized JspFactory getDefaultFactory() {
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp"; for v in 2.0-20040521 2.0 2.0.public_draft; do curl -fsSLO https://repo1.maven.org/maven2/jspapi/jsp-api/$v/jsp-api-$v.jar || true; done; for f in *.jar; do echo "--- $f"; jar xf "$f" META-INF/MANIFEST.MF; sed -n '"'1,80p' META-INF/MANIFEST.MF; rm -rf META-INF; done; sha1sum *.jar; rm -rf \""'$tmp"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 486ms:
+curl: (22) The requested URL returned error: 404
+--- jsp-api-2.0-20040521.jar
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.5.3 
+Created-By: 1.4.2_01-b06 (Sun Microsystems Inc.)
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.public_draft
+Implementation-Vendor: Apache Software Foundation
+
+--- jsp-api-2.0.jar
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.2
+Created-By: 1.4.2_06-b03 (Sun Microsystems Inc.)
+
+Name: javax/servlet/jsp/
+Specification-Title: Java API for JavaServer Pages
+Specification-Version: 2.0
+Specification-Vendor: Sun Microsystems, Inc.
+Implementation-Title: javax.servlet.jsp
+Implementation-Version: 2.0.public_draft
+Implementation-Vendor: Apache Software Foundation
+
+8d48cb70875a67782b1b80556bb28df5cf605b99  jsp-api-2.0-20040521.jar
+e6def06602b51b1d9be51f6c3fcdf163ecd01644  jsp-api-2.0.jar
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jspapi/jsp-api/2.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jspapi/jsp-api/2.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jsp-api-2.0.jar" title="jsp-api-2.0.jar">jsp-api-2.0.jar</a>                                   2005-09-20 05:49     50493      
+<a href="jsp-api-2.0.jar.md5" title="jsp-api-2.0.jar.md5">jsp-api-2.0.jar.md5</a>                               2005-09-20 05:49        32      
+<a href="jsp-api-2.0.jar.sha1" title="jsp-api-2.0.jar.sha1">jsp-api-2.0.jar.sha1</a>                              2005-09-20 05:49        40      
+<a href="jsp-api-2.0.pom" title="jsp-api-2.0.pom">jsp-api-2.0.pom</a>                                   2005-09-20 05:49       313      
+<a href="jsp-api-2.0.pom.md5" title="jsp-api-2.0.pom.md5">jsp-api-2.0.pom.md5</a>                               2005-09-20 05:49       127      
+<a href="jsp-api-2.0.pom.sha1" title="jsp-api-2.0.pom.sha1">jsp-api-2.0.pom.sha1</a>                              2005-09-20 05:49       135      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:49       110      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:49        74      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:49       129      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/jspapi/jsp-api/2.0/jsp-api-2.0.pom' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>jspapi</groupId>
+  <artifactId>jsp-api</artifactId>
+  <version>2.0</version>
+  <distributionManagement>
+    <relocation>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+    </relocation>
+  </distributionManagement>
+</project>
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:\\s*\"N/A\"|\"repository-url\"\\s*:\\s*\"N/A\"|\"test-code-url\"\\s*:\\s*\"N/A\"|\"documentation-url\"\\s*:\\s*\"N/A\"' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n 'jsp-api|javax.servlet.jsp|javax.servlet' build/discovered-artifact-metadata metadata | sed -n '1,120p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json:2:  "coordinates" : "jspapi:jsp-api:2.0-20040521"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:5:        "typeReached" : "javax.servlet.http.HttpUtils"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:17:        "typeReached" : "javax.servlet.http.HttpServlet"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:19:      "type" : "javax.servlet.http.HttpServlet"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:25:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:31:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:33:      "glob" : "javax/servlet/LocalStrings.properties"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:37:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:39:      "glob" : "javax/servlet/LocalStrings_en.properties"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:43:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:45:      "glob" : "javax/servlet/LocalStrings_en_US.properties"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:49:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:51:      "glob" : "javax/servlet/http/LocalStrings.properties"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:55:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:57:      "glob" : "javax/servlet/http/LocalStrings_en.properties"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:61:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:63:      "glob" : "javax/servlet/http/LocalStrings_en_US.properties"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:66:      "bundle" : "javax.servlet.LocalStrings"
+metadata/org.mortbay.jetty/servlet-api/2.5-20081211/reachability-metadata.json:69:      "bundle" : "javax.servlet.http.LocalStrings"
+metadata/org.mortbay.jetty/servlet-api/index.json:9:    "description" : "Provides the Java Servlet 2.5 API interfaces, classes, and deployment descriptor resources used by servlet containers and Java web applications. It packages the standard javax.servlet and javax.servlet.http contracts so applications can compile against the servlet specification without bundling a container implementation.",
+metadata/org.mortbay.jetty/servlet-api/index.json:14:      "javax.servlet"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:5:        "typeReached" : "javax.servlet.http.HttpUtils"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:19:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:25:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:27:      "glob" : "javax/servlet/LocalStrings.properties"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:31:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:33:      "glob" : "javax/servlet/LocalStrings_en.properties"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:37:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:39:      "glob" : "javax/servlet/LocalStrings_en_US.properties"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:43:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:45:      "glob" : "javax/servlet/http/LocalStrings.properties"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:49:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:51:      "glob" : "javax/servlet/http/LocalStrings_en.properties"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:55:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:57:      "glob" : "javax/servlet/http/LocalStrings_en_US.properties"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:60:      "bundle" : "javax.servlet.LocalStrings"
+metadata/javax.servlet/javax.servlet-api/3.1.0/reachability-metadata.json:63:      "bundle" : "javax.servlet.http.LocalStrings"
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:15:      "javax.servlet"
+metadata/javax.servlet.jsp/jsp-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1-sources.jar",
+metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.1",
+metadata/javax.servlet.jsp/jsp-api/index.json:15:      "javax.servlet.jsp"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json:5:        "typeReached": "javax.servlet.GenericServlet"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json:7:      "bundle": "javax.servlet.LocalStrings"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json:11:        "typeReached": "javax.servlet.http.HttpServlet"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/reachability-metadata.json:13:      "bundle": "javax.servlet.http.LocalStrings"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:6:      "javax.servlet"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:5:        "typeReached" : "javax.servlet.http.HttpUtils"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:19:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:25:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:27:      "glob" : "javax/servlet/LocalStrings.properties"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:31:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:33:      "glob" : "javax/servlet/LocalStrings_en.properties"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:37:        "typeReached" : "javax.servlet.GenericServlet"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:39:      "glob" : "javax/servlet/LocalStrings_en_US.properties"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:43:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:45:      "glob" : "javax/servlet/http/LocalStrings.properties"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:49:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:51:      "glob" : "javax/servlet/http/LocalStrings_en.properties"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:55:        "typeReached" : "javax.servlet.http.Cookie"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:57:      "glob" : "javax/servlet/http/LocalStrings_en_US.properties"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:60:      "bundle" : "javax.servlet.LocalStrings"
+metadata/org.glassfish/javax.servlet/3.1/reachability-metadata.json:63:      "bundle" : "javax.servlet.http.LocalStrings"
+metadata/org.glassfish/javax.servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/javax.servlet/3.1/javax.servlet-3.1-sources.jar",
+metadata/org.glassfish/javax.servlet/index.json:8:    "documentation-url" : "https://javadoc.io/doc/org.glassfish/javax.servlet/3.1",
+metadata/org.glassfish/javax.servlet/index.json:14:      "javax.servlet"
+metadata/org.apache.openejb/javaee-api/index.json:4:    "allowed-packages": [ "javax.activation", "javax.annotation", "javax.ejb", "javax.enterprise.deploy", "javax.interceptor", "javax.jms", "javax.jws", "javax.mail", "javax.management.j2ee", "javax.persistence", "javax.resource", "javax.security.jacc", "javax.servlet", "javax.transaction", "javax.xml", "org.apache.geronimo.mail" ],
+metadata/org.apache.tomcat.embed/tomcat-embed-el/9.0.83/reachability-metadata.json:183:      "type" : "javax.servlet.jsp.el.ScopedAttributeELResolver"
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:13:      "javax.servlet"
+metadata/jakarta.servlet/jakarta.servlet-api/4.0.4/reachability-metadata.json:5:        "typeReached": "javax.servlet.http.HttpUtils"
+metadata/jakarta.servlet/jakarta.servlet-api/4.0.4/reachability-metadata.json:19:        "typeReached": "javax.servlet.GenericServlet"
+metadata/jakarta.servlet/jakarta.servlet-api/4.0.4/reachability-metadata.json:21:      "bundle": "javax.servlet.LocalStrings"
+metadata/jakarta.servlet/jakarta.servlet-api/4.0.4/reachability-metadata.json:25:        "typeReached": "javax.servlet.http.HttpServlet"
+metadata/jakarta.servlet/jakarta.servlet-api/4.0.4/reachability-metadata.json:27:      "bundle": "javax.servlet.http.LocalStrings"
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | sed -n '1,20p' | xargs -r -n1 sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+{
+  "coordinates" : "jspapi:jsp-api:2.0-20040521"
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,140p' metadata/javax.servlet.jsp/jsp-api/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1-sources.jar",
+    "repository-url" : "N/A",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.1",
+    "description" : "This artifact provides the JavaServer Pages 2.1 API contracts, including core JSP, tag extension, and expression language interfaces used by JSP containers and applications. It defines standard types that JSP engines and custom tag libraries implement at compile time and runtime.",
+    "tested-versions" : [
+      "2.1"
+    ],
+    "allowed-packages" : [
+      "javax.el",
+      "javax.servlet.jsp"
+    ]
+  }
+]
+
+web search: 
+web search: 
+web search: 
+web search: javadoc.io jspapi jsp-api 2.0-20040521
+codex
+I found no exact-version sources, tests, or Javadocs published alongside `jspapi:jsp-api:2.0-20040521`, and Maven Central/Sonatype expose no project URL or SCM for that artifact. I’m updating the discovered metadata with `N/A` for those unverifiable URL fields and a two-sentence API description based on the artifact contents.
+apply patch
+patch: completed
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+diff --git a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+index 39561997a5a83d7eb0ee4043c8ced8e59b1e4063..5018aeae4e732f53fd457c373bcf05ce3f9657d1
+--- a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
++++ b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jspapi:jsp-api:2.0-20040521"
++  "coordinates" : "jspapi:jsp-api:2.0-20040521",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API classes under javax.servlet.jsp, including page, tag, and expression language contracts. Applications and containers use it as a compile-time API for JSP components rather than as a JSP engine implementation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+index 39561997a5a83d7eb0ee4043c8ced8e59b1e4063..5018aeae4e732f53fd457c373bcf05ce3f9657d1
+--- a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
++++ b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jspapi:jsp-api:2.0-20040521"
++  "coordinates" : "jspapi:jsp-api:2.0-20040521",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API classes under javax.servlet.jsp, including page, tag, and expression language contracts. Applications and containers use it as a compile-time API for JSP components rather than as a JSP engine implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+{
+  "coordinates" : "jspapi:jsp-api:2.0-20040521",
+  "source-code-url" : "N/A",
+  "repository-url" : "N/A",
+  "test-code-url" : "N/A",
+  "documentation-url" : "N/A",
+  "description" : "This artifact provides the JavaServer Pages 2.0 API classes under javax.servlet.jsp, including page, tag, and expression language contracts. Applications and containers use it as a compile-time API for JSP components rather than as a JSP engine implementation."
+}
+
+diff --git a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+index 39561997a5a83d7eb0ee4043c8ced8e59b1e4063..5018aeae4e732f53fd457c373bcf05ce3f9657d1
+--- a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
++++ b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jspapi:jsp-api:2.0-20040521"
++  "coordinates" : "jspapi:jsp-api:2.0-20040521",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API classes under javax.servlet.jsp, including page, tag, and expression language contracts. Applications and containers use it as a compile-time API for JSP components rather than as a JSP engine implementation."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+index 39561997a5a83d7eb0ee4043c8ced8e59b1e4063..5018aeae4e732f53fd457c373bcf05ce3f9657d1
+--- a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
++++ b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jspapi:jsp-api:2.0-20040521"
++  "coordinates" : "jspapi:jsp-api:2.0-20040521",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API classes under javax.servlet.jsp, including page, tag, and expression language contracts. Applications and containers use it as a compile-time API for JSP components rather than as a JSP engine implementation."
+ }
+
+web search: 
+web search: https://central.sonatype.com/artifact/jspapi/jsp-api/2.0-20040521/pom
+web search: 
+web search: repo1.maven.org maven2 jspapi jsp-api 2.0-20040521
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/
+web search: 
+web search: https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/
+web search: 
+web search: 
+codex
+Updated [jspapi-jsp-api-2.0-20040521.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json).
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. I set the URL fields to `N/A` because the exact Maven directory only publishes the binary JAR, POM, checksums, and metadata, and the POM has no project/SCM information. ([repo1.maven.org](https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/))
+
+Validation: JSON parses successfully.
+diff --git a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+index 39561997a5a83d7eb0ee4043c8ced8e59b1e4063..5018aeae4e732f53fd457c373bcf05ce3f9657d1
+--- a/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
++++ b/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "jspapi:jsp-api:2.0-20040521"
++  "coordinates" : "jspapi:jsp-api:2.0-20040521",
++  "source-code-url" : "N/A",
++  "repository-url" : "N/A",
++  "test-code-url" : "N/A",
++  "documentation-url" : "N/A",
++  "description" : "This artifact provides the JavaServer Pages 2.0 API classes under javax.servlet.jsp, including page, tag, and expression language contracts. Applications and containers use it as a compile-time API for JSP components rather than as a JSP engine implementation."
+ }
+
+2026-04-28T23:18:48.754657Z ERROR codex_core::session: failed to record rollout items: thread 019dd660-23ac-7ff1-8a10-780037f0a590 not found
+tokens used
+205,954
+Updated [jspapi-jsp-api-2.0-20040521.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2/build/discovered-artifact-metadata/jspapi-jsp-api-2.0-20040521.json).
+
+I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library. I set the URL fields to `N/A` because the exact Maven directory only publishes the binary JAR, POM, checksums, and metadata, and the POM has no project/SCM information. ([repo1.maven.org](https://repo1.maven.org/maven2/jspapi/jsp-api/2.0-20040521/))
+
+Validation: JSON parses successfully.
+Ran agent for jspapi:jsp-api:2.0-20040521 (exit 0). Log: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2/build/agent-artifact-discovery-logs/jspapi-jsp-api-2.0-20040521.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2842-982f85a2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3m 31s
+9 actionable tasks: 4 executed, 5 from cache
