@@ -7,6 +7,8 @@
 package org_jetbrains_kotlin.kotlin_test
 
 import org.junit.jupiter.api.Test
+import kotlin.test.Asserter
+import kotlin.test.DefaultAsserter
 import kotlin.test.assertContains
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -141,5 +143,33 @@ public class Kotlin_testTest {
             fail("forced failure from kotlin.test.fail")
         }
         assertContains(failure.message ?: "", "forced failure")
+    }
+
+    @Test
+    fun defaultAsserterDefersLazyFailureMessagesUntilAssertionFails() {
+        val defaultAsserter: Asserter = DefaultAsserter
+        var evaluatedMessage = false
+
+        defaultAsserter.assertTrue(
+            lazyMessage = {
+                evaluatedMessage = true
+                "success details should stay lazy"
+            },
+            actual = true,
+        )
+        assertFalse(evaluatedMessage, "successful assertions should not evaluate lazy messages")
+
+        val failure = assertFailsWith<AssertionError> {
+            defaultAsserter.assertTrue(
+                lazyMessage = {
+                    evaluatedMessage = true
+                    "computed failure details"
+                },
+                actual = false,
+            )
+        }
+
+        assertTrue(evaluatedMessage, "failed assertions should evaluate lazy messages")
+        assertContains(failure.message ?: "", "computed failure details")
     }
 }
