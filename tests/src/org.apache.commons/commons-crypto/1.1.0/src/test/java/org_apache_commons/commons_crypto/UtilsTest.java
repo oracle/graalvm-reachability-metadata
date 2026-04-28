@@ -18,6 +18,6 @@ public class UtilsTest {
     void returnsDefaultProperties() {
         Properties properties = Utils.getDefaultProperties();
 
-        assertThat(properties).containsEntry("java.version", System.getProperty("java.version"));
+        assertThat(properties.getProperty("java.version")).isEqualTo(System.getProperty("java.version"));
     }
 }
