@@ -18,7 +18,7 @@ public class StaticLoggerBinderTest {
 
     @Test
     void staticLoggerBinderProvidesTheNopLoggerFactoryUsedBySlf4j() {
-        StaticLoggerBinder binder = StaticLoggerBinder.SINGLETON;
+        StaticLoggerBinder binder = StaticLoggerBinder.getSingleton();
         ILoggerFactory binderFactory = binder.getLoggerFactory();
         ILoggerFactory apiFactory = LoggerFactory.getILoggerFactory();
         Logger firstLogger = binderFactory.getLogger("first");
@@ -27,6 +27,6 @@ public class StaticLoggerBinderTest {
         assertThat(apiFactory).isSameAs(binderFactory);
         assertThat(binder.getLoggerFactoryClassStr()).isEqualTo(binderFactory.getClass().getName());
         assertThat(firstLogger).isSameAs(secondLogger);
-        assertThat(StaticLoggerBinder.SINGLETON).isSameAs(binder);
+        assertThat(StaticLoggerBinder.getSingleton()).isSameAs(binder);
     }
 }
