@@ -8,9 +8,9 @@ package org_apache_ant.ant_launcher;
 
 import org.junit.jupiter.api.Test;
 
-class Ant_launcherTest {
+public class Ant_launcherTest {
     @Test
-    void test() throws Exception {
+    public void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
     }
 }
