@@ -7,6 +7,7 @@
 package org_roaringbitmap.shims;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 import org.roaringbitmap.ArraysShim;
@@ -45,6 +46,18 @@ public class ShimsTest {
     }
 
     @Test
+    void charRangeEqualsRejectsInvalidRangeBoundaries() {
+        char[] values = {'r', 'o', 'a', 'r'};
+
+        assertThatThrownBy(() -> ArraysShim.equals(values, 3, 1, values, 0, 1))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> ArraysShim.equals(values, -1, 1, values, 0, 1))
+                .isInstanceOf(ArrayIndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> ArraysShim.equals(values, 0, 1, values, 0, values.length + 1))
+                .isInstanceOf(ArrayIndexOutOfBoundsException.class);
+    }
+
+    @Test
     void byteRangeMismatchReturnsMinusOneForEqualWindows() {
         byte[] first = {9, 10, 11, 12, 13};
         byte[] second = {0, 0, 10, 11, 12, 99};
@@ -75,5 +88,17 @@ public class ShimsTest {
 
         assertThat(ArraysShim.mismatch(first, 2, 2, second, 1, 1)).isEqualTo(-1);
         assertThat(ArraysShim.mismatch(first, 2, 2, second, 0, 1)).isZero();
+    }
+
+    @Test
+    void byteRangeMismatchRejectsInvalidRangeBoundaries() {
+        byte[] values = {1, 2, 3, 4};
+
+        assertThatThrownBy(() -> ArraysShim.mismatch(values, 3, 1, values, 0, 1))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> ArraysShim.mismatch(values, -1, 1, values, 0, 1))
+                .isInstanceOf(ArrayIndexOutOfBoundsException.class);
+        assertThatThrownBy(() -> ArraysShim.mismatch(values, 0, 1, values, 0, values.length + 1))
+                .isInstanceOf(ArrayIndexOutOfBoundsException.class);
     }
 }
