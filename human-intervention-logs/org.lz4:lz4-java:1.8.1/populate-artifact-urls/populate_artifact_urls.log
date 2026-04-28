@@ -1,0 +1,578 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd54f-7ec9-7542-b917-923c28c20a4d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.lz4:lz4-java:1.8.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.8.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/metadata/org.lz4/lz4-java/index.json
+- Entry selector: "metadata-version" = "1.8.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.8.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.8.1
+- Entry test-version: 1.8.1
+codex
+I’ll verify the exact 1.8.1 artifact sources and tag layout first, then update only blank fields in the existing JSON entry.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.8\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.lz4/lz4-java/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+4:    "metadata-version" : "1.8.1",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+15:    "repository-url" : "https://github.com/lz4/lz4-java",
+16:    "test-code-url" : "https://github.com/lz4/lz4-java/tree/1.8.0/src/test",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+18:    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.lz4/lz4-java/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.1",
+    "tested-versions" : [
+      "1.8.1"
+    ],
+    "allowed-packages" : [
+      "net.jpountz"
+    ]
+  },
+  {
+    "metadata-version" : "1.8.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+    "repository-url" : "https://github.com/lz4/lz4-java",
+    "test-code-url" : "https://github.com/lz4/lz4-java/tree/1.8.0/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+    "tested-versions" : [
+      "1.8.0"
+    ],
+    "allowed-packages" : [
+      "net.jpountz"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central org.lz4 lz4-java 1.8.1 sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.1/
+web search: 
+web search: https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.1/
+web search: 
+web search: 
+web search: 
+web search: https://central.sonatype.com/artifact/at.yawk.lz4/lz4-java/1.8.1
+web search: 
+web search: site:github.com/yawkat/lz4-java/releases 1.8.1
+codex
+The 1.8.1 `org.lz4` coordinate is a relocation POM only; the actual 1.8.1 artifacts, including sources and javadocs, are under the relocated `at.yawk.lz4` coordinate. I’m checking the SCM revision from that POM for the exact test tree now.
+web search: 
+web search: https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test
+codex
+I found no Maven test-sources artifact in the 1.8.1 directory, but the relocated artifact’s POM records the exact SCM revision and `src/test` exists at that revision. I’ll fill the missing 1.8.1 fields with Maven Central source/javadoc artifacts where available and the pinned GitHub test tree for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/metadata/org.lz4/lz4-java/index.json
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..4bc3f48ba51e53e804719b8b6f7ee332e50821e5
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "1.8.1"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "allowed-packages" : [
+       "net.jpountz"
+     ]
+
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..4bc3f48ba51e53e804719b8b6f7ee332e50821e5
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "1.8.1"
+     ],
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "allowed-packages" : [
+       "net.jpountz"
+     ]
+
+codex
+The file is now populated; I’m doing a quick cleanup pass so the new 1.8.1 entry follows the same field order as the existing 1.8.0 entry, then I’ll validate the JSON.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/metadata/org.lz4/lz4-java/index.json
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..83d154234b73ff789df8a5122b0a04bfd73b47bb
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..83d154234b73ff789df8a5122b0a04bfd73b47bb
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+exec
+/usr/bin/bash -lc "sed -n '1,36p' metadata/org.lz4/lz4-java/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
+    "repository-url" : "https://github.com/yawkat/lz4-java",
+    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
+    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+    "tested-versions" : [
+      "1.8.1"
+    ],
+    "allowed-packages" : [
+      "net.jpountz"
+    ]
+  },
+  {
+    "metadata-version" : "1.8.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+    "repository-url" : "https://github.com/lz4/lz4-java",
+    "test-code-url" : "https://github.com/lz4/lz4-java/tree/1.8.0/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+    "tested-versions" : [
+      "1.8.0"
+    ],
+    "allowed-packages" : [
+      "net.jpountz"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.lz4/lz4-java/index.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+ succeeded in 0ms:
+diff --git i/metadata/org.lz4/lz4-java/index.json w/metadata/org.lz4/lz4-java/index.json
+index 583046de0d..83d154234b 100644
+--- i/metadata/org.lz4/lz4-java/index.json
++++ w/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+exec
+/usr/bin/bash -lc 'python -m json.tool metadata/org.lz4/lz4-java/index.json >/dev/null' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+ succeeded in 0ms:
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..83d154234b73ff789df8a5122b0a04bfd73b47bb
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+codex
+The JSON parses cleanly and the diff is limited to the missing 1.8.1 fields. I’m running the repository metadata validation for this coordinate as the final check.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..83d154234b73ff789df8a5122b0a04bfd73b47bb
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+ exited 1 in 1024ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/metadata/org.lz4/lz4-java/1.8.1/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/metadata/org.lz4/lz4-java/1.8.1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/metadata/org.lz4/lz4-java/1.8.1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/
+web search: 
+web search: https://central.sonatype.com/artifact/org.lz4/lz4-java/1.8.1
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.lz4/lz4-java/index.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0
+ succeeded in 0ms:
+ M metadata/org.lz4/lz4-java/index.json
+
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..83d154234b73ff789df8a5122b0a04bfd73b47bb
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/metadata/org.lz4/lz4-java/index.json:1) for `metadata-version` `1.8.1`.
+
+I used the relocated `at.yawk.lz4` 1.8.1 Maven artifacts for sources and javadocs, and the pinned GitHub test tree for the exact SCM revision. `language` was left absent because this is not a Kotlin, Groovy, or Scala-specific library. citeturn6view0turn5view0turn4view0
+
+Validation:
+- `python -m json.tool metadata/org.lz4/lz4-java/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace` failed because `metadata/org.lz4/lz4-java/1.8.1/reachability-metadata.json` is missing.
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..83d154234b73ff789df8a5122b0a04bfd73b47bb
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/d041c28d3d4cd734d7c238206a27fd4768abb21d/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java bindings and pure Java implementations of the LZ4 compression algorithm and the XXHash hashing algorithm. It supports JNI, safe Java, and Unsafe-backed implementations for compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+2026-04-28T18:19:00.767274Z ERROR codex_core::session: failed to record rollout items: thread 019dd54f-7ec9-7542-b917-923c28c20a4d not found
+tokens used
+96,013
+Updated [index.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/metadata/org.lz4/lz4-java/index.json:1) for `metadata-version` `1.8.1`.
+
+I used the relocated `at.yawk.lz4` 1.8.1 Maven artifacts for sources and javadocs, and the pinned GitHub test tree for the exact SCM revision. `language` was left absent because this is not a Kotlin, Groovy, or Scala-specific library. citeturn6view0turn5view0turn4view0
+
+Validation:
+- `python -m json.tool metadata/org.lz4/lz4-java/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace` failed because `metadata/org.lz4/lz4-java/1.8.1/reachability-metadata.json` is missing.
+Ran agent for org.lz4:lz4-java:1.8.1 (exit 0). Log: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/build/agent-url-discovery-logs/org.lz4-lz4-java-1.8.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/1812-bef76ab0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 31s
+9 actionable tasks: 1 executed, 8 up-to-date
