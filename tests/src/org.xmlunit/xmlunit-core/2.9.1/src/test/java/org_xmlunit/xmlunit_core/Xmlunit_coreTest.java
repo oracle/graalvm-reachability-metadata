@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -24,6 +26,8 @@ import org.xmlunit.diff.Difference;
 import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.transform.Transformation;
+import org.xmlunit.util.Convert;
+import org.xmlunit.util.DocumentBuilderFactoryConfigurer;
 import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
@@ -206,6 +210,28 @@ public class Xmlunit_coreTest {
         assertFalse(problems.isEmpty());
         String invalidProblemMessages = problemMessages(problems);
         assertTrue(invalidProblemMessages.contains("quantity") || invalidProblemMessages.contains("sku"));
+    }
+
+    @Test
+    void documentBuilderFactoryConfigurerPreservesEntityReferencesWhenConvertingSources() {
+        String xml = """
+                <!DOCTYPE message [<!ENTITY writer "Ada Lovelace">]>
+                <message>Hello &writer;</message>
+                """;
+        DocumentBuilderFactory factory = DocumentBuilderFactoryConfigurer.builder()
+                .withExpandEntityReferences(false)
+                .build()
+                .configure(DocumentBuilderFactory.newInstance());
+
+        Document document = Convert.toDocument(Input.fromString(xml).build(), factory);
+        Node message = document.getDocumentElement();
+
+        assertEquals("message", message.getNodeName());
+        assertEquals(2, message.getChildNodes().getLength());
+        assertEquals(Node.TEXT_NODE, message.getChildNodes().item(0).getNodeType());
+        assertEquals("Hello ", message.getChildNodes().item(0).getNodeValue());
+        assertEquals(Node.ENTITY_REFERENCE_NODE, message.getChildNodes().item(1).getNodeType());
+        assertEquals("writer", message.getChildNodes().item(1).getNodeName());
     }
 
     @Test
