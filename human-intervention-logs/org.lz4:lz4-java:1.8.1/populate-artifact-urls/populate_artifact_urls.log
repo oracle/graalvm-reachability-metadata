@@ -1,0 +1,1136 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd409-48b3-7421-bd43-425e60911947
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.lz4:lz4-java:1.8.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.8.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/metadata/org.lz4/lz4-java/index.json
+- Entry selector: "metadata-version" = "1.8.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.8.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.8.1
+- Entry test-version: 1.8.1
+codex
+I’ll verify the artifact metadata and local JSON shape before editing, then I’ll update only the blank fields for the `1.8.1` entry.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.lz4/lz4-java/index.json" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8.1",
+    "tested-versions" : [
+      "1.8.1"
+    ],
+    "allowed-packages" : [
+      "net.jpountz"
+    ]
+  },
+  {
+    "metadata-version" : "1.8.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+    "repository-url" : "https://github.com/lz4/lz4-java",
+    "test-code-url" : "https://github.com/lz4/lz4-java/tree/1.8.0/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+    "tested-versions" : [
+      "1.8.0"
+    ],
+    "allowed-packages" : [
+      "net.jpountz"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.8\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.lz4/lz4-java/index.json" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+4:    "metadata-version" : "1.8.1",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+15:    "repository-url" : "https://github.com/lz4/lz4-java",
+16:    "test-code-url" : "https://github.com/lz4/lz4-java/tree/1.8.0/src/test",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+18:    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+
+exec
+/usr/bin/bash -lc "rg -n 'javadoc.io/doc|repo1.maven.org|sources.jar|test-sources|source-code-url.*github.com/.*/tree|documentation-url' metadata | head -80" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:9:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:33:    "test-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/org.jetbrains/annotations-java5/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/23.0.0/annotations-java5-23.0.0-sources.jar",
+metadata/org.jetbrains/annotations-java5/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/23.0.0/annotations-java5-23.0.0-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/org.jetbrains/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0-sources.jar",
+metadata/org.jetbrains/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0-javadoc.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+metadata/io.dropwizard.metrics/metrics-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1-sources.jar",
+metadata/io.dropwizard.metrics/metrics-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/dropwizard/metrics/metrics-core/4.1.12.1/metrics-core-4.1.12.1-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-sources.jar",
+metadata/org.mockito/mockito-core/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar",
+metadata/org.mockito/mockito-core/index.json:53:    "documentation-url": "https://github.com/mockito/mockito/blob/v4.8.1/README.md",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/net.i2p.crypto/eddsa/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/net/i2p/crypto/eddsa/0.3.0/eddsa-0.3.0-sources.jar",
+metadata/net.i2p.crypto/eddsa/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/net/i2p/crypto/eddsa/0.3.0/eddsa-0.3.0-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-test-sources.jar",
+metadata/commons-io/commons-io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+
+web search: 
+web search: Maven Central org.lz4 lz4-java 1.8.1 sources jar test sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.1/
+codex
+The local file already has a complete `1.8.0` entry, so I’m using that as the formatting and wording baseline. Maven Central shows `org.lz4:lz4-java:1.8.1` as a POM-only coordinate, so I’m checking whether it relocates to a new artifact before choosing URLs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.1/lz4-java-1.8.1.pom' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <!--
+    The relocation POM for this version is being published
+    by Sonatype, Inc. with the collaboration and support
+    of the original LZ4 project and the maintainers of
+    the relocation target.
+  -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.lz4</groupId>
+  <artifactId>lz4-java</artifactId>
+  <version>1.8.1</version>
+  <distributionManagement>
+    <relocation>
+      <groupId>at.yawk.lz4</groupId>
+    </relocation>
+  </distributionManagement>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/ | sed -n '1,120p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: at/yawk/lz4/lz4-java/1.8.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>at/yawk/lz4/lz4-java/1.8.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="lz4-java-1.8.1-javadoc.jar" title="lz4-java-1.8.1-javadoc.jar">lz4-java-1.8.1-javadoc.jar</a>                        2025-11-26 08:55    271487      
+<a href="lz4-java-1.8.1-javadoc.jar.asc" title="lz4-java-1.8.1-javadoc.jar.asc">lz4-java-1.8.1-javadoc.jar.asc</a>                    2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1-javadoc.jar.md5" title="lz4-java-1.8.1-javadoc.jar.md5">lz4-java-1.8.1-javadoc.jar.md5</a>                    2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1-javadoc.jar.sha1" title="lz4-java-1.8.1-javadoc.jar.sha1">lz4-java-1.8.1-javadoc.jar.sha1</a>                   2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1-javadoc.jar.sha256" title="lz4-java-1.8.1-javadoc.jar.sha256">lz4-java-1.8.1-javadoc.jar.sha256</a>                 2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1-javadoc.jar.sha512" title="lz4-java-1.8.1-javadoc.jar.sha512">lz4-java-1.8.1-javadoc.jar.sha512</a>                 2025-11-26 08:55       128      
+<a href="lz4-java-1.8.1-sources.jar" title="lz4-java-1.8.1-sources.jar">lz4-java-1.8.1-sources.jar</a>                        2025-11-26 08:55    652114      
+<a href="lz4-java-1.8.1-sources.jar.asc" title="lz4-java-1.8.1-sources.jar.asc">lz4-java-1.8.1-sources.jar.asc</a>                    2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1-sources.jar.md5" title="lz4-java-1.8.1-sources.jar.md5">lz4-java-1.8.1-sources.jar.md5</a>                    2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1-sources.jar.sha1" title="lz4-java-1.8.1-sources.jar.sha1">lz4-java-1.8.1-sources.jar.sha1</a>                   2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1-sources.jar.sha256" title="lz4-java-1.8.1-sources.jar.sha256">lz4-java-1.8.1-sources.jar.sha256</a>                 2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1-sources.jar.sha512" title="lz4-java-1.8.1-sources.jar.sha512">lz4-java-1.8.1-sources.jar.sha512</a>                 2025-11-26 08:55       128      
+<a href="lz4-java-1.8.1.jar" title="lz4-java-1.8.1.jar">lz4-java-1.8.1.jar</a>                                2025-11-26 08:55    683071      
+<a href="lz4-java-1.8.1.jar.asc" title="lz4-java-1.8.1.jar.asc">lz4-java-1.8.1.jar.asc</a>                            2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1.jar.md5" title="lz4-java-1.8.1.jar.md5">lz4-java-1.8.1.jar.md5</a>                            2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1.jar.sha1" title="lz4-java-1.8.1.jar.sha1">lz4-java-1.8.1.jar.sha1</a>                           2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1.jar.sha256" title="lz4-java-1.8.1.jar.sha256">lz4-java-1.8.1.jar.sha256</a>                         2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1.jar.sha512" title="lz4-java-1.8.1.jar.sha512">lz4-java-1.8.1.jar.sha512</a>                         2025-11-26 08:55       128      
+<a href="lz4-java-1.8.1.module" title="lz4-java-1.8.1.module">lz4-java-1.8.1.module</a>                             2025-11-26 08:55      4374      
+<a href="lz4-java-1.8.1.module.asc" title="lz4-java-1.8.1.module.asc">lz4-java-1.8.1.module.asc</a>                         2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1.module.md5" title="lz4-java-1.8.1.module.md5">lz4-java-1.8.1.module.md5</a>                         2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1.module.sha1" title="lz4-java-1.8.1.module.sha1">lz4-java-1.8.1.module.sha1</a>                        2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1.module.sha256" title="lz4-java-1.8.1.module.sha256">lz4-java-1.8.1.module.sha256</a>                      2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1.module.sha512" title="lz4-java-1.8.1.module.sha512">lz4-java-1.8.1.module.sha512</a>                      2025-11-26 08:55       128      
+<a href="lz4-java-1.8.1.pom" title="lz4-java-1.8.1.pom">lz4-java-1.8.1.pom</a>                                2025-11-26 08:55     10654      
+<a href="lz4-java-1.8.1.pom.asc" title="lz4-java-1.8.1.pom.asc">lz4-java-1.8.1.pom.asc</a>                            2025-11-26 08:55       833      
+<a href="lz4-java-1.8.1.pom.md5" title="lz4-java-1.8.1.pom.md5">lz4-java-1.8.1.pom.md5</a>                            2025-11-26 08:55        32      
+<a href="lz4-java-1.8.1.pom.sha1" title="lz4-java-1.8.1.pom.sha1">lz4-java-1.8.1.pom.sha1</a>                           2025-11-26 08:55        40      
+<a href="lz4-java-1.8.1.pom.sha256" title="lz4-java-1.8.1.pom.sha256">lz4-java-1.8.1.pom.sha256</a>                         2025-11-26 08:55        64      
+<a href="lz4-java-1.8.1.pom.sha512" title="lz4-java-1.8.1.pom.sha512">lz4-java-1.8.1.pom.sha512</a>                         2025-11-26 08:55       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/lz4/lz4-java.git 'refs/tags/*1.8.1*' 'refs/tags/*1_8_1*'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 313ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1.pom' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion> <!-- do_not_remove: published-with-gradle-metadata -->
+  <groupId>at.yawk.lz4</groupId>
+  <artifactId>lz4-java</artifactId>
+  <version>1.8.1</version>
+  <name>LZ4 Java Compression</name>
+  <description>Java bindings and pure Java implementations of LZ4 and XXHash</description>
+  <url>https://github.com/lz4/lz4-java</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>jpountz</id>
+      <name>Adrien Grand</name>
+      <email>jpountz@gmail.com</email>
+    </developer>
+    <developer>
+      <id>odaira</id>
+      <name>Rei Odaira</name>
+      <email>Rei.Odaira@gmail.com</email>
+    </developer>
+    <developer>
+      <id>yawkat</id>
+      <name>Jonas Konrad</name>
+      <email>me@yawk.at</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>https://github.com/yawkat/lz4-java.git</connection>
+    <developerConnection>git@github.com:yawkat/lz4-java.git</developerConnection>
+    <tag>d041c28d3d4cd734d7c238206a27fd4768abb21d</tag>
+    <url>https://github.com/yawkat/lz4-java</url>
+  </scm>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputTimestamp>1980-01-01T00:00:02Z</project.build.outputTimestamp>
+    <generated.sources.dir>${project.build.directory}/generated-sources/mvel</generated.sources.dir>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>5.11.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>1.11.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.carrotsearch.randomizedtesting</groupId>
+      <artifactId>randomizedtesting-runner</artifactId>
+      <version>2.7.7</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <sourceDirectory>${project.basedir}/src/java</sourceDirectory>
+    <testSourceDirectory>${project.basedir}/src/test</testSourceDirectory>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>${project.basedir}/src/resources</directory>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>${project.basedir}/src/test-resources</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <id>add-extra-source-roots</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.basedir}/src/java-unsafe</source>
+                <source>${generated.sources.dir}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <source>1.7</source>
+              <target>1.7</target>
+              <encoding>${project.build.sourceEncoding}</encoding>
+              <debug>true</debug>
+              <fork>true</fork>
+              <jdkToolchain>
+                <version>7</version>
+              </jdkToolchain>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <release>21</release>
+              <encoding>${project.build.sourceEncoding}</encoding>
+              <debug>true</debug>
+              <fork>true</fork>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+            <manifestEntries>
+              <Automatic-Module-Name>org.lz4.java</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>mvel-generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="out.dir" value="${generated.sources.dir}" />
+                <property environment="env" />
+                <java fork="true" classname="org.mvel2.sh.Main" failonerror="true" dir="${project.basedir}/src/build/source_templates">
+                  <sysproperty value="${generated.sources.dir}" key="out.dir" />
+                  <classpath refid="maven.plugin.classpath" />
+                  <arg value="${project.basedir}/src/build/gen_sources.mvel" />
+                </java>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>bnd-wrap-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="packages.version" value="${project.version}" />
+                <property name="ivy.revision" value="${project.version}" />
+                <property name="-noextraheaders" value="true" />
+                <property name="-reproducible" value="true" />
+                <taskdef resource="aQute/bnd/ant/taskdef.properties" classpathref="maven.plugin.classpath" />
+                <bndwrap output="${project.build.directory}/${project.build.finalName}-wrapped.jar" trace="true" definitions="${project.basedir}">
+                  <fileset includes="${project.build.finalName}.jar" dir="${project.build.directory}" />
+                </bndwrap>
+                <delete file="${project.build.directory}/${project.build.finalName}.jar" />
+                <move file="${project.build.directory}/${project.build.finalName}-wrapped.jar" tofile="${project.build.directory}/${project.build.finalName}.jar" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>biz.aQute.bnd.ant</artifactId>
+            <version>7.1.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+            <version>2.5.2.Final</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.gradlex</groupId>
+        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>gmm</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <capabilities>
+            <capability>
+              <groupId>org.lz4</groupId>
+              <artifactId>lz4-java</artifactId>
+            </capability>
+            <capability>
+              <groupId>org.lz4</groupId>
+              <artifactId>lz4-pure-java</artifactId>
+            </capability>
+            <capability>
+              <groupId>net.jpountz.lz4</groupId>
+              <artifactId>lz4</artifactId>
+            </capability>
+          </capabilities>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>deploy</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <configuration>
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                  </gpgArguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.9.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/yawkat/lz4-java.git 'refs/tags/*1.8.1*' 'refs/tags/*1_8_1*'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/yawkat/lz4-java.git | head -20' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 313ms:
+d041c28d3d4cd734d7c238206a27fd4768abb21d	refs/tags/v1.8.1
+
+ succeeded in 319ms:
+d041c28d3d4cd734d7c238206a27fd4768abb21d	refs/heads/1.8.1
+b9b22f893b962bbc924d0d71a347ed83087b3b0f	refs/heads/gh-pages
+5a5bd584a60058e64b8abd3cd0987b68d22d6392	refs/heads/main
+
+web search: 
+web search: https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/
+web search: 
+web search: https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.1/
+web search: 
+web search: https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/lz4-java-1.8.1-sources.jar https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar && jar tf /tmp/lz4-java-1.8.1-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/yawkat/lz4-java/git/ref/tags/v1.8.1' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+exec
+/usr/bin/bash -lc "curl -fsSL -I https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-test-sources.jar | sed -n '1,20p' && curl -fsSL -I https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 137ms:
+META-INF/MANIFEST.MF
+META-INF/
+net/
+net/jpountz/
+net/jpountz/lz4/
+net/jpountz/util/
+net/jpountz/xxhash/
+net/jpountz/util/darwin/
+net/jpountz/util/darwin/aarch64/
+net/jpountz/util/darwin/x86_64/
+net/jpountz/util/linux/
+net/jpountz/util/linux/aarch64/
+net/jpountz/util/linux/amd64/
+net/jpountz/util/linux/i386/
+net/jpountz/util/linux/ppc64le/
+net/jpountz/util/linux/s390x/
+net/jpountz/util/win32/
+net/jpountz/util/win32/amd64/
+META-INF/maven/
+META-INF/maven/at.yawk.lz4/
+META-INF/maven/at.yawk.lz4/lz4-java/
+net/jpountz/lz4/LZ4BlockInputStream.java
+net/jpountz/lz4/LZ4BlockOutputStream.java
+net/jpountz/lz4/LZ4ByteBufferUtils.java
+net/jpountz/lz4/LZ4Compressor.java
+net/jpountz/lz4/LZ4CompressorWithLength.java
+net/jpountz/lz4/LZ4Constants.java
+net/jpountz/lz4/LZ4Decompressor.java
+net/jpountz/lz4/LZ4DecompressorWithLength.java
+net/jpountz/lz4/LZ4Exception.java
+net/jpountz/lz4/LZ4Factory.java
+net/jpountz/lz4/LZ4FastDecompressor.java
+net/jpountz/lz4/LZ4FrameInputStream.java
+net/jpountz/lz4/LZ4FrameOutputStream.java
+net/jpountz/lz4/LZ4HCJNICompressor.java
+net/jpountz/lz4/LZ4JNI.java
+net/jpountz/lz4/LZ4JNICompressor.java
+net/jpountz/lz4/LZ4JNIFastDecompressor.java
+net/jpountz/lz4/LZ4JNISafeDecompressor.java
+net/jpountz/lz4/LZ4SafeDecompressor.java
+net/jpountz/lz4/LZ4SafeUtils.java
+net/jpountz/lz4/LZ4UnknownSizeDecompressor.java
+net/jpountz/lz4/LZ4Utils.java
+net/jpountz/lz4/package.html
+net/jpountz/util/ByteBufferUtils.java
+net/jpountz/util/Native.java
+net/jpountz/util/SafeUtils.java
+net/jpountz/util/Utils.java
+net/jpountz/util/package.html
+net/jpountz/xxhash/AbstractStreamingXXHash32Java.java
+net/jpountz/xxhash/AbstractStreamingXXHash64Java.java
+net/jpountz/xxhash/StreamingXXHash32.java
+net/jpountz/xxhash/StreamingXXHash32JNI.java
+net/jpountz/xxhash/StreamingXXHash64.java
+net/jpountz/xxhash/StreamingXXHash64JNI.java
+net/jpountz/xxhash/XXHash32.java
+net/jpountz/xxhash/XXHash32JNI.java
+net/jpountz/xxhash/XXHash64.java
+net/jpountz/xxhash/XXHash64JNI.java
+net/jpountz/xxhash/XXHashConstants.java
+net/jpountz/xxhash/XXHashFactory.java
+net/jpountz/xxhash/XXHashJNI.java
+net/jpountz/xxhash/package.html
+overview.html
+net/jpountz/lz4/LZ4UnsafeUtils.java
+net/jpountz/util/UnsafeUtils.java
+net/jpountz/lz4/LZ4HCJavaSafeCompressor.java
+net/jpountz/lz4/LZ4HCJavaUnsafeCompressor.java
+net/jpountz/lz4/LZ4JavaSafeCompressor.java
+net/jpountz/lz4/LZ4JavaSafeFastDecompressor.java
+net/jpountz/lz4/LZ4JavaSafeSafeDecompressor.java
+net/jpountz/lz4/LZ4JavaUnsafeCompressor.java
+net/jpountz/lz4/LZ4JavaUnsafeFastDecompressor.java
+net/jpountz/lz4/LZ4JavaUnsafeSafeDecompressor.java
+net/jpountz/xxhash/StreamingXXHash32JavaSafe.java
+net/jpountz/xxhash/StreamingXXHash32JavaUnsafe.java
+net/jpountz/xxhash/StreamingXXHash64JavaSafe.java
+net/jpountz/xxhash/StreamingXXHash64JavaUnsafe.java
+net/jpountz/xxhash/XXHash32JavaSafe.java
+net/jpountz/xxhash/XXHash32JavaUnsafe.java
+
+ succeeded in 180ms:
+{
+  "ref": "refs/tags/v1.8.1",
+  "node_id": "REF_kwDOPiPyZ7ByZWZzL3RhZ3MvdjEuOC4x",
+  "url": "https://api.github.com/repos/yawkat/lz4-java/git/refs/tags/v1.8.1",
+  "object": {
+    "sha": "d041c28d3d4cd734d7c238206a27fd4768abb21d",
+    "type": "commit",
+    "url": "https://api.github.com/repos/yawkat/lz4-java/git/commits/d041c28d3d4cd734d7c238206a27fd4768abb21d"
+  }
+}
+
+ succeeded in 466ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 12:21:57 GMT
+content-type: text/html
+cf-ray: 9f36079a2a614f9a-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 12:21:57 GMT
+content-type: text/html
+cf-ray: 9f36079be88270cb-ZRH
+cf-cache-status: HIT
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test
+web search: 
+web search: repo1.maven.org at.yawk.lz4 lz4-java 1.8.1 sources javadoc
+codex
+I found the exact release data: the `org.lz4` coordinate is a relocation POM for `1.8.1`, and the actual versioned source and Javadocs are published under `at.yawk.lz4`. Maven Central does not publish a test-sources or tests jar for that target artifact, so I’m using the version tag’s `src/test` directory for the test suite URL.
+apply patch
+patch: completed
+/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/metadata/org.lz4/lz4-java/index.json
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..b773078716b33b0384e4c69d8f3035e4878db2ae
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..b773078716b33b0384e4c69d8f3035e4878db2ae
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq . metadata/org.lz4/lz4-java/index.json >/dev/null' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.lz4/lz4-java/index.json' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+ succeeded in 0ms:
+diff --git i/metadata/org.lz4/lz4-java/index.json w/metadata/org.lz4/lz4-java/index.json
+index 583046de0d..b773078716 100644
+--- i/metadata/org.lz4/lz4-java/index.json
++++ w/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.lz4/lz4-java/index.json' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+ M metadata/org.lz4/lz4-java/index.json
+
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..b773078716b33b0384e4c69d8f3035e4878db2ae
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+codex
+The JSON parses cleanly and the diff is limited to the missing fields on the `1.8.1` entry. I’m running the targeted metadata validation now so we catch schema or repository-policy issues before I wrap up.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..b773078716b33b0384e4c69d8f3035e4878db2ae
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+ exited 1 in 1721ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/metadata/org.lz4/lz4-java/1.8.1/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/metadata/org.lz4/lz4-java/1.8.1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.lz4:lz4-java:1.8.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/metadata/org.lz4/lz4-java/1.8.1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: repo1.maven.org at/yawk/lz4/lz4-java/1.8.1 lz4-java-1.8.1-sources.jar javadoc.jar
+web search: 
+web search: https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test
+web search: 
+web search: https://central.sonatype.com/artifact/org.lz4/lz4-java/1.8.1
+web search: 
+web search: https://central.sonatype.com/artifact/at.yawk.lz4/lz4-java/1.8.1
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac
+ succeeded in 0ms:
+ M metadata/org.lz4/lz4-java/index.json
+
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..b773078716b33b0384e4c69d8f3035e4878db2ae
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+web search: 
+web search: central sonatype at.yawk.lz4 lz4-java 1.8.1
+web search: 
+web search: https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test
+codex
+Updated [index.json](/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/metadata/org.lz4/lz4-java/index.json) for `metadata-version` `1.8.1`.
+
+I used the `at.yawk.lz4` Maven artifacts because `org.lz4:lz4-java:1.8.1` is a relocation POM to that group, and Maven Central provides exact `1.8.1` sources and Javadocs there. The repository/test URL points at the `yawkat/lz4-java` `v1.8.1` tag, and I left `language` absent because this is a Java library, not Kotlin or Scala. ([central.sonatype.com](https://central.sonatype.com/artifact/org.lz4/lz4-java/1.8.1?utm_source=openai))
+
+Verification:
+- `jq . metadata/org.lz4/lz4-java/index.json >/dev/null` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace` failed because `metadata/org.lz4/lz4-java/1.8.1/reachability-metadata.json` is missing; I did not add that because the request was scoped to filling index fields.
+diff --git a/metadata/org.lz4/lz4-java/index.json b/metadata/org.lz4/lz4-java/index.json
+index 583046de0d2f8ee38e54bfd7aafaee3172f5dcef..b773078716b33b0384e4c69d8f3035e4878db2ae
+--- a/metadata/org.lz4/lz4-java/index.json
++++ b/metadata/org.lz4/lz4-java/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-sources.jar",
++    "repository-url" : "https://github.com/yawkat/lz4-java",
++    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.8.1/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.8.1/lz4-java-1.8.1-javadoc.jar",
++    "description" : "lz4-java provides Java ports and bindings for the LZ4 compression algorithm and the xxHash hashing algorithm. It offers JNI, pure Java, and Unsafe-based implementations for fast compression, decompression, and hashing.",
+     "tested-versions" : [
+       "1.8.1"
+     ],
+
+2026-04-28T12:23:11.603370Z ERROR codex_core::session: failed to record rollout items: thread 019dd409-48b3-7421-bd43-425e60911947 not found
+tokens used
+98,790
+Updated [index.json](/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/metadata/org.lz4/lz4-java/index.json) for `metadata-version` `1.8.1`.
+
+I used the `at.yawk.lz4` Maven artifacts because `org.lz4:lz4-java:1.8.1` is a relocation POM to that group, and Maven Central provides exact `1.8.1` sources and Javadocs there. The repository/test URL points at the `yawkat/lz4-java` `v1.8.1` tag, and I left `language` absent because this is a Java library, not Kotlin or Scala. ([central.sonatype.com](https://central.sonatype.com/artifact/org.lz4/lz4-java/1.8.1?utm_source=openai))
+
+Verification:
+- `jq . metadata/org.lz4/lz4-java/index.json >/dev/null` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.lz4:lz4-java:1.8.1 --stacktrace` failed because `metadata/org.lz4/lz4-java/1.8.1/reachability-metadata.json` is missing; I did not add that because the request was scoped to filling index fields.
+Ran agent for org.lz4:lz4-java:1.8.1 (exit 0). Log: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/build/agent-url-discovery-logs/org.lz4-lz4-java-1.8.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1812-e1aa8cac/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 1s
+9 actionable tasks: 1 executed, 8 up-to-date
