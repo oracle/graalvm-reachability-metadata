@@ -18,6 +18,7 @@ import java.io.StringReader;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EvaluatingVisitorTest {
+    @SuppressWarnings("checkstyle:annotationAccess")
     @Test
     void evaluatesStringConcatenationInParsedAnnotationValues() throws Exception {
         JavaDocBuilder builder = new JavaDocBuilder();
