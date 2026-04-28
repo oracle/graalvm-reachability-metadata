@@ -1,0 +1,736 @@
+Starting a Gradle Daemon, 2 busy and 2 incompatible and 1 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd2ca-c507-72d2-81c3-b93ef5c2ddea
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.minidev:accessors-smart:2.4.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.4.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+- Set "coordinates" to "net.minidev:accessors-smart:2.4.7".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the upstream tag before editing the JSON, since the version-specific source/test/doc URLs need to be exact.
+exec
+/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+{
+  "coordinates" : "net.minidev:accessors-smart:2.4.7"
+}
+
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'net\\.minidev-accessors-smart-2\\.4\\.7\\.json"'$|accessors-smart'"'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+
+web search: 
+web search: net.minidev accessors-smart 2.4.7 Maven POM scm tag
+web search: 
+web search: https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/
+web search: 
+web search: 
+codex
+Maven Central has the versioned sources and Javadocs jars for `2.4.7`; I’m checking the POM and upstream repository now to see whether there is a matching test-source artifact or tag-specific test path.
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7.pom' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.minidev</groupId>
+    <artifactId>accessors-smart</artifactId>
+    <version>2.4.7</version>
+    <name>ASM based accessors helper used by json-smart</name>
+    <description>Java reflect give poor performance on getter setter an constructor calls, accessors-smart use ASM to speed up those calls.</description>
+    <packaging>bundle</packaging>
+    <url>https://urielch.github.io/</url>
+    <organization>
+        <name>Chemouni Uriel</name>
+        <url>https://urielch.github.io/</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>uriel</id>
+            <name>Uriel Chemouni</name>
+            <email>uchemouni@gmail.com</email>
+            <timezone>GMT+3</timezone>
+        </developer>
+
+
+
+
+
+
+    </developers>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>All files under Apache 2</comments>
+        </license>
+    </licenses>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <scm>
+        <connection>scm:git:https://github.com/netplex/json-smart-v2.git</connection>
+        <developerConnection>scm:git:https://github.com/netplex/json-smart-v2.git</developerConnection>
+        <url>https://github.com/netplex/json-smart-v2</url>
+    </scm>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+	<!-- release with: mvn clean deploy -P release-sign-artifacts-->
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <!-- will be set by the release plugin upon performing mvn release:perform -->
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+				<!-- 2021 rsa4096 key-->
+				<gpg.keyname>53BE126D</gpg.keyname>
+                <!-- <gpg.keyname>Uriel Chemouni (dev) <uchemouni@gmail.com></gpg.keyname> -->
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Publish also javadocs when releasing - required by Sonatype -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.2.0</version>
+						<configuration>
+                          <source>8</source>
+                		</configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Release Plugin (Update version in POM before/after release, create 
+						tag, deploy) to try: mvn release:prepare -DdryRun=true && mvn release:clean 
+						to perform: mvn release:prepare release:perform Read http://nexus.sonatype.org/oss-repository-hosting.html#3 
+						for instructions on releasing to this project's Sonatype repository -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>3.0.0-M1</version>
+                        <configuration>
+                            <mavenExecutorId>forked-path</mavenExecutorId>
+                            <arguments>-Psonatype-oss-release</arguments>
+                            <autoVersionSubmodules>false</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>include-sources</id>
+            <build>
+                <resources>
+                    <resource>
+                        <targetPath>/</targetPath>
+                        <filtering>true</filtering>
+                        <directory>src/main/java</directory>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>bind-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <!-- ONLY NEEDED With jdk 1.7+ -->
+                <configuration>
+                    <source>8</source>
+                    <failOnError>false</failOnError>
+                    <!-- <additionalparam>-Xdoclint:none</additionalparam> -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.2</version> <!-- 3.0.0 need java 7+ -->
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Import-Package>
+                        	org.objectweb.asm;version="[8.0,10)",*
+                        </Import-Package>
+                        <Export-Package>
+                            net.minidev.asm, net.minidev.asm.ex
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>5.7.1</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>9.1</version>
+            </dependency>
+        </dependencies>    
+</project>
+
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/ | rg 'test|source|javadoc|pom'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+<a href="accessors-smart-2.4.7-javadoc.jar" title="accessors-smart-2.4.7-javadoc.jar">accessors-smart-2.4.7-javadoc.jar</a>                 2021-05-02 12:58    470998      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc" title="accessors-smart-2.4.7-javadoc.jar.asc">accessors-smart-2.4.7-javadoc.jar.asc</a>             2021-05-02 12:58       833      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc.md5" title="accessors-smart-2.4.7-javadoc.jar.asc.md5">accessors-smart-2.4.7-javadoc.jar.asc.md5</a>         2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc.sha1" title="accessors-smart-2.4.7-javadoc.jar.asc.sha1">accessors-smart-2.4.7-javadoc.jar.asc.sha1</a>        2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc.sha256" title="accessors-smart-2.4.7-javadoc.jar.asc.sha256">accessors-smart-2.4.7-javadoc.jar.asc.sha256</a>      2021-05-02 12:58        64      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc.sha512" title="accessors-smart-2.4.7-javadoc.jar.asc.sha512">accessors-smart-2.4.7-javadoc.jar.asc.sha512</a>      2021-05-02 12:58       128      
+<a href="accessors-smart-2.4.7-javadoc.jar.md5" title="accessors-smart-2.4.7-javadoc.jar.md5">accessors-smart-2.4.7-javadoc.jar.md5</a>             2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7-javadoc.jar.sha1" title="accessors-smart-2.4.7-javadoc.jar.sha1">accessors-smart-2.4.7-javadoc.jar.sha1</a>            2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7-sources.jar" title="accessors-smart-2.4.7-sources.jar">accessors-smart-2.4.7-sources.jar</a>                 2021-05-02 12:58     19925      
+<a href="accessors-smart-2.4.7-sources.jar.asc" title="accessors-smart-2.4.7-sources.jar.asc">accessors-smart-2.4.7-sources.jar.asc</a>             2021-05-02 12:58       833      
+<a href="accessors-smart-2.4.7-sources.jar.asc.md5" title="accessors-smart-2.4.7-sources.jar.asc.md5">accessors-smart-2.4.7-sources.jar.asc.md5</a>         2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7-sources.jar.asc.sha1" title="accessors-smart-2.4.7-sources.jar.asc.sha1">accessors-smart-2.4.7-sources.jar.asc.sha1</a>        2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7-sources.jar.asc.sha256" title="accessors-smart-2.4.7-sources.jar.asc.sha256">accessors-smart-2.4.7-sources.jar.asc.sha256</a>      2021-05-02 12:58        64      
+<a href="accessors-smart-2.4.7-sources.jar.asc.sha512" title="accessors-smart-2.4.7-sources.jar.asc.sha512">accessors-smart-2.4.7-sources.jar.asc.sha512</a>      2021-05-02 12:58       128      
+<a href="accessors-smart-2.4.7-sources.jar.md5" title="accessors-smart-2.4.7-sources.jar.md5">accessors-smart-2.4.7-sources.jar.md5</a>             2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7-sources.jar.sha1" title="accessors-smart-2.4.7-sources.jar.sha1">accessors-smart-2.4.7-sources.jar.sha1</a>            2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7.pom" title="accessors-smart-2.4.7.pom">accessors-smart-2.4.7.pom</a>                         2021-05-02 12:58      9920      
+<a href="accessors-smart-2.4.7.pom.asc" title="accessors-smart-2.4.7.pom.asc">accessors-smart-2.4.7.pom.asc</a>                     2021-05-02 12:58       833      
+<a href="accessors-smart-2.4.7.pom.asc.md5" title="accessors-smart-2.4.7.pom.asc.md5">accessors-smart-2.4.7.pom.asc.md5</a>                 2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7.pom.asc.sha1" title="accessors-smart-2.4.7.pom.asc.sha1">accessors-smart-2.4.7.pom.asc.sha1</a>                2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7.pom.asc.sha256" title="accessors-smart-2.4.7.pom.asc.sha256">accessors-smart-2.4.7.pom.asc.sha256</a>              2021-05-02 12:58        64      
+<a href="accessors-smart-2.4.7.pom.asc.sha512" title="accessors-smart-2.4.7.pom.asc.sha512">accessors-smart-2.4.7.pom.asc.sha512</a>              2021-05-02 12:58       128      
+<a href="accessors-smart-2.4.7.pom.md5" title="accessors-smart-2.4.7.pom.md5">accessors-smart-2.4.7.pom.md5</a>                     2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7.pom.sha1" title="accessors-smart-2.4.7.pom.sha1">accessors-smart-2.4.7.pom.sha1</a>                    2021-05-02 12:58        40      
+
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/netplex/json-smart-v2.git | rg '2\\.4\\.7|v2\\.4\\.7|accessors'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+exec
+/bin/bash -lc 'curl -fsSL https://api.github.com/repos/netplex/json-smart-v2/contents/?ref=2.4.7' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+exec
+/bin/bash -lc 'curl -I -fsSL https://javadoc.io/doc/net.minidev/accessors-smart/2.4.7/' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ exited 22 in 224ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 431ms:
+HTTP/2 301 
+date: Tue, 28 Apr 2026 06:33:36 GMT
+content-length: 0
+location: /doc/net.minidev/accessors-smart/2.4.7
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=1FMPdKkIuy5UYEEMyDnshAg8xwdXuO4a4AUlIc3iGpBFVI8IW3HEeh7SRIhLbU9f6AksmjFstKqV6uGDPGML7DCYHDyUzqIVaE7zWHWmIGYeN2F790IeQnu%2FyZEN"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f3409514ddbe290-BEG
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Tue, 28 Apr 2026 06:33:36 GMT
+content-length: 0
+location: /doc/net.minidev/accessors-smart/2.4.7/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=I9LZBiyd1yDCgEg0ZkmZmKHerbPhged%2Bj2a4WvBffRf3EXtgby2frd5upfl1O3mZpPLFlYYjIVOHxNGI%2FgV72WMTghyTRm0Q2IM9CQlQ%2Bx23nzi%2BhojzwvjCLZia"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f3409522fd0e290-BEG
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 28 Apr 2026 06:33:36 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/net.minidev/accessors-smart/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=33aNMnYhezNH0m4AcX0xQuVrUxCBOfqgwy9RtCJITyDdDAJURWjV0qKWtwQwzCJgQUD1B6Np0dVo23Y%2BFYiSTdm73aMl%2FJrhppzo%2BPgPfPlkoWxxf9Xnd3QZ%2BIWB"}]}
+server: cloudflare
+cf-ray: 9f340952e91ae290-BEG
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 1 in 450ms:
+exec
+/bin/bash -lc 'git ls-remote --tags https://github.com/netplex/json-smart-v2.git | tail -80' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/netplex/json-smart-v2 | rg '\"html_url\"|\"default_branch\"|\"description\"|\"archived\"'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 279ms:
+    "html_url": "https://github.com/netplex",
+  "html_url": "https://github.com/netplex/json-smart-v2",
+  "description": null,
+  "archived": false,
+  "default_branch": "master",
+    "html_url": "https://github.com/netplex",
+
+ succeeded in 434ms:
+9bcdf62f6a801bad18afd621cb580076e141d987	refs/tags/2.2
+309223e3a7ee27ba5c0fe5e102967f2961547c62	refs/tags/2.4.1
+d6a8c5e0facd25bc3aa6bdc712e7451767c1e804	refs/tags/2.4.10
+1deae1e79a706c6480e2bc8a8f7a861803411442	refs/tags/2.4.11
+23628ba5d7fe11a5146dfe6f1894471f71ab47a9	refs/tags/2.4.5
+509dfaa045a564e38f2aa007a98c539a57e5b2ae	refs/tags/2.4.8
+08517d2033289386aa97462ce43b986eee928b9f	refs/tags/2.4.9
+54eb6f06cf4f63687d1147a9a3beaba8750e7be0	refs/tags/2.5.0
+8346cf476ae583ab13d9e69360c3f095c2cdfed0	refs/tags/2.5.1
+20dff245b23686a08a0e0df21fe734a2dfc2ad37	refs/tags/2.5.2
+d4f7fa4f31e20145d20393c5e79c6255954cb81e	refs/tags/2.5.2^{}
+8e48bd53c658ac8dc21a5586c3c1c5413c6a0d4d	refs/tags/v2.6.0
+ebf7cf8cf0dccef246cd1ed0d052074d787a2de4	refs/tags/v2.6.0^{}
+
+codex
+The upstream repository has tags around this version but no `2.4.7` tag, and Maven Central does not list a test-sources artifact. I’m checking nearby metadata files so the URL style matches this repository’s conventions before patching.
+exec
+/bin/bash -lc "rg '\"test-code-url\"\\s*:\\s*\"N/A\"' build/discovered-artifact-metadata -n | head -10" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+exec
+/bin/bash -lc "rg '\"source-code-url\"\\s*:\\s*\"https://repo1.maven.org/maven2/.+-sources.jar\"' build/discovered-artifact-metadata -n | head -20" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+exec
+/bin/bash -lc "rg '\"documentation-url\"\\s*:\\s*\"https://repo1.maven.org/maven2/.+-javadoc.jar\"' build/discovered-artifact-metadata -n | head -20" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -5' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+
+exec
+/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata -n | head -20" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+exec
+/bin/bash -lc "rg '\"test-code-url\"' -n | head -30" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+exec
+/bin/bash -lc "rg '\"source-code-url\"' -n | head -30" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-source-release.zip",
+metadata/javax.cache/cache-api/index.json:6:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:21:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.13.4/jr-objects/src/test",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "test-code-url" : "N/A",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/3.0.7-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.0.0/istack-commons/runtime/src/test",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:221:                    "test-code-url": "https://example.com/tests-a",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.51.0/netty/src/test",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.27.2/context/src/test",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+metadata/org.testcontainers/testcontainers/index.json:7:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/1.19.8/core/src/test",
+metadata/org.testcontainers/testcontainers/index.json:38:    "test-code-url" : "https://github.com/testcontainers/testcontainers-java/tree/1.17.6/core/src/test",
+metadata/org.jooq/jooq/index.json:8:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:38:    "test-code-url" : "N/A",
+metadata/org.jooq/jooq/index.json:114:    "test-code-url" : "N/A",
+metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.69.0/core/src/test",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/com.h2database/h2/index.json:10:    "test-code-url": "https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test",
+metadata/com.baomidou/mybatis-plus/index.json:7:    "test-code-url" : "https://github.com/baomidou/mybatis-plus/tree/v3.5.3/mybatis-plus/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/8.0.31/src/test",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v0.4.0-build-plan/jib-build-plan/src/test",
+metadata/net.java.dev.jna/jna/index.json:10:    "test-code-url": "https://github.com/java-native-access/jna/tree/5.8.0/test",
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:7:    "test-code-url" : "https://github.com/Kotlin/kotlinx.serialization/tree/v1.9.0/core/jvmTest",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.logging/jboss-logging/index.json:17:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/logging/jboss-logging/3.5.0.Final/jboss-logging-3.5.0.Final-source-release.zip",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-2.17.2/src/test",
+
+ succeeded in 0ms:
+docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/info.picocli/picocli/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+metadata/com.mysql/mysql-connector-j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-sources.jar",
+metadata/org.scala-js/scalajs-javalib-intf/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scala-js/scalajs-javalib-intf/1.16.0/scalajs-javalib-intf-1.16.0-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/dev.langchain4j/langchain4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/1.9.0/langchain4j-1.9.0-sources.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/1.0.0/jakarta.mail-1.0.0-sources.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-sources.jar",
+metadata/org.mockito/mockito-core/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-sources.jar",
+metadata/org.mockito/mockito-core/index.json:50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar",
+metadata/com.fasterxml/classmate/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-sources.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-sources.jar",
+metadata/mysql/mysql-connector-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29-sources.jar",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:219:                    "source-code-url": "https://example.com/source-a",
+metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-sources.jar",
+metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+metadata/org.example/library/index.json:9:    "source-code-url": "N/A",
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+metadata/com.google.code.findbugs/jsr305/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+metadata/io.netty/netty-common/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-sources.jar",
+metadata/io.netty/netty-common/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-sources.jar",
+metadata/io.netty/netty-common/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-sources.jar",
+
+exec
+/bin/bash -lc "rg '\"documentation-url\"' metadata -n | head -40" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/com.fasterxml/classmate/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-javadoc.jar",
+metadata/dev.langchain4j/langchain4j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/1.9.0/langchain4j-1.9.0-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-javadoc.jar",
+metadata/org.example/library/index.json:12:    "documentation-url": "N/A",
+metadata/com.google.protobuf/protobuf-java-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:49:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-javadoc.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-javadoc.jar",
+metadata/javax.xml.bind/jaxb-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-javadoc.jar",
+metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-javadoc.jar",
+metadata/org.jooq/jooq/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-javadoc.jar",
+metadata/org.jooq/jooq/index.json:115:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-javadoc.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/narayana-jta/5.12.4.Final/narayana-jta-5.12.4.Final-javadoc.jar",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+metadata/io.netty/netty-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:11:    "documentation-url": "https://github.com/apache/tomcat/tree/10.1.7/webapps/docs",
+metadata/org.freemarker/freemarker/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-javadoc.jar",
+metadata/io.grpc/grpc-netty/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-javadoc.jar",
+metadata/io.nats/jnats/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/io/nats/jnats/2.16.11/jnats-2.16.11-javadoc.jar",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-javadoc.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/io.grpc/grpc-context/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-javadoc.jar",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:8:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs/annotationapi",
+
+exec
+/bin/bash -lc "rg '\"language\"' metadata -n | head -20" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+
+codex
+I found enough to make a confident update: Maven Central provides exact `2.4.7` source and Javadoc jars, while the exact test suite cannot be tied to a `2.4.7` tag or Maven test artifact. I’m updating only the requested discovered metadata file and leaving `language` absent because this is a Java library, not Kotlin or Scala-specific.
+apply patch
+patch: completed
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+index fe0ca4f93eee430519190cc1a02a3d591a0da1ba..eba93316000d102261e3c3ef91327c42e29cdb5e
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:2.4.7"
++  "coordinates" : "net.minidev:accessors-smart:2.4.7",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+index fe0ca4f93eee430519190cc1a02a3d591a0da1ba..eba93316000d102261e3c3ef91327c42e29cdb5e
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:2.4.7"
++  "coordinates" : "net.minidev:accessors-smart:2.4.7",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+{
+  "coordinates": "net.minidev:accessors-smart:2.4.7",
+  "source-code-url": "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
+  "repository-url": "https://github.com/netplex/json-smart-v2",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
+  "description": "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields."
+}
+
+exec
+/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+index fe0ca4f93eee430519190cc1a02a3d591a0da1ba..eba93316000d102261e3c3ef91327c42e29cdb5e
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:2.4.7"
++  "coordinates" : "net.minidev:accessors-smart:2.4.7",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields."
+ }
+
+ succeeded in 580ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 06:34:14 GMT
+content-type: application/java-archive
+content-length: 470998
+cf-ray: 9f340a3b5a5fd814-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "6f0b2fe310c0cfa9805ecb2c6f16ee2d"
+last-modified: Sun, 02 May 2021 12:58:40 GMT
+x-checksum-md5: 6f0b2fe310c0cfa9805ecb2c6f16ee2d
+x-checksum-sha1: 51b0aeab7977f740810d8c21e44fd666cc073769
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The file is valid JSON, and both Maven URLs return `200 OK`. I’m doing one final diff check so the close-out reports exactly what changed.
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+index fe0ca4f93eee430519190cc1a02a3d591a0da1ba..eba93316000d102261e3c3ef91327c42e29cdb5e
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:2.4.7"
++  "coordinates" : "net.minidev:accessors-smart:2.4.7",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields."
+ }
+
+exec
+/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json && sed -n '1,120p' build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+{
+  "coordinates" : "net.minidev:accessors-smart:2.4.7",
+  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
+  "repository-url" : "https://github.com/netplex/json-smart-v2",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
+  "description" : "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields."
+}
+
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+index fe0ca4f93eee430519190cc1a02a3d591a0da1ba..eba93316000d102261e3c3ef91327c42e29cdb5e
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:2.4.7"
++  "coordinates" : "net.minidev:accessors-smart:2.4.7",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields."
+ }
+
+codex
+Updated [net.minidev-accessors-smart-2.4.7.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json) with the discovered metadata.
+
+Key decisions:
+- Used Maven Central exact `2.4.7` sources and Javadoc jars.
+- Set `test-code-url` to `N/A` because Maven has no test artifact and upstream has no exact `2.4.7` tag.
+- Left `language` absent because this is not Kotlin or Scala-specific.
+
+Verified the JSON parses with `jq`, and both Maven URLs return `200 OK`.
+diff --git a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+index fe0ca4f93eee430519190cc1a02a3d591a0da1ba..eba93316000d102261e3c3ef91327c42e29cdb5e
+--- a/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
++++ b/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.minidev:accessors-smart:2.4.7"
++  "coordinates" : "net.minidev:accessors-smart:2.4.7",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
++  "repository-url" : "https://github.com/netplex/json-smart-v2",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
++  "description" : "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields."
+ }
+
+2026-04-28T06:34:34.064678Z ERROR codex_core::session: failed to record rollout items: thread 019dd2ca-c507-72d2-81c3-b93ef5c2ddea not found
+tokens used
+48,194
+Updated [net.minidev-accessors-smart-2.4.7.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/build/discovered-artifact-metadata/net.minidev-accessors-smart-2.4.7.json) with the discovered metadata.
+
+Key decisions:
+- Used Maven Central exact `2.4.7` sources and Javadoc jars.
+- Set `test-code-url` to `N/A` because Maven has no test artifact and upstream has no exact `2.4.7` tag.
+- Left `language` absent because this is not Kotlin or Scala-specific.
+
+Verified the JSON parses with `jq`, and both Maven URLs return `200 OK`.
+Ran agent for net.minidev:accessors-smart:2.4.7 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/build/agent-artifact-discovery-logs/net.minidev-accessors-smart-2.4.7.log
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 34s
+9 actionable tasks: 4 executed, 5 from cache

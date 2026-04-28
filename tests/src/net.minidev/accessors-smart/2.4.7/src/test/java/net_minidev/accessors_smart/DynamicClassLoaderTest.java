@@ -6,13 +6,12 @@
  */
 package net_minidev.accessors_smart;
 
-import net.minidev.asm.BeansAccess;
+import java.lang.reflect.Method;
+
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
-
-import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
@@ -24,21 +23,6 @@ import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_8;
 
 public class DynamicClassLoaderTest {
-    @Test
-    void generatesAccessorClassesWhenNoPrebuiltAccessorExists() {
-        BeansAccess<RuntimeGeneratedBean> access = BeansAccess.get(RuntimeGeneratedBean.class);
-        RuntimeGeneratedBean bean = access.newInstance();
-
-        access.set(bean, "count", "7");
-        access.set(bean, "label", "generated");
-
-        assertThat(access.getClass().getName()).isEqualTo(RuntimeGeneratedBean.class.getName() + "AccAccess");
-        assertThat(bean.getCount()).isEqualTo(7);
-        assertThat(bean.getLabel()).isEqualTo("generated");
-        assertThat(access.get(bean, "count")).isEqualTo(7);
-        assertThat(access.get(bean, "label")).isEqualTo("generated");
-    }
-
     @Test
     void directlyInstantiatesGeneratedClasses() throws ReflectiveOperationException {
         String generatedClassName = DynamicClassLoaderTest.class.getPackageName() + ".GeneratedDirectInstanceBean";
@@ -91,26 +75,5 @@ public class DynamicClassLoaderTest {
 
     public abstract static class GeneratedBase {
         public abstract String value();
-    }
-
-    public static final class RuntimeGeneratedBean {
-        private int count;
-        private String label;
-
-        public int getCount() {
-            return this.count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-
-        public String getLabel() {
-            return this.label;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
     }
 }

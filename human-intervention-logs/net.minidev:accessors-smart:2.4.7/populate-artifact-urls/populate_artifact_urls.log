@@ -1,0 +1,495 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd2cc-6885-76b3-8135-6c02e1d4686a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.minidev:accessors-smart:2.4.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.4.7".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/metadata/net.minidev/accessors-smart/index.json
+- Entry selector: "metadata-version" = "2.4.7"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.4.7".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar
+- repository-url: https://github.com/netplex/json-smart-v2
+- test-code-url: N/A
+- documentation-url: https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar
+- description: accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.4.7
+- Entry test-version: 2.4.7
+codex
+I’ll verify the version-specific artifact URLs and the existing metadata entry first, then I’ll only fill fields that are actually missing.
+exec
+/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.4.7\")' metadata/net.minidev/accessors-smart/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.4.7",
+  "source-code-url": "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
+  "repository-url": "https://github.com/netplex/json-smart-v2",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
+  "description": "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields.",
+  "tested-versions": [
+    "2.4.7"
+  ],
+  "allowed-packages": [
+    "net.minidev.asm"
+  ]
+}
+
+exec
+/bin/bash -lc "rg -n 'accessors-smart|json-smart-v2|2\\.4\\.7' metadata/net.minidev/accessors-smart/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+4:    "metadata-version" : "2.4.7",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar",
+6:    "repository-url" : "https://github.com/netplex/json-smart-v2",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar",
+9:    "description" : "accessors-smart is a Java helper library used by json-smart to generate fast accessors for bean properties, constructors, getters, and setters. It uses ASM bytecode generation to avoid slower reflection-based calls when reading and writing object fields.",
+11:      "2.4.7"
+
+web search: 
+web search: net.minidev accessors-smart 2.4.7 maven sources javadoc tests jar
+codex
+The target entry already has non-blank values for source, repository, test URL, documentation, and description. I’m checking Maven Central/GitHub now mainly to decide whether the missing `language` field should be added and whether any field is confidently absent.
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/ | sed -n '1,160p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/minidev/accessors-smart/2.4.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/minidev/accessors-smart/2.4.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="accessors-smart-2.4.7-javadoc.jar" title="accessors-smart-2.4.7-javadoc.jar">accessors-smart-2.4.7-javadoc.jar</a>                 2021-05-02 12:58    470998      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc" title="accessors-smart-2.4.7-javadoc.jar.asc">accessors-smart-2.4.7-javadoc.jar.asc</a>             2021-05-02 12:58       833      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc.md5" title="accessors-smart-2.4.7-javadoc.jar.asc.md5">accessors-smart-2.4.7-javadoc.jar.asc.md5</a>         2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc.sha1" title="accessors-smart-2.4.7-javadoc.jar.asc.sha1">accessors-smart-2.4.7-javadoc.jar.asc.sha1</a>        2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc.sha256" title="accessors-smart-2.4.7-javadoc.jar.asc.sha256">accessors-smart-2.4.7-javadoc.jar.asc.sha256</a>      2021-05-02 12:58        64      
+<a href="accessors-smart-2.4.7-javadoc.jar.asc.sha512" title="accessors-smart-2.4.7-javadoc.jar.asc.sha512">accessors-smart-2.4.7-javadoc.jar.asc.sha512</a>      2021-05-02 12:58       128      
+<a href="accessors-smart-2.4.7-javadoc.jar.md5" title="accessors-smart-2.4.7-javadoc.jar.md5">accessors-smart-2.4.7-javadoc.jar.md5</a>             2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7-javadoc.jar.sha1" title="accessors-smart-2.4.7-javadoc.jar.sha1">accessors-smart-2.4.7-javadoc.jar.sha1</a>            2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7-sources.jar" title="accessors-smart-2.4.7-sources.jar">accessors-smart-2.4.7-sources.jar</a>                 2021-05-02 12:58     19925      
+<a href="accessors-smart-2.4.7-sources.jar.asc" title="accessors-smart-2.4.7-sources.jar.asc">accessors-smart-2.4.7-sources.jar.asc</a>             2021-05-02 12:58       833      
+<a href="accessors-smart-2.4.7-sources.jar.asc.md5" title="accessors-smart-2.4.7-sources.jar.asc.md5">accessors-smart-2.4.7-sources.jar.asc.md5</a>         2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7-sources.jar.asc.sha1" title="accessors-smart-2.4.7-sources.jar.asc.sha1">accessors-smart-2.4.7-sources.jar.asc.sha1</a>        2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7-sources.jar.asc.sha256" title="accessors-smart-2.4.7-sources.jar.asc.sha256">accessors-smart-2.4.7-sources.jar.asc.sha256</a>      2021-05-02 12:58        64      
+<a href="accessors-smart-2.4.7-sources.jar.asc.sha512" title="accessors-smart-2.4.7-sources.jar.asc.sha512">accessors-smart-2.4.7-sources.jar.asc.sha512</a>      2021-05-02 12:58       128      
+<a href="accessors-smart-2.4.7-sources.jar.md5" title="accessors-smart-2.4.7-sources.jar.md5">accessors-smart-2.4.7-sources.jar.md5</a>             2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7-sources.jar.sha1" title="accessors-smart-2.4.7-sources.jar.sha1">accessors-smart-2.4.7-sources.jar.sha1</a>            2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7.jar" title="accessors-smart-2.4.7.jar">accessors-smart-2.4.7.jar</a>                         2021-05-02 12:58     29489      
+<a href="accessors-smart-2.4.7.jar.asc" title="accessors-smart-2.4.7.jar.asc">accessors-smart-2.4.7.jar.asc</a>                     2021-05-02 12:58       833      
+<a href="accessors-smart-2.4.7.jar.asc.md5" title="accessors-smart-2.4.7.jar.asc.md5">accessors-smart-2.4.7.jar.asc.md5</a>                 2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7.jar.asc.sha1" title="accessors-smart-2.4.7.jar.asc.sha1">accessors-smart-2.4.7.jar.asc.sha1</a>                2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7.jar.asc.sha256" title="accessors-smart-2.4.7.jar.asc.sha256">accessors-smart-2.4.7.jar.asc.sha256</a>              2021-05-02 12:58        64      
+<a href="accessors-smart-2.4.7.jar.asc.sha512" title="accessors-smart-2.4.7.jar.asc.sha512">accessors-smart-2.4.7.jar.asc.sha512</a>              2021-05-02 12:58       128      
+<a href="accessors-smart-2.4.7.jar.md5" title="accessors-smart-2.4.7.jar.md5">accessors-smart-2.4.7.jar.md5</a>                     2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7.jar.sha1" title="accessors-smart-2.4.7.jar.sha1">accessors-smart-2.4.7.jar.sha1</a>                    2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7.pom" title="accessors-smart-2.4.7.pom">accessors-smart-2.4.7.pom</a>                         2021-05-02 12:58      9920      
+<a href="accessors-smart-2.4.7.pom.asc" title="accessors-smart-2.4.7.pom.asc">accessors-smart-2.4.7.pom.asc</a>                     2021-05-02 12:58       833      
+<a href="accessors-smart-2.4.7.pom.asc.md5" title="accessors-smart-2.4.7.pom.asc.md5">accessors-smart-2.4.7.pom.asc.md5</a>                 2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7.pom.asc.sha1" title="accessors-smart-2.4.7.pom.asc.sha1">accessors-smart-2.4.7.pom.asc.sha1</a>                2021-05-02 12:58        40      
+<a href="accessors-smart-2.4.7.pom.asc.sha256" title="accessors-smart-2.4.7.pom.asc.sha256">accessors-smart-2.4.7.pom.asc.sha256</a>              2021-05-02 12:58        64      
+<a href="accessors-smart-2.4.7.pom.asc.sha512" title="accessors-smart-2.4.7.pom.asc.sha512">accessors-smart-2.4.7.pom.asc.sha512</a>              2021-05-02 12:58       128      
+<a href="accessors-smart-2.4.7.pom.md5" title="accessors-smart-2.4.7.pom.md5">accessors-smart-2.4.7.pom.md5</a>                     2021-05-02 12:58        32      
+<a href="accessors-smart-2.4.7.pom.sha1" title="accessors-smart-2.4.7.pom.sha1">accessors-smart-2.4.7.pom.sha1</a>                    2021-05-02 12:58        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/bin/bash -lc 'git status --short -- metadata/net.minidev/accessors-smart/index.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+?? metadata/net.minidev/accessors-smart/index.json
+
+exec
+/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-sources.jar && curl -fsSI https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7-javadoc.jar' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 128ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 06:35:18 GMT
+content-type: application/java-archive
+content-length: 470998
+cf-ray: 9f340bd0db34e291-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 64
+etag: "6f0b2fe310c0cfa9805ecb2c6f16ee2d"
+last-modified: Sun, 02 May 2021 12:58:40 GMT
+x-checksum-md5: 6f0b2fe310c0cfa9805ecb2c6f16ee2d
+x-checksum-sha1: 51b0aeab7977f740810d8c21e44fd666cc073769
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7.pom | sed -n '1,220p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.minidev</groupId>
+    <artifactId>accessors-smart</artifactId>
+    <version>2.4.7</version>
+    <name>ASM based accessors helper used by json-smart</name>
+    <description>Java reflect give poor performance on getter setter an constructor calls, accessors-smart use ASM to speed up those calls.</description>
+    <packaging>bundle</packaging>
+    <url>https://urielch.github.io/</url>
+    <organization>
+        <name>Chemouni Uriel</name>
+        <url>https://urielch.github.io/</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>uriel</id>
+            <name>Uriel Chemouni</name>
+            <email>uchemouni@gmail.com</email>
+            <timezone>GMT+3</timezone>
+        </developer>
+
+
+
+
+
+
+    </developers>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>All files under Apache 2</comments>
+        </license>
+    </licenses>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <scm>
+        <connection>scm:git:https://github.com/netplex/json-smart-v2.git</connection>
+        <developerConnection>scm:git:https://github.com/netplex/json-smart-v2.git</developerConnection>
+        <url>https://github.com/netplex/json-smart-v2</url>
+    </scm>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+	<!-- release with: mvn clean deploy -P release-sign-artifacts-->
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <!-- will be set by the release plugin upon performing mvn release:perform -->
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+				<!-- 2021 rsa4096 key-->
+				<gpg.keyname>53BE126D</gpg.keyname>
+                <!-- <gpg.keyname>Uriel Chemouni (dev) <uchemouni@gmail.com></gpg.keyname> -->
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Publish also javadocs when releasing - required by Sonatype -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.2.0</version>
+						<configuration>
+                          <source>8</source>
+                		</configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Release Plugin (Update version in POM before/after release, create 
+						tag, deploy) to try: mvn release:prepare -DdryRun=true && mvn release:clean 
+						to perform: mvn release:prepare release:perform Read http://nexus.sonatype.org/oss-repository-hosting.html#3 
+						for instructions on releasing to this project's Sonatype repository -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>3.0.0-M1</version>
+                        <configuration>
+                            <mavenExecutorId>forked-path</mavenExecutorId>
+                            <arguments>-Psonatype-oss-release</arguments>
+                            <autoVersionSubmodules>false</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>include-sources</id>
+            <build>
+                <resources>
+                    <resource>
+                        <targetPath>/</targetPath>
+                        <filtering>true</filtering>
+                        <directory>src/main/java</directory>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>bind-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <!-- ONLY NEEDED With jdk 1.7+ -->
+                <configuration>
+                    <source>8</source>
+                    <failOnError>false</failOnError>
+                    <!-- <additionalparam>-Xdoclint:none</additionalparam> -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.2</version> <!-- 3.0.0 need java 7+ -->
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Import-Package>
+                        	org.objectweb.asm;version="[8.0,10)",*
+                        </Import-Package>
+                        <Export-Package>
+                            net.minidev.asm, net.minidev.asm.ex
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/netplex/json-smart-v2/tags?per_page=100 | jq -r '.[].name' | rg '2\\.4\\.7|v2|2\\.4'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 256ms:
+v2.6.0
+2.4.11
+2.4.10
+2.4.9
+2.4.8
+2.4.5
+2.4.1
+
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/accessors-smart-2.4.7.pom | sed -n '220,440p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>5.7.1</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>9.1</version>
+            </dependency>
+        </dependencies>    
+</project>
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/netplex/json-smart-v2/git/matching-refs/tags | jq -r '.[].ref' | rg '2\\.4\\.7|2\\.4'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 254ms:
+refs/tags/2.4.1
+refs/tags/2.4.10
+refs/tags/2.4.11
+refs/tags/2.4.5
+refs/tags/2.4.8
+refs/tags/2.4.9
+
+codex
+Maven Central has version-specific sources and javadocs for `2.4.7`, but no test JAR in that directory. The POM identifies a Java 8 project with GitHub SCM, so it does not match the Kotlin or Scala-only `language` field rules.
+exec
+/bin/bash -lc 'jq empty metadata/net.minidev/accessors-smart/index.json && git diff -- metadata/net.minidev/accessors-smart/index.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540
+ succeeded in 0ms:
+web search: 
+web search: https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/
+web search: 
+web search: accessors-smart 2.4.7 POM scm github json-smart-v2 Java reflect ASM
+web search: 
+web search: https://mvnrepository.com/artifact/net.minidev/accessors-smart/2.4.7
+codex
+No file changes were needed in [index.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/metadata/net.minidev/accessors-smart/index.json:4). The `2.4.7` entry already has non-blank values for the requested URL and description fields, and `language` remains absent because this is a Java library, not a Kotlin or Scala-specific artifact.
+
+I verified that Maven Central has the exact `2.4.7` sources and javadocs, and its listing does not include a test JAR. ([repo1.maven.org](https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/)) The artifact description matches accessors-smart’s ASM/reflection purpose, and the versioned javadocs are for `accessors-smart 2.4.7`. ([mvnrepository.com](https://mvnrepository.com/artifact/net.minidev/accessors-smart/2.4.7))
+
+Validation run: `jq empty metadata/net.minidev/accessors-smart/index.json` passed.
+2026-04-28T06:35:50.886921Z ERROR codex_core::session: failed to record rollout items: thread 019dd2cc-6885-76b3-8135-6c02e1d4686a not found
+tokens used
+37,594
+No file changes were needed in [index.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/metadata/net.minidev/accessors-smart/index.json:4). The `2.4.7` entry already has non-blank values for the requested URL and description fields, and `language` remains absent because this is a Java library, not a Kotlin or Scala-specific artifact.
+
+I verified that Maven Central has the exact `2.4.7` sources and javadocs, and its listing does not include a test JAR. ([repo1.maven.org](https://repo1.maven.org/maven2/net/minidev/accessors-smart/2.4.7/)) The artifact description matches accessors-smart’s ASM/reflection purpose, and the versioned javadocs are for `accessors-smart 2.4.7`. ([mvnrepository.com](https://mvnrepository.com/artifact/net.minidev/accessors-smart/2.4.7))
+
+Validation run: `jq empty metadata/net.minidev/accessors-smart/index.json` passed.
+Ran agent for net.minidev:accessors-smart:2.4.7 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/build/agent-url-discovery-logs/net.minidev-accessors-smart-2.4.7.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2363-4ea71540/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 50s
+9 actionable tasks: 1 executed, 8 up-to-date
