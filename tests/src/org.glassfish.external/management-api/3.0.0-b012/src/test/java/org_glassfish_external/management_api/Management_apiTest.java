@@ -8,7 +8,7 @@ package org_glassfish_external.management_api;
 
 import org.junit.jupiter.api.Test;
 
-class Management_apiTest {
+public class Management_apiTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
