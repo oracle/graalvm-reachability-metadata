@@ -15,6 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CGLIBProxyTypePermissionTest {
     @Test
+    void rejectsTypesBeforeCglibProxyChecks() {
+        TypePermission permission = CGLIBProxyTypePermission.PROXIES;
+
+        assertThat(permission.allows(Object.class)).isFalse();
+        assertThat(permission.allows(Runnable.class)).isFalse();
+        assertThat(permission.allows(null)).isFalse();
+    }
+
+    @Test
     void comparesByConcretePermissionClass() {
         TypePermission permission = CGLIBProxyTypePermission.PROXIES;
 
