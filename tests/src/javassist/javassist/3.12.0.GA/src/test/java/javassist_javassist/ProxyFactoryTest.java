@@ -38,6 +38,24 @@ public class ProxyFactoryTest {
         assertThat(serialized).isNotEmpty();
     }
 
+    @Test
+    void generatedProxyClassReceivesStaticFactoryFields() throws Throwable {
+        ProxyFactory factory = new ProxyFactory();
+        factory.setUseCache(false);
+        factory.setUseWriteReplace(false);
+        factory.setSuperclass(GreetingService.class);
+        factory.setFilter(method -> method.getName().equals("greet"));
+        factory.setHandler(new GreetingHandler());
+
+        GreetingService proxy = (GreetingService) factory.create(
+                new Class[] {String.class},
+                new Object[] {"generated"});
+
+        assertThat(ProxyFactory.isProxyClass(proxy.getClass())).isTrue();
+        assertThat(proxy.prefix()).isEqualTo("generated");
+        assertThat(proxy.greet("factory")).isEqualTo("handled:factory");
+    }
+
     private static byte[] serialize(Object value) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ProxyObjectOutputStream output = new ProxyObjectOutputStream(bytes)) {
@@ -89,8 +107,7 @@ public class ProxyFactoryTest {
                 return super.greet(name);
             }
             try {
-                Method method = GreetingService.class.getMethod("greet", String.class);
-                return (String) handler.invoke(this, method, null, new Object[] {name});
+                return (String) handler.invoke(this, null, null, new Object[] {name});
             } catch (Throwable throwable) {
                 throw new IllegalStateException(throwable);
             }
