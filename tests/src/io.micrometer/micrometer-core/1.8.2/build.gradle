@@ -16,6 +16,12 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED"
+    ]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -23,6 +29,13 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll([
+                '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED'
+            ])
         }
     }
 }
