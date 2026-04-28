@@ -63,6 +63,30 @@ public class Javax_transactionTest {
     }
 
     @Test
+    void transactionRollbackRollsBackXaResourceAndSkipsBeforeCompletion() throws Exception {
+        RecordingTransactionManager transactionManager = new RecordingTransactionManager();
+        RecordingXaResource resource = new RecordingXaResource("orders");
+        RecordingSynchronization synchronization = new RecordingSynchronization();
+
+        transactionManager.begin();
+        Transaction transaction = transactionManager.getTransaction();
+
+        assertThat(transaction.enlistResource(resource)).isTrue();
+        transaction.registerSynchronization(synchronization);
+        assertThat(transaction.delistResource(resource, XAResource.TMFAIL)).isTrue();
+
+        transactionManager.rollback();
+
+        assertThat(transactionManager.getStatus()).isEqualTo(Status.STATUS_NO_TRANSACTION);
+        assertThat(transaction.getStatus()).isEqualTo(Status.STATUS_ROLLEDBACK);
+        assertThat(resource.operations()).containsExactly(
+                "orders:start:4660:0",
+                "orders:end:4660:536870912",
+                "orders:rollback:4660");
+        assertThat(synchronization.events()).containsExactly("afterCompletion:4");
+    }
+
+    @Test
     void userTransactionRollbackOnlyTurnsCommitIntoRollbackException() throws Exception {
         UserTransaction userTransaction = new RecordingTransactionManager();
 
