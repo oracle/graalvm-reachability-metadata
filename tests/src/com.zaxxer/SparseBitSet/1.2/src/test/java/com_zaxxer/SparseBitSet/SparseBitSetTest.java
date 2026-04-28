@@ -59,6 +59,28 @@ public class SparseBitSetTest {
     }
 
     @Test
+    void booleanRangeAssignmentsSetAndClearSelectedSpans() {
+        SparseBitSet sparse = sparseOf(2, 5, 64, 130, 4096, 90_000);
+        BitSet expected = bitSetOf(2, 5, 64, 130, 4096, 90_000);
+
+        sparse.set(10, 18, true);
+        expected.set(10, 18, true);
+        sparse.set(64, 131, false);
+        expected.set(64, 131, false);
+        sparse.set(2048, 2052, true);
+        expected.set(2048, 2052, true);
+        sparse.set(2049, 2051, false);
+        expected.set(2049, 2051, false);
+        sparse.set(90_001, 90_001, true);
+        expected.set(90_001, 90_001, true);
+        sparse.set(0, 0, false);
+        expected.set(0, 0, false);
+
+        assertMatches(sparse, expected);
+        assertNavigationMatches(sparse, expected, 0, 2, 10, 17, 18, 64, 130, 2048, 2051, 90_000, 90_001);
+    }
+
+    @Test
     void wholeSetLogicalOperationsDoNotMutateOperandsAndMatchBitSet() {
         SparseBitSet left = sparseOf(1, 2, 64, 1000, 4096, 70_000);
         SparseBitSet right = sparseOf(2, 3, 64, 4096, 80_000);
