@@ -10,6 +10,39 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+Provider<Directory> explodedH2Runtime = layout.buildDirectory.dir("exploded-h2-runtime")
+
+TaskProvider<Task> prepareExplodedH2Runtime = tasks.register("prepareExplodedH2Runtime") { task ->
+    task.inputs.files(configurations.testRuntimeClasspath)
+    task.outputs.dir(explodedH2Runtime)
+    task.doLast {
+        File h2Jar = configurations.testRuntimeClasspath.files.find { file ->
+            file.name == "h2-${libraryVersion}.jar"
+        }
+        if (h2Jar == null) {
+            throw new GradleException("Unable to locate h2-${libraryVersion}.jar on the test runtime classpath")
+        }
+        File outputDir = explodedH2Runtime.get().asFile
+        delete(outputDir)
+        copy {
+            from(zipTree(h2Jar)) {
+                exclude "org/h2/util/data.zip"
+            }
+            into(outputDir)
+        }
+        copy {
+            from(zipTree(h2Jar)) {
+                include "org/h2/util/data.zip"
+            }
+            into(task.temporaryDir)
+        }
+        copy {
+            from(zipTree(new File(task.temporaryDir, "org/h2/util/data.zip")))
+            into(outputDir)
+        }
+    }
+}
+
 dependencies {
 	testImplementation("com.h2database:h2:$libraryVersion")
 	testImplementation("org.assertj:assertj-core:3.22.0")
@@ -17,6 +50,10 @@ dependencies {
 
 test {
     systemProperty 'h2.javaObjectSerializer', 'h2.JdbcUtilsTest$PassThroughJavaObjectSerializer'
+    dependsOn prepareExplodedH2Runtime
+    classpath = files(explodedH2Runtime).builtBy(prepareExplodedH2Runtime) + classpath.filter { file ->
+        file.name != "h2-${libraryVersion}.jar"
+    }
 }
 
 graalvmNative {
