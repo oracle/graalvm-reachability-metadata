@@ -1,0 +1,1593 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd3f3-9622-7752-9ff5-fef6eeee7057
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.openjfx:javafx-base:13-ea
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "13-ea".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/metadata/org.openjfx/javafx-base/index.json
+- Entry selector: "metadata-version" = "13-ea"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "13-ea".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 13-ea
+- Entry test-version: 13-ea
+codex
+I’ll verify the version-specific upstream locations first, then patch only the blank fields in the existing JSON entry.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"13-ea\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.openjfx/javafx-base/index.json" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+4:    "metadata-version" : "13-ea",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+15:    "repository-url" : "https://github.com/javafxports/openjdk-jfx",
+16:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+18:    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.openjfx/javafx-base/index.json" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "13-ea",
+    "tested-versions" : [
+      "13-ea"
+    ],
+    "allowed-packages" : [
+      "org.openjfx"
+    ]
+  },
+  {
+    "metadata-version" : "11.0.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+    "repository-url" : "https://github.com/javafxports/openjdk-jfx",
+    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+    "tested-versions" : [
+      "11.0.2",
+      "12-ea+10",
+      "12-ea+11",
+      "12-ea+12",
+      "12-ea+13",
+      "12-ea+14",
+      "12-ea+2",
+      "12-ea+3",
+      "12-ea+4",
+      "12-ea+5",
+      "12-ea+6",
+      "12-ea+7",
+      "12-ea+8",
+      "12-ea+9",
+      "12",
+      "12.0.1",
+      "12.0.2",
+      "13-ea+1",
+      "13-ea+10",
+      "13-ea+11",
+      "13-ea+12",
+      "13-ea+13",
+      "13-ea+2",
+      "13-ea+3",
+      "13-ea+4",
+      "13-ea+5",
+      "13-ea+6",
+      "13-ea+7",
+      "13-ea+8",
+      "13-ea+9",
+      "13"
+    ],
+    "allowed-packages" : [
+      "org.openjfx"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central org.openjfx javafx-base 13-ea sources jar javadoc jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/
+codex
+The local entry is just the first object and all requested fields are absent. Maven Central has many `13-ea+N` artifacts, so I’m checking whether a literal `13-ea` artifact or an exact upstream tag exists before choosing fallbacks.
+exec
+/usr/bin/bash -lc "rg -n '13-ea\"|javafx-base.*13-ea|org.openjfx:javafx-base' ." in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+./metadata/org.openjfx/javafx-base/index.json:4:    "metadata-version" : "13-ea",
+./metadata/org.openjfx/javafx-base/index.json:6:      "13-ea"
+./tests/src/org.openjfx/javafx-base/11.0.2/build.gradle:16:    testImplementation "org.openjfx:javafx-base:$libraryVersion:$javafxPlatform"
+./tests/src/org.openjfx/javafx-base/11.0.2/gradle.properties:4:library.coordinates = org.openjfx:javafx-base:11.0.2
+./tests/src/org.openjfx/javafx-base/13-ea/build.gradle:16:    testImplementation "org.openjfx:javafx-base:$libraryVersion:$javafxPlatform"
+./tests/src/org.openjfx/javafx-base/13-ea/gradle.properties:4:library.coordinates = org.openjfx:javafx-base:13-ea
+./tests/src/org.openjfx/javafx-base/13-ea/gradle.properties:6:metadata.dir = org.openjfx/javafx-base/13-ea/
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/13-ea/' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/openjdk/jfx.git 'refs/tags/*13*'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ exited 22 in 276ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 380ms:
+5fbfcfc3e6bbbdcb2d329a874f14f19ef105a208	refs/tags/12+13
+a6a99e54ef4692bca0f69226e1cb902cca43478a	refs/tags/12+13^{}
+9a63b97f60f4943469b99fcff88b25a5b9c83690	refs/tags/13+0
+711ca2dc8b33278201154022348cd550480ce87a	refs/tags/13+0^{}
+a7cf69b6523558f4994f616694a56cfd62c0363c	refs/tags/13+1
+a6d9ece22b4b7a13973024aa9da6825bdf939ee8	refs/tags/13+1^{}
+fd126d7c0051a1bf35735753fb9ecaf0774d4b35	refs/tags/13+10
+bd02deebf7f64dce66f8e4a2c07370e52dbefaa7	refs/tags/13+10^{}
+3059721ee73170428ccf3f0864e3e27d8c494fdd	refs/tags/13+11
+dbce14db944cbaad092becf798cbe4bcab3e43b4	refs/tags/13+11^{}
+3012efbd40e89f2992266f89856b5f109b40b852	refs/tags/13+12
+5e169f75c619c6ef623fce572ec3e447f4a60bff	refs/tags/13+12^{}
+f82ec0bf8bd61bd34e8810c2aa69763587b05a40	refs/tags/13+13
+2b82249ebc9c6e53e8846ff742c388c9df1c7397	refs/tags/13+13^{}
+3f1a6cea0caca663eec85536871d29c10bb78978	refs/tags/13+14
+8f2572c09d9930f1497b4a14f84e0db1285489c6	refs/tags/13+14^{}
+bf4cd00b48c4bb1d0f5f7c198c0096ff2ec485b0	refs/tags/13+2
+a9b22d2d2924448e8030d3e5fdef1fa8b51e612b	refs/tags/13+2^{}
+1137ae5533a8b84e92f20f9478237d71120b4632	refs/tags/13+3
+6516798c6262e8e07e5bfb2e24e6482e392eb329	refs/tags/13+3^{}
+5fa40dc95afbad868d5ad13872dc5c3048560794	refs/tags/13+4
+89c51eeaa5e4bae3e205ed67cebd42e650eced62	refs/tags/13+4^{}
+cefea5dec7f5a96e01b463cbc7e094808f5f24cf	refs/tags/13+5
+06425a0f8d203c2acc7f2d1a652eea5b830122ff	refs/tags/13+5^{}
+aa9a371d4d16d879ea30aeb3b67918f6e252adc7	refs/tags/13+6
+4c33ea92347b32e9e3c4a861a00a0c6c749e418d	refs/tags/13+6^{}
+4946f65eefd098f9ffc35467b46d0a55cea823be	refs/tags/13+7
+59e84fd49deda1cea8a3e509891e1766b0ef8ee9	refs/tags/13+7^{}
+5e8296e8aa859342adbdc365d8f35832ecb9d5a8	refs/tags/13+8
+f55024f7824abc8600c7cd0d43310115fc706deb	refs/tags/13+8^{}
+8ddc0c6d092fed8df530af5c0e88b4e72afe9559	refs/tags/13+9
+9dbd8abf55b6af98b662e73928e35658765245c6	refs/tags/13+9^{}
+ceda8be6268a51e2efc110d621610409913070c1	refs/tags/17+13
+13cffbaad4068177d2d3239fa297302c3f94c217	refs/tags/17+13^{}
+c1141caa3b3ca89ce139f358fc78c8ae88c94134	refs/tags/2.1-b13
+25acf27a38a6c0bde7a92a68be3b79c1fe71f943	refs/tags/2.1-b13^{}
+ea74c54348c042819fa406f221ad6e65eae03f97	refs/tags/2.2-b13
+cae39c965e151e1d236de67def3baed4da20de70	refs/tags/2.2-b13^{}
+1777d209c00ff4db616a1c35284eec99ed948902	refs/tags/20+13
+5b96d348ebcabb4b6d2e1d95937de3c82a1f6876	refs/tags/20+13^{}
+6d53dbadeae714afd1b03f397184994db61f7994	refs/tags/21+13
+f28896aa63592a37e7f78263548f3b2d4f2bc381	refs/tags/21+13^{}
+1ab07fa50bc9caf54b8207bd4a7d8029903967ee	refs/tags/22+13
+e621d4b65222ee99b29fb2709a830d8ad70ea44f	refs/tags/22+13^{}
+fbd751903f2018549ebaf957a0cfd8963885db28	refs/tags/23+13
+0eb4d7196099d817cc6467985b882242845bdd2e	refs/tags/23+13^{}
+d8a32ece6065b6f05d5e50806b7f7405c18d1c15	refs/tags/24+13
+fb06b1f8e88d1c09cc8109ad3cb0ef5a5a754934	refs/tags/24+13^{}
+bfc763d1789e339a4da4175b617a61e7b097ec71	refs/tags/25+13
+9291099cc3a7830937bffdb65100b372ea1cc77a	refs/tags/25+13^{}
+eb4f2c6c27f64b1c6efa342058c52f6854ce7c08	refs/tags/26+13
+47d9dcc38a5e685a014774274f478b4205c6e397	refs/tags/26+13^{}
+5d2779add1c71effa54e2500bf81e64dc367bfb2	refs/tags/27+13
+086496c2ec1977e3426c1cbaa53fc76903938f31	refs/tags/27+13^{}
+6ef62ad7b51488f76efa44d1427e72d7db04ab44	refs/tags/8.0-b113
+5199684d1026791e60eba956167f4acaa25eb657	refs/tags/8.0-b113^{}
+169695ed15c03538e5740dc3d79ba876755d045e	refs/tags/8.0-b130
+02db3280dcdb25778bca2572f9bd9b7cb5a124cd	refs/tags/8.0-b130^{}
+93356675e4b86e939c0e52e0612c8b9574a9dc4d	refs/tags/8.0-b131
+a785ebbd497da2bef677b43e26727bb180b8af71	refs/tags/8.0-b131^{}
+6bccf9124d5a67b4773e85fbf91d5fd095d25a06	refs/tags/8.0-b132
+1a0c382658d94a7f7692f0c9bb09129733a34861	refs/tags/8.0-b132^{}
+b65373c2923efc30ce673d3b15d4447ee0ee6d17	refs/tags/8u20-b13
+a93e0cba9d5c7e07a8ed0c2a70d4801f569eecd9	refs/tags/8u20-b13^{}
+225d3c8139c2dc06484e25a4de69bcd25278c5df	refs/tags/8u25-b13
+02eead6d8e200421a9c73b85bbfcac9cafc3e431	refs/tags/8u25-b13^{}
+8fecc8a07fee9250fb24a93a17a0e70f9f1851b1	refs/tags/8u31-b13
+eb087309a4b68bd55ee89aefa25756c9b5e82de2	refs/tags/8u31-b13^{}
+6bcd02b5fb148e88e2787f8ef1f39b79fdc36b74	refs/tags/8u40-b13
+0c48e387a3d5183f45e11566ac3d6f3be849176a	refs/tags/8u40-b13^{}
+081f28d11769a36e83066cf3a0d36eb8e14a8c39	refs/tags/8u45-b13
+6b91866419b37539e0cb7585ddeca78a3e1a8ec9	refs/tags/8u45-b13^{}
+0781190f0bc5182f6961ad02b836eb409c56a69d	refs/tags/8u5-b13
+84b39c65ddd0e5469fd7e60dd17b592da27f0038	refs/tags/8u5-b13^{}
+a3502d76bb89767399f830f4d86391c8a240d65a	refs/tags/9-b13
+8530e34dae93df183422bc9e4094186fc1cdcc09	refs/tags/9-b13^{}
+38064345a5b8517d6b9e9e5268e417215057e9c7	refs/tags/jdk-10+13
+c7474e34d52d1758033c2172aad7a946b11b62d0	refs/tags/jdk-10+13^{}
+1635d17acbdca36a7aa0b78fe4bcab6d32011a32	refs/tags/jdk-11+13
+b839c4db3d2129c7ed9a1c98fc7c65915aae74b8	refs/tags/jdk-11+13^{}
+955e933de9c570dc0c6230ae64df8887521d159b	refs/tags/jdk-9+113
+7471701e104dc53a558a0be492cc6890bdbb36b3	refs/tags/jdk-9+113^{}
+d0a80088b198190cc8460ad2b2f0e1d637bd9b37	refs/tags/jdk-9+130
+81d26e4fd1c3e08670ec9f8fbdd90d113e0953bc	refs/tags/jdk-9+130^{}
+690f0c351a7fd0f807cedb52de0763f3b330dbf4	refs/tags/jdk-9+131
+faac28b1016154c82a6826035d1df40c2c1cb19c	refs/tags/jdk-9+131^{}
+af3f24aecf3ea1fab6798e57b6dd838a97df7be3	refs/tags/jdk-9+132
+e7c81d61a49a42a5be3f2d589584a8ab1e5a94fa	refs/tags/jdk-9+132^{}
+d5f0efb16a014af9f3a3ae90657709651b24bb41	refs/tags/jdk-9+133
+3b021b234f6b9e9635b8c7e76f025105ef0e964b	refs/tags/jdk-9+133^{}
+aec722deffe13b5ae227747aa96dceda1978dc90	refs/tags/jdk-9+134
+1c191deeefd0e7b2b5f6918a210707845cdca85f	refs/tags/jdk-9+134^{}
+7e59a8f551581fa8c0f9a92676906a533d07a25b	refs/tags/jdk-9+135
+1e19f7a5ca55f2aca01023d05513a529b58931dc	refs/tags/jdk-9+135^{}
+4a628de3eb0c59dc5d813c4777c4c89c4f013e0e	refs/tags/jdk-9+136
+61ff2836e9660a25fc28a84cf0e979e39eca65fb	refs/tags/jdk-9+136^{}
+66d24f47013e51f599d59c91b33f648352ad0bb0	refs/tags/jdk-9+137
+760cdfe7fdfc67dce739842f75996afd17b88603	refs/tags/jdk-9+137^{}
+6e0d9d566fe20274f0fe7885995a5522a3ec117b	refs/tags/jdk-9+138
+bf36c7323204673dec50531b30b82937211d5b36	refs/tags/jdk-9+138^{}
+916c7cb2a4741fabc48d618358898d6c880f07e0	refs/tags/jdk-9+139
+05223763914b3c59771e478e817d422390ff3792	refs/tags/jdk-9+139^{}
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' tests/src/org.openjfx/javafx-base/13-ea/gradle.properties" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+# Optional explicit tested library coordinates (format: group:artifact:version).
+# If omitted, fallback resolution in org.graalvm.internal.tck.gradle still uses
+# environment variable GVM_TCK_LC and then this property.
+library.coordinates = org.openjfx:javafx-base:13-ea
+library.version = 13-ea
+metadata.dir = org.openjfx/javafx-base/13-ea/
+
+exec
+/usr/bin/bash -lc "sed -n '1,180p' tests/src/org.openjfx/javafx-base/13-ea/build.gradle" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+String osName = System.getProperty("os.name").toLowerCase()
+String javafxPlatform = osName.contains("win") ? "win" : osName.contains("mac") ? "mac" : "linux"
+
+dependencies {
+    testImplementation "org.openjfx:javafx-base:$libraryVersion:$javafxPlatform"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/maven-metadata.xml' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.openjfx</groupId>
+  <artifactId>javafx-base</artifactId>
+  <versioning>
+    <latest>27-ea+14</latest>
+    <release>27-ea+14</release>
+    <versions>
+      <version>11</version>
+      <version>11-ea+19</version>
+      <version>11-ea+23</version>
+      <version>11-ea+24</version>
+      <version>11-ea+25</version>
+      <version>11.0.1</version>
+      <version>11.0.1-ea+1</version>
+      <version>11.0.2</version>
+      <version>12</version>
+      <version>12-ea+2</version>
+      <version>12-ea+3</version>
+      <version>12-ea+4</version>
+      <version>12-ea+5</version>
+      <version>12-ea+6</version>
+      <version>12-ea+7</version>
+      <version>12-ea+8</version>
+      <version>12-ea+9</version>
+      <version>12-ea+10</version>
+      <version>12-ea+11</version>
+      <version>12-ea+12</version>
+      <version>12-ea+13</version>
+      <version>12-ea+14</version>
+      <version>12.0.1</version>
+      <version>12.0.2</version>
+      <version>13</version>
+      <version>13-ea+1</version>
+      <version>13-ea+2</version>
+      <version>13-ea+3</version>
+      <version>13-ea+4</version>
+      <version>13-ea+5</version>
+      <version>13-ea+6</version>
+      <version>13-ea+7</version>
+      <version>13-ea+8</version>
+      <version>13-ea+9</version>
+      <version>13-ea+10</version>
+      <version>13-ea+11</version>
+      <version>13-ea+12</version>
+      <version>13-ea+13</version>
+      <version>13-ea+14</version>
+      <version>13-ea+14b</version>
+      <version>13.0.1</version>
+      <version>13.0.2</version>
+      <version>14</version>
+      <version>14-ea+1</version>
+      <version>14-ea+2</version>
+      <version>14-ea+4</version>
+      <version>14-ea+6</version>
+      <version>14-ea+7</version>
+      <version>14-ea+8</version>
+      <version>14-ea+9</version>
+      <version>14.0.1</version>
+      <version>14.0.2.1</version>
+      <version>14.0.2</version>
+      <version>15</version>
+      <version>15-ea+1</version>
+      <version>15-ea+2</version>
+      <version>15-ea+3</version>
+      <version>15-ea+4</version>
+      <version>15-ea+5</version>
+      <version>15-ea+6</version>
+      <version>15-ea+7</version>
+      <version>15-ea+8</version>
+      <version>15.0.1</version>
+      <version>16</version>
+      <version>16-ea+1</version>
+      <version>16-ea+2</version>
+      <version>16-ea+3</version>
+      <version>16-ea+4</version>
+      <version>16-ea+5</version>
+      <version>16-ea+6</version>
+      <version>16-ea+7</version>
+      <version>17.0.0.1</version>
+      <version>17</version>
+      <version>17-ea+2</version>
+      <version>17-ea+3</version>
+      <version>17-ea+5</version>
+      <version>17-ea+6</version>
+      <version>17-ea+7</version>
+      <version>17-ea+8</version>
+      <version>17-ea+9</version>
+      <version>17-ea+11</version>
+      <version>17-ea+12</version>
+      <version>17-ea+13</version>
+      <version>17-ea+14</version>
+      <version>17-ea+15</version>
+      <version>17-ea+16</version>
+      <version>17-ea+17</version>
+      <version>17-ea+18</version>
+      <version>17.0.1</version>
+      <version>17.0.2</version>
+      <version>17.0.2-ea+1</version>
+      <version>17.0.2-ea+2</version>
+      <version>17.0.6</version>
+      <version>17.0.7</version>
+      <version>17.0.7-ea+1</version>
+      <version>17.0.8</version>
+      <version>17.0.8-ea+1</version>
+      <version>17.0.9</version>
+      <version>17.0.9-ea+2</version>
+      <version>17.0.9-ea+3</version>
+      <version>17.0.9-ea+4</version>
+      <version>17.0.10</version>
+      <version>17.0.11</version>
+      <version>17.0.11-ea+1</version>
+      <version>17.0.11-ea+2</version>
+      <version>17.0.12</version>
+      <version>17.0.12-ea+1</version>
+      <version>17.0.13</version>
+      <version>17.0.14</version>
+      <version>17.0.14-ea+2</version>
+      <version>17.0.15</version>
+      <version>17.0.15-ea+1</version>
+      <version>17.0.16</version>
+      <version>17.0.16-ea+1</version>
+      <version>17.0.16-ea+2</version>
+      <version>17.0.17</version>
+      <version>17.0.17-ea+1</version>
+      <version>17.0.18</version>
+      <version>17.0.18-ea+1</version>
+      <version>17.0.19</version>
+      <version>17.0.19-ea+1</version>
+      <version>17.0.19-ea+2</version>
+      <version>17.0.19-ea+3</version>
+      <version>18</version>
+      <version>18-ea+1</version>
+      <version>18-ea+2</version>
+      <version>18-ea+3</version>
+      <version>18-ea+4</version>
+      <version>18-ea+5</version>
+      <version>18-ea+6</version>
+      <version>18-ea+7</version>
+      <version>18-ea+8</version>
+      <version>18-ea+9</version>
+      <version>18-ea+10</version>
+      <version>18-ea+11</version>
+      <version>18-ea+12</version>
+      <version>18.0.1</version>
+      <version>18.0.1-ea+1</version>
+      <version>18.0.2</version>
+      <version>19</version>
+      <version>19-ea+2</version>
+      <version>19-ea+3</version>
+      <version>19-ea+4</version>
+      <version>19-ea+5</version>
+      <version>19-ea+6</version>
+      <version>19-ea+7</version>
+      <version>19-ea+8</version>
+      <version>19-ea+9</version>
+      <version>19-ea+10</version>
+      <version>19-ea+11</version>
+      <version>19.0.2.1</version>
+      <version>19.0.2</version>
+      <version>20</version>
+      <version>20-ea+1</version>
+      <version>20-ea+2</version>
+      <version>20-ea+3</version>
+      <version>20-ea+4</version>
+      <version>20-ea+6</version>
+      <version>20-ea+7</version>
+      <version>20-ea+9</version>
+      <version>20-ea+11</version>
+      <version>20-ea+19</version>
+      <version>20.0.1</version>
+      <version>20.0.2</version>
+      <version>21</version>
+      <version>21-ea+5</version>
+      <version>21-ea+17</version>
+      <version>21-ea+21</version>
+      <version>21-ea+23</version>
+      <version>21-ea+24</version>
+      <version>21-ea+31</version>
+      <version>21.0.1</version>
+      <version>21.0.2</version>
+      <version>21.0.3</version>
+      <version>21.0.3-ea+1</version>
+      <version>21.0.4</version>
+      <version>21.0.4-ea+1</version>
+      <version>21.0.5</version>
+      <version>21.0.6</version>
+      <version>21.0.6-ea+2</version>
+      <version>21.0.7</version>
+      <version>21.0.7-ea+1</version>
+      <version>21.0.8</version>
+      <version>21.0.8-ea+1</version>
+      <version>21.0.8-ea+2</version>
+      <version>21.0.9</version>
+      <version>21.0.9-ea+1</version>
+      <version>21.0.10</version>
+      <version>21.0.10-ea+1</version>
+      <version>21.0.11</version>
+      <version>21.0.11-ea+2</version>
+      <version>21.0.11-ea+3</version>
+      <version>21.0.11-ea+4</version>
+      <version>22</version>
+      <version>22-ea+9</version>
+      <version>22-ea+11</version>
+      <version>22-ea+16</version>
+      <version>22-ea+27</version>
+      <version>22-ea+28</version>
+      <version>22.0.1</version>
+      <version>22.0.2</version>
+      <version>23</version>
+      <version>23-ea+3</version>
+      <version>23-ea+18</version>
+      <version>23-ea+20</version>
+      <version>23-ea+22</version>
+      <version>23-ea+27</version>
+      <version>23.0.1</version>
+      <version>23.0.2</version>
+      <version>24</version>
+      <version>24-ea+5</version>
+      <version>24-ea+15</version>
+      <version>24-ea+19</version>
+      <version>24-ea+25</version>
+      <version>24-ea+26</version>
+      <version>24-ea+27</version>
+      <version>24-ea+28</version>
+      <version>24-ea+29</version>
+      <version>24.0.1</version>
+      <version>24.0.2</version>
+      <version>24.0.2-ea+1</version>
+      <version>25</version>
+      <version>25-ea+1</version>
+      <version>25-ea+2</version>
+      <version>25-ea+5</version>
+      <version>25-ea+6</version>
+      <version>25-ea+8</version>
+      <version>25-ea+10</version>
+      <version>25-ea+11</version>
+      <version>25-ea+12</version>
+      <version>25-ea+14</version>
+      <version>25-ea+17</version>
+      <version>25-ea+18</version>
+      <version>25-ea+20</version>
+      <version>25-ea+21</version>
+      <version>25-ea+22</version>
+      <version>25-ea+22b</version>
+      <version>25-ea+23</version>
+      <version>25-ea+24</version>
+      <version>25-ea+26</version>
+      <version>25-ea+27</version>
+      <version>25-ea+28</version>
+      <version>25-ea+29</version>
+      <version>25.0.1</version>
+      <version>25.0.2</version>
+      <version>25.0.2-ea+3</version>
+      <version>25.0.3</version>
+      <version>25.0.3-ea+2</version>
+      <version>25.0.3-ea+3</version>
+      <version>26</version>
+      <version>26-ea+1</version>
+      <version>26-ea+2</version>
+      <version>26-ea+3</version>
+      <version>26-ea+6</version>
+      <version>26-ea+7</version>
+      <version>26-ea+9</version>
+      <version>26-ea+10</version>
+      <version>26-ea+11</version>
+      <version>26-ea+12</version>
+      <version>26-ea+13</version>
+      <version>26-ea+14</version>
+      <version>26-ea+15</version>
+      <version>26-ea+16</version>
+      <version>26-ea+17</version>
+      <version>26-ea+18</version>
+      <version>26-ea+19</version>
+      <version>26-ea+21</version>
+      <version>26-ea+22</version>
+      <version>26-ea+23</version>
+      <version>26-ea+24</version>
+      <version>26-ea+25</version>
+      <version>26-ea+26</version>
+      <version>26-ea+27</version>
+      <version>26.0.1</version>
+      <version>27-ea+1</version>
+      <version>27-ea+2</version>
+      <version>27-ea+3</version>
+      <version>27-ea+4</version>
+      <version>27-ea+5</version>
+      <version>27-ea+6</version>
+      <version>27-ea+8</version>
+      <version>27-ea+9</version>
+      <version>27-ea+10</version>
+      <version>27-ea+11</version>
+      <version>27-ea+12</version>
+      <version>27-ea+13</version>
+      <version>27-ea+14</version>
+    </versions>
+    <lastUpdated>20260424062954</lastUpdated>
+  </versioning>
+</metadata>
+
+exec
+/usr/bin/bash -lc "rg -n 'repo.maven|mavenCentral|repositories|openjfx|13-ea' build.gradle settings.gradle gradle.properties buildSrc src tests -g '*.gradle' -g '*.properties' -g '*.java' -g '*.groovy'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ exited 2 in 0ms:
+rg: buildSrc: No such file or directory (os error 2)
+rg: src: No such file or directory (os error 2)
+settings.gradle:9:    repositories {
+build.gradle:24:    repositories {
+build.gradle:25:        mavenCentral()
+tests/tck-build-logic/build.gradle:12:repositories {
+tests/tck-build-logic/build.gradle:13:    mavenCentral()
+tests/tck-build-logic/build.gradle:26:    repositories {
+tests/tck-build-logic/settings.gradle:8:    repositories {
+tests/tck-build-logic/settings.gradle:9:        mavenCentral()
+tests/tck-build-logic/settings.gradle:24:    repositories {
+tests/tck-build-logic/settings.gradle:25:        mavenCentral()
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle:23:repositories {
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle:25:    mavenCentral()
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-settings.settings.gradle:8:    repositories {
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-settings.settings.gradle:9:        mavenCentral()
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-settings.settings.gradle:24:    repositories {
+tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-settings.settings.gradle:25:        mavenCentral()
+tests/src/org.apache.commons/commons-compress/1.21/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.activemq/artemis-jms-client/2.28.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.slf4j/slf4j-api/1.7.36/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opencensus/opencensus-api/0.31.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.yetus/audience-annotations/0.12.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline-terminal-jna/3.20.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.commons/commons-compress/1.23.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/log4j/log4j/1.2.17/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.activemq/activemq-client/5.18.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.github.ben-manes.caffeine/caffeine/2.9.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.slf4j/slf4j-api/1.5.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.jetty/jetty-util/12.0.9/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.j2objc/j2objc-annotations/1.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.commons/commons-dbcp2/2.12.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jline/jline/3.21.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.activation/javax.activation-api/1.2.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.zipkin.zipkin2/zipkin/2.23.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.github.ben-manes.caffeine/caffeine/3.1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/11.0.2/build.gradle:16:    testImplementation "org.openjfx:javafx-base:$libraryVersion:$javafxPlatform"
+tests/src/com.squareup.okio/okio/1.17.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.jetty/jetty-client/12.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/11.0.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/11.0.2/settings.gradle:20:rootProject.name = 'org.openjfx.javafx-base_tests'
+tests/src/com.itextpdf/kernel/8.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.activemq/activemq-client/6.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.example/library/0.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.commons/commons-text/1.9/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jvnet.staxex/stax-ex/1.8/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/11.0.2/src/test/java/org_openjfx/javafx_base/Javafx_baseTest.java:7:package org_openjfx.javafx_base;
+tests/src/org.bouncycastle/bcpkix-jdk15to18/1.77/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/11.0.2/gradle.properties:4:library.coordinates = org.openjfx:javafx-base:11.0.2
+tests/src/org.openjfx/javafx-base/11.0.2/gradle.properties:6:metadata.dir = org.openjfx/javafx-base/11.0.2/
+tests/src/org.eclipse.jetty/jetty-client/11.0.12/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.itextpdf/forms/8.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.zookeeper/zookeeper/3.8.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.commons/commons-pool2/2.11.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/13-ea/build.gradle:16:    testImplementation "org.openjfx:javafx-base:$libraryVersion:$javafxPlatform"
+tests/src/org.openjfx/javafx-base/13-ea/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/13-ea/settings.gradle:20:rootProject.name = 'org.openjfx.javafx-base_tests'
+tests/src/com.fasterxml.jackson.core/jackson-databind/2.15.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.ehcache/ehcache/3.10.8-jakarta/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.activation/activation/1.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.activemq/activemq-broker/5.18.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/13-ea/gradle.properties:4:library.coordinates = org.openjfx:javafx-base:13-ea
+tests/src/org.openjfx/javafx-base/13-ea/gradle.properties:5:library.version = 13-ea
+tests/src/org.openjfx/javafx-base/13-ea/gradle.properties:6:metadata.dir = org.openjfx/javafx-base/13-ea/
+tests/src/org.eclipse.jetty/jetty-server/12.1.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.openjfx/javafx-base/13-ea/src/test/java/org_openjfx/javafx_base/Javafx_baseTest.java:7:package org_openjfx.javafx_base;
+tests/src/org.bouncycastle/bcpkix-jdk18on/1.77/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.commons/commons-lang3/3.11/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.itextpdf/layout/8.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.zookeeper/zookeeper-jute/3.8.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.activemq/activemq-broker/6.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.itextpdf/svg/8.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jvnet/animal-sniffer-annotation/1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.itextpdf/io/8.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.yaml/snakeyaml/1.32/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.fasterxml.jackson.core/jackson-core/2.1.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.jetty/jetty-server/11.0.12/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.fasterxml.jackson.core/jackson-annotations/2.1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.commons/commons-collections4/4.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.sun.istack/istack-commons-runtime/4.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jctools/jctools-core/2.1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.android/annotations/4.1.1.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.sun.mail/jakarta.mail/2.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.3.20/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.sun.istack/istack-commons-runtime/3.0.7/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.jetty/jetty-server/12.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.guava/failureaccess/1.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/samples/docker/image-pull/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.openejb/javaee-api/5.0-2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.logmanager/jboss-logmanager/1.2.0.GA/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.mysql/mysql-connector-j/8.0.31/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.auth/google-auth-library-credentials/1.10.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jetbrains.kotlin/kotlin-reflect/1.7.10/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jetbrains.kotlin/kotlin-script-runtime/2.3.20/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.thymeleaf/thymeleaf/3.1.0.RELEASE/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.attoparser/attoparser/2.0.5.RELEASE/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.fasterxml.jackson.module/jackson-module-kotlin/2.17.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.jgit/org.eclipse.jgit/7.4.0.202509020913-r/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jetbrains/annotations-java5/23.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jooq/jooq/3.18.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.thymeleaf/thymeleaf/3.1.0.M2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.jsonwebtoken/jjwt-gson/0.12.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.rnorth.duct-tape/duct-tape/1.0.8/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.postgresql/postgresql/42.3.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.codehaus.mojo/animal-sniffer-annotations/1.17/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.lz4/lz4-java/1.8.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jetbrains/annotations/13.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.jgit/org.eclipse.jgit/6.5.0.202303070854-r/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.jsonwebtoken/jjwt-gson/0.11.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.thymeleaf/thymeleaf-spring6/3.1.0.RELEASE/build.gradle:27:repositories {
+tests/src/org.thymeleaf/thymeleaf-spring6/3.1.0.RELEASE/build.gradle:28:    mavenCentral()
+tests/src/org.postgresql/postgresql/42.7.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.el/javax.el-api/3.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.thymeleaf/thymeleaf-spring6/3.1.0.RELEASE/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpclient/4.5.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.mockito/mockito-core/4.8.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/commons-io/commons-io/2.11.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.dropwizard.metrics/metrics-core/4.1.12.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.servlet/javax.servlet-api/3.1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.jsonwebtoken/jjwt-jackson/0.12.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.microsoft.sqlserver/mssql-jdbc/12.2.0.jre11/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.orm/hibernate-jcache/7.2.1.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpclient/4.5.14/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.mockito/mockito-core/5.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jooq/jooq/3.17.7/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.persistence/jakarta.persistence-api/3.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.googlecode.javaewah/JavaEWAH/1.1.13/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/commons-cli/commons-cli/1.5.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.jsonwebtoken/jjwt-jackson/0.11.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.immutables/value/2.8.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.httpcomponents/httpcore/4.4.9/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.orm/hibernate-core/6.6.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/commons-logging/commons-logging/1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.antlr/antlr4-runtime/4.10/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.opengauss/opengauss-jdbc/3.1.0-og/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.github.spotbugs/spotbugs-annotations/4.8.6/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.jsonwebtoken/jjwt-orgjson/0.12.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/ch.qos.logback.contrib/logback-jackson/0.1.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.graphql-java/java-dataloader/3.2.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.resteasy/resteasy-client/6.2.12.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/ch.qos.logback.contrib/logback-json-core/0.1.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.nats/jnats/2.16.11/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/ch.qos.logback.contrib/logback-json-classic/0.1.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.jsonwebtoken/jjwt-orgjson/0.11.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.codehaus.woodstox/stax2-api/4.2.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.graphql-java/graphql-java-extended-scalars/19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.graphql-java/graphql-java/19.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.code.findbugs/findbugs-annotations/3.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.graphql-java/graphql-java-extended-validation/19.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.freemarker/freemarker/2.3.31/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.orm/hibernate-core/7.0.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.cache/cache-api/1.1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.code.findbugs/jsr305/3.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.jsonwebtoken/jjwt-api/0.11.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.classfilewriter/jboss-classfilewriter/1.2.4.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.cache/cache-api/1.1.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.fusesource.hawtbuf/hawtbuf/1.11/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.json/json/20220320/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.rocksdb/rocksdbjni/7.1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/net.java.dev.jna/jna/5.8.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.osgi/org.osgi.core/4.3.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.zaxxer/HikariCP/5.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry/opentelemetry-sdk-metrics/1.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.github.luben/zstd-jni/1.5.2-5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry/opentelemetry-context/1.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.jsonwebtoken/jjwt-api/0.12.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.rocksdb/rocksdbjni/7.9.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.orm/hibernate-core/6.2.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.validation/jakarta.validation-api/3.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.ecwid.consul/consul-api/1.4.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry/opentelemetry-sdk-trace/1.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.github.luben/zstd-jni/1.5.5-1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.zaxxer/HikariCP/6.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.osgi/org.osgi.compendium/5.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry/opentelemetry-exporter-otlp/1.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/ch.qos.logback/logback-core/1.2.12/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/at.yawk.lz4/lz4-java/1.10.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.zaxxer/HikariCP/4.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.hazelcast/hazelcast/5.5.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry/opentelemetry-exporter-jaeger/1.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry/opentelemetry-exporter-logging/1.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.jms/jakarta.jms-api/2.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.annotation/jsr250-api/1.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.orm/hibernate-core/7.1.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry/opentelemetry-exporter-zipkin/1.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.persistence/javax.persistence-api/2.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.zaxxer/HikariCP-java7/2.4.13/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.opentelemetry/opentelemetry-api/1.19.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/commons-codec/commons-codec/1.10/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.logging/jboss-logging/3.5.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.annotation/javax.annotation-api/1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.servlet/jakarta.servlet-api/4.0.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/ch.qos.logback/logback-core/1.1.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.servlet/jakarta.servlet-api/5.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.mchange/mchange-commons-java/0.2.15/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.fasterxml.jackson.jr/jackson-jr-objects/2.13.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.hazelcast/hazelcast/5.2.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.liquibase/liquibase-core/4.17.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.liquibase/liquibase-core/4.25.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.quartz-scheduler/quartz/2.3.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/ch.qos.logback/logback-classic/1.4.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.liquibase/liquibase-core/5.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.santuario/xmlsec/4.0.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.narayana.jta/jta/5.12.4.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/build.gradle:8:    repositories {
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/build.gradle:9:        mavenCentral()
+tests/src/org.hibernate.orm/hibernate-core/6.1.1.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jline/jline/2.14.6/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.mariadb.jdbc/mariadb-java-client/3.0.6/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/ch.qos.logback/logback-classic/1.2.11/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.jetty.alpn/alpn-api/1.1.3.v20160715/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.xml.bind/jaxb-api/2.3.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.testcontainers/testcontainers/1.17.6/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.inject/jakarta.inject-api/2.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.glassfish.jaxb/txw2/2.3.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.kafka/kafka-clients/3.5.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.mariadb.jdbc/mariadb-java-client/3.5.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.orm/hibernate-core/6.5.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.angus/jakarta.mail/1.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.glassfish.jaxb/jaxb-runtime/3.0.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/net.i2p.crypto/eddsa/0.3.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/software.amazon.awssdk/s3/2.25.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hdrhistogram/HdrHistogram/2.1.12/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss/jandex/2.4.2.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.testcontainers/testcontainers/1.19.8/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.kafka/kafka-streams/3.5.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.sun.xml.fastinfoset/FastInfoset/1.2.15/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.h2database/h2/2.1.210/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.reactive/hibernate-reactive-core/2.0.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.paho/org.eclipse.paho.mqttv5.client/1.2.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.2_spec/1.0.1.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/build.gradle:8:    repositories {
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/build.gradle:9:        mavenCentral()
+tests/src/org.hibernate.orm/hibernate-envers/6.1.1.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.spec.javax.interceptor/jboss-interceptors-api_1.1_spec/1.0.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.paho/org.eclipse.paho.client.mqttv3/1.2.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/dev.langchain4j/langchain4j/1.9.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.undertow/undertow-parser-generator/2.2.19.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.ow2.asm/asm/9.4/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/jakarta.annotation/jakarta.annotation-api/1.3.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.undertow/undertow-core/2.2.19.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.undertow/undertow-core/2.3.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.jboss.jdeparser/jdeparser/2.0.2.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.netty/netty-transport-classes-epoll/4.1.99.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.tomcat/tomcat-annotations-api/10.0.20/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.apache.tomcat/tomcat-jdbc/10.1.7/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.objenesis/objenesis/3.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.baomidou/mybatis-plus/3.5.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/javax.interceptor/javax.interceptor-api/1.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.auto.value/auto-value-annotations/1.9/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.fasterxml/classmate/1.5.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.eclipse.jetty.toolchain/jetty-jakarta-servlet-api/5.0.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate/hibernate-core/6.0.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/mysql/mysql-connector-java/8.0.29/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.netty/netty-common/4.1.80.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate/hibernate-spatial/6.5.0.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/build.gradle:28:repositories {
+tests/src/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/build.gradle:29:    mavenCentral()
+tests/src/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate.validator/hibernate-validator/7.0.4.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.cloud.tools/jib-build-plan/0.4.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.netty/netty-transport/4.1.80.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.protobuf/protobuf-java-util/3.22.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.hibernate/hibernate-core/5.6.14.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.netty/netty-common/4.1.79.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.unbescape/unbescape/1.1.6.RELEASE/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.checkerframework/checker-qual/3.5.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/berkeleydb/je/3.2.76/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.flywaydb/flyway-core/11.14.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.flywaydb/flyway-database-postgresql/10.10.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.sun.activation/jakarta.activation/2.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.netty/netty-transport/4.1.115.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.flywaydb/flyway-core/10.15.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.checkerframework/checker-qual/3.12.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.mariadb/r2dbc-mariadb/1.1.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.google.protobuf/protobuf-java-util/3.21.12/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.flywaydb/flyway-core/10.20.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.checkerframework/checker-compat-qual/2.5.5/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.netty/netty-common/4.1.115.Final/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.flywaydb/flyway-core/10.20.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.flywaydb/flyway-core/9.0.1/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.atomikos/transactions-api/6.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.reactivestreams/reactive-streams/1.0.3/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.grpc/grpc-core/1.69.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.grpc/grpc-context/1.27.2/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/io.grpc/grpc-netty/1.51.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.flywaydb/flyway-core/10.10.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/org.flywaydb/flyway-sqlserver/10.10.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+tests/src/com.atomikos/transactions/6.0.0/settings.gradle:13:    repositories { mavenLocal(); gradlePluginPortal() }
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/13-ea+14/ | sed -n '1,200p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/openjfx/javafx-base/13-ea&#43;14</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/openjfx/javafx-base/13-ea&#43;14</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="javafx-base-13-ea+14-javadoc.jar" title="javafx-base-13-ea+14-javadoc.jar">javafx-base-13-ea+14-javadoc.jar</a>                  2019-09-03 13:17  10173400      
+<a href="javafx-base-13-ea+14-javadoc.jar.asc" title="javafx-base-13-ea+14-javadoc.jar.asc">javafx-base-13-ea+14-javadoc.jar.asc</a>              2019-09-03 13:17       475      
+<a href="javafx-base-13-ea+14-javadoc.jar.asc.md5" title="javafx-base-13-ea+14-javadoc.jar.asc.md5">javafx-base-13-ea+14-javadoc.jar.asc.md5</a>          2019-09-03 13:17        32      
+<a href="javafx-base-13-ea+14-javadoc.jar.asc.sha1" title="javafx-base-13-ea+14-javadoc.jar.asc.sha1">javafx-base-13-ea+14-javadoc.jar.asc.sha1</a>         2019-09-03 13:17        40      
+<a href="javafx-base-13-ea+14-javadoc.jar.md5" title="javafx-base-13-ea+14-javadoc.jar.md5">javafx-base-13-ea+14-javadoc.jar.md5</a>              2019-09-03 13:17        32      
+<a href="javafx-base-13-ea+14-javadoc.jar.sha1" title="javafx-base-13-ea+14-javadoc.jar.sha1">javafx-base-13-ea+14-javadoc.jar.sha1</a>             2019-09-03 13:17        40      
+<a href="javafx-base-13-ea+14-sources.jar" title="javafx-base-13-ea+14-sources.jar">javafx-base-13-ea+14-sources.jar</a>                  2019-09-03 13:17    585178      
+<a href="javafx-base-13-ea+14-sources.jar.asc" title="javafx-base-13-ea+14-sources.jar.asc">javafx-base-13-ea+14-sources.jar.asc</a>              2019-09-03 13:17       475      
+<a href="javafx-base-13-ea+14-sources.jar.asc.md5" title="javafx-base-13-ea+14-sources.jar.asc.md5">javafx-base-13-ea+14-sources.jar.asc.md5</a>          2019-09-03 13:17        32      
+<a href="javafx-base-13-ea+14-sources.jar.asc.sha1" title="javafx-base-13-ea+14-sources.jar.asc.sha1">javafx-base-13-ea+14-sources.jar.asc.sha1</a>         2019-09-03 13:17        40      
+<a href="javafx-base-13-ea+14-sources.jar.md5" title="javafx-base-13-ea+14-sources.jar.md5">javafx-base-13-ea+14-sources.jar.md5</a>              2019-09-03 13:17        32      
+<a href="javafx-base-13-ea+14-sources.jar.sha1" title="javafx-base-13-ea+14-sources.jar.sha1">javafx-base-13-ea+14-sources.jar.sha1</a>             2019-09-03 13:17        40      
+<a href="javafx-base-13-ea+14.jar" title="javafx-base-13-ea+14.jar">javafx-base-13-ea+14.jar</a>                          2019-09-03 13:17       302      
+<a href="javafx-base-13-ea+14.jar.asc" title="javafx-base-13-ea+14.jar.asc">javafx-base-13-ea+14.jar.asc</a>                      2019-09-03 13:17       475      
+<a href="javafx-base-13-ea+14.jar.asc.md5" title="javafx-base-13-ea+14.jar.asc.md5">javafx-base-13-ea+14.jar.asc.md5</a>                  2019-09-03 13:17        32      
+<a href="javafx-base-13-ea+14.jar.asc.sha1" title="javafx-base-13-ea+14.jar.asc.sha1">javafx-base-13-ea+14.jar.asc.sha1</a>                 2019-09-03 13:17        40      
+<a href="javafx-base-13-ea+14.jar.md5" title="javafx-base-13-ea+14.jar.md5">javafx-base-13-ea+14.jar.md5</a>                      2019-09-03 13:17        32      
+<a href="javafx-base-13-ea+14.jar.sha1" title="javafx-base-13-ea+14.jar.sha1">javafx-base-13-ea+14.jar.sha1</a>                     2019-09-03 13:17        40      
+<a href="javafx-base-13-ea+14.pom" title="javafx-base-13-ea+14.pom">javafx-base-13-ea+14.pom</a>                          2019-09-03 13:17       754      
+<a href="javafx-base-13-ea+14.pom.asc" title="javafx-base-13-ea+14.pom.asc">javafx-base-13-ea+14.pom.asc</a>                      2019-09-03 13:17       475      
+<a href="javafx-base-13-ea+14.pom.asc.md5" title="javafx-base-13-ea+14.pom.asc.md5">javafx-base-13-ea+14.pom.asc.md5</a>                  2019-09-03 13:17        32      
+<a href="javafx-base-13-ea+14.pom.asc.sha1" title="javafx-base-13-ea+14.pom.asc.sha1">javafx-base-13-ea+14.pom.asc.sha1</a>                 2019-09-03 13:17        40      
+<a href="javafx-base-13-ea+14.pom.md5" title="javafx-base-13-ea+14.pom.md5">javafx-base-13-ea+14.pom.md5</a>                      2019-09-03 13:17        32      
+<a href="javafx-base-13-ea+14.pom.sha1" title="javafx-base-13-ea+14.pom.sha1">javafx-base-13-ea+14.pom.sha1</a>                     2019-09-03 13:17        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javafxports/openjdk-jfx.git 'refs/tags/*13*'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 346ms:
+eeb9ea1536886f52e27d6b380f722b92d78849a8	refs/tags/12+13
+dfa029062234eb67d43ba5b0f2283f6e1c906077	refs/tags/13+0
+5710570f3a421c453362eb228c5413c9b3c2e1a6	refs/tags/13+1
+b109617af2803ae575f0cedc9aed6b5f12951003	refs/tags/13+10
+f431cc45540a655bef28bf5f808a0026c106c245	refs/tags/13+11
+8b50fee40e8292a02ad9bc38d83f6016fd7e2197	refs/tags/13+12
+46474d964fc8376b69c49a2e4295defa1a812194	refs/tags/13+13
+4d761fef36644d007c595fdc21f3d36b9709a672	refs/tags/13+14
+52965a08aa8affeb98d223e20aa6752a0f2fc33e	refs/tags/13+2
+dce5fa4bc77745e0cfe494e791bc78f698bea3eb	refs/tags/13+3
+2821bd76155dec8683e5473c84cff5bed122ee55	refs/tags/13+4
+74ab85ef37506afcadf325ea9d6c24c0fb5daedb	refs/tags/13+5
+14fe9608f0342ddf610d8261c4c7aee26ce2f4c1	refs/tags/13+6
+854149a3f91f4cbb110aa8c715052abae7850809	refs/tags/13+7
+515e271d3ea9bfb0c73ea6770c17ffa4371e7eff	refs/tags/13+8
+bb11d64578d3ca8c3cbeb2f38ea621113289dda8	refs/tags/13+9
+8af9c3a5918137c6df5d010d6a0a095bd0c9de0a	refs/tags/13.0.1+0
+099899305ea95d498866847ebdb9d84b51182503	refs/tags/13.0.1+1
+5a0afb412b7075d0c347ed0145d0ee9cba4e392e	refs/tags/13.0.2+0
+a947f50525345a0ce6350a10384684e2b2b28609	refs/tags/13.0.2+1
+9c6b02628f7eeb1a762c0d9b1889a510d2961b2f	refs/tags/2.1-b13
+b4f1d8f4f83be0948ef4bd78fb5ff22e03364c15	refs/tags/2.2-b13
+00c39208a936e26ae355936323d68c108f8b8f72	refs/tags/8.0-b113
+b51a928c336ccd94ac959efd0de955ae8137d0e8	refs/tags/8.0-b130
+ebc7d0981f5a2c6cefe94b9967cb7be131d52aa3	refs/tags/8.0-b131
+f23531800781ee54a92d56ea7b41a70b135a5c52	refs/tags/8.0-b132
+110fdddadacff98701015b86b04bca866b0b37a6	refs/tags/8u20-b13
+2e793c06a8b536f169591303de38e6ae6e8f8c94	refs/tags/8u25-b13
+1c81a946b205f0d0c8c949f98ce1b6b00f499b1c	refs/tags/8u31-b13
+0b821a4f18c84c77839593a78cd32d57461de778	refs/tags/8u40-b13
+3e19d12fd6b76dff9babe7d52cd3914a3475ae74	refs/tags/8u45-b13
+fdb43a3b4bbbcb60ea8fca6d58f4b7d167fa7ab5	refs/tags/8u5-b13
+6f2d67feaa78ff8449e8261d18ec48980522deac	refs/tags/9-b13
+0b7b573a0f8d1dfd404124125690c9e652fe7df8	refs/tags/jdk-10+13
+261311e0735de774e1bc6b74a6127a14fbd676ea	refs/tags/jdk-11+13
+bedece68b7c98d6f159e6f395fa42a9257e86090	refs/tags/jdk-9+113
+51c5ad61e1560ebe8d5786cf8b6cde68a0879cba	refs/tags/jdk-9+130
+2f9eabbd415a2a3963a0644ead7cb7cde7c46be5	refs/tags/jdk-9+131
+ff63f4a9b553713967f6e5ab788c07f379214df0	refs/tags/jdk-9+132
+19c451d61e55521f4cfd00ce1ef88cfa04026380	refs/tags/jdk-9+133
+951b9237b0d7d31d827d537f96da928a361c66eb	refs/tags/jdk-9+134
+0af9a3137bf4ee6d1a0143c5720d8ac9d4903537	refs/tags/jdk-9+135
+665ff089672b2b8c301fc3aa7a6e9bafdfe2b216	refs/tags/jdk-9+136
+b12e76299edb58a481376d415ffe31975b52dc8b	refs/tags/jdk-9+137
+9a5ce512d04a641ffc0a00ae45f6e915da086a64	refs/tags/jdk-9+138
+6ed71590c2e54288f0b43787c64d8079092b80c4	refs/tags/jdk-9+139
+
+exec
+/usr/bin/bash -lc "find ~/.m2/repository/org/openjfx/javafx-base -maxdepth 2 -type f 2>/dev/null | sed -n '1,120p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/22.0.2/javafx-base-22.0.2.jar.sha1
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/22.0.2/javafx-base-22.0.2-linux.jar.sha1
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/22.0.2/javafx-base-22.0.2.jar
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/22.0.2/javafx-base-22.0.2-linux.jar
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/22.0.2/javafx-base-22.0.2.pom
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/22.0.2/_remote.repositories
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/22.0.2/javafx-base-22.0.2.pom.sha1
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/23.0.1/javafx-base-23.0.1-linux.jar.sha1
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/23.0.1/javafx-base-23.0.1.pom.sha1
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/23.0.1/javafx-base-23.0.1.jar.sha1
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/23.0.1/javafx-base-23.0.1.jar
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/23.0.1/javafx-base-23.0.1-linux.jar
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/23.0.1/javafx-base-23.0.1.pom
+/home/vjovanov/.m2/repository/org/openjfx/javafx-base/23.0.1/_remote.repositories
+
+exec
+/usr/bin/bash -lc "find metadata/org.openjfx/javafx-base -maxdepth 3 -type f -print -exec sed -n '1,160p' {} \\;" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+metadata/org.openjfx/javafx-base/index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "13-ea",
+    "tested-versions" : [
+      "13-ea"
+    ],
+    "allowed-packages" : [
+      "org.openjfx"
+    ]
+  },
+  {
+    "metadata-version" : "11.0.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+    "repository-url" : "https://github.com/javafxports/openjdk-jfx",
+    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+    "tested-versions" : [
+      "11.0.2",
+      "12-ea+10",
+      "12-ea+11",
+      "12-ea+12",
+      "12-ea+13",
+      "12-ea+14",
+      "12-ea+2",
+      "12-ea+3",
+      "12-ea+4",
+      "12-ea+5",
+      "12-ea+6",
+      "12-ea+7",
+      "12-ea+8",
+      "12-ea+9",
+      "12",
+      "12.0.1",
+      "12.0.2",
+      "13-ea+1",
+      "13-ea+10",
+      "13-ea+11",
+      "13-ea+12",
+      "13-ea+13",
+      "13-ea+2",
+      "13-ea+3",
+      "13-ea+4",
+      "13-ea+5",
+      "13-ea+6",
+      "13-ea+7",
+      "13-ea+8",
+      "13-ea+9",
+      "13"
+    ],
+    "allowed-packages" : [
+      "org.openjfx"
+    ]
+  }
+]
+metadata/org.openjfx/javafx-base/11.0.2/reachability-metadata.json
+{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/13-ea+14/javafx-base-13-ea+14.pom'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 188ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openjfx</groupId>
+  <artifactId>javafx-base</artifactId>
+  <version>13-ea+14</version>
+  <parent>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx</artifactId>
+    <version>13-ea+14</version>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <version>13-ea+14</version>
+      <classifier>${javafx.platform}</classifier>
+    </dependency>
+  </dependencies>
+</project>
+
+web search: 
+web search: "javafx-base" "13-ea" "sources.jar"
+web search: 
+web search: https://github.com/openjdk/jfx/tree/13%2B14/tests
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/openjdk/jfx.git 'refs/tags/*13-ea*'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/javafxports/openjdk-jfx.git 'refs/tags/*13-ea*'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+exec
+/usr/bin/bash -lc "curl -fsSIL 'https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/13-ea/javafx-base-13-ea-sources.jar' || true
+curl -fsSIL 'https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/13-ea/javafx-base-13-ea-javadoc.jar' || true" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 372ms:
+ succeeded in 377ms:
+ succeeded in 579ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 11:58:21 GMT
+content-type: text/html
+cf-ray: 9f35e5059b4a5da5-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/openjfx/javafx-base/13-ea/javafx-base-13-ea-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 28 Apr 2026 11:58:21 GMT
+content-type: text/html
+cf-ray: 9f35e507bd31343e-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/openjfx/javafx-base/13-ea/javafx-base-13-ea-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: OpenJFX repository GitHub openjdk/jfx source code
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/openjfx/
+web search: 
+web search: https://repo1.maven.org/maven2/org/openjfx/javafx-base/
+codex
+There is no literal `13-ea` directory on Maven Central and no `13-ea` tag in either the official OpenJDK `jfx` repo or the older `javafxports/openjdk-jfx` mirror. I’m going to record the canonical repository root, set the exact-version source/test/docs fields to `N/A`, and leave `language` absent because this is not Kotlin- or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/metadata/org.openjfx/javafx-base/index.json
+diff --git a/metadata/org.openjfx/javafx-base/index.json b/metadata/org.openjfx/javafx-base/index.json
+index 0921438830098e50f34062aae4465e17c43776be..c11a93035bbbcf96f08b8d0bef6906f3db3a4e80
+--- a/metadata/org.openjfx/javafx-base/index.json
++++ b/metadata/org.openjfx/javafx-base/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "13-ea",
++    "source-code-url" : "N/A",
++    "repository-url" : "https://github.com/openjdk/jfx",
++    "test-code-url" : "N/A",
++    "documentation-url" : "N/A",
++    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+     "tested-versions" : [
+       "13-ea"
+     ],
+
+diff --git a/metadata/org.openjfx/javafx-base/index.json b/metadata/org.openjfx/javafx-base/index.json
+index 0921438830098e50f34062aae4465e17c43776be..c11a93035bbbcf96f08b8d0bef6906f3db3a4e80
+--- a/metadata/org.openjfx/javafx-base/index.json
++++ b/metadata/org.openjfx/javafx-base/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "13-ea",
++    "source-code-url" : "N/A",
++    "repository-url" : "https://github.com/openjdk/jfx",
++    "test-code-url" : "N/A",
++    "documentation-url" : "N/A",
++    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+     "tested-versions" : [
+       "13-ea"
+     ],
+
+exec
+/usr/bin/bash -lc "sed -n '1,34p' metadata/org.openjfx/javafx-base/index.json" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "13-ea",
+    "source-code-url" : "N/A",
+    "repository-url" : "https://github.com/openjdk/jfx",
+    "test-code-url" : "N/A",
+    "documentation-url" : "N/A",
+    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+    "tested-versions" : [
+      "13-ea"
+    ],
+    "allowed-packages" : [
+      "org.openjfx"
+    ]
+  },
+  {
+    "metadata-version" : "11.0.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+    "repository-url" : "https://github.com/javafxports/openjdk-jfx",
+    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-javadoc.jar",
+    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+    "tested-versions" : [
+      "11.0.2",
+      "12-ea+10",
+      "12-ea+11",
+      "12-ea+12",
+      "12-ea+13",
+      "12-ea+14",
+      "12-ea+2",
+      "12-ea+3",
+      "12-ea+4",
+      "12-ea+5",
+
+exec
+/usr/bin/bash -lc 'python3 -m json.tool metadata/org.openjfx/javafx-base/index.json >/dev/null' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.openjfx:javafx-base:13-ea --stacktrace' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+diff --git a/metadata/org.openjfx/javafx-base/index.json b/metadata/org.openjfx/javafx-base/index.json
+index 0921438830098e50f34062aae4465e17c43776be..c11a93035bbbcf96f08b8d0bef6906f3db3a4e80
+--- a/metadata/org.openjfx/javafx-base/index.json
++++ b/metadata/org.openjfx/javafx-base/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "13-ea",
++    "source-code-url" : "N/A",
++    "repository-url" : "https://github.com/openjdk/jfx",
++    "test-code-url" : "N/A",
++    "documentation-url" : "N/A",
++    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+     "tested-versions" : [
+       "13-ea"
+     ],
+
+ exited 1 in 1705ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/build/reports/problems/problems-report.html
+Metadata files check failed for org.openjfx:javafx-base:13-ea: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/metadata/org.openjfx/javafx-base/13-ea/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.openjfx:javafx-base:13-ea: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/metadata/org.openjfx/javafx-base/13-ea/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.openjfx:javafx-base:13-ea: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/metadata/org.openjfx/javafx-base/13-ea/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+BUILD FAILED in 1s
+
+codex
+The JSON parses cleanly after the patch. I’ve started the targeted metadata validation for `org.openjfx:javafx-base:13-ea` and am waiting on Gradle.
+diff --git a/metadata/org.openjfx/javafx-base/index.json b/metadata/org.openjfx/javafx-base/index.json
+index 0921438830098e50f34062aae4465e17c43776be..c11a93035bbbcf96f08b8d0bef6906f3db3a4e80
+--- a/metadata/org.openjfx/javafx-base/index.json
++++ b/metadata/org.openjfx/javafx-base/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "13-ea",
++    "source-code-url" : "N/A",
++    "repository-url" : "https://github.com/openjdk/jfx",
++    "test-code-url" : "N/A",
++    "documentation-url" : "N/A",
++    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+     "tested-versions" : [
+       "13-ea"
+     ],
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.openjfx/javafx-base/index.json' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+diff --git i/metadata/org.openjfx/javafx-base/index.json w/metadata/org.openjfx/javafx-base/index.json
+index 0921438830..c11a93035b 100644
+--- i/metadata/org.openjfx/javafx-base/index.json
++++ w/metadata/org.openjfx/javafx-base/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "13-ea",
++    "source-code-url" : "N/A",
++    "repository-url" : "https://github.com/openjdk/jfx",
++    "test-code-url" : "N/A",
++    "documentation-url" : "N/A",
++    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+     "tested-versions" : [
+       "13-ea"
+     ],
+
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.openjfx/javafx-base/index.json' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509
+ succeeded in 0ms:
+diff --git a/metadata/org.openjfx/javafx-base/index.json b/metadata/org.openjfx/javafx-base/index.json
+index 0921438830098e50f34062aae4465e17c43776be..c11a93035bbbcf96f08b8d0bef6906f3db3a4e80
+--- a/metadata/org.openjfx/javafx-base/index.json
++++ b/metadata/org.openjfx/javafx-base/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "13-ea",
++    "source-code-url" : "N/A",
++    "repository-url" : "https://github.com/openjdk/jfx",
++    "test-code-url" : "N/A",
++    "documentation-url" : "N/A",
++    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+     "tested-versions" : [
+       "13-ea"
+     ],
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/openjfx/javafx-base/ javafx-base 13-ea+14 sources javadoc
+codex
+Updated [index.json](/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/metadata/org.openjfx/javafx-base/index.json:4) for `metadata-version` `13-ea`.
+
+I set:
+- `source-code-url`: `N/A`
+- `repository-url`: `https://github.com/openjdk/jfx`
+- `test-code-url`: `N/A`
+- `documentation-url`: `N/A`
+- `description`: two sentences
+- `language`: left absent
+
+Maven Central lists `13-ea+N` artifacts but no literal `13-ea`, so the exact-version source/test/docs fields were set to `N/A`; the canonical repository root is OpenJDK’s `jfx` repo. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/?utm_source=openai))
+
+Verification: JSON parsing and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.openjfx:javafx-base:13-ea --stacktrace` failed because `metadata/org.openjfx/javafx-base/13-ea/reachability-metadata.json` is missing, which is outside the requested `index.json` edit.
+diff --git a/metadata/org.openjfx/javafx-base/index.json b/metadata/org.openjfx/javafx-base/index.json
+index 0921438830098e50f34062aae4465e17c43776be..c11a93035bbbcf96f08b8d0bef6906f3db3a4e80
+--- a/metadata/org.openjfx/javafx-base/index.json
++++ b/metadata/org.openjfx/javafx-base/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "13-ea",
++    "source-code-url" : "N/A",
++    "repository-url" : "https://github.com/openjdk/jfx",
++    "test-code-url" : "N/A",
++    "documentation-url" : "N/A",
++    "description" : "JavaFX Base defines the core APIs that underpin the JavaFX toolkit, including properties, bindings, collections, and events. It provides the foundational observable and event infrastructure that higher-level JavaFX modules build on.",
+     "tested-versions" : [
+       "13-ea"
+     ],
+
+2026-04-28T11:59:08.637856Z ERROR codex_core::session: failed to record rollout items: thread 019dd3f3-9622-7752-9ff5-fef6eeee7057 not found
+tokens used
+89,178
+Updated [index.json](/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/metadata/org.openjfx/javafx-base/index.json:4) for `metadata-version` `13-ea`.
+
+I set:
+- `source-code-url`: `N/A`
+- `repository-url`: `https://github.com/openjdk/jfx`
+- `test-code-url`: `N/A`
+- `documentation-url`: `N/A`
+- `description`: two sentences
+- `language`: left absent
+
+Maven Central lists `13-ea+N` artifacts but no literal `13-ea`, so the exact-version source/test/docs fields were set to `N/A`; the canonical repository root is OpenJDK’s `jfx` repo. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/openjfx/javafx-base/?utm_source=openai))
+
+Verification: JSON parsing and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.openjfx:javafx-base:13-ea --stacktrace` failed because `metadata/org.openjfx/javafx-base/13-ea/reachability-metadata.json` is missing, which is outside the requested `index.json` edit.
+Ran agent for org.openjfx:javafx-base:13-ea (exit 0). Log: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/build/agent-url-discovery-logs/org.openjfx-javafx-base-13-ea.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/2049-4195c509/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 40s
+9 actionable tasks: 1 executed, 8 up-to-date
