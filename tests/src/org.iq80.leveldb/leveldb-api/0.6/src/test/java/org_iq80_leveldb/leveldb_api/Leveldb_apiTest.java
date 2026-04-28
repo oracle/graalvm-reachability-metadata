@@ -209,6 +209,22 @@ public class Leveldb_apiTest {
     }
 
     @Test
+    void dbIterableProvidesEntriesForEnhancedForLoops() throws Exception {
+        try (DB db = new InMemoryDB(BYTEWISE_COMPARATOR)) {
+            db.put(bytes("one"), bytes("first"));
+            db.put(bytes("two"), bytes("second"));
+            db.put(bytes("three"), bytes("third"));
+
+            List<String> entries = new ArrayList<>();
+            for (Map.Entry<byte[], byte[]> entry : db) {
+                entries.add(string(entry.getKey()) + "=" + string(entry.getValue()));
+            }
+
+            assertThat(entries).containsExactly("one=first", "three=third", "two=second");
+        }
+    }
+
+    @Test
     void dbExceptionConstructorsPreserveMessagesAndCauses() {
         IllegalStateException cause = new IllegalStateException("disk full");
 
@@ -244,6 +260,10 @@ public class Leveldb_apiTest {
 
     private static byte[] bytes(String value) {
         return value.getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static String string(byte[] value) {
+        return new String(value, StandardCharsets.UTF_8);
     }
 
     private static final class BytewiseComparator implements DBComparator {
