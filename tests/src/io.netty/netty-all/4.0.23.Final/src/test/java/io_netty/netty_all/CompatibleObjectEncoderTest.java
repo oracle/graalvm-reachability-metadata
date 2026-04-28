@@ -22,7 +22,7 @@ public class CompatibleObjectEncoderTest {
         ByteBuf encoded = null;
         try {
             Assertions.assertTrue(channel.writeOutbound("netty-compatible-serialization"));
-            encoded = channel.readOutbound();
+            encoded = (ByteBuf) channel.readOutbound();
             Assertions.assertNotNull(encoded);
 
             try (ObjectInputStream input = new ObjectInputStream(new ByteBufInputStream(encoded))) {
