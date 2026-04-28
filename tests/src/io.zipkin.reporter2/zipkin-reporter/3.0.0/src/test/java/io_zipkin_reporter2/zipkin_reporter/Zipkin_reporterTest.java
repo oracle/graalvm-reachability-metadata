@@ -7,16 +7,16 @@
 package io_zipkin_reporter2.zipkin_reporter;
 
 import org.junit.jupiter.api.Test;
-import zipkin2.Call;
-import zipkin2.CheckResult;
 import zipkin2.Span;
-import zipkin2.codec.BytesEncoder;
-import zipkin2.codec.Encoding;
 import zipkin2.codec.SpanBytesDecoder;
 import zipkin2.codec.SpanBytesEncoder;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.AwaitableCallback;
+import zipkin2.reporter.BytesEncoder;
 import zipkin2.reporter.BytesMessageEncoder;
+import zipkin2.reporter.Call;
+import zipkin2.reporter.CheckResult;
+import zipkin2.reporter.Encoding;
 import zipkin2.reporter.InMemoryReporterMetrics;
 import zipkin2.reporter.Sender;
 
@@ -343,14 +343,6 @@ public class Zipkin_reporterTest {
             return message.jsonBytes();
         }
 
-        @Override
-        public byte[] encodeList(List<JsonMessage> messages) {
-            List<byte[]> encodedMessages = new ArrayList<>(messages.size());
-            for (JsonMessage message : messages) {
-                encodedMessages.add(encode(message));
-            }
-            return BytesMessageEncoder.JSON.encode(encodedMessages);
-        }
     }
 
     private enum ProtoJsonMessageEncoder implements BytesEncoder<JsonMessage> {
@@ -371,10 +363,6 @@ public class Zipkin_reporterTest {
             return JsonMessageEncoder.INSTANCE.encode(message);
         }
 
-        @Override
-        public byte[] encodeList(List<JsonMessage> messages) {
-            return JsonMessageEncoder.INSTANCE.encodeList(messages);
-        }
     }
 
     private static final class CapturingSender extends Sender {
