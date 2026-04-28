@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
+import org.sonatype.aether.ConfigurationProperties;
 import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.CollectResult;
@@ -430,6 +431,31 @@ public class Aether_apiTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new VersionRangeResult(null))
                 .withMessageContaining("version range request has not been specified");
+    }
+
+    @Test
+    void configurationPropertiesReadTypedValuesAndFallbackToDefaults() {
+        Map<String, Object> properties = Map.of(
+                ConfigurationProperties.USER_AGENT, "native-aether-tests",
+                ConfigurationProperties.CONNECT_TIMEOUT, 2500,
+                ConfigurationProperties.REQUEST_TIMEOUT, "5000",
+                ConfigurationProperties.INTERACTIVE, "false",
+                "feature.enabled", Boolean.TRUE,
+                "bad.timeout", "not-a-number",
+                "unsupported.boolean", 7,
+                "unsupported.string", 42);
+
+        assertThat(ConfigurationProperties.get(properties, ConfigurationProperties.USER_AGENT, "fallback-agent"))
+                .isEqualTo("native-aether-tests");
+        assertThat(ConfigurationProperties.get(properties, "unsupported.string", "fallback-agent"))
+                .isEqualTo("fallback-agent");
+        assertThat(ConfigurationProperties.get(properties, ConfigurationProperties.CONNECT_TIMEOUT, -1)).isEqualTo(2500);
+        assertThat(ConfigurationProperties.get(properties, ConfigurationProperties.REQUEST_TIMEOUT, -1)).isEqualTo(5000);
+        assertThat(ConfigurationProperties.get(properties, "bad.timeout", 1200)).isEqualTo(1200);
+        assertThat(ConfigurationProperties.get(properties, ConfigurationProperties.INTERACTIVE, true)).isFalse();
+        assertThat(ConfigurationProperties.get(properties, "feature.enabled", false)).isTrue();
+        assertThat(ConfigurationProperties.get(properties, "unsupported.boolean", true)).isTrue();
+        assertThat(ConfigurationProperties.get(properties, "missing.boolean", false)).isFalse();
     }
 
     @Test
