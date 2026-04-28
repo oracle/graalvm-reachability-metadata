@@ -23,6 +23,7 @@ import org.jline.console.impl.JlineCommandRegistry;
 import org.jline.console.impl.SystemRegistryImpl;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
+import org.jline.reader.LineReader.SuggestionType;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.completer.NullCompleter;
@@ -31,6 +32,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.impl.DumbTerminal;
 import org.jline.utils.AttributedString;
 import org.jline.widget.AutopairWidgets;
+import org.jline.widget.AutosuggestionWidgets;
 import org.jline.widget.Widgets;
 import org.junit.Test;
 
@@ -245,6 +247,32 @@ public class JLineConsoleTests {
         assertEquals("(beta)", reader.readLine());
         assertEquals("\"quoted\"", reader.readLine());
         assertEquals("{block}", reader.readLine());
+    }
+
+    @Test
+    public void autosuggestionWidgetsAcceptTailTipsIntoTheLineBuffer() throws IOException {
+        Terminal terminal = newTerminal();
+        LineReader reader = LineReaderBuilder.builder()
+                .terminal(terminal)
+                .parser(new DefaultParser())
+                .build();
+        AutosuggestionWidgets widgets = new AutosuggestionWidgets(reader);
+
+        assertEquals(SuggestionType.NONE, reader.getAutosuggestion());
+        widgets.enable();
+        assertEquals(SuggestionType.HISTORY, reader.getAutosuggestion());
+
+        widgets.putString("git");
+        widgets.setTailTip(" status");
+        assertTrue(widgets.autosuggestForwardChar());
+        assertEquals("git status", widgets.buffer().toString());
+
+        widgets.setTailTip(" --short");
+        assertTrue(widgets.autosuggestEndOfLine());
+        assertEquals("git status --short", widgets.buffer().toString());
+
+        widgets.disable();
+        assertEquals(SuggestionType.NONE, reader.getAutosuggestion());
     }
 
     private static Terminal newTerminal() throws IOException {
