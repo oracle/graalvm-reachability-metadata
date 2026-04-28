@@ -97,6 +97,35 @@ public class Metrics_jmxTest {
     }
 
     @Test
+    void reporterStopUnregistersMBeansAndRestartPublishesCurrentMetrics() throws Exception {
+        MetricRegistry registry = new MetricRegistry();
+        MBeanServer server = MBeanServerFactory.newMBeanServer();
+        String domain = uniqueDomain("lifecycle");
+        ObjectName initialCounterName = metricName(domain, "counters", "initial.requests");
+        ObjectName restartedCounterName = metricName(domain, "counters", "restarted.requests");
+
+        try (JmxReporter reporter = JmxReporter.forRegistry(registry)
+                .registerWith(server)
+                .inDomain(domain)
+                .build()) {
+            registry.counter("initial.requests");
+
+            reporter.start();
+            assertThat(server.isRegistered(initialCounterName)).isTrue();
+
+            reporter.stop();
+            assertThat(server.isRegistered(initialCounterName)).isFalse();
+
+            registry.remove("initial.requests");
+            registry.counter("restarted.requests");
+
+            reporter.start();
+            assertThat(server.isRegistered(initialCounterName)).isFalse();
+            assertThat(server.isRegistered(restartedCounterName)).isTrue();
+        }
+    }
+
+    @Test
     void reporterHonorsMetricFiltersAndCustomObjectNameFactories() throws Exception {
         MetricRegistry registry = new MetricRegistry();
         registry.counter("visible.requests").inc(4);
