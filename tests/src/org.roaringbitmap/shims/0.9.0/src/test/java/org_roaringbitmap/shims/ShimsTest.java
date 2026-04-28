@@ -101,4 +101,24 @@ public class ShimsTest {
         assertThatThrownBy(() -> ArraysShim.mismatch(values, 0, 1, values, 0, values.length + 1))
                 .isInstanceOf(ArrayIndexOutOfBoundsException.class);
     }
+
+    @Test
+    void charRangeEqualsRejectsNullArrays() {
+        char[] values = {'r', 'o', 'a', 'r'};
+
+        assertThatThrownBy(() -> ArraysShim.equals(null, 0, 1, values, 0, 1))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> ArraysShim.equals(values, 0, 1, null, 0, 1))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void byteRangeMismatchRejectsNullArrays() {
+        byte[] values = {1, 2, 3, 4};
+
+        assertThatThrownBy(() -> ArraysShim.mismatch(null, 0, 1, values, 0, 1))
+                .isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> ArraysShim.mismatch(values, 0, 1, null, 0, 1))
+                .isInstanceOf(NullPointerException.class);
+    }
 }
