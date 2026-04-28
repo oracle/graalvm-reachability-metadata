@@ -7,11 +7,10 @@
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.fasterxml.jackson.jr.ob.JSON;
-import com.fasterxml.jackson.jr.ob.api.MapBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,37 +23,31 @@ public class MapBuilderDefaultDynamicAccessTest {
     }
 
     @Test
-    void readsEmptyObjectsIntoConfiguredMapImplementation() throws Exception {
-        Map<String, Object> counts = jsonWithCountsMaps().mapFrom("{}");
+    void readsEmptyTypedMapSubclasses() throws Exception {
+        CountsMap counts = JSON.std.beanFrom(CountsMap.class, "{}");
 
-        assertThat(counts).isInstanceOf(CountsMap.class).isEmpty();
+        assertThat(counts).isEmpty();
         assertThat(CountsMap.getConstructorCalls()).isEqualTo(1);
     }
 
     @Test
-    void readsSingletonObjectsIntoConfiguredMapImplementation() throws Exception {
-        Map<String, Object> counts = jsonWithCountsMaps().mapFrom("{\"only\":99}");
+    void readsSingletonTypedMapSubclasses() throws Exception {
+        CountsMap counts = JSON.std.beanFrom(CountsMap.class, "{\"only\":99}");
 
-        assertThat(counts).isInstanceOf(CountsMap.class);
         assertThat(counts).containsEntry("only", 99);
         assertThat(CountsMap.getConstructorCalls()).isEqualTo(1);
     }
 
     @Test
-    void readsNestedObjectsIntoConfiguredMapImplementationForEachObject() throws Exception {
-        Map<String, Object> counts = jsonWithCountsMaps().mapFrom("{\"outer\":{\"alpha\":1,\"beta\":2},\"count\":3}");
-        @SuppressWarnings("unchecked")
-        Map<String, Object> outer = (Map<String, Object>) counts.get("outer");
+    void readsTypedMapSubclassesInsideCollections() throws Exception {
+        List<CountsMap> counts = JSON.std.listOfFrom(CountsMap.class,
+                "[{\"alpha\":1},{\"beta\":2}]");
 
-        assertThat(counts).isInstanceOf(CountsMap.class);
-        assertThat(counts).containsEntry("count", 3);
-        assertThat(outer).isInstanceOf(CountsMap.class);
-        assertThat(outer).containsEntry("alpha", 1).containsEntry("beta", 2);
+        assertThat(counts).hasSize(2);
+        assertThat(counts).allSatisfy(count -> assertThat(count).isInstanceOf(CountsMap.class));
+        assertThat(counts.get(0)).containsEntry("alpha", 1);
+        assertThat(counts.get(1)).containsEntry("beta", 2);
         assertThat(CountsMap.getConstructorCalls()).isEqualTo(2);
-    }
-
-    private static JSON jsonWithCountsMaps() {
-        return JSON.std.with(MapBuilder.defaultImpl().newBuilder(CountsMap.class));
     }
 
     public static final class CountsMap extends LinkedHashMap<String, Object> {
