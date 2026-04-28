@@ -14,8 +14,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReflectionUtilsTest {
     @Test
     void loadsClassesAndCreatesInstances() throws ClassNotFoundException {
-        assertThat(ReflectionUtils.getClassByName(String.class.getName())).isSameAs(String.class);
-        assertThat(ReflectionUtils.newInstance(StringBuilder.class).toString()).isEmpty();
-        assertThat(ReflectionUtils.newInstance(String.class, "commons-crypto")).isEqualTo("commons-crypto");
+        assertThat(ReflectionUtils.getClassByName(TestConstructible.class.getName())).isSameAs(TestConstructible.class);
+        assertThat(ReflectionUtils.newInstance(TestConstructible.class).value()).isEqualTo("default");
+        assertThat(ReflectionUtils.newInstance(TestConstructible.class, "commons-crypto").value())
+                .isEqualTo("commons-crypto");
+    }
+
+    public static final class TestConstructible {
+        private final String value;
+
+        public TestConstructible() {
+            this("default");
+        }
+
+        public TestConstructible(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return this.value;
+        }
     }
 }
