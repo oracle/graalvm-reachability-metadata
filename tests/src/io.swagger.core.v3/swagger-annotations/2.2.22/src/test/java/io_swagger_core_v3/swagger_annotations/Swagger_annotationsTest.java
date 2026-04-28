@@ -164,7 +164,7 @@ public class Swagger_annotationsTest {
     void readsOperationRequestResponseParameterCallbackAndMethodAnnotations() throws NoSuchMethodException {
         Method method = AnnotatedApi.class.getDeclaredMethod("replacePet", String.class, Pet.class);
 
-        assertThat(method.isAnnotationPresent(OpenAPI31.class)).isTrue();
+        assertThat(annotation(method, OpenAPI31.class)).isNotNull();
         Operation operation = annotation(method, Operation.class);
         assertThat(operation.method()).isEqualTo("PUT");
         assertThat(operation.tags()).containsExactly("pets", "write");
@@ -357,9 +357,9 @@ public class Swagger_annotationsTest {
     }
 
     private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
-        A annotation = element.getAnnotation(annotationType);
-        assertThat(annotation).as(annotationType.getSimpleName()).isNotNull();
-        return annotation;
+        A[] annotations = element.getAnnotationsByType(annotationType);
+        assertThat(annotations).as(annotationType.getSimpleName()).hasSize(1);
+        return annotations[0];
     }
 
     private static <A extends Annotation> A firstAnnotation(Annotation[] annotations, Class<A> annotationType) {
