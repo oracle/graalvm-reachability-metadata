@@ -6,45 +6,65 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import com.fasterxml.jackson.jr.ob.JSON;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyWriter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyWriterDynamicAccessTest {
-    private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
-
     @Test
-    void serializesFieldBackedPropertiesFromNonPublicBeans() throws Exception {
-        String json = JSON_WITH_FORCE_ACCESS.asString(new NonPublicFieldBackedWriterBean());
+    void getsFieldBackedPropertyValues() throws Exception {
+        BeanPropertyWriter writer = new BeanPropertyWriter(-1, "id",
+                publicField(FieldBackedWriterBean.class, "id"), null);
 
-        assertThat(json).isEqualTo("{\"id\":3}");
+        Object value = writer.getValueFor(new FieldBackedWriterBean());
+
+        assertThat(value).isEqualTo(3);
     }
 
     @Test
-    void serializesGetterBackedPropertiesFromNonPublicBeans() throws Exception {
-        String json = JSON_WITH_FORCE_ACCESS.asString(new NonPublicGetterBackedWriterBean("Ada"));
+    void invokesGetterBackedPropertyValues() throws Exception {
+        BeanPropertyWriter writer = new BeanPropertyWriter(-1, "name", null,
+                publicMethod(GetterBackedWriterBean.class, "getName"));
 
-        assertThat(json).isEqualTo("{\"name\":\"Ada\"}");
+        Object value = writer.getValueFor(new GetterBackedWriterBean("Ada"));
+
+        assertThat(value).isEqualTo("Ada");
     }
 
-    private static final class NonPublicFieldBackedWriterBean {
+    private static Field publicField(Class<?> declaringType, String fieldName) {
+        try {
+            return declaringType.getField(fieldName);
+        } catch (NoSuchFieldException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    private static Method publicMethod(Class<?> declaringType, String methodName,
+            Class<?>... parameterTypes) {
+        try {
+            return declaringType.getMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    public static final class FieldBackedWriterBean {
         public int id = 3;
     }
 
-    private static final class NonPublicGetterBackedWriterBean {
-        private String name;
+    public static final class GetterBackedWriterBean {
+        private final String name;
 
-        private NonPublicGetterBackedWriterBean(String name) {
+        public GetterBackedWriterBean(String name) {
             this.name = name;
         }
 
         public String getName() {
             return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
         }
     }
 }
