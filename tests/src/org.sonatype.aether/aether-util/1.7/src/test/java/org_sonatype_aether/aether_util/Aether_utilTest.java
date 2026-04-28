@@ -23,10 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.sonatype.aether.RepositoryException;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.artifact.ArtifactType;
 import org.sonatype.aether.collection.DependencyCollectionContext;
+import org.sonatype.aether.collection.DependencyGraphTransformationContext;
+import org.sonatype.aether.collection.DependencyGraphTransformer;
 import org.sonatype.aether.collection.DependencySelector;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.graph.DependencyFilter;
@@ -64,6 +67,11 @@ import org.sonatype.aether.util.graph.TreeDependencyVisitor;
 import org.sonatype.aether.util.graph.selector.ExclusionDependencySelector;
 import org.sonatype.aether.util.graph.selector.OptionalDependencySelector;
 import org.sonatype.aether.util.graph.selector.ScopeDependencySelector;
+import org.sonatype.aether.util.graph.transformer.ChainedDependencyGraphTransformer;
+import org.sonatype.aether.util.graph.transformer.ConflictMarker;
+import org.sonatype.aether.util.graph.transformer.JavaEffectiveScopeCalculator;
+import org.sonatype.aether.util.graph.transformer.NearestVersionConflictResolver;
+import org.sonatype.aether.util.graph.transformer.TransformationContextKeys;
 import org.sonatype.aether.util.layout.MavenDefaultLayout;
 import org.sonatype.aether.util.listener.DefaultRepositoryEvent;
 import org.sonatype.aether.util.listener.DefaultTransferEvent;
@@ -240,6 +248,40 @@ public class Aether_utilTest {
         root.setScope(JavaScopes.RUNTIME);
         assertThat(root.getDependency().getArtifact().getArtifactId()).isEqualTo("replacement");
         assertThat(root.getDependency().getScope()).isEqualTo(JavaScopes.RUNTIME);
+    }
+
+    @Test
+    void dependencyGraphTransformersMarkConflictsCalculateScopesAndResolveNearestVersions()
+            throws InvalidVersionSpecificationException, RepositoryException {
+        DefaultDependencyNode root = resolvedNode("org.example:app:jar:1.0", JavaScopes.COMPILE);
+        DefaultDependencyNode directLibrary = resolvedNode("org.example:direct:jar:1.0", JavaScopes.COMPILE);
+        DefaultDependencyNode runtimeLibrary = resolvedNode("org.example:runtime:jar:1.0", JavaScopes.RUNTIME);
+        DefaultDependencyNode nearestShared = resolvedNode("org.example:shared:jar:1.0", JavaScopes.RUNTIME);
+        DefaultDependencyNode fartherShared = resolvedNode("org.example:shared:jar:2.0", JavaScopes.COMPILE);
+        DefaultDependencyNode transitiveCompile = resolvedNode("org.example:transitive:jar:1.0", JavaScopes.COMPILE);
+        root.getChildren().add(directLibrary);
+        root.getChildren().add(runtimeLibrary);
+        directLibrary.getChildren().add(nearestShared);
+        runtimeLibrary.getChildren().add(fartherShared);
+        runtimeLibrary.getChildren().add(transitiveCompile);
+        TestTransformationContext context = new TestTransformationContext();
+        DependencyGraphTransformer transformer = new ChainedDependencyGraphTransformer(
+                new ConflictMarker(), new JavaEffectiveScopeCalculator(), new NearestVersionConflictResolver());
+
+        DependencyNode transformed = transformer.transformGraph(root, context);
+        Map<Object, Object> conflictIds = new HashMap<>(
+                (Map<?, ?>) context.get(TransformationContextKeys.CONFLICT_IDS));
+
+        assertThat(transformed).isSameAs(root);
+        assertThat(root.getChildren()).containsExactly(directLibrary, runtimeLibrary);
+        assertThat(directLibrary.getChildren()).containsExactly(nearestShared);
+        assertThat(runtimeLibrary.getChildren()).containsExactly(transitiveCompile);
+        assertThat(nearestShared.getDependency().getArtifact().getVersion()).isEqualTo("1.0");
+        assertThat(transitiveCompile.getDependency().getScope()).isEqualTo(JavaScopes.RUNTIME);
+        assertThat(conflictIds)
+                .containsKeys(root, directLibrary, runtimeLibrary, nearestShared, fartherShared, transitiveCompile);
+        assertThat(conflictIds.get(nearestShared)).isEqualTo(conflictIds.get(fartherShared));
+        assertThat(context.get(TransformationContextKeys.SORTED_CONFLICT_IDS)).isNotNull();
     }
 
     @Test
@@ -456,6 +498,16 @@ public class Aether_utilTest {
                 new DefaultArtifact(groupId + ':' + artifactId + ':' + extension + ':' + version), scope));
     }
 
+    private static DefaultDependencyNode resolvedNode(String coordinates, String scope)
+            throws InvalidVersionSpecificationException {
+        Artifact artifact = new DefaultArtifact(coordinates);
+        DefaultDependencyNode node = new DefaultDependencyNode(new Dependency(artifact, scope));
+        GenericVersionScheme versionScheme = new GenericVersionScheme();
+        node.setVersion(versionScheme.parseVersion(artifact.getVersion()));
+        node.setVersionConstraint(versionScheme.parseVersionConstraint(artifact.getVersion()));
+        return node;
+    }
+
     private static Dependency dependency(
             String groupId, String artifactId, String extension, String version, String scope, boolean optional) {
         Artifact artifact = new DefaultArtifact(groupId + ':' + artifactId + ':' + extension + ':' + version);
@@ -490,6 +542,25 @@ public class Aether_utilTest {
         @Override
         public List<String> findVersions(Artifact artifact) {
             return versions;
+        }
+    }
+
+    private static final class TestTransformationContext implements DependencyGraphTransformationContext {
+        private final Map<Object, Object> values = new HashMap<>();
+
+        @Override
+        public RepositorySystemSession getSession() {
+            return new DefaultRepositorySystemSession();
+        }
+
+        @Override
+        public Object get(Object key) {
+            return values.get(key);
+        }
+
+        @Override
+        public Object put(Object key, Object value) {
+            return values.put(key, value);
         }
     }
 
