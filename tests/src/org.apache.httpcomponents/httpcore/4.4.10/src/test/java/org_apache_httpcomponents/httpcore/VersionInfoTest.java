@@ -21,7 +21,7 @@ class VersionInfoTest {
         assertThat(versionInfo).isNotNull();
         assertThat(versionInfo.getPackage()).isEqualTo("org.apache.http");
         assertThat(versionInfo.getModule()).isEqualTo("httpcore");
-        assertThat(versionInfo.getRelease()).isEqualTo("4.4.9");
+        assertThat(versionInfo.getRelease()).isEqualTo("4.4.10");
         assertThat(versionInfo.getTimestamp()).isEqualTo(VersionInfo.UNAVAILABLE);
         assertThat(versionInfo.getClassloader()).isEqualTo(classLoader.toString());
     }
@@ -31,6 +31,6 @@ class VersionInfoTest {
         String userAgent = VersionInfo.getUserAgent("httpcore-test", "org.apache.http", VersionInfo.class);
 
         assertThat(userAgent)
-                .isEqualTo("httpcore-test/4.4.9 (Java/" + System.getProperty("java.version") + ")");
+                .isEqualTo("httpcore-test/4.4.10 (Java/" + System.getProperty("java.version") + ")");
     }
 }
