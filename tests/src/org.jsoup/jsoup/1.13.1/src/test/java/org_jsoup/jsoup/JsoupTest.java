@@ -229,7 +229,7 @@ public class JsoupTest {
 
     @Test
     public void controlsOutputEscapingCharsetAndSyntax() {
-        Document document = Jsoup.parseBodyFragment("<p title='snowman ☃ & copy ©'>5 < 7 & π</p><br>");
+        Document document = Jsoup.parseBodyFragment("<p title='snowman \u2603 & copy \u00a9'>5 < 7 & \u03c0</p><br>");
         Document.OutputSettings outputSettings = new Document.OutputSettings()
                 .charset("US-ASCII")
                 .escapeMode(Entities.EscapeMode.xhtml)
@@ -237,7 +237,7 @@ public class JsoupTest {
                 .prettyPrint(false);
         document.outputSettings(outputSettings);
 
-        String escapedText = Entities.escape("© π ☃ & <", document.outputSettings());
+        String escapedText = Entities.escape("\u00a9 \u03c0 \u2603 & <", document.outputSettings());
         Document.OutputSettings clonedSettings = document.outputSettings().clone()
                 .charset("UTF-8")
                 .escapeMode(Entities.EscapeMode.extended);
