@@ -166,6 +166,17 @@ public class Mysema_commons_langTest {
     }
 
     @Test
+    void staticAsListWrapsCloseFailuresFromCloseableIterators() {
+        IOException failure = new IOException("cannot close iterator");
+        FailingCloseCloseableIterator iterator = new FailingCloseCloseableIterator(failure, "one", "two");
+
+        assertThatThrownBy(() -> IteratorAdapter.asList(iterator))
+                .isInstanceOf(RuntimeException.class)
+                .hasCause(failure);
+        assertThat(iterator.closeCount).isEqualTo(1);
+    }
+
+    @Test
     void uriResolverRecognizesAbsoluteUrlsAndRejectsRelativeOrInvalidSchemes() {
         assertThat(URIResolver.isAbsoluteURL("http://example.com/path")).isTrue();
         assertThat(URIResolver.isAbsoluteURL("git+ssh://example.com/repository.git")).isTrue();
@@ -275,6 +286,33 @@ public class Mysema_commons_langTest {
         @Override
         public void close() {
             closeCount++;
+        }
+    }
+
+    private static final class FailingCloseCloseableIterator implements Iterator<String>, Closeable {
+        private final Iterator<String> delegate;
+        private final IOException failure;
+        private int closeCount;
+
+        private FailingCloseCloseableIterator(IOException failure, String... values) {
+            this.delegate = Arrays.asList(values).iterator();
+            this.failure = failure;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return delegate.hasNext();
+        }
+
+        @Override
+        public String next() {
+            return delegate.next();
+        }
+
+        @Override
+        public void close() throws IOException {
+            closeCount++;
+            throw failure;
         }
     }
 }
