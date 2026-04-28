@@ -11,10 +11,12 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.EventFilter;
 import javax.xml.stream.FactoryConfigurationError;
@@ -309,6 +311,31 @@ public class Stax_apiTest {
     }
 
     @Test
+    void eventFactoryStartElementResolvesNamespacesFromCustomContext() {
+        XMLEventFactory factory = XMLEventFactory.newFactory();
+        NamespaceContext namespaceContext = new FixedNamespaceContext();
+
+        StartElement element = factory.createStartElement(
+                "b",
+                "urn:books",
+                "book",
+                Collections.emptyIterator(),
+                Collections.emptyIterator(),
+                namespaceContext);
+
+        assertThat(element.getName()).isEqualTo(new QName("urn:books", "book", "b"));
+        assertThat(element.getNamespaceContext()).isSameAs(namespaceContext);
+        assertThat(element.getNamespaceURI("b")).isEqualTo("urn:books");
+        assertThat(element.getNamespaceURI(XMLConstants.DEFAULT_NS_PREFIX)).isEqualTo("urn:default");
+        assertThat(element.getNamespaceContext().getPrefix("urn:authors")).isEqualTo("a");
+        assertThat(toList(element.getNamespaceContext().getPrefixes("urn:books"))).containsExactly("b");
+        assertThat(element.getNamespaceContext().getNamespaceURI(XMLConstants.XML_NS_PREFIX))
+                .isEqualTo(XMLConstants.XML_NS_URI);
+        assertThat(element.getNamespaceContext().getNamespaceURI(XMLConstants.XMLNS_ATTRIBUTE))
+                .isEqualTo(XMLConstants.XMLNS_ATTRIBUTE_NS_URI);
+    }
+
+    @Test
     void outputFactoriesWriteStreamAndEventDocuments() throws Exception {
         XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
         if (outputFactory.isPropertySupported(XMLOutputFactory.IS_REPAIRING_NAMESPACES)) {
@@ -476,6 +503,63 @@ public class Stax_apiTest {
             values.add(iterator.next());
         }
         return values;
+    }
+
+    private static final class FixedNamespaceContext implements NamespaceContext {
+        @Override
+        public String getNamespaceURI(String prefix) {
+            if (prefix == null) {
+                throw new IllegalArgumentException("Prefix must not be null");
+            }
+            if (XMLConstants.XML_NS_PREFIX.equals(prefix)) {
+                return XMLConstants.XML_NS_URI;
+            }
+            if (XMLConstants.XMLNS_ATTRIBUTE.equals(prefix)) {
+                return XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+            }
+            if (XMLConstants.DEFAULT_NS_PREFIX.equals(prefix)) {
+                return "urn:default";
+            }
+            if ("b".equals(prefix)) {
+                return "urn:books";
+            }
+            if ("a".equals(prefix)) {
+                return "urn:authors";
+            }
+            return XMLConstants.NULL_NS_URI;
+        }
+
+        @Override
+        public String getPrefix(String namespaceURI) {
+            if (namespaceURI == null) {
+                throw new IllegalArgumentException("Namespace URI must not be null");
+            }
+            if (XMLConstants.XML_NS_URI.equals(namespaceURI)) {
+                return XMLConstants.XML_NS_PREFIX;
+            }
+            if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(namespaceURI)) {
+                return XMLConstants.XMLNS_ATTRIBUTE;
+            }
+            if ("urn:default".equals(namespaceURI)) {
+                return XMLConstants.DEFAULT_NS_PREFIX;
+            }
+            if ("urn:books".equals(namespaceURI)) {
+                return "b";
+            }
+            if ("urn:authors".equals(namespaceURI)) {
+                return "a";
+            }
+            return null;
+        }
+
+        @Override
+        public Iterator<String> getPrefixes(String namespaceURI) {
+            String prefix = getPrefix(namespaceURI);
+            if (prefix == null) {
+                return Collections.emptyIterator();
+            }
+            return Collections.singleton(prefix).iterator();
+        }
     }
 
     private static final class FixedLocation implements Location {
