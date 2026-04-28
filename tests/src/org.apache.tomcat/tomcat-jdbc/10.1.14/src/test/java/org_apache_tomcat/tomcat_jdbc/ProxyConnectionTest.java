@@ -34,7 +34,7 @@ public class ProxyConnectionTest {
             TestProxyConnection proxyConnection = new TestProxyConnection(connectionPool, pooledConnection);
             Connection connection = (Connection) Proxy.newProxyInstance(
                     ProxyConnectionTest.class.getClassLoader(),
-                    new Class<?>[] { Connection.class, XAConnection.class },
+                    new Class<?>[] {Connection.class, XAConnection.class},
                     proxyConnection);
 
             XAResource xaResource = ((XAConnection) connection).getXAResource();

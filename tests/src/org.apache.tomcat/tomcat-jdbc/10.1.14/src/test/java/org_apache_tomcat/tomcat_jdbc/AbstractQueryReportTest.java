@@ -77,7 +77,7 @@ public class AbstractQueryReportTest {
         private PreparedStatement wrapPreparedStatement(PreparedStatement statement, String sql)
                 throws NoSuchMethodException {
             Method method = Connection.class.getMethod("prepareStatement", String.class);
-            Object[] args = { sql };
+            Object[] args = {sql};
             return (PreparedStatement) createStatement(null, method, args, statement, 0);
         }
 

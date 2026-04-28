@@ -45,7 +45,7 @@ public class StatementCacheInnerCachedStatementTest {
             statementCache.setNext(new TerminalConnectionInterceptor(delegate));
             Connection connection = (Connection) Proxy.newProxyInstance(
                     StatementCacheInnerCachedStatementTest.class.getClassLoader(),
-                    new Class<?>[] { Connection.class },
+                    new Class<?>[] {Connection.class},
                     statementCache);
             try {
                 PreparedStatement firstStatement = connection.prepareStatement(SELECT_NAME_BY_ID);

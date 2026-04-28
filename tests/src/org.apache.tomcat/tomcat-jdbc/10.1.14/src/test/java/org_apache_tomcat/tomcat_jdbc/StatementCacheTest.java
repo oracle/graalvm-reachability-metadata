@@ -38,7 +38,7 @@ public class StatementCacheTest {
             statementCache.setNext(new TerminalConnectionInterceptor(delegate));
             Connection connection = (Connection) Proxy.newProxyInstance(
                     StatementCacheTest.class.getClassLoader(),
-                    new Class<?>[] { Connection.class },
+                    new Class<?>[] {Connection.class},
                     statementCache);
             try {
                 assertPreparedStatementQuery(connection, 1, "cached-first");
