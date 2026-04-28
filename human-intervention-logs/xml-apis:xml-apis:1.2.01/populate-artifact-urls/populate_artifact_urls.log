@@ -1,0 +1,1518 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd434-e250-72b3-b251-b2fc8dc6694f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: xml-apis:xml-apis:1.2.01
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2.01".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/metadata/xml-apis/xml-apis/index.json
+- Entry selector: "metadata-version" = "1.2.01"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.2.01".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.2.01
+- Entry test-version: 1.2.01
+codex
+I’ll check the existing metadata entry first, then verify the upstream artifact and any versioned source/test/doc artifacts before editing only blank fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/xml-apis/xml-apis/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.2.01",
+    "tested-versions" : [
+      "1.2.01"
+    ],
+    "allowed-packages" : [
+      "javax.xml",
+      "org.apache.xmlcommons",
+      "org.w3c.dom",
+      "org.xml.sax"
+    ]
+  },
+  {
+    "metadata-version" : "1.0.b2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+    "description" : "XML Commons External Components XML APIs packages Apache-hosted copies of standard DOM, SAX, and JAXP interfaces used by XML-based Java projects. It lets projects depend on a common version and packaging scheme for these XML standards APIs.",
+    "tested-versions" : [
+      "1.0.b2"
+    ],
+    "allowed-packages" : [
+      "javax.xml",
+      "org.apache.xmlcommons",
+      "org.w3c.dom",
+      "org.xml.sax"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+web search: 
+web search: xml-apis xml-apis 1.2.01 sources jar Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/
+codex
+The current entry has only `latest`, versions, and allowed packages, so all requested fields are genuinely missing. Maven Central for `1.2.01` only exposes the POM in the directory listing I found, so I’m checking Apache’s version tags next before deciding which URLs are defensible.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xml-apis/xml-apis/1.2.01</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xml-apis/xml-apis/1.2.01</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="xml-apis-1.2.01.pom" title="xml-apis-1.2.01.pom">xml-apis-1.2.01.pom</a>                               2010-02-03 21:05       377      
+<a href="xml-apis-1.2.01.pom.md5" title="xml-apis-1.2.01.pom.md5">xml-apis-1.2.01.pom.md5</a>                           2010-02-03 21:05        54      
+<a href="xml-apis-1.2.01.pom.sha1" title="xml-apis-1.2.01.pom.sha1">xml-apis-1.2.01.pom.sha1</a>                          2010-02-03 21:05        62      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/xml-apis-1.2.01.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xml-apis</groupId>
+  <artifactId>xml-apis</artifactId>
+  <version>1.2.01</version>
+<!-- MAVENUPLOAD-1538 -->
+  <distributionManagement>
+    <relocation>
+      <groupId>xerces</groupId>
+      <artifactId>xmlParserAPIs</artifactId>
+      <version>2.6.2</version>
+    </relocation>
+  </distributionManagement>
+</project>
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/tags</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/tags</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="DOM_LEVEL_2/">DOM_LEVEL_2/</a></li>
+  <li><a href="JAXP-1_1/">JAXP-1_1/</a></li>
+  <li><a href="JDK1_4_IBMv1/">JDK1_4_IBMv1/</a></li>
+  <li><a href="JDK1_4_IBMv2/">JDK1_4_IBMv2/</a></li>
+  <li><a href="SAX-2_0-r2-prerelease/">SAX-2_0-r2-prerelease/</a></li>
+  <li><a href="SAX2-ext-1_0/">SAX2-ext-1_0/</a></li>
+  <li><a href="Xerces-J_2_3_0/">Xerces-J_2_3_0/</a></li>
+  <li><a href="Xerces-J_2_4_0/">Xerces-J_2_4_0/</a></li>
+  <li><a href="before-jaxp13-upgradation/">before-jaxp13-upgradation/</a></li>
+  <li><a href="factoryfinder-build/">factoryfinder-build/</a></li>
+  <li><a href="jaxp-ri-1_1_1/">jaxp-ri-1_1_1/</a></li>
+  <li><a href="jaxp-ri-1_1_2beta2/">jaxp-ri-1_1_2beta2/</a></li>
+  <li><a href="jaxp-ri-1_1_2beta3/">jaxp-ri-1_1_2beta3/</a></li>
+  <li><a href="jaxp-ri-1_1_3/">jaxp-ri-1_1_3/</a></li>
+  <li><a href="jaxp-ri-1_1_3-orig/">jaxp-ri-1_1_3-orig/</a></li>
+  <li><a href="jaxp-ri-1_1_4-tag1/">jaxp-ri-1_1_4-tag1/</a></li>
+  <li><a href="jdk-ri-1_4_0/">jdk-ri-1_4_0/</a></li>
+  <li><a href="sax-2_0_1/">sax-2_0_1/</a></li>
+  <li><a href="xalan-j_2_2_d12/">xalan-j_2_2_d12/</a></li>
+  <li><a href="xalan-j_2_2_d14/">xalan-j_2_2_d14/</a></li>
+  <li><a href="xalan-j_2_5_0/">xalan-j_2_5_0/</a></li>
+  <li><a href="xml-commons-1_0_b1/">xml-commons-1_0_b1/</a></li>
+  <li><a href="xml-commons-1_0_b2/">xml-commons-1_0_b2/</a></li>
+  <li><a href="xml-commons-external-1_2_01/">xml-commons-external-1_2_01/</a></li>
+  <li><a href="xml-commons-external-1_2_02/">xml-commons-external-1_2_02/</a></li>
+  <li><a href="xml-commons-external-1_2_03/">xml-commons-external-1_2_03/</a></li>
+  <li><a href="xml-commons-external-1_2_04/">xml-commons-external-1_2_04/</a></li>
+  <li><a href="xml-commons-external-1_2_05/">xml-commons-external-1_2_05/</a></li>
+  <li><a href="xml-commons-external-1_2_06/">xml-commons-external-1_2_06/</a></li>
+  <li><a href="xml-commons-external-1_3_01/">xml-commons-external-1_3_01/</a></li>
+  <li><a href="xml-commons-external-1_3_02/">xml-commons-external-1_3_02/</a></li>
+  <li><a href="xml-commons-external-1_3_03/">xml-commons-external-1_3_03/</a></li>
+  <li><a href="xml-commons-external-1_3_04/">xml-commons-external-1_3_04/</a></li>
+  <li><a href="xml-commons-external-1_3_05/">xml-commons-external-1_3_05/</a></li>
+  <li><a href="xml-commons-external-1_4_01/">xml-commons-external-1_4_01/</a></li>
+  <li><a href="xml-commons-resolver-1_0/">xml-commons-resolver-1_0/</a></li>
+  <li><a href="xml-commons-resolver-1_1/">xml-commons-resolver-1_1/</a></li>
+  <li><a href="xml-commons-resolver-1_1_b1/">xml-commons-resolver-1_1_b1/</a></li>
+  <li><a href="xml-commons-resolver-1_2/">xml-commons-resolver-1_2/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/maven-metadata.xml' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>xml-apis</groupId>
+  <artifactId>xml-apis</artifactId>
+  <versioning>
+    <latest>2.0.2</latest>
+    <release>2.0.2</release>
+    <versions>
+      <version>1.0.b2</version>
+      <version>1.2.01</version>
+      <version>1.3.02</version>
+      <version>1.3.03</version>
+      <version>1.3.04</version>
+      <version>1.4.01</version>
+      <version>2.0.0</version>
+      <version>2.0.2</version>
+    </versions>
+    <lastUpdated>20120626170101</lastUpdated>
+  </versioning>
+</metadata>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xerces/xmlParserAPIs/2.6.2/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="java/">java/</a></li>
+ </ul>
+</body></html>
+ succeeded in 184ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xerces/xmlParserAPIs/2.6.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xerces/xmlParserAPIs/2.6.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:52       118      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:52        82      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:52       137      
+<a href="xmlParserAPIs-2.6.2.jar" title="xmlParserAPIs-2.6.2.jar">xmlParserAPIs-2.6.2.jar</a>                           2005-09-20 05:52    124724      
+<a href="xmlParserAPIs-2.6.2.jar.md5" title="xmlParserAPIs-2.6.2.jar.md5">xmlParserAPIs-2.6.2.jar.md5</a>                       2005-09-20 05:52        32      
+<a href="xmlParserAPIs-2.6.2.jar.sha1" title="xmlParserAPIs-2.6.2.jar.sha1">xmlParserAPIs-2.6.2.jar.sha1</a>                      2005-09-20 05:52        40      
+<a href="xmlParserAPIs-2.6.2.pom" title="xmlParserAPIs-2.6.2.pom">xmlParserAPIs-2.6.2.pom</a>                           2005-09-20 05:52       153      
+<a href="xmlParserAPIs-2.6.2.pom.md5" title="xmlParserAPIs-2.6.2.pom.md5">xmlParserAPIs-2.6.2.pom.md5</a>                       2005-09-20 05:52        32      
+<a href="xmlParserAPIs-2.6.2.pom.sha1" title="xmlParserAPIs-2.6.2.pom.sha1">xmlParserAPIs-2.6.2.pom.sha1</a>                      2005-09-20 05:52        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/1.4.01/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xml-apis/xml-apis/1.4.01</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xml-apis/xml-apis/1.4.01</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="xml-apis-1.4.01-javadoc.jar" title="xml-apis-1.4.01-javadoc.jar">xml-apis-1.4.01-javadoc.jar</a>                       2011-08-20 00:11   1480162      
+<a href="xml-apis-1.4.01-javadoc.jar.asc" title="xml-apis-1.4.01-javadoc.jar.asc">xml-apis-1.4.01-javadoc.jar.asc</a>                   2011-08-20 00:11       499      
+<a href="xml-apis-1.4.01-javadoc.jar.asc.md5" title="xml-apis-1.4.01-javadoc.jar.asc.md5">xml-apis-1.4.01-javadoc.jar.asc.md5</a>               2011-08-20 00:11        32      
+<a href="xml-apis-1.4.01-javadoc.jar.asc.sha1" title="xml-apis-1.4.01-javadoc.jar.asc.sha1">xml-apis-1.4.01-javadoc.jar.asc.sha1</a>              2011-08-20 00:11        40      
+<a href="xml-apis-1.4.01-javadoc.jar.md5" title="xml-apis-1.4.01-javadoc.jar.md5">xml-apis-1.4.01-javadoc.jar.md5</a>                   2011-08-20 00:11        32      
+<a href="xml-apis-1.4.01-javadoc.jar.sha1" title="xml-apis-1.4.01-javadoc.jar.sha1">xml-apis-1.4.01-javadoc.jar.sha1</a>                  2011-08-20 00:11        40      
+<a href="xml-apis-1.4.01-sources.jar" title="xml-apis-1.4.01-sources.jar">xml-apis-1.4.01-sources.jar</a>                       2011-08-20 00:11    656529      
+<a href="xml-apis-1.4.01-sources.jar.asc" title="xml-apis-1.4.01-sources.jar.asc">xml-apis-1.4.01-sources.jar.asc</a>                   2011-08-20 00:11       499      
+<a href="xml-apis-1.4.01-sources.jar.asc.md5" title="xml-apis-1.4.01-sources.jar.asc.md5">xml-apis-1.4.01-sources.jar.asc.md5</a>               2011-08-20 00:11        32      
+<a href="xml-apis-1.4.01-sources.jar.asc.sha1" title="xml-apis-1.4.01-sources.jar.asc.sha1">xml-apis-1.4.01-sources.jar.asc.sha1</a>              2011-08-20 00:11        40      
+<a href="xml-apis-1.4.01-sources.jar.md5" title="xml-apis-1.4.01-sources.jar.md5">xml-apis-1.4.01-sources.jar.md5</a>                   2011-08-20 00:11        32      
+<a href="xml-apis-1.4.01-sources.jar.sha1" title="xml-apis-1.4.01-sources.jar.sha1">xml-apis-1.4.01-sources.jar.sha1</a>                  2011-08-20 00:11        40      
+<a href="xml-apis-1.4.01.jar" title="xml-apis-1.4.01.jar">xml-apis-1.4.01.jar</a>                               2011-08-20 00:11    220536      
+<a href="xml-apis-1.4.01.jar.asc" title="xml-apis-1.4.01.jar.asc">xml-apis-1.4.01.jar.asc</a>                           2011-08-20 00:11       499      
+<a href="xml-apis-1.4.01.jar.asc.md5" title="xml-apis-1.4.01.jar.asc.md5">xml-apis-1.4.01.jar.asc.md5</a>                       2011-08-20 00:11        32      
+<a href="xml-apis-1.4.01.jar.asc.sha1" title="xml-apis-1.4.01.jar.asc.sha1">xml-apis-1.4.01.jar.asc.sha1</a>                      2011-08-20 00:11        40      
+<a href="xml-apis-1.4.01.jar.md5" title="xml-apis-1.4.01.jar.md5">xml-apis-1.4.01.jar.md5</a>                           2011-08-20 00:11        32      
+<a href="xml-apis-1.4.01.jar.sha1" title="xml-apis-1.4.01.jar.sha1">xml-apis-1.4.01.jar.sha1</a>                          2011-08-20 00:11        40      
+<a href="xml-apis-1.4.01.pom" title="xml-apis-1.4.01.pom">xml-apis-1.4.01.pom</a>                               2011-08-20 00:11      2661      
+<a href="xml-apis-1.4.01.pom.asc" title="xml-apis-1.4.01.pom.asc">xml-apis-1.4.01.pom.asc</a>                           2011-08-20 00:11       499      
+<a href="xml-apis-1.4.01.pom.asc.md5" title="xml-apis-1.4.01.pom.asc.md5">xml-apis-1.4.01.pom.asc.md5</a>                       2011-08-20 00:11        32      
+<a href="xml-apis-1.4.01.pom.asc.sha1" title="xml-apis-1.4.01.pom.asc.sha1">xml-apis-1.4.01.pom.asc.sha1</a>                      2011-08-20 00:11        40      
+<a href="xml-apis-1.4.01.pom.md5" title="xml-apis-1.4.01.pom.md5">xml-apis-1.4.01.pom.md5</a>                           2011-08-20 00:11        32      
+<a href="xml-apis-1.4.01.pom.sha1" title="xml-apis-1.4.01.pom.sha1">xml-apis-1.4.01.pom.sha1</a>                          2011-08-20 00:11        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/1.3.02/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xml-apis/xml-apis/1.3.02</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xml-apis/xml-apis/1.3.02</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:53       116      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:53        80      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:53       135      
+<a href="xml-apis-1.3.02.jar" title="xml-apis-1.3.02.jar">xml-apis-1.3.02.jar</a>                               2005-09-20 05:53    194205      
+<a href="xml-apis-1.3.02.jar.md5" title="xml-apis-1.3.02.jar.md5">xml-apis-1.3.02.jar.md5</a>                           2005-09-20 05:53        32      
+<a href="xml-apis-1.3.02.jar.sha1" title="xml-apis-1.3.02.jar.sha1">xml-apis-1.3.02.jar.sha1</a>                          2005-09-20 05:53        40      
+<a href="xml-apis-1.3.02.pom" title="xml-apis-1.3.02.pom">xml-apis-1.3.02.pom</a>                               2005-09-20 05:53       357      
+<a href="xml-apis-1.3.02.pom.md5" title="xml-apis-1.3.02.pom.md5">xml-apis-1.3.02.pom.md5</a>                           2005-09-20 05:53       137      
+<a href="xml-apis-1.3.02.pom.sha1" title="xml-apis-1.3.02.pom.sha1">xml-apis-1.3.02.pom.sha1</a>                          2005-09-20 05:53       145      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="external/">external/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/1.3.03/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/2.0.2/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="BUGS-sax">BUGS-sax</a></li>
+  <li><a href="ChangeLog-sax">ChangeLog-sax</a></li>
+  <li><a href="KEYS">KEYS</a></li>
+  <li><a href="LICENSE.dom-documentation.txt">LICENSE.dom-documentation.txt</a></li>
+  <li><a href="LICENSE.dom-software.txt">LICENSE.dom-software.txt</a></li>
+  <li><a href="LICENSE.sax.txt">LICENSE.sax.txt</a></li>
+  <li><a href="README-sax">README-sax</a></li>
+  <li><a href="README.dom.txt">README.dom.txt</a></li>
+  <li><a href="README.sax.txt">README.sax.txt</a></li>
+  <li><a href="build.bat">build.bat</a></li>
+  <li><a href="build.sh">build.sh</a></li>
+  <li><a href="build.xml">build.xml</a></li>
+  <li><a href="src/">src/</a></li>
+  <li><a href="xdocs/">xdocs/</a></li>
+ </ul>
+</body></html>
+ succeeded in 192ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xml-apis/xml-apis/1.3.03</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xml-apis/xml-apis/1.3.03</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2006-04-10 20:32       116      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2006-04-10 20:32        80      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2006-04-10 20:32       135      
+<a href="xml-apis-1.3.03.jar" title="xml-apis-1.3.03.jar">xml-apis-1.3.03.jar</a>                               2006-04-10 20:32    195119      
+<a href="xml-apis-1.3.03.jar.md5" title="xml-apis-1.3.03.jar.md5">xml-apis-1.3.03.jar.md5</a>                           2006-04-10 20:32        32      
+<a href="xml-apis-1.3.03.jar.sha1" title="xml-apis-1.3.03.jar.sha1">xml-apis-1.3.03.jar.sha1</a>                          2006-04-10 20:32        40      
+<a href="xml-apis-1.3.03.pom" title="xml-apis-1.3.03.pom">xml-apis-1.3.03.pom</a>                               2006-04-10 20:32       738      
+<a href="xml-apis-1.3.03.pom.asc" title="xml-apis-1.3.03.pom.asc">xml-apis-1.3.03.pom.asc</a>                           2006-04-10 20:32       188      
+<a href="xml-apis-1.3.03.pom.asc.md5" title="xml-apis-1.3.03.pom.asc.md5">xml-apis-1.3.03.pom.asc.md5</a>                       2006-04-10 20:32        32      
+<a href="xml-apis-1.3.03.pom.asc.sha1" title="xml-apis-1.3.03.pom.asc.sha1">xml-apis-1.3.03.pom.asc.sha1</a>                      2006-04-10 20:32        40      
+<a href="xml-apis-1.3.03.pom.md5" title="xml-apis-1.3.03.pom.md5">xml-apis-1.3.03.pom.md5</a>                           2006-04-10 20:32        56      
+<a href="xml-apis-1.3.03.pom.sha1" title="xml-apis-1.3.03.pom.sha1">xml-apis-1.3.03.pom.sha1</a>                          2006-04-10 20:32        64      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 210ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: xml-apis/xml-apis/2.0.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>xml-apis/xml-apis/2.0.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:53       115      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:53        79      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:53       134      
+<a href="xml-apis-2.0.2-sources.jar" title="xml-apis-2.0.2-sources.jar">xml-apis-2.0.2-sources.jar</a>                        2005-09-20 05:53    286764      
+<a href="xml-apis-2.0.2-sources.jar.md5" title="xml-apis-2.0.2-sources.jar.md5">xml-apis-2.0.2-sources.jar.md5</a>                    2005-09-20 05:53        85      
+<a href="xml-apis-2.0.2-sources.jar.sha1" title="xml-apis-2.0.2-sources.jar.sha1">xml-apis-2.0.2-sources.jar.sha1</a>                   2005-09-20 05:53        93      
+<a href="xml-apis-2.0.2.jar" title="xml-apis-2.0.2.jar">xml-apis-2.0.2.jar</a>                                2005-09-20 05:53    109318      
+<a href="xml-apis-2.0.2.jar.md5" title="xml-apis-2.0.2.jar.md5">xml-apis-2.0.2.jar.md5</a>                            2005-09-20 05:53        32      
+<a href="xml-apis-2.0.2.jar.sha1" title="xml-apis-2.0.2.jar.sha1">xml-apis-2.0.2.jar.sha1</a>                           2005-09-20 05:53        40      
+<a href="xml-apis-2.0.2.pom" title="xml-apis-2.0.2.pom">xml-apis-2.0.2.pom</a>                                2005-09-20 05:53       346      
+<a href="xml-apis-2.0.2.pom.md5" title="xml-apis-2.0.2.pom.md5">xml-apis-2.0.2.pom.md5</a>                            2005-09-20 05:53        32      
+<a href="xml-apis-2.0.2.pom.sha1" title="xml-apis-2.0.2.pom.sha1">xml-apis-2.0.2.pom.sha1</a>                           2005-09-20 05:53        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="javax/">javax/</a></li>
+  <li><a href="manifest.commons">manifest.commons</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="dom/">dom/</a></li>
+  <li><a href="sax/">sax/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/trunk/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/trunk</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/trunk</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href=".cvsignore">.cvsignore</a></li>
+  <li><a href="KEYS">KEYS</a></li>
+  <li><a href="LICENSE">LICENSE</a></li>
+  <li><a href="NOTICE">NOTICE</a></li>
+  <li><a href="README.txt">README.txt</a></li>
+  <li><a href="build.xml">build.xml</a></li>
+  <li><a href="contrib/">contrib/</a></li>
+  <li><a href="doap_XML_Commons_External.xml">doap_XML_Commons_External.xml</a></li>
+  <li><a href="doap_XML_Commons_Resolver.xml">doap_XML_Commons_Resolver.xml</a></li>
+  <li><a href="forrest.properties">forrest.properties</a></li>
+  <li><a href="java/">java/</a></li>
+  <li><a href="readme-build.txt">readme-build.txt</a></li>
+  <li><a href="relicense-tree.txt">relicense-tree.txt</a></li>
+  <li><a href="src/">src/</a></li>
+  <li><a href="status.xml">status.xml</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/README.dom.txt | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+xml-commons/java/external/README.dom.txt $Id$
+
+
+HEAR YE, HEAR YE!
+
+
+All of the .java software and associated documentation about 
+the DOM in this repository are distributed under the license 
+from the W3C, which is provided herein.
+
+
+LICENSE.dom-software.txt covers all software from the W3C 
+including the following items in the xml-commons project:
+
+    xml-commons/java/external/src/org/w3c
+      and all subdirectories
+
+LICENSE.dom-documentation.txt covers all documentation from the W3C 
+including the following items in the xml-commons project:
+
+    xml-commons/java/external/xdocs/dom
+      and all subdirectories
+
+The actual DOM Java Language Binding classes in xml-commons came from: 
+    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/java-binding.html
+	The original versions are tagged 'DOM_LEVEL_2'
+
+The specification of DOM Level 2's various parts is at:
+    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/
+    http://www.w3.org/TR/2000/REC-DOM-Level-2-Views-20001113/
+	http://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/
+	http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113/
+	http://www.w3.org/TR/2000/REC-DOM-Level-2-Traversal-Range-20001113/
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/dom/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/dom</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/dom</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="core/">core/</a></li>
+  <li><a href="events/">events/</a></li>
+  <li><a href="style/">style/</a></li>
+  <li><a href="traversal-range/">traversal-range/</a></li>
+  <li><a href="views/">views/</a></li>
+  <li><a href="xml/">xml/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/sax/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<html><head><title>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/sax</title></head>
+<body>
+ <h2>asf - Revision 1933418: /xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/sax</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="changes.html">changes.html</a></li>
+  <li><a href="features.html">features.html</a></li>
+  <li><a href="filters.html">filters.html</a></li>
+  <li><a href="namespaces.html">namespaces.html</a></li>
+  <li><a href="quick-start.html">quick-start.html</a></li>
+  <li><a href="sax-style.css">sax-style.css</a></li>
+  <li><a href="sax.html">sax.html</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/README.sax.txt | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+xml-commons/java/external/README.sax.txt $Id$
+
+
+HEAR YE, HEAR YE!
+
+
+All of the .java software and associated documentation about 
+SAX in this repository are distributed freely in the 
+public domain.
+
+
+LICENSE.sax.txt covers all software and documentation from the 
+megginson.com including the following in the xml-commons project:
+
+    xml-commons/java/external/src/org/xml/sax
+      and all subdirectories
+    xml-commons/java/external/xdocs/sax
+      and all subdirectories
+
+
+The actual SAX classes in xml-commons came from: 
+    http://www.megginson.com/Software/index.html
+	The original versions are tagged 'SAX-2_0-r2-prerelease'
+
+
+codex
+The Apache tag for `xml-commons-external-1_2_01` contains the Java sources and versioned DOM/SAX documentation, but I have not seen a versioned tests directory or Maven test artifact. I’m doing one recursive check for test-related paths before writing `N/A` for the test suite.
+exec
+/usr/bin/bash -lc "svn ls -R https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/ | rg -i '("'^|/)(test|tests|testing|junit|surefire)|Test'"\\.java|Tests\\.java'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ exited 1 in 0ms:
+/usr/bin/bash: line 1: svn: command not found
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/ | rg -i 'source|javadoc|test|tests'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/xml-apis-1.2.01.pom | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xml-apis</groupId>
+  <artifactId>xml-apis</artifactId>
+  <version>1.2.01</version>
+<!-- MAVENUPLOAD-1538 -->
+  <distributionManagement>
+    <relocation>
+      <groupId>xerces</groupId>
+      <artifactId>xmlParserAPIs</artifactId>
+      <version>2.6.2</version>
+    </relocation>
+  </distributionManagement>
+</project>
+
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\" : \"https://svn.apache.org/repos/asf/xerces/xml-commons/tags' metadata -g index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "rg 'svn.apache.org/repos/asf/.+/tags/.+/(src|source)' metadata -g index.json | head -40" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\" : \"N/A\"' metadata -g index.json | head -20" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+ succeeded in 0ms:
+metadata/com.google.j2objc/j2objc-annotations/index.json:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:    "test-code-url" : "N/A",
+metadata/org.jetbrains/annotations-java5/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.namespace.extender/index.json:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.osgi/org.osgi.namespace.service/index.json:    "test-code-url" : "N/A",
+metadata/javax.el/javax.el-api/index.json:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:    "test-code-url" : "N/A",
+metadata/javax.servlet/javax.servlet-api/index.json:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "test-code-url" : "N/A",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:    "test-code-url" : "N/A",
+metadata/org.codehaus.woodstox/stax2-api/index.json:    "test-code-url" : "N/A",
+metadata/com.google.guava/failureaccess/index.json:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:    "test-code-url" : "N/A",
+metadata/javax.cache/cache-api/index.json:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/build.xml | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/manifest.commons | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/ChangeLog-sax | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 132ms:
+<?xml version="1.0"?>
+<!-- 
+    @author David Megginson, david@megginson.com
+    @author shane_curcuru@lotus.com
+    @author Davanum Srinivas, dims@yaoo.com
+-->
+<project name="xml-commons-external" default="jar" >
+
+  <!-- Name and version information -->
+  <property name="name.external" value="xml-commons-external"/>
+  <property name="impl.name" value="XmlCommonsExternal"/>
+  <!-- If no external version is provided, don't use one -->
+  <property name="version" value="1.2.01"/>
+  <property name="impl.version" value="${version}"/>
+
+  <!-- Location of the system's temporary directory; all output sent here -->
+  <property name="tmp.dir" value="." />
+
+  <!-- Properties to control compilation -->
+  <property name="debug" value="off"/>
+
+  <!-- Build directories -->
+  <property name="build.dir" value="${tmp.dir}/build" />
+  <property name="build.classes.dir" value="${build.dir}/classes" />
+  <property name="build.docs.dir" value="${build.dir}/docs" />
+  <property name="build.javadocs.dir" value="${build.docs.dir}/javadoc" />
+  <property name="external.javadoc.title" value="JAXP 1.2, DOM 2.0, SAX 2.01, SAX2-ext 1.0" />
+
+  <property name="dist.basename" value="${name.external}-${impl.version}" />
+
+  <!-- Source constants and directories -->
+  <property name="src.dir" value="src" />
+  <property name="docs.dir" value="xdocs" />
+  <property name="api.jar.location" value="${build.dir}" />
+  <property name="api.jar.name" value="xml-apis.jar" />
+  <property name="api.jar" value="${api.jar.location}/${api.jar.name}" />
+
+  <!-- License and readme files of various types -->
+  <property name="licenses.external.dir" value="."/>
+  <patternset id="licenses.external">
+    <include name="LICENSE.dom-documentation.txt" />
+    <include name="LICENSE.dom-software.txt" />
+    <include name="README.dom.txt" />
+    <include name="LICENSE.sax.txt" />
+    <include name="README.sax.txt" />
+  </patternset>
+  <property name="licenses.asf.dir" value="../.."/>
+  <patternset id="licenses.asf" >
+    <include name="LICENSE.txt" />
+    <include name="README.txt" />
+  </patternset>
+  <property name="keys.external.dir" value="."/>
+  <patternset id="keys.external">
+    <include name="KEYS" />
+  </patternset>  
+  
+  
+
+  <target name="all" depends="jar,javadoc,exportsrc,bin.distro"
+    description="Jar external classes, create javadoc, create sources.tar.gz, create binary.tar.gz">
+  </target>
+
+  <target name="prepare" 
+    description="Create build output directories">
+    <echo message="Building ${name.external} (version: ${impl.version}) Buildfile: $Revision$"/>
+    <mkdir dir="${build.classes.dir}" />
+    <mkdir dir="${build.docs.dir}" />
+    <mkdir dir="${build.javadocs.dir}" />
+    <filter token="java.version" value="${java.version}"/>
+    <filter token="java.vendor" value="${java.vendor}"/>    
+    <filter token="impl.version" value="${impl.version}"/>
+    <filter token="impl.name" value="${impl.name}"/>
+    <copy file="${src.dir}/org/apache/xmlcommons/Version.src" 
+        tofile="${src.dir}/org/apache/xmlcommons/Version.java" 
+        filtering="true" preservelastmodified="true" />
+    <copy todir="${build.dir}" file="${src.dir}/manifest.commons" filtering="true"/>
+  </target>
+
+  <target name="compile" depends="prepare"
+    description="Compile all classes">
+   <javac srcdir="${src.dir}" destdir="${build.classes.dir}"
+          debug="${debug}" />
+  </target>
+
+  <target name="jar" depends="compile"
+    description="Jar all classes">
+    <echo message="Jarring ${api.jar} from ${build.classes.dir}" />
+
+    <!-- Copy various licenses so they appear in the .jar file -->
+    <property name="jar-licenses" value="${build.classes.dir}/license" />
+    <mkdir dir="${jar-licenses}" />
+    <copy todir="${jar-licenses}">
+      <fileset dir="${licenses.external.dir}">
+        <patternset refid="licenses.external"/>
+      </fileset>
+      <fileset dir="${licenses.asf.dir}">
+        <patternset refid="licenses.asf"/>
+      </fileset>
+    </copy>
+
+    <jar jarfile="${api.jar}" 
+        basedir="${build.classes.dir}" 
+        manifest="${build.dir}/manifest.commons"  />
+  </target>
+
+  <target name="javadoc" depends="prepare"
+    description="Build javadocs and copy doc over">
+    <javadoc packagenames="org.xml.sax.*,org.w3c.dom.*,javax.xml.parsers.*,javax.xml.transform.*"
+      sourcepath="${src.dir}" 
+      destdir="${build.javadocs.dir}" 
+      version="yes" 
+      windowtitle="${external.javadoc.title}" 
+      doctitle="${external.javadoc.title}"
+    />
+    <!-- Legal question: what should the bottom= copyright line be
+         for this mixed set of javadocs? -->
+    <!-- Just copy existing .html files over as well -->
+    <copy todir="${build.docs.dir}">
+      <fileset dir="${docs.dir}"/>
+    </copy>
+   </target>
+
+  <target name="exportsrc" depends="prepare"
+    description="Create a simple distribution of sources">
+    <!-- Note: this *only* a copy of the .java sources that 
+         go into our .jar file, not all our sources! -->
+
+    <patternset id="external-srcs" >
+    <!-- Relative to external/src, which is ${src.dir}  -->
+      <include name="org/"/>
+      <include name="javax/"/>
+    </patternset>
+
+    <tar tarfile="${build.dir}/${name.external}-${impl.version}-src.tar" >
+      <tarfileset dir="${src.dir}">
+        <patternset refid="external-srcs"/>
+      </tarfileset>
+      <tarfileset dir="${build.dir}">
+        <include name="manifest.commons"/>
+      </tarfileset>
+      <tarfileset dir="${licenses.external.dir}">
+        <patternset refid="licenses.external"/>
+      </tarfileset>
+      <tarfileset dir="${licenses.asf.dir}">
+        <patternset refid="licenses.asf"/>
+      </tarfileset>
+    </tar>
+    
+    <!-- Xerces would like a zipped version instead for various reasons
+        principally involving CVS limitations.  -->
+    <gzip src="${build.dir}/${name.external}-${impl.version}-src.tar" zipfile="${build.dir}/${name.external}-${impl.version}-src.tar.gz"/>
+    <delete file="${build.dir}/${name.external}-${impl.version}-src.tar" />
+    <zip zipfile="${build.dir}/${name.external}-${impl.version}-src.zip" >
+      <zipfileset dir="${src.dir}">
+        <patternset refid="external-srcs"/>
+      </zipfileset>
+      <zipfileset dir="${build.dir}">
+        <include name="manifest.commons"/>
+      </zipfileset>
+      <zipfileset dir="${licenses.external.dir}">
+        <patternset refid="licenses.external"/>
+      </zipfileset>
+      <zipfileset dir="${licenses.asf.dir}">
+        <patternset refid="licenses.asf"/>
+      </zipfileset>
+    </zip>
+  </target>
+
+  <target name="bin.distro" depends="jar,javadoc"
+    description="Create a binary distribution for xml-common-external">
+
+    <mkdir dir="${build.dir}/${dist.basename}"/>
+    <mkdir dir="${build.dir}/${dist.basename}/docs"/>
+
+    <copy todir="${build.dir}/${dist.basename}/docs">
+      <fileset dir="${build.docs.dir}"/>
+    </copy>
+    <copy todir="${build.dir}/${dist.basename}">
+      <fileset dir="${build.dir}" includes="xml-apis.jar"/>
+      <fileset dir="${build.dir}" includes="manifest.commons"/>  
+    </copy>
+    <copy todir="${build.dir}/${dist.basename}">
+      <fileset dir="${licenses.external.dir}">
+        <patternset refid="licenses.external"/>
+      </fileset>
+      <fileset dir="${licenses.asf.dir}">
+        <patternset refid="licenses.asf"/>
+      </fileset>
+      <fileset dir="${keys.external.dir}">
+        <patternset refid="keys.external"/>
+      </fileset>      
+    </copy>
+
+    <tar tarfile="${build.dir}/${dist.basename}-bin.tar" >
+      <tarfileset dir="${build.dir}">
+        <include name="${dist.basename}/"/>
+      </tarfileset>
+    </tar>
+
+    <gzip src="${build.dir}/${dist.basename}-bin.tar" zipfile="${build.dir}/${dist.basename}-bin.tar.gz"/>
+    <delete file="${build.dir}/${dist.basename}-bin.tar" />
+    <zip zipfile="${build.dir}/${dist.basename}-bin.zip" >
+      <zipfileset dir="${build.dir}">
+        <include name="${dist.basename}/"/>
+      </zipfileset>
+    </zip>
+  </target>
+
+  <target name="clean" 
+      description="Clean the output build area">
+    <delete file="${api.jar}"/>
+    <delete dir="${build.dir}"/>
+    <delete file="${src.dir}/org/apache/xmlcommons/Version.java"/>
+  </target>
+
+</project>
+
+ succeeded in 132ms:
+Manifest-Version: 1.0
+Created-By: @java.version@ (@java.vendor@)
+
+Name: org/apache/xmlcommons/Version
+Comment: @impl.name@ for http://xml.apache.org/ subproject's use
+Implementation-Title: org.apache.xmlcommons.Version
+Implementation-Version: @impl.version@
+Implementation-Vendor: Apache Software Foundation
+Implementation-URL: http://xml.apache.org/commons/
+
+Name: org/xml/sax/
+Comment: xml-commons for http://xml.apache.org/ subproject's use
+Specification-Title: Simple API for XML
+Specification-Vendor: David Megginson
+Specification-Version: 2.0.1
+Implementation-Title: org.xml.sax
+Implementation-Version: 2.0.1
+Implementation-Vendor: David Megginson
+Implementation-URL: http://www.saxproject.org/
+
+Name: org/w3c/dom/
+Comment: xml-commons for http://xml.apache.org/ subproject's use
+Specification-Title: Document Object Model, Level 2 Core
+Specification-Vendor: World Wide Web Consortium
+Specification-Version: 1.0
+Implementation-Title: org.w3c.dom
+Implementation-Version: 1.0
+Implementation-Vendor: World Wide Web Consortium
+Implementation-URL: http://www.w3c.org/DOM/
+
+Name: javax/xml/parsers/
+Comment: xml-commons for http://xml.apache.org/ subproject's use
+Specification-Title: Java API for XML Processing
+Specification-Version: 1.2
+Specification-Vendor: Sun Microsystems Inc.
+Implementation-Title: javax.xml.transform
+Implementation-Version: @impl.version@
+Implementation-Vendor: Sun Microsystems Inc.
+Implementation-URL: http://java.sun.com/xml/jaxp.html
+
+Name: javax/xml/transform/
+Comment: xml-commons for http://xml.apache.org/ subproject's use
+Specification-Title: Java API for XML Processing
+Specification-Version: 1.2
+Specification-Vendor: Sun Microsystems Inc.
+Implementation-Title: javax.xml.transform
+Implementation-Version: @impl.version@
+Implementation-Vendor: Sun Microsystems Inc.
+Implementation-URL: http://java.sun.com/xml/jaxp.html
+
+ succeeded in 136ms:
+2002-Jan-29 David Brownell <dbrownell@users.sourceforge.net>
+
+	* SAX2 r2 (SAX 2.0.1) release
+
+2002-Jan-12 David Brownell <dbrownell@users.sourceforge.net>
+
+	* Doc clarifications
+	  - skippedEntity() within markup constructs isn't done,
+	    matching startEntity()/endEntity()
+
+2002-Jan-11 David Brownell <dbrownell@users.sourceforge.net>
+
+	* Doc clarifications
+	  - Locator I18N issue for column/line numbers
+	  - Locator getSystemId() absolutization examples
+	  - SAXParseException relationship to Locator
+
+2002-Jan-10 David Brownell <dbrownell@users.sourceforge.net>
+
+	* Doc clarifications
+	  - reword empty string for startPrefixMapping() [501777]
+	  - inconsistent parameter naming [501901]
+	  - add missing @see in XMLFilterImpl [501915],
+	    remove duplicates [501919], fix typo [501927]
+	  - mention multi-char character issues in ContentHandler
+	* Mention JDK 1.4 update procedure in README
+
+2001-Dec-04 David Brownell <dbrownell@users.sourceforge.net>
+
+	* Doc clarifications
+	  - ContentHandler.skippedEntity() reported once per skip,
+	    not once to cover all times it's skipped! 
+
+2001-Nov-29 David Brownell <dbrownell@users.sourceforge.net>
+
+	* Doc clarifications
+	  - Attributes: remind that namespace decls have no namespace
+	  - ContentHandler: empty prefix means default namespace, and
+	    startDocument() also precedes extension callbacks
+	  - InputStream: with Reader, encoding not necessarily ignored;
+	    it might hold Infoset [character encoding scheme]
+
+2001-Nov-20 David Brownell <dbrownell@users.sourceforge.net>
+	
+	* SAX2 r2pre3 release
+	  - marked files in "sax2r2" branch using @version
+	  - javadoc disclaimers point to 'www.saxproject.org'
+	    (but 'sax.sourceforge.net' is still hosting SAX)
+
+2001-Nov-12 David Brownell <dbrownell@users.sourceforge.net>
+	* LexicalHandler, DeclHandler
+	  - Clarify recognize != support
+	  - setProperty() text matches current implementations
+	* LexicalHandler.startDTD()
+	  - Clarify systemId:  do NOT absolutize this URI
+	    (matches current implementations)
+	* Patch (from Edwin Goei) to factory support class
+	  - helpers/NewInstance.java (internal) compiles on JDK 1.1
+	* DTDHandler
+	  - Revert change from Aug-01, not all implementations agree
+	    the spec is wrong.  A new "resolve-dtd-entities" feature
+	    flag addresses the behavior (extension defined separately)
+	* Locator
+	  - Clarify when this object may be used
+
+2001-Nov-05 David Brownell <dbrownell@users.sourceforge.net>
+
+	* XmlReader, XmlFilterImpl, ParserAdapter:
+	  - Clarify that SAXNotRecognizedException means the
+	    feature/property isn't gettable/settable
+	  - Set-to-null isn't an error for handlers.  Most parsers
+	    (and now XMLFilterImpl, ParserAdapter) treat it as
+	    restoring the default setting.
+	  - fixed [476507], javadoc param names wrong
+
+2001-Oct-23 David Brownell <dbrownell@users.sourceforge.net>
+
+	* NamespaceSupport now enforces declare-before-use constraint.
+
+2001-Oct-14 David Brownell <dbrownell@users.sourceforge.net>
+
+	* Doc updates:
+	    - NamespaceSupport, identifying different usage modes
+	      (application vs SAX driver) and minor bugfixes
+	    - DeclHandler, attributeDecl() doesn't leave anything
+	      unexpanded (or process PEs)
+
+2001-Sep-28 David Brownell <dbrownell@users.sourceforge.net>
+
+	* Fix minor error path bug on ParserAdapter, path[0,1] null
+	* XMLReaderFactory updates
+	    - Better robustness by expecting distro-specific fallback
+	    - Merge more correct ClassLoader support from Crimson
+		(contributed by Edwin Goei, edwingo@apache.org)
+	    - More configurability by META-INF/services support
+	* ParserFactory update for more correct ClassLoader usage
+
+2001-Sep-26 David Brownell <dbrownell@users.sourceforge.net>
+
+	* Removed refs to sax@megginson.com email (by request :)
+	* Doc clarifications
+	    - InputSource
+	    - NamespaceSupport
+
+2001-Aug-03 David Brownell <dbrownell@users.sourceforge.net>
+
+	* ParserAdapter
+	    - process declarations before references
+	    - only process "xmlns:foo" and "xmlns", not "xmlnsf:oo"
+	* Doc updates (mostly @see to SAX2 not SAX1) to:
+	    - DTDHandler
+	    - EntityResolver
+	    - ErrorHandler
+
+2001-Aug-01 David Brownell <dbrownell@users.sourceforge.net>
+	
+	* AttributesImpl
+	    - remove array bounds bug
+	    - removeAttribute() frees memory
+	* DTDHandler
+
+web search: 
+web search: https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/
+web search: 
+web search: svn.apache.org xerces xml-commons tags xml-commons-external-1_2_01 java external build.xml
+web search: 
+web search: https://xerces.apache.org/xml-commons/
+web search: 
+web search: "xml-commons-external-1_2_01" "build.xml" "version"
+codex
+Maven has no `sources`, `javadoc`, or tests classifier for `xml-apis:xml-apis:1.2.01`; its POM is a relocation-only artifact. I’m going to fill the entry from the exact Apache `xml-commons-external-1_2_01` SVN tag, with tests as `N/A`, and leave `language` absent because this is not a Kotlin/Scala language-versioned library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/metadata/xml-apis/xml-apis/index.json
+diff --git a/metadata/xml-apis/xml-apis/index.json b/metadata/xml-apis/xml-apis/index.json
+index 6fb8135c07cc6428163f7dfdbd671c20409752b9..5828b25a77855c60c93d517692f1d357431f015d
+--- a/metadata/xml-apis/xml-apis/index.json
++++ b/metadata/xml-apis/xml-apis/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.01",
++    "source-code-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/",
++    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/",
++    "description" : "XML Commons External Components XML APIs provides Apache-hosted Java interfaces for XML standards including DOM, SAX, and JAXP. It lets Java projects compile against a consistent packaged set of XML API classes without depending on a specific parser implementation.",
+     "tested-versions" : [
+       "1.2.01"
+     ],
+
+diff --git a/metadata/xml-apis/xml-apis/index.json b/metadata/xml-apis/xml-apis/index.json
+index 6fb8135c07cc6428163f7dfdbd671c20409752b9..5828b25a77855c60c93d517692f1d357431f015d
+--- a/metadata/xml-apis/xml-apis/index.json
++++ b/metadata/xml-apis/xml-apis/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.01",
++    "source-code-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/",
++    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/",
++    "description" : "XML Commons External Components XML APIs provides Apache-hosted Java interfaces for XML standards including DOM, SAX, and JAXP. It lets Java projects compile against a consistent packaged set of XML API classes without depending on a specific parser implementation.",
+     "tested-versions" : [
+       "1.2.01"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq . metadata/xml-apis/xml-apis/index.json >/dev/null' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/xml-apis/xml-apis/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.2.01",
+    "source-code-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/",
+    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/",
+    "description" : "XML Commons External Components XML APIs provides Apache-hosted Java interfaces for XML standards including DOM, SAX, and JAXP. It lets Java projects compile against a consistent packaged set of XML API classes without depending on a specific parser implementation.",
+    "tested-versions" : [
+      "1.2.01"
+    ],
+    "allowed-packages" : [
+      "javax.xml",
+      "org.apache.xmlcommons",
+      "org.w3c.dom",
+      "org.xml.sax"
+    ]
+  },
+  {
+    "metadata-version" : "1.0.b2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+    "description" : "XML Commons External Components XML APIs packages Apache-hosted copies of standard DOM, SAX, and JAXP interfaces used by XML-based Java projects. It lets projects depend on a common version and packaging scheme for these XML standards APIs.",
+    "tested-versions" : [
+      "1.0.b2"
+    ],
+    "allowed-packages" : [
+      "javax.xml",
+      "org.apache.xmlcommons",
+      "org.w3c.dom",
+      "org.xml.sax"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/xml-apis/xml-apis/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+diff --git i/metadata/xml-apis/xml-apis/index.json w/metadata/xml-apis/xml-apis/index.json
+index 6fb8135c07..5828b25a77 100644
+--- i/metadata/xml-apis/xml-apis/index.json
++++ w/metadata/xml-apis/xml-apis/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.01",
++    "source-code-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/",
++    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/",
++    "description" : "XML Commons External Components XML APIs provides Apache-hosted Java interfaces for XML standards including DOM, SAX, and JAXP. It lets Java projects compile against a consistent packaged set of XML API classes without depending on a specific parser implementation.",
+     "tested-versions" : [
+       "1.2.01"
+     ],
+
+diff --git a/metadata/xml-apis/xml-apis/index.json b/metadata/xml-apis/xml-apis/index.json
+index 6fb8135c07cc6428163f7dfdbd671c20409752b9..5828b25a77855c60c93d517692f1d357431f015d
+--- a/metadata/xml-apis/xml-apis/index.json
++++ b/metadata/xml-apis/xml-apis/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.01",
++    "source-code-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/",
++    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/",
++    "description" : "XML Commons External Components XML APIs provides Apache-hosted Java interfaces for XML standards including DOM, SAX, and JAXP. It lets Java projects compile against a consistent packaged set of XML API classes without depending on a specific parser implementation.",
+     "tested-versions" : [
+       "1.2.01"
+     ],
+
+codex
+The JSON parse check passes and the diff is limited to the missing fields for `1.2.01`. I’m running the repository’s targeted metadata validation now.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=xml-apis:xml-apis:1.2.01 --stacktrace' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+diff --git a/metadata/xml-apis/xml-apis/index.json b/metadata/xml-apis/xml-apis/index.json
+index 6fb8135c07cc6428163f7dfdbd671c20409752b9..5828b25a77855c60c93d517692f1d357431f015d
+--- a/metadata/xml-apis/xml-apis/index.json
++++ b/metadata/xml-apis/xml-apis/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.01",
++    "source-code-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/",
++    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/",
++    "description" : "XML Commons External Components XML APIs provides Apache-hosted Java interfaces for XML standards including DOM, SAX, and JAXP. It lets Java projects compile against a consistent packaged set of XML API classes without depending on a specific parser implementation.",
+     "tested-versions" : [
+       "1.2.01"
+     ],
+
+ exited 1 in 1128ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for xml-apis:xml-apis:1.2.01: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/metadata/xml-apis/xml-apis/1.2.01/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - xml-apis:xml-apis:1.2.01: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/metadata/xml-apis/xml-apis/1.2.01/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - xml-apis:xml-apis:1.2.01: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/metadata/xml-apis/xml-apis/1.2.01/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/
+web search: 
+web search: "xml-commons-external-1_2_01" "java/external" "build.xml" "version"
+web search: 
+web search: Apache XML Commons External Components xml-apis 1.2.01 DOM SAX JAXP
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45
+ succeeded in 0ms:
+ M metadata/xml-apis/xml-apis/index.json
+
+diff --git a/metadata/xml-apis/xml-apis/index.json b/metadata/xml-apis/xml-apis/index.json
+index 6fb8135c07cc6428163f7dfdbd671c20409752b9..5828b25a77855c60c93d517692f1d357431f015d
+--- a/metadata/xml-apis/xml-apis/index.json
++++ b/metadata/xml-apis/xml-apis/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.01",
++    "source-code-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/",
++    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/",
++    "description" : "XML Commons External Components XML APIs provides Apache-hosted Java interfaces for XML standards including DOM, SAX, and JAXP. It lets Java projects compile against a consistent packaged set of XML API classes without depending on a specific parser implementation.",
+     "tested-versions" : [
+       "1.2.01"
+     ],
+
+web search: 
+web search: "xml-commons-external-1_2_01" "version" "1.2.01" "build.xml"
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/xml-commons/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/xerces/xml-commons/
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org xml-apis xml-apis 1.2.01 pom
+codex
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/metadata/xml-apis/xml-apis/index.json:4) for `metadata-version` `1.2.01`.
+
+I used the exact Apache SVN tag because Maven Central for `xml-apis:xml-apis:1.2.01` only lists the POM, while the Apache tag contains the versioned `src` and `xdocs` directories. The repository URL is the canonical SVN root, `test-code-url` is `N/A`, and `language` remains absent because this is not a Kotlin/Scala language-versioned library. ([repo1.maven.org](https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/?utm_source=openai))
+
+Verification: `jq` JSON validation passed. `./gradlew checkMetadataFiles -Pcoordinates=xml-apis:xml-apis:1.2.01 --stacktrace` fails because `metadata/xml-apis/xml-apis/1.2.01/reachability-metadata.json` is missing, which is outside the requested index-field update.
+diff --git a/metadata/xml-apis/xml-apis/index.json b/metadata/xml-apis/xml-apis/index.json
+index 6fb8135c07cc6428163f7dfdbd671c20409752b9..5828b25a77855c60c93d517692f1d357431f015d
+--- a/metadata/xml-apis/xml-apis/index.json
++++ b/metadata/xml-apis/xml-apis/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.01",
++    "source-code-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/src/",
++    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-external-1_2_01/java/external/xdocs/",
++    "description" : "XML Commons External Components XML APIs provides Apache-hosted Java interfaces for XML standards including DOM, SAX, and JAXP. It lets Java projects compile against a consistent packaged set of XML API classes without depending on a specific parser implementation.",
+     "tested-versions" : [
+       "1.2.01"
+     ],
+
+2026-04-28T13:11:09.597078Z ERROR codex_core::session: failed to record rollout items: thread 019dd434-e250-72b3-b251-b2fc8dc6694f not found
+tokens used
+104,959
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/metadata/xml-apis/xml-apis/index.json:4) for `metadata-version` `1.2.01`.
+
+I used the exact Apache SVN tag because Maven Central for `xml-apis:xml-apis:1.2.01` only lists the POM, while the Apache tag contains the versioned `src` and `xdocs` directories. The repository URL is the canonical SVN root, `test-code-url` is `N/A`, and `language` remains absent because this is not a Kotlin/Scala language-versioned library. ([repo1.maven.org](https://repo1.maven.org/maven2/xml-apis/xml-apis/1.2.01/?utm_source=openai))
+
+Verification: `jq` JSON validation passed. `./gradlew checkMetadataFiles -Pcoordinates=xml-apis:xml-apis:1.2.01 --stacktrace` fails because `metadata/xml-apis/xml-apis/1.2.01/reachability-metadata.json` is missing, which is outside the requested index-field update.
+Ran agent for xml-apis:xml-apis:1.2.01 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/build/agent-url-discovery-logs/xml-apis-xml-apis-1.2.01.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2574-8f806a45/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 23s
+9 actionable tasks: 1 executed, 8 up-to-date
