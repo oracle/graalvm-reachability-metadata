@@ -1,0 +1,421 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd48c-a9df-7571-bd58-aa480cef882c
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.netty:netty-all:4.0.23.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "4.0.23.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/metadata/io.netty/netty-all/index.json
+- Entry selector: "metadata-version" = "4.0.23.Final"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "4.0.23.Final".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar
+- repository-url: https://github.com/netty/netty
+- test-code-url: https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar
+- documentation-url: https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar
+- description: Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency.
+- language: <missing>
+
+Context:
+- Coordinate version: 4.0.23.Final
+- Entry test-version: 4.0.23.Final
+codex
+I’ll inspect the existing entry first so I only fill fields that are actually missing, then verify the exact-version artifact URLs before editing.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/io.netty/netty-all/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+4:    "metadata-version" : "4.0.23.Final",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
+6:    "repository-url" : "https://github.com/netty/netty",
+7:    "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
+9:    "description" : "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency.",
+
+exec
+/usr/bin/bash -lc 'pwd && git status --short' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+?? metadata/io.netty/netty-all/
+?? tests/src/io.netty/netty-all/
+
+web search: 
+web search: io.netty netty-all 4.0.23.Final Maven Central sources javadoc testsuite tests jar
+web search: 
+web search: https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/
+web search: 
+web search: 
+codex
+The target entry already has non-blank values for the URL and description fields. I’m checking whether any allowed `language` value applies; Netty is a Java/JVM library, not Kotlin or Scala-specific, so that field should stay absent.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/io.netty/netty-all/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.0.23.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
+    "repository-url" : "https://github.com/netty/netty",
+    "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
+    "description" : "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency.",
+    "tested-versions" : [
+      "4.0.23.Final"
+    ],
+    "allowed-packages" : [
+      "io.netty"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final.pom | sed -n '1,140p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 The Netty Project
+  ~
+  ~ The Netty Project licenses this file to you under the Apache License,
+  ~ version 2.0 (the "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at:
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  ~ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.netty</groupId>
+    <artifactId>netty-parent</artifactId>
+    <version>4.0.23.Final</version>
+  </parent>
+
+  <artifactId>netty-all</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Netty/All-in-One</name>
+
+  <properties>
+    <quickbuild>true</quickbuild>
+    <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
+    <dependencyVersionsDir>${project.build.directory}/versions</dependencyVersionsDir>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>full</id>
+      <properties>
+        <quickbuild>false</quickbuild>
+      </properties>
+    </profile>
+    <profile>
+      <id>coverage</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jacoco-merge</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>merge</goal>
+                </goals>
+                <configuration>
+                  <fileSets>
+                    <fileSet>
+                      <directory>${project.parent.build.directory}/..</directory>
+                      <includes>
+                        <include>**/target/jacoco.exec</include>
+                      </includes>
+                    </fileSet>
+                  </fileSets>
+                </configuration>
+              </execution>
+              <execution>
+                <id>jacoco-report</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>linux</family>
+        </os>
+      </activation>
+      <dependencies>
+        <!-- All release modules -->
+        <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>netty-transport-native-epoll</artifactId>
+          <version>${project.version}</version>
+          <classifier>${os.detected.classifier}</classifier>
+          <scope>compile</scope>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+  <dependencies>
+
+    <!-- All release modules -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-buffer</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-codec</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-codec-http</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-codec-socks</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 14:45:07 GMT
+content-type: application/java-archive
+content-length: 1442971
+cf-ray: 9f36d9502a3abe86-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 761472
+etag: "d9412d5655a335600df7fade2029211c"
+last-modified: Fri, 15 Aug 2014 18:06:42 GMT
+x-checksum-md5: d9412d5655a335600df7fade2029211c
+x-checksum-sha1: fd8e5b2341f3a08b02fe116d6e9886654e65b219
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar | sed -n '1,12p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 14:45:07 GMT
+content-type: application/java-archive
+content-length: 180839
+cf-ray: 9f36d950d96e739d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 61
+etag: "5f150ea49faf0388c3ab2d8184e9e5ae"
+last-modified: Fri, 15 Aug 2014 18:05:38 GMT
+x-checksum-md5: 5f150ea49faf0388c3ab2d8184e9e5ae
+x-checksum-sha1: 3f7164aa2aa507c481ac8c389530afde32b34abc
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 14:45:07 GMT
+content-type: application/java-archive
+content-length: 3922526
+cf-ray: 9f36d950d8d803a5-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 947293
+etag: "772e777e17b2515369582182ebb70f82"
+last-modified: Fri, 15 Aug 2014 18:06:45 GMT
+x-checksum-md5: 772e777e17b2515369582182ebb70f82
+x-checksum-sha1: 035e392a44218cd37a03fa52327345f81bc28019
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/netty/netty-parent/4.0.23.Final/netty-parent-4.0.23.Final.pom | rg -n '<url>|<connection>|<developerConnection>' -C 2" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+30-
+31-  <name>Netty</name>
+32:  <url>http://netty.io/</url>
+33-  <description>
+34-    Netty is an asynchronous event-driven network application framework for 
+--
+39-  <organization>
+40-    <name>The Netty Project</name>
+41:    <url>http://netty.io/</url>
+42-  </organization>
+43-
+--
+45-    <license>
+46-      <name>Apache License, Version 2.0</name>
+47:      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+48-    </license>
+49-  </licenses>
+--
+51-
+52-  <scm>
+53:    <url>https://github.com/netty/netty</url>
+54:    <connection>scm:git:git://github.com/netty/netty.git</connection>
+55:    <developerConnection>scm:git:ssh://git@github.com/netty/netty.git</developerConnection>
+56-    <tag>netty-4.0.23.Final</tag>
+57-  </scm>
+--
+62-      <name>The Netty Project Contributors</name>
+63-      <email>netty@googlegroups.com</email>
+64:      <url>http://netty.io/</url>
+65-      <organization>The Netty Project</organization>
+66-      <organizationUrl>http://netty.io/</organizationUrl>
+
+web search: 
+web search: https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/
+web search: 
+web search: https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/
+web search: 
+web search: 
+web search: 
+web search: netty-4.0.23.Final GitHub netty tag scm
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.netty/netty-all/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.netty:netty-all:4.0.23.Final' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 3341ms:
+Starting a Gradle Daemon, 2 busy and 16 incompatible Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles
+Metadata files check passed for io.netty:netty-all:4.0.23.Final
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+No file changes were necessary in [index.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/metadata/io.netty/netty-all/index.json): the `4.0.23.Final` entry already has non-blank exact-version Maven URLs for sources, tests, and Javadocs, plus the canonical repository URL and a two-sentence description.
+
+I left `language` absent because `io.netty:netty-all` is not Kotlin- or Scala-specific. Verified with:
+
+`./gradlew checkMetadataFiles -Pcoordinates=io.netty:netty-all:4.0.23.Final`
+
+The metadata check passed.
+2026-04-28T14:45:32.273769Z ERROR codex_core::session: failed to record rollout items: thread 019dd48c-a9df-7571-bd58-aa480cef882c not found
+tokens used
+26,354
+No file changes were necessary in [index.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/metadata/io.netty/netty-all/index.json): the `4.0.23.Final` entry already has non-blank exact-version Maven URLs for sources, tests, and Javadocs, plus the canonical repository URL and a two-sentence description.
+
+I left `language` absent because `io.netty:netty-all` is not Kotlin- or Scala-specific. Verified with:
+
+`./gradlew checkMetadataFiles -Pcoordinates=io.netty:netty-all:4.0.23.Final`
+
+The metadata check passed.
+Ran agent for io.netty:netty-all:4.0.23.Final (exit 0). Log: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/agent-url-discovery-logs/io.netty-netty-all-4.0.23.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 51s
+9 actionable tasks: 1 executed, 8 up-to-date

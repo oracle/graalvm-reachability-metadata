@@ -1,0 +1,714 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd48b-4fe0-7360-8526-e41b2675a926
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.netty:netty-all:4.0.23.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "4.0.23.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+- Set "coordinates" to "io.netty:netty-all:4.0.23.Final".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing metadata format first, then verify Netty’s exact 4.0.23.Final source/test/doc locations before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+{
+  "coordinates" : "io.netty:netty-all:4.0.23.Final"
+}
+
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -30" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+
+web search: 
+web search: Maven Central io.netty netty-all 4.0.23.Final sources jar tests jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/
+web search: 
+web search: https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/
+web search: 
+web search: site:github.com/netty/netty/releases 4.0.23.Final netty
+web search: 
+web search: https://github.com/netty/netty/tree/netty-4.0.23.Final
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org io/netty/netty-testsuite/4.0.23.Final
+codex
+Maven Central has exact-version `sources` and `javadoc` artifacts for `netty-all`; I’m checking whether a published test artifact exists before falling back to the GitHub tag’s `testsuite` path.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final.pom | sed -n '1,220p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 The Netty Project
+  ~
+  ~ The Netty Project licenses this file to you under the Apache License,
+  ~ version 2.0 (the "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at:
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  ~ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.netty</groupId>
+    <artifactId>netty-parent</artifactId>
+    <version>4.0.23.Final</version>
+  </parent>
+
+  <artifactId>netty-all</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Netty/All-in-One</name>
+
+  <properties>
+    <quickbuild>true</quickbuild>
+    <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
+    <dependencyVersionsDir>${project.build.directory}/versions</dependencyVersionsDir>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>full</id>
+      <properties>
+        <quickbuild>false</quickbuild>
+      </properties>
+    </profile>
+    <profile>
+      <id>coverage</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jacoco-merge</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>merge</goal>
+                </goals>
+                <configuration>
+                  <fileSets>
+                    <fileSet>
+                      <directory>${project.parent.build.directory}/..</directory>
+                      <includes>
+                        <include>**/target/jacoco.exec</include>
+                      </includes>
+                    </fileSet>
+                  </fileSets>
+                </configuration>
+              </execution>
+              <execution>
+                <id>jacoco-report</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>linux</family>
+        </os>
+      </activation>
+      <dependencies>
+        <!-- All release modules -->
+        <dependency>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>netty-transport-native-epoll</artifactId>
+          <version>${project.version}</version>
+          <classifier>${os.detected.classifier}</classifier>
+          <scope>compile</scope>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+  <dependencies>
+
+    <!-- All release modules -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-buffer</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-codec</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-codec-http</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-codec-socks</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-handler</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-transport</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-transport-rxtx</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-transport-sctp</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-transport-udt</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-example</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Add optional dependencies explicitly to avoid Javadoc warnings and errors. -->
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <executions>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/netty/netty-testsuite/4.0.23.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/netty/netty-testsuite/4.0.23.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="netty-testsuite-4.0.23.Final-tests.jar" title="netty-testsuite-4.0.23.Final-tests.jar">netty-testsuite-4.0.23.Final-tests.jar</a>            2014-08-15 18:05    180839      
+<a href="netty-testsuite-4.0.23.Final-tests.jar.asc" title="netty-testsuite-4.0.23.Final-tests.jar.asc">netty-testsuite-4.0.23.Final-tests.jar.asc</a>        2014-08-15 18:05       230      
+<a href="netty-testsuite-4.0.23.Final-tests.jar.asc.md5" title="netty-testsuite-4.0.23.Final-tests.jar.asc.md5">netty-testsuite-4.0.23.Final-tests.jar.asc.md...</a>  2014-08-15 18:05        32      
+<a href="netty-testsuite-4.0.23.Final-tests.jar.asc.sha1" title="netty-testsuite-4.0.23.Final-tests.jar.asc.sha1">netty-testsuite-4.0.23.Final-tests.jar.asc.sh...</a>  2014-08-15 18:05        40      
+<a href="netty-testsuite-4.0.23.Final-tests.jar.md5" title="netty-testsuite-4.0.23.Final-tests.jar.md5">netty-testsuite-4.0.23.Final-tests.jar.md5</a>        2014-08-15 18:05        32      
+<a href="netty-testsuite-4.0.23.Final-tests.jar.sha1" title="netty-testsuite-4.0.23.Final-tests.jar.sha1">netty-testsuite-4.0.23.Final-tests.jar.sha1</a>       2014-08-15 18:05        40      
+<a href="netty-testsuite-4.0.23.Final.jar" title="netty-testsuite-4.0.23.Final.jar">netty-testsuite-4.0.23.Final.jar</a>                  2014-08-15 18:05      3411      
+<a href="netty-testsuite-4.0.23.Final.jar.asc" title="netty-testsuite-4.0.23.Final.jar.asc">netty-testsuite-4.0.23.Final.jar.asc</a>              2014-08-15 18:05       230      
+<a href="netty-testsuite-4.0.23.Final.jar.asc.md5" title="netty-testsuite-4.0.23.Final.jar.asc.md5">netty-testsuite-4.0.23.Final.jar.asc.md5</a>          2014-08-15 18:05        32      
+<a href="netty-testsuite-4.0.23.Final.jar.asc.sha1" title="netty-testsuite-4.0.23.Final.jar.asc.sha1">netty-testsuite-4.0.23.Final.jar.asc.sha1</a>         2014-08-15 18:05        40      
+<a href="netty-testsuite-4.0.23.Final.jar.md5" title="netty-testsuite-4.0.23.Final.jar.md5">netty-testsuite-4.0.23.Final.jar.md5</a>              2014-08-15 18:05        32      
+<a href="netty-testsuite-4.0.23.Final.jar.sha1" title="netty-testsuite-4.0.23.Final.jar.sha1">netty-testsuite-4.0.23.Final.jar.sha1</a>             2014-08-15 18:05        40      
+<a href="netty-testsuite-4.0.23.Final.pom" title="netty-testsuite-4.0.23.Final.pom">netty-testsuite-4.0.23.Final.pom</a>                  2014-08-15 18:05      4148      
+<a href="netty-testsuite-4.0.23.Final.pom.asc" title="netty-testsuite-4.0.23.Final.pom.asc">netty-testsuite-4.0.23.Final.pom.asc</a>              2014-08-15 18:05       230      
+<a href="netty-testsuite-4.0.23.Final.pom.asc.md5" title="netty-testsuite-4.0.23.Final.pom.asc.md5">netty-testsuite-4.0.23.Final.pom.asc.md5</a>          2014-08-15 18:05        32      
+<a href="netty-testsuite-4.0.23.Final.pom.asc.sha1" title="netty-testsuite-4.0.23.Final.pom.asc.sha1">netty-testsuite-4.0.23.Final.pom.asc.sha1</a>         2014-08-15 18:05        40      
+<a href="netty-testsuite-4.0.23.Final.pom.md5" title="netty-testsuite-4.0.23.Final.pom.md5">netty-testsuite-4.0.23.Final.pom.md5</a>              2014-08-15 18:05        32      
+<a href="netty-testsuite-4.0.23.Final.pom.sha1" title="netty-testsuite-4.0.23.Final.pom.sha1">netty-testsuite-4.0.23.Final.pom.sha1</a>             2014-08-15 18:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/netty/netty/git/ref/tags/netty-4.0.23.Final' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 177ms:
+{
+  "ref": "refs/tags/netty-4.0.23.Final",
+  "node_id": "MDM6UmVmMTA2NDU2MzpyZWZzL3RhZ3MvbmV0dHktNC4wLjIzLkZpbmFs",
+  "url": "https://api.github.com/repos/netty/netty/git/refs/tags/netty-4.0.23.Final",
+  "object": {
+    "sha": "a9f1fb65016c1f88c71e4456f97eaf898427b681",
+    "type": "tag",
+    "url": "https://api.github.com/repos/netty/netty/git/tags/a9f1fb65016c1f88c71e4456f97eaf898427b681"
+  }
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/netty/netty-parent/4.0.23.Final/netty-parent-4.0.23.Final.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>' -C 2" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+30-
+31-  <name>Netty</name>
+32:  <url>http://netty.io/</url>
+33-  <description>
+34-    Netty is an asynchronous event-driven network application framework for 
+--
+39-  <organization>
+40-    <name>The Netty Project</name>
+41:    <url>http://netty.io/</url>
+42-  </organization>
+43-
+--
+45-    <license>
+46-      <name>Apache License, Version 2.0</name>
+47:      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+48-    </license>
+49-  </licenses>
+50-  <inceptionYear>2008</inceptionYear>
+51-
+52:  <scm>
+53:    <url>https://github.com/netty/netty</url>
+54:    <connection>scm:git:git://github.com/netty/netty.git</connection>
+55:    <developerConnection>scm:git:ssh://git@github.com/netty/netty.git</developerConnection>
+56:    <tag>netty-4.0.23.Final</tag>
+57-  </scm>
+58-
+--
+62-      <name>The Netty Project Contributors</name>
+63-      <email>netty@googlegroups.com</email>
+64:      <url>http://netty.io/</url>
+65-      <organization>The Netty Project</organization>
+66-      <organizationUrl>http://netty.io/</organizationUrl>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/ | sed -n '1,220p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/netty/netty/git/tags/a9f1fb65016c1f88c71e4456f97eaf898427b681' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 167ms:
+{
+  "node_id": "MDM6VGFnMTA2NDU2MzphOWYxZmI2NTAxNmMxZjg4YzcxZTQ0NTZmOTdlYWY4OTg0MjdiNjgx",
+  "sha": "a9f1fb65016c1f88c71e4456f97eaf898427b681",
+  "url": "https://api.github.com/repos/netty/netty/git/tags/a9f1fb65016c1f88c71e4456f97eaf898427b681",
+  "tagger": {
+    "name": "Trustin Lee",
+    "email": "t@motd.kr",
+    "date": "2014-08-15T18:02:00Z"
+  },
+  "object": {
+    "sha": "208198c0cb14521f6d35ae7dd1205adc45f6342f",
+    "type": "commit",
+    "url": "https://api.github.com/repos/netty/netty/git/commits/208198c0cb14521f6d35ae7dd1205adc45f6342f"
+  },
+  "tag": "netty-4.0.23.Final",
+  "message": "[maven-release-plugin]  copy for tag netty-4.0.23.Final\n",
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}
+
+ succeeded in 265ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/netty/netty-all/4.0.23.Final</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/netty/netty-all/4.0.23.Final</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="netty-all-4.0.23.Final-javadoc.jar" title="netty-all-4.0.23.Final-javadoc.jar">netty-all-4.0.23.Final-javadoc.jar</a>                2014-08-15 18:06   3922526      
+<a href="netty-all-4.0.23.Final-javadoc.jar.asc" title="netty-all-4.0.23.Final-javadoc.jar.asc">netty-all-4.0.23.Final-javadoc.jar.asc</a>            2014-08-15 18:06       230      
+<a href="netty-all-4.0.23.Final-javadoc.jar.asc.md5" title="netty-all-4.0.23.Final-javadoc.jar.asc.md5">netty-all-4.0.23.Final-javadoc.jar.asc.md5</a>        2014-08-15 18:06        32      
+<a href="netty-all-4.0.23.Final-javadoc.jar.asc.sha1" title="netty-all-4.0.23.Final-javadoc.jar.asc.sha1">netty-all-4.0.23.Final-javadoc.jar.asc.sha1</a>       2014-08-15 18:06        40      
+<a href="netty-all-4.0.23.Final-javadoc.jar.md5" title="netty-all-4.0.23.Final-javadoc.jar.md5">netty-all-4.0.23.Final-javadoc.jar.md5</a>            2014-08-15 18:06        32      
+<a href="netty-all-4.0.23.Final-javadoc.jar.sha1" title="netty-all-4.0.23.Final-javadoc.jar.sha1">netty-all-4.0.23.Final-javadoc.jar.sha1</a>           2014-08-15 18:06        40      
+<a href="netty-all-4.0.23.Final-sources.jar" title="netty-all-4.0.23.Final-sources.jar">netty-all-4.0.23.Final-sources.jar</a>                2014-08-15 18:06   1442971      
+<a href="netty-all-4.0.23.Final-sources.jar.asc" title="netty-all-4.0.23.Final-sources.jar.asc">netty-all-4.0.23.Final-sources.jar.asc</a>            2014-08-15 18:06       230      
+<a href="netty-all-4.0.23.Final-sources.jar.asc.md5" title="netty-all-4.0.23.Final-sources.jar.asc.md5">netty-all-4.0.23.Final-sources.jar.asc.md5</a>        2014-08-15 18:06        32      
+<a href="netty-all-4.0.23.Final-sources.jar.asc.sha1" title="netty-all-4.0.23.Final-sources.jar.asc.sha1">netty-all-4.0.23.Final-sources.jar.asc.sha1</a>       2014-08-15 18:06        40      
+<a href="netty-all-4.0.23.Final-sources.jar.md5" title="netty-all-4.0.23.Final-sources.jar.md5">netty-all-4.0.23.Final-sources.jar.md5</a>            2014-08-15 18:06        32      
+<a href="netty-all-4.0.23.Final-sources.jar.sha1" title="netty-all-4.0.23.Final-sources.jar.sha1">netty-all-4.0.23.Final-sources.jar.sha1</a>           2014-08-15 18:06        40      
+<a href="netty-all-4.0.23.Final.jar" title="netty-all-4.0.23.Final.jar">netty-all-4.0.23.Final.jar</a>                        2014-08-15 18:06   1779991      
+<a href="netty-all-4.0.23.Final.jar.asc" title="netty-all-4.0.23.Final.jar.asc">netty-all-4.0.23.Final.jar.asc</a>                    2014-08-15 18:06       230      
+<a href="netty-all-4.0.23.Final.jar.asc.md5" title="netty-all-4.0.23.Final.jar.asc.md5">netty-all-4.0.23.Final.jar.asc.md5</a>                2014-08-15 18:06        32      
+<a href="netty-all-4.0.23.Final.jar.asc.sha1" title="netty-all-4.0.23.Final.jar.asc.sha1">netty-all-4.0.23.Final.jar.asc.sha1</a>               2014-08-15 18:06        40      
+<a href="netty-all-4.0.23.Final.jar.md5" title="netty-all-4.0.23.Final.jar.md5">netty-all-4.0.23.Final.jar.md5</a>                    2014-08-15 18:06        32      
+<a href="netty-all-4.0.23.Final.jar.sha1" title="netty-all-4.0.23.Final.jar.sha1">netty-all-4.0.23.Final.jar.sha1</a>                   2014-08-15 18:06        40      
+<a href="netty-all-4.0.23.Final.pom" title="netty-all-4.0.23.Final.pom">netty-all-4.0.23.Final.pom</a>                        2014-08-15 18:06     17244      
+<a href="netty-all-4.0.23.Final.pom.asc" title="netty-all-4.0.23.Final.pom.asc">netty-all-4.0.23.Final.pom.asc</a>                    2014-08-15 18:06       230      
+<a href="netty-all-4.0.23.Final.pom.asc.md5" title="netty-all-4.0.23.Final.pom.asc.md5">netty-all-4.0.23.Final.pom.asc.md5</a>                2014-08-15 18:06        32      
+<a href="netty-all-4.0.23.Final.pom.asc.sha1" title="netty-all-4.0.23.Final.pom.asc.sha1">netty-all-4.0.23.Final.pom.asc.sha1</a>               2014-08-15 18:06        40      
+<a href="netty-all-4.0.23.Final.pom.md5" title="netty-all-4.0.23.Final.pom.md5">netty-all-4.0.23.Final.pom.md5</a>                    2014-08-15 18:06        32      
+<a href="netty-all-4.0.23.Final.pom.sha1" title="netty-all-4.0.23.Final.pom.sha1">netty-all-4.0.23.Final.pom.sha1</a>                   2014-08-15 18:06        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+The exact tag is `netty-4.0.23.Final`, and the parent POM’s SCM block points to `https://github.com/netty/netty`. I found published Maven Central artifacts for `netty-all` sources/Javadocs and an exact-version `netty-testsuite` tests jar, so I’ll use those Maven URLs where the prompt prefers them.
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url|repository-url' -n . --glob '*.json' --glob '"'!build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json'"' | head -40" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:9:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:30:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 14:44:05 GMT
+content-type: application/java-archive
+content-length: 1442971
+cf-ray: 9f36d7cb7bdf23bc-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 761410
+etag: "d9412d5655a335600df7fade2029211c"
+last-modified: Fri, 15 Aug 2014 18:06:42 GMT
+x-checksum-md5: d9412d5655a335600df7fade2029211c
+x-checksum-sha1: fd8e5b2341f3a08b02fe116d6e9886654e65b219
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 14:44:05 GMT
+content-type: application/java-archive
+content-length: 3922526
+cf-ray: 9f36d7cbacea273b-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 947230
+etag: "772e777e17b2515369582182ebb70f82"
+last-modified: Fri, 15 Aug 2014 18:06:45 GMT
+x-checksum-md5: 772e777e17b2515369582182ebb70f82
+x-checksum-sha1: 035e392a44218cd37a03fa52327345f81bc28019
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar | sed -n '1,12p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 357ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 14:44:05 GMT
+content-type: application/java-archive
+content-length: 180839
+cf-ray: 9f36d7cbba16bab3-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "5f150ea49faf0388c3ab2d8184e9e5ae"
+last-modified: Fri, 15 Aug 2014 18:05:38 GMT
+x-checksum-md5: 5f150ea49faf0388c3ab2d8184e9e5ae
+x-checksum-sha1: 3f7164aa2aa507c481ac8c389530afde32b34abc
+server: cloudflare
+
+codex
+I’m updating the discovered metadata file now with the verified Maven Central artifact URLs, GitHub repository, and a two-sentence description. The library is not a Kotlin- or Scala-specific artifact, so I’ll leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+diff --git a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+index bdcbacdeab9c5a50fb31cdc9c04bcb7108f98b3a..ab7f81f169f46fd7525f573e6afc43d08003b11a
+--- a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
++++ b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.netty:netty-all:4.0.23.Final"
++  "coordinates" : "io.netty:netty-all:4.0.23.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
++  "repository-url" : "https://github.com/netty/netty",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
++  "description" : "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+index bdcbacdeab9c5a50fb31cdc9c04bcb7108f98b3a..ab7f81f169f46fd7525f573e6afc43d08003b11a
+--- a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
++++ b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.netty:netty-all:4.0.23.Final"
++  "coordinates" : "io.netty:netty-all:4.0.23.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
++  "repository-url" : "https://github.com/netty/netty",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
++  "description" : "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+{
+  "coordinates": "io.netty:netty-all:4.0.23.Final",
+  "source-code-url": "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
+  "repository-url": "https://github.com/netty/netty",
+  "test-code-url": "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
+  "description": "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+index bdcbacdeab9c5a50fb31cdc9c04bcb7108f98b3a..ab7f81f169f46fd7525f573e6afc43d08003b11a
+--- a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
++++ b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.netty:netty-all:4.0.23.Final"
++  "coordinates" : "io.netty:netty-all:4.0.23.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
++  "repository-url" : "https://github.com/netty/netty",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
++  "description" : "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json && git diff --no-index -- /dev/null build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14
+ exited 1 in 0ms:
+diff --git 1/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json 2/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+new file mode 100644
+index 0000000000..ab7f81f169
+--- /dev/null
++++ 2/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+@@ -0,0 +1,8 @@
++{
++  "coordinates" : "io.netty:netty-all:4.0.23.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
++  "repository-url" : "https://github.com/netty/netty",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
++  "description" : "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency."
++}
+
+diff --git a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+index bdcbacdeab9c5a50fb31cdc9c04bcb7108f98b3a..ab7f81f169f46fd7525f573e6afc43d08003b11a
+--- a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
++++ b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.netty:netty-all:4.0.23.Final"
++  "coordinates" : "io.netty:netty-all:4.0.23.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
++  "repository-url" : "https://github.com/netty/netty",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
++  "description" : "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency."
+ }
+
+codex
+Updated [io.netty-netty-all-4.0.23.Final.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json) with the repository, exact-version Maven source/Javadoc/test artifact URLs, and the two-sentence description.
+
+I left `language` absent because this is not a Kotlin- or Scala-specific artifact. Verified the JSON parses with `jq`.
+diff --git a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+index bdcbacdeab9c5a50fb31cdc9c04bcb7108f98b3a..ab7f81f169f46fd7525f573e6afc43d08003b11a
+--- a/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
++++ b/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.netty:netty-all:4.0.23.Final"
++  "coordinates" : "io.netty:netty-all:4.0.23.Final",
++  "source-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-sources.jar",
++  "repository-url" : "https://github.com/netty/netty",
++  "test-code-url" : "https://repo1.maven.org/maven2/io/netty/netty-testsuite/4.0.23.Final/netty-testsuite-4.0.23.Final-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/io/netty/netty-all/4.0.23.Final/netty-all-4.0.23.Final-javadoc.jar",
++  "description" : "Netty is an asynchronous, event-driven network application framework for building protocol servers and clients on the JVM. The netty-all artifact bundles the core Netty 4.0 modules into a single jar for applications that want the complete framework in one dependency."
+ }
+
+2026-04-28T14:44:34.873231Z ERROR codex_core::session: failed to record rollout items: thread 019dd48b-4fe0-7360-8526-e41b2675a926 not found
+tokens used
+68,547
+Updated [io.netty-netty-all-4.0.23.Final.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/discovered-artifact-metadata/io.netty-netty-all-4.0.23.Final.json) with the repository, exact-version Maven source/Javadoc/test artifact URLs, and the two-sentence description.
+
+I left `language` absent because this is not a Kotlin- or Scala-specific artifact. Verified the JSON parses with `jq`.
+Ran agent for io.netty:netty-all:4.0.23.Final (exit 0). Log: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/agent-artifact-discovery-logs/io.netty-netty-all-4.0.23.Final.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2617-58182f14/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 23s
+9 actionable tasks: 4 executed, 5 from cache
