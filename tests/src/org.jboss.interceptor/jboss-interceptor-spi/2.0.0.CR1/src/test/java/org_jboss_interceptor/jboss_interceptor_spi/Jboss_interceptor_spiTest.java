@@ -197,6 +197,47 @@ public class Jboss_interceptor_spiTest {
     }
 
     @Test
+    public void interceptionModelReturnsBusinessInterceptorsForSpecificMethods() throws Exception {
+        Method checkout = BusinessOperations.class.getMethod("checkout", String.class);
+        Method cancel = BusinessOperations.class.getMethod("cancel", String.class);
+        SimpleMethodMetadata aroundInvokeMethod = new SimpleMethodMetadata(
+                checkout,
+                String.class,
+                InterceptionType.AROUND_INVOKE
+        );
+        SimpleMethodMetadata aroundTimeoutMethod = new SimpleMethodMetadata(
+                checkout,
+                void.class,
+                InterceptionType.AROUND_TIMEOUT
+        );
+        SimpleInterceptorMetadata<String> auditInterceptor = interceptorMetadata(
+                "audit-business-interceptor",
+                false,
+                aroundInvokeMethod
+        );
+        SimpleInterceptorMetadata<String> timeoutInterceptor = interceptorMetadata(
+                "timeout-business-interceptor",
+                false,
+                aroundTimeoutMethod
+        );
+        SimpleInterceptionModel<Class<BusinessOperations>, String> model = new SimpleInterceptionModel<>(
+                BusinessOperations.class
+        );
+
+        model.register(InterceptionType.AROUND_INVOKE, checkout, auditInterceptor);
+        model.register(InterceptionType.AROUND_TIMEOUT, checkout, timeoutInterceptor);
+
+        assertThat(aroundInvokeMethod.getJavaMethod()).isSameAs(checkout);
+        assertThat(model.getInterceptors(InterceptionType.AROUND_INVOKE, checkout)).containsExactly(auditInterceptor);
+        assertThat(model.getInterceptors(InterceptionType.AROUND_INVOKE, cancel)).isEmpty();
+        assertThat(model.getInterceptors(InterceptionType.AROUND_TIMEOUT, checkout)).containsExactly(timeoutInterceptor);
+        assertThat(model.getAllInterceptors()).containsExactlyInAnyOrder(auditInterceptor, timeoutInterceptor);
+        assertThatThrownBy(() -> model.getInterceptors(InterceptionType.POST_CONSTRUCT, checkout))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("must not receive a method");
+    }
+
+    @Test
     public void invocationContextFactoryCreatesMethodInvocationContextsBackedByAnInterceptionChain() throws Exception {
         RecordingInterceptionChain chain = new RecordingInterceptionChain(List.of(
                 context -> {
@@ -278,6 +319,16 @@ public class Jboss_interceptor_spiTest {
     }
 
     private static final class BusinessService extends ParentService {
+    }
+
+    public static final class BusinessOperations {
+
+        public String checkout(String item) {
+            return item;
+        }
+
+        public void cancel(String orderId) {
+        }
     }
 
     private static final class TimerDescriptor {
@@ -462,17 +513,23 @@ public class Jboss_interceptor_spiTest {
 
     private static final class SimpleMethodMetadata implements MethodMetadata {
 
+        private final Method javaMethod;
         private final Class<?> returnType;
         private final Set<InterceptionType> supportedInterceptionTypes;
 
         private SimpleMethodMetadata(Class<?> returnType, InterceptionType... supportedInterceptionTypes) {
+            this(null, returnType, supportedInterceptionTypes);
+        }
+
+        private SimpleMethodMetadata(Method javaMethod, Class<?> returnType, InterceptionType... supportedInterceptionTypes) {
+            this.javaMethod = javaMethod;
             this.returnType = returnType;
             this.supportedInterceptionTypes = new LinkedHashSet<>(List.of(supportedInterceptionTypes));
         }
 
         @Override
         public Method getJavaMethod() {
-            return null;
+            return javaMethod;
         }
 
         @Override
@@ -584,6 +641,9 @@ public class Jboss_interceptor_spiTest {
         private final Map<InterceptionType, List<InterceptorMetadata<I>>> interceptorsByType = new EnumMap<>(
                 InterceptionType.class
         );
+        private final Map<InterceptionType, Map<Method, List<InterceptorMetadata<I>>>> interceptorsByMethod = new EnumMap<>(
+                InterceptionType.class
+        );
 
         private SimpleInterceptionModel(T interceptedEntity) {
             this.interceptedEntity = interceptedEntity;
@@ -591,6 +651,13 @@ public class Jboss_interceptor_spiTest {
 
         private void register(InterceptionType type, InterceptorMetadata<I> interceptorMetadata) {
             interceptorsByType.computeIfAbsent(type, ignored -> new ArrayList<>()).add(interceptorMetadata);
+        }
+
+        private void register(InterceptionType type, Method method, InterceptorMetadata<I> interceptorMetadata) {
+            interceptorsByMethod
+                    .computeIfAbsent(type, ignored -> new LinkedHashMap<>())
+                    .computeIfAbsent(method, ignored -> new ArrayList<>())
+                    .add(interceptorMetadata);
         }
 
         @Override
@@ -601,7 +668,14 @@ public class Jboss_interceptor_spiTest {
             if (interceptionType.isLifecycleCallback() && method != null) {
                 throw new IllegalArgumentException(interceptionType + " must not receive a method");
             }
-            return List.copyOf(interceptorsByType.getOrDefault(interceptionType, List.of()));
+            if (interceptionType.isLifecycleCallback()) {
+                return List.copyOf(interceptorsByType.getOrDefault(interceptionType, List.of()));
+            }
+            return List.copyOf(
+                    interceptorsByMethod
+                            .getOrDefault(interceptionType, Map.of())
+                            .getOrDefault(method, List.of())
+            );
         }
 
         @Override
@@ -609,6 +683,11 @@ public class Jboss_interceptor_spiTest {
             Set<InterceptorMetadata<I>> interceptors = new LinkedHashSet<>();
             for (List<InterceptorMetadata<I>> typeInterceptors : interceptorsByType.values()) {
                 interceptors.addAll(typeInterceptors);
+            }
+            for (Map<Method, List<InterceptorMetadata<I>>> methodInterceptors : interceptorsByMethod.values()) {
+                for (List<InterceptorMetadata<I>> interceptorsForMethod : methodInterceptors.values()) {
+                    interceptors.addAll(interceptorsForMethod);
+                }
             }
             return Set.copyOf(interceptors);
         }
