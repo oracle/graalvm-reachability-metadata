@@ -1,0 +1,871 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd1e4-acf4-7fc2-8409-0ff8fea730cd
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.opentelemetry:opentelemetry-exporter-common:1.28.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.28.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+- Entry selector: "metadata-version" = "1.28.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.28.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.28.0
+- Entry test-version: 1.28.0
+codex
+I’ll inspect the existing metadata entry first, then verify the artifact URLs against Maven/GitHub before making the smallest JSON edit.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.opentelemetry/opentelemetry-exporter-common/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.28.0",
+    "tested-versions" : [
+      "1.28.0"
+    ],
+    "allowed-packages" : [
+      "io.opentelemetry.exporter.internal"
+    ]
+  },
+  {
+    "metadata-version" : "1.19.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0-sources.jar",
+    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/exporters/common/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0-javadoc.jar",
+    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+    "tested-versions" : [
+      "1.19.0"
+    ],
+    "allowed-packages" : [
+      "io.opentelemetry.exporter.internal"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 0ms:
+web search: 
+web search: 
+web search: 
+web search: Maven Central io.opentelemetry opentelemetry-exporter-common 1.28.0 sources jar javadoc jar
+codex
+The existing older entry already points at Maven sources/Javadoc and GitHub tests, so I’m following that established pattern and checking whether 1.28.0 has the same Maven artifacts.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/ | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/opentelemetry/opentelemetry-exporter-common/1.28.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/opentelemetry/opentelemetry-exporter-common/1.28.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar" title="opentelemetry-exporter-common-1.28.0-javadoc.jar">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28       371      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28       475      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc.md5" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc.md5">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc.sha1" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc.sha1">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc.sha256" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc.sha256">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc.sha512" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.asc.sha512">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.md5" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.md5">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.sha1" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.sha1">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.sha256" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.sha256">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0-javadoc.jar.sha512" title="opentelemetry-exporter-common-1.28.0-javadoc.jar.sha512">opentelemetry-exporter-common-1.28.0-javadoc....</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar" title="opentelemetry-exporter-common-1.28.0-sources.jar">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28     52839      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.asc" title="opentelemetry-exporter-common-1.28.0-sources.jar.asc">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28       475      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.asc.md5" title="opentelemetry-exporter-common-1.28.0-sources.jar.asc.md5">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.asc.sha1" title="opentelemetry-exporter-common-1.28.0-sources.jar.asc.sha1">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.asc.sha256" title="opentelemetry-exporter-common-1.28.0-sources.jar.asc.sha256">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.asc.sha512" title="opentelemetry-exporter-common-1.28.0-sources.jar.asc.sha512">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.md5" title="opentelemetry-exporter-common-1.28.0-sources.jar.md5">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.sha1" title="opentelemetry-exporter-common-1.28.0-sources.jar.sha1">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.sha256" title="opentelemetry-exporter-common-1.28.0-sources.jar.sha256">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0-sources.jar.sha512" title="opentelemetry-exporter-common-1.28.0-sources.jar.sha512">opentelemetry-exporter-common-1.28.0-sources....</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0.jar" title="opentelemetry-exporter-common-1.28.0.jar">opentelemetry-exporter-common-1.28.0.jar</a>          2023-07-07 12:28     82089      
+<a href="opentelemetry-exporter-common-1.28.0.jar.asc" title="opentelemetry-exporter-common-1.28.0.jar.asc">opentelemetry-exporter-common-1.28.0.jar.asc</a>      2023-07-07 12:28       475      
+<a href="opentelemetry-exporter-common-1.28.0.jar.asc.md5" title="opentelemetry-exporter-common-1.28.0.jar.asc.md5">opentelemetry-exporter-common-1.28.0.jar.asc....</a>  2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0.jar.asc.sha1" title="opentelemetry-exporter-common-1.28.0.jar.asc.sha1">opentelemetry-exporter-common-1.28.0.jar.asc....</a>  2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0.jar.asc.sha256" title="opentelemetry-exporter-common-1.28.0.jar.asc.sha256">opentelemetry-exporter-common-1.28.0.jar.asc....</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0.jar.asc.sha512" title="opentelemetry-exporter-common-1.28.0.jar.asc.sha512">opentelemetry-exporter-common-1.28.0.jar.asc....</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0.jar.md5" title="opentelemetry-exporter-common-1.28.0.jar.md5">opentelemetry-exporter-common-1.28.0.jar.md5</a>      2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0.jar.sha1" title="opentelemetry-exporter-common-1.28.0.jar.sha1">opentelemetry-exporter-common-1.28.0.jar.sha1</a>     2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0.jar.sha256" title="opentelemetry-exporter-common-1.28.0.jar.sha256">opentelemetry-exporter-common-1.28.0.jar.sha2...</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0.jar.sha512" title="opentelemetry-exporter-common-1.28.0.jar.sha512">opentelemetry-exporter-common-1.28.0.jar.sha5...</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0.module" title="opentelemetry-exporter-common-1.28.0.module">opentelemetry-exporter-common-1.28.0.module</a>       2023-07-07 12:28      4042      
+<a href="opentelemetry-exporter-common-1.28.0.module.asc" title="opentelemetry-exporter-common-1.28.0.module.asc">opentelemetry-exporter-common-1.28.0.module.a...</a>  2023-07-07 12:28       475      
+<a href="opentelemetry-exporter-common-1.28.0.module.asc.md5" title="opentelemetry-exporter-common-1.28.0.module.asc.md5">opentelemetry-exporter-common-1.28.0.module.a...</a>  2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0.module.asc.sha1" title="opentelemetry-exporter-common-1.28.0.module.asc.sha1">opentelemetry-exporter-common-1.28.0.module.a...</a>  2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0.module.asc.sha256" title="opentelemetry-exporter-common-1.28.0.module.asc.sha256">opentelemetry-exporter-common-1.28.0.module.a...</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0.module.asc.sha512" title="opentelemetry-exporter-common-1.28.0.module.asc.sha512">opentelemetry-exporter-common-1.28.0.module.a...</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0.module.md5" title="opentelemetry-exporter-common-1.28.0.module.md5">opentelemetry-exporter-common-1.28.0.module.m...</a>  2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0.module.sha1" title="opentelemetry-exporter-common-1.28.0.module.sha1">opentelemetry-exporter-common-1.28.0.module.s...</a>  2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0.module.sha256" title="opentelemetry-exporter-common-1.28.0.module.sha256">opentelemetry-exporter-common-1.28.0.module.s...</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0.module.sha512" title="opentelemetry-exporter-common-1.28.0.module.sha512">opentelemetry-exporter-common-1.28.0.module.s...</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0.pom" title="opentelemetry-exporter-common-1.28.0.pom">opentelemetry-exporter-common-1.28.0.pom</a>          2023-07-07 12:28      1799      
+<a href="opentelemetry-exporter-common-1.28.0.pom.asc" title="opentelemetry-exporter-common-1.28.0.pom.asc">opentelemetry-exporter-common-1.28.0.pom.asc</a>      2023-07-07 12:28       475      
+<a href="opentelemetry-exporter-common-1.28.0.pom.asc.md5" title="opentelemetry-exporter-common-1.28.0.pom.asc.md5">opentelemetry-exporter-common-1.28.0.pom.asc....</a>  2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0.pom.asc.sha1" title="opentelemetry-exporter-common-1.28.0.pom.asc.sha1">opentelemetry-exporter-common-1.28.0.pom.asc....</a>  2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0.pom.asc.sha256" title="opentelemetry-exporter-common-1.28.0.pom.asc.sha256">opentelemetry-exporter-common-1.28.0.pom.asc....</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0.pom.asc.sha512" title="opentelemetry-exporter-common-1.28.0.pom.asc.sha512">opentelemetry-exporter-common-1.28.0.pom.asc....</a>  2023-07-07 12:28       128      
+<a href="opentelemetry-exporter-common-1.28.0.pom.md5" title="opentelemetry-exporter-common-1.28.0.pom.md5">opentelemetry-exporter-common-1.28.0.pom.md5</a>      2023-07-07 12:28        32      
+<a href="opentelemetry-exporter-common-1.28.0.pom.sha1" title="opentelemetry-exporter-common-1.28.0.pom.sha1">opentelemetry-exporter-common-1.28.0.pom.sha1</a>     2023-07-07 12:28        40      
+<a href="opentelemetry-exporter-common-1.28.0.pom.sha256" title="opentelemetry-exporter-common-1.28.0.pom.sha256">opentelemetry-exporter-common-1.28.0.pom.sha2...</a>  2023-07-07 12:28        64      
+<a href="opentelemetry-exporter-common-1.28.0.pom.sha512" title="opentelemetry-exporter-common-1.28.0.pom.sha512">opentelemetry-exporter-common-1.28.0.pom.sha5...</a>  2023-07-07 12:28       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.28.0/exporters/common/build.gradle.kts | sed -n '1,180p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 206ms:
+plugins {
+  id("otel.java-conventions")
+  id("otel.publish-conventions")
+
+  id("otel.animalsniffer-conventions")
+}
+
+description = "OpenTelemetry Exporter Common"
+otelJava.moduleName.set("io.opentelemetry.exporter.internal")
+
+val versions: Map<String, String> by project
+dependencies {
+  api(project(":api:all"))
+
+  compileOnly(project(":sdk:common"))
+
+  compileOnly("org.codehaus.mojo:animal-sniffer-annotations")
+
+  annotationProcessor("com.google.auto.value:auto-value")
+
+  // We include helpers shared by gRPC exporters but do not want to impose these
+  // dependency on all of our consumers.
+  compileOnly("com.fasterxml.jackson.core:jackson-core")
+  compileOnly("com.squareup.okhttp3:okhttp")
+  compileOnly("io.grpc:grpc-stub")
+
+  testImplementation(project(":sdk:common"))
+
+  testImplementation("com.google.protobuf:protobuf-java-util")
+  testImplementation("com.squareup.okhttp3:okhttp")
+  testImplementation("com.linecorp.armeria:armeria-junit5")
+  testImplementation("org.skyscreamer:jsonassert")
+  testImplementation("com.google.api.grpc:proto-google-common-protos")
+  testImplementation("io.grpc:grpc-testing")
+  testRuntimeOnly("io.grpc:grpc-netty-shaded")
+}
+
+val testJavaVersion: String? by project
+
+testing {
+  suites {
+    register<JvmTestSuite>("testHttpSenderProvider") {
+      dependencies {
+        implementation(project(":exporters:sender:jdk"))
+        implementation(project(":exporters:sender:okhttp"))
+      }
+      targets {
+        all {
+          testTask {
+            enabled = !testJavaVersion.equals("8")
+          }
+        }
+      }
+    }
+  }
+}
+
+tasks {
+  check {
+    dependsOn(testing.suites)
+  }
+}
+
+afterEvaluate {
+  tasks.named<JavaCompile>("compileTestHttpSenderProviderJava") {
+    options.release.set(11)
+  }
+}
+
+ succeeded in 534ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:22:15 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"a35cc21e282f89ba6bb150f182c74068"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=wB3nnV7d%2FCC5bQ3tttPcjwZorwDQU67HDP4Fn7NEcgqkqMxuM76kGkGXLRVldGR1cZHBlbheu35RSuGVyLNDA1FBxfUJDeAmrD6mkJy%2BwvDtL%2F7FkQ%2F9z4baqgJ%2FyW4QpY0ksBjaUPB698PEpIvBW7dTYDIydr5VVSkfA96JxhFlf752EfHCu9xXKsd8nm926iWvr4TrPamZHs1up7R1P1h1taSKJaS5FEhFsjXMoBRBXFKTsZvvDhiBsYTeKpkl7C7lnMdp2qEscDIiOaGVXw%3D%3D--ZE67XGQP5ukEVGzR--m8Rk9kB7yxgvzifZ9PpgEQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1017960402.1777342934; expires=Wed, 28 Apr 2027 02:22:14 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 02:22:14 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:1B1C01:60B7935:49D29B2:69F019D6
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.opentelemetry</groupId>
+  <artifactId>opentelemetry-exporter-common</artifactId>
+  <version>1.28.0</version>
+  <name>OpenTelemetry Java</name>
+  <description>OpenTelemetry Exporter Common</description>
+  <url>https://github.com/open-telemetry/opentelemetry-java</url>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>opentelemetry</id>
+      <name>OpenTelemetry</name>
+      <url>https://github.com/open-telemetry/community</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:open-telemetry/opentelemetry-java.git</connection>
+    <developerConnection>scm:git:git@github.com:open-telemetry/opentelemetry-java.git</developerConnection>
+    <url>git@github.com:open-telemetry/opentelemetry-java.git</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>1.28.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar | sed -n '1,24p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar | sed -n '1,24p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-test-sources.jar | sed -n '1,24p'; true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 198ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:22:21 GMT
+content-type: application/java-archive
+content-length: 52839
+cf-ray: 9f329945be6d3b64-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "6607ae4c946286abb284d3dfb69bfe20"
+last-modified: Fri, 07 Jul 2023 12:28:34 GMT
+x-checksum-md5: 6607ae4c946286abb284d3dfb69bfe20
+x-checksum-sha1: 0a7dd0cd601cd982426770ecda435dd8391a143f
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 239ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:22:21 GMT
+content-type: application/java-archive
+content-length: 371
+cf-ray: 9f329945cc503b58-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "8320f5b886478f6d3185d454ddd777a7"
+last-modified: Fri, 07 Jul 2023 12:28:34 GMT
+x-checksum-md5: 8320f5b886478f6d3185d454ddd777a7
+x-checksum-sha1: 9191c01746726f3094e4fb73e1e93748f247fdfe
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 251ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 02:22:21 GMT
+content-type: text/html
+cf-ray: 9f329945cdaa3b57-GVA
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I found Maven-hosted 1.28.0 sources and Javadoc artifacts, no Maven test-sources artifact, and the tagged GitHub test directory resolves. I’m going to fill only the missing fields on the 1.28.0 entry and leave `language` absent because this is a Java artifact, not a Kotlin or Scala-specific library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+diff --git a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+index fd46f2b565e39d49d325952fe17699e88ca30c35..737a648d26b53448b348c8776d82b54e4bdb0206
+--- a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
++++ b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.28.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
++    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
++    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+     "tested-versions" : [
+       "1.28.0"
+     ],
+
+diff --git a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+index fd46f2b565e39d49d325952fe17699e88ca30c35..737a648d26b53448b348c8776d82b54e4bdb0206
+--- a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
++++ b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.28.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
++    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
++    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+     "tested-versions" : [
+       "1.28.0"
+     ],
+
+codex
+The JSON edit is in place. I’ll do a quick structural check and inspect the diff so we catch formatting or accidental-field issues before I wrap up.
+exec
+/usr/bin/bash -lc 'jq empty metadata/io.opentelemetry/opentelemetry-exporter-common/index.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.opentelemetry/opentelemetry-exporter-common/index.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 0ms:
+diff --git i/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json w/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+index fd46f2b565..737a648d26 100644
+--- i/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
++++ w/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.28.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
++    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
++    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+     "tested-versions" : [
+       "1.28.0"
+     ],
+
+diff --git a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+index fd46f2b565e39d49d325952fe17699e88ca30c35..737a648d26b53448b348c8776d82b54e4bdb0206
+--- a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
++++ b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.28.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
++    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
++    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+     "tested-versions" : [
+       "1.28.0"
+     ],
+
+codex
+The diff is only the requested missing fields, and `jq` accepts the file. I’m running the repo’s metadata-file validation for this coordinate now.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.opentelemetry:opentelemetry-exporter-common:1.28.0 --stacktrace' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+diff --git a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+index fd46f2b565e39d49d325952fe17699e88ca30c35..737a648d26b53448b348c8776d82b54e4bdb0206
+--- a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
++++ b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.28.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
++    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
++    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+     "tested-versions" : [
+       "1.28.0"
+     ],
+
+ exited 1 in 1796ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for io.opentelemetry:opentelemetry-exporter-common:1.28.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/metadata/io.opentelemetry/opentelemetry-exporter-common/1.28.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.opentelemetry:opentelemetry-exporter-common:1.28.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/metadata/io.opentelemetry/opentelemetry-exporter-common/1.28.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.opentelemetry:opentelemetry-exporter-common:1.28.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/metadata/io.opentelemetry/opentelemetry-exporter-common/1.28.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The coordinate-scoped metadata validation fails because this library version has no `reachability-metadata.json` directory content in the repo, which is outside the URL/description edit. I’ve still confirmed the edited JSON parses cleanly.
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/io.opentelemetry/opentelemetry-exporter-common/index.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSI https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.28.0/exporters/common/README.md | sed -n '1,24p'; true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common | sed -n '1,24p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 127ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+content-security-policy: default-src 'none'; style-src 'unsafe-inline'; sandbox
+strict-transport-security: max-age=31536000
+x-content-type-options: nosniff
+x-frame-options: deny
+x-xss-protection: 1; mode=block
+content-type: text/plain; charset=utf-8
+x-github-request-id: BE92:21BADB:82ADD64:91AA14E:69F019F7
+accept-ranges: bytes
+date: Tue, 28 Apr 2026 02:22:48 GMT
+via: 1.1 varnish
+x-served-by: cache-fra-eddf8230172-FRA
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1777342968.265128,VS0,VE121
+vary: Authorization,Accept-Encoding
+access-control-allow-origin: *
+cross-origin-resource-policy: cross-origin
+x-fastly-request-id: f4614d3cad14e7edbc1fe6196c98d3e7ec008a5a
+expires: Tue, 28 Apr 2026 02:27:48 GMT
+source-age: 0
+content-length: 14
+
+
+diff --git a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+index fd46f2b565e39d49d325952fe17699e88ca30c35..737a648d26b53448b348c8776d82b54e4bdb0206
+--- a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
++++ b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.28.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
++    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
++    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+     "tested-versions" : [
+       "1.28.0"
+     ],
+
+ succeeded in 478ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:22:48 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"829cd2e9451adddd157c723476b4742f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=iRDhkpDWFziHftcZlAKf6LNf17Dfnp3CZNyTWJa5voDPjgGpcENIGUrYynDuaAHjD1gz1%2FLKwK3jX6B3CmiSiwZzBN7EV1zMo%2BJSUfPm3D5Sh0Qlax%2BOzb%2FWbGEUVb9SD%2FzKI%2B5uRvFG3mVfgYoQFjV0ep1WjX390bL4%2BFDpuo%2BbLiJtZlmT%2FGk7O43S1JrCulpieC3x7%2B11MkJtcoWbHdQc4negoygPiug0ozaukZf%2B%2Fk89KPEmucL5VoQYhweDtjr1sBdd5nVDh8gpGoDp8Q%3D%3D--AbkoDnLrVvEKHtw0--Be75t3WIusr64WAyhVZUug%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1991334570.1777342968; expires=Wed, 28 Apr 2027 02:22:48 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 02:22:48 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 50FF:380B67:5F2E835:4892E7F:69F019F8
+
+
+web search: 
+web search: https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test
+web search: 
+web search: repo1.maven.org io/opentelemetry/opentelemetry-exporter-common/1.28.0 opentelemetry-exporter-common-1.28.0-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/io.opentelemetry/opentelemetry-exporter-common
+web search: 
+web search: https://maven.wso2.org/nexus/content/groups/wso2-public/io/opentelemetry/opentelemetry-exporter-common/1.28.0/
+exec
+/usr/bin/bash -lc "nl -ba metadata/io.opentelemetry/opentelemetry-exporter-common/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.28.0",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
+     6	    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+     7	    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
+     9	    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+    10	    "tested-versions" : [
+    11	      "1.28.0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "io.opentelemetry.exporter.internal"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.19.0",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0-sources.jar",
+    20	    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
+    21	    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.19.0/exporters/common/src/test",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.19.0/opentelemetry-exporter-common-1.19.0-javadoc.jar",
+    23	    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+index fd46f2b565e39d49d325952fe17699e88ca30c35..737a648d26b53448b348c8776d82b54e4bdb0206
+--- a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
++++ b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.28.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
++    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
++    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+     "tested-versions" : [
+       "1.28.0"
+     ],
+
+web search: 
+web search: opentelemetry-exporter-common 1.28.0 sources jar javadoc jar maven central
+web search: 
+web search: https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test
+web search: 
+web search: https://maven.wso2.org/nexus/content/groups/wso2-public/io/opentelemetry/opentelemetry-exporter-common/1.28.0/
+web search: 
+web search: https://raw.githubusercontent.com/open-telemetry/opentelemetry-java/v1.28.0/exporters/common/build.gradle.kts
+codex
+Updated [index.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json:4) for `metadata-version` `1.28.0` with source, repository, test suite, documentation, and the two-sentence description. I left `language` absent because this is not a Kotlin or Scala-specific artifact.
+
+I selected Maven-hosted exact-version sources/Javadoc and the tagged GitHub test directory for `v1.28.0`; the module metadata identifies it as OpenTelemetry Exporter Common with shared exporter helper dependencies. ([maven.wso2.org](https://maven.wso2.org/nexus/content/groups/wso2-public/io/opentelemetry/opentelemetry-exporter-common/1.28.0/))
+
+Verification:
+- `jq empty metadata/io.opentelemetry/opentelemetry-exporter-common/index.json` passed.
+- `git diff --check -- metadata/io.opentelemetry/opentelemetry-exporter-common/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.opentelemetry:opentelemetry-exporter-common:1.28.0 --stacktrace` failed because `metadata/io.opentelemetry/opentelemetry-exporter-common/1.28.0/reachability-metadata.json` is missing, which is outside the requested fields.
+diff --git a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+index fd46f2b565e39d49d325952fe17699e88ca30c35..737a648d26b53448b348c8776d82b54e4bdb0206
+--- a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
++++ b/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.28.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-sources.jar",
++    "repository-url" : "https://github.com/open-telemetry/opentelemetry-java",
++    "test-code-url" : "https://github.com/open-telemetry/opentelemetry-java/tree/v1.28.0/exporters/common/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/opentelemetry/opentelemetry-exporter-common/1.28.0/opentelemetry-exporter-common-1.28.0-javadoc.jar",
++    "description" : "OpenTelemetry Exporter Common provides shared Java helper code used by OpenTelemetry exporters. It contains common internal exporter utilities for building telemetry export integrations without forcing optional transport dependencies onto every consumer.",
+     "tested-versions" : [
+       "1.28.0"
+     ],
+
+2026-04-28T02:23:36.277115Z ERROR codex_core::session: failed to record rollout items: thread 019dd1e4-acf4-7fc2-8409-0ff8fea730cd not found
+tokens used
+85,933
+Updated [index.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/metadata/io.opentelemetry/opentelemetry-exporter-common/index.json:4) for `metadata-version` `1.28.0` with source, repository, test suite, documentation, and the two-sentence description. I left `language` absent because this is not a Kotlin or Scala-specific artifact.
+
+I selected Maven-hosted exact-version sources/Javadoc and the tagged GitHub test directory for `v1.28.0`; the module metadata identifies it as OpenTelemetry Exporter Common with shared exporter helper dependencies. ([maven.wso2.org](https://maven.wso2.org/nexus/content/groups/wso2-public/io/opentelemetry/opentelemetry-exporter-common/1.28.0/))
+
+Verification:
+- `jq empty metadata/io.opentelemetry/opentelemetry-exporter-common/index.json` passed.
+- `git diff --check -- metadata/io.opentelemetry/opentelemetry-exporter-common/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=io.opentelemetry:opentelemetry-exporter-common:1.28.0 --stacktrace` failed because `metadata/io.opentelemetry/opentelemetry-exporter-common/1.28.0/reachability-metadata.json` is missing, which is outside the requested fields.
+Ran agent for io.opentelemetry:opentelemetry-exporter-common:1.28.0 (exit 0). Log: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/build/agent-url-discovery-logs/io.opentelemetry-opentelemetry-exporter-common-1.28.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2565-eb511c0a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 40s
+9 actionable tasks: 1 executed, 8 up-to-date
