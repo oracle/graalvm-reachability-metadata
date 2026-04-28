@@ -1,0 +1,1045 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd4d5-8262-79c1-9a7f-6db10ceb3cea
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "9.0.83".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+- Set "coordinates" to "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and the Tomcat tag before editing the JSON, then I’ll patch the file in place and validate it parses.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.tomcat\\.embed-tomcat-embed-websocket-9\\.0\\.83\\.json"'$'"'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83"
+}
+
+web search: 
+web search: Maven Central org.apache.tomcat.embed tomcat-embed-websocket 9.0.83 sources test sources
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/
+web search: 
+web search: https://github.com/apache/tomcat
+web search: 
+web search: https://github.com/apache/tomcat/tree/9.0.83
+codex
+The Maven directory has a `9.0.83-sources.jar`, but no corresponding `test-sources` artifact. I’m checking the Tomcat `9.0.83` tag for the version-pinned test and documentation locations.
+web search: 
+web search: https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket
+web search: 
+web search: 'web-socket-howto.xml' in https://github.com/apache/tomcat/tree/9.0.83/webapps/docs
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.tomcat.embed</groupId>
+  <artifactId>tomcat-embed-websocket</artifactId>
+  <version>9.0.83</version>
+  <description>Core Tomcat implementation</description>
+  <url>https://tomcat.apache.org/</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-core</artifactId>
+      <version>9.0.83</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -s https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-test-sources.jar' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/tomcat/9.0.83/build.properties.release | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 233ms:
+HTTP/2 404 
+date: Tue, 28 Apr 2026 16:05:01 GMT
+content-type: text/html
+cf-ray: 9f374e5c5d912325-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 270ms:
+# -----------------------------------------------------------------------------
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# -----------------------------------------------------------------------------
+
+# This file was auto-generated by the pre-release Ant target.
+
+# Any unwanted settings may be over-ridden in a build.properties file located
+# in the same directory as this file.
+
+# Set the version-dev to "" (empty string) as this is not a development release.
+version.dev=
+
+# Ensure consistent timestamps for reproducible builds.
+ant.tstamp.now.iso=2023-11-09T20:57:42Z
+
+# Enable insertion of detached signatures into the Windows installer.
+do.codesigning=true
+
+# Re-use the same GPG executable.
+gpg.exec=/usr/bin/gpg
+
+# Reproducible builds require the use of the build tools defined below. The
+# vendors (where appropriate) and versions must match exactly for a reproducible
+# build since this data is embedded in various files, particularly JAR file
+# manifests, as part of the build process.
+#
+# Apache Ant:      Apache Ant(TM) version 1.10.12 compiled on July 19 2023
+#
+# Java Name:       OpenJDK 64-Bit Server VM
+# Java Vendor:     Eclipse Adoptium
+# Java Version:    17.0.9+9
+
+# The following is provided for information only. Builds will be repeatable
+# whether or not the build environment is consistent with this information.
+#
+# OS:              amd64 Linux 6.5.10-300.fc39.x86_64
+# File encoding:   UTF-8
+#
+# Release Manager: remm
+release-java-version=17.0.9+9
+release-ant-version=1.10.12
+
+web search: 
+web search: repo.maven.apache.org tomcat-embed-websocket 9.0.83 sources jar
+web search: 
+web search: https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket
+web search: 
+web search: https://raw.githubusercontent.com/apache/tomcat/9.0.83/webapps/docs/web-socket-howto.xml
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'repo\\.maven\\.apache\\.org/.+-sources\\.jar' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\"' build/discovered-artifact-metadata | head -20" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'source-code-url' -g '*.json' . | head -30" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+./metadata/org.ehcache/ehcache/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+./metadata/org.yaml/snakeyaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+./metadata/io.opencensus/opencensus-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-sources.jar",
+./metadata/commons-cli/commons-cli/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+./metadata/ch.qos.logback/logback-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-sources.jar",
+./metadata/ch.qos.logback/logback-core/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-sources.jar",
+./metadata/javax.persistence/javax.persistence-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-sources.jar",
+./metadata/org.opengauss/opengauss-jdbc/index.json:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.0-og/opengauss-jdbc-3.1.0-og-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+./metadata/org.antlr/antlr4-runtime/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/oro/oro/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+./metadata/com.mysql/mysql-connector-j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+./metadata/net.java.dev.jna/jna/index.json:    "source-code-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.8.0/jna-5.8.0-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-sources.jar",
+./metadata/javax.activation/activation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/com.itextpdf/kernel/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+./metadata/org.jetbrains/annotations-java5/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/annotations-java5/23.0.0/annotations-java5-23.0.0-sources.jar",
+./metadata/org.jetbrains/annotations/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0-sources.jar",
+./metadata/at.yawk.lz4/lz4-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/at/yawk/lz4/lz4-java/1.10.4/lz4-java-1.10.4-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'repository-url' -g '*.json' . | head -30" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/javax.activation/javax.activation-api/index.json:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.slf4j/slf4j-api/index.json:    "repository-url" : "https://github.com/qos-ch/slf4j",
+./metadata/org.slf4j/slf4j-api/index.json:    "repository-url" : "https://github.com/qos-ch/slf4j",
+./metadata/com.sun.mail/jakarta.mail/index.json:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/org.slf4j/slf4j-nop/index.json:    "repository-url" : "https://github.com/qos-ch/slf4j",
+./metadata/org.slf4j/slf4j-jdk14/index.json:    "repository-url" : "https://github.com/qos-ch/slf4j",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.squareup.okio/okio/index.json:    "repository-url" : "https://github.com/square/okio",
+./metadata/org.postgresql/postgresql/index.json:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.apache.zookeeper/zookeeper/index.json:    "repository-url" : "https://github.com/apache/zookeeper",
+./metadata/org.apache.zookeeper/zookeeper-jute/index.json:    "repository-url" : "https://gitbox.apache.org/repos/asf/zookeeper.git",
+./metadata/javax.servlet/javax.servlet-api/index.json:    "repository-url" : "https://github.com/javaee/servlet-spec",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:    "repository-url" : "https://github.com/javaee/jaxb-istack-commons",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons",
+./metadata/org.jline/jline-terminal-jna/index.json:    "repository-url" : "https://github.com/jline/jline3",
+./metadata/org.eclipse.aether/aether-util/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/org.eclipse.aether/aether-api/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/org.jline/jline/index.json:    "repository-url": "https://github.com/jline/jline3",
+./metadata/org.eclipse.aether/aether-spi/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git/tree/",
+./metadata/com.google.guava/listenablefuture/index.json:    "repository-url": "https://github.com/google/guava",
+./metadata/com.google.guava/failureaccess/index.json:    "repository-url" : "https://github.com/google/guava",
+./metadata/org.eclipse.aether/aether-impl/index.json:    "repository-url" : "https://git.eclipse.org/c/aether/aether-core.git",
+./metadata/org.jvnet.staxex/stax-ex/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex",
+./metadata/org.jvnet.staxex/stax-ex/index.json:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.ehcache/ehcache/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.ehcache"
+    ],
+    "metadata-version": "3.10.8-jakarta",
+    "tested-versions": [
+      "3.10.8-jakarta"
+    ],
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+    "repository-url": "https://github.com/ehcache/ehcache3",
+    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+    "description": "Ehcache is an open source, standards-based Java cache that improves performance, reduces database load, and simplifies scalability. It supports both the Ehcache API and the JSR-107 cache API, with configurations ranging from in-process caches to larger tiered deployments."
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/commons-cli/commons-cli/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-sources.jar",
+    "repository-url" : "https://github.com/apache/commons-cli",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-test-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-javadoc.jar",
+    "tested-versions" : [
+      "1.5.0",
+      "1.6.0",
+      "1.7.0",
+      "1.8.0",
+      "1.9.0",
+      "1.10.0",
+      "1.11.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.commons.cli",
+      "java.util"
+    ],
+    "description" : "Apache Commons CLI provides a simple API for defining, processing, and validating command-line options in Java applications. It helps applications parse arguments, enforce option rules, and generate usage information."
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' metadata/org.apache.tomcat* metadata/org.apache* -g 'index.json' | head -40" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:    "documentation-url": "https://github.com/apache/tomcat/tree/10.1.7/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/9.0.83/webapps/docs/elapi",
+metadata/org.apache.ant/ant-antlr/index.json:    "documentation-url" : "https://github.com/apache/ant/blob/rel/1.10.15/manual/Tasks/antlr.html",
+metadata/org.apache.maven/maven-monitor/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/2.0.6/maven-monitor-2.0.6-javadoc.jar",
+metadata/org.apache.kafka/kafka-clients/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-javadoc.jar",
+metadata/org.apache.openejb/javaee-api/index.json:    "documentation-url": "N/A",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+metadata/org.apache.commons/commons-dbcp2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+metadata/org.apache.kafka/kafka-streams/index.json:    "documentation-url": "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-javadoc.jar",
+metadata/org.apache.commons/commons-lang3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-javadoc.jar",
+metadata/org.apache.tomcat/tomcat-juli/index.json:    "documentation-url" : "https://github.com/apache/tomcat/blob/10.1.7/webapps/docs/logging.xml",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.1.0/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs",
+metadata/org.apache.commons/commons-text/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-javadoc.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/org.apache.commons/commons-collections4/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.apache.commons/commons-pool2/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-javadoc.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/9.0.83/webapps/docs/elapi",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs/annotationapi",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.1.0/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:    "documentation-url" : "https://zookeeper.apache.org/doc/r3.8.1/index.html",
+metadata/org.apache.tomcat/tomcat-annotations-api/index.json:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs/annotationapi",
+metadata/org.apache.tomcat/tomcat-jdbc/index.json:    "documentation-url": "https://github.com/apache/tomcat/tree/10.1.7/webapps/docs",
+metadata/org.apache.tomcat/tomcat-juli/index.json:    "documentation-url" : "https://github.com/apache/tomcat/blob/10.1.7/webapps/docs/logging.xml",
+metadata/org.apache.santuario/xmlsec/index.json:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "9.0.83",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-el/9.0.83/tomcat-embed-el-9.0.83-sources.jar",
+    "repository-url" : "https://github.com/apache/tomcat",
+    "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/el",
+    "documentation-url" : "https://github.com/apache/tomcat/tree/9.0.83/webapps/docs/elapi",
+    "description" : "Tomcat Embed EL provides Apache Tomcat's embeddable implementation of the Java Unified Expression Language used by Tomcat 9. It parses and evaluates EL expressions for JSP and servlet-based applications running with embedded Tomcat.",
+    "tested-versions" : [
+      "9.0.83",
+      "9.0.84",
+      "9.0.85",
+      "9.0.86",
+      "9.0.87",
+      "9.0.88",
+      "9.0.89",
+      "9.0.90",
+      "9.0.91",
+      "9.0.93",
+      "9.0.94",
+      "9.0.95",
+      "9.0.96",
+      "9.0.97",
+      "9.0.98",
+      "9.0.99",
+      "9.0.100",
+      "9.0.102",
+      "9.0.104",
+      "9.0.105",
+      "9.0.106",
+      "9.0.107",
+      "9.0.108",
+      "9.0.109",
+      "9.0.110",
+      "9.0.111",
+      "9.0.112",
+      "9.0.113",
+      "9.0.115",
+      "9.0.116",
+      "9.0.117"
+    ],
+    "allowed-packages" : [
+      "javax.el",
+      "org.apache.el"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "10.1.0",
+    "test-version" : "10.0.20",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/10.1.0/tomcat-embed-core-10.1.0-sources.jar",
+    "repository-url" : "https://github.com/apache/tomcat",
+    "test-code-url" : "https://github.com/apache/tomcat/tree/10.1.0/test",
+    "documentation-url" : "https://github.com/apache/tomcat/tree/10.1.0/webapps/docs",
+    "description" : "Apache Tomcat Embed provides the core Tomcat server implementation for embedding a servlet container in a Java application. It supplies the runtime components needed to run Jakarta Servlet-based web applications without deploying to a separate Tomcat installation.",
+    "tested-versions" : [
+      "10.1.0",
+      "10.1.1",
+      "10.1.2",
+      "10.1.4",
+      "10.1.5",
+      "10.1.6",
+      "10.1.7",
+      "10.1.8",
+      "10.1.9",
+      "10.1.10",
+      "10.1.11",
+      "10.1.12",
+      "10.1.13",
+      "10.1.14",
+      "10.1.15",
+      "10.1.16",
+      "10.1.17",
+      "10.1.18",
+      "10.1.19",
+      "10.1.20",
+      "10.1.23",
+      "10.1.24",
+      "10.1.25",
+      "10.1.26",
+      "10.1.28",
+      "10.1.29",
+      "10.1.30",
+      "10.1.31",
+      "10.1.33",
+      "10.1.34",
+      "10.1.35",
+      "10.1.36",
+      "10.1.39",
+      "10.1.40",
+      "10.1.41",
+      "10.1.42",
+      "10.1.43",
+      "10.1.44",
+      "10.1.45",
+      "10.1.46",
+      "10.1.47",
+      "10.1.48",
+      "10.1.49",
+      "10.1.50",
+      "10.1.52",
+      "10.1.53",
+      "11.0.0",
+      "11.0.1",
+      "11.0.2",
+      "11.0.3",
+      "11.0.4",
+      "11.0.5",
+      "11.0.6",
+      "11.0.7",
+      "11.0.8",
+      "11.0.9",
+      "11.0.10",
+      "11.0.11",
+      "11.0.12",
+      "11.0.13",
+      "11.0.14",
+      "11.0.15",
+      "11.0.18",
+      "11.0.20",
+      "11.0.21"
+    ],
+    "allowed-packages" : [
+      "org.apache.catalina",
+      "org.apache.tomcat"
+    ]
+  },
+  {
+    "metadata-version" : "10.0.20",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/10.0.20/tomcat-embed-core-10.0.20-sources.jar",
+    "repository-url" : "https://github.com/apache/tomcat",
+    "test-code-url" : "https://github.com/apache/tomcat/tree/10.0.20/test",
+    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs",
+    "description" : "Apache Tomcat Embed is a library that allows you to embed Tomcat in your application. The tomcat-embed-core artifact provides the core Tomcat server implementation for running an embedded servlet container.",
+    "tested-versions" : [
+      "10.0.20",
+      "10.0.21",
+      "10.0.22",
+      "10.0.23",
+      "10.0.26",
+      "10.0.27",
+      "10.1.0-M1",
+      "10.1.0-M2",
+      "10.1.0-M4"
+    ],
+    "allowed-packages" : [
+      "org.apache.catalina",
+      "org.apache.tomcat"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/tomcat/contents/webapps/docs?ref=9.0.83 | rg 'web-socket|websocket|name'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket?ref=9.0.83 | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/tomcat/contents/webapps/docs/websocketapi?ref=9.0.83 | sed -n '1,80p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 156ms:
+[
+  {
+    "name": "index.html",
+    "path": "webapps/docs/websocketapi/index.html",
+    "sha": "19cd77817d08c869b79930dec7c11b6dc239edd9",
+    "size": 1170,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/webapps/docs/websocketapi/index.html?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/websocketapi/index.html",
+    "git_url": "https://api.github.com/repos/apache/tomcat/git/blobs/19cd77817d08c869b79930dec7c11b6dc239edd9",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/webapps/docs/websocketapi/index.html",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat/contents/webapps/docs/websocketapi/index.html?ref=9.0.83",
+      "git": "https://api.github.com/repos/apache/tomcat/git/blobs/19cd77817d08c869b79930dec7c11b6dc239edd9",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/websocketapi/index.html"
+    }
+  }
+]
+
+ succeeded in 194ms:
+[
+  {
+    "name": "TestConnectionLimit.java",
+    "path": "test/org/apache/tomcat/websocket/TestConnectionLimit.java",
+    "sha": "f1ec95dcdb26579b170ab37b3b158391e15675f5",
+    "size": 3748,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestConnectionLimit.java?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestConnectionLimit.java",
+    "git_url": "https://api.github.com/repos/apache/tomcat/git/blobs/f1ec95dcdb26579b170ab37b3b158391e15675f5",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/test/org/apache/tomcat/websocket/TestConnectionLimit.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestConnectionLimit.java?ref=9.0.83",
+      "git": "https://api.github.com/repos/apache/tomcat/git/blobs/f1ec95dcdb26579b170ab37b3b158391e15675f5",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestConnectionLimit.java"
+    }
+  },
+  {
+    "name": "TestPerMessageDeflate.java",
+    "path": "test/org/apache/tomcat/websocket/TestPerMessageDeflate.java",
+    "sha": "d2a420cffc47d8f693c30329a77f1f15fa76d62f",
+    "size": 7527,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestPerMessageDeflate.java?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestPerMessageDeflate.java",
+    "git_url": "https://api.github.com/repos/apache/tomcat/git/blobs/d2a420cffc47d8f693c30329a77f1f15fa76d62f",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/test/org/apache/tomcat/websocket/TestPerMessageDeflate.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestPerMessageDeflate.java?ref=9.0.83",
+      "git": "https://api.github.com/repos/apache/tomcat/git/blobs/d2a420cffc47d8f693c30329a77f1f15fa76d62f",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestPerMessageDeflate.java"
+    }
+  },
+  {
+    "name": "TestUtil.java",
+    "path": "test/org/apache/tomcat/websocket/TestUtil.java",
+    "sha": "8771ab380ac87f550cc54f3952a6f968607db421",
+    "size": 12250,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestUtil.java?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestUtil.java",
+    "git_url": "https://api.github.com/repos/apache/tomcat/git/blobs/8771ab380ac87f550cc54f3952a6f968607db421",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/test/org/apache/tomcat/websocket/TestUtil.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestUtil.java?ref=9.0.83",
+      "git": "https://api.github.com/repos/apache/tomcat/git/blobs/8771ab380ac87f550cc54f3952a6f968607db421",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestUtil.java"
+    }
+  },
+  {
+    "name": "TestWebSocketFrameClient.java",
+    "path": "test/org/apache/tomcat/websocket/TestWebSocketFrameClient.java",
+    "sha": "f7cfd9c38f69912f1613dd8c36543ca6feb75dde",
+    "size": 9245,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWebSocketFrameClient.java?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWebSocketFrameClient.java",
+    "git_url": "https://api.github.com/repos/apache/tomcat/git/blobs/f7cfd9c38f69912f1613dd8c36543ca6feb75dde",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/test/org/apache/tomcat/websocket/TestWebSocketFrameClient.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWebSocketFrameClient.java?ref=9.0.83",
+      "git": "https://api.github.com/repos/apache/tomcat/git/blobs/f7cfd9c38f69912f1613dd8c36543ca6feb75dde",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWebSocketFrameClient.java"
+    }
+  },
+  {
+    "name": "TestWebSocketFrameClientSSL.java",
+    "path": "test/org/apache/tomcat/websocket/TestWebSocketFrameClientSSL.java",
+    "sha": "55a1197f3881bc916955f2b6d3194b124e57b916",
+    "size": 5913,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWebSocketFrameClientSSL.java?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWebSocketFrameClientSSL.java",
+    "git_url": "https://api.github.com/repos/apache/tomcat/git/blobs/55a1197f3881bc916955f2b6d3194b124e57b916",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/test/org/apache/tomcat/websocket/TestWebSocketFrameClientSSL.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWebSocketFrameClientSSL.java?ref=9.0.83",
+      "git": "https://api.github.com/repos/apache/tomcat/git/blobs/55a1197f3881bc916955f2b6d3194b124e57b916",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWebSocketFrameClientSSL.java"
+    }
+  },
+  {
+    "name": "TestWsFrame.java",
+    "path": "test/org/apache/tomcat/websocket/TestWsFrame.java",
+    "sha": "c14386d68ef92b44e2cb9b6e240958f241e1e635",
+    "size": 3588,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWsFrame.java?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWsFrame.java",
+    "git_url": "https://api.github.com/repos/apache/tomcat/git/blobs/c14386d68ef92b44e2cb9b6e240958f241e1e635",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/test/org/apache/tomcat/websocket/TestWsFrame.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWsFrame.java?ref=9.0.83",
+      "git": "https://api.github.com/repos/apache/tomcat/git/blobs/c14386d68ef92b44e2cb9b6e240958f241e1e635",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWsFrame.java"
+    }
+  },
+  {
+    "name": "TestWsPingPongMessages.java",
+    "path": "test/org/apache/tomcat/websocket/TestWsPingPongMessages.java",
+    "sha": "5b400151c4b4983f68c7fcb50ea89f815017d31d",
+    "size": 3511,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWsPingPongMessages.java?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWsPingPongMessages.java",
+    "git_url": "https://api.github.com/repos/apache/tomcat/git/blobs/5b400151c4b4983f68c7fcb50ea89f815017d31d",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/test/org/apache/tomcat/websocket/TestWsPingPongMessages.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWsPingPongMessages.java?ref=9.0.83",
+      "git": "https://api.github.com/repos/apache/tomcat/git/blobs/5b400151c4b4983f68c7fcb50ea89f815017d31d",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWsPingPongMessages.java"
+    }
+  },
+  {
+    "name": "TestWsRemoteEndpoint.java",
+    "path": "test/org/apache/tomcat/websocket/TestWsRemoteEndpoint.java",
+    "sha": "88e5bd9908537390744a22974f04ffba9df36133",
+    "size": 8980,
+    "url": "https://api.github.com/repos/apache/tomcat/contents/test/org/apache/tomcat/websocket/TestWsRemoteEndpoint.java?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/test/org/apache/tomcat/websocket/TestWsRemoteEndpoint.java",
+
+ succeeded in 215ms:
+    "name": "META-INF",
+    "name": "WEB-INF",
+    "name": "aio.xml",
+    "name": "annotationapi",
+    "name": "api",
+    "name": "appdev",
+    "name": "apr.xml",
+    "name": "architecture",
+    "name": "balancer-howto.xml",
+    "name": "building.xml",
+    "name": "cdi.xml",
+    "name": "cgi-howto.xml",
+    "name": "changelog.xml",
+    "name": "class-loader-howto.xml",
+    "name": "cluster-howto.xml",
+    "name": "comments.xml",
+    "name": "config",
+    "name": "connectors.xml",
+    "name": "default-servlet.xml",
+    "name": "deployer-howto.xml",
+    "name": "developers.xml",
+    "name": "elapi",
+    "name": "graal.xml",
+    "name": "host-manager-howto.xml",
+    "name": "html-host-manager-howto.xml",
+    "name": "html-manager-howto.xml",
+    "name": "images",
+    "name": "index.xml",
+    "name": "introduction.xml",
+    "name": "jasper-howto.xml",
+    "name": "jaspicapi",
+    "name": "jndi-datasource-examples-howto.xml",
+    "name": "jndi-resources-howto.xml",
+    "name": "jspapi",
+    "name": "logging.xml",
+    "name": "manager-howto.xml",
+    "name": "maven-jars.xml",
+    "name": "mbeans-descriptors-howto.xml",
+    "name": "monitoring.xml",
+    "name": "project.xml",
+    "name": "proxy-howto.xml",
+    "name": "realm-howto.xml",
+    "name": "rewrite.xml",
+    "name": "security-howto.xml",
+    "name": "security-manager-howto.xml",
+    "name": "servletapi",
+    "name": "setup.xml",
+    "name": "ssi-howto.xml",
+    "name": "ssl-howto.xml",
+    "name": "tomcat-docs.xsl",
+    "name": "tribes",
+    "name": "virtual-hosting-howto.xml",
+    "name": "web-socket-howto.xml",
+    "path": "webapps/docs/web-socket-howto.xml",
+    "url": "https://api.github.com/repos/apache/tomcat/contents/webapps/docs/web-socket-howto.xml?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
+    "download_url": "https://raw.githubusercontent.com/apache/tomcat/9.0.83/webapps/docs/web-socket-howto.xml",
+      "self": "https://api.github.com/repos/apache/tomcat/contents/webapps/docs/web-socket-howto.xml?ref=9.0.83",
+      "html": "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml"
+    "name": "websocketapi",
+    "path": "webapps/docs/websocketapi",
+    "url": "https://api.github.com/repos/apache/tomcat/contents/webapps/docs/websocketapi?ref=9.0.83",
+    "html_url": "https://github.com/apache/tomcat/tree/9.0.83/webapps/docs/websocketapi",
+      "self": "https://api.github.com/repos/apache/tomcat/contents/webapps/docs/websocketapi?ref=9.0.83",
+      "html": "https://github.com/apache/tomcat/tree/9.0.83/webapps/docs/websocketapi"
+    "name": "windows-auth-howto.xml",
+    "name": "windows-service-howto.xml",
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/src.jar" https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar; jar tf "$tmp/src.jar" | sed -n '"'1,160p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/tomcat/9.0.83/webapps/docs/web-socket-howto.xml | rg -n '<title>|WebSocket|javax|org.apache.tomcat.websocket' | head -40" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/tomcat/9.0.83/webapps/docs/websocketapi/index.html | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 102ms:
+dpointBasic.java
+org/apache/tomcat/websocket/WsRemoteEndpointImplBase.java
+org/apache/tomcat/websocket/WsRemoteEndpointImplClient.java
+org/apache/tomcat/websocket/WsSession.java
+org/apache/tomcat/websocket/WsWebSocketContainer.java
+org/apache/tomcat/websocket/pojo/Constants.java
+org/apache/tomcat/websocket/pojo/LocalStrings.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_cs.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_de.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_es.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_fr.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_ja.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_ko.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_pt_BR.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_ru.properties
+org/apache/tomcat/websocket/pojo/LocalStrings_zh_CN.properties
+org/apache/tomcat/websocket/pojo/PojoEndpointBase.java
+org/apache/tomcat/websocket/pojo/PojoEndpointClient.java
+org/apache/tomcat/websocket/pojo/PojoEndpointServer.java
+org/apache/tomcat/websocket/pojo/PojoMessageHandlerBase.java
+org/apache/tomcat/websocket/pojo/PojoMessageHandlerPartialBase.java
+org/apache/tomcat/websocket/pojo/PojoMessageHandlerPartialBinary.java
+org/apache/tomcat/websocket/pojo/PojoMessageHandlerPartialText.java
+org/apache/tomcat/websocket/pojo/PojoMessageHandlerWholeBase.java
+org/apache/tomcat/websocket/pojo/PojoMessageHandlerWholeBinary.java
+org/apache/tomcat/websocket/pojo/PojoMessageHandlerWholePong.java
+org/apache/tomcat/websocket/pojo/PojoMessageHandlerWholeText.java
+org/apache/tomcat/websocket/pojo/PojoMethodMapping.java
+org/apache/tomcat/websocket/pojo/PojoPathParam.java
+org/apache/tomcat/websocket/pojo/package-info.java
+org/apache/tomcat/websocket/server/Constants.java
+org/apache/tomcat/websocket/server/DefaultServerEndpointConfigurator.java
+org/apache/tomcat/websocket/server/LocalStrings.properties
+org/apache/tomcat/websocket/server/LocalStrings_cs.properties
+org/apache/tomcat/websocket/server/LocalStrings_de.properties
+org/apache/tomcat/websocket/server/LocalStrings_es.properties
+org/apache/tomcat/websocket/server/LocalStrings_fr.properties
+org/apache/tomcat/websocket/server/LocalStrings_ja.properties
+org/apache/tomcat/websocket/server/LocalStrings_ko.properties
+org/apache/tomcat/websocket/server/LocalStrings_zh_CN.properties
+org/apache/tomcat/websocket/server/UpgradeUtil.java
+org/apache/tomcat/websocket/server/UriTemplate.java
+org/apache/tomcat/websocket/server/WsContextListener.java
+org/apache/tomcat/websocket/server/WsFilter.java
+org/apache/tomcat/websocket/server/WsFrameServer.java
+org/apache/tomcat/websocket/server/WsHandshakeRequest.java
+org/apache/tomcat/websocket/server/WsHttpUpgradeHandler.java
+org/apache/tomcat/websocket/server/WsMappingResult.java
+org/apache/tomcat/websocket/server/WsPerSessionServerEndpointConfig.java
+org/apache/tomcat/websocket/server/WsRemoteEndpointImplServer.java
+org/apache/tomcat/websocket/server/WsSci.java
+org/apache/tomcat/websocket/server/WsServerContainer.java
+org/apache/tomcat/websocket/server/WsSessionListener.java
+org/apache/tomcat/websocket/server/WsWriteTimeout.java
+org/apache/tomcat/websocket/server/package-info.java
+META-INF/NOTICE
+META-INF/LICENSE
+
+ succeeded in 171ms:
+26:      <title>WebSocket How-To</title>
+36:<p>Tomcat provides support for WebSocket as defined by
+41:<p>Tomcat implements the Java WebSocket 1.1 API defined by <a
+44:<p>There are several example applications that demonstrate how the WebSocket API
+52:<section name="Tomcat WebSocket specific configuration">
+55:   WebSocket. It is anticipated that these will be absorbed into the WebSocket
+58:<p>The write timeout used when sending WebSocket messages in blocking mode
+60:   the property <code>org.apache.tomcat.websocket.BLOCKING_SEND_TIMEOUT</code>
+61:   in the user properties collection attached to the WebSocket session. The
+67:   is part of the Java WebSocket API, Tomcat provides greater control of the
+69:   <code>org.apache.tomcat.websocket.READ_IDLE_TIMEOUT_MS</code> in the user
+70:   properties collection attached to the WebSocket session will trigger a
+71:   session timeout if no WebSocket message is received for the specified number
+73:   <code>org.apache.tomcat.websocket.WRITE_IDLE_TIMEOUT_MS</code> will trigger a
+74:   session timeout if no WebSocket message is sent for the specified number of
+85:   <code>org.apache.tomcat.websocket.binaryBufferSize</code> to the desired
+94:   <code>org.apache.tomcat.websocket.textBufferSize</code> to the desired value
+97:<p>The Java WebSocket specification 1.0 does not permit programmatic deployment
+98:   after the first endpoint has started a WebSocket handshake. By default,
+101:   <code>org.apache.tomcat.websocket.noAddAfterHandshake</code> servlet context
+103:   <code>org.apache.tomcat.websocket.STRICT_SPEC_COMPLIANCE</code> system
+107:<p>When using the WebSocket client to connect to server endpoints, the timeout
+110:   <code>javax.websocket.ClientEndpointConfig</code>. The property is
+111:   <code>org.apache.tomcat.websocket.IO_TIMEOUT_MS</code> and is the
+115:<p>When using the WebSocket client to connect to secure server endpoints, the
+117:   of the provided <code>javax.websocket.ClientEndpointConfig</code>. The
+120:     <li><code>org.apache.tomcat.websocket.SSL_CONTEXT</code></li>
+121:     <li><code>org.apache.tomcat.websocket.SSL_PROTOCOLS</code></li>
+122:     <li><code>org.apache.tomcat.websocket.SSL_TRUSTSTORE</code></li>
+123:     <li><code>org.apache.tomcat.websocket.SSL_TRUSTSTORE_PWD</code></li>
+127:<p>If the <code>org.apache.tomcat.websocket.SSL_CONTEXT</code> property is
+128:   set then the <code>org.apache.tomcat.websocket.SSL_TRUSTSTORE</code> and
+129:   <code>org.apache.tomcat.websocket.SSL_TRUSTSTORE_PWD</code> properties
+135:   <code>org.apache.tomcat.websocket.SSL_CONTEXT</code> user property. The
+138:   <code>javax.net.ssl.X509ExtendedTrustManager</code>. The desired verification
+142:<p>When using the WebSocket client to connect to server endpoints, the number of
+145:   <code>javax.websocket.ClientEndpointConfig</code>. The property is
+146:   <ocde>org.apache.tomcat.websocket.MAX_REDIRECTIONS</ocde>. The default value
+150:<p>When using the WebSocket client to connect to a server endpoint that requires
+154:     <li><code>org.apache.tomcat.websocket.WS_AUTHENTICATION_USER_NAME</code>
+
+ succeeded in 219ms:
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8" />
+    <title>API docs</title>
+</head>
+
+<body>
+
+The WebSocket Javadoc is not installed by default. Download and install
+the "fulldocs" package to get it.
+
+You can also access the javadoc online in the Tomcat
+<a href="https://tomcat.apache.org/tomcat-@VERSION_MAJOR_MINOR@-doc/">
+documentation bundle</a>.
+
+</body>
+</html>
+
+codex
+I found a matching existing Tomcat metadata pattern in the repo: Maven Central for `source-code-url`, the Apache Tomcat GitHub repository, and version-tagged Tomcat tree URLs for tests and docs. I’m updating only the requested discovered metadata file now.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+diff --git a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+index 8535c8264c459490d2acdee003dac00231029e30..016fc19d6ddc2961ced58e0e2e7007b772dd30ed
+--- a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
++++ b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83"
++  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
++  "repository-url" : "https://github.com/apache/tomcat",
++  "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
++  "documentation-url" : "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
++  "description" : "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+index 8535c8264c459490d2acdee003dac00231029e30..016fc19d6ddc2961ced58e0e2e7007b772dd30ed
+--- a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
++++ b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83"
++  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
++  "repository-url" : "https://github.com/apache/tomcat",
++  "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
++  "documentation-url" : "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
++  "description" : "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers."
+ }
+
+codex
+The file is patched. I’m doing a quick JSON parse plus a content check so we don’t leave behind a formatting or field-name issue.
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python3 -m json.tool build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json >/tmp/tomcat-websocket-metadata.json && sed -n '1,120p' /tmp/tomcat-websocket-metadata.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+{
+    "coordinates": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
+    "repository-url": "https://github.com/apache/tomcat",
+    "test-code-url": "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
+    "documentation-url": "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
+    "description": "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+index 8535c8264c459490d2acdee003dac00231029e30..016fc19d6ddc2961ced58e0e2e7007b772dd30ed
+--- a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
++++ b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83"
++  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
++  "repository-url" : "https://github.com/apache/tomcat",
++  "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
++  "documentation-url" : "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
++  "description" : "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers."
+ }
+
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
+  "repository-url" : "https://github.com/apache/tomcat",
+  "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
+  "documentation-url" : "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
+  "description" : "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored=matching build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+index 8535c8264c459490d2acdee003dac00231029e30..016fc19d6ddc2961ced58e0e2e7007b772dd30ed
+--- a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
++++ b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83"
++  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
++  "repository-url" : "https://github.com/apache/tomcat",
++  "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
++  "documentation-url" : "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
++  "description" : "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers."
+ }
+
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83 tomcat-embed-websocket-9.0.83-sources.jar
+web search: 
+web search: https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket
+web search: 
+web search: 'Tomcat provides support for WebSocket' in https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml
+codex
+Updated [org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json:1).
+
+I used the Maven Central `9.0.83` sources jar, the Apache Tomcat repository, the `9.0.83` tagged WebSocket test directory, and the `9.0.83` tagged WebSocket how-to doc. The library is not Kotlin- or Scala-specific, so I left `language` absent. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/?utm_source=openai))
+
+Validated the edited file with `python3 -m json.tool`.
+diff --git a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+index 8535c8264c459490d2acdee003dac00231029e30..016fc19d6ddc2961ced58e0e2e7007b772dd30ed
+--- a/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
++++ b/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83"
++  "coordinates" : "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
++  "repository-url" : "https://github.com/apache/tomcat",
++  "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
++  "documentation-url" : "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
++  "description" : "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers."
+ }
+
+2026-04-28T16:06:18.999837Z ERROR codex_core::session: failed to record rollout items: thread 019dd4d5-8262-79c1-9a7f-6db10ceb3cea not found
+tokens used
+124,549
+Updated [org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/build/discovered-artifact-metadata/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.json:1).
+
+I used the Maven Central `9.0.83` sources jar, the Apache Tomcat repository, the `9.0.83` tagged WebSocket test directory, and the `9.0.83` tagged WebSocket how-to doc. The library is not Kotlin- or Scala-specific, so I left `language` absent. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/?utm_source=openai))
+
+Validated the edited file with `python3 -m json.tool`.
+Ran agent for org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/build/agent-artifact-discovery-logs/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 4s
+9 actionable tasks: 4 executed, 5 from cache

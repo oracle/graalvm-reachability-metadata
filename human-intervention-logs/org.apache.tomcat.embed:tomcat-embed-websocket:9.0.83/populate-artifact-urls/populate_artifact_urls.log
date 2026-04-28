@@ -1,0 +1,164 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd4d7-8065-7cc3-9cdf-c656e0fe1496
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "9.0.83".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json
+- Entry selector: "metadata-version" = "9.0.83"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "9.0.83".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar
+- repository-url: https://github.com/apache/tomcat
+- test-code-url: https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket
+- documentation-url: https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml
+- description: Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers.
+- language: <missing>
+
+Context:
+- Coordinate version: 9.0.83
+- Entry test-version: 9.0.83
+codex
+I’ll verify the existing entry first, then check the authoritative Maven/GitHub locations for the exact 9.0.83 artifacts and docs before deciding whether any field is actually missing.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+4:    "metadata-version" : "9.0.83",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
+6:    "repository-url" : "https://github.com/apache/tomcat",
+7:    "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
+8:    "documentation-url" : "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
+9:    "description" : "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers.",
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+?? metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json
+
+web search: 
+web search: Maven Central org.apache.tomcat.embed tomcat-embed-websocket 9.0.83 sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/
+web search: 
+web search: https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket
+web search: 
+web search: 'Apache Tomcat® software is an open source implementation' in https://github.com/apache/tomcat
+codex
+The 9.0.83 entry already has non-blank values for the source, repository, test, documentation, and description fields. Since this artifact is Java/Tomcat rather than Kotlin or Scala, the requested `language` field should remain absent.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json >/dev/null' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'nl -ba metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "9.0.83",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/tomcat-embed-websocket-9.0.83-sources.jar",
+     6	    "repository-url" : "https://github.com/apache/tomcat",
+     7	    "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket",
+     8	    "documentation-url" : "https://github.com/apache/tomcat/blob/9.0.83/webapps/docs/web-socket-howto.xml",
+     9	    "description" : "Tomcat Embed WebSocket provides Apache Tomcat's embeddable implementation of the Java WebSocket API for Tomcat 9 applications. It includes client and server WebSocket runtime classes, endpoint support, frame handling, and Tomcat-specific WebSocket integration for embedded servlet containers.",
+    10	    "tested-versions" : [
+    11	      "9.0.83"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "javax.websocket",
+    15	      "org.apache.tomcat.websocket"
+    16	    ]
+    17	  }
+    18	]
+
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83 tomcat-embed-websocket-9.0.83-sources.jar
+web search: 
+web search: https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/tomcat/websocket
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/
+web search: 
+web search: 
+codex
+No file change was necessary. The 9.0.83 entry in [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json:4) already has non-blank source, repository, test, documentation, and two-sentence description fields.
+
+Verified: Maven Central has the exact `9.0.83` sources jar and no Maven test artifact in that directory, so the existing Maven source URL and GitHub test URL are appropriate. The GitHub test suite and documentation links both point at tag `9.0.83`; `language` remains absent because this is not a Kotlin or Scala library. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/))
+
+Validation run: `jq . metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json >/dev/null` passed.
+2026-04-28T16:07:09.043547Z ERROR codex_core::session: failed to record rollout items: thread 019dd4d7-8065-7cc3-9cdf-c656e0fe1496 not found
+tokens used
+39,096
+No file change was necessary. The 9.0.83 entry in [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json:4) already has non-blank source, repository, test, documentation, and two-sentence description fields.
+
+Verified: Maven Central has the exact `9.0.83` sources jar and no Maven test artifact in that directory, so the existing Maven source URL and GitHub test URL are appropriate. The GitHub test suite and documentation links both point at tag `9.0.83`; `language` remains absent because this is not a Kotlin or Scala library. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/tomcat/embed/tomcat-embed-websocket/9.0.83/))
+
+Validation run: `jq . metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json >/dev/null` passed.
+Ran agent for org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/build/agent-url-discovery-logs/org.apache.tomcat.embed-tomcat-embed-websocket-9.0.83.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2258-7854fa02/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 43s
+9 actionable tasks: 1 executed, 8 up-to-date
