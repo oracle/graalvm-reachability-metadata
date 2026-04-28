@@ -156,6 +156,16 @@ public class Mysema_commons_langTest {
     }
 
     @Test
+    void staticAsListClosesCloseableIteratorWhenIterationFails() {
+        FailingNextCloseableIterator iterator = new FailingNextCloseableIterator();
+
+        assertThatThrownBy(() -> IteratorAdapter.asList(iterator))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("cannot read next item");
+        assertThat(iterator.closeCount).isEqualTo(1);
+    }
+
+    @Test
     void uriResolverRecognizesAbsoluteUrlsAndRejectsRelativeOrInvalidSchemes() {
         assertThat(URIResolver.isAbsoluteURL("http://example.com/path")).isTrue();
         assertThat(URIResolver.isAbsoluteURL("git+ssh://example.com/repository.git")).isTrue();
@@ -241,6 +251,25 @@ public class Mysema_commons_langTest {
         @Override
         public void remove() {
             delegate.remove();
+        }
+
+        @Override
+        public void close() {
+            closeCount++;
+        }
+    }
+
+    private static final class FailingNextCloseableIterator implements Iterator<String>, Closeable {
+        private int closeCount;
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public String next() {
+            throw new IllegalStateException("cannot read next item");
         }
 
         @Override
