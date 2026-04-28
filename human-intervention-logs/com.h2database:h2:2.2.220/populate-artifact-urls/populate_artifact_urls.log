@@ -1,0 +1,571 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd562-3324-7b92-9e31-9495556f9f82
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.h2database:h2:2.2.220
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.2.220".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/metadata/com.h2database/h2/index.json
+- Entry selector: "metadata-version" = "2.2.220"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.2.220".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.2.220
+- Entry test-version: 2.2.220
+codex
+I’ll verify the version-specific URLs first, then patch only the blank fields in the selected `index.json` entry. After that I’ll validate the JSON shape so the change is limited and parseable.
+web search: 
+web search: com.h2database h2 2.2.220 Maven Central sources tests documentation repository
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.h2database/h2/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.2.220",
+    "tested-versions" : [
+      "2.2.220"
+    ],
+    "allowed-packages" : [
+      "org.h2"
+    ]
+  },
+  {
+    "metadata-version" : "2.1.210",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-sources.jar",
+    "repository-url" : "https://github.com/h2database/h2database",
+    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-javadoc.jar",
+    "description" : "H2 is a Java SQL relational database that can run embedded in an application or as a server-based database. It provides JDBC support and offers both disk-based and in-memory storage options.",
+    "tested-versions" : [
+      "2.1.210",
+      "2.1.212",
+      "2.1.214"
+    ],
+    "allowed-packages" : [
+      "org.h2"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"2\\.2\\.220\"|source-code-url|test-code-url|documentation-url|repository-url|description|language' metadata/com.h2database/h2/index.json" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+4:    "metadata-version" : "2.2.220",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-sources.jar",
+15:    "repository-url" : "https://github.com/h2database/h2database",
+16:    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-javadoc.jar",
+18:    "description" : "H2 is a Java SQL relational database that can run embedded in an application or as a server-based database. It provides JDBC support and offers both disk-based and in-memory storage options.",
+
+exec
+/usr/bin/bash -lc "rg -n 'repo1.maven.org/maven2/.+sources.jar|javadoc.jar|test.*jar|github.com/.+/tree/.+' metadata | head -80" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/1.0.8/src/test/java",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+metadata/org.slf4j/slf4j-simple/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/v_1.7.25/slf4j-simple/src/test/java",
+metadata/org.slf4j/slf4j-simple/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/org.slf4j/slf4j-nop/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.slf4j/slf4j-jdk14/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.5.6/slf4j-jdk14-1.5.6-sources.jar",
+metadata/org.slf4j/slf4j-jdk14/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-jdk14/src/test",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:33:    "repository-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:34:    "test-code-url" : "https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.15.2/src/test",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v2.1.2/jctools-core/src/test",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/forms/src/test",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-2.17.2/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-tests.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/layout/src/test",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-2.1.3/src/test",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-javadoc.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/5.12.4.Final/jta-5.12.4.Final-sources.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/5.12.4.Final/jta-5.12.4.Final-tests.jar",
+metadata/org.jboss.narayana.jta/jta/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/narayana-jta/5.12.4.Final/narayana-jta-5.12.4.Final-javadoc.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-test-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/daemon/daemon-tests/test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+
+web search: 
+web search: com.h2database h2 2.2.220 Maven Central sources tests documentation repository
+codex
+The existing older H2 entry already uses Maven Central for sources and Javadocs, and the Maven Central directory for `2.2.220` exposes those exact artifacts. I’m checking whether a Maven test artifact exists before falling back to the tagged GitHub test tree.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220.pom' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <version>2.2.220</version>
+    <packaging>jar</packaging>
+    <name>H2 Database Engine</name>
+    <url>https://h2database.com</url>
+    <description>H2 Database Engine</description>
+    <licenses>
+        <license>
+            <name>MPL 2.0</name>
+            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>EPL 1.0</name>
+            <url>https://opensource.org/licenses/eclipse-1.0.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:https://github.com/h2database/h2database</connection>
+        <url>https://github.com/h2database/h2database</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>thomas.tom.mueller</id>
+            <name>Thomas Mueller</name>
+            <email>thomas.tom.mueller at gmail dot com</email>
+        </developer>
+    </developers>
+    <dependencies>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/ | rg 'h2-2\\.2\\.220-(sources|javadoc|tests|test-sources)\\.jar|h2-2\\.2\\.220\\.pom'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+<a href="h2-2.2.220-javadoc.jar" title="h2-2.2.220-javadoc.jar">h2-2.2.220-javadoc.jar</a>                            2023-07-05 14:57   3700400      
+<a href="h2-2.2.220-javadoc.jar.asc" title="h2-2.2.220-javadoc.jar.asc">h2-2.2.220-javadoc.jar.asc</a>                        2023-07-05 14:57       914      
+<a href="h2-2.2.220-javadoc.jar.asc.md5" title="h2-2.2.220-javadoc.jar.asc.md5">h2-2.2.220-javadoc.jar.asc.md5</a>                    2023-07-05 14:57        32      
+<a href="h2-2.2.220-javadoc.jar.asc.sha1" title="h2-2.2.220-javadoc.jar.asc.sha1">h2-2.2.220-javadoc.jar.asc.sha1</a>                   2023-07-05 14:57        40      
+<a href="h2-2.2.220-javadoc.jar.asc.sha256" title="h2-2.2.220-javadoc.jar.asc.sha256">h2-2.2.220-javadoc.jar.asc.sha256</a>                 2023-07-05 14:57        64      
+<a href="h2-2.2.220-javadoc.jar.asc.sha512" title="h2-2.2.220-javadoc.jar.asc.sha512">h2-2.2.220-javadoc.jar.asc.sha512</a>                 2023-07-05 14:57       128      
+<a href="h2-2.2.220-javadoc.jar.md5" title="h2-2.2.220-javadoc.jar.md5">h2-2.2.220-javadoc.jar.md5</a>                        2023-07-05 14:57        32      
+<a href="h2-2.2.220-javadoc.jar.sha1" title="h2-2.2.220-javadoc.jar.sha1">h2-2.2.220-javadoc.jar.sha1</a>                       2023-07-05 14:57        40      
+<a href="h2-2.2.220-javadoc.jar.sha256" title="h2-2.2.220-javadoc.jar.sha256">h2-2.2.220-javadoc.jar.sha256</a>                     2023-07-05 14:57        64      
+<a href="h2-2.2.220-javadoc.jar.sha512" title="h2-2.2.220-javadoc.jar.sha512">h2-2.2.220-javadoc.jar.sha512</a>                     2023-07-05 14:57       128      
+<a href="h2-2.2.220-sources.jar" title="h2-2.2.220-sources.jar">h2-2.2.220-sources.jar</a>                            2023-07-05 14:57   1748039      
+<a href="h2-2.2.220-sources.jar.asc" title="h2-2.2.220-sources.jar.asc">h2-2.2.220-sources.jar.asc</a>                        2023-07-05 14:57       914      
+<a href="h2-2.2.220-sources.jar.asc.md5" title="h2-2.2.220-sources.jar.asc.md5">h2-2.2.220-sources.jar.asc.md5</a>                    2023-07-05 14:57        32      
+<a href="h2-2.2.220-sources.jar.asc.sha1" title="h2-2.2.220-sources.jar.asc.sha1">h2-2.2.220-sources.jar.asc.sha1</a>                   2023-07-05 14:57        40      
+<a href="h2-2.2.220-sources.jar.asc.sha256" title="h2-2.2.220-sources.jar.asc.sha256">h2-2.2.220-sources.jar.asc.sha256</a>                 2023-07-05 14:57        64      
+<a href="h2-2.2.220-sources.jar.asc.sha512" title="h2-2.2.220-sources.jar.asc.sha512">h2-2.2.220-sources.jar.asc.sha512</a>                 2023-07-05 14:57       128      
+<a href="h2-2.2.220-sources.jar.md5" title="h2-2.2.220-sources.jar.md5">h2-2.2.220-sources.jar.md5</a>                        2023-07-05 14:57        32      
+<a href="h2-2.2.220-sources.jar.sha1" title="h2-2.2.220-sources.jar.sha1">h2-2.2.220-sources.jar.sha1</a>                       2023-07-05 14:57        40      
+<a href="h2-2.2.220-sources.jar.sha256" title="h2-2.2.220-sources.jar.sha256">h2-2.2.220-sources.jar.sha256</a>                     2023-07-05 14:57        64      
+<a href="h2-2.2.220-sources.jar.sha512" title="h2-2.2.220-sources.jar.sha512">h2-2.2.220-sources.jar.sha512</a>                     2023-07-05 14:57       128      
+<a href="h2-2.2.220.pom" title="h2-2.2.220.pom">h2-2.2.220.pom</a>                                    2023-07-05 14:57      1132      
+<a href="h2-2.2.220.pom.asc" title="h2-2.2.220.pom.asc">h2-2.2.220.pom.asc</a>                                2023-07-05 14:57       914      
+<a href="h2-2.2.220.pom.asc.md5" title="h2-2.2.220.pom.asc.md5">h2-2.2.220.pom.asc.md5</a>                            2023-07-05 14:57        32      
+<a href="h2-2.2.220.pom.asc.sha1" title="h2-2.2.220.pom.asc.sha1">h2-2.2.220.pom.asc.sha1</a>                           2023-07-05 14:57        40      
+<a href="h2-2.2.220.pom.asc.sha256" title="h2-2.2.220.pom.asc.sha256">h2-2.2.220.pom.asc.sha256</a>                         2023-07-05 14:57        64      
+<a href="h2-2.2.220.pom.asc.sha512" title="h2-2.2.220.pom.asc.sha512">h2-2.2.220.pom.asc.sha512</a>                         2023-07-05 14:57       128      
+<a href="h2-2.2.220.pom.md5" title="h2-2.2.220.pom.md5">h2-2.2.220.pom.md5</a>                                2023-07-05 14:57        32      
+<a href="h2-2.2.220.pom.sha1" title="h2-2.2.220.pom.sha1">h2-2.2.220.pom.sha1</a>                               2023-07-05 14:57        40      
+<a href="h2-2.2.220.pom.sha256" title="h2-2.2.220.pom.sha256">h2-2.2.220.pom.sha256</a>                             2023-07-05 14:57        64      
+<a href="h2-2.2.220.pom.sha512" title="h2-2.2.220.pom.sha512">h2-2.2.220.pom.sha512</a>                             2023-07-05 14:57       128      
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/h2database/h2database.git 'refs/tags/version-2.2.220' 'refs/tags/v2.2.220'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+exec
+/usr/bin/bash -lc 'curl -fsSI -L https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test | head -n 20' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 324ms:
+66185fbfde24fbe5b2adf06fdaae4f5ffb178813	refs/tags/version-2.2.220
+
+ succeeded in 514ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 18:38:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"f9420f36d8225a1bb909c5aa4d0a8fe9"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=hp1wkO72RqT4ejAhyLKlAdFal9ncvBL18uUKVEeQz6r74onhKckqZu8I%2B36qcq8W45W1Ahx6MPvUG3yjsAhZDgfsKH5Wdqq0tGa1DH9LSoQuGL3qu6jcLWGJS6nFr2zckt74kOYACdTAKsybzikB3am6rAlbkbmuqyqbjEalT5DrysguHY7F2k6BRZtzuUCqk3QC611humg2ji6spdea8pA0fIaiptRm9Huo%2FeTItXo92S9S3SywpBVBoK%2FSrr%2BJaPN36x7csA11vpjrWamgDg%3D%3D--WWxjesVdASlxzQRa--Gk%2FpOsH9bKDjbEqZrkHGuA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2024319044.1777401511; expires=Wed, 28 Apr 2027 18:38:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 18:38:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5105:13E58C:14DC896:F4E295:69F0FEA7
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/
+web search: 
+web search: 
+codex
+There is no `tests` or `test-sources` JAR listed for H2 `2.2.220`, so the version tag’s `h2/src/test` tree is the best test-suite URL. I’m going to add Maven Central source/Javadoc URLs, the canonical GitHub repository root, the tagged test tree, and a two-sentence description; I’ll leave `language` absent because this is not one of the Kotlin/Groovy/Scala language-specific artifacts requested.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/metadata/com.h2database/h2/index.json
+diff --git a/metadata/com.h2database/h2/index.json b/metadata/com.h2database/h2/index.json
+index 0116d9779a954b862735c38a28376f377a3f9dc2..7192c12881f6770b3ca92174f2958e0834b042ba
+--- a/metadata/com.h2database/h2/index.json
++++ b/metadata/com.h2database/h2/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.2.220",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-sources.jar",
++    "repository-url" : "https://github.com/h2database/h2database",
++    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-javadoc.jar",
++    "description" : "H2 is a Java SQL relational database engine that can run embedded in applications or as a standalone server. It provides JDBC access with disk-based and in-memory database modes for development, testing, and lightweight production use.",
+     "tested-versions" : [
+       "2.2.220"
+     ],
+
+diff --git a/metadata/com.h2database/h2/index.json b/metadata/com.h2database/h2/index.json
+index 0116d9779a954b862735c38a28376f377a3f9dc2..7192c12881f6770b3ca92174f2958e0834b042ba
+--- a/metadata/com.h2database/h2/index.json
++++ b/metadata/com.h2database/h2/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.2.220",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-sources.jar",
++    "repository-url" : "https://github.com/h2database/h2database",
++    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-javadoc.jar",
++    "description" : "H2 is a Java SQL relational database engine that can run embedded in applications or as a standalone server. It provides JDBC access with disk-based and in-memory database modes for development, testing, and lightweight production use.",
+     "tested-versions" : [
+       "2.2.220"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/com.h2database/h2/index.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.h2database/h2/index.json' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+diff --git i/metadata/com.h2database/h2/index.json w/metadata/com.h2database/h2/index.json
+index 0116d9779a..7192c12881 100644
+--- i/metadata/com.h2database/h2/index.json
++++ w/metadata/com.h2database/h2/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.2.220",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-sources.jar",
++    "repository-url" : "https://github.com/h2database/h2database",
++    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-javadoc.jar",
++    "description" : "H2 is a Java SQL relational database engine that can run embedded in applications or as a standalone server. It provides JDBC access with disk-based and in-memory database modes for development, testing, and lightweight production use.",
+     "tested-versions" : [
+       "2.2.220"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.h2database:h2:2.2.220' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+diff --git a/metadata/com.h2database/h2/index.json b/metadata/com.h2database/h2/index.json
+index 0116d9779a954b862735c38a28376f377a3f9dc2..7192c12881f6770b3ca92174f2958e0834b042ba
+--- a/metadata/com.h2database/h2/index.json
++++ b/metadata/com.h2database/h2/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.2.220",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-sources.jar",
++    "repository-url" : "https://github.com/h2database/h2database",
++    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-javadoc.jar",
++    "description" : "H2 is a Java SQL relational database engine that can run embedded in applications or as a standalone server. It provides JDBC access with disk-based and in-memory database modes for development, testing, and lightweight production use.",
+     "tested-versions" : [
+       "2.2.220"
+     ],
+
+ exited 1 in 618ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for com.h2database:h2:2.2.220: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/metadata/com.h2database/h2/2.2.220/
+
+FAILURE: Build failed with an exception.
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/build/reports/problems/problems-report.html
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.h2database:h2:2.2.220: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/metadata/com.h2database/h2/2.2.220/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> 
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 615ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: Maven Central com.h2database h2 2.2.220 h2-2.2.220-sources.jar h2-2.2.220-javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/
+web search: 
+web search: https://github.com/h2database/h2database
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/com.h2database/h2/index.json metadata/com.h2database/h2/2.2.220' in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+ M metadata/com.h2database/h2/index.json
+
+diff --git a/metadata/com.h2database/h2/index.json b/metadata/com.h2database/h2/index.json
+index 0116d9779a954b862735c38a28376f377a3f9dc2..7192c12881f6770b3ca92174f2958e0834b042ba
+--- a/metadata/com.h2database/h2/index.json
++++ b/metadata/com.h2database/h2/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.2.220",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-sources.jar",
++    "repository-url" : "https://github.com/h2database/h2database",
++    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-javadoc.jar",
++    "description" : "H2 is a Java SQL relational database engine that can run embedded in applications or as a standalone server. It provides JDBC access with disk-based and in-memory database modes for development, testing, and lightweight production use.",
+     "tested-versions" : [
+       "2.2.220"
+     ],
+
+web search: 
+web search: repo1.maven.org/maven2/com/h2database/h2/2.2.220 h2-2.2.220-sources.jar
+web search: 
+web search: https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test
+exec
+/usr/bin/bash -lc "nl -ba metadata/com.h2database/h2/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.2.220",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-sources.jar",
+     6	    "repository-url" : "https://github.com/h2database/h2database",
+     7	    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-javadoc.jar",
+     9	    "description" : "H2 is a Java SQL relational database engine that can run embedded in applications or as a standalone server. It provides JDBC access with disk-based and in-memory database modes for development, testing, and lightweight production use.",
+    10	    "tested-versions" : [
+    11	      "2.2.220"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.h2"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "2.1.210",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-sources.jar",
+    20	    "repository-url" : "https://github.com/h2database/h2database",
+    21	    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.1.210/h2/src/test",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210-javadoc.jar",
+    23	    "description" : "H2 is a Java SQL relational database that can run embedded in an application or as a server-based database. It provides JDBC support and offers both disk-based and in-memory storage options.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/com.h2database/h2/index.json b/metadata/com.h2database/h2/index.json
+index 0116d9779a954b862735c38a28376f377a3f9dc2..7192c12881f6770b3ca92174f2958e0834b042ba
+--- a/metadata/com.h2database/h2/index.json
++++ b/metadata/com.h2database/h2/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.2.220",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-sources.jar",
++    "repository-url" : "https://github.com/h2database/h2database",
++    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-javadoc.jar",
++    "description" : "H2 is a Java SQL relational database engine that can run embedded in applications or as a standalone server. It provides JDBC access with disk-based and in-memory database modes for development, testing, and lightweight production use.",
+     "tested-versions" : [
+       "2.2.220"
+     ],
+
+web search: 
+web search: Maven Repository H2 Database Engine 2.2.220 sources jar javadoc jar
+web search: 
+web search: https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/h2database/h2/
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.220/
+web search: 
+web search: 
+web search: 
+web search: https://github.com/h2database/h2database
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/metadata/com.h2database/h2/index.json:5) for `metadata-version` `2.2.220`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the exact two-sentence `description`. I left `language` absent because H2 is not a Kotlin/Groovy/Scala-specific artifact; it is a Java SQL database project. The source and Javadoc artifacts are present for exact version `2.2.220` on Maven Central, while the test suite uses the tagged GitHub `version-2.2.220` tree. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.220/))
+
+Verification:
+- `jq empty metadata/com.h2database/h2/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.h2database:h2:2.2.220` failed because `metadata/com.h2database/h2/2.2.220/reachability-metadata.json` is missing; that is outside the requested field update.
+diff --git a/metadata/com.h2database/h2/index.json b/metadata/com.h2database/h2/index.json
+index 0116d9779a954b862735c38a28376f377a3f9dc2..7192c12881f6770b3ca92174f2958e0834b042ba
+--- a/metadata/com.h2database/h2/index.json
++++ b/metadata/com.h2database/h2/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.2.220",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-sources.jar",
++    "repository-url" : "https://github.com/h2database/h2database",
++    "test-code-url" : "https://github.com/h2database/h2database/tree/version-2.2.220/h2/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220-javadoc.jar",
++    "description" : "H2 is a Java SQL relational database engine that can run embedded in applications or as a standalone server. It provides JDBC access with disk-based and in-memory database modes for development, testing, and lightweight production use.",
+     "tested-versions" : [
+       "2.2.220"
+     ],
+
+2026-04-28T18:39:36.287624Z ERROR codex_core::session: failed to record rollout items: thread 019dd562-3324-7b92-9e31-9495556f9f82 not found
+tokens used
+78,902
+Updated [index.json](/home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/metadata/com.h2database/h2/index.json:5) for `metadata-version` `2.2.220`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the exact two-sentence `description`. I left `language` absent because H2 is not a Kotlin/Groovy/Scala-specific artifact; it is a Java SQL database project. The source and Javadoc artifacts are present for exact version `2.2.220` on Maven Central, while the test suite uses the tagged GitHub `version-2.2.220` tree. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/com/h2database/h2/2.2.220/))
+
+Verification:
+- `jq empty metadata/com.h2database/h2/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.h2database:h2:2.2.220` failed because `metadata/com.h2database/h2/2.2.220/reachability-metadata.json` is missing; that is outside the requested field update.
+Ran agent for com.h2database:h2:2.2.220 (exit 0). Log: /home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/build/agent-url-discovery-logs/com.h2database-h2-2.2.220.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge6/metadata-forge/local_repositories/forge_worktrees/730-cc272617/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 41s
+9 actionable tasks: 1 executed, 8 up-to-date
