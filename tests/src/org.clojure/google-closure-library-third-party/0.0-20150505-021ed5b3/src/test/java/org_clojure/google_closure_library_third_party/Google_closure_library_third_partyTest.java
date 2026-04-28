@@ -8,17 +8,24 @@ package org_clojure.google_closure_library_third_party;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 public class Google_closure_library_third_partyTest {
@@ -27,6 +34,14 @@ public class Google_closure_library_third_partyTest {
             "META-INF/maven/org.clojure/google-closure-library-third-party/pom.properties";
     private static final String POM_XML =
             "META-INF/maven/org.clojure/google-closure-library-third-party/pom.xml";
+    private static final Path GRADLE_ARTIFACT_CACHE = Path.of(
+            System.getProperty("user.home"),
+            ".gradle",
+            "caches",
+            "modules-2",
+            "files-2.1",
+            "org.clojure",
+            "google-closure-library-third-party");
     private static final Pattern PROVIDE_PATTERN = Pattern.compile("goog\\.provide\\('([^']+)'\\);");
     private static final Pattern REQUIRE_PATTERN = Pattern.compile("goog\\.require\\('([^']+)'\\);");
 
@@ -261,6 +276,28 @@ public class Google_closure_library_third_partyTest {
     }
 
     @Test
+    void htmlSanitizerAttributePoliciesSeparateSafeTokensUrisAndExecutableContent() throws IOException {
+        String source = loadResource("goog/caja/string/html/htmlsanitizer.js");
+        Map<String, Integer> attributeTypes = extractEnumValues(
+                source, "goog.string.html.HtmlSanitizer.AttributeType");
+        Map<String, Integer> attributes = extractAttributePolicyValues(source, attributeTypes);
+
+        assertThat(attributeTypes).containsKeys("URI", "GLOBAL_NAME", "LOCAL_NAME", "CLASSES", "ID", "STYLE", "SCRIPT");
+        assertThat(attributePolicy(attributes, "a", "href")).isEqualTo(attributeTypes.get("URI"));
+        assertThat(attributePolicy(attributes, "blockquote", "cite")).isEqualTo(attributeTypes.get("URI"));
+        assertThat(attributePolicy(attributes, "img", "src")).isEqualTo(attributeTypes.get("URI"));
+        assertThat(attributePolicy(attributes, "a", "name")).isEqualTo(attributeTypes.get("GLOBAL_NAME"));
+        assertThat(attributePolicy(attributes, "button", "name")).isEqualTo(attributeTypes.get("LOCAL_NAME"));
+        assertThat(attributePolicy(attributes, "span", "class")).isEqualTo(attributeTypes.get("CLASSES"));
+        assertThat(attributePolicy(attributes, "span", "id")).isEqualTo(attributeTypes.get("ID"));
+        assertThat(attributePolicy(attributes, "span", "style")).isEqualTo(attributeTypes.get("STYLE"));
+        assertThat(attributePolicy(attributes, "span", "onclick")).isEqualTo(attributeTypes.get("SCRIPT"));
+        assertThat(attributePolicy(attributes, "input", "checked")).isZero();
+        assertThat(attributePolicy(attributes, "td", "rowspan")).isZero();
+        assertThat(attributePolicy(attributes, "span", "data-custom")).isNull();
+    }
+
+    @Test
     void mavenMetadataIdentifiesThePublishedArtifact() throws IOException {
         Properties properties = new Properties();
         try (InputStream inputStream = openResource(POM_PROPERTIES)) {
@@ -276,6 +313,47 @@ public class Google_closure_library_third_partyTest {
                 .contains("<groupId>org.clojure</groupId>")
                 .contains("<artifactId>google-closure-library-third-party</artifactId>")
                 .contains("<version>" + VERSION + "</version>");
+    }
+
+    private static Map<String, Integer> extractEnumValues(String source, String objectName) {
+        Matcher matcher = Pattern.compile("\\s*([A-Z_]+): (\\d+),?")
+                .matcher(extractObjectLiteralBody(source, objectName));
+        Map<String, Integer> values = new LinkedHashMap<>();
+        while (matcher.find()) {
+            values.put(matcher.group(1), Integer.parseInt(matcher.group(2)));
+        }
+        assertThat(values).as(objectName).isNotEmpty();
+        return values;
+    }
+
+    private static Map<String, Integer> extractAttributePolicyValues(
+            String source, Map<String, Integer> attributeTypes) {
+        Matcher matcher = Pattern.compile(
+                "\\s*'([^']+)': (?:goog\\.string\\.html\\.HtmlSanitizer\\.AttributeType\\.([A-Z_]+)|(\\d+)),?")
+                .matcher(extractObjectLiteralBody(source, "goog.string.html.HtmlSanitizer.Attributes"));
+        Map<String, Integer> values = new LinkedHashMap<>();
+        while (matcher.find()) {
+            values.put(matcher.group(1), matcher.group(2) == null
+                    ? Integer.parseInt(matcher.group(3))
+                    : attributeTypes.get(matcher.group(2)));
+        }
+        assertThat(values).as("goog.string.html.HtmlSanitizer.Attributes").isNotEmpty();
+        return values;
+    }
+
+    private static String extractObjectLiteralBody(String source, String objectName) {
+        Matcher matcher = Pattern.compile(Pattern.quote(objectName) + " = \\{\\R(?<body>.*?)\\R\\};", Pattern.DOTALL)
+                .matcher(source);
+        assertThat(matcher.find()).as(objectName).isTrue();
+        return matcher.group("body");
+    }
+
+    private static Integer attributePolicy(Map<String, Integer> attributes, String tagName, String attributeName) {
+        Integer specificPolicy = attributes.get(tagName + "::" + attributeName);
+        if (specificPolicy != null) {
+            return specificPolicy;
+        }
+        return attributes.get("*::" + attributeName);
     }
 
     private static List<String> extractMatches(Pattern pattern, String text) {
@@ -297,11 +375,75 @@ public class Google_closure_library_third_partyTest {
         InputStream inputStream = Google_closure_library_third_partyTest.class
                 .getClassLoader()
                 .getResourceAsStream(path);
-        assertThat(inputStream).as(path).isNotNull();
-        return inputStream;
+        if (inputStream != null) {
+            return inputStream;
+        }
+        byte[] bytes = loadResourceBytesFromGradleArtifactCache(path);
+        assertThat(bytes).as(path).isNotNull();
+        return new ByteArrayInputStream(bytes);
     }
 
     private static URL resourceUrl(String path) {
-        return Google_closure_library_third_partyTest.class.getClassLoader().getResource(path);
+        URL resource = Google_closure_library_third_partyTest.class.getClassLoader().getResource(path);
+        if (resource != null) {
+            return resource;
+        }
+        Path jar = findArtifactJarContaining(path);
+        if (jar == null) {
+            return null;
+        }
+        try {
+            return jar.toUri().toURL();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static byte[] loadResourceBytesFromGradleArtifactCache(String path) {
+        Path jar = findArtifactJarContaining(path);
+        if (jar == null) {
+            return null;
+        }
+        return loadResourceBytesFromJar(jar, path);
+    }
+
+    private static Path findArtifactJarContaining(String path) {
+        if (!Files.isDirectory(GRADLE_ARTIFACT_CACHE)) {
+            return null;
+        }
+        try (Stream<Path> paths = Files.walk(GRADLE_ARTIFACT_CACHE)) {
+            return paths.filter(Files::isRegularFile)
+                    .filter(Google_closure_library_third_partyTest::isLibraryJar)
+                    .filter(jar -> jarContains(jar, path))
+                    .findFirst()
+                    .orElse(null);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static boolean isLibraryJar(Path path) {
+        String fileName = path.getFileName().toString();
+        return fileName.startsWith("google-closure-library-third-party-") && fileName.endsWith(".jar");
+    }
+
+    private static boolean jarContains(Path jar, String path) {
+        try (JarFile jarFile = new JarFile(jar.toFile())) {
+            return jarFile.getJarEntry(path) != null;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static byte[] loadResourceBytesFromJar(Path jar, String path) {
+        try (JarFile jarFile = new JarFile(jar.toFile())) {
+            JarEntry jarEntry = jarFile.getJarEntry(path);
+            assertThat(jarEntry).as(path).isNotNull();
+            try (InputStream inputStream = jarFile.getInputStream(jarEntry)) {
+                return inputStream.readAllBytes();
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }
