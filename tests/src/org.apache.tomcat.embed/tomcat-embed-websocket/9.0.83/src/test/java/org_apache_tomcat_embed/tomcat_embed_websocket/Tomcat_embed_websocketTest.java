@@ -8,7 +8,7 @@ package org_apache_tomcat_embed.tomcat_embed_websocket;
 
 import org.junit.jupiter.api.Test;
 
-class Tomcat_embed_websocketTest {
+public class Tomcat_embed_websocketTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
