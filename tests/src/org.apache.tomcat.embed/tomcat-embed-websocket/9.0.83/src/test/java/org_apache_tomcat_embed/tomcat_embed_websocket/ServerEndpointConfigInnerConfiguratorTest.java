@@ -27,7 +27,7 @@ public class ServerEndpointConfigInnerConfiguratorTest {
     public void builderFallsBackToTomcatDefaultConfiguratorWhenNoServiceProviderIsVisible() {
         Thread currentThread = Thread.currentThread();
         ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
-        ClassLoader noConfiguratorServiceClassLoader = new NoConfiguratorServiceClassLoader(originalContextClassLoader);
+        ClassLoader noConfiguratorServiceClassLoader = new NoConfiguratorServiceClassLoader();
         currentThread.setContextClassLoader(noConfiguratorServiceClassLoader);
         try {
             ServerEndpointConfig config = ServerEndpointConfig.Builder.create(TestEndpoint.class, "/fallback").build();
@@ -48,8 +48,16 @@ public class ServerEndpointConfigInnerConfiguratorTest {
         private static final String CONFIGURATOR_SERVICE =
                 "META-INF/services/javax.websocket.server.ServerEndpointConfig$Configurator";
 
-        private NoConfiguratorServiceClassLoader(ClassLoader parent) {
-            super(parent);
+        private NoConfiguratorServiceClassLoader() {
+            super(null);
+        }
+
+        @Override
+        public URL getResource(String name) {
+            if (CONFIGURATOR_SERVICE.equals(name)) {
+                return null;
+            }
+            return super.getResource(name);
         }
 
         @Override
