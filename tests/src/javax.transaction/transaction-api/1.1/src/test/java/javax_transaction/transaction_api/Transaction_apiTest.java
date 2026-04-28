@@ -261,6 +261,19 @@ public class Transaction_apiTest {
     }
 
     @Test
+    void transactionSynchronizationRegistryRunsInterposedSynchronizationsForCommittedTransaction() {
+        RecordingTransactionSynchronizationRegistry registry = new RecordingTransactionSynchronizationRegistry();
+        RecordingSynchronization synchronization = new RecordingSynchronization();
+
+        registry.registerInterposedSynchronization(synchronization);
+        registry.complete();
+
+        assertThat(registry.getTransactionStatus()).isEqualTo(Status.STATUS_COMMITTED);
+        assertThat(registry.getRollbackOnly()).isFalse();
+        assertThat(synchronization.events).containsExactly("before", "after:" + Status.STATUS_COMMITTED);
+    }
+
+    @Test
     void xaResourceAndXidApisExposeResourceManagerOperations() throws Exception {
         RecordingXAResource firstResource = new RecordingXAResource("orders");
         RecordingXAResource sameResourceManager = new RecordingXAResource("orders");
