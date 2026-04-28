@@ -8,14 +8,12 @@ package org_apache_geronimo_specs.geronimo_osgi_registry;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -141,12 +139,12 @@ public class ProviderRegistryImplInnerBundleProviderLoaderTest {
         }
 
         @Override
-        public ServiceReference<?>[] getRegisteredServices() {
+        public ServiceReference[] getRegisteredServices() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public ServiceReference<?>[] getServicesInUse() {
+        public ServiceReference[] getServicesInUse() {
             throw new UnsupportedOperationException();
         }
 
@@ -176,12 +174,12 @@ public class ProviderRegistryImplInnerBundleProviderLoaderTest {
         }
 
         @Override
-        public Enumeration<URL> getResources(String name) throws IOException {
+        public Enumeration getResources(String name) throws IOException {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Enumeration<String> getEntryPaths(String path) {
+        public Enumeration getEntryPaths(String path) {
             throw new UnsupportedOperationException();
         }
 
@@ -196,7 +194,7 @@ public class ProviderRegistryImplInnerBundleProviderLoaderTest {
         }
 
         @Override
-        public Enumeration<URL> findEntries(String path, String filePattern, boolean recurse) {
+        public Enumeration findEntries(String path, String filePattern, boolean recurse) {
             if ("META-INF/services/".equals(path)) {
                 return Collections.enumeration(List.of(serviceDefinition));
             }
@@ -209,28 +207,13 @@ public class ProviderRegistryImplInnerBundleProviderLoaderTest {
         }
 
         @Override
-        public Map<X509Certificate, List<X509Certificate>> getSignerCertificates(int signersType) {
+        public Map getSignerCertificates(int signersType) {
             throw new UnsupportedOperationException();
         }
 
         @Override
         public Version getVersion() {
             throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public <A> A adapt(Class<A> type) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public File getDataFile(String filename) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int compareTo(Bundle other) {
-            return Long.compare(bundleId, other.getBundleId());
         }
     }
 }
