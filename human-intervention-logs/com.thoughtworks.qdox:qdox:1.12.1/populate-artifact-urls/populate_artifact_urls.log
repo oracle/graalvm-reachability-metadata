@@ -1,0 +1,423 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd2ff-3e1b-7171-840b-fb257fe03c77
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.thoughtworks.qdox:qdox:1.12.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.12.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d/metadata/com.thoughtworks.qdox/qdox/index.json
+- Entry selector: "metadata-version" = "1.12.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.12.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-sources.jar
+- repository-url: https://github.com/paul-hammant/qdox
+- test-code-url: https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz
+- documentation-url: https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-javadoc.jar
+- description: QDox is a lightweight Java source parser that extracts class, interface, method, annotation, parameter, and JavaDoc tag information without loading compiled classes. It is commonly used by code generation, documentation, and build tooling that needs a simple model of Java source structure.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.12.1
+- Entry test-version: 1.12.1
+codex
+I’ll verify the existing entry first, then check the Maven artifacts and project metadata for the exact `1.12.1` version before making any scoped edit.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.thoughtworks.qdox/qdox/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.12.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-sources.jar",
+    "repository-url" : "https://github.com/paul-hammant/qdox",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-javadoc.jar",
+    "description" : "QDox is a lightweight Java source parser that extracts class, interface, method, annotation, parameter, and JavaDoc tag information without loading compiled classes. It is commonly used by code generation, documentation, and build tooling that needs a simple model of Java source structure.",
+    "tested-versions" : [
+      "1.12.1"
+    ],
+    "allowed-packages" : [
+      "com.thoughtworks.qdox"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d
+ succeeded in 0ms:
+?? metadata/com.thoughtworks.qdox/
+?? tests/src/com.thoughtworks.qdox/
+
+web search: 
+web search: Maven Central com.thoughtworks.qdox qdox 1.12.1 sources javadoc project tar.gz
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/
+web search: 
+web search: 
+web search: 
+web search: github paul-hammant qdox tag 1.12.1
+web search: 
+web search: https://github.com/paul-hammant/qdox
+codex
+The JSON entry already has non-blank values for the URL and description fields, so the only open question is whether a `language` field should be added. I’m checking the versioned Maven project archive as the test source and the project metadata before deciding whether any edit is actually allowed.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>org.codehaus</groupId>
+    <artifactId>codehaus-parent</artifactId>
+    <version>4</version>
+  </parent>
+  
+  <name>QDox</name>
+  <groupId>com.thoughtworks.qdox</groupId>
+  <artifactId>qdox</artifactId>
+  <version>1.12.1</version>
+  
+  <url>http://qdox.codehaus.org</url>
+  <description>
+    QDox is a high speed, small footprint parser for extracting class/interface/method definitions from source files
+    complete with JavaDoc @tags. It is designed to be used by active code generators or documentation tools.
+  </description>
+  <inceptionYear>2002</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <mailingLists>
+    <mailingList>
+      <name>announce at QDox</name>
+      <post>announce@qdox.codehaus.org</post>
+      <subscribe>announce-subscribe@qdox.codehaus.org</subscribe>
+      <unsubscribe>announce-unsubscribe@qdox.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.qdox.announce</archive>
+    </mailingList>
+    <mailingList>
+      <name>dev at QDox</name>
+      <post>dev@qdox.codehaus.org</post>
+      <subscribe>dev-subscribe@qdox.codehaus.org</subscribe>
+      <unsubscribe>dev-unsubscribe@qdox.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.qdox.dev</archive>
+    </mailingList>
+    <mailingList>
+      <name>scm at QDox</name>
+      <subscribe>scm-subscribe@qdox.codehaus.org</subscribe>
+      <unsubscribe>scm-unsubscribe@qdox.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.qdox.scm</archive>
+    </mailingList>
+    <mailingList>
+      <name>user at QDox</name>
+      <post>user@qdox.codehaus.org</post>
+      <subscribe>user-subscribe@qdox.codehaus.org</subscribe>
+      <unsubscribe>user-unsubscribe@qdox.codehaus.org</unsubscribe>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.qdox.user</archive>
+    </mailingList>
+  </mailingLists>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/QDOX</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/qdox/tags/qdox-1.12.1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/qdox/tags/qdox-1.12.1</developerConnection>
+    <url>http://svn.qdox.codehaus.org/browse/qdox/tags/qdox-1.12.1</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>rfscholte</id>
+      <name>Robert Scholte</name>
+      <timezone>+1</timezone>
+      <roles>
+        <role>project lead</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>joe</id>
+      <name>Joe Walnes</name>
+      <roles>
+        <role>project founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Aslak Hellesoy</name>
+      <id>rinkrank</id>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Paul Hammant</name>
+      <id>paul</id>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Mike Williams</name>
+      <id>mdub</id>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mauro</id>
+      <name>Mauro Talevi</name>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Mike Royle</name>
+    </contributor>
+    <contributor>
+      <name>Peter Donald</name>
+    </contributor>
+    <contributor>
+      <name>James Strachan</name>
+    </contributor>
+    <contributor>
+      <name>Nick Pomfret</name>
+    </contributor>
+    <contributor>
+      <name>Chris Stevenson</name>
+    </contributor>
+    <contributor>
+      <name>Ben Hogan</name>
+    </contributor>
+    <contributor>
+      <name>Laurent Etiemble</name>
+    </contributor>
+    <contributor>
+      <name>Shawn Chain</name>
+    </contributor>
+    <contributor>
+      <name>Brian Slesinsky</name>
+    </contributor>
+    <contributor>
+      <name>James Lee</name>
+    </contributor>
+    <contributor>
+      <name>Eric Redmond</name>
+    </contributor>
+  </contributors>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav</artifactId>
+        <version>1.0-beta-2</version>
+      </extension>
+    </extensions>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/src/test-resources</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <groupId>de.jflex</groupId>
+        <artifactId>maven-jflex-plugin</artifactId>
+        <version>1.4.3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+           <outputDirectory>${project.build.directory}/generated-sources/parser</outputDirectory>
+           <lexDefinitions>
+             <lexFile>${basedir}/src/grammar/lexer.flex</lexFile>
+           </lexDefinitions>
+           <skeleton>${basedir}/src/grammar/skeleton.inner</skeleton>
+         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.3</version>
+        <configuration>
+          <tasks>
+            <echo>OS Arch = ${os.arch}</echo>
+            <exec executable="${qdox.byaccj.executable}" dir="${project.build.directory}/generated-sources/parser/com/thoughtworks/qdox/parser/impl" failonerror="true">
+              <arg value="-v" />
+              <arg value="-Jnorun" />
+              <arg value="-Jnoconstruct" />
+              <arg value="-Jclass=Parser" />
+              <arg value="-Jsemantic=Value" />
+              <arg value="-Jpackage=com.thoughtworks.qdox.parser.impl" />
+
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.12.1\")' metadata/com.thoughtworks.qdox/qdox/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.12.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-sources.jar",
+  "repository-url": "https://github.com/paul-hammant/qdox",
+  "test-code-url": "https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-javadoc.jar",
+  "description": "QDox is a lightweight Java source parser that extracts class, interface, method, annotation, parameter, and JavaDoc tag information without loading compiled classes. It is commonly used by code generation, documentation, and build tooling that needs a simple model of Java source structure.",
+  "tested-versions": [
+    "1.12.1"
+  ],
+  "allowed-packages": [
+    "com.thoughtworks.qdox"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/qdox-1.12.1-project.tar.gz | tar -tzf - | rg '("'^|/)src/test/'"' | head -20" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d
+ succeeded in 0ms:
+qdox-1.12.1/src/test/
+qdox-1.12.1/src/test/com/
+qdox-1.12.1/src/test/com/thoughtworks/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/ant/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/directorywalker/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/model/util/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/parser/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/testdata/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/traversal/
+qdox-1.12.1/src/test/com/thoughtworks/qdox/AnnotationsModelTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/AnnotationsTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/ant/AbstractQdoxTaskTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/ClassResolutionTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/directorywalker/DirectoryScannerTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/EnumsModelTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/EnumsTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/FieldsTest.java
+qdox-1.12.1/src/test/com/thoughtworks/qdox/GenericsTest.java
+
+web search: 
+web search: repo.maven.apache.org com/thoughtworks/qdox/qdox/1.12.1 qdox-1.12.1-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/thoughtworks/qdox/qdox/1.12.1/
+codex
+The Maven POM for `1.12.1` describes QDox as a Java source parser, and the versioned project archive contains `src/test` test sources. Since the allowed `language` metadata is only for Kotlin or Scala variants, this entry should keep `language` absent.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.thoughtworks.qdox/qdox/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'jq empty metadata/com.thoughtworks.qdox/qdox/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d
+ succeeded in 0ms:
+web search: 
+web search: QDox is a high speed small footprint parser extracting class interface method definitions source files JavaDoc tags
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com/artifact/com.thoughtworks.qdox/qdox/1.12.1
+web search: 
+web search: https://mvnrepository.com/artifact/com.thoughtworks.qdox/qdox/1.12.1
+codex
+No file edit was needed in [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d/metadata/com.thoughtworks.qdox/qdox/index.json): all requested URL and description fields were already non-blank, and `language` should remain absent because this is not a Kotlin or Scala-specific artifact.
+
+I verified the entry stays valid JSON with `jq empty`. QDox `1.12.1` is described as a Java compiler/parser library for extracting class/interface/method definitions and JavaDoc tags, which matches the existing two-sentence description. ([mvnrepository.com](https://mvnrepository.com/artifact/com.thoughtworks.qdox/qdox/1.12.1))
+2026-04-28T07:31:42.175510Z ERROR codex_core::session: failed to record rollout items: thread 019dd2ff-3e1b-7171-840b-fb257fe03c77 not found
+tokens used
+75,537
+No file edit was needed in [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d/metadata/com.thoughtworks.qdox/qdox/index.json): all requested URL and description fields were already non-blank, and `language` should remain absent because this is not a Kotlin or Scala-specific artifact.
+
+I verified the entry stays valid JSON with `jq empty`. QDox `1.12.1` is described as a Java compiler/parser library for extracting class/interface/method definitions and JavaDoc tags, which matches the existing two-sentence description. ([mvnrepository.com](https://mvnrepository.com/artifact/com.thoughtworks.qdox/qdox/1.12.1))
+Ran agent for com.thoughtworks.qdox:qdox:1.12.1 (exit 0). Log: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d/build/agent-url-discovery-logs/com.thoughtworks.qdox-qdox-1.12.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/2229-8345ad8d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 7s
+9 actionable tasks: 1 executed, 8 up-to-date
