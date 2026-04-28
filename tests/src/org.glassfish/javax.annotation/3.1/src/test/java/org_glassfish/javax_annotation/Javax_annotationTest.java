@@ -58,6 +58,18 @@ public class Javax_annotationTest {
     }
 
     @Test
+    void typeLevelAnnotationsDescribeNamedManagedComponentDependencies() {
+        ManagedBean managedBean = annotation(NamedResourceManagedBean.class, ManagedBean.class);
+        Resource resource = annotation(NamedResourceManagedBean.class, Resource.class);
+
+        assertThat(managedBean.value()).isEqualTo("inventoryService");
+        assertThat(resource.name()).isEqualTo("jms/auditQueue");
+        assertThat(resource.type()).isEqualTo(Runnable.class);
+        assertThat(resource.authenticationType()).isEqualTo(Resource.AuthenticationType.APPLICATION);
+        assertThat(resource.shareable()).isFalse();
+    }
+
+    @Test
     void securityAnnotationsRetainClassAndMethodRoles() throws Exception {
         DeclareRoles declareRoles = annotation(SecuredComponent.class, DeclareRoles.class);
         RunAs runAs = annotation(SecuredComponent.class, RunAs.class);
@@ -262,6 +274,15 @@ public class Javax_annotationTest {
         @PreDestroy
         void destroy() {
         }
+    }
+
+    @ManagedBean("inventoryService")
+    @Resource(
+            name = "jms/auditQueue",
+            type = Runnable.class,
+            authenticationType = Resource.AuthenticationType.APPLICATION,
+            shareable = false)
+    private static final class NamedResourceManagedBean {
     }
 
     @DeclareRoles({"admin", "auditor", "operator"})
