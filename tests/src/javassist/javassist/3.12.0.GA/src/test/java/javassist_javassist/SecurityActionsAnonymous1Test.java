@@ -6,10 +6,10 @@
  */
 package javassist_javassist;
 
-import java.lang.reflect.Method;
-import java.security.Permission;
-
-import javassist.util.proxy.RuntimeSupport;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.security.PrivilegedAction;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,44 +17,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecurityActionsAnonymous1Test {
     @Test
-    @SuppressWarnings("removal")
-    void findMethodUsesPrivilegedDeclaredMethodsLookupWhenSecurityManagerIsPresent() {
-        SecurityManager previousSecurityManager = System.getSecurityManager();
-        boolean securityManagerInstalled = installSecurityManagerIfSupported();
+    void privilegedActionRunReturnsDeclaredMethods() throws Throwable {
+        Class<?> actionClass = SecurityActionsAnonymous1Test.class.getClassLoader()
+                .loadClass("javassist.util.proxy.SecurityActions$1");
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(actionClass, MethodHandles.lookup());
+        MethodHandle constructor = lookup.findConstructor(actionClass, MethodType.methodType(void.class, Class.class));
+        PrivilegedAction<?> action = (PrivilegedAction<?>) constructor.invoke(LookupTarget.class);
 
-        try {
-            String descriptor = RuntimeSupport.makeDescriptor(new Class[0], String.class);
-            Method method = RuntimeSupport.findMethod(new LookupTarget(), "message", descriptor);
+        Object[] methods = (Object[]) action.run();
 
-            assertThat(method.getName()).isEqualTo("message");
-            assertThat(method.getDeclaringClass()).isEqualTo(LookupTarget.class);
-        } finally {
-            if (securityManagerInstalled) {
-                System.setSecurityManager(previousSecurityManager);
-            }
-        }
-    }
-
-    @SuppressWarnings("removal")
-    private static boolean installSecurityManagerIfSupported() {
-        try {
-            System.setSecurityManager(new PermissiveSecurityManager());
-            return System.getSecurityManager() != null;
-        } catch (UnsupportedOperationException unsupportedOperationException) {
-            return false;
-        }
+        assertThat(methods).hasSize(1);
+        assertThat(methods[0].toString()).contains("message");
     }
 
     public static class LookupTarget {
         public String message() {
             return "hello";
-        }
-    }
-
-    @SuppressWarnings("removal")
-    private static final class PermissiveSecurityManager extends SecurityManager {
-        @Override
-        public void checkPermission(Permission permission) {
         }
     }
 }

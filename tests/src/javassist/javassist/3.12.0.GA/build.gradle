@@ -18,9 +18,6 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     jvmArgs += ["--add-opens=java.base/java.lang=ALL-UNNAMED"]
-    if ((JavaVersion.current().majorVersion as int) < 24) {
-        jvmArgs += ["-Djava.security.manager=allow"]
-    }
 }
 
 graalvmNative {
