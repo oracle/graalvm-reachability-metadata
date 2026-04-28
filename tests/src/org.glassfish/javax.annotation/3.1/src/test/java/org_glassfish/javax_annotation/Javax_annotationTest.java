@@ -255,11 +255,12 @@ public class Javax_annotationTest {
     }
 
     private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
-        return element.getAnnotation(annotationType);
+        A[] annotations = element.getAnnotationsByType(annotationType);
+        return annotations.length == 0 ? null : annotations[0];
     }
 
     private static boolean annotationPresent(AnnotatedElement element, Class<? extends Annotation> annotationType) {
-        return element.isAnnotationPresent(annotationType);
+        return element.getAnnotationsByType(annotationType).length > 0;
     }
 
     private static Field field(Class<?> type, String name) throws NoSuchFieldException {
