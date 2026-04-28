@@ -160,6 +160,43 @@ public class Jboss_interceptor_spiTest {
     }
 
     @Test
+    public void interceptionModelAggregatesUniqueInterceptorsAcrossLifecycleCallbacks() {
+        SimpleMethodMetadata postConstructMethod = new SimpleMethodMetadata(
+                void.class,
+                InterceptionType.POST_CONSTRUCT
+        );
+        SimpleMethodMetadata preDestroyMethod = new SimpleMethodMetadata(
+                void.class,
+                InterceptionType.PRE_DESTROY
+        );
+        SimpleMethodMetadata prePassivateMethod = new SimpleMethodMetadata(
+                void.class,
+                InterceptionType.PRE_PASSIVATE
+        );
+        SimpleInterceptorMetadata<String> lifecycleInterceptor = interceptorMetadata(
+                "shared-lifecycle-interceptor",
+                true,
+                postConstructMethod,
+                preDestroyMethod
+        );
+        SimpleInterceptorMetadata<String> passivationInterceptor = interceptorMetadata(
+                "passivation-interceptor",
+                false,
+                prePassivateMethod
+        );
+        SimpleInterceptionModel<String, String> model = new SimpleInterceptionModel<>("InventoryService");
+
+        model.register(InterceptionType.POST_CONSTRUCT, lifecycleInterceptor);
+        model.register(InterceptionType.PRE_DESTROY, lifecycleInterceptor);
+        model.register(InterceptionType.PRE_PASSIVATE, passivationInterceptor);
+
+        assertThat(model.getInterceptors(InterceptionType.POST_CONSTRUCT, null)).containsExactly(lifecycleInterceptor);
+        assertThat(model.getInterceptors(InterceptionType.PRE_DESTROY, null)).containsExactly(lifecycleInterceptor);
+        assertThat(model.getInterceptors(InterceptionType.PRE_PASSIVATE, null)).containsExactly(passivationInterceptor);
+        assertThat(model.getAllInterceptors()).containsExactlyInAnyOrder(lifecycleInterceptor, passivationInterceptor);
+    }
+
+    @Test
     public void invocationContextFactoryCreatesMethodInvocationContextsBackedByAnInterceptionChain() throws Exception {
         RecordingInterceptionChain chain = new RecordingInterceptionChain(List.of(
                 context -> {
