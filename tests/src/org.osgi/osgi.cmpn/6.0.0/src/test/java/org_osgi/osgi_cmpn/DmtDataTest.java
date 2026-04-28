@@ -83,7 +83,7 @@ public class DmtDataTest {
         assertThat(binaryCopy).isNotSameAs(bytes);
         assertThat(binaryData.getBinary()).containsExactly((byte) 0x00, (byte) 0x0A, (byte) 0xFF);
         assertThat(binaryData.getSize()).isEqualTo(3);
-        assertThat(binaryData.toString()).isEqualTo("000AFF");
+        assertThat(binaryData.toString()).isEqualTo("00 0A FF");
 
         assertThat(base64Data.getFormat()).isEqualTo(DmtData.FORMAT_BASE64);
         assertThat(base64Data.getBase64()).containsExactly((byte) 0x00, (byte) 0x0A, (byte) 0xFF);
@@ -164,7 +164,7 @@ public class DmtDataTest {
                 .hasMessage("Time string is out of range.");
         assertThatThrownBy(() -> new DmtData("value", DmtData.FORMAT_INTEGER))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Wrong format for DmtData(String,int)");
+                .hasMessageContaining("Invalid type type for DmtData");
         assertThatThrownBy(() -> new DmtData(new byte[] {1}, DmtData.FORMAT_RAW_BINARY))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("only FORMAT_BINARY and FORMAT_BASE64 are allowed");
