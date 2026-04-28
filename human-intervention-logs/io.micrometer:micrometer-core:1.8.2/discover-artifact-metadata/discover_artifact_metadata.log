@@ -1,0 +1,533 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd5d0-3aae-7880-945e-84aae7a530a1
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.micrometer:micrometer-core:1.8.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.8.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+- Set "coordinates" to "io.micrometer:micrometer-core:1.8.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the Maven artifacts first because the repository instructions prefer Maven-hosted sources/tests when available, then I’ll fall back to the release tag for anything not published there.
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'io\\.micrometer-micrometer-core-1\\.8\\.2\\.json"'$'"'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+{
+  "coordinates" : "io.micrometer:micrometer-core:1.8.2"
+}
+
+web search: 
+web search: Maven Central io.micrometer micrometer-core 1.8.2 sources jar javadoc tests jar
+web search: 
+web search: https://github.com/micrometer-metrics/micrometer/tree/v1.8.2
+web search: 
+web search: repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/
+web search: 
+web search: 
+codex
+Maven Central has a `1.8.2` directory with published `sources.jar` and `javadoc.jar`; I’m checking the POM and repository tag now to fill the remaining repository/test/doc fields precisely.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.micrometer</groupId>
+  <artifactId>micrometer-core</artifactId>
+  <version>1.8.2</version>
+  <name>micrometer-core</name>
+  <description>Application monitoring instrumentation facade</description>
+  <url>https://github.com/micrometer-metrics/micrometer</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>shakuzen</id>
+      <name>Tommy Ludwig</name>
+      <email>tludwig@vmware.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <url>git@github.com:micrometer-metrics/micrometer.git</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.hdrhistogram</groupId>
+      <artifactId>HdrHistogram</artifactId>
+      <version>2.1.12</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.latencyutils</groupId>
+      <artifactId>LatencyUtils</artifactId>
+      <version>2.0.3</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>HdrHistogram</artifactId>
+          <groupId>org.hdrhistogram</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.dropwizard.metrics</groupId>
+      <artifactId>metrics-core</artifactId>
+      <version>4.0.7</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.0.1-jre</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>2.9.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <version>2.10.9.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.cache</groupId>
+      <artifactId>cache-api</artifactId>
+      <version>1.1.1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>hazelcast</artifactId>
+      <version>5.0</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>5.6.1.Final</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.4.44.v20210927</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-client</artifactId>
+      <version>9.4.44.v20210927</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-core</artifactId>
+      <version>8.5.72</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>2.35</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-api</artifactId>
+      <version>1.42.0</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.5.13</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpasyncclient</artifactId>
+      <version>4.1.4</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.netflix.hystrix</groupId>
+      <artifactId>hystrix-core</artifactId>
+      <version>1.5.12</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.10</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.17.1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+      <version>3.4.14</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor.netty</groupId>
+      <artifactId>reactor-netty-http</artifactId>
+      <version>1.0.15</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>1.8.14</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>5.0.0-alpha.2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-sync</artifactId>
+      <version>4.4.0-beta2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jooq</groupId>
+      <artifactId>jooq</artifactId>
+      <version>3.14.15</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>2.8.1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -name 'io.micrometer*' -type f -print" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+web search: 
+web search: https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/
+web search: 
+web search: '1.8.2/' in https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"' . --glob '*.json' --glob '"'!build/**'"' | head -30" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-impl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/1.0.2.v20150114/aether-impl-1.0.2.v20150114-javadoc.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+./metadata/aopalliance/aopalliance/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/1.0/aopalliance.zip/download",
+./metadata/javax.annotation/jsr250-api/index.json:9:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+./metadata/javax.annotation/javax.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-javadoc.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+./metadata/javax.jcr/jcr/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/1.0/jcr-1.0-javadoc.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-javadoc.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-javadoc.jar",
+./metadata/org.sonatype.aether/aether-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+./metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+./metadata/com.vaadin.external.google/android-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/ | rg 'test|javadoc|sources|\\.pom'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+<a href="micrometer-core-1.8.2-javadoc.jar" title="micrometer-core-1.8.2-javadoc.jar">micrometer-core-1.8.2-javadoc.jar</a>                 2022-01-13 05:45   1239760      
+<a href="micrometer-core-1.8.2-javadoc.jar.asc" title="micrometer-core-1.8.2-javadoc.jar.asc">micrometer-core-1.8.2-javadoc.jar.asc</a>             2022-01-13 05:45       475      
+<a href="micrometer-core-1.8.2-javadoc.jar.asc.md5" title="micrometer-core-1.8.2-javadoc.jar.asc.md5">micrometer-core-1.8.2-javadoc.jar.asc.md5</a>         2022-01-13 05:45        32      
+<a href="micrometer-core-1.8.2-javadoc.jar.asc.sha1" title="micrometer-core-1.8.2-javadoc.jar.asc.sha1">micrometer-core-1.8.2-javadoc.jar.asc.sha1</a>        2022-01-13 05:45        40      
+<a href="micrometer-core-1.8.2-javadoc.jar.asc.sha256" title="micrometer-core-1.8.2-javadoc.jar.asc.sha256">micrometer-core-1.8.2-javadoc.jar.asc.sha256</a>      2022-01-13 05:45        64      
+<a href="micrometer-core-1.8.2-javadoc.jar.asc.sha512" title="micrometer-core-1.8.2-javadoc.jar.asc.sha512">micrometer-core-1.8.2-javadoc.jar.asc.sha512</a>      2022-01-13 05:45       128      
+<a href="micrometer-core-1.8.2-javadoc.jar.md5" title="micrometer-core-1.8.2-javadoc.jar.md5">micrometer-core-1.8.2-javadoc.jar.md5</a>             2022-01-13 05:45        32      
+<a href="micrometer-core-1.8.2-javadoc.jar.sha1" title="micrometer-core-1.8.2-javadoc.jar.sha1">micrometer-core-1.8.2-javadoc.jar.sha1</a>            2022-01-13 05:45        40      
+<a href="micrometer-core-1.8.2-javadoc.jar.sha256" title="micrometer-core-1.8.2-javadoc.jar.sha256">micrometer-core-1.8.2-javadoc.jar.sha256</a>          2022-01-13 05:45        64      
+<a href="micrometer-core-1.8.2-javadoc.jar.sha512" title="micrometer-core-1.8.2-javadoc.jar.sha512">micrometer-core-1.8.2-javadoc.jar.sha512</a>          2022-01-13 05:45       128      
+<a href="micrometer-core-1.8.2-sources.jar" title="micrometer-core-1.8.2-sources.jar">micrometer-core-1.8.2-sources.jar</a>                 2022-01-13 05:45    418633      
+<a href="micrometer-core-1.8.2-sources.jar.asc" title="micrometer-core-1.8.2-sources.jar.asc">micrometer-core-1.8.2-sources.jar.asc</a>             2022-01-13 05:45       475      
+<a href="micrometer-core-1.8.2-sources.jar.asc.md5" title="micrometer-core-1.8.2-sources.jar.asc.md5">micrometer-core-1.8.2-sources.jar.asc.md5</a>         2022-01-13 05:45        32      
+<a href="micrometer-core-1.8.2-sources.jar.asc.sha1" title="micrometer-core-1.8.2-sources.jar.asc.sha1">micrometer-core-1.8.2-sources.jar.asc.sha1</a>        2022-01-13 05:45        40      
+<a href="micrometer-core-1.8.2-sources.jar.asc.sha256" title="micrometer-core-1.8.2-sources.jar.asc.sha256">micrometer-core-1.8.2-sources.jar.asc.sha256</a>      2022-01-13 05:45        64      
+<a href="micrometer-core-1.8.2-sources.jar.asc.sha512" title="micrometer-core-1.8.2-sources.jar.asc.sha512">micrometer-core-1.8.2-sources.jar.asc.sha512</a>      2022-01-13 05:45       128      
+<a href="micrometer-core-1.8.2-sources.jar.md5" title="micrometer-core-1.8.2-sources.jar.md5">micrometer-core-1.8.2-sources.jar.md5</a>             2022-01-13 05:45        32      
+<a href="micrometer-core-1.8.2-sources.jar.sha1" title="micrometer-core-1.8.2-sources.jar.sha1">micrometer-core-1.8.2-sources.jar.sha1</a>            2022-01-13 05:45        40      
+<a href="micrometer-core-1.8.2-sources.jar.sha256" title="micrometer-core-1.8.2-sources.jar.sha256">micrometer-core-1.8.2-sources.jar.sha256</a>          2022-01-13 05:45        64      
+<a href="micrometer-core-1.8.2-sources.jar.sha512" title="micrometer-core-1.8.2-sources.jar.sha512">micrometer-core-1.8.2-sources.jar.sha512</a>          2022-01-13 05:45       128      
+<a href="micrometer-core-1.8.2.pom" title="micrometer-core-1.8.2.pom">micrometer-core-1.8.2.pom</a>                         2022-01-13 05:45      8732      
+<a href="micrometer-core-1.8.2.pom.asc" title="micrometer-core-1.8.2.pom.asc">micrometer-core-1.8.2.pom.asc</a>                     2022-01-13 05:45       475      
+<a href="micrometer-core-1.8.2.pom.asc.md5" title="micrometer-core-1.8.2.pom.asc.md5">micrometer-core-1.8.2.pom.asc.md5</a>                 2022-01-13 05:45        32      
+<a href="micrometer-core-1.8.2.pom.asc.sha1" title="micrometer-core-1.8.2.pom.asc.sha1">micrometer-core-1.8.2.pom.asc.sha1</a>                2022-01-13 05:45        40      
+<a href="micrometer-core-1.8.2.pom.asc.sha256" title="micrometer-core-1.8.2.pom.asc.sha256">micrometer-core-1.8.2.pom.asc.sha256</a>              2022-01-13 05:45        64      
+<a href="micrometer-core-1.8.2.pom.asc.sha512" title="micrometer-core-1.8.2.pom.asc.sha512">micrometer-core-1.8.2.pom.asc.sha512</a>              2022-01-13 05:45       128      
+<a href="micrometer-core-1.8.2.pom.md5" title="micrometer-core-1.8.2.pom.md5">micrometer-core-1.8.2.pom.md5</a>                     2022-01-13 05:45        32      
+<a href="micrometer-core-1.8.2.pom.sha1" title="micrometer-core-1.8.2.pom.sha1">micrometer-core-1.8.2.pom.sha1</a>                    2022-01-13 05:45        40      
+<a href="micrometer-core-1.8.2.pom.sha256" title="micrometer-core-1.8.2.pom.sha256">micrometer-core-1.8.2.pom.sha256</a>                  2022-01-13 05:45        64      
+<a href="micrometer-core-1.8.2.pom.sha512" title="micrometer-core-1.8.2.pom.sha512">micrometer-core-1.8.2.pom.sha512</a>                  2022-01-13 05:45       128      
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar \\
+  https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-tests.jar \\
+  https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test; do \\
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; '"\\
+done" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 1743ms:
+200 https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-javadoc.jar
+404 https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-test-sources.jar
+404 https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-tests.jar
+200 https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test
+
+codex
+The Maven directory confirms there is no published test-sources/tests artifact for this version, so the test URL should use the `v1.8.2` repository tag. I’m updating the JSON with Maven sources/Javadoc and the tagged GitHub test suite.
+apply patch
+patch: completed
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+diff --git a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+index 63afc45b358fb816e74d4a03482fa7b7384245ba..e83c1ba235b15c013414606f01173ba2804ad56f
+--- a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
++++ b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.micrometer:micrometer-core:1.8.2"
++  "coordinates" : "io.micrometer:micrometer-core:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/micrometer-metrics/micrometer",
++  "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-javadoc.jar",
++  "description" : "Micrometer Core provides a vendor-neutral application metrics instrumentation facade for the JVM. It supplies the core meter APIs, registries, and instrumentation support used to record counters, gauges, timers, and other metrics for monitoring systems."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+index 63afc45b358fb816e74d4a03482fa7b7384245ba..e83c1ba235b15c013414606f01173ba2804ad56f
+--- a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
++++ b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.micrometer:micrometer-core:1.8.2"
++  "coordinates" : "io.micrometer:micrometer-core:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/micrometer-metrics/micrometer",
++  "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-javadoc.jar",
++  "description" : "Micrometer Core provides a vendor-neutral application metrics instrumentation facade for the JVM. It supplies the core meter APIs, registries, and instrumentation support used to record counters, gauges, timers, and other metrics for monitoring systems."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+ succeeded in 0ms:
+{
+  "coordinates": "io.micrometer:micrometer-core:1.8.2",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar",
+  "repository-url": "https://github.com/micrometer-metrics/micrometer",
+  "test-code-url": "https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-javadoc.jar",
+  "description": "Micrometer Core provides a vendor-neutral application metrics instrumentation facade for the JVM. It supplies the core meter APIs, registries, and instrumentation support used to record counters, gauges, timers, and other metrics for monitoring systems."
+}
+
+diff --git a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+index 63afc45b358fb816e74d4a03482fa7b7384245ba..e83c1ba235b15c013414606f01173ba2804ad56f
+--- a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
++++ b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.micrometer:micrometer-core:1.8.2"
++  "coordinates" : "io.micrometer:micrometer-core:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/micrometer-metrics/micrometer",
++  "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-javadoc.jar",
++  "description" : "Micrometer Core provides a vendor-neutral application metrics instrumentation facade for the JVM. It supplies the core meter APIs, registries, and instrumentation support used to record counters, gauges, timers, and other metrics for monitoring systems."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+index 63afc45b358fb816e74d4a03482fa7b7384245ba..e83c1ba235b15c013414606f01173ba2804ad56f
+--- a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
++++ b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.micrometer:micrometer-core:1.8.2"
++  "coordinates" : "io.micrometer:micrometer-core:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/micrometer-metrics/micrometer",
++  "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-javadoc.jar",
++  "description" : "Micrometer Core provides a vendor-neutral application metrics instrumentation facade for the JVM. It supplies the core meter APIs, registries, and instrumentation support used to record counters, gauges, timers, and other metrics for monitoring systems."
+ }
+
+web search: 
+web search: https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/
+web search: 
+web search: 
+web search: 
+web search: https://github.com/micrometer-metrics/micrometer
+codex
+Updated [io.micrometer-micrometer-core-1.8.2.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json) with the repository, Maven-hosted sources/Javadoc, tagged GitHub test suite, and a two-sentence description. Maven Central has the exact `1.8.2` sources and Javadoc artifacts, while the test suite is on the `v1.8.2` GitHub tag. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/))
+
+I left `language` absent because this is not a Kotlin- or Scala-specific library; the repository identifies it as Java-based. ([github.com](https://github.com/micrometer-metrics/micrometer)) JSON validation passed with `jq`.
+diff --git a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+index 63afc45b358fb816e74d4a03482fa7b7384245ba..e83c1ba235b15c013414606f01173ba2804ad56f
+--- a/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
++++ b/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.micrometer:micrometer-core:1.8.2"
++  "coordinates" : "io.micrometer:micrometer-core:1.8.2",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-sources.jar",
++  "repository-url" : "https://github.com/micrometer-metrics/micrometer",
++  "test-code-url" : "https://github.com/micrometer-metrics/micrometer/tree/v1.8.2/micrometer-core/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/micrometer-core-1.8.2-javadoc.jar",
++  "description" : "Micrometer Core provides a vendor-neutral application metrics instrumentation facade for the JVM. It supplies the core meter APIs, registries, and instrumentation support used to record counters, gauges, timers, and other metrics for monitoring systems."
+ }
+
+2026-04-28T20:39:41.183908Z ERROR codex_core::session: failed to record rollout items: thread 019dd5d0-3aae-7880-945e-84aae7a530a1 not found
+tokens used
+78,475
+Updated [io.micrometer-micrometer-core-1.8.2.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f/build/discovered-artifact-metadata/io.micrometer-micrometer-core-1.8.2.json) with the repository, Maven-hosted sources/Javadoc, tagged GitHub test suite, and a two-sentence description. Maven Central has the exact `1.8.2` sources and Javadoc artifacts, while the test suite is on the `v1.8.2` GitHub tag. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/io/micrometer/micrometer-core/1.8.2/))
+
+I left `language` absent because this is not a Kotlin- or Scala-specific library; the repository identifies it as Java-based. ([github.com](https://github.com/micrometer-metrics/micrometer)) JSON validation passed with `jq`.
+Ran agent for io.micrometer:micrometer-core:1.8.2 (exit 0). Log: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f/build/agent-artifact-discovery-logs/io.micrometer-micrometer-core-1.8.2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2448-e88b971f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 4 executed, 5 from cache
