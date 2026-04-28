@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,9 +85,11 @@ public class ClassFileWriterTest {
 
     private static final class ResourceHidingClassLoader extends ClassLoader {
         private final List<String> hiddenResourceRequests = new ArrayList<>();
+        private final ProtectionDomain protectionDomain;
 
         ResourceHidingClassLoader(ClassLoader parent) {
             super(parent);
+            this.protectionDomain = ClassFileWriter.class.getProtectionDomain();
         }
 
         List<String> hiddenResourceRequests() {
@@ -134,7 +137,7 @@ public class ClassFileWriterTest {
             String resourceName = name.replace('.', '/') + ".class";
             try {
                 byte[] classBytes = readSystemClassBytes(resourceName);
-                return defineClass(name, classBytes, 0, classBytes.length);
+                return defineClass(name, classBytes, 0, classBytes.length, protectionDomain);
             } catch (IOException ex) {
                 throw new ClassNotFoundException(name, ex);
             }
