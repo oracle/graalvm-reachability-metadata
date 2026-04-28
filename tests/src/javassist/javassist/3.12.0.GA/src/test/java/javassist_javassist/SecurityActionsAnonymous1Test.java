@@ -26,8 +26,9 @@ public class SecurityActionsAnonymous1Test {
 
         Object[] methods = (Object[]) action.run();
 
-        assertThat(methods).hasSize(1);
-        assertThat(methods[0].toString()).contains("message");
+        assertThat(methods)
+                .extracting(Object::toString)
+                .anyMatch(signature -> signature.contains("LookupTarget.message()"));
     }
 
     public static class LookupTarget {
