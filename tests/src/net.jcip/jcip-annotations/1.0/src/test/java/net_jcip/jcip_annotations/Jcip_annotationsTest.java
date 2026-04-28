@@ -56,6 +56,7 @@ public class Jcip_annotationsTest {
     }
 
     @Test
+    @SuppressWarnings("annotationAccess")
     void runtimeVisibleAnnotationInstancesRetainValuesAndStandardSemantics() throws NoSuchFieldException, NoSuchMethodException {
         ThreadSafe threadSafeOnBase = ThreadSafeBase.class.getAnnotation(ThreadSafe.class);
         ThreadSafe threadSafeOnOtherType = AnotherThreadSafeType.class.getAnnotation(ThreadSafe.class);
@@ -115,6 +116,7 @@ public class Jcip_annotationsTest {
     }
 
     @Test
+    @SuppressWarnings("annotationAccess")
     void markerAnnotationsApplyToInterfacesEnumsAndAnnotationTypes() {
         ThreadSafe threadSafeInterface = ConcurrencyContract.class.getAnnotation(ThreadSafe.class);
         NotThreadSafe notThreadSafeEnum = LifecycleMode.class.getAnnotation(NotThreadSafe.class);
@@ -133,6 +135,7 @@ public class Jcip_annotationsTest {
     }
 
     @Test
+    @SuppressWarnings("annotationAccess")
     void immutableAnnotationAppliesToRecordTypes() {
         ImmutableCoordinates coordinates = new ImmutableCoordinates(4, -1);
         ImmutableCoordinates translated = coordinates.translate(3, 2);
