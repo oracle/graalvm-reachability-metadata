@@ -1,0 +1,1360 @@
+Starting a Gradle Daemon, 5 busy and 8 incompatible and 126 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd19c-90e8-73d1-bfd7-150699dba062
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.thoughtworks.xstream:xstream:1.4.20
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.4.20".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+- Set "coordinates" to "com.thoughtworks.xstream:xstream:1.4.20".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact’s published metadata and exact-version upstream links, then patch the JSON in place with the resolved values.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,220p' build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+{
+  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'com\\.thoughtworks\\.xstream|xstream' build/discovered-artifact-metadata metadata -g '*.json'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json:2:  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
+
+codex
+The target file currently only has coordinates, and there are no nearby entries for this artifact to copy. I’m checking the published POM/JAR coordinates and upstream tag so the version-specific URLs are defensible.
+web search: 
+web search: com.thoughtworks.xstream xstream 1.4.20 maven sources test sources
+web search: 
+web search: https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/
+web search: 
+web search: 
+web search: 
+web search: site:x-stream.github.io/1.4.20 XStream documentation
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f -name '*.json' | head -20" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:6:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/2.36.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:33:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/2.32.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:51:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/2.29.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:66:    "repository-url" : "https://github.com/apache/artemis",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/2.28.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:6:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:36:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-5.18.1/activemq-client/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:5:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:28:    "repository-url" : "https://github.com/apache/activemq",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:6:    "repository-url" : "https://github.com/apache/activemq-artemis",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/2.28.0/artemis-log-annotation-processor/src/test",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:6:    "repository-url" : "https://github.com/jline/jline3",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.20.0/terminal-jna/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-sources.jar",
+metadata/org.jline/jline/index.json:10:    "repository-url": "https://github.com/jline/jline3",
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.21.0",
+metadata/org.jline/jline/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:6:    "repository-url" : "https://github.com/javaee/metro-stax-ex",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/1.8/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20.pom | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/ | sed -n '1,200p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/thoughtworks/xstream/xstream/1.4.20</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/thoughtworks/xstream/xstream/1.4.20</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="xstream-1.4.20-javadoc.jar" title="xstream-1.4.20-javadoc.jar">xstream-1.4.20-javadoc.jar</a>                        2022-12-23 23:23   2128484      
+<a href="xstream-1.4.20-javadoc.jar.asc" title="xstream-1.4.20-javadoc.jar.asc">xstream-1.4.20-javadoc.jar.asc</a>                    2022-12-23 23:23       833      
+<a href="xstream-1.4.20-javadoc.jar.md5" title="xstream-1.4.20-javadoc.jar.md5">xstream-1.4.20-javadoc.jar.md5</a>                    2022-12-23 23:23        32      
+<a href="xstream-1.4.20-javadoc.jar.sha1" title="xstream-1.4.20-javadoc.jar.sha1">xstream-1.4.20-javadoc.jar.sha1</a>                   2022-12-23 23:23        40      
+<a href="xstream-1.4.20-sources.jar" title="xstream-1.4.20-sources.jar">xstream-1.4.20-sources.jar</a>                        2022-12-23 23:23    455474      
+<a href="xstream-1.4.20-sources.jar.asc" title="xstream-1.4.20-sources.jar.asc">xstream-1.4.20-sources.jar.asc</a>                    2022-12-23 23:23       833      
+<a href="xstream-1.4.20-sources.jar.md5" title="xstream-1.4.20-sources.jar.md5">xstream-1.4.20-sources.jar.md5</a>                    2022-12-23 23:23        32      
+<a href="xstream-1.4.20-sources.jar.sha1" title="xstream-1.4.20-sources.jar.sha1">xstream-1.4.20-sources.jar.sha1</a>                   2022-12-23 23:23        40      
+<a href="xstream-1.4.20-tests.jar" title="xstream-1.4.20-tests.jar">xstream-1.4.20-tests.jar</a>                          2022-12-23 23:23      9967      
+<a href="xstream-1.4.20-tests.jar.asc" title="xstream-1.4.20-tests.jar.asc">xstream-1.4.20-tests.jar.asc</a>                      2022-12-23 23:23       833      
+<a href="xstream-1.4.20-tests.jar.md5" title="xstream-1.4.20-tests.jar.md5">xstream-1.4.20-tests.jar.md5</a>                      2022-12-23 23:23        32      
+<a href="xstream-1.4.20-tests.jar.sha1" title="xstream-1.4.20-tests.jar.sha1">xstream-1.4.20-tests.jar.sha1</a>                     2022-12-23 23:23        40      
+<a href="xstream-1.4.20.jar" title="xstream-1.4.20.jar">xstream-1.4.20.jar</a>                                2022-12-23 23:23    644649      
+<a href="xstream-1.4.20.jar.asc" title="xstream-1.4.20.jar.asc">xstream-1.4.20.jar.asc</a>                            2022-12-23 23:23       833      
+<a href="xstream-1.4.20.jar.md5" title="xstream-1.4.20.jar.md5">xstream-1.4.20.jar.md5</a>                            2022-12-23 23:23        32      
+<a href="xstream-1.4.20.jar.sha1" title="xstream-1.4.20.jar.sha1">xstream-1.4.20.jar.sha1</a>                           2022-12-23 23:23        40      
+<a href="xstream-1.4.20.pom" title="xstream-1.4.20.pom">xstream-1.4.20.pom</a>                                2022-12-23 23:23     24850      
+<a href="xstream-1.4.20.pom.asc" title="xstream-1.4.20.pom.asc">xstream-1.4.20.pom.asc</a>                            2022-12-23 23:23       833      
+<a href="xstream-1.4.20.pom.md5" title="xstream-1.4.20.pom.md5">xstream-1.4.20.pom.md5</a>                            2022-12-23 23:23        32      
+<a href="xstream-1.4.20.pom.sha1" title="xstream-1.4.20.pom.sha1">xstream-1.4.20.pom.sha1</a>                           2022-12-23 23:23        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+     Copyright (C) 2006 Joe Walnes.
+     Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 XStream committers.
+     All rights reserved.
+     
+     The software in this package is published under the terms of the BSD
+     style license a copy of which has been included with this distribution in
+     the LICENSE.txt file.
+     
+     Created on 29. July 2006 by Mauro Talevi
+     -->
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.thoughtworks.xstream</groupId>
+    <artifactId>xstream-parent</artifactId>
+    <version>1.4.20</version>
+  </parent>
+  <artifactId>xstream</artifactId>
+  <packaging>jar</packaging>
+  <name>XStream Core</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>xom</groupId>
+      <artifactId>xom</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.x-stream</groupId>
+      <artifactId>mxparser</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.kxml</groupId>
+      <artifactId>kxml2-min</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+<!-- Registers itself as Service like Xpp3
+    <dependency>
+      <groupId>net.sf.kxml</groupId>
+      <artifactId>kxml2</artifactId>
+      <optional>true</optional>
+    </dependency>
+-->
+
+    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3_min</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jettison</groupId>
+      <artifactId>jettison</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <scope>provided</scope><!-- only required for compilation with Java 11 or higher, but only used by Java 7 or below -->
+    </dependency>
+
+    <!-- test-scoped -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>jmock</groupId>
+      <artifactId>jmock</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.megginson.sax</groupId>
+      <artifactId>xml-writer</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.ws</groupId>
+          <artifactId>jaxws-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.istack</groupId>
+          <artifactId>istack-commons-runtime</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.messaging.saaj</groupId>
+          <artifactId>saaj-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.stream.buffer</groupId>
+          <artifactId>streambuffer</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.ws</groupId>
+          <artifactId>policy</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.org.apache.xml.internal</groupId>
+          <artifactId>resolver</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.gmbal</groupId>
+          <artifactId>gmbal-api-only</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jvnet</groupId>
+          <artifactId>mimepull</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jvnet.staxex</groupId>
+          <artifactId>stax-ex</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>complete-test-classpath</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/lib</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>proxytoys</groupId>
+                  <artifactId>proxytoys</artifactId>
+                  <version>0.2.1</version>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>collect-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+
+exec
+/usr/bin/bash -lc "for u in https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar; do printf '%s ' \""'$u"; curl -fsSI "$u" | sed -n '"'1p'; done" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 422ms:
+HTTP/2 200 
+https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar HTTP/2 200 
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream-parent/1.4.20/xstream-parent-1.4.20.pom | sed -n '1,260p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+     Copyright (C) 2006 Joe Walnes.
+     Copyright (C) 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 XStream committers.
+     All rights reserved.
+     
+     The software in this package is published under the terms of the BSD
+     style license a copy of which has been included with this distribution in
+     the LICENSE.txt file.
+     
+     Created on 29. July 2006 by Mauro Talevi
+     -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.thoughtworks.xstream</groupId>
+  <artifactId>xstream-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.4.20</version>
+  <name>XStream Parent</name>
+  <url>http://x-stream.github.io</url>
+  <description>
+    XStream is a serialization library from Java objects to XML and back.
+  </description>
+
+  <inceptionYear>2004</inceptionYear>
+  <organization>
+    <name>XStream</name>
+    <url>http://x-stream.github.io</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>xstream</id>
+      <name>XStream Committers</name>
+      <url>http://x-stream.github.io/team.html</url>
+    </developer>
+  </developers>
+
+  <profiles>
+    <profile>
+      <id>jdk12-ge</id>
+      <activation>
+        <jdk>[12,)</jdk>
+      </activation>
+      <properties>
+        <version.java.5>1.7</version.java.5>
+        <version.java.6>1.7</version.java.6>
+        <version.java.source>1.7</version.java.source>
+        <version.java.target>1.7</version.java.target>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk9-ge-jdk12</id>
+      <activation>
+        <jdk>[9,12)</jdk>
+      </activation>
+      <properties>
+        <version.java.5>1.6</version.java.5>
+        <version.java.source>1.6</version.java.source>
+        <version.java.target>1.6</version.java.target>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk9-ge</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <properties>
+        <version.plugin.maven.enforcer>3.0.0-M1</version.plugin.maven.enforcer>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk8-ge</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.xdoclint>-Xdoclint:-missing</javadoc.xdoclint>
+        <version.plugin.felix.bundle>2.5.4</version.plugin.felix.bundle>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <version.java.source>1.4</version.java.source>
+        <version.java.target>1.4</version.java.target>
+      </properties>
+    </profile>
+    <profile>
+      <id>jdk6</id>
+      <activation>
+        <jdk>1.6</jdk>
+      </activation>
+      <properties>
+        <version.org.openjdk.jmh>1.16</version.org.openjdk.jmh>
+      </properties>
+    </profile>
+    <profile>
+      <!-- build with Maven 3.2.5 !!! -->
+      <id>jdk6-ge</id>
+      <activation>
+        <jdk>[1.6,)</jdk>
+      </activation>
+      <modules>
+        <!--module>xstream-its</module--><!-- requires installed repo -->
+        <module>xstream-jmh</module>
+        <module>xstream-distribution</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- build with Maven 3.0.5 !!! -->
+      <id>jdk5</id>
+      <activation>
+        <jdk>1.5</jdk>
+      </activation>
+      <properties>
+        <version.hsqldb>1.8.0.10</version.hsqldb>
+        <version.org.hibernate.core>3.6.6.Final</version.org.hibernate.core>
+      </properties>
+    </profile>
+    <profile>
+      <!-- build with Maven 2.0.10 !!! -->
+      <id>jdk4</id>
+      <activation>
+        <jdk>1.4</jdk>
+      </activation>
+      <properties>
+        <version.java.source>1.3</version.java.source>
+        <version.java.target>1.3</version.java.target>
+        <version.plugin.maven.enforcer>1.0-beta-1</version.plugin.maven.enforcer>
+        <link.javadoc.javase>http://docs.oracle.com/javase/1.4.2/docs/api/</link.javadoc.javase>
+        <!-- repeat Hibernate version dependencies, JDK intervals in activation is not supported with M2.0.x -->
+        <version.hsqldb>1.8.0.10</version.hsqldb>
+        <version.org.hibernate.core>3.3.2.GA</version.org.hibernate.core>
+        <version.org.hibernate.envers>3.6.6.Final</version.org.hibernate.envers><!-- not usable with JDK 1.4 -->
+      </properties>
+    </profile>
+    <profile>
+      <id>java</id>
+      <activation>
+        <file>
+          <exists>src/java</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>include-license</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>add-resource</goal>
+                </goals>
+                <configuration>
+                  <resources>
+                    <resource>
+                      <directory>${project.build.directory}/generated-resources</directory>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-license</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy file="../LICENSE.txt" tofile="${project.build.directory}/generated-resources/META-INF/LICENSE" overwrite="false" failonerror="true" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <!-- overwrite codehaus-parent -->
+            <version>${version.plugin.maven.enforcer}</version>
+            <executions>
+              <execution>
+                <id>enforce-java-version</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <version>${version.java.enforced}</version>
+                    </requireJavaVersion>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>java-test</id>
+      <activation>
+        <file>
+          <exists>src/test</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-license-for-test</id>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy file="../LICENSE.txt" tofile="${project.build.directory}/test-classes/META-INF/LICENSE" overwrite="false" failonerror="true" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>osgi</id>
+      <activation>
+        <jdk>[1.6,)</jdk>
+        <file>
+          <exists>profiles/osgi</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>bundle-manifest</id>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/x-stream/xstream/git/refs/tags | rg -n '1\\.4\\.20|xstream'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/x-stream/xstream/contents?ref=XSTREAM_1_4_20 | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 188ms:
+[
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "291c4e7b9973983dbc5f60dc6372e3b976ab0e1a",
+    "size": 219,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/.gitattributes?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/.gitattributes",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/291c4e7b9973983dbc5f60dc6372e3b976ab0e1a",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/.gitattributes?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/291c4e7b9973983dbc5f60dc6372e3b976ab0e1a",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/.gitattributes"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "0b870e1243d5cff7290b8f277fdf341d740d45da",
+    "size": 16,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/.gitignore?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/.gitignore",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/0b870e1243d5cff7290b8f277fdf341d740d45da",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/.gitignore?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/0b870e1243d5cff7290b8f277fdf341d740d45da",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/.gitignore"
+    }
+  },
+  {
+    "name": ".travis.settings.xml",
+    "path": ".travis.settings.xml",
+    "sha": "83d2666b66d22baccd27b2f9ac42b940b70e28a0",
+    "size": 205,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/.travis.settings.xml?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/.travis.settings.xml",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/83d2666b66d22baccd27b2f9ac42b940b70e28a0",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/.travis.settings.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/.travis.settings.xml?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/83d2666b66d22baccd27b2f9ac42b940b70e28a0",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/.travis.settings.xml"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "0e8f84f2ed416c00d2af033e76dc5cea34e93fc7",
+    "size": 584,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/.travis.yml?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/.travis.yml",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/0e8f84f2ed416c00d2af033e76dc5cea34e93fc7",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/.travis.yml?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/0e8f84f2ed416c00d2af033e76dc5cea34e93fc7",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/.travis.yml"
+    }
+  },
+  {
+    "name": "BUILD.txt",
+    "path": "BUILD.txt",
+    "sha": "04da29f574231af152a9f1e6956d6769bcf47a9e",
+    "size": 454,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/BUILD.txt?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/BUILD.txt",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/04da29f574231af152a9f1e6956d6769bcf47a9e",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/BUILD.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/BUILD.txt?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/04da29f574231af152a9f1e6956d6769bcf47a9e",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/BUILD.txt"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "9bc9763eba625fcdaa04bea0233869ccd800b2c0",
+    "size": 1527,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/LICENSE.txt?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/9bc9763eba625fcdaa04bea0233869ccd800b2c0",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/LICENSE.txt?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/9bc9763eba625fcdaa04bea0233869ccd800b2c0",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "2a662e817dea54f55b44f775ed72f83de0e001dc",
+    "size": 1526,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/README.md?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/README.md",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/2a662e817dea54f55b44f775ed72f83de0e001dc",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/README.md?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/2a662e817dea54f55b44f775ed72f83de0e001dc",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/README.md"
+    }
+  },
+  {
+    "name": "README.txt",
+    "path": "README.txt",
+    "sha": "020aee104defa709dc9f3102752dc3ce44f39703",
+    "size": 1129,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/README.txt?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/README.txt",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/020aee104defa709dc9f3102752dc3ce44f39703",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/README.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/README.txt?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/020aee104defa709dc9f3102752dc3ce44f39703",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/README.txt"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "4493f9ff554e0cc94128e724361adc10e6807b2a",
+    "size": 873,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/SECURITY.md?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/SECURITY.md",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/4493f9ff554e0cc94128e724361adc10e6807b2a",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/SECURITY.md?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/4493f9ff554e0cc94128e724361adc10e6807b2a",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/SECURITY.md"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "0e5a6039b57bb26eaa778b37139999b7ec42bdd0",
+    "size": 43605,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/pom.xml?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/pom.xml",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/0e5a6039b57bb26eaa778b37139999b7ec42bdd0",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/pom.xml?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/0e5a6039b57bb26eaa778b37139999b7ec42bdd0",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/pom.xml"
+    }
+  },
+  {
+    "name": "settings-template.xml",
+    "path": "settings-template.xml",
+    "sha": "e48b65fa098ed2bb07403419cb94357b9b4a6d33",
+    "size": 925,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/settings-template.xml?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/settings-template.xml",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/e48b65fa098ed2bb07403419cb94357b9b4a6d33",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/settings-template.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/settings-template.xml?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/e48b65fa098ed2bb07403419cb94357b9b4a6d33",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/settings-template.xml"
+    }
+  },
+  {
+    "name": "xstream-benchmark",
+    "path": "xstream-benchmark",
+    "sha": "d6846e0a6b0d0a14cc4798bbe71d49a056aa3a35",
+    "size": 0,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/xstream-benchmark?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream-benchmark",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/trees/d6846e0a6b0d0a14cc4798bbe71d49a056aa3a35",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/xstream-benchmark?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/trees/d6846e0a6b0d0a14cc4798bbe71d49a056aa3a35",
+      "html": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream-benchmark"
+    }
+  },
+  {
+    "name": "xstream-distribution",
+    "path": "xstream-distribution",
+    "sha": "bb4b3ec6fb3db37f368d4948b8a30055965b689f",
+    "size": 0,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/xstream-distribution?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream-distribution",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/trees/bb4b3ec6fb3db37f368d4948b8a30055965b689f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/xstream-distribution?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/trees/bb4b3ec6fb3db37f368d4948b8a30055965b689f",
+      "html": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream-distribution"
+    }
+  },
+  {
+    "name": "xstream-hibernate",
+    "path": "xstream-hibernate",
+    "sha": "c615155ab08b9fbeb24235cfcb24d18d0988117d",
+    "size": 0,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/xstream-hibernate?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream-hibernate",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/trees/c615155ab08b9fbeb24235cfcb24d18d0988117d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+
+ succeeded in 255ms:
+5:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_0_2",
+9:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/4f326e7a1617f7c8fbcbedc8f9712f19d1c45f16"
+15:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_0_3",
+19:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/3fb078fe95a718a3a41bf926491eb9fd5b06046e"
+25:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_0_4",
+29:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/9494bc442359e81cf7cf0cafdddd3be580ad3a93"
+35:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_0_5",
+39:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/16ef434c8ee5e11c71e639ab8f4e65bfe8bc968a"
+45:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_0_6",
+49:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/5ff1612126ee87cdc19f744ba6c4dd42deed390e"
+55:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_0_6_RC1",
+59:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/9558654acec69c644f60422c245ff1f5f57b5069"
+65:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_0_1",
+69:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/4398df832746d1b72de0e9042de0e486e4b98aaf"
+75:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_0_2",
+79:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/97f9ec66790b3ff9bce0195f807abbf2a3b000eb"
+85:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_0_RC1",
+89:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/81903b0a4f3982f2426c09f345b5a60896efff44"
+95:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_1",
+99:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/84a8f46cc0940e99d845ca1f130a21a51d0adf0f"
+105:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_1_1",
+109:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/8958bdc30de3fac10e676313d1de2102bc00fca4"
+115:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_1_2",
+119:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/a33d490c796fcbeb16f9d5903e581835f4980ba5"
+125:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_1_3",
+129:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/69c31f8a555f51325fd2b6cc8d3b756583c0a5b6"
+135:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_2",
+139:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/80c3dd61ce233db8cfb6c4a478b31f6a1088124c"
+145:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_2_1",
+149:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/b7021913641ec536cdb75a3028da09b90976d11f"
+155:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_2_2",
+159:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/882b3b19b2a491a566060f53f3e15f61404af844"
+165:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_3",
+169:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/c96604476ca84217e03e9e23fabfbf7973f54e8c"
+175:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_3_1",
+179:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/0f5257eea12bdd52900fe2345a0a274157c79312"
+185:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4",
+189:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/c073c0cc555ad6bb2fd9698b26449d7eb7800ae5"
+195:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_1",
+199:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/01f16cb03298d38d75674447ea5707ba6b26e1de"
+205:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_10",
+209:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/2d4732e113f58b60d531a937df3c3611e4b87437"
+215:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_11",
+219:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/668004ac197c431ed74205a9ffa5321b3725de96"
+225:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_11_1",
+229:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/8830486ec94920d3f92063ef2f441621a0914dd4"
+235:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_12",
+239:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/69c86f31d1e68d3bcad0c68a48a23d9f63f7204a"
+245:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_13",
+249:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/383af9601a6f9e6626d59c086d051ab449fbc687"
+255:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_14",
+259:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/0d69497a630040c584115fc8f270606067226bbb"
+265:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_15",
+269:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/258b739c1f5e374670fac9b9319d57fb5a4d6dce"
+275:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_16",
+279:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/2015467bc79213519e3a49c657029d47ef06957a"
+285:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_17",
+289:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/f8f9e9fe563755da47d643ffe06b82123faf1cb7"
+295:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_18",
+299:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/dbcc8f7ce65b9fbd64cee27fbcf7dcb0900c3e7c"
+305:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_19",
+309:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/fe5a890cfb0fcd0aaeefcee14d9cba6289a684e5"
+315:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_2",
+319:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/989dffbc5954225a7bf539483d0118d6cfb200b0"
+325:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_20",
+329:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/6207a7df71526dc31ce5257cc72b13e457624982"
+335:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_21",
+339:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/2805deb559b1d9455631e22c0d548e6d14f18e6c"
+345:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_3",
+349:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/a367b1972ddec4851ab49eb876342d27d27386ed"
+355:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_4",
+359:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/0662257924cd71845f09b1d51b5bcf11aa6d7d57"
+365:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_5",
+369:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/eb9a533bbd5fdb73f2d92352a70af841efdd694d"
+375:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_6",
+379:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/fcacaa872eb4f72df6abb8e7f48f0b6b84aa5fd0"
+385:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_7",
+389:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/f29ff75ab517b477a621a0e8011c481081cae2d1"
+395:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_8",
+399:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/a5da4d49927952aef25d7e071e5ff385776ef9c1"
+405:    "url": "https://api.github.com/repos/x-stream/xstream/git/refs/tags/XSTREAM_1_4_9",
+409:      "url": "https://api.github.com/repos/x-stream/xstream/git/tags/11431fdc6ea76102471bb8b4b1e3ebc9eb292c91"
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream-parent/1.4.20/xstream-parent-1.4.20.pom | rg -n -C 3 '<scm>|connection|developerConnection|url>|github|description|distributionManagement|site'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/x-stream/xstream/contents/xstream/src/test?ref=XSTREAM_1_4_20 | sed -n '1,120p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/x-stream/xstream/contents/xstream/src?ref=XSTREAM_1_4_20 | sed -n '1,220p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 117ms:
+16-  <packaging>pom</packaging>
+17-  <version>1.4.20</version>
+18-  <name>XStream Parent</name>
+19:  <url>http://x-stream.github.io</url>
+20:  <description>
+21-    XStream is a serialization library from Java objects to XML and back.
+22:  </description>
+23-
+24-  <inceptionYear>2004</inceptionYear>
+25-  <organization>
+26-    <name>XStream</name>
+27:    <url>http://x-stream.github.io</url>
+28-  </organization>
+29-
+30-  <developers>
+31-    <developer>
+32-      <id>xstream</id>
+33-      <name>XStream Committers</name>
+34:      <url>http://x-stream.github.io/team.html</url>
+35-    </developer>
+36-  </developers>
+37-
+--
+357-  <licenses>
+358-    <license>
+359-      <name>BSD-3-Clause</name>
+360:      <url>http://x-stream.github.io/license.html</url>
+361-      <distribution>repo</distribution>
+362-    </license>
+363-  </licenses>
+364-
+365-  <issueManagement>
+366:    <system>github</system>
+367:    <url>https://github.com/x-stream/xstream/issues/</url>
+368-  </issueManagement>
+369-  <ciManagement>
+370-    <system>Travis</system>
+371:    <url>https://travis-ci.org/x-stream/xstream</url>
+372-  </ciManagement>
+373-  <mailingLists>
+374-    <mailingList>
+--
+581-      </dependency>
+582-
+583-      <dependency>
+584:        <groupId>io.github.x-stream</groupId>
+585-        <artifactId>mxparser</artifactId>
+586:        <version>${version.io.github.x-stream.mxparser}</version>
+587-      </dependency>
+588-      <dependency>
+589-        <groupId>xpp3</groupId>
+--
+946-        </plugin>
+947-        <plugin>
+948-          <groupId>org.apache.maven.plugins</groupId>
+949:          <artifactId>maven-site-plugin</artifactId>
+950:          <version>${version.plugin.maven.site}</version>
+951-        </plugin>
+952-        <plugin>
+953-          <groupId>org.apache.maven.plugins</groupId>
+--
+1021-          <version>${version.plugin.mojo.build-helper}</version>
+1022-        </plugin>
+1023-        <plugin>
+1024:          <groupId>org.codehaus.xsite</groupId>
+1025:          <artifactId>xsite-maven-plugin</artifactId>
+1026:          <version>${version.plugin.codehaus.xsite}</version>
+1027-          <dependencies>
+1028-            <dependency>
+1029-                <groupId>com.thoughtworks.xstream</groupId>
+--
+1092-    </plugins>
+1093-  </build>
+1094-
+1095:  <distributionManagement>
+1096-    <repository>
+1097-      <id>ossrh-staging</id>
+1098:      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+1099-    </repository>
+1100-    <snapshotRepository>
+1101-      <id>ossrh-snapshots</id>
+1102:      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+1103-    </snapshotRepository>
+1104:    <!--site>
+1105:      <id>github</id>
+1106:      <url>scm:git:ssh://git@github.com/x-stream/x-stream.github.io.git</url>
+1107:    </site-->
+1108:  </distributionManagement>
+1109-
+1110:  <scm>
+1111:    <url>http://github.com/x-stream/xstream</url>
+1112:    <developerConnection>scm:git:ssh://git@github.com/x-stream/xstream.git</developerConnection>
+1113:    <connection>scm:git:ssh://git@github.com/x-stream/xstream.git</connection>
+1114-    <tag>v-1.4.x</tag>
+1115-  </scm>
+1116-  
+--
+1123-    <version.java.target>1.5</version.java.target>
+1124-    <version.java.enforced>[1.4,)</version.java.enforced>
+1125-
+1126:    <version.plugin.codehaus.xsite>1.3</version.plugin.codehaus.xsite>
+1127-    <version.plugin.felix.bundle>2.3.7</version.plugin.felix.bundle>
+1128-    <version.plugin.maven.antrun>1.1</version.plugin.maven.antrun>
+1129-    <version.plugin.maven.assembly>2.1</version.plugin.maven.assembly>
+--
+1140-    <version.plugin.maven.jxr>2.5</version.plugin.maven.jxr>
+1141-    <version.plugin.maven.release>2.1</version.plugin.maven.release>
+1142-    <version.plugin.maven.resources>2.2</version.plugin.maven.resources>
+1143:    <version.plugin.maven.site>2.0-beta-6</version.plugin.maven.site>
+1144-    <version.plugin.maven.source>2.1.2</version.plugin.maven.source>
+1145-    <version.plugin.maven.surefire>2.4.3</version.plugin.maven.surefire>
+1146-    <version.plugin.mojo.build-helper>1.5</version.plugin.mojo.build-helper>
+--
+1157-    <version.commons.lang>2.4</version.commons.lang>
+1158-    <version.dom4j>1.6.1</version.dom4j>
+1159-    <version.hsqldb>2.2.8</version.hsqldb>
+1160:    <version.io.github.x-stream.mxparser>1.2.2</version.io.github.x-stream.mxparser>
+1161-    <version.javaassist>3.12.1.GA</version.javaassist>
+1162-    <version.javax.activation>1.1.1</version.javax.activation>
+1163-    <version.javax.annotation.api>1.3.2</version.javax.annotation.api>
+
+ succeeded in 167ms:
+[
+  {
+    "name": "$Package.java",
+    "path": "xstream/src/test/$Package.java",
+    "sha": "4a4b9f0e27586c18e08ae407c0638f970e0139f5",
+    "size": 525,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/xstream/src/test/$Package.java?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/xstream/src/test/$Package.java",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/blobs/4a4b9f0e27586c18e08ae407c0638f970e0139f5",
+    "download_url": "https://raw.githubusercontent.com/x-stream/xstream/XSTREAM_1_4_20/xstream/src/test/%24Package.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/xstream/src/test/$Package.java?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/blobs/4a4b9f0e27586c18e08ae407c0638f970e0139f5",
+      "html": "https://github.com/x-stream/xstream/blob/XSTREAM_1_4_20/xstream/src/test/$Package.java"
+    }
+  },
+  {
+    "name": "com",
+    "path": "xstream/src/test/com",
+    "sha": "30643e8dd6913d7061a495fe5e3ed408a378dddd",
+    "size": 0,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/xstream/src/test/com?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream/src/test/com",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/trees/30643e8dd6913d7061a495fe5e3ed408a378dddd",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/xstream/src/test/com?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/trees/30643e8dd6913d7061a495fe5e3ed408a378dddd",
+      "html": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream/src/test/com"
+    }
+  }
+]
+
+ succeeded in 199ms:
+[
+  {
+    "name": "java",
+    "path": "xstream/src/java",
+    "sha": "94cd3d7f41c8c60527ec061bd3e8e3f89382ce96",
+    "size": 0,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/xstream/src/java?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream/src/java",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/trees/94cd3d7f41c8c60527ec061bd3e8e3f89382ce96",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/xstream/src/java?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/trees/94cd3d7f41c8c60527ec061bd3e8e3f89382ce96",
+      "html": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream/src/java"
+    }
+  },
+  {
+    "name": "test",
+    "path": "xstream/src/test",
+    "sha": "eef5c65f162eff822cd04fe4eff0ea26fc011e8f",
+    "size": 0,
+    "url": "https://api.github.com/repos/x-stream/xstream/contents/xstream/src/test?ref=XSTREAM_1_4_20",
+    "html_url": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream/src/test",
+    "git_url": "https://api.github.com/repos/x-stream/xstream/git/trees/eef5c65f162eff822cd04fe4eff0ea26fc011e8f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/x-stream/xstream/contents/xstream/src/test?ref=XSTREAM_1_4_20",
+      "git": "https://api.github.com/repos/x-stream/xstream/git/trees/eef5c65f162eff822cd04fe4eff0ea26fc011e8f",
+      "html": "https://github.com/x-stream/xstream/tree/XSTREAM_1_4_20/xstream/src/test"
+    }
+  }
+]
+
+codex
+Maven Central publishes exact `sources`, `tests`, and `javadoc` JARs for `1.4.20`, so I’ll use those rather than GitHub paths. The upstream repository is `x-stream/xstream`, and this artifact is not a Kotlin or Scala language-specific variant, so no `language` field is needed.
+apply patch
+patch: completed
+/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..cd8132db1e677c42073389487a2b207b176e6203
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..cd8132db1e677c42073389487a2b207b176e6203
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+{
+  "coordinates": "com.thoughtworks.xstream:xstream:1.4.20",
+  "source-code-url": "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
+  "repository-url": "https://github.com/x-stream/xstream",
+  "test-code-url": "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
+  "description": "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..cd8132db1e677c42073389487a2b207b176e6203
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms."
+ }
+
+codex
+The JSON parses cleanly. I’m checking the worktree view now because this file lives under `build/`, which may be ignored even though it was updated on disk.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+{
+  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
+  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
+  "repository-url" : "https://github.com/x-stream/xstream",
+  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
+  "description" : "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..cd8132db1e677c42073389487a2b207b176e6203
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms."
+ }
+
+web search: 
+web search: repo1.maven.org maven2 com thoughtworks xstream xstream 1.4.20 xstream-1.4.20-sources.jar tests jar javadoc jar
+codex
+Updated [com.thoughtworks.xstream-xstream-1.4.20.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json).
+
+Used Maven Central’s exact `1.4.20` `sources`, `tests`, and `javadoc` artifacts, and the upstream `x-stream/xstream` repository. No `language` field was added because this is not a Kotlin or Scala language-specific artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/?utm_source=openai))
+
+Verified the JSON with `jq`. Note: the file is under ignored `build/`, so `git diff` does not show it, but it is updated on disk.
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+index 91bb16f5946c1b3ee778c366d2c860942038259b..cd8132db1e677c42073389487a2b207b176e6203
+--- a/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20"
++  "coordinates" : "com.thoughtworks.xstream:xstream:1.4.20",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
++  "repository-url" : "https://github.com/x-stream/xstream",
++  "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
++  "description" : "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms."
+ }
+
+2026-04-28T01:04:22.962570Z ERROR codex_core::session: failed to record rollout items: thread 019dd19c-90e8-73d1-bfd7-150699dba062 not found
+tokens used
+71,831
+Updated [com.thoughtworks.xstream-xstream-1.4.20.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/build/discovered-artifact-metadata/com.thoughtworks.xstream-xstream-1.4.20.json).
+
+Used Maven Central’s exact `1.4.20` `sources`, `tests`, and `javadoc` artifacts, and the upstream `x-stream/xstream` repository. No `language` field was added because this is not a Kotlin or Scala language-specific artifact. ([repo1.maven.org](https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/?utm_source=openai))
+
+Verified the JSON with `jq`. Note: the file is under ignored `build/`, so `git diff` does not show it, but it is updated on disk.
+Ran agent for com.thoughtworks.xstream:xstream:1.4.20 (exit 0). Log: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/build/agent-artifact-discovery-logs/com.thoughtworks.xstream-xstream-1.4.20.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 18s
+9 actionable tasks: 4 executed, 5 from cache

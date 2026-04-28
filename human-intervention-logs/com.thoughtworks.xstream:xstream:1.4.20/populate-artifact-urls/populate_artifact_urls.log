@@ -1,0 +1,420 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd19d-f2cc-7570-b11d-e67db128df55
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.thoughtworks.xstream:xstream:1.4.20
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.4.20".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/metadata/com.thoughtworks.xstream/xstream/index.json
+- Entry selector: "metadata-version" = "1.4.20"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.4.20".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar
+- repository-url: https://github.com/x-stream/xstream
+- test-code-url: https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar
+- documentation-url: https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar
+- description: XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.4.20
+- Entry test-version: 1.4.20
+codex
+I’ll verify the existing metadata entry and the version-specific URLs before touching the JSON. Since the Maven artifact URLs are already version-pinned, the likely outcome is either a no-op or only a narrowly scoped fill for genuinely blank fields.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/com.thoughtworks.xstream/xstream/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+4:    "metadata-version" : "1.4.20",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
+6:    "repository-url" : "https://github.com/x-stream/xstream",
+7:    "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
+9:    "description" : "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms.",
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/com.thoughtworks.xstream/xstream/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+?? metadata/com.thoughtworks.xstream/xstream/index.json
+
+web search: 
+web search: Maven Central com.thoughtworks.xstream xstream 1.4.20 sources tests javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/
+web search: 
+web search: https://central.sonatype.com/artifact/com.thoughtworks.xstream/xstream/1.4.20
+web search: 
+web search: 
+codex
+The selected 1.4.20 entry already has non-blank values for the five URL/description fields, and Maven Central exposes the exact `sources`, `tests`, and `javadoc` jars for that version. I’m checking the JSON shape and whether a `language` entry is actually warranted before deciding if there is anything to write.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.thoughtworks.xstream/xstream/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.4.20",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
+    "repository-url" : "https://github.com/x-stream/xstream",
+    "test-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
+    "description" : "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms.",
+    "tested-versions" : [
+      "1.4.20"
+    ],
+    "allowed-packages" : [
+      "com.thoughtworks.xstream"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.4.20\")' metadata/com.thoughtworks.xstream/xstream/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.4.20",
+  "source-code-url": "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar",
+  "repository-url": "https://github.com/x-stream/xstream",
+  "test-code-url": "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar",
+  "description": "XStream is a Java serialization library that converts Java objects to XML and back. It provides a simple API for object marshalling and unmarshalling, with support for multiple XML drivers and customization of serialized forms.",
+  "tested-versions": [
+    "1.4.20"
+  ],
+  "allowed-packages": [
+    "com.thoughtworks.xstream"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|<artifactId>|<name>|<description>'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+16:    <artifactId>xstream-parent</artifactId>
+19:  <artifactId>xstream</artifactId>
+21:  <name>XStream Core</name>
+26:      <artifactId>dom4j</artifactId>
+32:      <artifactId>jdom</artifactId>
+37:      <artifactId>jdom2</artifactId>
+43:      <artifactId>joda-time</artifactId>
+49:      <artifactId>stax</artifactId>
+55:      <artifactId>stax-api</artifactId>
+61:      <artifactId>xom</artifactId>
+67:      <artifactId>mxparser</artifactId>
+72:      <artifactId>kxml2-min</artifactId>
+79:      <artifactId>kxml2</artifactId>
+86:      <artifactId>xpp3_min</artifactId>
+92:      <artifactId>cglib-nodep</artifactId>
+98:      <artifactId>jettison</artifactId>
+104:      <artifactId>activation</artifactId>
+109:      <artifactId>jaxb-api</artifactId>
+116:      <artifactId>junit</artifactId>
+121:      <artifactId>jmock</artifactId>
+126:      <artifactId>json</artifactId>
+132:      <artifactId>xml-writer</artifactId>
+138:      <artifactId>commons-lang</artifactId>
+144:      <artifactId>jaxws-rt</artifactId>
+149:          <artifactId>jaxws-api</artifactId>
+153:          <artifactId>istack-commons-runtime</artifactId>
+157:          <artifactId>jaxb-impl</artifactId>
+161:          <artifactId>saaj-impl</artifactId>
+165:          <artifactId>streambuffer</artifactId>
+169:          <artifactId>policy</artifactId>
+173:          <artifactId>resolver</artifactId>
+177:          <artifactId>gmbal-api-only</artifactId>
+181:          <artifactId>mimepull</artifactId>
+185:          <artifactId>stax-ex</artifactId>
+195:        <artifactId>maven-dependency-plugin</artifactId>
+208:                  <artifactId>proxytoys</artifactId>
+229:        <artifactId>maven-jar-plugin</artifactId>
+282:            <artifactId>maven-surefire-plugin</artifactId>
+286:                <artifactId>jaxb-api</artifactId>
+312:            <artifactId>maven-compiler-plugin</artifactId>
+392:            <artifactId>maven-javadoc-plugin</artifactId>
+404:            <artifactId>maven-javadoc-plugin</artifactId>
+428:            <artifactId>maven-compiler-plugin</artifactId>
+449:            <artifactId>maven-javadoc-plugin</artifactId>
+467:            <artifactId>maven-compiler-plugin</artifactId>
+501:            <artifactId>maven-compiler-plugin</artifactId>
+530:          <artifactId>wstx-asl</artifactId>
+543:          <artifactId>woodstox-core</artifactId>
+551:            <artifactId>maven-jar-plugin</artifactId>
+568:            <artifactId>maven-source-plugin</artifactId>
+572:            <artifactId>maven-bundle-plugin</artifactId>
+591:            <artifactId>maven-compiler-plugin</artifactId>
+635:          <artifactId>xml-apis</artifactId>
+639:          <artifactId>xercesImpl</artifactId>
+643:          <artifactId>wstx-asl</artifactId>
+657:        <artifactId>maven-surefire-report-plugin</artifactId>
+662:        <artifactId>jacoco-maven-plugin</artifactId>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-javadoc.jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 01:05:14 GMT
+content-type: application/java-archive
+content-length: 2128484
+cf-ray: 9f32285188cc3b5d-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 272041
+etag: "11c876ce19920587ba8c9df2a5df544d"
+last-modified: Fri, 23 Dec 2022 23:23:09 GMT
+x-checksum-md5: 11c876ce19920587ba8c9df2a5df544d
+x-checksum-sha1: f09777214fa6e897865381e948d60c53afc17b35
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-sources.jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 01:05:14 GMT
+content-type: application/java-archive
+content-length: 455474
+cf-ray: 9f3228518ec13b64-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1309114
+etag: "8996203d5eb82f734d991d7328f5b62a"
+last-modified: Fri, 23 Dec 2022 23:23:16 GMT
+x-checksum-md5: 8996203d5eb82f734d991d7328f5b62a
+x-checksum-sha1: b2db9ac96424951253e3d8bd4d4435e0fb8f5f8b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream-parent/1.4.20/xstream-parent-1.4.20.pom | rg -n '<url>|<connection>|<developerConnection>|<tag>|<description>|<artifactId>|<name>'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+15:  <artifactId>xstream-parent</artifactId>
+18:  <name>XStream Parent</name>
+19:  <url>http://x-stream.github.io</url>
+20:  <description>
+26:    <name>XStream</name>
+27:    <url>http://x-stream.github.io</url>
+33:      <name>XStream Committers</name>
+34:      <url>http://x-stream.github.io/team.html</url>
+151:            <artifactId>build-helper-maven-plugin</artifactId>
+171:            <artifactId>maven-antrun-plugin</artifactId>
+189:            <artifactId>maven-source-plugin</artifactId>
+193:            <artifactId>maven-enforcer-plugin</artifactId>
+226:            <artifactId>maven-antrun-plugin</artifactId>
+257:            <artifactId>maven-bundle-plugin</artifactId>
+276:            <artifactId>maven-jar-plugin</artifactId>
+307:            <artifactId>maven-gpg-plugin</artifactId>
+332:            <artifactId>coveralls-maven-plugin</artifactId>
+336:            <artifactId>jacoco-maven-plugin</artifactId>
+359:      <name>BSD-3-Clause</name>
+360:      <url>http://x-stream.github.io/license.html</url>
+367:    <url>https://github.com/x-stream/xstream/issues/</url>
+371:    <url>https://travis-ci.org/x-stream/xstream</url>
+375:      <name>XStream Users List</name>
+386:      <name>XStream Notifications List</name>
+396:      <name>Former (pre-2015-06) Development List</name>
+403:      <name>Former (pre-2015-06) Announcements List</name>
+412:        <artifactId>xstream</artifactId>
+417:        <artifactId>xstream</artifactId>
+425:        <artifactId>xstream</artifactId>
+432:        <artifactId>xstream-hibernate</artifactId>
+437:        <artifactId>xstream-hibernate</artifactId>
+444:        <artifactId>xstream-jmh</artifactId>
+449:        <artifactId>xstream-jmh</artifactId>
+456:        <artifactId>xstream-benchmark</artifactId>
+461:        <artifactId>xstream-benchmark</artifactId>
+469:        <artifactId>commons-io</artifactId>
+475:        <artifactId>commons-cli</artifactId>
+481:        <artifactId>commons-lang</artifactId>
+487:        <artifactId>cglib-nodep</artifactId>
+492:        <artifactId>javassist</artifactId>
+498:        <artifactId>dom4j</artifactId>
+503:            <artifactId>xml-apis</artifactId>
+510:        <artifactId>jdom</artifactId>
+515:        <artifactId>jdom2</artifactId>
+521:        <artifactId>joda-time</artifactId>
+527:        <artifactId>xml-writer</artifactId>
+532:            <artifactId>xml-apis</artifactId>
+539:        <artifactId>stax</artifactId>
+544:        <artifactId>stax-api</artifactId>
+550:        <artifactId>woodstox-core</artifactId>
+555:        <artifactId>wstx-asl</artifactId>
+561:        <artifactId>xom</artifactId>
+566:            <artifactId>xmlParserAPIs</artifactId>
+570:            <artifactId>xercesImpl</artifactId>
+574:            <artifactId>xalan</artifactId>
+578:            <artifactId>jaxen</artifactId>
+585:        <artifactId>mxparser</artifactId>
+590:        <artifactId>xpp3_min</artifactId>
+595:        <artifactId>kxml2-min</artifactId>
+600:        <artifactId>kxml2</artifactId>
+605:        <artifactId>xmlpull</artifactId>
+611:        <artifactId>json</artifactId>
+617:        <artifactId>jettison</artifactId>
+623:        <artifactId>xml-apis</artifactId>
+629:        <artifactId>xercesImpl</artifactId>
+635:        <artifactId>activation</artifactId>
+640:        <artifactId>javax.annotation-api</artifactId>
+645:        <artifactId>jaxb-api</artifactId>
+650:        <artifactId>jaxws-rt</artifactId>
+656:        <artifactId>hibernate-core</artifactId>
+661:        <artifactId>hibernate-envers</artifactId>
+666:            <artifactId>cglib</artifactId>
+672:        <artifactId>hsqldb</artifactId>
+677:        <artifactId>slf4j-api</artifactId>
+683:        <artifactId>slf4j-simple</artifactId>
+690:        <artifactId>jmh-core</artifactId>
+695:        <artifactId>jmh-generator-annprocess</artifactId>
+701:        <artifactId>commons-codec</artifactId>
+706:        <artifactId>migbase64</artifactId>
+713:        <artifactId>junit</artifactId>
+719:        <artifactId>jmock</artifactId>
+727:        <artifactId>org.apache.felix.framework</artifactId>
+733:        <artifactId>javax.inject</artifactId>
+739:        <artifactId>pax-exam-container-native</artifactId>
+745:        <artifactId>pax-exam-extender-service</artifactId>
+751:        <artifactId>pax-exam-inject</artifactId>
+757:        <artifactId>pax-exam-invoker-junit</artifactId>
+763:        <artifactId>pax-exam-junit4</artifactId>
+769:        <artifactId>pax-exam-link-assembly</artifactId>
+775:        <artifactId>pax-exam-link-mvn</artifactId><!-- Preferred link because it does not require an mvn url handler implicitely. -->
+808:          <artifactId>maven-antrun-plugin</artifactId>
+813:          <artifactId>maven-assembly-plugin</artifactId>
+818:          <artifactId>maven-clean-plugin</artifactId>
+823:          <artifactId>maven-compiler-plugin</artifactId>
+832:          <artifactId>maven-dependency-plugin</artifactId>
+837:          <artifactId>maven-deploy-plugin</artifactId>
+842:          <artifactId>maven-eclipse-plugin</artifactId>
+850:          <artifactId>maven-enforcer-plugin</artifactId>
+855:          <artifactId>maven-failsafe-plugin</artifactId>
+860:          <artifactId>maven-gpg-plugin</artifactId>
+869:          <artifactId>maven-install-plugin</artifactId>
+874:          <artifactId>maven-jar-plugin</artifactId>
+896:          <artifactId>maven-javadoc-plugin</artifactId>
+927:          <artifactId>maven-jxr-plugin</artifactId>
+932:          <artifactId>maven-release-plugin</artifactId>
+944:          <artifactId>maven-resources-plugin</artifactId>
+949:          <artifactId>maven-site-plugin</artifactId>
+954:          <artifactId>maven-source-plugin</artifactId>
+991:          <artifactId>maven-surefire-plugin</artifactId>
+1007:                <name>java.awt.headless</name>
+1015:          <artifactId>maven-surefire-report-plugin</artifactId>
+1020:          <artifactId>build-helper-maven-plugin</artifactId>
+1025:          <artifactId>xsite-maven-plugin</artifactId>
+1030:                <artifactId>xstream</artifactId>
+1037:          <artifactId>maven-bundle-plugin</artifactId>
+1057:          <artifactId>coveralls-maven-plugin</artifactId>
+1062:          <artifactId>jacoco-maven-plugin</artifactId>
+1070:        <artifactId>build-helper-maven-plugin</artifactId>
+1087:        <artifactId>maven-release-plugin</artifactId>
+1098:      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+1102:      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+1106:      <url>scm:git:ssh://git@github.com/x-stream/x-stream.github.io.git</url>
+1111:    <url>http://github.com/x-stream/xstream</url>
+1112:    <developerConnection>scm:git:ssh://git@github.com/x-stream/xstream.git</developerConnection>
+1113:    <connection>scm:git:ssh://git@github.com/x-stream/xstream.git</connection>
+1114:    <tag>v-1.4.x</tag>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/xstream-1.4.20-tests.jar' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 212ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 01:05:14 GMT
+content-type: application/java-archive
+content-length: 9967
+cf-ray: 9f3228518c266aa1-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "abd1edf9e61302ffdcd8d5ec48b07574"
+last-modified: Fri, 23 Dec 2022 23:23:21 GMT
+x-checksum-md5: abd1edf9e61302ffdcd8d5ec48b07574
+x-checksum-sha1: 68ec5a4ae43a622a6e59da098c8e5b6b3bbeed5b
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: site:repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20 xstream-1.4.20-sources.jar tests javadoc
+codex
+The artifact checks returned HTTP 200 for all three Maven Central jars, and the parent POM points SCM at the GitHub repository root. XStream is a Java library, not one of the Kotlin or Scala language-version-specific artifacts the metadata schema calls out, so the missing `language` field should remain absent.
+exec
+/usr/bin/bash -lc 'jq empty metadata/com.thoughtworks.xstream/xstream/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4
+ succeeded in 0ms:
+web search: 
+web search: Maven Central com.thoughtworks.xstream xstream 1.4.20 xstream-1.4.20-sources.jar xstream-1.4.20-tests.jar xstream-1.4.20-javadoc.jar
+web search: 
+web search: x-stream xstream GitHub repository XStream
+codex
+Verified the 1.4.20 metadata in [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/metadata/com.thoughtworks.xstream/xstream/index.json:4). No edit was needed: all URL and description fields were already non-blank, and `language` should remain absent because XStream is not Kotlin- or Scala-version-specific. Maven Central has the exact 1.4.20 source/test/javadoc artifacts, and the canonical repository is `x-stream/xstream`. ([repo1.maven.org](https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/?utm_source=openai))
+
+The JSON remains valid; I checked it with `jq empty`.
+2026-04-28T01:05:48.061708Z ERROR codex_core::session: failed to record rollout items: thread 019dd19d-f2cc-7570-b11d-e67db128df55 not found
+tokens used
+57,528
+Verified the 1.4.20 metadata in [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/metadata/com.thoughtworks.xstream/xstream/index.json:4). No edit was needed: all URL and description fields were already non-blank, and `language` should remain absent because XStream is not Kotlin- or Scala-version-specific. Maven Central has the exact 1.4.20 source/test/javadoc artifacts, and the canonical repository is `x-stream/xstream`. ([repo1.maven.org](https://repo1.maven.org/maven2/com/thoughtworks/xstream/xstream/1.4.20/?utm_source=openai))
+
+The JSON remains valid; I checked it with `jq empty`.
+Ran agent for com.thoughtworks.xstream:xstream:1.4.20 (exit 0). Log: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/build/agent-url-discovery-logs/com.thoughtworks.xstream-xstream-1.4.20.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1352-c1d442d4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 8s
+9 actionable tasks: 1 executed, 8 up-to-date
