@@ -1,0 +1,570 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd193-0fcf-7631-a5ee-a8e4926d489e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.google.auto.value:auto-value-annotations:1.10
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.10".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/metadata/com.google.auto.value/auto-value-annotations/index.json
+- Entry selector: "metadata-version" = "1.10"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.10".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.10
+- Entry test-version: 1.10
+codex
+I’ll verify the versioned artifact metadata first, then patch only the missing fields in the existing JSON entry. For the Maven preference, I’ll check whether source or test artifacts exist for `1.10` before falling back to the tagged upstream repository.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.google.auto.value/auto-value-annotations/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.10",
+    "tested-versions" : [
+      "1.10"
+    ],
+    "allowed-packages" : [
+      "com.google.auto.value"
+    ]
+  },
+  {
+    "metadata-version" : "1.9",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.9/auto-value-annotations-1.9-sources.jar",
+    "repository-url" : "https://github.com/google/auto",
+    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.9/value/src/test/java",
+    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.9/index.html",
+    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+    "tested-versions" : [
+      "1.9"
+    ],
+    "allowed-packages" : [
+      "com.google.auto.value"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.10\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/com.google.auto.value/auto-value-annotations/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+ succeeded in 0ms:
+/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+4:    "metadata-version" : "1.10",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.9/auto-value-annotations-1.9-sources.jar",
+15:    "repository-url" : "https://github.com/google/auto",
+16:    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.9/value/src/test/java",
+17:    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.9/index.html",
+18:    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+
+web search: 
+web search: Maven Central com.google.auto.value auto-value-annotations 1.10 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/
+web search: 
+web search: https://github.com/google/auto/blob/auto-value-1.10/value/annotations/pom.xml
+codex
+I found the 1.10 Maven Central directory includes the published sources and javadoc jars, but no tests jar in that artifact directory. The tagged upstream tree `auto-value-1.10` has the test suite under `value/src/test/java`, so I’ll use Maven for sources/docs and the tag for tests.
+apply patch
+patch: completed
+/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/metadata/com.google.auto.value/auto-value-annotations/index.json
+diff --git a/metadata/com.google.auto.value/auto-value-annotations/index.json b/metadata/com.google.auto.value/auto-value-annotations/index.json
+index 1a7ca7ecdd728911ddadeeeccfac79daf9a09165..81d23a2c4d14017dbe594c60748d8a81f76b7616
+--- a/metadata/com.google.auto.value/auto-value-annotations/index.json
++++ b/metadata/com.google.auto.value/auto-value-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.10",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
++    "repository-url" : "https://github.com/google/auto",
++    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
++    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
++    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+     "tested-versions" : [
+       "1.10"
+     ],
+
+diff --git a/metadata/com.google.auto.value/auto-value-annotations/index.json b/metadata/com.google.auto.value/auto-value-annotations/index.json
+index 1a7ca7ecdd728911ddadeeeccfac79daf9a09165..81d23a2c4d14017dbe594c60748d8a81f76b7616
+--- a/metadata/com.google.auto.value/auto-value-annotations/index.json
++++ b/metadata/com.google.auto.value/auto-value-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.10",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
++    "repository-url" : "https://github.com/google/auto",
++    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
++    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
++    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+     "tested-versions" : [
+       "1.10"
+     ],
+
+codex
+The JSON entry is patched now. I’m going to validate the file shape and run the repository’s targeted metadata check for this coordinate so the change is not just syntactically correct.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.10\")' metadata/com.google.auto.value/auto-value-annotations/index.json" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.10",
+  "source-code-url": "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
+  "repository-url": "https://github.com/google/auto",
+  "test-code-url": "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
+  "documentation-url": "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
+  "description": "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+  "tested-versions": [
+    "1.10"
+  ],
+  "allowed-packages": [
+    "com.google.auto.value"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.google.auto.value/auto-value-annotations/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+ succeeded in 0ms:
+diff --git i/metadata/com.google.auto.value/auto-value-annotations/index.json w/metadata/com.google.auto.value/auto-value-annotations/index.json
+index 1a7ca7ecdd..81d23a2c4d 100644
+--- i/metadata/com.google.auto.value/auto-value-annotations/index.json
++++ w/metadata/com.google.auto.value/auto-value-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.10",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
++    "repository-url" : "https://github.com/google/auto",
++    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
++    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
++    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+     "tested-versions" : [
+       "1.10"
+     ],
+
+diff --git a/metadata/com.google.auto.value/auto-value-annotations/index.json b/metadata/com.google.auto.value/auto-value-annotations/index.json
+index 1a7ca7ecdd728911ddadeeeccfac79daf9a09165..81d23a2c4d14017dbe594c60748d8a81f76b7616
+--- a/metadata/com.google.auto.value/auto-value-annotations/index.json
++++ b/metadata/com.google.auto.value/auto-value-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.10",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
++    "repository-url" : "https://github.com/google/auto",
++    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
++    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
++    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+     "tested-versions" : [
+       "1.10"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.google.auto.value:auto-value-annotations:1.10 --stacktrace' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+diff --git a/metadata/com.google.auto.value/auto-value-annotations/index.json b/metadata/com.google.auto.value/auto-value-annotations/index.json
+index 1a7ca7ecdd728911ddadeeeccfac79daf9a09165..81d23a2c4d14017dbe594c60748d8a81f76b7616
+--- a/metadata/com.google.auto.value/auto-value-annotations/index.json
++++ b/metadata/com.google.auto.value/auto-value-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.10",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
++    "repository-url" : "https://github.com/google/auto",
++    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
++    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
++    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+     "tested-versions" : [
+       "1.10"
+     ],
+
+ exited 1 in 1689ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for com.google.auto.value:auto-value-annotations:1.10: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/metadata/com.google.auto.value/auto-value-annotations/1.10/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.google.auto.value:auto-value-annotations:1.10: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/metadata/com.google.auto.value/auto-value-annotations/1.10/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - com.google.auto.value:auto-value-annotations:1.10: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/metadata/com.google.auto.value/auto-value-annotations/1.10/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/
+web search: 
+web search: https://github.com/google/auto
+exec
+/usr/bin/bash -lc "nl -ba metadata/com.google.auto.value/auto-value-annotations/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.10",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
+     6	    "repository-url" : "https://github.com/google/auto",
+     7	    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
+     8	    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
+     9	    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+    10	    "tested-versions" : [
+    11	      "1.10"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "com.google.auto.value"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.9",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.9/auto-value-annotations-1.9-sources.jar",
+    20	    "repository-url" : "https://github.com/google/auto",
+    21	    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.9/value/src/test/java",
+    22	    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.9/index.html",
+    23	    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/com.google.auto.value/auto-value-annotations/index.json b/metadata/com.google.auto.value/auto-value-annotations/index.json
+index 1a7ca7ecdd728911ddadeeeccfac79daf9a09165..81d23a2c4d14017dbe594c60748d8a81f76b7616
+--- a/metadata/com.google.auto.value/auto-value-annotations/index.json
++++ b/metadata/com.google.auto.value/auto-value-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.10",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
++    "repository-url" : "https://github.com/google/auto",
++    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
++    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
++    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+     "tested-versions" : [
+       "1.10"
+     ],
+
+web search: 
+web search: site:repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10 auto-value-annotations-1.10-sources.jar
+web search: 
+web search: https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java
+web search: 
+web search: '<name>' in https://github.com/google/auto/blob/auto-value-1.10/value/annotations/pom.xml
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/com.google.auto.value/auto-value-annotations/index.json' in /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad
+ succeeded in 0ms:
+ M metadata/com.google.auto.value/auto-value-annotations/index.json
+
+diff --git a/metadata/com.google.auto.value/auto-value-annotations/index.json b/metadata/com.google.auto.value/auto-value-annotations/index.json
+index 1a7ca7ecdd728911ddadeeeccfac79daf9a09165..81d23a2c4d14017dbe594c60748d8a81f76b7616
+--- a/metadata/com.google.auto.value/auto-value-annotations/index.json
++++ b/metadata/com.google.auto.value/auto-value-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.10",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
++    "repository-url" : "https://github.com/google/auto",
++    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
++    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
++    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+     "tested-versions" : [
+       "1.10"
+     ],
+
+web search: 
+web search: auto-value-annotations 1.10 Maven Central sources jar
+web search: 
+web search: https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java
+codex
+Updated [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/metadata/com.google.auto.value/auto-value-annotations/index.json:4) for `metadata-version` `1.10`.
+
+I filled the missing source, repository, test suite, documentation, and two-sentence description fields. I used Maven Central for the versioned sources/docs, the canonical `google/auto` repository root, and the `auto-value-1.10` tagged GitHub test tree because no Maven test jar is listed for that version. ([repo1.maven.org](https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/?utm_source=openai))
+
+No `language` field was added: this is a Java annotation/code-generation artifact, not a Kotlin or Scala-specific library under the requested schema. ([github.com](https://github.com/google/auto/tree/auto-value-1.10))
+
+Validation:
+- `jq` parse/entry check passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.google.auto.value:auto-value-annotations:1.10 --stacktrace` failed because `metadata/.../auto-value-annotations/1.10/reachability-metadata.json` is missing, which is outside the URL-field update requested.
+diff --git a/metadata/com.google.auto.value/auto-value-annotations/index.json b/metadata/com.google.auto.value/auto-value-annotations/index.json
+index 1a7ca7ecdd728911ddadeeeccfac79daf9a09165..81d23a2c4d14017dbe594c60748d8a81f76b7616
+--- a/metadata/com.google.auto.value/auto-value-annotations/index.json
++++ b/metadata/com.google.auto.value/auto-value-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.10",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/auto-value-annotations-1.10-sources.jar",
++    "repository-url" : "https://github.com/google/auto",
++    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
++    "documentation-url" : "https://javadoc.io/doc/com.google.auto.value/auto-value-annotations/1.10/index.html",
++    "description" : "AutoValue Annotations provides the annotation types used to declare immutable value types and related extensions in Java. It is the annotation artifact of Google AutoValue, enabling code generation integrations without requiring the processor at runtime.",
+     "tested-versions" : [
+       "1.10"
+     ],
+
+2026-04-28T00:53:58.407048Z ERROR codex_core::session: failed to record rollout items: thread 019dd193-0fcf-7631-a5ee-a8e4926d489e not found
+tokens used
+76,723
+Updated [index.json](/home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/metadata/com.google.auto.value/auto-value-annotations/index.json:4) for `metadata-version` `1.10`.
+
+I filled the missing source, repository, test suite, documentation, and two-sentence description fields. I used Maven Central for the versioned sources/docs, the canonical `google/auto` repository root, and the `auto-value-1.10` tagged GitHub test tree because no Maven test jar is listed for that version. ([repo1.maven.org](https://repo1.maven.org/maven2/com/google/auto/value/auto-value-annotations/1.10/?utm_source=openai))
+
+No `language` field was added: this is a Java annotation/code-generation artifact, not a Kotlin or Scala-specific library under the requested schema. ([github.com](https://github.com/google/auto/tree/auto-value-1.10))
+
+Validation:
+- `jq` parse/entry check passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.google.auto.value:auto-value-annotations:1.10 --stacktrace` failed because `metadata/.../auto-value-annotations/1.10/reachability-metadata.json` is missing, which is outside the URL-field update requested.
+Ran agent for com.google.auto.value:auto-value-annotations:1.10 (exit 0). Log: /home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/build/agent-url-discovery-logs/com.google.auto.value-auto-value-annotations-1.10.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge2/metadata-forge/local_repositories/forge_worktrees/1841-16387aad/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 10s
+9 actionable tasks: 1 executed, 8 up-to-date
