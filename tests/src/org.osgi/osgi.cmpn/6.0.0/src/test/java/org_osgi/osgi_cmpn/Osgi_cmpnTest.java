@@ -8,7 +8,7 @@ package org_osgi.osgi_cmpn;
 
 import org.junit.jupiter.api.Test;
 
-class Osgi_cmpnTest {
+public class Osgi_cmpnTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
