@@ -6,18 +6,22 @@
  */
 package com_thoughtworks_xstream.xstream;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.NotActiveException;
+import java.io.ObjectInputValidation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicitCollection;
+import com.thoughtworks.xstream.converters.reflection.SerializationMethodInvoker;
 import com.thoughtworks.xstream.core.ClassLoaderReference;
+import com.thoughtworks.xstream.core.util.CustomObjectInputStream;
+import com.thoughtworks.xstream.core.util.CustomObjectOutputStream;
 import com.thoughtworks.xstream.mapper.AnnotationMapper;
 import com.thoughtworks.xstream.mapper.DefaultMapper;
 
@@ -44,24 +48,24 @@ public class AnnotationMapperTest {
 
     @Test
     @SuppressWarnings("deprecation")
-    void serializesAndDeserializesAnnotationMapperWithObjectStreams() throws Exception {
-        AnnotationMapper mapper = newAnnotationMapper();
-        XStream xstream = new XStream();
-        xstream.allowTypesByWildcard(new String[]{"com.thoughtworks.xstream.**"});
-        StringWriter writer = new StringWriter();
+    void invokesCustomSerializationHooksForAnnotationMapper() throws Exception {
+        ClassLoaderReference classLoaderReference = new ClassLoaderReference(
+            AnnotationMapperTest.class.getClassLoader());
+        AnnotationMapper mapper = newAnnotationMapper(classLoaderReference);
+        RecordingOutputCallback outputCallback = new RecordingOutputCallback();
+        RecordingInputCallback inputCallback = new RecordingInputCallback(classLoaderReference);
+        SerializationMethodInvoker invoker = new SerializationMethodInvoker();
 
-        try (ObjectOutputStream output = xstream.createObjectOutputStream(writer)) {
-            output.writeObject(mapper);
-        }
-        String xml = writer.toString();
+        invoker.callWriteObject(AnnotationMapper.class, mapper, new CustomObjectOutputStream(outputCallback));
+        invoker.callReadObject(
+            AnnotationMapper.class,
+            mapper,
+            new CustomObjectInputStream(inputCallback, classLoaderReference));
 
-        Object restored;
-        try (ObjectInputStream input = xstream.createObjectInputStream(new StringReader(xml))) {
-            restored = input.readObject();
-        }
-
-        assertThat(xml).contains("com.thoughtworks.xstream.mapper.AnnotationMapper");
-        assertThat(restored).isInstanceOf(AnnotationMapper.class);
+        assertThat(outputCallback.defaultObjectWritten).isTrue();
+        assertThat(outputCallback.writtenObjects).contains(classLoaderReference);
+        assertThat(inputCallback.defaultObjectRead).isTrue();
+        assertThat(inputCallback.objectsRead).containsExactly(classLoaderReference);
     }
 
     @SuppressWarnings("deprecation")
@@ -72,10 +76,76 @@ public class AnnotationMapperTest {
         return xstream;
     }
 
-    private static AnnotationMapper newAnnotationMapper() {
-        ClassLoaderReference classLoaderReference = new ClassLoaderReference(
-            AnnotationMapperTest.class.getClassLoader());
+    private static AnnotationMapper newAnnotationMapper(ClassLoaderReference classLoaderReference) {
         return new AnnotationMapper(new DefaultMapper(classLoaderReference), null, null, classLoaderReference, null);
+    }
+
+    private static final class RecordingOutputCallback implements CustomObjectOutputStream.StreamCallback {
+        private final List<Object> writtenObjects = new ArrayList<>();
+        private boolean defaultObjectWritten;
+
+        @Override
+        public void writeToStream(Object object) {
+            writtenObjects.add(object);
+        }
+
+        @Override
+        public void writeFieldsToStream(Map fields) {
+            writtenObjects.add(fields);
+        }
+
+        @Override
+        public void defaultWriteObject() {
+            defaultObjectWritten = true;
+        }
+
+        @Override
+        public void flush() {
+        }
+
+        @Override
+        public void close() {
+        }
+    }
+
+    private static final class RecordingInputCallback implements CustomObjectInputStream.StreamCallback {
+        private final List<Object> objectsToRead = new ArrayList<>();
+        private final List<Object> objectsRead = new ArrayList<>();
+        private boolean defaultObjectRead;
+
+        RecordingInputCallback(ClassLoaderReference classLoaderReference) {
+            objectsToRead.add(1);
+            objectsToRead.add(classLoaderReference);
+        }
+
+        @Override
+        public Object readFromStream() {
+            Object object = objectsToRead.remove(0);
+            if (!(object instanceof Integer)) {
+                objectsRead.add(object);
+            }
+            return object;
+        }
+
+        @Override
+        public Map readFieldsFromStream() throws IOException {
+            throw new IOException("readFields is not used by AnnotationMapper");
+        }
+
+        @Override
+        public void defaultReadObject() {
+            defaultObjectRead = true;
+        }
+
+        @Override
+        public void registerValidation(ObjectInputValidation validation, int priority)
+                throws NotActiveException, InvalidObjectException {
+            throw new NotActiveException("validation is not used by AnnotationMapper");
+        }
+
+        @Override
+        public void close() {
+        }
     }
 
     @XStreamAlias("inventory")
