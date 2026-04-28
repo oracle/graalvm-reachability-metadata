@@ -8,7 +8,7 @@ package com_univocity.univocity_parsers;
 
 import org.junit.jupiter.api.Test;
 
-class Univocity_parsersTest {
+public class Univocity_parsersTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
