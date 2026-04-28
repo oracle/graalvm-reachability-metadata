@@ -1,0 +1,983 @@
+Starting a Gradle Daemon, 1 busy and 2 incompatible Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd093-292d-7620-b019-7ed4dff9b1cd
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ant:ant:1.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8/build/discovered-artifact-metadata/ant-ant-1.6.json
+- Set "coordinates" to "ant:ant:1.6".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the exact 1.6 artifacts and upstream tag before editing, with Maven artifacts taking precedence where they exist. Then I’ll update the JSON in place and validate its shape.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/ant-ant-1.6.json && sed -n '1,160p' build/discovered-artifact-metadata/ant-ant-1.6.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+-rw-rw-r-- 1 vjovanov vjovanov 36 Apr 27 22:13 build/discovered-artifact-metadata/ant-ant-1.6.json
+{
+  "coordinates" : "ant:ant:1.6"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"coordinates\"\\s*:\\s*\"ant:ant' build/discovered-artifact-metadata metadata || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+build/discovered-artifact-metadata/ant-ant-1.6.json:2:  "coordinates" : "ant:ant:1.6"
+
+web search: 
+web search: Maven Central ant ant 1.6 sources jar tests jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/ant/ant/1.6/
+web search: 
+web search: site:github.com/apache/ant/tree rel/1.6.0 ant 1.6.0
+codex
+The Maven Central directory for `ant:ant:1.6` contains a `-sources.jar` but no obvious `-tests.jar`, so I’m checking whether that source artifact includes the upstream test tree before falling back to the release tag for tests.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6.pom' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ant</groupId>  
+  <artifactId>ant</artifactId>
+  <name>Ant</name>
+  <version>1.6</version>
+</project>
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/ant-1.6-sources.jar" https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar; jar tf "$tmpdir/ant-1.6-sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-tests.jar || true' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 243ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 20:13:38 GMT
+content-type: text/html
+cf-ray: 9f307d296bf4bc0e-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/ant/ant/1.6/ant-1.6-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 784ms:
+main/org/
+main/org/apache/
+main/org/apache/tools/
+main/org/apache/tools/ant/
+main/org/apache/tools/ant/AntClassLoader.java
+main/org/apache/tools/ant/AntTypeDefinition.java
+main/org/apache/tools/ant/BuildEvent.java
+main/org/apache/tools/ant/BuildException.java
+main/org/apache/tools/ant/BuildListener.java
+main/org/apache/tools/ant/BuildLogger.java
+main/org/apache/tools/ant/ComponentHelper.java
+main/org/apache/tools/ant/DefaultLogger.java
+main/org/apache/tools/ant/defaultManifest.mf
+main/org/apache/tools/ant/DemuxInputStream.java
+main/org/apache/tools/ant/DemuxOutputStream.java
+main/org/apache/tools/ant/Diagnostics.java
+main/org/apache/tools/ant/DirectoryScanner.java
+main/org/apache/tools/ant/DynamicConfigurator.java
+main/org/apache/tools/ant/ExitException.java
+main/org/apache/tools/ant/FileScanner.java
+main/org/apache/tools/ant/filters/
+main/org/apache/tools/ant/filters/BaseFilterReader.java
+main/org/apache/tools/ant/filters/BaseParamFilterReader.java
+main/org/apache/tools/ant/filters/ChainableReader.java
+main/org/apache/tools/ant/filters/ClassConstants.java
+main/org/apache/tools/ant/filters/ConcatFilter.java
+main/org/apache/tools/ant/filters/EscapeUnicode.java
+main/org/apache/tools/ant/filters/ExpandProperties.java
+main/org/apache/tools/ant/filters/HeadFilter.java
+main/org/apache/tools/ant/filters/LineContains.java
+main/org/apache/tools/ant/filters/LineContainsRegExp.java
+main/org/apache/tools/ant/filters/PrefixLines.java
+main/org/apache/tools/ant/filters/ReplaceTokens.java
+main/org/apache/tools/ant/filters/StringInputStream.java
+main/org/apache/tools/ant/filters/StripJavaComments.java
+main/org/apache/tools/ant/filters/StripLineBreaks.java
+main/org/apache/tools/ant/filters/StripLineComments.java
+main/org/apache/tools/ant/filters/TabsToSpaces.java
+main/org/apache/tools/ant/filters/TailFilter.java
+main/org/apache/tools/ant/filters/TokenFilter.java
+main/org/apache/tools/ant/filters/util/
+main/org/apache/tools/ant/filters/util/ChainReaderHelper.java
+main/org/apache/tools/ant/filters/util/JavaClassHelper.java
+main/org/apache/tools/ant/helper/
+main/org/apache/tools/ant/helper/AntXMLContext.java
+main/org/apache/tools/ant/helper/ProjectHelper2.java
+main/org/apache/tools/ant/helper/ProjectHelperImpl.java
+main/org/apache/tools/ant/input/
+main/org/apache/tools/ant/input/DefaultInputHandler.java
+main/org/apache/tools/ant/input/InputHandler.java
+main/org/apache/tools/ant/input/InputRequest.java
+main/org/apache/tools/ant/input/MultipleChoiceInputRequest.java
+main/org/apache/tools/ant/input/PropertyFileInputHandler.java
+main/org/apache/tools/ant/IntrospectionHelper.java
+main/org/apache/tools/ant/launch/
+main/org/apache/tools/ant/launch/AntMain.java
+main/org/apache/tools/ant/launch/Launcher.java
+main/org/apache/tools/ant/launch/LaunchException.java
+main/org/apache/tools/ant/launch/Locator.java
+main/org/apache/tools/ant/listener/
+main/org/apache/tools/ant/listener/AnsiColorLogger.java
+main/org/apache/tools/ant/listener/CommonsLoggingListener.java
+main/org/apache/tools/ant/listener/defaults.properties
+main/org/apache/tools/ant/listener/Log4jListener.java
+main/org/apache/tools/ant/listener/MailLogger.java
+main/org/apache/tools/ant/loader/
+main/org/apache/tools/ant/loader/AntClassLoader2.java
+main/org/apache/tools/ant/Location.java
+main/org/apache/tools/ant/MagicNames.java
+main/org/apache/tools/ant/Main.java
+main/org/apache/tools/ant/NoBannerLogger.java
+main/org/apache/tools/ant/PathTokenizer.java
+main/org/apache/tools/ant/Project.java
+main/org/apache/tools/ant/ProjectComponent.java
+main/org/apache/tools/ant/ProjectHelper.java
+main/org/apache/tools/ant/PropertyHelper.java
+main/org/apache/tools/ant/RuntimeConfigurable.java
+main/org/apache/tools/ant/Target.java
+main/org/apache/tools/ant/Task.java
+main/org/apache/tools/ant/TaskAdapter.java
+main/org/apache/tools/ant/TaskContainer.java
+main/org/apache/tools/ant/taskdefs/
+main/org/apache/tools/ant/taskdefs/AbstractCvsTask.java
+main/org/apache/tools/ant/taskdefs/Ant.java
+main/org/apache/tools/ant/taskdefs/Antlib.java
+main/org/apache/tools/ant/taskdefs/AntlibDefinition.java
+main/org/apache/tools/ant/taskdefs/AntStructure.java
+main/org/apache/tools/ant/taskdefs/Available.java
+main/org/apache/tools/ant/taskdefs/Basename.java
+main/org/apache/tools/ant/taskdefs/BuildNumber.java
+main/org/apache/tools/ant/taskdefs/BUnzip2.java
+main/org/apache/tools/ant/taskdefs/BZip2.java
+main/org/apache/tools/ant/taskdefs/CallTarget.java
+main/org/apache/tools/ant/taskdefs/Checksum.java
+main/org/apache/tools/ant/taskdefs/Chmod.java
+main/org/apache/tools/ant/taskdefs/compilers/
+main/org/apache/tools/ant/taskdefs/compilers/CompilerAdapter.java
+main/org/apache/tools/ant/taskdefs/compilers/CompilerAdapterFactory.java
+main/org/apache/tools/ant/taskdefs/compilers/DefaultCompilerAdapter.java
+main/org/apache/tools/ant/taskdefs/compilers/Gcj.java
+main/org/apache/tools/ant/taskdefs/compilers/Javac12.java
+main/org/apache/tools/ant/taskdefs/compilers/Javac13.java
+main/org/apache/tools/ant/taskdefs/compilers/JavacExternal.java
+main/org/apache/tools/ant/taskdefs/compilers/Jikes.java
+main/org/apache/tools/ant/taskdefs/compilers/Jvc.java
+main/org/apache/tools/ant/taskdefs/compilers/Kjc.java
+main/org/apache/tools/ant/taskdefs/compilers/Sj.java
+main/org/apache/tools/ant/taskdefs/Concat.java
+main/org/apache/tools/ant/taskdefs/condition/
+main/org/apache/tools/ant/taskdefs/condition/And.java
+main/org/apache/tools/ant/taskdefs/condition/Condition.java
+main/org/apache/tools/ant/taskdefs/condition/ConditionBase.java
+main/org/apache/tools/ant/taskdefs/condition/Contains.java
+main/org/apache/tools/ant/taskdefs/condition/Equals.java
+main/org/apache/tools/ant/taskdefs/condition/FilesMatch.java
+main/org/apache/tools/ant/taskdefs/condition/Http.java
+main/org/apache/tools/ant/taskdefs/condition/IsFalse.java
+main/org/apache/tools/ant/taskdefs/condition/IsReference.java
+main/org/apache/tools/ant/taskdefs/condition/IsSet.java
+main/org/apache/tools/ant/taskdefs/condition/IsTrue.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/ant/ant/1.6/ | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: ant/ant/1.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>ant/ant/1.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="ant-1.6-sources.jar" title="ant-1.6-sources.jar">ant-1.6-sources.jar</a>                               2005-09-20 05:44   2182693      
+<a href="ant-1.6-sources.jar.md5" title="ant-1.6-sources.jar.md5">ant-1.6-sources.jar.md5</a>                           2005-09-20 05:44        66      
+<a href="ant-1.6-sources.jar.sha1" title="ant-1.6-sources.jar.sha1">ant-1.6-sources.jar.sha1</a>                          2005-09-20 05:44        74      
+<a href="ant-1.6.jar" title="ant-1.6.jar">ant-1.6.jar</a>                                       2005-09-20 05:44    952104      
+<a href="ant-1.6.jar.md5" title="ant-1.6.jar.md5">ant-1.6.jar.md5</a>                                   2005-09-20 05:44        32      
+<a href="ant-1.6.jar.sha1" title="ant-1.6.jar.sha1">ant-1.6.jar.sha1</a>                                  2005-09-20 05:44        40      
+<a href="ant-1.6.pom" title="ant-1.6.pom">ant-1.6.pom</a>                                       2005-09-20 05:44       182      
+<a href="ant-1.6.pom.md5" title="ant-1.6.pom.md5">ant-1.6.pom.md5</a>                                   2005-09-20 05:44       116      
+<a href="ant-1.6.pom.sha1" title="ant-1.6.pom.sha1">ant-1.6.pom.sha1</a>                                  2005-09-20 05:44       124      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2005-09-20 05:44       103      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2005-09-20 05:44        67      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2005-09-20 05:44       122      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/ant-1.6-sources.jar" https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar; jar tf "$tmpdir/ant-1.6-sources.jar" | rg '"'("'^|/)test|Test'"\\.java|/junit/' | sed -n '1,120p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 217ms:
+main/org/apache/tools/ant/taskdefs/optional/junit/
+main/org/apache/tools/ant/taskdefs/optional/junit/AggregateTransformer.java
+main/org/apache/tools/ant/taskdefs/optional/junit/BaseTest.java
+main/org/apache/tools/ant/taskdefs/optional/junit/BatchTest.java
+main/org/apache/tools/ant/taskdefs/optional/junit/BriefJUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/DOMUtil.java
+main/org/apache/tools/ant/taskdefs/optional/junit/Enumerations.java
+main/org/apache/tools/ant/taskdefs/optional/junit/FormatterElement.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitTask.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitTest.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitTestRunner.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitVersionHelper.java
+main/org/apache/tools/ant/taskdefs/optional/junit/PlainJUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/SummaryJUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/Xalan1Executor.java
+main/org/apache/tools/ant/taskdefs/optional/junit/Xalan2Executor.java
+main/org/apache/tools/ant/taskdefs/optional/junit/XalanExecutor.java
+main/org/apache/tools/ant/taskdefs/optional/junit/XMLConstants.java
+main/org/apache/tools/ant/taskdefs/optional/junit/XMLJUnitResultFormatter.java
+main/org/apache/tools/ant/taskdefs/optional/junit/XMLResultAggregator.java
+main/org/apache/tools/ant/taskdefs/optional/Test.java
+
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); curl -fsSL -o "$tmpdir/ant-1.6-sources.jar" https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar; jar tf "$tmpdir/ant-1.6-sources.jar" | rg '"'("'^|/)testcases/|Test'"\\.java"'$|TestCase'"\\.java"'$'"' | sed -n '1,200p'; rm -rf \""'$tmpdir"' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 215ms:
+main/org/apache/tools/ant/taskdefs/optional/junit/BaseTest.java
+main/org/apache/tools/ant/taskdefs/optional/junit/BatchTest.java
+main/org/apache/tools/ant/taskdefs/optional/junit/JUnitTest.java
+main/org/apache/tools/ant/taskdefs/optional/Test.java
+
+web search: 
+web search: Apache Ant Git tags ANT_160
+web search: 
+web search: 
+web search: 
+web search: https://svn-eu.apache.org/repos/asf/ant/core/tags/ANT_160/proposal/ant-site/forrest/
+web search: 
+web search: https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/ | sed -n '1,120p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/ | sed -n '1,160p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 133ms:
+<html><head><title>asf - Revision 1933407: /ant/core/tags/ANT_160/src</title></head>
+<body>
+ <h2>asf - Revision 1933407: /ant/core/tags/ANT_160/src</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="antidote/">antidote/</a></li>
+  <li><a href="etc/">etc/</a></li>
+  <li><a href="main/">main/</a></li>
+  <li><a href="script/">script/</a></li>
+  <li><a href="testcases/">testcases/</a></li>
+ </ul>
+</body></html>
+ succeeded in 107ms:
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>Apache Ant User Manual</title>
+<link rel="stylesheet" type="text/css" href="stylesheets/antmanual.css">
+</head>
+
+<frameset cols="26%,74%">
+<frame src="toc.html" name="navFrame">
+<frame src="cover.html" name="mainFrame">
+</frameset>
+<noframes>
+<H2>Apache Ant User Manual</H2>
+
+<a href="toc.html">Apache Ant User Manual</a></noframes>
+
+</html>
+
+ succeeded in 140ms:
+<html><head><title>asf - Revision 1933407: /ant/core/tags/ANT_160</title></head>
+<body>
+ <h2>asf - Revision 1933407: /ant/core/tags/ANT_160</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href=".cvsignore">.cvsignore</a></li>
+  <li><a href="KEYS">KEYS</a></li>
+  <li><a href="LICENSE">LICENSE</a></li>
+  <li><a href="LICENSE.dom">LICENSE.dom</a></li>
+  <li><a href="LICENSE.junit">LICENSE.junit</a></li>
+  <li><a href="LICENSE.sax">LICENSE.sax</a></li>
+  <li><a href="LICENSE.xerces">LICENSE.xerces</a></li>
+  <li><a href="README">README</a></li>
+  <li><a href="ReleaseInstructions">ReleaseInstructions</a></li>
+  <li><a href="STATUS">STATUS</a></li>
+  <li><a href="WHATSNEW">WHATSNEW</a></li>
+  <li><a href="ant.properties.sample">ant.properties.sample</a></li>
+  <li><a href="bootstrap.bat">bootstrap.bat</a></li>
+  <li><a href="bootstrap.sh">bootstrap.sh</a></li>
+  <li><a href="build.bat">build.bat</a></li>
+  <li><a href="build.sh">build.sh</a></li>
+  <li><a href="build.xml">build.xml</a></li>
+  <li><a href="check.xml">check.xml</a></li>
+  <li><a href="docs/">docs/</a></li>
+  <li><a href="docs.xml">docs.xml</a></li>
+  <li><a href="lib/">lib/</a></li>
+  <li><a href="patch.xml">patch.xml</a></li>
+  <li><a href="proposal/">proposal/</a></li>
+  <li><a href="src/">src/</a></li>
+  <li><a href="welcome.html">welcome.html</a></li>
+  <li><a href="xdocs/">xdocs/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"\\s*:' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\"\\s*:' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' build/discovered-artifact-metadata | sed -n '1,80p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"\\s*:' . | sed -n '1,120p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+./metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+./metadata/org.osgi/org.osgi.core/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+./metadata/org.osgi/org.osgi.annotation.versioning/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/1.1.2/org.osgi.annotation.versioning-1.1.2-sources.jar",
+./metadata/org.testcontainers/testcontainers/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8-sources.jar",
+./metadata/org.testcontainers/testcontainers/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.17.6/testcontainers-1.17.6-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-databind/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+./metadata/org.osgi/org.osgi.compendium/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/5.0.0/org.osgi.compendium-5.0.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:219:                    "source-code-url": "https://example.com/source-a",
+./metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-sources.jar",
+./metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+./metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+./metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/12.0.9/jetty-util-12.0.9-sources.jar",
+./metadata/com.zaxxer/HikariCP/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3-sources.jar",
+./metadata/com.zaxxer/HikariCP/index.json:18:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1-sources.jar",
+./metadata/com.zaxxer/HikariCP/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/6.0.0/HikariCP-6.0.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.glassfish.jaxb/txw2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+./metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+./metadata/com.zaxxer/HikariCP-java7/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/zaxxer/HikariCP-java7/2.4.13/HikariCP-java7-2.4.13-sources.jar",
+./metadata/org.glassfish.jaxb/jaxb-runtime/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/3.0.2/jaxb-runtime-3.0.2-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.1.5/jetty-client-12.1.5-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:23:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/12.0.0/jetty-client-12.0.0-sources.jar",
+./metadata/org.eclipse.jetty/jetty-client/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/11.0.12/jetty-client-11.0.12-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+./metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+./metadata/org.apache.openejb/javaee-api/index.json:5:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/openejb/javaee-api/5.0-2/javaee-api-5.0-2-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+./metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-serialization-core-jvm/1.9.0/kotlinx-serialization-core-jvm-1.9.0-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+./metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.31/kotlin-stdlib-common-1.5.31-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.apache.maven.surefire/surefire-logger-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.1.3/jetty-server-12.1.3-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/12.0.1/jetty-server-12.0.1-sources.jar",
+./metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/11.0.12/jetty-server-11.0.12-sources.jar",
+./metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+./metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11-sources.jar",
+./metadata/org.hdrhistogram/HdrHistogram/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12-sources.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-sources.jar",
+./metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+./metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-sources.jar",
+./metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+./metadata/commons-logging/commons-logging/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-sources.jar",
+./metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-sources.jar",
+./metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+./metadata/io.nats/jnats/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/io/nats/jnats/2.16.11/jnats-2.16.11-sources.jar",
+./metadata/org.eclipse.jetty.alpn/alpn-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/eclipse/jetty/alpn/alpn-api/1.1.3.v20160715/alpn-api-1.1.3.v20160715-sources.jar",
+./metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+./metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+./metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/com.google.code.findbugs/findbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/3.0.1/findbugs-annotations-3.0.1-sources.jar",
+./metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+./metadata/org.apache.kafka/kafka-clients/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/kafka/kafka-clients/3.5.1/kafka-clients-3.5.1-sources.jar",
+./metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+./metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+./metadata/com.google.code.findbugs/jsr305/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1-sources.jar",
+./metadata/org.apache.kafka/kafka-streams/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/apache/kafka/kafka-streams/3.5.1/kafka-streams-3.5.1-sources.jar",
+./metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+./metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+./metadata/javax.xml.bind/jaxb-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1-sources.jar",
+./metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+./metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+./metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/10.1.0/tomcat-embed-core-10.1.0-sources.jar",
+./metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:85:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/tomcat/embed/tomcat-embed-core/10.0.20/tomcat-embed-core-10.0.20-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-sources.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+./metadata/org.jboss.narayana.jta/jta/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/narayana/jta/jta/5.12.4.Final/jta-5.12.4.Final-sources.jar",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-sources.jar",
+./metadata/org.apache.commons/commons-compress/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.23.0/commons-compress-1.23.0-sources.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+./metadata/org.apache.commons/commons-dbcp2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.12.0/commons-dbcp2-2.12.0-sources.jar",
+./metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+./metadata/org.freemarker/freemarker/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/freemarker/freemarker/2.3.31/freemarker-2.3.31-sources.jar",
+./metadata/org.apache.commons/commons-text/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/1.9/commons-text-1.9-sources.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-sources.jar",
+./metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-sources.jar",
+./metadata/org.jboss.logmanager/jboss-logmanager/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.0.GA/jboss-logmanager-1.2.0.GA-sources.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-sources.jar",
+./metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-sources.jar",
+./metadata/org.apache.commons/commons-pool2/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-pool2/2.11.1/commons-pool2-2.11.1-sources.jar",
+./metadata/org.apache.commons/commons-collections4/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4-sources.jar",
+./metadata/javax.annotation/jsr250-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0-sources.jar",
+./metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-sources.jar",
+./metadata/com.googlecode.javaewah/JavaEWAH/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.13/JavaEWAH-1.1.13-sources.jar",
+./metadata/org.apache.commons/commons-lang3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.11/commons-lang3-3.11-sources.jar",
+./metadata/javax.annotation/javax.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-sources.jar",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/log4j/log4j/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "allowed-packages": [
+      "org.apache.log4j"
+    ],
+    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+    "repository-url": "https://github.com/apache/logging-log4j1",
+    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-1.2.17/tests",
+    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+    "description": "Apache Log4j 1.2 is a Java logging framework that lets applications route log events to appenders such as the console, files, sockets, JDBC, and JMS. It provides hierarchical loggers plus configurable layouts, filters, and XML or properties-based configuration.",
+    "metadata-version": "1.2.17",
+    "tested-versions": [
+      "1.2.17"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.17.2",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/jackson-module-kotlin",
+    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-2.17.2/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+    "tested-versions" : [
+      "2.17.2",
+      "2.17.3",
+      "2.18.0",
+      "2.18.1",
+      "2.18.2",
+      "2.18.3",
+      "2.18.4",
+      "2.18.5",
+      "2.18.6",
+      "2.19.0",
+      "2.19.1",
+      "2.19.2",
+      "2.19.3",
+      "2.19.4",
+      "2.20.0",
+      "2.20.1",
+      "2.20.2",
+      "2.21.0",
+      "2.21.1",
+      "2.21.2"
+    ],
+    "allowed-packages" : [
+      "com.fasterxml.jackson.module"
+    ],
+    "description" : "Jackson module that adds support for serializing and deserializing Kotlin classes and data classes. It lets Jackson infer constructor parameter names and work with single-constructor classes without requiring explicit property name annotations or default constructors."
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '120,180p' docs/CONTRIBUTING.md" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+  {
+    "allowed-packages": ["org.example.library"],
+    "metadata-version": "1.0.0",
+    "tested-versions": [
+      "1.0.0",
+      "1.0.1"
+    ],
+    "skipped-versions": [
+      {
+        "version": "1.0.5",
+        "reason": "Integrated reflect-config.json does not parse."
+      }
+    ]
+  },
+  {
+     "latest": true,
+     "override": true,
+     "allowed-packages": ["org.example.library"],
+     "metadata-version": "1.1.0",
+     "test-version": "1.0.0",
+     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+     "repository-url": "https://github.com/example/repo",
+     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+     "tested-versions": [
+       "1.1.0",
+       "1.1.1"
+    ],
+     "requires": ["org.slf4j:slf4j-api"]
+  }
+]
+```
+
+#### Populate Artifact URLs With an Agent
+
+To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+
+```bash
+./gradlew populateArtifactURLs \
+  --coordinates=all \
+  --agent-command='codex -a never exec -s danger-full-access'
+```
+
+By default, this task skips entries where all four URL fields and the `description` field are already set and only fills missing fields in partially populated entries.
+To overwrite existing URL values, add `--overwrite-existing`:
+
+```bash
+./gradlew populateArtifactURLs \
+  --coordinates=all \
+  --overwrite-existing \
+  --agent-command='codex -a never exec -s danger-full-access'
+```
+
+To require source/test-source verification (for Maven and non-Maven candidates) before selecting source URLs, add `--verify-artifact-sources`:
+
+```bash
+./gradlew populateArtifactURLs \
+  --coordinates=all \
+  --verify-artifact-sources \
+  --agent-command='codex -a never exec -s danger-full-access'
+```
+
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/ant/tree/rel/1.6.0 | sed -n '1,20p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/ant/tree/ANT_160 | sed -n '1,20p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/ant/tree/ANT_160/src/testcases | sed -n '1,20p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 533ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 20:14:20 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"64f561e1e73f77d5f2b472092b09f577"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ID7E50LM5DQira%2BTgsqLBKNf%2BaVHdWWgr1mFuSwDKi2M2UUAQSVzVHopC0qEAPv3zrKM1%2Bd%2BYBxduhR5YnOzafSijddCgfhk3LcLupT9cyTRH84RPYuBzIuf6XazFNJNNxfG5KNg64WeBpAyjkbjT2p8hE1QdHS5NHnk41HdwsnjxfpyNE7TzCEVirZghFiiCdFIVLu%2FfkiqiJoOaiTLYEDVGchQjY1TReISsyfGDHwSsNu9OthNXSChpAcdRqfCeDoCbrgDiqnbgZZntPwDOA%3D%3D--W%2FYPRC2IqrgvrC15--LWR%2BL7h03eKLYci00odMZA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2021045146.1777320860; expires=Tue, 27 Apr 2027 20:14:20 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 20:14:20 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 7283:374FB0:362309D:27D99D7:69EFC39C
+
+
+ succeeded in 956ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 20:14:21 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"6449c9d20d26fc33eb53898d1b2128cf"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=CrVId653jwi0N9U9qOc3kEeH5F%2FskoOXLyTq84nRPTLjDijkziJvmZ3a32AjgbxHH%2FUAGQLP1Y39GmPg55tfcmsYShGbxdI0C6KqlukB%2FKEhCSO2alOB5WNNaS%2Bx4kcyXGNLJ6nI%2BJ7rzhm0y1zwe8MN7PXECAbP35KUvYE89YbVXPlmz0s5cejIkEQMz61EJAfKFFi5S%2F2YEbveqiqWg6NM%2B5OvS%2F4OMqRWsLdgGRohNcfuoNJLMICEsGBYPKbrYMF0KkRLBUqba%2F3itbrB9w%3D%3D--tC79H%2BLyNepjasTo--E3Ewn%2Bj5jaFBef9ztfXGaw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.276435936.1777320860; expires=Tue, 27 Apr 2027 20:14:20 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 20:14:20 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 7242:368766:3769C23:28CB028:69EFC39C
+
+
+ succeeded in 972ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 20:14:21 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e649e0610536980eca1613538aaf18f6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=nmpVZ3Bil%2FtMfS0OAELnbIUd2BL0fy8JnSAlufEwUSlvLBHASG%2FV6Hr3E9SSNReeiSqkc34%2Bqh03%2FczWHimHgyU9y97e3C4auWmHWX6kewUijZLk270bZuGeoGeV6SzSRd5mCs5Zazh6qFRlQmm8RENFlamFHVkGMbjO%2BPGdh%2FBN3EoJRHdCDTnRrTsCYjA865Y9frkehfO8RhI3YPSHyjf9RFZ%2FsmaLzoZzlqP1KKKsz%2FVpDKmNG9oU4Nk84ELj137VKIMXlJvfC%2F3Yx1aMzg%3D%3D--TsJ5kIh1zZqLTLWG--bMpe2GSX5%2BEBoWE7jhsZUQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.405308930.1777320860; expires=Tue, 27 Apr 2027 20:14:20 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 20:14:20 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 7203:2B6DE:3621A7E:27E3047:69EFC39C
+
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo1.maven.org/maven2/ant/ant/1.6/ant-1.6-sources.jar | sed -n '1,20p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/ant/tree/ANT_160/docs/manual | sed -n '1,20p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-javadoc.jar | sed -n '1,20p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 181ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 20:14:25 GMT
+content-type: application/java-archive
+content-length: 2182693
+cf-ray: 9f307e517efcc126-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "6dbbb5f0ab161e97d0d1d80277399964"
+last-modified: Tue, 01 Nov 2005 16:07:18 GMT
+x-checksum-md5: 6dbbb5f0ab161e97d0d1d80277399964
+x-checksum-sha1: 9ffe0ee28957fb067503c88cac089c22a4fd2ba0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 211ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 20:14:25 GMT
+content-type: text/html
+cf-ray: 9f307e517e5603b1-ZRH
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/ant/ant/1.6/ant-1.6-javadoc.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 504ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 20:14:25 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"87908d7a9bc47378446067f69dcd4d6e"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kqJUOzO5zfAg7Xi%2BTmRRnH8qjYeT7gCZVJ9HAaPwRjv1nZd0fKccGQWTfxv4ouq6zNv9Duqhk4Ey%2FMhaOHJhcCwJWajIFAP2RcFDpGKLJoBNV1kFOfFoLpZFjA6tMWWhPcrP6%2FEGhSaw6MaG0OynOh2ux59zXTAI%2FM3MBS6tzUejA5ShnLHuDCFMX%2BGdartNkJBNBl3GIV7oHj84bt7NiqsRFT9Ff68krp34BA8kmnJY%2BNiuuLOCXy9ShGCnIvSPVQA7fhQa2hA2chEfdTddDQ%3D%3D--8xTjggQEyWFGaVt6--4x%2F2gpTJiLW%2FLJ1fy5cVIw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1211808164.1777320865; expires=Tue, 27 Apr 2027 20:14:25 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 20:14:25 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 7247:296CA8:37123C0:2886A45:69EFC3A1
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/ant/ant/1.6/
+web search: 
+web search: svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases
+web search: 
+web search: https://svn.apache.org/repos/asf/ant/core/
+web search: 
+web search: https://svn.apache.org/repos/asf/ant/core/tags/
+web search: 
+web search: https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/
+web search: 
+web search: https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/
+web search: 
+web search: https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/
+codex
+I found the exact `ANT_160` tag in Apache’s SVN history and confirmed it contains both `src/testcases/` and `docs/manual/`. Since Maven Central only publishes the binary, POM, and `ant-1.6-sources.jar` for this coordinate, I’m using the Maven sources JAR for source code and the tagged Apache tree for tests/docs.
+apply patch
+patch: completed
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8/build/discovered-artifact-metadata/ant-ant-1.6.json
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..f2a973e263fef8af83dfadbba1227bb667119c54
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates": "ant:ant:1.6",
++  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url": "https://github.com/apache/ant",
++  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+ }
+
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..f2a973e263fef8af83dfadbba1227bb667119c54
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates": "ant:ant:1.6",
++  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url": "https://github.com/apache/ant",
++  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/ant-ant-1.6.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+{
+  "coordinates": "ant:ant:1.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
+  "repository-url": "https://github.com/apache/ant",
+  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
+  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
+  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+}
+
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar | sed -n '1,12p'; curl -fsI https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/ | sed -n '1,8p'; curl -fsI https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/ | sed -n '1,8p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..f2a973e263fef8af83dfadbba1227bb667119c54
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates": "ant:ant:1.6",
++  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url": "https://github.com/apache/ant",
++  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+ }
+
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..f2a973e263fef8af83dfadbba1227bb667119c54
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates": "ant:ant:1.6",
++  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url": "https://github.com/apache/ant",
++  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+ }
+
+ succeeded in 5307ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 20:15:00 GMT
+content-type: application/java-archive
+content-length: 2182693
+cf-ray: 9f307f2d6915baba-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 69409
+etag: "6dbbb5f0ab161e97d0d1d80277399964"
+last-modified: Tue, 01 Nov 2005 16:07:18 GMT
+x-checksum-md5: 6dbbb5f0ab161e97d0d1d80277399964
+x-checksum-sha1: 9ffe0ee28957fb067503c88cac089c22a4fd2ba0
+HTTP/1.1 200 OK
+Date: Mon, 27 Apr 2026 20:15:00 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Thu, 18 Dec 2003 12:46:41 GMT
+ETag: W/"275813//ant/core/tags/ANT_160/src/testcases"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+HTTP/1.1 200 OK
+Date: Mon, 27 Apr 2026 20:15:00 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Thu, 18 Dec 2003 12:46:41 GMT
+ETag: W/"275813//ant/core/tags/ANT_160/docs/manual"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/ant-ant-1.6.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..f2a973e263fef8af83dfadbba1227bb667119c54
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates": "ant:ant:1.6",
++  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url": "https://github.com/apache/ant",
++  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+ }
+
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/ant-ant-1.6.json && sed -n '1,120p' build/discovered-artifact-metadata/ant-ant-1.6.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8
+ succeeded in 0ms:
+{
+  "coordinates": "ant:ant:1.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
+  "repository-url": "https://github.com/apache/ant",
+  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
+  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
+  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+}
+
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..f2a973e263fef8af83dfadbba1227bb667119c54
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates": "ant:ant:1.6",
++  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url": "https://github.com/apache/ant",
++  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+ }
+
+web search: 
+web search: repo.maven.apache.org maven2 ant ant 1.6 ant-1.6-sources.jar
+web search: 
+web search: https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/
+web search: 
+web search: "/ant/core/tags/ANT_160/docs/manual"
+web search: 
+web search: github apache ant tree ANT_160 docs manual
+codex
+Updated [ant-ant-1.6.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8/build/discovered-artifact-metadata/ant-ant-1.6.json) with the discovered metadata.
+
+I used the Maven Central `ant:ant:1.6` source artifact, the Apache Ant repository, and the `ANT_160` tagged Apache tree for the test suite and manual. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/ant/ant/1.6/?utm_source=openai))
+
+No `language` field was added; this is not a Kotlin or Scala-specific library. I also validated the file with `jq` and checked that the selected source, test, and documentation URLs return successfully.
+diff --git a/build/discovered-artifact-metadata/ant-ant-1.6.json b/build/discovered-artifact-metadata/ant-ant-1.6.json
+index ab57171d85b35aa5cb319971c127f307278fdf1c..f2a973e263fef8af83dfadbba1227bb667119c54
+--- a/build/discovered-artifact-metadata/ant-ant-1.6.json
++++ b/build/discovered-artifact-metadata/ant-ant-1.6.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "ant:ant:1.6"
++  "coordinates": "ant:ant:1.6",
++  "source-code-url": "https://repo.maven.apache.org/maven2/ant/ant/1.6/ant-1.6-sources.jar",
++  "repository-url": "https://github.com/apache/ant",
++  "test-code-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/src/testcases/",
++  "documentation-url": "https://svn.apache.org/repos/asf/ant/core/tags/ANT_160/docs/manual/",
++  "description": "Apache Ant is a Java-based build tool that runs XML-defined targets and tasks to compile, test, package, and deploy software projects. It favors portable Java task implementations over shell commands, making builds easier to run consistently across operating systems."
+ }
+
+2026-04-27T20:15:38.828298Z ERROR codex_core::session: failed to record rollout items: thread 019dd093-292d-7620-b019-7ed4dff9b1cd not found
+tokens used
+102,433
+Updated [ant-ant-1.6.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8/build/discovered-artifact-metadata/ant-ant-1.6.json) with the discovered metadata.
+
+I used the Maven Central `ant:ant:1.6` source artifact, the Apache Ant repository, and the `ANT_160` tagged Apache tree for the test suite and manual. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/ant/ant/1.6/?utm_source=openai))
+
+No `language` field was added; this is not a Kotlin or Scala-specific library. I also validated the file with `jq` and checked that the selected source, test, and documentation URLs return successfully.
+Ran agent for ant:ant:1.6 (exit 0). Log: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8/build/agent-artifact-discovery-logs/ant-ant-1.6.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2392-bfac8ba8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 25s
+9 actionable tasks: 4 executed, 5 from cache

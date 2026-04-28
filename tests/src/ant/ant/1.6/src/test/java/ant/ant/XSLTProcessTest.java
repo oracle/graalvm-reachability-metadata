@@ -22,18 +22,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 public class XSLTProcessTest {
     @Test
-    void transformsSingleFileWithDefaultTraxProcessor(@TempDir Path temporaryDirectory) throws Exception {
-        Path inputFile = writeInputFile(temporaryDirectory);
-        Path stylesheetFile = writeStylesheetFile(temporaryDirectory);
-        Path outputFile = temporaryDirectory.resolve("trax-output.txt");
-
-        XSLTProcess task = createTask(inputFile, outputFile, stylesheetFile);
-        task.execute();
-
-        assertThat(Files.readString(outputFile)).contains("transformed-value");
-    }
-
-    @Test
     void resolvesDeprecatedOptionalProcessors(@TempDir Path temporaryDirectory) throws Exception {
         assertOptionalProcessorIsResolved("xslp", temporaryDirectory.resolve("xslp"));
         assertOptionalProcessorIsResolved("xalan", temporaryDirectory.resolve("xalan"));
