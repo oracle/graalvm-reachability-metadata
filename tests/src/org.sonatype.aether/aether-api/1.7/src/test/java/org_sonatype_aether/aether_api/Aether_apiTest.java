@@ -29,6 +29,9 @@ import org.sonatype.aether.installation.InstallRequest;
 import org.sonatype.aether.installation.InstallResult;
 import org.sonatype.aether.metadata.Metadata;
 import org.sonatype.aether.repository.Authentication;
+import org.sonatype.aether.repository.LocalArtifactRegistration;
+import org.sonatype.aether.repository.LocalArtifactRequest;
+import org.sonatype.aether.repository.LocalArtifactResult;
 import org.sonatype.aether.repository.LocalRepository;
 import org.sonatype.aether.repository.Proxy;
 import org.sonatype.aether.repository.RemoteRepository;
@@ -159,6 +162,51 @@ public class Aether_apiTest {
         assertThat(workspaceRepository).isEqualTo(equivalentWorkspaceRepository);
         assertThat(workspaceRepository.hashCode()).isEqualTo(equivalentWorkspaceRepository.hashCode());
         assertThat(workspaceRepository.toString()).isEqualTo("(reactor)");
+    }
+
+    @Test
+    void localArtifactCacheLookupAndRegistrationRetainRepositoryOriginAndAvailability() {
+        TestArtifact cachedArtifact = artifact("org.example", "demo", "1.0.0");
+        RemoteRepository repository = new RemoteRepository("central", "default", "https://repo.example.org/maven2");
+        File cachedFile = Path.of("build", "aether-local-repo", "org", "example", "demo.jar").toFile();
+
+        LocalArtifactRequest request = new LocalArtifactRequest(cachedArtifact, List.of(repository), null);
+
+        assertThat(request.getArtifact()).isEqualTo(cachedArtifact);
+        assertThat(request.getRepositories()).containsExactly(repository);
+        assertThat(request.getContext()).isEmpty();
+        assertThat(request.toString()).contains(cachedArtifact.toString(), repository.toString());
+
+        request.setContext("runtime");
+        request.setRepositories(null);
+
+        assertThat(request.getContext()).isEqualTo("runtime");
+        assertThat(request.getRepositories()).isEmpty();
+
+        LocalArtifactResult result = new LocalArtifactResult(request)
+                .setFile(cachedFile)
+                .setAvailable(true);
+
+        assertThat(result.getRequest()).isSameAs(request);
+        assertThat(result.getFile()).isEqualTo(cachedFile);
+        assertThat(result.isAvailable()).isTrue();
+        assertThat(result.toString()).isEqualTo(cachedFile + "(available)");
+
+        result.setAvailable(false);
+
+        assertThat(result.isAvailable()).isFalse();
+        assertThat(result.toString()).isEqualTo(cachedFile + "(unavailable)");
+
+        LocalArtifactRegistration registration = new LocalArtifactRegistration(cachedArtifact, repository,
+                List.of("compile", "runtime"));
+
+        assertThat(registration.getArtifact()).isEqualTo(cachedArtifact);
+        assertThat(registration.getRepository()).isEqualTo(repository);
+        assertThat(registration.getContexts()).containsExactly("compile", "runtime");
+
+        registration.setContexts(null);
+
+        assertThat(registration.getContexts()).isEmpty();
     }
 
     @Test
