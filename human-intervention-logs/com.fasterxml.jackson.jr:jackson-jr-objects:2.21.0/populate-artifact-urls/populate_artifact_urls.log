@@ -1,0 +1,731 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd204-c249-7a42-b401-67864ba187fa
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.21.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+- Entry selector: "metadata-version" = "2.21.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.21.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.21.0
+- Entry test-version: 2.21.0
+codex
+I’ll verify the exact 2.21.0 artifact metadata first, then update only the blank fields in the existing JSON entry. I’m also checking whether Maven publishes usable sources or tests, since the request prefers Maven-hosted artifacts when available.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.21.0",
+    "tested-versions" : [
+      "2.21.0"
+    ],
+    "allowed-packages" : [
+      "com.fasterxml.jackson.jr"
+    ]
+  },
+  {
+    "metadata-version" : "2.13.4",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.13.4/jr-objects/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-javadoc.jar",
+    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and also includes builder-style APIs for composing JSON output.",
+    "tested-versions" : [
+      "2.13.4",
+      "2.13.5",
+      "2.14.0",
+      "2.14.1",
+      "2.14.2",
+      "2.14.3",
+      "2.15.0",
+      "2.15.1",
+      "2.15.2",
+      "2.15.3",
+      "2.15.4",
+      "2.16.0",
+      "2.16.1",
+      "2.16.2"
+    ],
+    "allowed-packages" : [
+      "com.fasterxml.jackson.jr"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"2\\.21\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+ succeeded in 0ms:
+4:    "metadata-version" : "2.21.0",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-sources.jar",
+15:    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+16:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.13.4/jr-objects/src/test",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-javadoc.jar",
+18:    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and also includes builder-style APIs for composing JSON output.",
+
+web search: 
+web search: Maven com.fasterxml.jackson.jr jackson-jr-objects 2.21.0 sources javadoc test jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/
+web search: 
+web search: https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/
+web search: 
+web search: 'jr-objects' in https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0
+web search: 
+web search: https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test
+web search: 
+web search: 
+codex
+The 2.21.0 Maven directory publishes `sources.jar` and `javadoc.jar`, but no test artifact, so I’ll use Maven for source/docs and the matching GitHub tag for tests. The library is a plain Java Jackson module, not Kotlin- or Scala-specific, so I’ll leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+diff --git a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+index 8774da86e5914678a0cd3ca7ea1954af644ba84f..8670c1e3e23d45cc59a98d705b9c5031ccafa991
+--- a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
++++ b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-jr",
++    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
++    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+     "tested-versions" : [
+       "2.21.0"
+     ],
+
+diff --git a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+index 8774da86e5914678a0cd3ca7ea1954af644ba84f..8670c1e3e23d45cc59a98d705b9c5031ccafa991
+--- a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
++++ b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-jr",
++    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
++    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+     "tested-versions" : [
+       "2.21.0"
+     ],
+
+web search: 
+web search: https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test
+web search: 
+web search: repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0 jackson-jr-objects-2.21.0-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/
+web search: 
+web search: https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'jq empty metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "sed -n '1,32p' metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.21.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
+    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+    "tested-versions" : [
+      "2.21.0"
+    ],
+    "allowed-packages" : [
+      "com.fasterxml.jackson.jr"
+    ]
+  },
+  {
+    "metadata-version" : "2.13.4",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/jackson-jr",
+    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.13.4/jr-objects/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-javadoc.jar",
+    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and also includes builder-style APIs for composing JSON output.",
+    "tested-versions" : [
+      "2.13.4",
+      "2.13.5",
+      "2.14.0",
+      "2.14.1",
+      "2.14.2",
+      "2.14.3",
+      "2.15.0",
+      "2.15.1",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0.pom | sed -n '1,160p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+diff --git a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+index 8774da86e5914678a0cd3ca7ea1954af644ba84f..8670c1e3e23d45cc59a98d705b9c5031ccafa991
+--- a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
++++ b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-jr",
++    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
++    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+     "tested-versions" : [
+       "2.21.0"
+     ],
+
+ succeeded in 108ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.fasterxml.jackson.jr</groupId>
+    <artifactId>jackson-jr-parent</artifactId>
+    <version>2.21.0</version>
+  </parent>
+  <artifactId>jackson-jr-objects</artifactId>
+  <name>Jackson-jr: Objects (main)</name>
+  <packaging>bundle</packaging>
+  <description>Simple data-binding that builds directly on jackson-core (streaming),
+has no other dependencies, and provides additional builder-style content generator
+</description>
+  <url>https://github.com/FasterXML/jackson-jr</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <properties>
+    <!-- 01-Dec-2015, tatu: OSGi imports, exports should be fine with defaults from parent -->
+    <packageVersion.dir>com/fasterxml/jackson/jr/ob</packageVersion.dir>
+    <packageVersion.package>${project.groupId}.ob</packageVersion.package>
+    <packageVersion.template.input>${basedir}/src/main/java/${packageVersion.dir}/PackageVersion.java.in</packageVersion.template.input>
+    <packageVersion.template.output>${generatedSourcesDir}/${packageVersion.dir}/PackageVersion.java</packageVersion.template.output>
+
+    <!-- for Reproducible Builds -->
+    <project.build.outputTimestamp>2026-01-18T23:05:35Z</project.build.outputTimestamp>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version.core}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links combine.children="append">
+            <link>https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-core/2.19/</link>
+          </links>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+      </plugin>
+      <!-- 28-Apr-2025, tatu: SBOM generation [JSTEP-14] -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+      </plugin>
+      <!-- 11-Mar-2019, tatu: Add basic JDK8-includable module-info, generated by Moditect -->
+      <plugin>
+        <groupId>org.moditect</groupId>
+        <artifactId>moditect-maven-plugin</artifactId>
+      </plugin>
+      <!-- 05-Jul-2020, tatu: Add generation of Gradle Module Metadata -->
+       <plugin>
+        <groupId>org.gradlex</groupId>
+        <artifactId>gradle-module-metadata-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+codex
+The JSON is valid after the edit. I’m doing one metadata validation pass for the selected coordinate and a quick URL availability check for the exact 2.21.0 artifacts/tag path.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0 --stacktrace' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+ succeeded in 188ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:57:51 GMT
+content-type: application/java-archive
+content-length: 93528
+cf-ray: 9f32cd48ca013b52-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "0159df40e8073e376d6bd4d7366f2048"
+last-modified: Sun, 18 Jan 2026 23:07:20 GMT
+x-checksum-md5: 0159df40e8073e376d6bd4d7366f2048
+x-checksum-sha1: 02deb64d6e243b1663384cc5b74b3f8f001d0fb2
+server: cloudflare
+
+ succeeded in 426ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:57:51 GMT
+content-type: application/java-archive
+content-length: 452733
+cf-ray: 9f32cd48d9093b57-GVA
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "a8060732d74a84d11c19672a789f4904"
+last-modified: Sun, 18 Jan 2026 23:07:20 GMT
+x-checksum-md5: a8060732d74a84d11c19672a789f4904
+x-checksum-sha1: 2e4b8c37777e7c51034bf93bf20d131ef3ff1f6f
+server: cloudflare
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/FasterXML/jackson-jr/contents/jr-objects/src/test?ref=jackson-jr-parent-2.21.0 | jq -r '.[0:5][] | .path'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+diff --git a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+index 8774da86e5914678a0cd3ca7ea1954af644ba84f..8670c1e3e23d45cc59a98d705b9c5031ccafa991
+--- a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
++++ b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-jr",
++    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
++    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+     "tested-versions" : [
+       "2.21.0"
+     ],
+
+ succeeded in 167ms:
+jr-objects/src/test/java
+
+diff --git a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+index 8774da86e5914678a0cd3ca7ea1954af644ba84f..8670c1e3e23d45cc59a98d705b9c5031ccafa991
+--- a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
++++ b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-jr",
++    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
++    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+     "tested-versions" : [
+       "2.21.0"
+     ],
+
+ exited 1 in 4164ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/2.21.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/2.21.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/2.21.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: site:github.com/FasterXML/jackson-jr jackson-jr-parent-2.21.0 jr-objects src test
+web search: 
+web search: 
+web search: 
+web search: "jackson-jr-objects-2.21.0-sources.jar" "repo1.maven.org"
+web search: 
+web search: jackson-jr-objects 2.21.0 Maven Central
+web search: 
+web search: central sonatype com.fasterxml.jackson.jr jackson-jr-objects 2.21.0
+web search: 
+web search: 
+web search: 
+web search: "Maven Central: com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0"
+web search: 
+web search: https://github.com/FasterXML/jackson-jr
+web search: 
+web search: https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test
+web search: 
+web search: "jackson-jr-objects-2.21.0-javadoc.jar"
+web search: 
+web search: https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/
+web search: 
+web search: https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+ succeeded in 0ms:
+diff --git i/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json w/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+index 8774da86e5..8670c1e3e2 100644
+--- i/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
++++ w/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-jr",
++    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
++    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+     "tested-versions" : [
+       "2.21.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f
+ succeeded in 0ms:
+ M metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+
+diff --git a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+index 8774da86e5914678a0cd3ca7ea1954af644ba84f..8670c1e3e23d45cc59a98d705b9c5031ccafa991
+--- a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
++++ b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-jr",
++    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
++    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+     "tested-versions" : [
+       "2.21.0"
+     ],
+
+web search: 
+web search: 
+web search: 
+web search: "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0.pom"
+web search: 
+web search: 
+web search: 
+web search: jackson-jr-objects-2.21.0-sources.jar
+web search: 
+web search: https://github.com/FasterXML/jackson-jr
+web search: 
+web search: "repo.maven.apache.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/"
+web search: 
+web search: https://github.com/FasterXML/jackson-jr/blob/jackson-jr-parent-2.21.0/jr-objects/pom.xml
+codex
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:1) for `metadata-version` `2.21.0`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and a two-sentence `description`. I left `language` absent because this is not a Kotlin or Scala-specific library. The selected repository/test tag and description align with the exact `jackson-jr-parent-2.21.0` sources and project metadata. ([github.com](https://github.com/FasterXML/jackson-jr/blob/jackson-jr-parent-2.21.0/jr-objects/pom.xml))
+
+Verification:
+- `jq empty metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json` passed.
+- Source and javadoc Maven URLs returned HTTP 200.
+- GitHub tag test path resolved.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0 --stacktrace` failed because `metadata/.../jackson-jr-objects/2.21.0/reachability-metadata.json` is missing, unrelated to the index field update.
+diff --git a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+index 8774da86e5914678a0cd3ca7ea1954af644ba84f..8670c1e3e23d45cc59a98d705b9c5031ccafa991
+--- a/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
++++ b/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.21.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-sources.jar",
++    "repository-url" : "https://github.com/FasterXML/jackson-jr",
++    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.21.0/jr-objects/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.21.0/jackson-jr-objects-2.21.0-javadoc.jar",
++    "description" : "Jackson Jr Objects is a lightweight data-binding module for reading JSON into maps, lists, strings, wrappers, and Java beans, and for writing those values back as JSON. It builds directly on jackson-core with minimal dependencies and includes builder-style APIs for composing JSON output.",
+     "tested-versions" : [
+       "2.21.0"
+     ],
+
+2026-04-28T02:59:10.936356Z ERROR codex_core::session: failed to record rollout items: thread 019dd204-c249-7a42-b401-67864ba187fa not found
+tokens used
+143,741
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:1) for `metadata-version` `2.21.0`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and a two-sentence `description`. I left `language` absent because this is not a Kotlin or Scala-specific library. The selected repository/test tag and description align with the exact `jackson-jr-parent-2.21.0` sources and project metadata. ([github.com](https://github.com/FasterXML/jackson-jr/blob/jackson-jr-parent-2.21.0/jr-objects/pom.xml))
+
+Verification:
+- `jq empty metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json` passed.
+- Source and javadoc Maven URLs returned HTTP 200.
+- GitHub tag test path resolved.
+- `./gradlew checkMetadataFiles -Pcoordinates=com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0 --stacktrace` failed because `metadata/.../jackson-jr-objects/2.21.0/reachability-metadata.json` is missing, unrelated to the index field update.
+Ran agent for com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/build/agent-url-discovery-logs/com.fasterxml.jackson.jr-jackson-jr-objects-2.21.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2564-a552432f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 12s
+9 actionable tasks: 1 executed, 8 up-to-date
