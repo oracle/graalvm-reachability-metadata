@@ -21,15 +21,43 @@ TaskProvider<Task> generateSunMiscBase64Encoder = tasks.register("generateSunMis
     outputs.dir(generatedSunMiscBase64EncoderSourceDirectory)
 
     doLast {
-        File sourceFile = generatedSunMiscBase64EncoderSourceDirectory.get()
-            .file("sun/misc/BASE64Encoder.java").asFile
-        sourceFile.parentFile.mkdirs()
-        sourceFile.text = """
+        Directory sourceDirectory = generatedSunMiscBase64EncoderSourceDirectory.get()
+        File base64EncoderSourceFile = sourceDirectory.file("sun/misc/BASE64Encoder.java").asFile
+        base64EncoderSourceFile.parentFile.mkdirs()
+        base64EncoderSourceFile.text = """
             package sun.misc;
 
             public class BASE64Encoder {
                 public String encode(byte[] bytes) {
                     return "generated-encoder";
+                }
+            }
+            """.stripIndent()
+
+        File characterEncoderSourceFile = sourceDirectory.file("sun/misc/CharacterEncoder.java").asFile
+        characterEncoderSourceFile.text = """
+            package sun.misc;
+
+            import java.io.IOException;
+            import java.io.InputStream;
+            import java.io.OutputStream;
+
+            public class CharacterEncoder {
+                public void encode(InputStream inputStream, OutputStream outputStream) throws IOException {
+                    int value;
+                    while ((value = inputStream.read()) != -1) {
+                        outputStream.write(value);
+                    }
+                }
+            }
+            """.stripIndent()
+
+        File uuEncoderSourceFile = sourceDirectory.file("sun/misc/UUEncoder.java").asFile
+        uuEncoderSourceFile.text = """
+            package sun.misc;
+
+            public class UUEncoder extends CharacterEncoder {
+                public UUEncoder(String name) {
                 }
             }
             """.stripIndent()
