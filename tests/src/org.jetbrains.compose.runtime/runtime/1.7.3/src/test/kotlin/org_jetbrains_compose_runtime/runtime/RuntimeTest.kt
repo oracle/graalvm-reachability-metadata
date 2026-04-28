@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.snapshots.Snapshot
+import androidx.compose.runtime.snapshots.SnapshotStateObserver
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.runtime.toMutableStateList
@@ -163,6 +164,40 @@ class RuntimeTest {
         copied["c"] = 3
 
         assertThat(copied).containsExactlyEntriesOf(mapOf("c" to 3))
+    }
+
+    @Test
+    fun snapshotStateObserverInvalidatesOnlyScopesThatReadChangedState() {
+        val first: MutableState<String> = mutableStateOf("first")
+        val second: MutableState<String> = mutableStateOf("second")
+        val invalidatedScopes = mutableListOf<String>()
+        val observer = SnapshotStateObserver { callback -> callback() }
+
+        try {
+            observer.start()
+            observer.observeReads("first-scope", { scope: String -> invalidatedScopes += scope }) {
+                first.value
+            }
+            observer.observeReads("second-scope", { scope: String -> invalidatedScopes += scope }) {
+                second.value
+            }
+
+            Snapshot.withMutableSnapshot {
+                first.value = "changed"
+            }
+            assertThat(invalidatedScopes).containsExactly("first-scope")
+
+            invalidatedScopes.clear()
+            observer.clear("first-scope")
+            Snapshot.withMutableSnapshot {
+                first.value = "ignored"
+                second.value = "changed"
+            }
+            assertThat(invalidatedScopes).containsExactly("second-scope")
+        } finally {
+            observer.stop()
+            observer.clear()
+        }
     }
 
     @Test
