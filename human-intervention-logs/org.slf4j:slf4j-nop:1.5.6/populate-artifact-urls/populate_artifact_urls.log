@@ -1,0 +1,707 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd1e6-29a6-7ce2-9da3-d5481ea4fcab
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.slf4j:slf4j-nop:1.5.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.5.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/metadata/org.slf4j/slf4j-nop/index.json
+- Entry selector: "metadata-version" = "1.5.6"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.5.6".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.5.6
+- Entry test-version: 1.5.6
+codex
+I’ll verify the exact-version artifacts and existing metadata format first, then patch only blank fields in the requested entry.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.slf4j/slf4j-nop/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.6",
+    "tested-versions" : [
+      "1.5.6"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  },
+  {
+    "metadata-version" : "1.5.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+    "tested-versions" : [
+      "1.5.3"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"|\"description\"' metadata/org.slf4j -g 'index.json'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:5:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:8:    "description" : "SLF4J defines a common logging API for Java applications and libraries. It lets code route log messages to different logging implementations without changing application code.",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:20:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:23:    "description" : "SLF4J defines a common logging API for Java applications and libraries. It lets code route log messages to different logging implementations without changing application code.",
+metadata/org.slf4j/slf4j-nop/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:15:    "repository-url" : "https://github.com/qos-ch/slf4j",
+metadata/org.slf4j/slf4j-nop/index.json:16:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+metadata/org.slf4j/slf4j-nop/index.json:17:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+metadata/org.slf4j/slf4j-nop/index.json:18:    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+
+web search: 
+web search: Maven Central org.slf4j slf4j-nop 1.5.6 sources jar tests jar slf4j-site 1.5.6
+web search: 
+web search: https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/
+web search: 
+web search: https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/
+web search: 
+web search: site:github.com/qos-ch/slf4j SLF4J_1.5.6 slf4j-nop src test java
+web search: 
+web search: repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6 slf4j-site-1.5.6-sources.jar
+codex
+The local metadata already has a 1.5.3 entry, so I’m matching that style where it still satisfies the exact-version requirement. I’m checking Maven Central first because the request explicitly prefers Maven-hosted source/test artifacts when they exist.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/slf4j/slf4j-site/1.5.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/slf4j/slf4j-site/1.5.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="slf4j-site-1.5.6-sources.jar" title="slf4j-site-1.5.6-sources.jar">slf4j-site-1.5.6-sources.jar</a>                      2008-11-21 13:58     66064      
+<a href="slf4j-site-1.5.6-sources.jar.md5" title="slf4j-site-1.5.6-sources.jar.md5">slf4j-site-1.5.6-sources.jar.md5</a>                  2008-11-21 13:58        32      
+<a href="slf4j-site-1.5.6-sources.jar.sha1" title="slf4j-site-1.5.6-sources.jar.sha1">slf4j-site-1.5.6-sources.jar.sha1</a>                 2008-11-21 13:58        40      
+<a href="slf4j-site-1.5.6.jar" title="slf4j-site-1.5.6.jar">slf4j-site-1.5.6.jar</a>                              2008-11-21 13:58      1750      
+<a href="slf4j-site-1.5.6.jar.md5" title="slf4j-site-1.5.6.jar.md5">slf4j-site-1.5.6.jar.md5</a>                          2008-11-21 13:58        32      
+<a href="slf4j-site-1.5.6.jar.sha1" title="slf4j-site-1.5.6.jar.sha1">slf4j-site-1.5.6.jar.sha1</a>                         2008-11-21 13:58        40      
+<a href="slf4j-site-1.5.6.pom" title="slf4j-site-1.5.6.pom">slf4j-site-1.5.6.pom</a>                              2008-11-21 13:58      1510      
+<a href="slf4j-site-1.5.6.pom.md5" title="slf4j-site-1.5.6.pom.md5">slf4j-site-1.5.6.pom.md5</a>                          2008-11-21 13:58        32      
+<a href="slf4j-site-1.5.6.pom.sha1" title="slf4j-site-1.5.6.pom.sha1">slf4j-site-1.5.6.pom.sha1</a>                         2008-11-21 13:58        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/slf4j/slf4j-nop/1.5.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/slf4j/slf4j-nop/1.5.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="slf4j-nop-1.5.6-sources.jar" title="slf4j-nop-1.5.6-sources.jar">slf4j-nop-1.5.6-sources.jar</a>                       2008-11-21 13:56      5371      
+<a href="slf4j-nop-1.5.6-sources.jar.md5" title="slf4j-nop-1.5.6-sources.jar.md5">slf4j-nop-1.5.6-sources.jar.md5</a>                   2008-11-21 13:56        32      
+<a href="slf4j-nop-1.5.6-sources.jar.sha1" title="slf4j-nop-1.5.6-sources.jar.sha1">slf4j-nop-1.5.6-sources.jar.sha1</a>                  2008-11-21 13:56        40      
+<a href="slf4j-nop-1.5.6.jar" title="slf4j-nop-1.5.6.jar">slf4j-nop-1.5.6.jar</a>                               2008-11-21 13:56      5283      
+<a href="slf4j-nop-1.5.6.jar.md5" title="slf4j-nop-1.5.6.jar.md5">slf4j-nop-1.5.6.jar.md5</a>                           2008-11-21 13:56        32      
+<a href="slf4j-nop-1.5.6.jar.sha1" title="slf4j-nop-1.5.6.jar.sha1">slf4j-nop-1.5.6.jar.sha1</a>                          2008-11-21 13:56        40      
+<a href="slf4j-nop-1.5.6.pom" title="slf4j-nop-1.5.6.pom">slf4j-nop-1.5.6.pom</a>                               2008-11-21 13:56      1462      
+<a href="slf4j-nop-1.5.6.pom.md5" title="slf4j-nop-1.5.6.pom.md5">slf4j-nop-1.5.6.pom.md5</a>                           2008-11-21 13:56        32      
+<a href="slf4j-nop-1.5.6.pom.sha1" title="slf4j-nop-1.5.6.pom.sha1">slf4j-nop-1.5.6.pom.sha1</a>                          2008-11-21 13:56        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+<project 
+ xmlns="http://maven.apache.org/POM/4.0.0" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-parent</artifactId>
+    	<version>1.5.6</version>
+	</parent>
+	
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-nop</artifactId>
+	<packaging>jar</packaging>
+	<name>SLF4J NOP Binding</name>
+
+	<url>http://www.slf4j.org</url>
+		<description>
+		The slf4j NOP binding
+	</description>
+
+  <dependencies>
+	  <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+		</dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+			
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Bundle-Version>${project.version}</Bundle-Version>
+              <Bundle-Description>${project.description}</Bundle-Description>
+              <Implementation-Version>${project.version}</Implementation-Version>
+            </manifestEntries>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>			
+      </plugin>      
+    </plugins>
+
+  </build>
+
+</project>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/qos-ch/slf4j.git 'refs/tags/*1.5.6*'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 301ms:
+233e3cae7f72d27620ee1e488ffe251a8125b654	refs/tags/SLF4J_1.5.6
+93a2eaa03de453f7039ecbc6f415cbddcc1c5cd1	refs/tags/SLF4J_1.5.6^{}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-parent/1.5.6/slf4j-parent-1.5.6.pom | sed -n '/<scm>/,/<\\/scm>/p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+  <scm>
+		<connection>scm:svn:http://svn.slf4j.org/repos/slf4j/trunk</connection>
+		<developerConnection>scm:svn:https://svn.slf4j.org/repos/slf4j/trunk</developerConnection>
+		<url>http://svn.slf4j.org/viewvc/slf4j/trunk/</url>
+	</scm>
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+exec
+/usr/bin/bash -lc "curl -fsSL -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-tests.jar | sed -n '1,5p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 194ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 02:24:07 GMT
+content-type: text/html
+cf-ray: 9f329bdac9f56aa1-GVA
+cf-cache-status: MISS
+
+ succeeded in 736ms:
+200 https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java
+
+ succeeded in 898ms:
+200 https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html
+
+exec
+/usr/bin/bash -lc "rg -n 'slf4j-site|sources.jar\"' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+metadata/org.eclipse.aether/aether-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+metadata/javax.el/javax.el-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-sources.jar",
+metadata/org.eclipse.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+metadata/org.fusesource.jansi/jansi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/fusesource/jansi/jansi/1.13/jansi-1.13-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/7.4.0.202509020913-r/org.eclipse.jgit-7.4.0.202509020913-r-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/6.5.0.202303070854-r/org.eclipse.jgit-6.5.0.202303070854-r-sources.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:17:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+metadata/org.json/json/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/json/json/20220320/json-20220320-sources.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/thymeleaf-extras-springsecurity6-3.1.0.RELEASE-sources.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/2.0.0/jakarta.inject-api-2.0.0-sources.jar",
+metadata/com.itextpdf/io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/io/8.0.3/io-8.0.3-sources.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+metadata/org.osgi/org.osgi.core/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.core/4.3.0/org.osgi.core-4.3.0-sources.jar",
+metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/validator/hibernate-validator/7.0.4.Final/hibernate-validator-7.0.4.Final-sources.jar",
+metadata/com.ecwid.consul/consul-api/index.json:11:    "source-code-url": "https://repo1.maven.org/maven2/com/ecwid/consul/consul-api/1.4.5/consul-api-1.4.5-sources.jar",
+metadata/org.yaml/snakeyaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-sources.jar",
+metadata/io.zipkin.reporter2/zipkin-reporter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/zipkin/reporter2/zipkin-reporter/2.16.3/zipkin-reporter-2.16.3-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/1.1.2/org.osgi.annotation.versioning-1.1.2-sources.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+metadata/org.testcontainers/testcontainers/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8-sources.jar",
+metadata/org.testcontainers/testcontainers/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.17.6/testcontainers-1.17.6-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+metadata/commons-codec/commons-codec/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-sources.jar",
+metadata/commons-codec/commons-codec/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-test-sources.jar",
+metadata/org.osgi/org.osgi.namespace.service/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.namespace.service/1.0.0/org.osgi.namespace.service-1.0.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/0.4.0/jib-build-plan-0.4.0-sources.jar",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+metadata/io.projectreactor/reactor-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+metadata/org.osgi/org.osgi.service.serviceloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/org.osgi.service.serviceloader/1.0.0/org.osgi.service.serviceloader-1.0.0-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-sources.jar",
+metadata/org.objenesis/objenesis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-sources.jar",
+metadata/org.objenesis/objenesis/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/3.2/objenesis-tck-3.2-sources.jar",
+metadata/org.osgi/org.osgi.compendium/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.compendium/5.0.0/org.osgi.compendium-5.0.0-sources.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-sources.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+metadata/javax.servlet.jsp/jsp-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1-sources.jar",
+metadata/org.mariadb/r2dbc-mariadb/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/mariadb/r2dbc-mariadb/1.1.3/r2dbc-mariadb-1.1.3-sources.jar",
+metadata/org.glassfish.jaxb/txw2/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/jaxb/txw2/2.3.1/txw2-2.3.1-sources.jar",
+metadata/org.checkerframework/checker-qual/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0-sources.jar",
+metadata/org.checkerframework/checker-qual/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0-sources.jar",
+metadata/commons-cli/commons-cli/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-sources.jar",
+metadata/commons-cli/commons-cli/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/commons-cli/commons-cli/1.5.0/commons-cli-1.5.0-test-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+metadata/org.glassfish.jaxb/jaxb-runtime/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-runtime/3.0.2/jaxb-runtime-3.0.2-sources.jar",
+metadata/org.checkerframework/checker-compat-qual/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5-sources.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+metadata/org.opengauss/opengauss-jdbc/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.0-og/opengauss-jdbc-3.1.0-og-sources.jar",
+metadata/org.hibernate/hibernate-core/index.json:16:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.0.0.Final/hibernate-core-6.0.0.Final-sources.jar",
+metadata/org.hibernate/hibernate-core/index.json:40:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/hibernate-core/5.6.14.Final/hibernate-core-5.6.14.Final-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \".*sources\\.jar\"' metadata -g 'index.json' | head -80" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/slf4j-site-1.5.6-sources.jar" https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar; jar tf "$tmp/slf4j-site-1.5.6-sources.jar" | sed -n '"'1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/slf4j-nop-1.5.6-sources.jar" https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar; jar tf "$tmp/slf4j-nop-1.5.6-sources.jar"' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 252ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/slf4j/
+org/slf4j/impl/
+org/slf4j/impl/NOPLoggerFactory.java
+org/slf4j/impl/StaticLoggerBinder.java
+org/slf4j/impl/StaticMarkerBinder.java
+org/slf4j/impl/StaticMDCBinder.java
+
+ succeeded in 450ms:
+META-INF/
+META-INF/MANIFEST.MF
+../
+../../
+../../../
+../../../target/
+../../../target/site/
+../../../target/site/changes/
+../../../target/site/css/
+../../../target/site/templates/
+../../../target/site/bug-reporting.html
+../../../target/site/changes/changes-1.3.txt
+../../../target/site/codes.html
+../../../target/site/compatibility.html
+../../../target/site/css/site.css
+../../../target/site/docs.html
+../../../target/site/download.html
+../../../target/site/extensions.html
+../../../target/site/faq.html
+../../../target/site/index.html
+../../../target/site/inde_base.html
+../../../target/site/legacy.html
+../../../target/site/license.html
+../../../target/site/log4j-over-slf4j.html
+../../../target/site/mailing-lists.html
+../../../target/site/manual.html
+../../../target/site/migrator.html
+../../../target/site/news.html
+../../../target/site/support.html
+../../../target/site/svn.html
+../../../target/site/templates/footer.js
+../../../target/site/templates/header.js
+../../../target/site/templates/left.js
+../../../target/site/templates/right.js
+
+codex
+There is a Maven source jar for `slf4j-nop` 1.5.6 and a Maven site source jar for the 1.5.6 docs. Maven has no `slf4j-nop-1.5.6-tests.jar`, so I’ll use the `SLF4J_1.5.6` GitHub tag for the test suite path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/metadata/org.slf4j/slf4j-nop/index.json
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 4236dc1611445d418aa7adad3d25ffa2d4772c82..57c3e6b77941e0ea0bb9b11d135d1f427dace168
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 4236dc1611445d418aa7adad3d25ffa2d4772c82..57c3e6b77941e0ea0bb9b11d135d1f427dace168
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+exec
+/usr/bin/bash -lc "jq . metadata/org.slf4j/slf4j-nop/index.json >/dev/null && sed -n '1,36p' metadata/org.slf4j/slf4j-nop/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.6",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar",
+    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+    "tested-versions" : [
+      "1.5.6"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  },
+  {
+    "metadata-version" : "1.5.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+    "tested-versions" : [
+      "1.5.3"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.slf4j/slf4j-nop/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+diff --git i/metadata/org.slf4j/slf4j-nop/index.json w/metadata/org.slf4j/slf4j-nop/index.json
+index 4236dc1611..57c3e6b779 100644
+--- i/metadata/org.slf4j/slf4j-nop/index.json
++++ w/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 4236dc1611445d418aa7adad3d25ffa2d4772c82..57c3e6b77941e0ea0bb9b11d135d1f427dace168
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+codex
+The JSON parses cleanly after the edit. I’m running the targeted metadata validation now to catch any schema or formatting issue for this coordinate.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.slf4j:slf4j-nop:1.5.6' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 4236dc1611445d418aa7adad3d25ffa2d4772c82..57c3e6b77941e0ea0bb9b11d135d1f427dace168
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+ exited 1 in 1396ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.slf4j:slf4j-nop:1.5.6: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/metadata/org.slf4j/slf4j-nop/1.5.6/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.slf4j:slf4j-nop:1.5.6: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/metadata/org.slf4j/slf4j-nop/1.5.6/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted Gradle metadata check fails before validating the index fields because this coordinate has no `metadata/org.slf4j/slf4j-nop/1.5.6/reachability-metadata.json` directory payload. That is pre-existing scope outside the requested index update, so I’m leaving it untouched.
+exec
+/usr/bin/bash -lc 'find metadata/org.slf4j/slf4j-nop -maxdepth 2 -type f -print | sort' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+metadata/org.slf4j/slf4j-nop/1.5.3/reachability-metadata.json
+metadata/org.slf4j/slf4j-nop/index.json
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.slf4j/slf4j-nop/index.json metadata/org.slf4j/slf4j-nop' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a
+ succeeded in 0ms:
+ M metadata/org.slf4j/slf4j-nop/index.json
+
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 4236dc1611445d418aa7adad3d25ffa2d4772c82..57c3e6b77941e0ea0bb9b11d135d1f427dace168
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+web search: 
+web search: https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java
+web search: 
+web search: repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/
+web search: 
+web search: https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/
+web search: 
+web search: site:repo1.maven.org/maven2/org/slf4j/slf4j-site/ slf4j-site 1.5.6 sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/slf4j/
+web search: 
+web search: https://repo1.maven.org/maven2/org/slf4j/slf4j-site/
+web search: 
+web search: https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/
+codex
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/metadata/org.slf4j/slf4j-nop/index.json) for `metadata-version` `1.5.6`: filled source, repository, test suite, documentation, and the two-sentence description. I left `language` absent because this is not Kotlin- or Scala-specific.
+
+I used the Maven Central source jar and versioned site documentation jar, and the tagged GitHub test tree because the Maven `slf4j-nop` `1.5.6` directory has no tests jar. ([repo1.maven.org](https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/))
+
+Verification: `jq` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.slf4j:slf4j-nop:1.5.6` fails due to a pre-existing missing `metadata/org.slf4j/slf4j-nop/1.5.6/reachability-metadata.json`, which I did not create because the request was scoped to `index.json`.
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 4236dc1611445d418aa7adad3d25ffa2d4772c82..57c3e6b77941e0ea0bb9b11d135d1f427dace168
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.6/slf4j-site-1.5.6-sources.jar",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+2026-04-28T02:25:29.798365Z ERROR codex_core::session: failed to record rollout items: thread 019dd1e6-29a6-7ce2-9da3-d5481ea4fcab not found
+tokens used
+90,744
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/metadata/org.slf4j/slf4j-nop/index.json) for `metadata-version` `1.5.6`: filled source, repository, test suite, documentation, and the two-sentence description. I left `language` absent because this is not Kotlin- or Scala-specific.
+
+I used the Maven Central source jar and versioned site documentation jar, and the tagged GitHub test tree because the Maven `slf4j-nop` `1.5.6` directory has no tests jar. ([repo1.maven.org](https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/))
+
+Verification: `jq` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.slf4j:slf4j-nop:1.5.6` fails due to a pre-existing missing `metadata/org.slf4j/slf4j-nop/1.5.6/reachability-metadata.json`, which I did not create because the request was scoped to `index.json`.
+Ran agent for org.slf4j:slf4j-nop:1.5.6 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/build/agent-url-discovery-logs/org.slf4j-slf4j-nop-1.5.6.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-800ed69a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 55s
+9 actionable tasks: 1 executed, 8 up-to-date
