@@ -18,27 +18,49 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class JdbcUtilsAnonymous1Test {
     @Test
+    void resolvesClassWithThreadContextLoader() throws Exception {
+        TrackingClassLoader trackingClassLoader = new TrackingClassLoader(
+                Thread.currentThread().getContextClassLoader(), ArrayList.class.getName(), false);
+        ArrayList<String> values = values();
+
+        Object deserialized = deserializeWithContextLoader(values, trackingClassLoader);
+
+        assertThat(trackingClassLoader.wasRequested()).isTrue();
+        assertThat(deserialized).isInstanceOf(ArrayList.class);
+        assertThat(deserialized).isEqualTo(values);
+    }
+
+    @Test
     void fallsBackToObjectInputStreamResolutionWhenThreadContextLoaderCannotLoadClass() throws Exception {
+        TrackingClassLoader trackingClassLoader = new TrackingClassLoader(
+                Thread.currentThread().getContextClassLoader(), ArrayList.class.getName(), true);
+        ArrayList<String> values = values();
+
+        Object deserialized = deserializeWithContextLoader(values, trackingClassLoader);
+
+        assertThat(trackingClassLoader.wasRequested()).isTrue();
+        assertThat(deserialized).isInstanceOf(ArrayList.class);
+        assertThat(deserialized).isEqualTo(values);
+    }
+
+    private static Object deserializeWithContextLoader(Object value, ClassLoader classLoader) throws Exception {
         JavaObjectSerializer configuredSerializer = JdbcUtils.serializer;
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        BlockingClassLoader blockingClassLoader = new BlockingClassLoader(originalClassLoader,
-                ArrayList.class.getName());
         JdbcUtils.serializer = null;
-        Thread.currentThread().setContextClassLoader(blockingClassLoader);
+        Thread.currentThread().setContextClassLoader(classLoader);
         try {
-            ArrayList<String> values = new ArrayList<>();
-            values.add("first");
-            values.add("second");
-
-            Object deserialized = JdbcUtils.deserialize(serialize(values), null);
-
-            assertThat(blockingClassLoader.wasBlocked()).isTrue();
-            assertThat(deserialized).isInstanceOf(ArrayList.class);
-            assertThat(deserialized).isEqualTo(values);
+            return JdbcUtils.deserialize(serialize(value), null);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
             JdbcUtils.serializer = configuredSerializer;
         }
+    }
+
+    private static ArrayList<String> values() {
+        ArrayList<String> values = new ArrayList<>();
+        values.add("first");
+        values.add("second");
+        return values;
     }
 
     private static byte[] serialize(Object value) throws Exception {
@@ -49,26 +71,30 @@ public class JdbcUtilsAnonymous1Test {
         return output.toByteArray();
     }
 
-    private static class BlockingClassLoader extends ClassLoader {
-        private final String blockedClassName;
-        private boolean blocked;
+    private static class TrackingClassLoader extends ClassLoader {
+        private final String trackedClassName;
+        private final boolean failTrackedClass;
+        private boolean requested;
 
-        BlockingClassLoader(ClassLoader parent, String blockedClassName) {
+        TrackingClassLoader(ClassLoader parent, String trackedClassName, boolean failTrackedClass) {
             super(parent);
-            this.blockedClassName = blockedClassName;
+            this.trackedClassName = trackedClassName;
+            this.failTrackedClass = failTrackedClass;
         }
 
         @Override
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            if (blockedClassName.equals(name)) {
-                blocked = true;
-                throw new ClassNotFoundException(name);
+            if (trackedClassName.equals(name)) {
+                requested = true;
+                if (failTrackedClass) {
+                    throw new ClassNotFoundException(name);
+                }
             }
             return super.loadClass(name, resolve);
         }
 
-        boolean wasBlocked() {
-            return blocked;
+        boolean wasRequested() {
+            return requested;
         }
     }
 }
