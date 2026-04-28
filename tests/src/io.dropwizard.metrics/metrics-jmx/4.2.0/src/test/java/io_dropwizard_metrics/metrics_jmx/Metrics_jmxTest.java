@@ -7,7 +7,6 @@
 package io_dropwizard_metrics.metrics_jmx;
 
 import java.lang.management.ManagementFactory;
-import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -231,19 +230,13 @@ public class Metrics_jmxTest {
         return "io.dropwizard.metrics.jmx.test." + suffix + "." + System.nanoTime();
     }
 
-    private static ObjectName metricName(String domain, String type, String name) throws Exception {
-        Hashtable<String, String> properties = new Hashtable<>();
-        properties.put("type", type);
-        properties.put("name", name);
-        return new ObjectName(domain, properties);
+    private static ObjectName metricName(String domain, String type, String name) {
+        return new DefaultObjectNameFactory().createName(type, domain, name);
     }
 
     private static ObjectName customMetricName(String domain, String group, String type, String metric) throws Exception {
-        Hashtable<String, String> properties = new Hashtable<>();
-        properties.put("group", group);
-        properties.put("type", type);
-        properties.put("metric", metric);
-        return new ObjectName(domain, properties);
+        return new ObjectName(domain + ":group=" + ObjectName.quote(group) + ",type=" + ObjectName.quote(type)
+                + ",metric=" + ObjectName.quote(metric));
     }
 
     private static final class RecordingObjectNameFactory implements ObjectNameFactory {
@@ -258,11 +251,8 @@ public class Metrics_jmxTest {
         public ObjectName createName(String type, String domain, String name) {
             requestedNames.add(type + ":" + name);
             try {
-                Hashtable<String, String> properties = new Hashtable<>();
-                properties.put("group", group);
-                properties.put("type", type);
-                properties.put("metric", name);
-                return new ObjectName(domain, properties);
+                return new ObjectName(domain + ":group=" + ObjectName.quote(group) + ",type=" + ObjectName.quote(type)
+                        + ",metric=" + ObjectName.quote(name));
             } catch (Exception exception) {
                 throw new IllegalArgumentException(exception);
             }
