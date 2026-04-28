@@ -1,0 +1,343 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd4c8-f6d0-7b41-9f75-7fcf70f50f24
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.external:management-api:3.0.0-b012
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.0.0-b012".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7/metadata/org.glassfish.external/management-api/index.json
+- Entry selector: "metadata-version" = "3.0.0-b012"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.0.0-b012".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/glassfish/external/management-api-sources/3.0.0-b012/management-api-sources-3.0.0-b012.jar
+- repository-url: http://kenai.com/hg/gmbal~gf_common
+- test-code-url: N/A
+- documentation-url: N/A
+- description: Management API provides GlassFish external API types for AMX administration, probe provider registration, and runtime statistics. It supplies the interfaces, annotations, and basic statistic implementations used by GlassFish components to expose management and monitoring data.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.0.0-b012
+- Entry test-version: 3.0.0-b012
+codex
+I’ll verify the exact entry first, then check Maven/repository evidence for whether this artifact is Kotlin/Scala-specific before touching the file.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.0.0-b012\")' metadata/org.glassfish.external/management-api/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.0.0-b012",
+  "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/external/management-api-sources/3.0.0-b012/management-api-sources-3.0.0-b012.jar",
+  "repository-url": "http://kenai.com/hg/gmbal~gf_common",
+  "test-code-url": "N/A",
+  "documentation-url": "N/A",
+  "description": "Management API provides GlassFish external API types for AMX administration, probe provider registration, and runtime statistics. It supplies the interfaces, annotations, and basic statistic implementations used by GlassFish components to expose management and monitoring data.",
+  "tested-versions": [
+    "3.0.0-b012"
+  ],
+  "allowed-packages": [
+    "org.glassfish.external"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.glassfish.external/management-api/index.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7
+ succeeded in 0ms:
+?? metadata/org.glassfish.external/management-api/index.json
+
+web search: 
+web search: org.glassfish.external management-api 3.0.0-b012 Maven management-api-sources
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/external/management-api-sources/3.0.0-b012/
+codex
+The target entry already has non-blank values for every requested URL and description field; the only absent field is `language`. I’m checking the published POM/source artifact now so I can decide whether adding `language` is warranted.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/external/management-api/3.0.0-b012/management-api-3.0.0-b012.pom | sed -n '1,220p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    
+<!--
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+  Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+  The contents of this file are subject to the terms of either the GNU
+  General Public License Version 2 only ("GPL") or the Common Development
+  and Distribution License("CDDL") (collectively, the "License").  You
+  may not use this file except in compliance with the License. You can obtain
+  a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+  or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+  language governing permissions and limitations under the License.
+ 
+  When distributing the software, include this License Header Notice in each
+  file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+  Sun designates this particular file as subject to the "Classpath" exception
+  as provided by Sun in the GPL Version 2 section of the License file that
+  accompanied this code.  If applicable, add the following below the License
+  Header, with the fields enclosed by brackets [] replaced by your own
+  identifying information: "Portions Copyrighted [year]
+  [name of copyright owner]"
+ 
+  Contributor(s):
+ 
+  If you wish your version of this file to be governed by only the CDDL or
+  only the GPL Version 2, indicate your decision by adding "[Contributor]
+  elects to include this software in this distribution under the [CDDL or GPL
+  Version 2] license."  If you don't indicate a single choice of license, a
+  recipient has the option to distribute your version of this file under
+  either the CDDL, the GPL Version 2 or to extend the choice of license to
+  its licensees as provided above.  However, if you add GPL Version 2 code
+  and therefore, elected the GPL Version 2 license, then the option applies
+  only if the new code is made subject to such option by the copyright
+  holder.
+-->
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.glassfish.external</groupId>
+    <artifactId>management-api</artifactId>
+    <packaging>jar</packaging>
+    <version>3.0.0-b012</version>
+    <name>management-api</name>
+    <description>GlassFish Common APIs</description>
+    <url>http://kenai.com/hg/gmbal~gf_common</url>
+    <developers>
+    </developers>
+    <organization>
+        <name>Sun Microsystems</name>
+        <url>http://www.sun.com</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>CDDL+GPL</name>
+            <url>https://glassfish.dev.java.net/public/CDDL+GPL.html</url>
+        </license>
+    </licenses>
+    <issueManagement>
+    </issueManagement>
+    <mailingLists>
+    </mailingLists>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/external/management-api-sources/3.0.0-b012/management-api-sources-3.0.0-b012.pom | sed -n '1,220p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    
+<!--
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ 
+  Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved.
+ 
+  The contents of this file are subject to the terms of either the GNU
+  General Public License Version 2 only ("GPL") or the Common Development
+  and Distribution License("CDDL") (collectively, the "License").  You
+  may not use this file except in compliance with the License. You can obtain
+  a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
+  or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
+  language governing permissions and limitations under the License.
+ 
+  When distributing the software, include this License Header Notice in each
+  file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
+  Sun designates this particular file as subject to the "Classpath" exception
+  as provided by Sun in the GPL Version 2 section of the License file that
+  accompanied this code.  If applicable, add the following below the License
+  Header, with the fields enclosed by brackets [] replaced by your own
+  identifying information: "Portions Copyrighted [year]
+  [name of copyright owner]"
+ 
+  Contributor(s):
+ 
+  If you wish your version of this file to be governed by only the CDDL or
+  only the GPL Version 2, indicate your decision by adding "[Contributor]
+  elects to include this software in this distribution under the [CDDL or GPL
+  Version 2] license."  If you don't indicate a single choice of license, a
+  recipient has the option to distribute your version of this file under
+  either the CDDL, the GPL Version 2 or to extend the choice of license to
+  its licensees as provided above.  However, if you add GPL Version 2 code
+  and therefore, elected the GPL Version 2 license, then the option applies
+  only if the new code is made subject to such option by the copyright
+  holder.
+-->
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.glassfish.external</groupId>
+    <artifactId>management-api-sources</artifactId>
+    <packaging>jar</packaging>
+    <version>3.0.0-b012</version>
+    <name>management-api-sources</name>
+    <description>GlassFish Common API source code</description>
+    <url>http://kenai.com/hg/gmbal~gf_common</url>
+    <developers>
+    </developers>
+    <organization>
+        <name>Sun Microsystems</name>
+        <url>http://www.sun.com</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>CDDL+GPL</name>
+            <url>https://glassfish.dev.java.net/public/CDDL+GPL.html</url>
+        </license>
+    </licenses>
+    <issueManagement>
+    </issueManagement>
+    <mailingLists>
+    </mailingLists>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/external/management-api-sources/3.0.0-b012/management-api-sources-3.0.0-b012.jar -o /tmp/management-api-sources-3.0.0-b012.jar && jar tf /tmp/management-api-sources-3.0.0-b012.jar | sed -n '1,120p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/glassfish/
+org/glassfish/external/
+org/glassfish/external/amx/
+org/glassfish/external/amx/AMX.java
+org/glassfish/external/amx/AMXGlassfish.java
+org/glassfish/external/amx/AMXUtil.java
+org/glassfish/external/amx/BootAMXMBean.java
+org/glassfish/external/amx/MBeanListener.java
+org/glassfish/external/arc/
+org/glassfish/external/arc/Stability.java
+org/glassfish/external/arc/Taxonomy.java
+org/glassfish/external/probe/
+org/glassfish/external/probe/provider/
+org/glassfish/external/probe/provider/PluginPoint.java
+org/glassfish/external/probe/provider/StatsProvider.java
+org/glassfish/external/probe/provider/StatsProviderInfo.java
+org/glassfish/external/probe/provider/StatsProviderManager.java
+org/glassfish/external/probe/provider/StatsProviderManagerDelegate.java
+org/glassfish/external/probe/provider/annotations/
+org/glassfish/external/probe/provider/annotations/Probe.java
+org/glassfish/external/probe/provider/annotations/ProbeListener.java
+org/glassfish/external/probe/provider/annotations/ProbeParam.java
+org/glassfish/external/probe/provider/annotations/ProbeProvider.java
+org/glassfish/external/statistics/
+org/glassfish/external/statistics/AverageRangeStatistic.java
+org/glassfish/external/statistics/BoundaryStatistic.java
+org/glassfish/external/statistics/BoundedRangeStatistic.java
+org/glassfish/external/statistics/CountStatistic.java
+org/glassfish/external/statistics/RangeStatistic.java
+org/glassfish/external/statistics/Statistic.java
+org/glassfish/external/statistics/Stats.java
+org/glassfish/external/statistics/StringStatistic.java
+org/glassfish/external/statistics/TimeStatistic.java
+org/glassfish/external/statistics/annotations/
+org/glassfish/external/statistics/annotations/Reset.java
+org/glassfish/external/statistics/impl/
+org/glassfish/external/statistics/impl/AverageRangeStatisticImpl.java
+org/glassfish/external/statistics/impl/BoundaryStatisticImpl.java
+org/glassfish/external/statistics/impl/BoundedRangeStatisticImpl.java
+org/glassfish/external/statistics/impl/CountStatisticImpl.java
+org/glassfish/external/statistics/impl/RangeStatisticImpl.java
+org/glassfish/external/statistics/impl/StatisticImpl.java
+org/glassfish/external/statistics/impl/StatsImpl.java
+org/glassfish/external/statistics/impl/StringStatisticImpl.java
+org/glassfish/external/statistics/impl/TimeStatisticImpl.java
+
+web search: 
+web search: 
+web search: 
+web search: org.glassfish.external management-api 3.0.0-b012 Maven Central
+web search: 
+web search: https://mvnrepository.com/artifact/org.glassfish.external/management-api/3.0.0-b012
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/external/management-api/3.0.0-b012/
+web search: 
+web search: 
+web search: 
+web search: "management-api-sources-3.0.0-b012.jar"
+codex
+The Maven Central directory for `management-api:3.0.0-b012` has only the jar and POM, while the separate `management-api-sources:3.0.0-b012` artifact provides Java sources. I don’t see a published test or javadoc/doc artifact for that exact version, and the source jar contents are `.java` under `org/glassfish/external`.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.glassfish.external/management-api/index.json && git diff -- metadata/org.glassfish.external/management-api/index.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jar tf /tmp/management-api-sources-3.0.0-b012.jar | rg '\\.(kt|scala|java)"'$'"' | sed 's/.*\\.//' | sort | uniq -c" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7
+ succeeded in 0ms:
+     35 java
+
+web search: 
+web search: Maven Central org.glassfish.external management-api 3.0.0-b012
+codex
+No file edit was needed. The target entry already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`; `language` is missing, but this artifact is Java source only, not Kotlin or Scala, so it should remain absent.
+
+I validated the exact `3.0.0-b012` Maven artifact and the separate `management-api-sources` artifact, and the source jar contains `.java` files only. ([mvnrepository.com](https://mvnrepository.com/artifact/org.glassfish.external/management-api-sources?utm_source=openai)) JSON validation passes for `metadata/org.glassfish.external/management-api/index.json`.
+2026-04-28T15:51:32.646688Z ERROR codex_core::session: failed to record rollout items: thread 019dd4c8-f6d0-7b41-9f75-7fcf70f50f24 not found
+tokens used
+37,494
+No file edit was needed. The target entry already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`; `language` is missing, but this artifact is Java source only, not Kotlin or Scala, so it should remain absent.
+
+I validated the exact `3.0.0-b012` Maven artifact and the separate `management-api-sources` artifact, and the source jar contains `.java` files only. ([mvnrepository.com](https://mvnrepository.com/artifact/org.glassfish.external/management-api-sources?utm_source=openai)) JSON validation passes for `metadata/org.glassfish.external/management-api/index.json`.
+Ran agent for org.glassfish.external:management-api:3.0.0-b012 (exit 0). Log: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7/build/agent-url-discovery-logs/org.glassfish.external-management-api-3.0.0-b012.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/3070-aee0a1a7/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 59s
+9 actionable tasks: 1 executed, 8 up-to-date
