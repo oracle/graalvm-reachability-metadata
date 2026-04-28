@@ -21,6 +21,7 @@ import org.apache.kerby.util.HexUtil;
 import org.apache.kerby.util.HostPort;
 import org.apache.kerby.util.IOUtil;
 import org.apache.kerby.util.IPAddressParser;
+import org.apache.kerby.util.NetworkUtil;
 import org.apache.kerby.util.OSUtil;
 import org.apache.kerby.util.PublicKeyDeriver;
 import org.apache.kerby.util.SysUtil;
@@ -33,6 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
+import java.net.ServerSocket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.security.KeyPair;
@@ -297,6 +299,16 @@ public class Kerby_utilTest {
         assertThat(hostPort.toString()).isEqualTo("127.0.0.1:8443");
         assertThat(hostPort.addr.getHostAddress()).isEqualTo("127.0.0.1");
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Util.toAddress("a:b:c", 88));
+    }
+
+    @Test
+    void networkUtilityAllocatesBindableServerPort() throws Exception {
+        int port = NetworkUtil.getServerPort();
+
+        assertThat(port).isBetween(1, 65_535);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            assertThat(serverSocket.getLocalPort()).isEqualTo(port);
+        }
     }
 
     @Test
