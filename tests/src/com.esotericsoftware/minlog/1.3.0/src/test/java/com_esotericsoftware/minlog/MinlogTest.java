@@ -182,6 +182,16 @@ public class MinlogTest {
         assertThat(text).contains("java.lang.IllegalStateException: broken");
     }
 
+    @Test
+    void loggerLogCanBeUsedDirectlyWithCustomPrintSink() {
+        CapturingPrintLogger printLogger = new CapturingPrintLogger();
+
+        printLogger.log(Log.LEVEL_DEBUG, null, "diagnostic detail", null);
+
+        assertThat(printLogger.lines).hasSize(1);
+        assertThat(printLogger.lines.get(0)).matches("\\d{2}:\\d{2} DEBUG: diagnostic detail");
+    }
+
     private static void assertFlags(boolean error, boolean warn, boolean info, boolean debug, boolean trace) {
         assertThat(Log.ERROR).isEqualTo(error);
         assertThat(Log.WARN).isEqualTo(warn);
@@ -212,6 +222,15 @@ public class MinlogTest {
                 messages.add(record.message);
             }
             return messages;
+        }
+    }
+
+    private static final class CapturingPrintLogger extends Log.Logger {
+        private final List<String> lines = new ArrayList<>();
+
+        @Override
+        protected void print(String message) {
+            lines.add(message);
         }
     }
 
