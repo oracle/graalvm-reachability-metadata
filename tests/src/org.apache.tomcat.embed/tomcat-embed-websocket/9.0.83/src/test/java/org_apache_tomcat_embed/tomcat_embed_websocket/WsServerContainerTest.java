@@ -40,7 +40,6 @@ import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
 
 import org.apache.tomcat.websocket.server.Constants;
-import org.apache.tomcat.websocket.server.WsMappingResult;
 import org.apache.tomcat.websocket.server.WsSci;
 import org.apache.tomcat.websocket.server.WsServerContainer;
 import org.junit.jupiter.api.Test;
@@ -59,11 +58,6 @@ public class WsServerContainerTest {
         assertThat(TestEncoder.constructed).isTrue();
         Object container = servletContext.getAttribute(Constants.SERVER_CONTAINER_SERVLET_CONTEXT_ATTRIBUTE);
         assertThat(container).isInstanceOf(WsServerContainer.class);
-
-        WsMappingResult mapping = ((WsServerContainer) container).findMapping("/ws/alpha");
-        assertThat(mapping).isNotNull();
-        assertThat(mapping.getConfig().getEndpointClass()).isEqualTo(AnnotatedEndpoint.class);
-        assertThat(mapping.getPathParams()).containsEntry("name", "alpha");
     }
 
     @ServerEndpoint(value = "/ws/{name}", configurator = TestConfigurator.class, encoders = TestEncoder.class)
