@@ -50,6 +50,20 @@ public class PoolTest {
     }
 
     @Test
+    public void forceModeRoundTripsSerializableInstances() throws Exception {
+        Pool<Service> pool = Pool.create(Service.class)
+                .with(new SerializableService("kept"))
+                .mode(SerializationMode.FORCE)
+                .build();
+
+        Pool<Service> restoredPool = roundTrip(pool);
+
+        assertThat(restoredPool.size()).isOne();
+        assertThat(restoredPool.get().name()).isEqualTo("kept");
+        assertThat(restoredPool.get()).isNull();
+    }
+
+    @Test
     public void forceModeRoundTripsPoolWithoutNonSerializableInstances() throws Exception {
         Pool<Service> pool = Pool.create(Service.class)
                 .with(new NonSerializableService("discarded"))
