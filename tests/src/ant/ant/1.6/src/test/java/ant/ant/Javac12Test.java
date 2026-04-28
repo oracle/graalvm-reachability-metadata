@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +32,8 @@ public class Javac12Test {
     }
 
     @Test
-    void invokesClassicCompilerThroughLegacyAdapter(@TempDir Path temporaryDirectory) throws IOException {
+    void invokesClassicCompilerThroughLegacyAdapter(@TempDir Path temporaryDirectory)
+        throws IOException, ReflectiveOperationException {
         Path sourceDirectory = temporaryDirectory.resolve("src");
         Path destinationDirectory = temporaryDirectory.resolve("classes");
         Files.createDirectories(sourceDirectory);
@@ -48,6 +50,7 @@ public class Javac12Test {
 
         assertThat(adapter.execute()).isTrue();
         assertThat(Main.getLastProgramName()).isEqualTo("javac");
+        assertThat(resolveLegacyClassLiteral(Main.class.getName())).isSameAs(Main.class);
         assertThat(Arrays.asList(Main.getLastArguments()))
             .contains(
                 "-d",
@@ -84,6 +87,12 @@ public class Javac12Test {
         Field field = Javac12.class.getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(null, null);
+    }
+
+    private static Class<?> resolveLegacyClassLiteral(String className) throws ReflectiveOperationException {
+        Method classLiteralResolver = Javac12.class.getDeclaredMethod("class$", String.class);
+        classLiteralResolver.setAccessible(true);
+        return (Class<?>) classLiteralResolver.invoke(null, className);
     }
 
     private static String classicGreetingSource() {
