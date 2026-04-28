@@ -1,0 +1,1016 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd175-9913-7112-8a33-93b7ced5f00e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.mojo:animal-sniffer-annotations:1.23
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.23".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+- Entry selector: "metadata-version" = "1.23"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.23".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.23
+- Entry test-version: 1.23
+codex
+I’ll inspect the existing metadata entry first, then verify the 1.23 artifact sources and project tag so the URLs are version-specific and the edit stays scoped.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.23",
+    "tested-versions" : [
+      "1.23"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.mojo.animal_sniffer"
+    ]
+  },
+  {
+    "metadata-version" : "1.17",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+    "tested-versions" : [
+      "1.17",
+      "1.18",
+      "1.19",
+      "1.20",
+      "1.21",
+      "1.22"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.mojo.animal_sniffer"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 0ms:
+web search: 
+web search: org.codehaus.mojo animal-sniffer-annotations 1.23 Maven Central sources javadoc
+web search: 
+web search: https://www.mojohaus.org/animal-sniffer/animal-sniffer-annotations/scm.html
+web search: 
+web search: repo.maven.apache.org maven2 org/codehaus/mojo/animal-sniffer-annotations/1.23 animal-sniffer-annotations-1.23-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+The existing 1.17 entry already uses Maven Central source and javadoc artifacts and `N/A` for tests. For 1.23, Maven Central lists the source and javadoc JARs but no tests JAR, so I’m checking the project tag before deciding whether a versioned GitHub test path is better than `N/A`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The MIT License
+ 
+  Copyright (c) 2009 codehaus.org.
+ 
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+ 
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+ 
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE. 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>animal-sniffer-parent</artifactId>
+    <version>1.23</version>
+  </parent>
+
+  <artifactId>animal-sniffer-annotations</artifactId>
+  <name>Animal Sniffer Annotations</name>
+
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/mojohaus/animal-sniffer.git '*1.23*'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-annotations?ref=animal-sniffer-1.23' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ exited 22 in 145ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 326ms:
+52344dc1b94c852a84b6976171502c6b85210549	refs/tags/1.23
+bae24234f6611b434d250ef47bbba101f3f2781b	refs/tags/1.23^{}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mojohaus/animal-sniffer/contents?ref=1.23' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/ | sed -n '1,200p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/mojo/animal-sniffer-annotations/1.23</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/mojo/animal-sniffer-annotations/1.23</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="animal-sniffer-annotations-1.23-javadoc.jar" title="animal-sniffer-annotations-1.23-javadoc.jar">animal-sniffer-annotations-1.23-javadoc.jar</a>       2023-03-25 07:57     84105      
+<a href="animal-sniffer-annotations-1.23-javadoc.jar.asc" title="animal-sniffer-annotations-1.23-javadoc.jar.asc">animal-sniffer-annotations-1.23-javadoc.jar.a...</a>  2023-03-25 07:57       866      
+<a href="animal-sniffer-annotations-1.23-javadoc.jar.md5" title="animal-sniffer-annotations-1.23-javadoc.jar.md5">animal-sniffer-annotations-1.23-javadoc.jar.m...</a>  2023-03-25 07:57        32      
+<a href="animal-sniffer-annotations-1.23-javadoc.jar.sha1" title="animal-sniffer-annotations-1.23-javadoc.jar.sha1">animal-sniffer-annotations-1.23-javadoc.jar.s...</a>  2023-03-25 07:57        40      
+<a href="animal-sniffer-annotations-1.23-sources.jar" title="animal-sniffer-annotations-1.23-sources.jar">animal-sniffer-annotations-1.23-sources.jar</a>       2023-03-25 07:57      3650      
+<a href="animal-sniffer-annotations-1.23-sources.jar.asc" title="animal-sniffer-annotations-1.23-sources.jar.asc">animal-sniffer-annotations-1.23-sources.jar.a...</a>  2023-03-25 07:57       866      
+<a href="animal-sniffer-annotations-1.23-sources.jar.md5" title="animal-sniffer-annotations-1.23-sources.jar.md5">animal-sniffer-annotations-1.23-sources.jar.m...</a>  2023-03-25 07:57        32      
+<a href="animal-sniffer-annotations-1.23-sources.jar.sha1" title="animal-sniffer-annotations-1.23-sources.jar.sha1">animal-sniffer-annotations-1.23-sources.jar.s...</a>  2023-03-25 07:57        40      
+<a href="animal-sniffer-annotations-1.23.jar" title="animal-sniffer-annotations-1.23.jar">animal-sniffer-annotations-1.23.jar</a>               2023-03-25 07:57      3109      
+<a href="animal-sniffer-annotations-1.23.jar.asc" title="animal-sniffer-annotations-1.23.jar.asc">animal-sniffer-annotations-1.23.jar.asc</a>           2023-03-25 07:57       866      
+<a href="animal-sniffer-annotations-1.23.jar.md5" title="animal-sniffer-annotations-1.23.jar.md5">animal-sniffer-annotations-1.23.jar.md5</a>           2023-03-25 07:57        32      
+<a href="animal-sniffer-annotations-1.23.jar.sha1" title="animal-sniffer-annotations-1.23.jar.sha1">animal-sniffer-annotations-1.23.jar.sha1</a>          2023-03-25 07:57        40      
+<a href="animal-sniffer-annotations-1.23.pom" title="animal-sniffer-annotations-1.23.pom">animal-sniffer-annotations-1.23.pom</a>               2023-03-25 07:57      1656      
+<a href="animal-sniffer-annotations-1.23.pom.asc" title="animal-sniffer-annotations-1.23.pom.asc">animal-sniffer-annotations-1.23.pom.asc</a>           2023-03-25 07:57       866      
+<a href="animal-sniffer-annotations-1.23.pom.md5" title="animal-sniffer-annotations-1.23.pom.md5">animal-sniffer-annotations-1.23.pom.md5</a>           2023-03-25 07:57        32      
+<a href="animal-sniffer-annotations-1.23.pom.sha1" title="animal-sniffer-annotations-1.23.pom.sha1">animal-sniffer-annotations-1.23.pom.sha1</a>          2023-03-25 07:57        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-annotations/src/test/java' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 170ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "983c73ceea47301bfad04bf868d7a3148d7ccfc0",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/.github?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/.github",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/983c73ceea47301bfad04bf868d7a3148d7ccfc0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/.github?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/983c73ceea47301bfad04bf868d7a3148d7ccfc0",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "00044ebc9bc1050f1b40f48da4d7666077e85851",
+    "size": 157,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/.gitignore?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/blob/1.23/.gitignore",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/00044ebc9bc1050f1b40f48da4d7666077e85851",
+    "download_url": "https://raw.githubusercontent.com/mojohaus/animal-sniffer/1.23/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/.gitignore?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/00044ebc9bc1050f1b40f48da4d7666077e85851",
+      "html": "https://github.com/mojohaus/animal-sniffer/blob/1.23/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "d69c4852d99c40292a542fa338433f1be0a2c836",
+    "size": 1075,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/LICENSE?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/blob/1.23/LICENSE",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/d69c4852d99c40292a542fa338433f1be0a2c836",
+    "download_url": "https://raw.githubusercontent.com/mojohaus/animal-sniffer/1.23/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/LICENSE?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/d69c4852d99c40292a542fa338433f1be0a2c836",
+      "html": "https://github.com/mojohaus/animal-sniffer/blob/1.23/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "2a8b1e4752cd823e1b4094707f1de0c1b3928ebe",
+    "size": 996,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/README.md?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/blob/1.23/README.md",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/2a8b1e4752cd823e1b4094707f1de0c1b3928ebe",
+    "download_url": "https://raw.githubusercontent.com/mojohaus/animal-sniffer/1.23/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/README.md?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/2a8b1e4752cd823e1b4094707f1de0c1b3928ebe",
+      "html": "https://github.com/mojohaus/animal-sniffer/blob/1.23/README.md"
+    }
+  },
+  {
+    "name": "animal-sniffer-annotations",
+    "path": "animal-sniffer-annotations",
+    "sha": "08102a4131327809b4afcd1a20f744b37ab92731",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-annotations?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-annotations",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/08102a4131327809b4afcd1a20f744b37ab92731",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-annotations?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/08102a4131327809b4afcd1a20f744b37ab92731",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-annotations"
+    }
+  },
+  {
+    "name": "animal-sniffer-ant-tasks",
+    "path": "animal-sniffer-ant-tasks",
+    "sha": "a5f52c3e7933ead35dd7df7c258397a79a0ae150",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-ant-tasks?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-ant-tasks",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/a5f52c3e7933ead35dd7df7c258397a79a0ae150",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-ant-tasks?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/a5f52c3e7933ead35dd7df7c258397a79a0ae150",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-ant-tasks"
+    }
+  },
+  {
+    "name": "animal-sniffer-enforcer-rule",
+    "path": "animal-sniffer-enforcer-rule",
+    "sha": "acb42a8dc413d71149f3b899321456c439c1daf2",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-enforcer-rule?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-enforcer-rule",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/acb42a8dc413d71149f3b899321456c439c1daf2",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-enforcer-rule?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/acb42a8dc413d71149f3b899321456c439c1daf2",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-enforcer-rule"
+    }
+  },
+  {
+    "name": "animal-sniffer-maven-plugin",
+    "path": "animal-sniffer-maven-plugin",
+    "sha": "64d6927e28b0cda0552dca0bb89e65410f3659f9",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-maven-plugin?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-maven-plugin",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/64d6927e28b0cda0552dca0bb89e65410f3659f9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-maven-plugin?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/64d6927e28b0cda0552dca0bb89e65410f3659f9",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-maven-plugin"
+    }
+  },
+  {
+    "name": "animal-sniffer",
+    "path": "animal-sniffer",
+    "sha": "d6bf16421311eae82d69ff1842ed6298fe9f786d",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/d6bf16421311eae82d69ff1842ed6298fe9f786d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/d6bf16421311eae82d69ff1842ed6298fe9f786d",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer"
+    }
+  },
+  {
+    "name": "java-boot-classpath-detector",
+    "path": "java-boot-classpath-detector",
+    "sha": "3cb8495f8910b67f68124efdf870437ef2b25a90",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/java-boot-classpath-detector?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/java-boot-classpath-detector",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/3cb8495f8910b67f68124efdf870437ef2b25a90",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/java-boot-classpath-detector?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/3cb8495f8910b67f68124efdf870437ef2b25a90",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/java-boot-classpath-detector"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "0c4e41deff50b44caead84aa74c45b468e013b96",
+    "size": 5948,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/pom.xml?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/blob/1.23/pom.xml",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/0c4e41deff50b44caead84aa74c45b468e013b96",
+    "download_url": "https://raw.githubusercontent.com/mojohaus/animal-sniffer/1.23/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/pom.xml?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/0c4e41deff50b44caead84aa74c45b468e013b96",
+      "html": "https://github.com/mojohaus/animal-sniffer/blob/1.23/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "b3a954e07b0c2575ef9c46ac6d6d871adda5490e",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/src?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/src",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/b3a954e07b0c2575ef9c46ac6d6d871adda5490e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/src?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/b3a954e07b0c2575ef9c46ac6d6d871adda5490e",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/src"
+    }
+  }
+]
+
+ exited 22 in 451ms:
+HTTP/2 404 
+date: Tue, 28 Apr 2026 00:21:11 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=I719wKc%2Br6FLi0L0bev9Az2Y0eWacz1By7i6lkCjb89fRJV%2FiooEA4oqPPZSPnIygx6oLR%2B4GTwZlbZu0JXnSnSEYIs8tLPaPipTTsQXcANghDEU7UJR1WlyRMvqQH2m2lU8gGh3zt7%2Bb0clXo17Jkipzyk6JQCafjmnXTjqNRCJ%2Fqamt7XbSsN2chfyvh3Bd4Sv22YMmVyTPuBGuu6mJ90H3brTox99vfXgA13tuxsPISM%2B5weifqER9JN9xfoT8G3k9MbzuzUMuxQV%2Bw9KOw%3D%3D--UfMgpQu1nnkbiNsr--DxFX8T76Z2wLhPrvkOxl9Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1907274247.1777335671; expires=Wed, 28 Apr 2027 00:21:11 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 00:21:11 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5715:380B67:53DF27F:3F4B47B:69EFFD77
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-annotations?ref=1.23' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-parent/1.23/animal-sniffer-parent-1.23.pom | sed -n '1,220p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/08102a4131327809b4afcd1a20f744b37ab92731?recursive=1' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 120ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The MIT License
+ 
+  Copyright (c) 2009 codehaus.org.
+ 
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+ 
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+ 
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE. 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>mojo-parent</artifactId>
+    <version>74</version>
+  </parent>
+
+  <artifactId>animal-sniffer-parent</artifactId>
+  <version>1.23</version>
+  <packaging>pom</packaging>
+
+  <name>Animal Sniffer</name>
+  <description>
+    Animal Sniffer Parent POM.
+  </description>
+  <url>https://www.mojohaus.org/animal-sniffer</url>
+  <inceptionYear>2008</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>MIT license</name>
+      <url>https://spdx.org/licenses/MIT.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Kohsuke Kaw</name>
+      <email>kohsuke (dot) kawaguchi (at) sun (dot) com</email>
+      <roles>
+        <role>Lead Developer</role>
+      </roles>
+      <timezone>-8</timezone>
+    </developer>
+    <developer>
+      <name>Stephen Connolly</name>
+      <email>stephen (dot) alan (dot) connolly (at) gmail (dot) com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+
+  <modules>
+    <module>java-boot-classpath-detector</module>
+    <module>animal-sniffer-annotations</module>
+    <module>animal-sniffer</module>
+    <module>animal-sniffer-maven-plugin</module>
+    <module>animal-sniffer-enforcer-rule</module>
+    <module>animal-sniffer-ant-tasks</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:https://github.com/mojohaus/animal-sniffer.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/mojohaus/animal-sniffer.git</developerConnection>
+    <url>https://github.com/mojohaus/animal-sniffer/tree/master</url>
+    <tag>1.23</tag>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/mojohaus/animal-sniffer/issues</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>GitHub</system>
+    <url>https://github.com/mojohaus/animal-sniffer/actions</url>
+  </ciManagement>
+
+
+  <properties>
+    <scmpublish.content>${project.build.directory}/staging/animal-sniffer-parent</scmpublish.content>
+    <maven.version>3.2.5</maven.version>
+    <mojo.java.target>8</mojo.java.target>
+    <build-helper.version>3.3.0</build-helper.version>
+    <project.build.outputTimestamp>2023-03-25T07:54:40Z</project.build.outputTimestamp>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>9.4</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <configuration>
+            <projectsDirectory>src/it</projectsDirectory>
+            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+            <settingsFile>src/it/settings.xml</settingsFile>
+            <showErrors>true</showErrors>
+            <debug>true</debug>
+            <postBuildHookScript>verify</postBuildHookScript>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </configuration>
+          <executions>
+            <execution>
+              <id>integration-test</id>
+              <goals>
+                <goal>install</goal>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${build-helper.version}</version>
+        </plugin>
+        <plugin>
+          <!-- multi module project - stage site -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-site</id>
+              <goals>
+                <goal>site</goal>
+                <goal>stage</goal>
+              </goals>
+              <phase>site</phase>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>disable-doclint-for-jdk8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <properties>
+        <additionalparam>-Xdoclint:none</additionalparam>
+      </properties>
+    </profile>
+  </profiles>
+</project>
+
+ succeeded in 246ms:
+{
+  "sha": "08102a4131327809b4afcd1a20f744b37ab92731",
+  "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/08102a4131327809b4afcd1a20f744b37ab92731",
+  "tree": [
+    {
+      "path": "pom.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce2430a01d48b5b6f7f93e558cfd4015c6e13599",
+      "size": 1656,
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/ce2430a01d48b5b6f7f93e558cfd4015c6e13599"
+    },
+    {
+      "path": "src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "58eeec95d6933023fbd3d378d054baa44782dcee",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/58eeec95d6933023fbd3d378d054baa44782dcee"
+    },
+    {
+      "path": "src/main",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "462b0764263702c2b2c9242aec98c90685e23a63",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/462b0764263702c2b2c9242aec98c90685e23a63"
+    },
+    {
+      "path": "src/main/java",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0dcc911c97e66b8fdd5e75550b7e615256ffc70c",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/0dcc911c97e66b8fdd5e75550b7e615256ffc70c"
+    },
+    {
+      "path": "src/main/java/org",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "3636eb3042ad427f835328f34c43a786b7fdf54f",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/3636eb3042ad427f835328f34c43a786b7fdf54f"
+    },
+    {
+      "path": "src/main/java/org/codehaus",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2bee334a480595da10c161aa38aa1756acbff6a0",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/2bee334a480595da10c161aa38aa1756acbff6a0"
+    },
+    {
+      "path": "src/main/java/org/codehaus/mojo",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "494590e41fe62b7deec813ca02f8ea2b207c9a43",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/494590e41fe62b7deec813ca02f8ea2b207c9a43"
+    },
+    {
+      "path": "src/main/java/org/codehaus/mojo/animal_sniffer",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b510ba4b90bb3f2749c4b2dc09a135580e977494",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/b510ba4b90bb3f2749c4b2dc09a135580e977494"
+    },
+    {
+      "path": "src/main/java/org/codehaus/mojo/animal_sniffer/IgnoreJRERequirement.java",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83b6d99f4ad72ab0f6ed19d98a7e25ed96ab0722",
+      "size": 1626,
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/83b6d99f4ad72ab0f6ed19d98a7e25ed96ab0722"
+    },
+    {
+      "path": "src/site",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f2d33d4a85004c65a35ed669e110560715be27e4",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/f2d33d4a85004c65a35ed669e110560715be27e4"
+    },
+    {
+      "path": "src/site/apt",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "91b2c58672f4d269a104ea2dcbe34bc89bde3ae5",
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/91b2c58672f4d269a104ea2dcbe34bc89bde3ae5"
+    },
+    {
+      "path": "src/site/apt/index.apt.vm",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "75acd4b8f326a7bd9ac3c9d65c79ffc4e4edf91c",
+      "size": 5071,
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/75acd4b8f326a7bd9ac3c9d65c79ffc4e4edf91c"
+    },
+    {
+      "path": "src/site/site.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4caa2bb5ba35e4a7116f31340d386946511802d7",
+      "size": 1542,
+      "url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/4caa2bb5ba35e4a7116f31340d386946511802d7"
+    }
+  ],
+  "truncated": false
+}
+
+ succeeded in 275ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "animal-sniffer-annotations/pom.xml",
+    "sha": "ce2430a01d48b5b6f7f93e558cfd4015c6e13599",
+    "size": 1656,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-annotations/pom.xml?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/blob/1.23/animal-sniffer-annotations/pom.xml",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/ce2430a01d48b5b6f7f93e558cfd4015c6e13599",
+    "download_url": "https://raw.githubusercontent.com/mojohaus/animal-sniffer/1.23/animal-sniffer-annotations/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-annotations/pom.xml?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/blobs/ce2430a01d48b5b6f7f93e558cfd4015c6e13599",
+      "html": "https://github.com/mojohaus/animal-sniffer/blob/1.23/animal-sniffer-annotations/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "animal-sniffer-annotations/src",
+    "sha": "58eeec95d6933023fbd3d378d054baa44782dcee",
+    "size": 0,
+    "url": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-annotations/src?ref=1.23",
+    "html_url": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-annotations/src",
+    "git_url": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/58eeec95d6933023fbd3d378d054baa44782dcee",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/mojohaus/animal-sniffer/contents/animal-sniffer-annotations/src?ref=1.23",
+      "git": "https://api.github.com/repos/mojohaus/animal-sniffer/git/trees/58eeec95d6933023fbd3d378d054baa44782dcee",
+      "html": "https://github.com/mojohaus/animal-sniffer/tree/1.23/animal-sniffer-annotations/src"
+    }
+  }
+]
+
+codex
+I found the 1.23 SCM tag in the parent POM and confirmed the annotations module has `src/main` and site docs but no `src/test` tree. I’m going to fill the missing fields with Maven Central source/javadoc artifacts, the canonical GitHub repository root, `N/A` for tests, the existing concise description style, and no `language` field.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+diff --git a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+index 0e2459e37a1adcd43c378b0b319aad1c1f28fa3c..a0aa0f6b013fa2b8e3c5988538b95b23bd167148
+--- a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
++++ b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.23",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
++    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
++    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+     "tested-versions" : [
+       "1.23"
+     ],
+
+diff --git a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+index 0e2459e37a1adcd43c378b0b319aad1c1f28fa3c..a0aa0f6b013fa2b8e3c5988538b95b23bd167148
+--- a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
++++ b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.23",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
++    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
++    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+     "tested-versions" : [
+       "1.23"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 0ms:
+diff --git i/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json w/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+index 0e2459e37a..a0aa0f6b01 100644
+--- i/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
++++ w/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.23",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
++    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
++    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+     "tested-versions" : [
+       "1.23"
+     ],
+
+diff --git a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+index 0e2459e37a1adcd43c378b0b319aad1c1f28fa3c..a0aa0f6b013fa2b8e3c5988538b95b23bd167148
+--- a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
++++ b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.23",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
++    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
++    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+     "tested-versions" : [
+       "1.23"
+     ],
+
+codex
+The JSON edit is in place and `jq` accepts the file. I’ll run the targeted metadata validation for this coordinate now, since this is a metadata-only change.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.codehaus.mojo:animal-sniffer-annotations:1.23' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+diff --git a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+index 0e2459e37a1adcd43c378b0b319aad1c1f28fa3c..a0aa0f6b013fa2b8e3c5988538b95b23bd167148
+--- a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
++++ b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.23",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
++    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
++    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+     "tested-versions" : [
+       "1.23"
+     ],
+
+ exited 1 in 10668ms:
+Starting a Gradle Daemon, 5 busy and 8 incompatible and 124 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.codehaus.mojo:animal-sniffer-annotations:1.23: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/metadata/org.codehaus.mojo/animal-sniffer-annotations/1.23/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.codehaus.mojo:animal-sniffer-annotations:1.23: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/metadata/org.codehaus.mojo/animal-sniffer-annotations/1.23/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/build/reports/problems/problems-report.html
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 10s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/
+web search: 
+web search: animal-sniffer-parent 1.23 POM SCM tag 1.23 GitHub mojohaus animal-sniffer
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json | sed -n '1,28p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.23",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
+     6	    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+     7	    "test-code-url" : "N/A",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
+     9	    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+    10	    "tested-versions" : [
+    11	      "1.23"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.codehaus.mojo.animal_sniffer"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.17",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-sources.jar",
+    20	    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
+    21	    "test-code-url" : "N/A",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+    23	    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+    24	    "tested-versions" : [
+    25	      "1.17",
+    26	      "1.18",
+    27	      "1.19",
+    28	      "1.20",
+
+diff --git a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+index 0e2459e37a1adcd43c378b0b319aad1c1f28fa3c..a0aa0f6b013fa2b8e3c5988538b95b23bd167148
+--- a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
++++ b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.23",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
++    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
++    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+     "tested-versions" : [
+       "1.23"
+     ],
+
+web search: 
+web search: repo.maven.apache.org org/codehaus/mojo/animal-sniffer-annotations/1.23 animal-sniffer-annotations-1.23-sources.jar javadoc.jar
+web search: 
+web search: mojohaus animal-sniffer GitHub scm tag 1.23 animal-sniffer-parent 1.23 pom
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/ animal-sniffer-annotations-1.23-sources.jar
+codex
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5) for `metadata-version` `1.23`. I used the exact 1.23 Maven Central source and javadoc artifacts, the canonical GitHub repository root, `N/A` for tests, and left `language` absent because it is not Kotlin- or Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/?utm_source=openai))
+
+Validation: `jq empty` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.codehaus.mojo:animal-sniffer-annotations:1.23` failed because `metadata/org.codehaus.mojo/animal-sniffer-annotations/1.23/reachability-metadata.json` is missing, which is outside the requested index field update.
+diff --git a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+index 0e2459e37a1adcd43c378b0b319aad1c1f28fa3c..a0aa0f6b013fa2b8e3c5988538b95b23bd167148
+--- a/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
++++ b/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.23",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-sources.jar",
++    "repository-url" : "https://github.com/mojohaus/animal-sniffer",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/animal-sniffer-annotations-1.23-javadoc.jar",
++    "description" : "Animal Sniffer Annotations provides Java annotations for marking code that Animal Sniffer should ignore when checking JRE API compatibility. It is typically used to annotate methods, constructors, or types that intentionally reference newer JRE APIs while preserving compatibility checks for the rest of the codebase.",
+     "tested-versions" : [
+       "1.23"
+     ],
+
+2026-04-28T00:22:24.630825Z ERROR codex_core::session: failed to record rollout items: thread 019dd175-9913-7112-8a33-93b7ced5f00e not found
+tokens used
+66,610
+Updated [index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:5) for `metadata-version` `1.23`. I used the exact 1.23 Maven Central source and javadoc artifacts, the canonical GitHub repository root, `N/A` for tests, and left `language` absent because it is not Kotlin- or Scala-specific. ([repo1.maven.org](https://repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.23/?utm_source=openai))
+
+Validation: `jq empty` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.codehaus.mojo:animal-sniffer-annotations:1.23` failed because `metadata/org.codehaus.mojo/animal-sniffer-annotations/1.23/reachability-metadata.json` is missing, which is outside the requested index field update.
+Ran agent for org.codehaus.mojo:animal-sniffer-annotations:1.23 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/build/agent-url-discovery-logs/org.codehaus.mojo-animal-sniffer-annotations-1.23.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2002-8dd8a101/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 47s
+9 actionable tasks: 1 executed, 8 up-to-date
