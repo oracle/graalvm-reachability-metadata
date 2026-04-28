@@ -49,7 +49,7 @@ class Animal_sniffer_annotationsTest {
                 isAnnotationPresent(Documented.class)).isTrue();
         Assertions.assertThat(target).isNotNull();
         Assertions.assertThat(target.value())
-                .containsExactlyInAnyOrder(ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.METHOD);
+                .containsExactlyInAnyOrder(ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.FIELD);
         Assertions.assertThat(retention).isNotNull();
         Assertions.assertThat(retention.value()).isEqualTo(RetentionPolicy.CLASS);
     }
@@ -63,12 +63,14 @@ class Animal_sniffer_annotationsTest {
     }
 
     @Test
-    void classRetentionKeepsIgnoreJreRequirementInvisibleAtRuntime() throws NoSuchMethodException {
+    void classRetentionKeepsIgnoreJreRequirementInvisibleAtRuntime() throws NoSuchMethodException, NoSuchFieldException {
         Class<AnnotatedCompatibilityLayer> compatibilityLayerClass = AnnotatedCompatibilityLayer.class;
 
         Assertions.assertThat(compatibilityLayerClass.
                 getDeclaredAnnotations()).isEmpty();
         Assertions.assertThat(compatibilityLayerClass.getDeclaredConstructor(String.class).
+                getDeclaredAnnotations()).isEmpty();
+        Assertions.assertThat(compatibilityLayerClass.getDeclaredField("profile").
                 getDeclaredAnnotations()).isEmpty();
         Assertions.assertThat(compatibilityLayerClass.getDeclaredMethod("describeFeature", String.class).
                 getDeclaredAnnotations()).isEmpty();
@@ -126,6 +128,7 @@ class Animal_sniffer_annotationsTest {
 
     @IgnoreJRERequirement
     private static final class AnnotatedCompatibilityLayer {
+        @IgnoreJRERequirement
         private final String profile;
 
         @IgnoreJRERequirement
