@@ -43,11 +43,13 @@ public class MapBuilderDefaultDynamicAccessTest {
     @Test
     void readsNestedObjectsIntoConfiguredMapImplementationForEachObject() throws Exception {
         Map<String, Object> counts = jsonWithCountsMaps().mapFrom("{\"outer\":{\"alpha\":1,\"beta\":2},\"count\":3}");
+        @SuppressWarnings("unchecked")
+        Map<String, Object> outer = (Map<String, Object>) counts.get("outer");
 
         assertThat(counts).isInstanceOf(CountsMap.class);
         assertThat(counts).containsEntry("count", 3);
-        assertThat(counts.get("outer")).isInstanceOf(CountsMap.class);
-        assertThat((Map<?, ?>) counts.get("outer")).containsEntry("alpha", 1).containsEntry("beta", 2);
+        assertThat(outer).isInstanceOf(CountsMap.class);
+        assertThat(outer).containsEntry("alpha", 1).containsEntry("beta", 2);
         assertThat(CountsMap.getConstructorCalls()).isEqualTo(2);
     }
 
