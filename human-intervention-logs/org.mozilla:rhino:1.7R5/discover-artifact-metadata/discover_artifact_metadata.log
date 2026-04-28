@@ -1,0 +1,280 @@
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd54a-8797-7b62-9c0f-1b7896817f94
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mozilla:rhino:1.7R5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.7R5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+- Set "coordinates" to "org.mozilla:rhino:1.7R5".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+mcp startup: no servers
+codex
+I’ll identify authoritative URLs for `org.mozilla:rhino:1.7R5` (preferring Maven-hosted source/test/docs artifacts when available), then update the target JSON file with exact-version links and a two-sentence description. I’m starting by checking the current file state and then verifying artifact metadata from Maven Central.
+exec
+/usr/bin/zsh -lc 'cd /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f && cat build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f succeeded in 51ms:
+{
+  "coordinates" : "org.mozilla:rhino:1.7R5"
+}
+exec
+/usr/bin/zsh -lc 'cd /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f && curl -s https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5.pom' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7fexec
+/usr/bin/zsh -lc 'cd /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f && curl -s https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f succeeded in 51ms:
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <groupId>org.mozilla</groupId>
+  <artifactId>rhino</artifactId>
+  <name>Mozilla Rhino</name>
+  <version>1.7R5</version>
+
+  <packaging>jar</packaging>
+  <description>
+      Rhino is an open-source implementation of JavaScript written entirely in Java. It is typically
+      embedded into Java applications to provide scripting to end users.
+ succeeded in 71ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/mozilla/rhino/1.7R5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/mozilla/rhino/1.7R5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+codex
+I confirmed Maven Central hosts `sources` and `javadoc` JARs for exactly `1.7R5`; next I’m checking whether tests are present in published Maven artifacts so we can prefer that for `test-code-url`.
+exec
+/usr/bin/zsh -lc 'cd /tmp && curl -sSLO https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar && jar tf rhino-1.7R5-javadoc.jar | head -n 20' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f succeeded in 376ms:
+org/
+org/mozilla/
+org/mozilla/classfile/
+org/mozilla/javascript/
+org/mozilla/javascript/annotations/
+org/mozilla/javascript/ast/
+org/mozilla/javascript/commonjs/
+org/mozilla/javascript/commonjs/module/
+org/mozilla/javascript/commonjs/module/provider/
+org/mozilla/javascript/debug/
+org/mozilla/javascript/jdk13/
+org/mozilla/javascript/jdk15/
+org/mozilla/javascript/json/
+org/mozilla/javascript/optimizer/
+org/mozilla/javascript/regexp/
+org/mozilla/javascript/serialize/
+org/mozilla/javascript/v8dtoa/
+org/mozilla/javascript/xml/
+resources/
+allclasses-frame.html
+exec
+/usr/bin/zsh -lc 'cd /tmp && curl -sSLO https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar && jar tf rhino-1.7R5-sources.jar | rg -i "test|junit|spec" | head -n 60' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f succeeded in 486ms:
+rhino1_7R5/testsrc/
+rhino1_7R5/testsrc/benchmarks/
+rhino1_7R5/testsrc/benchmarks/sunspider-0.9.1/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v5/
+rhino1_7R5/testsrc/benchmarks/v8-benchmarks-v6/
+rhino1_7R5/testsrc/doctests/
+rhino1_7R5/testsrc/jstests/
+rhino1_7R5/testsrc/org/
+rhino1_7R5/testsrc/org/mozilla/
+rhino1_7R5/testsrc/org/mozilla/javascript/
+rhino1_7R5/testsrc/org/mozilla/javascript/benchmarks/
+rhino1_7R5/testsrc/org/mozilla/javascript/drivers/
+rhino1_7R5/testsrc/org/mozilla/javascript/testing/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/absolute/submodule/
+rhino1_7R5/testsrc/org/mozilla/javascript/tests/commonjs/module/1.0/cyclic/
+codex
+I confirmed the `sources` JAR for `1.7R5` includes `testsrc`, so Maven Central can be used for both source and test URLs at the exact artifact version. I’ll now update the JSON with these URLs, the repository URL, and a strict two-sentence description.
+file update
+M /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source Java implementation of JavaScript that can execute scripts and compile them to Java bytecode. It is commonly embedded into Java applications to provide an extensible scripting engine for user-defined logic."
+ }
+apply_patch(auto_approved=true) exited 0 in 4ms:
+Success. Updated the following files:
+M /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+file update:
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..3aac627fa79d9d6bad0ce4e177d07f69227dd38d
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source Java implementation of JavaScript that can execute scripts and compile them to Java bytecode. It is commonly embedded into Java applications to provide an extensible scripting engine for user-defined logic."
+ }
+
+file update:
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..3aac627fa79d9d6bad0ce4e177d07f69227dd38d
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source Java implementation of JavaScript that can execute scripts and compile them to Java bytecode. It is commonly embedded into Java applications to provide an extensible scripting engine for user-defined logic."
+ }
+
+exec
+/usr/bin/zsh -lc 'cd /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f && jq . build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f succeeded in 51ms:
+{
+  "coordinates": "org.mozilla:rhino:1.7R5",
+  "source-code-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+  "repository-url": "https://github.com/mozilla/rhino",
+  "test-code-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
+  "description": "Rhino is an open-source Java implementation of JavaScript that can execute scripts and compile them to Java bytecode. It is commonly embedded into Java applications to provide an extensible scripting engine for user-defined logic."
+}
+file update:
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..3aac627fa79d9d6bad0ce4e177d07f69227dd38d
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source Java implementation of JavaScript that can execute scripts and compile them to Java bytecode. It is commonly embedded into Java applications to provide an extensible scripting engine for user-defined logic."
+ }
+
+codex
+Updated [org.mozilla-rhino-1.7R5.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json) with:
+
+- `coordinates`: `org.mozilla:rhino:1.7R5`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar`
+- `repository-url`: `https://github.com/mozilla/rhino`
+- `test-code-url`: `https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar` (contains `testsrc/` for 1.7R5)
+- `documentation-url`: `https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar`
+- `description`: exactly two sentences
+
+`language` was left absent because Rhino is a Java library, not Kotlin/Groovy/Scala-specific.
+file update:
+diff --git a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+index 4ef3063821c5c1b7fd0778ca5115acce27dd7429..3aac627fa79d9d6bad0ce4e177d07f69227dd38d
+--- a/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
++++ b/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mozilla:rhino:1.7R5"
++  "coordinates" : "org.mozilla:rhino:1.7R5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "repository-url" : "https://github.com/mozilla/rhino",
++  "test-code-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar",
++  "description" : "Rhino is an open-source Java implementation of JavaScript that can execute scripts and compile them to Java bytecode. It is commonly embedded into Java applications to provide an extensible scripting engine for user-defined logic."
+ }
+
+tokens used
+10,625
+Updated [org.mozilla-rhino-1.7R5.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/build/discovered-artifact-metadata/org.mozilla-rhino-1.7R5.json) with:
+
+- `coordinates`: `org.mozilla:rhino:1.7R5`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar`
+- `repository-url`: `https://github.com/mozilla/rhino`
+- `test-code-url`: `https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-sources.jar` (contains `testsrc/` for 1.7R5)
+- `documentation-url`: `https://repo1.maven.org/maven2/org/mozilla/rhino/1.7R5/rhino-1.7R5-javadoc.jar`
+- `description`: exactly two sentences
+
+`language` was left absent because Rhino is a Java library, not Kotlin/Groovy/Scala-specific.
+Ran agent for org.mozilla:rhino:1.7R5 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/build/agent-artifact-discovery-logs/org.mozilla-rhino-1.7R5.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2735-ebaf6a7f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 38s
+9 actionable tasks: 8 executed, 1 from cache
