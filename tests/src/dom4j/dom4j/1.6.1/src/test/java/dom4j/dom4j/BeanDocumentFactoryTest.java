@@ -20,12 +20,14 @@ public class BeanDocumentFactoryTest {
     void createsBeanBackedElementFromClassAttribute() {
         BeanDocumentFactory factory = new BeanDocumentFactory();
         AttributesImpl attributes = new AttributesImpl();
-        attributes.addAttribute("", "class", "class", "CDATA", BeanDocumentFactory.class.getName());
+        attributes.addAttribute("", "class", "class", "CDATA", factory.getClass().getName());
 
         Element element = factory.createElement(QName.get("configuredBean"), attributes);
+        Object data = ((BeanElement) element).getData();
 
         assertThat(element).isInstanceOf(BeanElement.class);
         assertThat(element.getName()).isEqualTo("configuredBean");
-        assertThat(((BeanElement) element).getData()).isInstanceOf(BeanDocumentFactory.class).isNotSameAs(factory);
+        assertThat(data).isNotSameAs(factory);
+        assertThat(data.getClass()).isEqualTo(factory.getClass());
     }
 }
