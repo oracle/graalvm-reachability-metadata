@@ -104,6 +104,17 @@ public class Apiguardian_apiTest {
         assertThat(new DefaultedApiUse().describe()).isEqualTo("default-members-compile");
     }
 
+    @Test
+    void apiAnnotationExposesDefaultMembersAtRuntime() {
+        API annotation = DefaultAudienceApi.class.getAnnotation(API.class);
+
+        assertThat(annotation).isNotNull();
+        assertThat(annotation.status()).isSameAs(API.Status.MAINTAINED);
+        assertThat(annotation.since()).isEmpty();
+        assertThat(annotation.consumers()).containsExactly("*");
+        assertThat(annotation.annotationType()).isSameAs(API.class);
+    }
+
     private static API api(API.Status status, String since, String... consumers) {
         return new API() {
             @Override
@@ -161,6 +172,10 @@ public class Apiguardian_apiTest {
         private String describe() {
             return "default-members-compile";
         }
+    }
+
+    @API(status = API.Status.MAINTAINED)
+    private static final class DefaultAudienceApi {
     }
 
     @API(status = API.Status.STABLE, since = "1.1.2", consumers = "annotation-authors")
