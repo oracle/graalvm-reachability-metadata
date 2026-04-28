@@ -40,7 +40,10 @@ import io.swagger.v3.oas.annotations.media.DependentSchema;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.PatternProperties;
+import io.swagger.v3.oas.annotations.media.PatternProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.SchemaProperties;
 import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -275,6 +278,29 @@ public class Swagger_annotationsTest {
                 .extracting(Schema::implementation)
                 .containsExactly(String.class, Integer.class);
         assertThat(annotation(hiddenField, Hidden.class)).isNotNull();
+    }
+
+    @Test
+    void readsRepeatableSchemaAndPatternPropertyAnnotations() throws NoSuchFieldException {
+        Field attributesField = DynamicMetadata.class.getDeclaredField("attributes");
+        SchemaProperties schemaProperties = annotation(attributesField, SchemaProperties.class);
+        PatternProperties patternProperties = annotation(attributesField, PatternProperties.class);
+
+        assertThat(schemaProperties.value()).hasSize(2);
+        assertThat(schemaProperties.value()).extracting(SchemaProperty::name).containsExactly("owner", "labels");
+        assertThat(schemaProperties.value()[0].schema().implementation()).isEqualTo(Owner.class);
+        assertThat(schemaProperties.value()[0].schema().requiredMode()).isEqualTo(Schema.RequiredMode.REQUIRED);
+        assertThat(schemaProperties.value()[1].array().items().implementation()).isEqualTo(Label.class);
+        assertThat(schemaProperties.value()[1].array().minItems()).isEqualTo(1);
+        assertThat(schemaProperties.value()[1].array().uniqueItems()).isTrue();
+
+        assertThat(patternProperties.value()).hasSize(2);
+        assertThat(patternProperties.value()).extracting(PatternProperty::regex)
+                .containsExactly("^x-[a-z]+$", "^metric-[a-z]+$");
+        assertThat(patternProperties.value()[0].schema().implementation()).isEqualTo(String.class);
+        assertThat(patternProperties.value()[0].schema().description()).isEqualTo("Extension metadata value");
+        assertThat(patternProperties.value()[1].array().items().implementation()).isEqualTo(Integer.class);
+        assertThat(patternProperties.value()[1].array().maxItems()).isEqualTo(4);
     }
 
     @Test
@@ -613,6 +639,34 @@ public class Swagger_annotationsTest {
     }
 
     private static class BasePet {
+    }
+
+    private static final class DynamicMetadata {
+        @SchemaProperty(
+                name = "owner",
+                schema = @Schema(
+                        implementation = Owner.class,
+                        description = "Metadata owner",
+                        requiredMode = Schema.RequiredMode.REQUIRED))
+        @SchemaProperty(
+                name = "labels",
+                array = @ArraySchema(
+                        items = @Schema(implementation = Label.class),
+                        minItems = 1,
+                        uniqueItems = true))
+        @PatternProperty(
+                regex = "^x-[a-z]+$",
+                schema = @Schema(implementation = String.class, description = "Extension metadata value"))
+        @PatternProperty(
+                regex = "^metric-[a-z]+$",
+                array = @ArraySchema(items = @Schema(implementation = Integer.class), maxItems = 4))
+        private Metadata attributes;
+    }
+
+    private static final class Owner {
+    }
+
+    private static final class Label {
     }
 
     private static final class Dog extends Pet {
