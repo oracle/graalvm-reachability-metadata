@@ -14,6 +14,8 @@ Provider<Directory> generatedSunMiscBase64EncoderSourceDirectory = layout.buildD
     .dir("generated/sources/sunMiscBase64Encoder/java")
 Provider<Directory> sunMiscBase64EncoderClassesDirectory = layout.buildDirectory
     .dir("classes/java/sunMiscBase64Encoder")
+Provider<String> sunMiscBase64EncoderPatchModuleArgument = sunMiscBase64EncoderClassesDirectory
+    .map { "jdk.unsupported=${it.asFile.absolutePath}" }
 
 TaskProvider<Task> generateSunMiscBase64Encoder = tasks.register("generateSunMiscBase64Encoder") {
     outputs.dir(generatedSunMiscBase64EncoderSourceDirectory)
@@ -51,12 +53,17 @@ sourceSets {
 tasks.withType(Test).configureEach {
     dependsOn(compileSunMiscBase64Encoder)
     doFirst {
-        jvmArgs "--patch-module", "jdk.unsupported=${sunMiscBase64EncoderClassesDirectory.get().asFile.absolutePath}"
+        jvmArgs "--patch-module", sunMiscBase64EncoderPatchModuleArgument.get()
     }
+}
+
+tasks.matching { it.name == "nativeTestCompile" }.configureEach {
+    dependsOn(compileSunMiscBase64Encoder)
 }
 
 dependencies {
     testImplementation "ant:ant:$libraryVersion"
+    testRuntimeOnly files(sunMiscBase64EncoderClassesDirectory).builtBy(compileSunMiscBase64Encoder)
     testRuntimeOnly "ant:ant-launcher:$libraryVersion"
     testRuntimeOnly "ant:ant-nodeps:$libraryVersion"
     testRuntimeOnly "ant:ant-trax:$libraryVersion"
@@ -71,6 +78,7 @@ graalvmNative {
         test {
             buildArgs.add('--initialize-at-run-time=org.apache.tools.ant.taskdefs.Execute')
             buildArgs.add('--initialize-at-run-time=org.apache.tools.ant.taskdefs.Parallel')
+            buildArgs.add("-J--patch-module=${sunMiscBase64EncoderPatchModuleArgument.get()}")
         }
     }
 
