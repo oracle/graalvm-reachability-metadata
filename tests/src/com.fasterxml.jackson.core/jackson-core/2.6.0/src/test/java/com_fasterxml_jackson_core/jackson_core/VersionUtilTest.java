@@ -7,28 +7,43 @@
 package com_fasterxml_jackson_core.jackson_core;
 
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.json.PackageVersion;
 import com.fasterxml.jackson.core.util.VersionUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class VersionUtilTest {
+public class VersionUtilTest {
     @Test
-    void versionForReadsVersionFileFromClassPackage() {
-        Version version = VersionUtil.versionFor(VersionUtilTest.class);
+    void versionForReadsGeneratedPackageVersion() {
+        Version version = VersionUtil.versionFor(PackageVersion.class);
+        Version packageVersion = PackageVersion.VERSION;
 
+        assertThat(version).isNotNull();
         assertThat(version.isUknownVersion()).isFalse();
-        assertThat(version.toString()).isEqualTo("2.1.3-test");
+        assertThat(version.toString()).isEqualTo(packageVersion.toString());
         assertThat(version.getGroupId()).isEqualTo("com.fasterxml.jackson.core");
-        assertThat(version.getArtifactId()).isEqualTo("jackson-core-test");
+        assertThat(version.getArtifactId()).isEqualTo("jackson-core");
     }
 
     @Test
+    void parseVersionKeepsSnapshotAndCoordinates() {
+        Version version = VersionUtil.parseVersion("4.5.6-test", "com.example.versionutil", "versionutil-fixture");
+
+        assertThat(version).isNotNull();
+        assertThat(version.isUknownVersion()).isFalse();
+        assertThat(version.isSnapshot()).isTrue();
+        assertThat(version.toString()).isEqualTo("4.5.6-test");
+        assertThat(version.toFullString()).isEqualTo("com.example.versionutil/versionutil-fixture/4.5.6-test");
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
     void mavenVersionForReadsPomPropertiesFromClassLoaderResource() {
-        ClassLoader classLoader = VersionUtilTest.class.getClassLoader();
+        Version version = VersionUtil.mavenVersionFor(
+                VersionUtilTest.class.getClassLoader(), "com.example.versionutil", "versionutil-fixture");
 
-        Version version = VersionUtil.mavenVersionFor(classLoader, "com.example.versionutil", "versionutil-fixture");
-
+        assertThat(version).isNotNull();
         assertThat(version.isUknownVersion()).isFalse();
         assertThat(version.toString()).isEqualTo("4.5.6");
         assertThat(version.getGroupId()).isEqualTo("com.example.versionutil");
