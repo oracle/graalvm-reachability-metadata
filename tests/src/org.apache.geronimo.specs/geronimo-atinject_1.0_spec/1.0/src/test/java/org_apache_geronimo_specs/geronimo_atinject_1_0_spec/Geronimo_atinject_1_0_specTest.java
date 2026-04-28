@@ -11,8 +11,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
@@ -110,6 +112,22 @@ public class Geronimo_atinject_1_0_specTest {
         assertThat(classProvider.get()).isEqualTo("class-provider");
         assertThat(anonymousProvider.get()).isEqualTo("class-provider:anonymous-provider");
         assertThat(lambdaProvider.get()).isEqualTo("class-provider:anonymous-provider:lambda-provider");
+    }
+
+    @Test
+    void namedQualifiersSelectSpecificProvidersWhenMultipleBindingsShareTheSameType() {
+        Named defaultFormatter = namedAnnotation("");
+        Named compactFormatter = namedAnnotation("compact");
+        Named detailedFormatter = namedAnnotation("detailed");
+        NamedFormatterRegistry registry = new NamedFormatterRegistry();
+        registry.register(defaultFormatter, () -> new LabelFormatter("DEFAULT", Locale.ROOT));
+        registry.register(compactFormatter, () -> new LabelFormatter("CMP", Locale.ROOT));
+        registry.register(detailedFormatter, () -> new LabelFormatter("DETAIL", Locale.ROOT));
+        ShippingLabelService service = new ShippingLabelService(registry);
+
+        assertThat(service.label(defaultFormatter, "box")).isEqualTo("DEFAULT-BOX");
+        assertThat(service.label(compactFormatter, "crate")).isEqualTo("CMP-CRATE");
+        assertThat(service.label(detailedFormatter, "pallet")).isEqualTo("DETAIL-PALLET");
     }
 
     private static Named namedAnnotation(String name) {
@@ -293,6 +311,45 @@ public class Geronimo_atinject_1_0_specTest {
         @Override
         public String get() {
             return value;
+        }
+    }
+
+    private static final class NamedFormatterRegistry {
+        private final Map<String, Provider<LabelFormatter>> formatterProviders = new HashMap<>();
+
+        private void register(Named qualifier, Provider<LabelFormatter> formatterProvider) {
+            formatterProviders.put(qualifier.value(), formatterProvider);
+        }
+
+        private LabelFormatter formatter(Named qualifier) {
+            return formatterProviders.get(qualifier.value()).get();
+        }
+    }
+
+    private static final class LabelFormatter {
+        private final String prefix;
+        private final Locale locale;
+
+        private LabelFormatter(String prefix, Locale locale) {
+            this.prefix = prefix;
+            this.locale = locale;
+        }
+
+        private String format(String item) {
+            return prefix + "-" + item.toUpperCase(locale);
+        }
+    }
+
+    private static final class ShippingLabelService {
+        private final NamedFormatterRegistry formatterRegistry;
+
+        @Inject
+        private ShippingLabelService(NamedFormatterRegistry formatterRegistry) {
+            this.formatterRegistry = formatterRegistry;
+        }
+
+        private String label(@Named("formatter") Named formatterQualifier, String item) {
+            return formatterRegistry.formatter(formatterQualifier).format(item);
         }
     }
 }
