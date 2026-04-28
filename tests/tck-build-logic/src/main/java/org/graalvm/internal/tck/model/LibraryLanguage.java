@@ -34,4 +34,9 @@ public record LibraryLanguage(
     public boolean isKotlin() {
         return "kotlin".equals(name);
     }
+
+    @JsonIgnore
+    public boolean isGroovy() {
+        return "groovy".equals(name);
+    }
 }

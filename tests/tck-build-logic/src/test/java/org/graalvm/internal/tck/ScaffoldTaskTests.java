@@ -184,6 +184,52 @@ class ScaffoldTaskTests {
     }
 
     @Test
+    void runUsesDiscoveredGroovyScaffoldAndSeedsIndexEntry() throws IOException {
+        Coordinates coordinates = Coordinates.parse("org.apache.groovy:groovy-json:4.0.21");
+        installLibraryArtifact(coordinates, List.of(
+                "groovy/json/JsonSlurper.class",
+                "groovy/json/JsonOutput.class"
+        ));
+        Project project = createProject();
+        writeDiscoveredArtifactMetadata(project, new DiscoveredArtifactMetadata(
+                coordinates.toString(),
+                "https://example.com/source",
+                "https://example.com/repository",
+                "https://example.com/tests",
+                "https://example.com/docs",
+                "Groovy JSON provides JSON parsing and generation APIs. It is designed for Groovy applications.",
+                new LibraryLanguage("groovy", "4.0")
+        ));
+        ScaffoldTask task = registerScaffoldTask(project, "scaffold", coordinates);
+
+        task.run();
+
+        assertThat(tempDir.resolve("tests/src/org.apache.groovy/groovy-json/4.0.21/src/test/groovy/org_apache_groovy/groovy_json/Groovy_jsonTest.groovy"))
+                .exists();
+        assertGeneratedFileMatchesTemplate(
+                coordinates,
+                "tests/src/org.apache.groovy/groovy-json/4.0.21/build.gradle",
+                "/scaffold/build.gradle.groovy.template"
+        );
+        assertThat(Files.readString(tempDir.resolve("tests/src/org.apache.groovy/groovy-json/4.0.21/build.gradle"), StandardCharsets.UTF_8))
+                .contains("id \"groovy\"")
+                .contains("testImplementation localGroovy()")
+                .contains("JavaLanguageVersion.of(21)")
+                .doesNotContain("25");
+        List<Map<String, Object>> indexEntries = OBJECT_MAPPER.readValue(
+                tempDir.resolve("metadata/org.apache.groovy/groovy-json/index.json").toFile(),
+                new TypeReference<>() {}
+        );
+        assertThat(indexEntries.get(0))
+                .containsEntry("source-code-url", "https://example.com/source")
+                .containsEntry("repository-url", "https://example.com/repository")
+                .containsEntry("test-code-url", "https://example.com/tests")
+                .containsEntry("documentation-url", "https://example.com/docs")
+                .containsEntry("description", "Groovy JSON provides JSON parsing and generation APIs. It is designed for Groovy applications.")
+                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+    }
+
+    @Test
     void runUsesDiscoveredScala3Scaffold() throws IOException {
         Coordinates coordinates = Coordinates.parse("org.typelevel:cats-core_3:2.12.0");
         installLibraryArtifact(coordinates, List.of(

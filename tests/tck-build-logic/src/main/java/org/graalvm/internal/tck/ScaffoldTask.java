@@ -353,6 +353,7 @@ class ScaffoldTask extends DefaultTask {
     private enum ScaffoldFlavor {
         JAVA("/scaffold/build.gradle.template", "/scaffold/Test.java.template", "src/test/java/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.java"),
         KOTLIN("/scaffold/build.gradle.kotlin.template", "/scaffold/Test.kt.template", "src/test/kotlin/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.kt"),
+        GROOVY("/scaffold/build.gradle.groovy.template", "/scaffold/Test.groovy.template", "src/test/groovy/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.groovy"),
         SCALA2("/scaffold/build.gradle.scala2.template", "/scaffold/Test.scala.template", "src/test/scala/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.scala"),
         SCALA3("/scaffold/build.gradle.scala3.template", "/scaffold/Test.scala.template", "src/test/scala/$sanitizedGroup$/$sanitizedArtifact$/$capitalizedSanitizedArtifact$Test.scala");
 
@@ -372,6 +373,9 @@ class ScaffoldTask extends DefaultTask {
             }
             if (language.isKotlin()) {
                 return KOTLIN;
+            }
+            if (language.isGroovy()) {
+                return GROOVY;
             }
             if (language.isScala2()) {
                 return SCALA2;

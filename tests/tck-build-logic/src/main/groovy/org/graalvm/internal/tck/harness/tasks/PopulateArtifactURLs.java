@@ -278,6 +278,7 @@ public class PopulateArtifactURLs extends DefaultTask {
                 Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: %s:%s:%s
                 Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
                 - { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+                - { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
                 - { "name": "scala", "version": "2" } for Scala 2 libraries
                 - { "name": "scala", "version": "3" } for Scala 3 libraries
                 If the library is not language-specific, leave the "language" field absent.

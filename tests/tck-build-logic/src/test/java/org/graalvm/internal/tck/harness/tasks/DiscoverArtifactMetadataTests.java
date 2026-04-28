@@ -48,6 +48,7 @@ class DiscoverArtifactMetadataTests {
         assertThat(output)
                 .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.ktor:ktor-server-core-jvm:3.1.0")
                 .contains("Also determine whether this is a language-specific library.")
+                .contains("{ \"name\": \"groovy\", \"version\": \"<groovy major.minor, e.g. 4.0>\" }")
                 .contains("{ \"name\": \"scala\", \"version\": \"3\" }")
                 .contains("If the library is not language-specific, leave the \"language\" field absent.")
                 .contains("Update this file directly:")

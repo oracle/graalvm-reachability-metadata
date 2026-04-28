@@ -50,6 +50,7 @@ class PopulateArtifactURLsTests {
                 .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ch.qos.logback:logback-classic:1.4.1")
                 .contains("Also determine whether this is a language-specific library.")
                 .contains("{ \"name\": \"kotlin\", \"version\": \"<kotlin major.minor, e.g. 2.0>\" }")
+                .contains("{ \"name\": \"groovy\", \"version\": \"<groovy major.minor, e.g. 4.0>\" }")
                 .contains("{ \"name\": \"scala\", \"version\": \"2\" }")
                 .contains("If the library is not language-specific, leave the \"language\" field absent.")
                 .contains("The sources URL, the test suite URL, and the documentation URL must be for the EXACT version \"1.4.1\".")
