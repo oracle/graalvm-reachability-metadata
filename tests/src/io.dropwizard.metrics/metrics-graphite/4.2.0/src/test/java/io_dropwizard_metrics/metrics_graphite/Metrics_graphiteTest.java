@@ -245,6 +245,28 @@ public class Metrics_graphiteTest {
     }
 
     @Test
+    void pickledGraphiteSenderFlushesPartialBatchWithConfiguredCharset() throws Exception {
+        Charset charset = StandardCharsets.ISO_8859_1;
+        try (ServerSocket serverSocket = new ServerSocket(0, 1, LOOPBACK)) {
+            CompletableFuture<byte[]> receivedPayload = CompletableFuture.supplyAsync(
+                    () -> readSinglePickleFrame(serverSocket));
+            PickledGraphite graphite = new PickledGraphite(
+                    new InetSocketAddress(LOOPBACK, serverSocket.getLocalPort()), SocketFactory.getDefault(), charset,
+                    10);
+
+            graphite.connect();
+            graphite.send("café.metric", "olé", 123L);
+            graphite.flush();
+
+            assertThat(new String(receivedPayload.get(5L, TimeUnit.SECONDS), charset))
+                    .isEqualTo("(l(S'café.metric'\n(L123L\nS'olé'\ntta.");
+            assertThat(graphite.getFailures()).isZero();
+            graphite.close();
+            assertThat(graphite.isConnected()).isFalse();
+        }
+    }
+
+    @Test
     void graphiteConstructorRejectsInvalidTcpEndpointConfiguration() {
         assertThatThrownBy(() -> new Graphite("", 2003)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("hostname");
