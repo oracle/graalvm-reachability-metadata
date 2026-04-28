@@ -7,7 +7,6 @@
 package net_minidev.accessors_smart;
 
 import net.minidev.asm.BeansAccess;
-import net.minidev.asm.ex.NoSuchFieldException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +27,8 @@ public class BeansAccessTest {
         assertThat(firstAccess.get(bean, "message")).isEqualTo("ready");
         assertThat(firstAccess.getIndex("message")).isGreaterThanOrEqualTo(0);
         assertThatThrownBy(() -> firstAccess.set(bean, "missing", "value"))
-                .isInstanceOf(NoSuchFieldException.class);
+                .isInstanceOf(java.lang.NoSuchFieldException.class)
+                .hasMessageContaining("failed to map field:missing");
     }
 
     public static final class MutableBean {
