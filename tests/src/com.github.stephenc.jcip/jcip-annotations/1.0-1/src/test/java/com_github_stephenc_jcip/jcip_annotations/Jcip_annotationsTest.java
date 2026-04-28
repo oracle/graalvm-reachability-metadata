@@ -85,6 +85,15 @@ public class Jcip_annotationsTest {
     }
 
     @Test
+    void guardedByCanDocumentClassLevelLocks() {
+        StaticSequence.reset();
+
+        assertThat(StaticSequence.next("alpha")).isEqualTo(1);
+        assertThat(StaticSequence.next("beta")).isEqualTo(2);
+        assertThat(StaticSequence.snapshot()).isEqualTo("1:alpha|2:beta");
+    }
+
+    @Test
     void annotationsCanDocumentExecutableConcurrencyExamples() {
         ThreadSafeCounter counter = new ThreadSafeCounter();
         MutableLedger ledger = new MutableLedger();
@@ -382,6 +391,47 @@ public class Jcip_annotationsTest {
         @GuardedBy("monitor()")
         private String describeLocked() {
             return "available=" + available + ",acquired=" + acquired;
+        }
+    }
+
+    @ThreadSafe
+    private static final class StaticSequence {
+        @GuardedBy("StaticSequence.class")
+        private static int nextId;
+
+        @GuardedBy("StaticSequence.class")
+        private static final StringBuilder entries = new StringBuilder();
+
+        private StaticSequence() {
+        }
+
+        static int next(String name) {
+            synchronized (StaticSequence.class) {
+                nextId++;
+                appendLocked(nextId, name);
+                return nextId;
+            }
+        }
+
+        static void reset() {
+            synchronized (StaticSequence.class) {
+                nextId = 0;
+                entries.setLength(0);
+            }
+        }
+
+        static String snapshot() {
+            synchronized (StaticSequence.class) {
+                return entries.toString();
+            }
+        }
+
+        @GuardedBy("StaticSequence.class")
+        private static void appendLocked(int id, String name) {
+            if (entries.length() > 0) {
+                entries.append('|');
+            }
+            entries.append(id).append(':').append(name);
         }
     }
 
