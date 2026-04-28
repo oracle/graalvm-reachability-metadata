@@ -1,0 +1,1319 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd581-b4ed-75b1-b273-63c78a636681
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.thoughtworks.proxytoys:proxytoys:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+- Set "coordinates" to "com.thoughtworks.proxytoys:proxytoys:1.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven first, then fall back to upstream project tags only if the exact 1.0 sources/tests/docs aren’t published there. After that I’ll patch the JSON directly.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json && sed -n '1,200p' build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+-rw-rw-r-- 1 vjovanov vjovanov 65 Apr 28 21:12 build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+{
+  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"com\\.thoughtworks\\.proxytoys|proxytoys\" build/discovered-artifact-metadata metadata tests || true" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json:2:  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0"
+
+web search: 
+web search: Maven Central com.thoughtworks.proxytoys proxytoys 1.0 sources jar
+web search: 
+web search: https://central.sonatype.com/artifact/com.thoughtworks.proxytoys/proxytoys
+web search: 
+web search: repo1.maven.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar
+codex
+Maven Central has the 1.0 POM and it identifies the project as “ProxyToys Core,” with source/javadoc plugins configured. I’m checking the actual Central files now so the source and docs URLs point to published versioned artifacts when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0.pom' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+     (c) 2009, 2010 ThoughtWorks Ltd
+     All rights reserved.
+    
+     The software in this package is published under the terms of the BSD
+     style license a copy of which has been included with this distribution in
+     the LICENSE.txt file.
+    
+     Created on 29-Jun-2009
+    -->
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.thoughtworks.proxytoys</groupId>
+        <artifactId>proxytoys-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>proxytoys</artifactId>
+    <name>ProxyToys Core</name>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                        <link>http://junit.sourceforge.net/javadoc</link>
+                        <link>http://cglib.sourceforge.net/apidocs</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                	<includes>
+                		<include>**/AllTests.java</include>
+                	</includes>
+                	<excludes>
+                		<exclude>**/*Test.java</exclude>
+                	</excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
+            <!--
+            <plugin>
+                <groupId>com.thoughtworks.classpathprinter</groupId>
+                <artifactId>classpath-printer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>print</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <!-- General project information -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <!-- Cross references report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+            <!-- Report about violations of coding standards -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+            <!-- Generate "PMD" and "CPD" reports -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <linkXref>true</linkXref>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.5</targetJdk>
+                </configuration>
+            </plugin>
+            <!-- Generate "JDepend" report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+            <!-- Generate "FindBugs Report" report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <threshold>Normal</threshold>
+                    <effort>Default</effort>
+                    <!--excludeFilterFile>findbugs-exclude.xml
+                    </excludeFilterFile>
+<includeFilterFile>findbugs-include.xml
+                    </includeFilterFile-->
+                    <visitors>FindDeadLocalStores,
+                        UnreadFields
+                    </visitors>
+                    <omitVisitors>FindDeadLocalStores,
+                        UnreadFields
+                    </omitVisitors>
+                    <pluginList>/libs/fb-contrib/fb-contrib-2.8.0.jar
+                    </pluginList>
+                </configuration>
+            </plugin>
+            <!-- Generate "JavaNCSS Report" report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <format>${cobertura.format}</format>            
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+exec
+/usr/bin/bash -lc "for u in https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-test-sources.jar https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-tests.jar https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar; do printf '%s -> ' \""'$u"; curl -fsSI "$u" | awk '"'BEGIN{code=\"\"; len=\"\"} /"'^HTTP/{code=$2} /''^Content-Length:/{len=$2} END{print code, len}'"'; done" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 180ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/thoughtworks/proxytoys/proxytoys/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/thoughtworks/proxytoys/proxytoys/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="proxytoys-1.0-javadoc.jar" title="proxytoys-1.0-javadoc.jar">proxytoys-1.0-javadoc.jar</a>                         2010-05-13 11:30    716433      
+<a href="proxytoys-1.0-javadoc.jar.md5" title="proxytoys-1.0-javadoc.jar.md5">proxytoys-1.0-javadoc.jar.md5</a>                     2010-05-13 11:30        32      
+<a href="proxytoys-1.0-javadoc.jar.sha1" title="proxytoys-1.0-javadoc.jar.sha1">proxytoys-1.0-javadoc.jar.sha1</a>                    2010-05-13 11:30        40      
+<a href="proxytoys-1.0-sources.jar" title="proxytoys-1.0-sources.jar">proxytoys-1.0-sources.jar</a>                         2010-05-13 11:30     80108      
+<a href="proxytoys-1.0-sources.jar.md5" title="proxytoys-1.0-sources.jar.md5">proxytoys-1.0-sources.jar.md5</a>                     2010-05-13 11:30        32      
+<a href="proxytoys-1.0-sources.jar.sha1" title="proxytoys-1.0-sources.jar.sha1">proxytoys-1.0-sources.jar.sha1</a>                    2010-05-13 11:30        40      
+<a href="proxytoys-1.0.jar" title="proxytoys-1.0.jar">proxytoys-1.0.jar</a>                                 2010-05-13 11:30    103078      
+<a href="proxytoys-1.0.jar.md5" title="proxytoys-1.0.jar.md5">proxytoys-1.0.jar.md5</a>                             2010-05-13 11:30        32      
+<a href="proxytoys-1.0.jar.sha1" title="proxytoys-1.0.jar.sha1">proxytoys-1.0.jar.sha1</a>                            2010-05-13 11:30        40      
+<a href="proxytoys-1.0.pom" title="proxytoys-1.0.pom">proxytoys-1.0.pom</a>                                 2010-05-13 11:30      6977      
+<a href="proxytoys-1.0.pom.md5" title="proxytoys-1.0.pom.md5">proxytoys-1.0.pom.md5</a>                             2010-05-13 11:30        32      
+<a href="proxytoys-1.0.pom.sha1" title="proxytoys-1.0.pom.sha1">proxytoys-1.0.pom.sha1</a>                            2010-05-13 11:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 677ms:
+curl: (22) The requested URL returned error: 404
+404 
+https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-tests.jar -> curl: (22) The requested URL returned error: 404
+404 
+https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar -> 200 
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys-parent/1.0/proxytoys-parent-1.0.pom' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+     (c) 2009, 2010 ThoughtWorks Ltd
+     All rights reserved.
+    
+     The software in this package is published under the terms of the BSD
+     style license a copy of which has been included with this distribution in
+     the LICENSE.txt file.
+    
+     Created on 29-Jun-2009
+    -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.thoughtworks.proxytoys</groupId>
+    <artifactId>proxytoys-parent</artifactId>
+    <name>ProxyToys Parent</name>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <url>http://proxytoys.codehaus.org</url>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>proxytoys</module>
+                <module>website</module>
+                <module>example-code</module>
+            </modules>
+            <properties>
+                <cobertura.format>html</cobertura.format>
+            </properties>
+        </profile>
+        <profile>
+            <id>bamboo</id>
+            <modules>
+                <module>proxytoys</module>
+                <module>example-code</module>
+            </modules>
+            <properties>
+                <cobertura.format>xml</cobertura.format>
+            </properties>
+        </profile>
+    </profiles>
+    <organization>
+        <name>Codehaus</name>
+        <url>http://codehaus.org/</url>
+    </organization>
+    <inceptionYear>2005</inceptionYear>
+    <description>
+        <![CDATA[Please refer to the <a href="http://proxytoys.codehaus.org/">site</a> for documentation.]]></description>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://jira.codehaus.org/browse/PTOYS</url>
+    </issueManagement>
+    <licenses>
+        <license>
+            <url>https://svn.codehaus.org/proxytoys/trunk/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:svn:http://svn.codehaus.org/proxytoys/tags/1.0</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/proxytoys/tags/1.0</developerConnection>
+        <url>http://fisheye.codehaus.org/browse/proxytoys/tags/1.0</url>
+    </scm>
+    <developers>
+        <developer>
+            <name>Dan North</name>
+            <id>tastapod</id>
+            <email>tastapod@gmail.com</email>
+            <organization>Thoughtworks Ltd.</organization>
+            <roles>
+                <role>Project Lead</role>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Aslak Hellesoy</name>
+            <id>rinkrank</id>
+            <email>aslak.hellesoy@gmail.com</email>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Joerg Schaible</name>
+            <id>joehni</id>
+            <email>joerg.schaible@gmx.de</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Paul Hammant</name>
+            <id>paul</id>
+            <email>paul@hammant.org</email>
+            <organization>Thoughtworks Ltd.</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Juan Li</name>
+            <id>jackyli</id>
+            <organization>Thoughtworks Inc.</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Tianshuo Deng</name>
+            <id>tsdeng</id>
+            <organization>Thoughtworks Inc.</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Aaron Knauf</name>
+        </contributor>
+        <contributor>
+            <name>Philipp Meier</name>
+        </contributor>
+        <contributor>
+            <name>Conrad Benham</name>
+        </contributor>
+    </contributors>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.thoughtworks.proxytoys</groupId>
+                <artifactId>proxytoys</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.proxytoys</groupId>
+                <artifactId>proxytoys</artifactId>
+                <version>1.0</version>
+                <classifier>javadoc</classifier>
+                <type>jar</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>2.2</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>1.8.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.7</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.3.1</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2-beta-5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-eclipse-plugin</artifactId>
+                    <configuration>
+                        <downloadSources>true</downloadSources>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.7</version>
+                    <configuration>
+                        <source>1.5</source>
+                        <linksource>true</linksource>
+                        <quiet>true</quiet>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0</version>
+                    <configuration>
+                        <goals>deploy</goals>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.4.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>2.0.1</version>
+                    <extensions>true</extensions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <forkMode>once</forkMode>
+                        <printSummary>true</printSummary>
+                        <useFile>false</useFile>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.4</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                               <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.xsite</groupId>
+                    <artifactId>xsite-maven-plugin</artifactId>
+                    <version>1.1.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
+    </build>
+    <distributionManagement>
+    <!--  
+      The server id here defined must also appear in ~/.m2/settings.xml
+      cf. settings-template.xml
+    -->
+        <repository>
+            <id>codehaus.org</id>
+            <name>Codehaus ProxyToys Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/proxytoys</url>
+        </repository>
+        <snapshotRepository>
+            <id>codehaus.org</id>
+            <name>Codehaus ProxyToys Snapshot Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/proxytoys</url>
+        </snapshotRepository>
+        <site>
+            <id>codehaus.org</id>
+            <name>Codehaus ProxyToys Site</name>
+            <url>dav:https://dav.codehaus.org/proxytoys</url>
+        </site>
+    </distributionManagement>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys-parent/1.0/' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 194ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/thoughtworks/proxytoys/proxytoys-parent/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/thoughtworks/proxytoys/proxytoys-parent/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="proxytoys-parent-1.0.pom" title="proxytoys-parent-1.0.pom">proxytoys-parent-1.0.pom</a>                          2010-05-13 11:29     12329      
+<a href="proxytoys-parent-1.0.pom.md5" title="proxytoys-parent-1.0.pom.md5">proxytoys-parent-1.0.pom.md5</a>                      2010-05-13 11:29        32      
+<a href="proxytoys-parent-1.0.pom.sha1" title="proxytoys-parent-1.0.pom.sha1">proxytoys-parent-1.0.pom.sha1</a>                     2010-05-13 11:29        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: ProxyToys GitHub ThoughtWorks proxytoys
+web search: 
+web search: https://proxytoys.github.io/apidocs/overview-summary.html
+web search: 
+web search: site:proxytoys.github.io ProxyToys Core 1.0 source repository
+web search: 
+web search: https://github.com/proxytoys/proxytoys
+web search: 
+web search: https://github.com/proxytoys/proxytoys/tree/1.0
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+{
+  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0"
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'source-code-url|test-code-url|documentation-url|repository-url' . --glob '*.{json,java,groovy,md}' --glob '"'!build/**'"' | head -100" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:242:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:243:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:244:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:245:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:28:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:32:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - repository-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:352:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:353:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:354:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:365:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:366:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:369:                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:179:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:181:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:224:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:225:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:226:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:227:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:59:                .contains("Set missing \"repository-url\" to the selected repository URL.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:60:                .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:61:                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:66:                .contains("- source-code-url: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:121:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:150:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:220:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:221:                    "repository-url": "https://example.com/repository-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:222:                    "test-code-url": "https://example.com/tests-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:223:                    "documentation-url": "https://example.com/docs-a",
+./docs/CONTRIBUTING.md:108:* `source-code-url`: URL to the metadata source code location for this index entry.
+./docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+./docs/CONTRIBUTING.md:110:* `test-code-url`: URL to the test source code location for this index entry.
+./docs/CONTRIBUTING.md:111:* `documentation-url`: URL to the project documentation for this index entry.
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:142:     "test-code-url": "https://github.com/example/repo/tree/main/tests/src/org.example/library/1.0.0",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:67:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:68:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:9:    "repository-url": "https://github.com/pgjdbc/pgjdbc",
+./metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"language\"' . --glob '*.json' --glob '"'!build/**'"' | head -80" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+./metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+./metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+./metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+./metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+./metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+./metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:10:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+./metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+./metadata/org.postgresql/postgresql/index.json:31:    "test-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-jdbc-src.tar.gz",
+./metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+./metadata/javax.servlet/javax.servlet-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-util/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-spi/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-spi/1.0.2.v20150114/aether-spi-1.0.2.v20150114-javadoc.jar",
+./metadata/org.eclipse.aether/aether-impl/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/1.0.2.v20150114/aether-impl-1.0.2.v20150114-sources.jar",
+./metadata/org.eclipse.aether/aether-impl/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether/1.0.2.v20150114/aether-1.0.2.v20150114-source-release.zip",
+./metadata/org.eclipse.aether/aether-impl/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-impl/1.0.2.v20150114/aether-impl-1.0.2.v20150114-javadoc.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-sources.jar",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:8:    "test-code-url": "N/A",
+./metadata/com.github.spotbugs/spotbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/github/spotbugs/spotbugs-annotations/4.8.6/spotbugs-annotations-4.8.6-javadoc.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-sources.jar",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-sources.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+./metadata/org.fusesource.hawtbuf/hawtbuf/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-javadoc.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-sources.jar",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/3.0.0/src/test",
+./metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-sources.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-tests.jar",
+./metadata/org.xmlunit/xmlunit-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1-javadoc.jar",
+./metadata/aopalliance/aopalliance/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar",
+./metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+./metadata/aopalliance/aopalliance/index.json:8:    "documentation-url" : "https://sourceforge.net/projects/aopalliance/files/aopalliance/1.0/aopalliance.zip/download",
+./metadata/javax.annotation/jsr250-api/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/javax/annotation/jsr250-api/1.0/jsr250-api-1.0-sources.jar",
+./metadata/javax.annotation/jsr250-api/index.json:8:    "test-code-url": "N/A",
+./metadata/javax.annotation/jsr250-api/index.json:9:    "documentation-url": "https://jcp.org/aboutJava/communityprocess/final/jsr250/index.html",
+./metadata/javax.annotation/javax.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-sources.jar",
+./metadata/javax.annotation/javax.annotation-api/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.annotation/javax.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-javadoc.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:8:    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-sources.jar",
+./metadata/org.apache.santuario/xmlsec/index.json:10:    "test-code-url": "https://github.com/apache/santuario-xml-security-java/tree/xmlsec-4.0.4/src/test",
+./metadata/org.apache.santuario/xmlsec/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/santuario/xmlsec/4.0.4/xmlsec-4.0.4-javadoc.jar",
+./metadata/javax.jcr/jcr/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/1.0/jcr-1.0-sources.jar",
+./metadata/javax.jcr/jcr/index.json:7:    "test-code-url" : "N/A",
+./metadata/javax.jcr/jcr/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/jcr/jcr/1.0/jcr-1.0-javadoc.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-util/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-util/src/test/java",
+./metadata/org.sonatype.aether/aether-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-javadoc.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-sources.jar",
+./metadata/org.sonatype.aether/aether-api/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api/src/test/java",
+
+web search: 
+web search: ProxyToys GitHub proxytoys
+web search: 
+web search: https://github.com/proxytoys/proxytoys
+web search: 
+web search: https://github.com/proxytoys/proxytoys/tags
+web search: 
+web search: https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test
+web search: 
+web search: https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java/com/thoughtworks/proxy
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar
+codex
+The artifact has no published test classifier on Maven Central, so I’m using the GitHub `1.0` tag for the test-suite path. The canonical repository is the GitHub root; the versioned source/docs can stay on Maven Central because those exact 1.0 artifacts are published.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar -o /tmp/proxytoys-1.0-sources.jar && jar tf /tmp/proxytoys-1.0-sources.jar | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/proxytoys/proxytoys/1.0/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/proxytoys/proxytoys/1.0/proxytoys/pom.xml | sed -n '1,140p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 135ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/thoughtworks/
+com/thoughtworks/proxy/
+com/thoughtworks/proxy/factory/
+com/thoughtworks/proxy/kit/
+com/thoughtworks/proxy/toys/
+com/thoughtworks/proxy/toys/dispatch/
+com/thoughtworks/proxy/toys/nullobject/
+com/thoughtworks/proxy/toys/hotswap/
+com/thoughtworks/proxy/toys/multicast/
+com/thoughtworks/proxy/toys/decorate/
+com/thoughtworks/proxy/toys/privilege/
+com/thoughtworks/proxy/toys/failover/
+com/thoughtworks/proxy/toys/pool/
+com/thoughtworks/proxy/toys/delegate/
+com/thoughtworks/proxy/toys/future/
+com/thoughtworks/proxy/toys/echo/
+com/thoughtworks/proxy/factory/CglibProxyFactory.java
+com/thoughtworks/proxy/factory/StandardProxyFactory.java
+com/thoughtworks/proxy/factory/InvokerReference.java
+com/thoughtworks/proxy/factory/AbstractProxyFactory.java
+com/thoughtworks/proxy/factory/package.html
+com/thoughtworks/proxy/kit/ObjectReference.java
+com/thoughtworks/proxy/kit/SimpleInvoker.java
+com/thoughtworks/proxy/kit/PrivateInvoker.java
+com/thoughtworks/proxy/kit/SimpleReference.java
+com/thoughtworks/proxy/kit/NoOperationResetter.java
+com/thoughtworks/proxy/kit/ReflectionUtils.java
+com/thoughtworks/proxy/kit/Resetter.java
+com/thoughtworks/proxy/kit/package.html
+com/thoughtworks/proxy/ProxyFactory.java
+com/thoughtworks/proxy/Invoker.java
+com/thoughtworks/proxy/package.html
+com/thoughtworks/proxy/toys/dispatch/DispatchingInvoker.java
+com/thoughtworks/proxy/toys/dispatch/DispatchingException.java
+com/thoughtworks/proxy/toys/dispatch/Dispatching.java
+com/thoughtworks/proxy/toys/dispatch/package.html
+com/thoughtworks/proxy/toys/nullobject/NullInvoker.java
+com/thoughtworks/proxy/toys/nullobject/Null.java
+com/thoughtworks/proxy/toys/nullobject/package.html
+com/thoughtworks/proxy/toys/hotswap/HotSwappingInvoker.java
+com/thoughtworks/proxy/toys/hotswap/HotSwapping.java
+com/thoughtworks/proxy/toys/hotswap/Swappable.java
+com/thoughtworks/proxy/toys/hotswap/package.html
+com/thoughtworks/proxy/toys/multicast/MulticastingInvoker.java
+com/thoughtworks/proxy/toys/multicast/Multicasting.java
+com/thoughtworks/proxy/toys/multicast/Multicast.java
+com/thoughtworks/proxy/toys/multicast/package.html
+com/thoughtworks/proxy/toys/decorate/Decorating.java
+com/thoughtworks/proxy/toys/decorate/Decorator.java
+com/thoughtworks/proxy/toys/decorate/DecoratingInvoker.java
+com/thoughtworks/proxy/toys/decorate/package.html
+com/thoughtworks/proxy/toys/privilege/Privileging.java
+com/thoughtworks/proxy/toys/privilege/AccessControllerExecutor.java
+com/thoughtworks/proxy/toys/privilege/DirectExecutor.java
+com/thoughtworks/proxy/toys/privilege/ActionExecutor.java
+com/thoughtworks/proxy/toys/privilege/PrivilegingInvoker.java
+com/thoughtworks/proxy/toys/privilege/SubjectExecutor.java
+com/thoughtworks/proxy/toys/privilege/package.html
+com/thoughtworks/proxy/toys/failover/FailoverInvoker.java
+com/thoughtworks/proxy/toys/failover/Failover.java
+com/thoughtworks/proxy/toys/failover/package.html
+com/thoughtworks/proxy/toys/pool/SerializationMode.java
+com/thoughtworks/proxy/toys/pool/Pool.java
+com/thoughtworks/proxy/toys/pool/Poolable.java
+com/thoughtworks/proxy/toys/pool/package.html
+com/thoughtworks/proxy/toys/delegate/DelegationMode.java
+com/thoughtworks/proxy/toys/delegate/DelegatingInvoker.java
+com/thoughtworks/proxy/toys/delegate/Delegating.java
+com/thoughtworks/proxy/toys/delegate/DelegationException.java
+com/thoughtworks/proxy/toys/delegate/package.html
+com/thoughtworks/proxy/toys/future/FutureInvoker.java
+com/thoughtworks/proxy/toys/future/Future.java
+com/thoughtworks/proxy/toys/future/package.html
+com/thoughtworks/proxy/toys/echo/EchoDecorator.java
+com/thoughtworks/proxy/toys/echo/Echoing.java
+com/thoughtworks/proxy/toys/echo/package.html
+
+ succeeded in 164ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 194ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+     (c) 2009, 2010 ThoughtWorks Ltd
+     All rights reserved.
+    
+     The software in this package is published under the terms of the BSD
+     style license a copy of which has been included with this distribution in
+     the LICENSE.txt file.
+    
+     Created on 29-Jun-2009
+    -->
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.thoughtworks.proxytoys</groupId>
+        <artifactId>proxytoys-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>proxytoys</artifactId>
+    <name>ProxyToys Core</name>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                        <link>http://junit.sourceforge.net/javadoc</link>
+                        <link>http://cglib.sourceforge.net/apidocs</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                	<includes>
+                		<include>**/AllTests.java</include>
+                	</includes>
+                	<excludes>
+                		<exclude>**/*Test.java</exclude>
+                	</excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
+            <!--
+            <plugin>
+                <groupId>com.thoughtworks.classpathprinter</groupId>
+                <artifactId>classpath-printer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>print</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <!-- General project information -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <!-- Cross references report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+            <!-- Report about violations of coding standards -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+            <!-- Generate "PMD" and "CPD" reports -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <linkXref>true</linkXref>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.5</targetJdk>
+                </configuration>
+            </plugin>
+            <!-- Generate "JDepend" report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/proxytoys/proxytoys/git/refs/tags/1.0' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/proxytoys/proxytoys/contents/proxytoys/src/test?ref=1.0 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/proxytoys/proxytoys/contents/proxytoys/src/test/java?ref=1.0 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 153ms:
+[
+  {
+    "name": "java",
+    "path": "proxytoys/src/test/java",
+    "sha": "8af6baf7477c4ed81d8147300de2b641d5bded72",
+    "size": 0,
+    "url": "https://api.github.com/repos/proxytoys/proxytoys/contents/proxytoys/src/test/java?ref=1.0",
+    "html_url": "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
+    "git_url": "https://api.github.com/repos/proxytoys/proxytoys/git/trees/8af6baf7477c4ed81d8147300de2b641d5bded72",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/proxytoys/proxytoys/contents/proxytoys/src/test/java?ref=1.0",
+      "git": "https://api.github.com/repos/proxytoys/proxytoys/git/trees/8af6baf7477c4ed81d8147300de2b641d5bded72",
+      "html": "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java"
+    }
+  }
+]
+
+ succeeded in 253ms:
+{
+  "ref": "refs/tags/1.0",
+  "node_id": "MDM6UmVmOTE3OTQ3OnJlZnMvdGFncy8xLjA=",
+  "url": "https://api.github.com/repos/proxytoys/proxytoys/git/refs/tags/1.0",
+  "object": {
+    "sha": "cb1a884c1c2a89ab4c79f8c77fb387ba81f65c3f",
+    "type": "tag",
+    "url": "https://api.github.com/repos/proxytoys/proxytoys/git/tags/cb1a884c1c2a89ab4c79f8c77fb387ba81f65c3f"
+  }
+}
+
+ succeeded in 172ms:
+[
+  {
+    "name": "com",
+    "path": "proxytoys/src/test/java/com",
+    "sha": "0216edb8eabb04cb8587b62e25f2a8483ff83812",
+    "size": 0,
+    "url": "https://api.github.com/repos/proxytoys/proxytoys/contents/proxytoys/src/test/java/com?ref=1.0",
+    "html_url": "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java/com",
+    "git_url": "https://api.github.com/repos/proxytoys/proxytoys/git/trees/0216edb8eabb04cb8587b62e25f2a8483ff83812",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/proxytoys/proxytoys/contents/proxytoys/src/test/java/com?ref=1.0",
+      "git": "https://api.github.com/repos/proxytoys/proxytoys/git/trees/0216edb8eabb04cb8587b62e25f2a8483ff83812",
+      "html": "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java/com"
+    }
+  }
+]
+
+codex
+I’m going to write the metadata now. I’m leaving `language` absent because this is a Java library, not a Kotlin/Groovy/Scala language-specific artifact under the schema the prompt described.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+index 231c936338c949684ebf0517a53f68b541824519..3c2ed94b856dba2845bedae6a5c0b75589067b09
+--- a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0"
++  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar",
++  "repository-url" : "https://github.com/proxytoys/proxytoys",
++  "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar",
++  "description" : "ProxyToys provides an implementation-neutral API for creating Java dynamic proxies with either JDK proxies or CGLIB. It includes reusable proxy factories for decorators, delegates, dispatchers, echo tracing, failover, futures, hot swapping, multicasting, null objects, object pools, and privileged invocation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+index 231c936338c949684ebf0517a53f68b541824519..3c2ed94b856dba2845bedae6a5c0b75589067b09
+--- a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0"
++  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar",
++  "repository-url" : "https://github.com/proxytoys/proxytoys",
++  "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar",
++  "description" : "ProxyToys provides an implementation-neutral API for creating Java dynamic proxies with either JDK proxies or CGLIB. It includes reusable proxy factories for decorators, delegates, dispatchers, echo tracing, failover, futures, hot swapping, multicasting, null objects, object pools, and privileged invocation."
+ }
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+ succeeded in 0ms:
+{
+  "coordinates": "com.thoughtworks.proxytoys:proxytoys:1.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar",
+  "repository-url": "https://github.com/proxytoys/proxytoys",
+  "test-code-url": "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar",
+  "description": "ProxyToys provides an implementation-neutral API for creating Java dynamic proxies with either JDK proxies or CGLIB. It includes reusable proxy factories for decorators, delegates, dispatchers, echo tracing, failover, futures, hot swapping, multicasting, null objects, object pools, and privileged invocation."
+}
+
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+index 231c936338c949684ebf0517a53f68b541824519..3c2ed94b856dba2845bedae6a5c0b75589067b09
+--- a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0"
++  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar",
++  "repository-url" : "https://github.com/proxytoys/proxytoys",
++  "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar",
++  "description" : "ProxyToys provides an implementation-neutral API for creating Java dynamic proxies with either JDK proxies or CGLIB. It includes reusable proxy factories for decorators, delegates, dispatchers, echo tracing, failover, futures, hot swapping, multicasting, null objects, object pools, and privileged invocation."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+index 231c936338c949684ebf0517a53f68b541824519..3c2ed94b856dba2845bedae6a5c0b75589067b09
+--- a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0"
++  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar",
++  "repository-url" : "https://github.com/proxytoys/proxytoys",
++  "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar",
++  "description" : "ProxyToys provides an implementation-neutral API for creating Java dynamic proxies with either JDK proxies or CGLIB. It includes reusable proxy factories for decorators, delegates, dispatchers, echo tracing, failover, futures, hot swapping, multicasting, null objects, object pools, and privileged invocation."
+ }
+
+web search: 
+web search: https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java
+web search: 
+web search: repo.maven.apache.org/maven2 com/thoughtworks/proxytoys/proxytoys/1.0 proxytoys-1.0-sources.jar proxytoys-1.0-javadoc.jar proxytoys-1.0.pom
+web search: 
+web search: https://repo.maven.apache.org/maven2/
+web search: 
+web search: https://repo.maven.apache.org/maven2/proxytoys/
+web search: 
+web search: 
+web search: 
+web search: central.sonatype.com artifact com.thoughtworks.proxytoys proxytoys 1.0
+codex
+Updated [com.thoughtworks.proxytoys-proxytoys-1.0.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json).
+
+I used the Maven-published 1.0 source and javadoc artifacts, the GitHub `1.0` tag test directory, and a two-sentence description based on the 1.0 API package summaries. No `language` field was added because this is not Kotlin, Groovy, or Scala-specific. ([jarcasting.com](https://jarcasting.com/artifacts/com.thoughtworks.proxytoys/proxytoys/?utm_source=openai))
+
+Validation: `jq .` passes.
+diff --git a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+index 231c936338c949684ebf0517a53f68b541824519..3c2ed94b856dba2845bedae6a5c0b75589067b09
+--- a/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
++++ b/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0"
++  "coordinates" : "com.thoughtworks.proxytoys:proxytoys:1.0",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar",
++  "repository-url" : "https://github.com/proxytoys/proxytoys",
++  "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar",
++  "description" : "ProxyToys provides an implementation-neutral API for creating Java dynamic proxies with either JDK proxies or CGLIB. It includes reusable proxy factories for decorators, delegates, dispatchers, echo tracing, failover, futures, hot swapping, multicasting, null objects, object pools, and privileged invocation."
+ }
+
+2026-04-28T19:14:35.779536Z ERROR codex_core::session: failed to record rollout items: thread 019dd581-b4ed-75b1-b273-63c78a636681 not found
+tokens used
+138,563
+Updated [com.thoughtworks.proxytoys-proxytoys-1.0.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/build/discovered-artifact-metadata/com.thoughtworks.proxytoys-proxytoys-1.0.json).
+
+I used the Maven-published 1.0 source and javadoc artifacts, the GitHub `1.0` tag test directory, and a two-sentence description based on the 1.0 API package summaries. No `language` field was added because this is not Kotlin, Groovy, or Scala-specific. ([jarcasting.com](https://jarcasting.com/artifacts/com.thoughtworks.proxytoys/proxytoys/?utm_source=openai))
+
+Validation: `jq .` passes.
+Ran agent for com.thoughtworks.proxytoys:proxytoys:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/build/agent-artifact-discovery-logs/com.thoughtworks.proxytoys-proxytoys-1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 18s
+9 actionable tasks: 4 executed, 5 from cache

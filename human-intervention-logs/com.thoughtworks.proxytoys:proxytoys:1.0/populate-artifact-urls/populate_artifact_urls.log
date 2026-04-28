@@ -1,0 +1,533 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd584-09d0-7552-964a-51be0e2ff7ea
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.thoughtworks.proxytoys:proxytoys:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/metadata/com.thoughtworks.proxytoys/proxytoys/index.json
+- Entry selector: "metadata-version" = "1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar
+- repository-url: https://github.com/proxytoys/proxytoys
+- test-code-url: https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java
+- documentation-url: https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar
+- description: ProxyToys provides an implementation-neutral API for creating Java dynamic proxies with either JDK proxies or CGLIB. It includes reusable proxy factories for decorators, delegates, dispatchers, echo tracing, failover, futures, hot swapping, multicasting, null objects, object pools, and privileged invocation.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0
+- Entry test-version: 1.0
+codex
+I’ll verify the existing entry, check whether any target fields are actually blank, and only patch fields that meet the missing-field rule. Since the URL requirements are version-specific, I’m also checking Maven/GitHub rather than relying only on the current values.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/com.thoughtworks.proxytoys/proxytoys/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar",
+    "repository-url" : "https://github.com/proxytoys/proxytoys",
+    "test-code-url" : "https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar",
+    "description" : "ProxyToys provides an implementation-neutral API for creating Java dynamic proxies with either JDK proxies or CGLIB. It includes reusable proxy factories for decorators, delegates, dispatchers, echo tracing, failover, futures, hot swapping, multicasting, null objects, object pools, and privileged invocation.",
+    "tested-versions" : [
+      "1.0"
+    ],
+    "allowed-packages" : [
+      "com.thoughtworks.proxy"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+?? metadata/com.thoughtworks.proxytoys/
+?? tests/src/com.thoughtworks.proxytoys/
+
+web search: 
+web search: com.thoughtworks.proxytoys proxytoys 1.0 maven sources javadoc
+codex
+The target entry already has non-blank values for every requested field except `language`. I’m checking the published POM/source layout now so I can decide whether `language` should remain absent under your rule set.
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 19:15:10 GMT
+content-type: application/java-archive
+content-length: 80108
+cf-ray: 9f3864e449b1bbfc-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 564811
+etag: "c410fa31e18907ca09d61459488fc82a"
+last-modified: Thu, 13 May 2010 11:30:42 GMT
+x-checksum-md5: c410fa31e18907ca09d61459488fc82a
+x-checksum-sha1: 0de95fbe8697606c339620e1301e3cea582e5776
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0.pom' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+     (c) 2009, 2010 ThoughtWorks Ltd
+     All rights reserved.
+    
+     The software in this package is published under the terms of the BSD
+     style license a copy of which has been included with this distribution in
+     the LICENSE.txt file.
+    
+     Created on 29-Jun-2009
+    -->
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.thoughtworks.proxytoys</groupId>
+        <artifactId>proxytoys-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>proxytoys</artifactId>
+    <name>ProxyToys Core</name>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <links>
+                        <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+                        <link>http://junit.sourceforge.net/javadoc</link>
+                        <link>http://cglib.sourceforge.net/apidocs</link>
+                    </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                	<includes>
+                		<include>**/AllTests.java</include>
+                	</includes>
+                	<excludes>
+                		<exclude>**/*Test.java</exclude>
+                	</excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
+            <!--
+            <plugin>
+                <groupId>com.thoughtworks.classpathprinter</groupId>
+                <artifactId>classpath-printer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>print</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <!-- General project information -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <!-- Cross references report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jxr-maven-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+            <!-- Report about violations of coding standards -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.3</version>
+            </plugin>
+            <!-- Generate "PMD" and "CPD" reports -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <linkXref>true</linkXref>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <minimumTokens>100</minimumTokens>
+                    <targetJdk>1.5</targetJdk>
+                </configuration>
+            </plugin>
+            <!-- Generate "JDepend" report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+            <!-- Generate "FindBugs Report" report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <threshold>Normal</threshold>
+                    <effort>Default</effort>
+                    <!--excludeFilterFile>findbugs-exclude.xml
+                    </excludeFilterFile>
+<includeFilterFile>findbugs-include.xml
+                    </includeFilterFile-->
+                    <visitors>FindDeadLocalStores,
+                        UnreadFields
+                    </visitors>
+                    <omitVisitors>FindDeadLocalStores,
+                        UnreadFields
+                    </omitVisitors>
+                    <pluginList>/libs/fb-contrib/fb-contrib-2.8.0.jar
+                    </pluginList>
+                </configuration>
+            </plugin>
+            <!-- Generate "JavaNCSS Report" report -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <format>${cobertura.format}</format>            
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-javadoc.jar' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 19:15:10 GMT
+content-type: application/java-archive
+content-length: 716433
+cf-ray: 9f3864e44c9fa43d-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2515
+etag: "46df0ff88291ca4b0bb1faf92f667b6c"
+last-modified: Thu, 13 May 2010 11:30:39 GMT
+x-checksum-md5: 46df0ff88291ca4b0bb1faf92f667b6c
+x-checksum-sha1: 541728fc98e611800251cb5b23d781b5fd579ae2
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/proxytoys/proxytoys.git refs/tags/1.0' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 342ms:
+cb1a884c1c2a89ab4c79f8c77fb387ba81f65c3f	refs/tags/1.0
+
+web search: 
+web search: 
+web search: 
+web search: com.thoughtworks.proxytoys proxytoys 1.0 Maven Central sources javadoc repository
+web search: 
+web search: https://central.sonatype.com/artifact/com.thoughtworks.proxytoys/proxytoys
+codex
+The Maven metadata identifies this as `ProxyToys Core` packaged as a Java jar with Java test dependencies and source/javadoc artifacts. I don’t see evidence that it is a Kotlin, Groovy, or Scala-specific library, so the correct repository state is to keep `language` absent.
+exec
+/usr/bin/bash -lc 'jq . metadata/com.thoughtworks.proxytoys/proxytoys/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/com.thoughtworks.proxytoys/proxytoys/index.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp); curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/proxytoys-1.0-sources.jar -o "$tmp"; jar tf "$tmp" | sed -n '"'1,80p'; rm -f \""'$tmp"' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+com/
+com/thoughtworks/
+com/thoughtworks/proxy/
+com/thoughtworks/proxy/factory/
+com/thoughtworks/proxy/kit/
+com/thoughtworks/proxy/toys/
+com/thoughtworks/proxy/toys/dispatch/
+com/thoughtworks/proxy/toys/nullobject/
+com/thoughtworks/proxy/toys/hotswap/
+com/thoughtworks/proxy/toys/multicast/
+com/thoughtworks/proxy/toys/decorate/
+com/thoughtworks/proxy/toys/privilege/
+com/thoughtworks/proxy/toys/failover/
+com/thoughtworks/proxy/toys/pool/
+com/thoughtworks/proxy/toys/delegate/
+com/thoughtworks/proxy/toys/future/
+com/thoughtworks/proxy/toys/echo/
+com/thoughtworks/proxy/factory/CglibProxyFactory.java
+com/thoughtworks/proxy/factory/StandardProxyFactory.java
+com/thoughtworks/proxy/factory/InvokerReference.java
+com/thoughtworks/proxy/factory/AbstractProxyFactory.java
+com/thoughtworks/proxy/factory/package.html
+com/thoughtworks/proxy/kit/ObjectReference.java
+com/thoughtworks/proxy/kit/SimpleInvoker.java
+com/thoughtworks/proxy/kit/PrivateInvoker.java
+com/thoughtworks/proxy/kit/SimpleReference.java
+com/thoughtworks/proxy/kit/NoOperationResetter.java
+com/thoughtworks/proxy/kit/ReflectionUtils.java
+com/thoughtworks/proxy/kit/Resetter.java
+com/thoughtworks/proxy/kit/package.html
+com/thoughtworks/proxy/ProxyFactory.java
+com/thoughtworks/proxy/Invoker.java
+com/thoughtworks/proxy/package.html
+com/thoughtworks/proxy/toys/dispatch/DispatchingInvoker.java
+com/thoughtworks/proxy/toys/dispatch/DispatchingException.java
+com/thoughtworks/proxy/toys/dispatch/Dispatching.java
+com/thoughtworks/proxy/toys/dispatch/package.html
+com/thoughtworks/proxy/toys/nullobject/NullInvoker.java
+com/thoughtworks/proxy/toys/nullobject/Null.java
+com/thoughtworks/proxy/toys/nullobject/package.html
+com/thoughtworks/proxy/toys/hotswap/HotSwappingInvoker.java
+com/thoughtworks/proxy/toys/hotswap/HotSwapping.java
+com/thoughtworks/proxy/toys/hotswap/Swappable.java
+com/thoughtworks/proxy/toys/hotswap/package.html
+com/thoughtworks/proxy/toys/multicast/MulticastingInvoker.java
+com/thoughtworks/proxy/toys/multicast/Multicasting.java
+com/thoughtworks/proxy/toys/multicast/Multicast.java
+com/thoughtworks/proxy/toys/multicast/package.html
+com/thoughtworks/proxy/toys/decorate/Decorating.java
+com/thoughtworks/proxy/toys/decorate/Decorator.java
+com/thoughtworks/proxy/toys/decorate/DecoratingInvoker.java
+com/thoughtworks/proxy/toys/decorate/package.html
+com/thoughtworks/proxy/toys/privilege/Privileging.java
+com/thoughtworks/proxy/toys/privilege/AccessControllerExecutor.java
+com/thoughtworks/proxy/toys/privilege/DirectExecutor.java
+com/thoughtworks/proxy/toys/privilege/ActionExecutor.java
+com/thoughtworks/proxy/toys/privilege/PrivilegingInvoker.java
+com/thoughtworks/proxy/toys/privilege/SubjectExecutor.java
+com/thoughtworks/proxy/toys/privilege/package.html
+com/thoughtworks/proxy/toys/failover/FailoverInvoker.java
+com/thoughtworks/proxy/toys/failover/Failover.java
+com/thoughtworks/proxy/toys/failover/package.html
+com/thoughtworks/proxy/toys/pool/SerializationMode.java
+com/thoughtworks/proxy/toys/pool/Pool.java
+com/thoughtworks/proxy/toys/pool/Poolable.java
+com/thoughtworks/proxy/toys/pool/package.html
+com/thoughtworks/proxy/toys/delegate/DelegationMode.java
+com/thoughtworks/proxy/toys/delegate/DelegatingInvoker.java
+com/thoughtworks/proxy/toys/delegate/Delegating.java
+com/thoughtworks/proxy/toys/delegate/DelegationException.java
+com/thoughtworks/proxy/toys/delegate/package.html
+com/thoughtworks/proxy/toys/future/FutureInvoker.java
+com/thoughtworks/proxy/toys/future/Future.java
+com/thoughtworks/proxy/toys/future/package.html
+com/thoughtworks/proxy/toys/echo/EchoDecorator.java
+com/thoughtworks/proxy/toys/echo/Echoing.java
+com/thoughtworks/proxy/toys/echo/package.html
+
+codex
+The JSON is valid and there is no diff for the target file. I’m doing one last check on the test-suite artifact preference: Maven has the preferred source/javadoc artifacts here, but I need to confirm there is no published tests jar before leaving the GitHub tag URL untouched.
+exec
+/usr/bin/bash -lc 'git diff --stat' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/thoughtworks/proxytoys/proxytoys/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/thoughtworks/proxytoys/proxytoys/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="proxytoys-1.0-javadoc.jar" title="proxytoys-1.0-javadoc.jar">proxytoys-1.0-javadoc.jar</a>                         2010-05-13 11:30    716433      
+<a href="proxytoys-1.0-javadoc.jar.md5" title="proxytoys-1.0-javadoc.jar.md5">proxytoys-1.0-javadoc.jar.md5</a>                     2010-05-13 11:30        32      
+<a href="proxytoys-1.0-javadoc.jar.sha1" title="proxytoys-1.0-javadoc.jar.sha1">proxytoys-1.0-javadoc.jar.sha1</a>                    2010-05-13 11:30        40      
+<a href="proxytoys-1.0-sources.jar" title="proxytoys-1.0-sources.jar">proxytoys-1.0-sources.jar</a>                         2010-05-13 11:30     80108      
+<a href="proxytoys-1.0-sources.jar.md5" title="proxytoys-1.0-sources.jar.md5">proxytoys-1.0-sources.jar.md5</a>                     2010-05-13 11:30        32      
+<a href="proxytoys-1.0-sources.jar.sha1" title="proxytoys-1.0-sources.jar.sha1">proxytoys-1.0-sources.jar.sha1</a>                    2010-05-13 11:30        40      
+<a href="proxytoys-1.0.jar" title="proxytoys-1.0.jar">proxytoys-1.0.jar</a>                                 2010-05-13 11:30    103078      
+<a href="proxytoys-1.0.jar.md5" title="proxytoys-1.0.jar.md5">proxytoys-1.0.jar.md5</a>                             2010-05-13 11:30        32      
+<a href="proxytoys-1.0.jar.sha1" title="proxytoys-1.0.jar.sha1">proxytoys-1.0.jar.sha1</a>                            2010-05-13 11:30        40      
+<a href="proxytoys-1.0.pom" title="proxytoys-1.0.pom">proxytoys-1.0.pom</a>                                 2010-05-13 11:30      6977      
+<a href="proxytoys-1.0.pom.md5" title="proxytoys-1.0.pom.md5">proxytoys-1.0.pom.md5</a>                             2010-05-13 11:30        32      
+<a href="proxytoys-1.0.pom.sha1" title="proxytoys-1.0.pom.sha1">proxytoys-1.0.pom.sha1</a>                            2010-05-13 11:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f
+ succeeded in 492ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 19:15:31 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"8514d5ba4253081855e5211ac1725373"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=SyXOP1OFGbx%2F8mY6nV%2BE1AD4EJ2R2SYQPcTphNrrUdmcDKz%2BLgIQAfnvsrNGovbCUjcmRHfDi9robbwlNGvF0zKTZWwYgdAW395TnejTgG2fGIr0hHvRT1dDEY66wvrfgaNqesCNW4J0khDW6YuDCybwjEnor9wkO4PO0jE89x4pN7%2BUz2%2FekniR3Z5GWTPgyRChroBSsDrdba%2BHlSchPJb%2FY91EbY5eIrz4j%2FYxT3oDYSw3azjqyl00fHLb5YOeTxTDZA8a%2BwS2uUNXV5SbJw%3D%3D--lTLKw9Ee%2FcnKmCk9--ZzZ7D0yozjiLO9vGtEt7Pg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1528689523.1777403731; expires=Wed, 28 Apr 2027 19:15:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 19:15:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 510E:31905A:1AC4E9F:138C185:69F10753
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/
+web search: 
+web search: https://github.com/proxytoys/proxytoys/tree/1.0/proxytoys/src/test/java
+web search: 
+web search: https://github.com/proxytoys/proxytoys
+codex
+Checked [index.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/metadata/com.thoughtworks.proxytoys/proxytoys/index.json). No edit was needed: `language` is the only missing field, and ProxyToys is a Java library, not Kotlin/Groovy/Scala-specific, so it should remain absent. GitHub lists the project as Java and describes it as “Proxy tools for Java.” ([github.com](https://github.com/proxytoys/proxytoys))
+
+The existing Maven source and javadoc artifact URLs are valid for exact version `1.0`; Maven Central does not list a tests jar, so keeping the GitHub `1.0` tag test-suite URL is consistent with the preference rules. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/))
+
+Verification: `jq` passed, and `git diff -- metadata/com.thoughtworks.proxytoys/proxytoys/index.json` is empty.
+2026-04-28T19:15:49.565469Z ERROR codex_core::session: failed to record rollout items: thread 019dd584-09d0-7552-964a-51be0e2ff7ea not found
+tokens used
+36,410
+Checked [index.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/metadata/com.thoughtworks.proxytoys/proxytoys/index.json). No edit was needed: `language` is the only missing field, and ProxyToys is a Java library, not Kotlin/Groovy/Scala-specific, so it should remain absent. GitHub lists the project as Java and describes it as “Proxy tools for Java.” ([github.com](https://github.com/proxytoys/proxytoys))
+
+The existing Maven source and javadoc artifact URLs are valid for exact version `1.0`; Maven Central does not list a tests jar, so keeping the GitHub `1.0` tag test-suite URL is consistent with the preference rules. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/com/thoughtworks/proxytoys/proxytoys/1.0/))
+
+Verification: `jq` passed, and `git diff -- metadata/com.thoughtworks.proxytoys/proxytoys/index.json` is empty.
+Ran agent for com.thoughtworks.proxytoys:proxytoys:1.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/build/agent-url-discovery-logs/com.thoughtworks.proxytoys-proxytoys-1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/2777-2c91892f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 57s
+9 actionable tasks: 1 executed, 8 up-to-date
