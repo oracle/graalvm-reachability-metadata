@@ -24,8 +24,8 @@ public class ArrayMemberValueTest {
         Object matrix = proxy.matrix();
         assertThat(matrix).isInstanceOf(String[][].class);
         assertThat((String[][]) matrix).isDeepEqualTo(new String[][] {
-                { "alpha", "beta" },
-                { "gamma" }
+                {"alpha", "beta"},
+                {"gamma"}
         });
     }
 

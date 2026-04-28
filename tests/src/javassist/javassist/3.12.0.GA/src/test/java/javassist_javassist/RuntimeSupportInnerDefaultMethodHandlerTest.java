@@ -14,10 +14,13 @@ import javassist.util.proxy.RuntimeSupport;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class RuntimeSupportInnerDefaultMethodHandlerTest {
     @Test
     void defaultHandlerInvokesGeneratedProceedMethod() throws Throwable {
+        assumeFalse(NativeImageConditions.isNativeImageRuntime(),
+                "Native Image does not support runtime proxy class definition.");
         ProxyFactory factory = new ProxyFactory();
         factory.setUseCache(false);
         factory.setUseWriteReplace(false);

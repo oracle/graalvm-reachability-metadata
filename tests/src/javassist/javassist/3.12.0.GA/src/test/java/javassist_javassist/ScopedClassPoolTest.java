@@ -32,8 +32,7 @@ public class ScopedClassPoolTest {
 
             assertThat(classLoader.requestedResources())
                     .contains("example/scopedpool/MissingType.class");
-        }
-        finally {
+        } finally {
             repository.unregisterClassLoader(classLoader);
         }
     }

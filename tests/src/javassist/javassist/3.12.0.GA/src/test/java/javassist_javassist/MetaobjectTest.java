@@ -19,6 +19,7 @@ import javassist.tools.reflect.Metaobject;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class MetaobjectTest {
     @Test
@@ -49,6 +50,8 @@ public class MetaobjectTest {
 
     @Test
     void serializesBaseObjectAndRestoresReflectiveMethodCache() throws Throwable {
+        assumeFalse(NativeImageConditions.isNativeImageRuntime(),
+                "Native Image does not support this Metaobject serialization path.");
         ReflectiveFixture fixture = new ReflectiveFixture("serialized");
         Metaobject original = new Metaobject(fixture, new Object[0]);
         fixture._setMetaobject(original);

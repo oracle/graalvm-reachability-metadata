@@ -6,10 +6,8 @@
  */
 package javassist_javassist;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.security.PrivilegedAction;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,17 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecurityActionsAnonymous2Test {
     @Test
-    void privilegedActionRunReturnsDeclaredConstructors() throws Throwable {
-        Class<?> actionClass = SecurityActionsAnonymous2Test.class.getClassLoader()
-                .loadClass("javassist.util.proxy.SecurityActions$2");
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(actionClass, MethodHandles.lookup());
-        MethodHandle constructor = lookup.findConstructor(actionClass, MethodType.methodType(void.class, Class.class));
-        PrivilegedAction<?> action = (PrivilegedAction<?>) constructor.invoke(ConstructorTarget.class);
+    void privilegedActionRunReturnsDeclaredConstructors() throws Exception {
+        Class<?> securityActions = Class.forName("javassist.util.proxy.SecurityActions");
+        Method getDeclaredConstructors = securityActions.getDeclaredMethod("getDeclaredConstructors", Class.class);
+        getDeclaredConstructors.setAccessible(true);
 
-        Object[] constructors = (Object[]) action.run();
+        Constructor<?>[] constructors = (Constructor<?>[]) getDeclaredConstructors.invoke(null, ConstructorTarget.class);
 
         assertThat(constructors)
-                .extracting(Object::toString)
+                .extracting(Constructor::toString)
                 .anyMatch(signature -> signature.contains("ConstructorTarget(java.lang.String)"));
     }
 

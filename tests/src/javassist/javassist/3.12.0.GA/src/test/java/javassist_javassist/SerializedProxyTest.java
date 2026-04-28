@@ -19,10 +19,13 @@ import javassist.util.proxy.ProxyFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class SerializedProxyTest {
     @Test
     void restoresProxySerializedThroughStandardObjectStreams() throws Throwable {
+        assumeFalse(NativeImageConditions.isNativeImageRuntime(),
+                "Native Image does not support recreating proxy classes during deserialization.");
         ProxyFactory factory = new ProxyFactory();
         factory.setUseCache(false);
         factory.setUseWriteReplace(true);

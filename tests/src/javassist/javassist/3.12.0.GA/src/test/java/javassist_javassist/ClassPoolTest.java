@@ -14,6 +14,7 @@ import javassist.CtClass;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class ClassPoolTest {
     @Test
@@ -36,6 +37,8 @@ public class ClassPoolTest {
 
     @Test
     void definesCtClassWithSuppliedClassLoader() throws Exception {
+        assumeFalse(NativeImageConditions.isNativeImageRuntime(),
+                "Native Image does not support ClassPool.toClass at runtime.");
         ClassPool classPool = new ClassPool(true);
         String className = "javassist_javassist.generated.ClassPoolDefinedWithoutDomain";
         CtClass ctClass = classPool.makeClass(className);
@@ -49,6 +52,8 @@ public class ClassPoolTest {
 
     @Test
     void definesCtClassWithProtectionDomain() throws Exception {
+        assumeFalse(NativeImageConditions.isNativeImageRuntime(),
+                "Native Image does not support ClassPool.toClass at runtime.");
         ClassPool classPool = new ClassPool(true);
         String className = "javassist_javassist.generated.ClassPoolDefinedWithDomain";
         CtClass ctClass = classPool.makeClass(className);

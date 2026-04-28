@@ -6,10 +6,7 @@
  */
 package javassist_javassist;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.security.PrivilegedAction;
+import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,17 +14,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecurityActionsAnonymous1Test {
     @Test
-    void privilegedActionRunReturnsDeclaredMethods() throws Throwable {
-        Class<?> actionClass = SecurityActionsAnonymous1Test.class.getClassLoader()
-                .loadClass("javassist.util.proxy.SecurityActions$1");
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(actionClass, MethodHandles.lookup());
-        MethodHandle constructor = lookup.findConstructor(actionClass, MethodType.methodType(void.class, Class.class));
-        PrivilegedAction<?> action = (PrivilegedAction<?>) constructor.invoke(LookupTarget.class);
+    void privilegedActionRunReturnsDeclaredMethods() throws Exception {
+        Class<?> securityActions = Class.forName("javassist.util.proxy.SecurityActions");
+        Method getDeclaredMethods = securityActions.getDeclaredMethod("getDeclaredMethods", Class.class);
+        getDeclaredMethods.setAccessible(true);
 
-        Object[] methods = (Object[]) action.run();
+        Method[] methods = (Method[]) getDeclaredMethods.invoke(null, LookupTarget.class);
 
         assertThat(methods)
-                .extracting(Object::toString)
+                .extracting(Method::toString)
                 .anyMatch(signature -> signature.contains("LookupTarget.message()"));
     }
 

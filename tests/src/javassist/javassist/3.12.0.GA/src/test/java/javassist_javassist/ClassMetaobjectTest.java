@@ -17,6 +17,7 @@ import javassist.tools.reflect.CannotCreateException;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class ClassMetaobjectTest {
     @Test
@@ -44,6 +45,8 @@ public class ClassMetaobjectTest {
     @Test
     void deserializesClassMetaobjectAndRebuildsConstructorCache()
             throws IOException, ClassNotFoundException, CannotCreateException {
+        assumeFalse(NativeImageConditions.isNativeImageRuntime(),
+                "Native Image does not support this ClassMetaobject serialization path.");
         ClassMetaobject original = metaobjectFor(ConstructorFixture.class);
 
         ClassMetaobject restored = roundTrip(original);

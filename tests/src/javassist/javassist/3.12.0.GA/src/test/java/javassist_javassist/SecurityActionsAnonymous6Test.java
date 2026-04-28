@@ -6,11 +6,8 @@
  */
 package javassist_javassist;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.security.PrivilegedExceptionAction;
+import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,21 +15,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecurityActionsAnonymous6Test {
     @Test
-    void privilegedExceptionActionRunSetsFieldValue() throws Throwable {
-        Class<?> actionClass = SecurityActionsAnonymous6Test.class.getClassLoader()
-                .loadClass("javassist.util.proxy.SecurityActions$6");
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(actionClass, MethodHandles.lookup());
-        MethodHandle constructor = lookup.findConstructor(
-                actionClass,
-                MethodType.methodType(void.class, Field.class, Object.class, Object.class));
+    void privilegedExceptionActionRunSetsFieldValue() throws Exception {
         MutableTarget target = new MutableTarget("initial");
         Field valueField = MutableTarget.class.getField("value");
-        PrivilegedExceptionAction<?> action = (PrivilegedExceptionAction<?>) constructor.invoke(
-                valueField,
-                target,
-                "updated");
+        Class<?> securityActions = Class.forName("javassist.util.proxy.SecurityActions");
+        Method set = securityActions.getDeclaredMethod("set", Field.class, Object.class, Object.class);
+        set.setAccessible(true);
 
-        Object result = action.run();
+        Object result = set.invoke(null, valueField, target, "updated");
 
         assertThat(result).isNull();
         assertThat(target.value()).isEqualTo("updated");
