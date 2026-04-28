@@ -7,6 +7,7 @@
 package org_awaitility.awaitility;
 
 import java.time.Duration;
+import java.util.concurrent.Callable;
 
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.Test;
@@ -25,10 +26,19 @@ public class LambdaErrorMessageGeneratorTest {
                         .pollDelay(Duration.ZERO)
                         .pollInterval(Duration.ofMillis(1))
                         .atMost(Duration.ofMillis(20))
-                        .until(() -> false));
+                        .until(new Synthetic$$Lambda$Condition()));
 
         assertThat(timeout.getMessage())
-                .contains("Condition")
+                .contains("Condition with")
+                .contains("Synthetic")
                 .contains("was not fulfilled");
+    }
+
+    @SuppressWarnings("checkstyle:TypeName")
+    private static final class Synthetic$$Lambda$Condition implements Callable<Boolean> {
+        @Override
+        public Boolean call() {
+            return false;
+        }
     }
 }
