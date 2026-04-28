@@ -11,11 +11,25 @@ import com.fasterxml.jackson.jr.type.TypeBindings;
 import com.fasterxml.jackson.jr.type.TypeResolver;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeResolverDynamicAccessTest {
+    @Test
+    void resolvesSyntheticGenericArrayTypesIntoArrayClasses() {
+        TypeResolver resolver = new TypeResolver();
+
+        ResolvedType resolvedArrayType = resolver.resolve(
+                TypeBindings.emptyBindings(),
+                new SyntheticGenericArrayType(String.class));
+
+        assertThat(resolvedArrayType.isArray()).isTrue();
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(String[].class);
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(String.class);
+    }
+
     @Test
     void resolvesGenericArrayTypesFromBoundTypeVariables() throws Exception {
         TypeResolver resolver = new TypeResolver();
@@ -46,5 +60,18 @@ public class TypeResolverDynamicAccessTest {
     }
 
     static final class StringArrayContainer extends GenericArrayContainer<String> {
+    }
+
+    static final class SyntheticGenericArrayType implements GenericArrayType {
+        private final Type componentType;
+
+        SyntheticGenericArrayType(Type componentType) {
+            this.componentType = componentType;
+        }
+
+        @Override
+        public Type getGenericComponentType() {
+            return componentType;
+        }
     }
 }
