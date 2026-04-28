@@ -181,6 +181,32 @@ public class Kerby_xdrTest {
     }
 
     @Test
+    void dataTypesExposeTheirNumericIdentifiersAndDeclaredOrder() {
+        assertThat(XdrDataType.values()).containsExactly(
+                XdrDataType.UNKNOWN,
+                XdrDataType.BOOLEAN,
+                XdrDataType.INTEGER,
+                XdrDataType.BYTES,
+                XdrDataType.STRING,
+                XdrDataType.ENUM,
+                XdrDataType.OPAQUE,
+                XdrDataType.UNSIGNED_INTEGER,
+                XdrDataType.STRUCT,
+                XdrDataType.UNION);
+
+        assertThat(XdrDataType.UNKNOWN.getValue()).isEqualTo(-1);
+        assertThat(XdrDataType.BOOLEAN.getValue()).isEqualTo(1);
+        assertThat(XdrDataType.INTEGER.getValue()).isEqualTo(2);
+        assertThat(XdrDataType.BYTES.getValue()).isEqualTo(3);
+        assertThat(XdrDataType.STRING.getValue()).isEqualTo(4);
+        assertThat(XdrDataType.ENUM.getValue()).isEqualTo(5);
+        assertThat(XdrDataType.OPAQUE.getValue()).isEqualTo(6);
+        assertThat(XdrDataType.UNSIGNED_INTEGER.getValue()).isEqualTo(7);
+        assertThat(XdrDataType.STRUCT.getValue()).isEqualTo(8);
+        assertThat(XdrDataType.UNION.getValue()).isEqualTo(9);
+    }
+
+    @Test
     void hexUtilitiesRoundTripCompactAndFriendlyRepresentations() {
         byte[] bytes = {0, 15, 16, 31, 127, -128, -1};
 
