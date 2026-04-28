@@ -21,7 +21,7 @@ public class BeanPropertyReaderDynamicAccessTest {
                 publicField(FieldBackedReaderBean.class, "name"), null, -1);
         FieldBackedReaderBean bean = new FieldBackedReaderBean();
 
-        reader.setValueFor(bean, new Object[] { "Ada" });
+        reader.setValueFor(bean, new Object[] {"Ada"});
 
         assertThat(bean.name).isEqualTo("Ada");
     }
@@ -32,7 +32,7 @@ public class BeanPropertyReaderDynamicAccessTest {
                 publicMethod(PublicSetterBackedReaderBean.class, "setName", String.class), -1);
         PublicSetterBackedReaderBean bean = new PublicSetterBackedReaderBean();
 
-        reader.setValueFor(bean, new Object[] { "Ada" });
+        reader.setValueFor(bean, new Object[] {"Ada"});
 
         assertThat(bean.getName()).isEqualTo("Ada");
         assertThat(bean.getSetterCalls()).isEqualTo(1);
