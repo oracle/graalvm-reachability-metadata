@@ -41,8 +41,7 @@ public class CompactObjectInputStreamTest {
             currentThread.setContextClassLoader(null);
             Object decoded = new ObjectDecoderInputStream(new ByteArrayInputStream(serialize(payload))).readObject();
             assertThat(decoded).isEqualTo(payload);
-        }
-        finally {
+        } finally {
             currentThread.setContextClassLoader(originalClassLoader);
         }
     }

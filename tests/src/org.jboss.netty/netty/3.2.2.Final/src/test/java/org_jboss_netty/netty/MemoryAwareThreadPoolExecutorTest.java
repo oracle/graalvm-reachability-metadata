@@ -25,8 +25,7 @@ public class MemoryAwareThreadPoolExecutorTest {
 
         try {
             assertThat(executor.allowsCoreThreadTimeOut()).isTrue();
-        }
-        finally {
+        } finally {
             executor.shutdownNow();
         }
     }
