@@ -68,6 +68,26 @@ public class Kerby_xdrTest {
     }
 
     @Test
+    void valuesCanBeEncodedSequentiallyIntoCallerProvidedByteBuffer() throws Exception {
+        ByteBuffer message = ByteBuffer.allocate(3 * Integer.BYTES);
+
+        new XdrInteger(0x01020304).encode(message);
+        XdrBoolean.TRUE.encode(message);
+        new XdrUnsignedInteger("65535").encode(message);
+
+        assertThat(message.position()).isEqualTo(3 * Integer.BYTES);
+        assertThat(message.array()).isEqualTo(new byte[] {
+                1, 2, 3, 4,
+                0, 0, 0, 1,
+                0, 0, (byte) 0xFF, (byte) 0xFF
+        });
+
+        XdrInteger decodedInteger = new XdrInteger();
+        decodedInteger.decode(ByteBuffer.wrap(Arrays.copyOfRange(message.array(), 0, Integer.BYTES)));
+        assertThat(decodedInteger.getValue()).isEqualTo(0x01020304);
+    }
+
+    @Test
     void booleanRejectsNonCanonicalEncodings() {
         XdrBoolean decoded = new XdrBoolean();
 
