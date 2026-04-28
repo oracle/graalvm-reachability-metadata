@@ -186,6 +186,22 @@ public class SparseBitSetTest {
     }
 
     @Test
+    void toStringCompactionControlsRunLengthFormatting() {
+        SparseBitSet sparse = new SparseBitSet();
+        sparse.set(10, 15);
+        sparse.set(20);
+
+        sparse.toStringCompaction(0);
+        assertThat(sparse).hasToString("{10, 11, 12, 13, 14, 20}");
+
+        sparse.toStringCompaction(2);
+        assertThat(sparse).hasToString("{10..14, 20}");
+
+        sparse.toStringCompaction(5);
+        assertThat(sparse).hasToString("{10, 11, 12, 13, 14, 20}");
+    }
+
+    @Test
     void invalidIndexesAndRangesAreRejected() {
         assertThatThrownBy(() -> new SparseBitSet(-1)).isInstanceOf(NegativeArraySizeException.class);
         assertThatThrownBy(() -> new SparseBitSet().set(-1)).isInstanceOf(IndexOutOfBoundsException.class);
