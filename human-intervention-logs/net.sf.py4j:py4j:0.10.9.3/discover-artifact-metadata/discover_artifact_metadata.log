@@ -1,0 +1,1394 @@
+Starting a Gradle Daemon, 5 busy and 16 incompatible and 179 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd5b7-61fa-7f53-9539-5da6b4b8fefe
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.sf.py4j:py4j:0.10.9.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.10.9.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+- Set "coordinates" to "net.sf.py4j:py4j:0.10.9.3".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven and upstream tags, then patch the JSON directly with exact-version URLs.
+web search: 
+web search: Maven Central net.sf.py4j py4j 0.10.9.3 sources jar
+web search: 
+web search: https://www.py4j.org/contents.html
+web search: 
+web search: repo.maven.apache.org maven2 net sf py4j py4j 0.10.9.3 py4j-0.10.9.3.pom
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json && sed -n '1,160p' build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+-rw-rw-r-- 1 vjovanov vjovanov 50 Apr 28 22:10 build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+{
+  "coordinates" : "net.sf.py4j:py4j:0.10.9.3"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3.pom' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+  <groupId>net.sf.py4j</groupId>
+  <artifactId>py4j</artifactId>
+  <version>0.10.9.3</version>
+  <name>Py4J</name>
+  <description>Py4J enables Python programs running in a Python interpreter to dynamically access Java objects in a Java Virtual Machine. Methods are called as if the Java objects resided in the Python interpreter and Java collections can be accessed through standard Python collection methods. Py4J also enables Java programs to call back Python objects.</description>
+  <licenses>
+    <license>
+      <name>The New BSD License</name>
+      <url>http://www.opensource.org/licenses/bsd-license.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>bartdag</id>
+      <name>Barthelemy Dagenais</name>
+      <url>http://infobart.com/</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:bartdag/py4j.git</connection>
+    <developerConnection>scm:git:git@github.com:bartdag/py4j.git</developerConnection>
+    <url>git@github.com:bartdag/py4j.git</url>
+  </scm>
+  <properties>
+    <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/sf/py4j/py4j/0.10.9.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/sf/py4j/py4j/0.10.9.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="py4j-0.10.9.3-javadoc.jar" title="py4j-0.10.9.3-javadoc.jar">py4j-0.10.9.3-javadoc.jar</a>                         2021-11-20 15:34    413923      
+<a href="py4j-0.10.9.3-javadoc.jar.asc" title="py4j-0.10.9.3-javadoc.jar.asc">py4j-0.10.9.3-javadoc.jar.asc</a>                     2021-11-20 15:34       488      
+<a href="py4j-0.10.9.3-javadoc.jar.asc.md5" title="py4j-0.10.9.3-javadoc.jar.asc.md5">py4j-0.10.9.3-javadoc.jar.asc.md5</a>                 2021-11-20 15:34        32      
+<a href="py4j-0.10.9.3-javadoc.jar.asc.sha1" title="py4j-0.10.9.3-javadoc.jar.asc.sha1">py4j-0.10.9.3-javadoc.jar.asc.sha1</a>                2021-11-20 15:34        40      
+<a href="py4j-0.10.9.3-javadoc.jar.asc.sha256" title="py4j-0.10.9.3-javadoc.jar.asc.sha256">py4j-0.10.9.3-javadoc.jar.asc.sha256</a>              2021-11-20 15:34        64      
+<a href="py4j-0.10.9.3-javadoc.jar.asc.sha512" title="py4j-0.10.9.3-javadoc.jar.asc.sha512">py4j-0.10.9.3-javadoc.jar.asc.sha512</a>              2021-11-20 15:34       128      
+<a href="py4j-0.10.9.3-javadoc.jar.md5" title="py4j-0.10.9.3-javadoc.jar.md5">py4j-0.10.9.3-javadoc.jar.md5</a>                     2021-11-20 15:34        32      
+<a href="py4j-0.10.9.3-javadoc.jar.sha1" title="py4j-0.10.9.3-javadoc.jar.sha1">py4j-0.10.9.3-javadoc.jar.sha1</a>                    2021-11-20 15:34        40      
+<a href="py4j-0.10.9.3-javadoc.jar.sha256" title="py4j-0.10.9.3-javadoc.jar.sha256">py4j-0.10.9.3-javadoc.jar.sha256</a>                  2021-11-20 15:34        64      
+<a href="py4j-0.10.9.3-javadoc.jar.sha512" title="py4j-0.10.9.3-javadoc.jar.sha512">py4j-0.10.9.3-javadoc.jar.sha512</a>                  2021-11-20 15:34       128      
+<a href="py4j-0.10.9.3-sources.jar" title="py4j-0.10.9.3-sources.jar">py4j-0.10.9.3-sources.jar</a>                         2021-11-20 15:34    125413      
+<a href="py4j-0.10.9.3-sources.jar.asc" title="py4j-0.10.9.3-sources.jar.asc">py4j-0.10.9.3-sources.jar.asc</a>                     2021-11-20 15:34       488      
+<a href="py4j-0.10.9.3-sources.jar.asc.md5" title="py4j-0.10.9.3-sources.jar.asc.md5">py4j-0.10.9.3-sources.jar.asc.md5</a>                 2021-11-20 15:34        32      
+<a href="py4j-0.10.9.3-sources.jar.asc.sha1" title="py4j-0.10.9.3-sources.jar.asc.sha1">py4j-0.10.9.3-sources.jar.asc.sha1</a>                2021-11-20 15:34        40      
+<a href="py4j-0.10.9.3-sources.jar.asc.sha256" title="py4j-0.10.9.3-sources.jar.asc.sha256">py4j-0.10.9.3-sources.jar.asc.sha256</a>              2021-11-20 15:34        64      
+<a href="py4j-0.10.9.3-sources.jar.asc.sha512" title="py4j-0.10.9.3-sources.jar.asc.sha512">py4j-0.10.9.3-sources.jar.asc.sha512</a>              2021-11-20 15:34       128      
+<a href="py4j-0.10.9.3-sources.jar.md5" title="py4j-0.10.9.3-sources.jar.md5">py4j-0.10.9.3-sources.jar.md5</a>                     2021-11-20 15:34        32      
+<a href="py4j-0.10.9.3-sources.jar.sha1" title="py4j-0.10.9.3-sources.jar.sha1">py4j-0.10.9.3-sources.jar.sha1</a>                    2021-11-20 15:34        40      
+<a href="py4j-0.10.9.3-sources.jar.sha256" title="py4j-0.10.9.3-sources.jar.sha256">py4j-0.10.9.3-sources.jar.sha256</a>                  2021-11-20 15:34        64      
+<a href="py4j-0.10.9.3-sources.jar.sha512" title="py4j-0.10.9.3-sources.jar.sha512">py4j-0.10.9.3-sources.jar.sha512</a>                  2021-11-20 15:34       128      
+<a href="py4j-0.10.9.3.jar" title="py4j-0.10.9.3.jar">py4j-0.10.9.3.jar</a>                                 2021-11-20 15:34    123054      
+<a href="py4j-0.10.9.3.jar.asc" title="py4j-0.10.9.3.jar.asc">py4j-0.10.9.3.jar.asc</a>                             2021-11-20 15:34       488      
+<a href="py4j-0.10.9.3.jar.asc.md5" title="py4j-0.10.9.3.jar.asc.md5">py4j-0.10.9.3.jar.asc.md5</a>                         2021-11-20 15:34        32      
+<a href="py4j-0.10.9.3.jar.asc.sha1" title="py4j-0.10.9.3.jar.asc.sha1">py4j-0.10.9.3.jar.asc.sha1</a>                        2021-11-20 15:34        40      
+<a href="py4j-0.10.9.3.jar.asc.sha256" title="py4j-0.10.9.3.jar.asc.sha256">py4j-0.10.9.3.jar.asc.sha256</a>                      2021-11-20 15:34        64      
+<a href="py4j-0.10.9.3.jar.asc.sha512" title="py4j-0.10.9.3.jar.asc.sha512">py4j-0.10.9.3.jar.asc.sha512</a>                      2021-11-20 15:34       128      
+<a href="py4j-0.10.9.3.jar.md5" title="py4j-0.10.9.3.jar.md5">py4j-0.10.9.3.jar.md5</a>                             2021-11-20 15:34        32      
+<a href="py4j-0.10.9.3.jar.sha1" title="py4j-0.10.9.3.jar.sha1">py4j-0.10.9.3.jar.sha1</a>                            2021-11-20 15:34        40      
+<a href="py4j-0.10.9.3.jar.sha256" title="py4j-0.10.9.3.jar.sha256">py4j-0.10.9.3.jar.sha256</a>                          2021-11-20 15:34        64      
+<a href="py4j-0.10.9.3.jar.sha512" title="py4j-0.10.9.3.jar.sha512">py4j-0.10.9.3.jar.sha512</a>                          2021-11-20 15:34       128      
+<a href="py4j-0.10.9.3.pom" title="py4j-0.10.9.3.pom">py4j-0.10.9.3.pom</a>                                 2021-11-20 15:34      2152      
+<a href="py4j-0.10.9.3.pom.asc" title="py4j-0.10.9.3.pom.asc">py4j-0.10.9.3.pom.asc</a>                             2021-11-20 15:34       488      
+<a href="py4j-0.10.9.3.pom.asc.md5" title="py4j-0.10.9.3.pom.asc.md5">py4j-0.10.9.3.pom.asc.md5</a>                         2021-11-20 15:34        32      
+<a href="py4j-0.10.9.3.pom.asc.sha1" title="py4j-0.10.9.3.pom.asc.sha1">py4j-0.10.9.3.pom.asc.sha1</a>                        2021-11-20 15:34        40      
+<a href="py4j-0.10.9.3.pom.asc.sha256" title="py4j-0.10.9.3.pom.asc.sha256">py4j-0.10.9.3.pom.asc.sha256</a>                      2021-11-20 15:34        64      
+<a href="py4j-0.10.9.3.pom.asc.sha512" title="py4j-0.10.9.3.pom.asc.sha512">py4j-0.10.9.3.pom.asc.sha512</a>                      2021-11-20 15:34       128      
+<a href="py4j-0.10.9.3.pom.md5" title="py4j-0.10.9.3.pom.md5">py4j-0.10.9.3.pom.md5</a>                             2021-11-20 15:34        32      
+<a href="py4j-0.10.9.3.pom.sha1" title="py4j-0.10.9.3.pom.sha1">py4j-0.10.9.3.pom.sha1</a>                            2021-11-20 15:34        40      
+<a href="py4j-0.10.9.3.pom.sha256" title="py4j-0.10.9.3.pom.sha256">py4j-0.10.9.3.pom.sha256</a>                          2021-11-20 15:34        64      
+<a href="py4j-0.10.9.3.pom.sha512" title="py4j-0.10.9.3.pom.sha512">py4j-0.10.9.3.pom.sha512</a>                          2021-11-20 15:34       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/
+web search: 
+web search: 
+web search: 
+web search: github py4j 0.10.9.3 tag
+web search: 
+web search: github.com bartdag py4j releases 0.10.9.3
+codex
+The Maven artifact publishes both a `-sources.jar` and `-javadoc.jar`, so I’m preferring those Maven-hosted exact-version URLs where they apply. I’m checking upstream now for an exact tag-backed test path, since Maven Central does not list a test-sources artifact for this version.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/bartdag/py4j.git | rg '0\\.10\\.9\\.3|v0\\.10\\.9\\.3|py4j'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/bartdag/py4j | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://search.maven.org/solrsearch/select?q=g:%22net.sf.py4j%22%20AND%20a:%22py4j%22%20AND%20v:%220.10.9.3%22&rows=20&wt=json'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 209ms:
+{"responseHeader":{"status":0,"QTime":2,"params":{"q":"g:\"net.sf.py4j\" AND a:\"py4j\" AND v:\"0.10.9.3\"","core":"","indent":"off","fl":"id,g,a,v,p,ec,timestamp,tags","start":"","sort":"score desc,timestamp desc,g asc,a asc,v desc","rows":"20","wt":"json","version":"2.2"}},"response":{"numFound":1,"start":0,"docs":[{"id":"net.sf.py4j:py4j:0.10.9.3","g":"net.sf.py4j","a":"py4j","v":"0.10.9.3","p":"jar","timestamp":1637422474000,"ec":[".pom.asc.sha256","-sources.jar","-javadoc.jar",".jar.asc.sha512",".jar",".jar.sha512","-javadoc.jar.asc.sha256","-javadoc.jar.sha512","-sources.jar.sha512",".jar.sha256",".pom.asc.sha512",".pom.sha256","-sources.jar.sha256","-sources.jar.asc.sha512","-javadoc.jar.asc.sha512",".pom",".pom.sha512","-sources.jar.asc.sha256",".jar.asc.sha256","-javadoc.jar.sha256"],"tags":["accessed","resided","virtual","methods","call","programs","standard","back","collection","through","dynamically","access","machine","running","py4j","python","enables","interpreter","called","java","objects","also","collections"]}]}}
+ succeeded in 322ms:
+a0730c6fb77e578ff37b6c6ea211376438f23255	refs/tags/0.10.9.3
+
+ succeeded in 398ms:
+{
+  "id": 1045976,
+  "node_id": "MDEwOlJlcG9zaXRvcnkxMDQ1OTc2",
+  "name": "py4j",
+  "full_name": "py4j/py4j",
+  "private": false,
+  "owner": {
+    "login": "py4j",
+    "id": 99001623,
+    "node_id": "O_kgDOBealFw",
+    "avatar_url": "https://avatars.githubusercontent.com/u/99001623?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/py4j",
+    "html_url": "https://github.com/py4j",
+    "followers_url": "https://api.github.com/users/py4j/followers",
+    "following_url": "https://api.github.com/users/py4j/following{/other_user}",
+    "gists_url": "https://api.github.com/users/py4j/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/py4j/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/py4j/subscriptions",
+    "organizations_url": "https://api.github.com/users/py4j/orgs",
+    "repos_url": "https://api.github.com/users/py4j/repos",
+    "events_url": "https://api.github.com/users/py4j/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/py4j/received_events",
+    "type": "Organization",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "html_url": "https://github.com/py4j/py4j",
+  "description": "Py4J enables Python programs to dynamically access arbitrary Java objects",
+  "fork": false,
+  "url": "https://api.github.com/repos/py4j/py4j",
+  "forks_url": "https://api.github.com/repos/py4j/py4j/forks",
+  "keys_url": "https://api.github.com/repos/py4j/py4j/keys{/key_id}",
+  "collaborators_url": "https://api.github.com/repos/py4j/py4j/collaborators{/collaborator}",
+  "teams_url": "https://api.github.com/repos/py4j/py4j/teams",
+  "hooks_url": "https://api.github.com/repos/py4j/py4j/hooks",
+  "issue_events_url": "https://api.github.com/repos/py4j/py4j/issues/events{/number}",
+  "events_url": "https://api.github.com/repos/py4j/py4j/events",
+  "assignees_url": "https://api.github.com/repos/py4j/py4j/assignees{/user}",
+  "branches_url": "https://api.github.com/repos/py4j/py4j/branches{/branch}",
+  "tags_url": "https://api.github.com/repos/py4j/py4j/tags",
+  "blobs_url": "https://api.github.com/repos/py4j/py4j/git/blobs{/sha}",
+  "git_tags_url": "https://api.github.com/repos/py4j/py4j/git/tags{/sha}",
+  "git_refs_url": "https://api.github.com/repos/py4j/py4j/git/refs{/sha}",
+  "trees_url": "https://api.github.com/repos/py4j/py4j/git/trees{/sha}",
+  "statuses_url": "https://api.github.com/repos/py4j/py4j/statuses/{sha}",
+  "languages_url": "https://api.github.com/repos/py4j/py4j/languages",
+  "stargazers_url": "https://api.github.com/repos/py4j/py4j/stargazers",
+  "contributors_url": "https://api.github.com/repos/py4j/py4j/contributors",
+  "subscribers_url": "https://api.github.com/repos/py4j/py4j/subscribers",
+  "subscription_url": "https://api.github.com/repos/py4j/py4j/subscription",
+  "commits_url": "https://api.github.com/repos/py4j/py4j/commits{/sha}",
+  "git_commits_url": "https://api.github.com/repos/py4j/py4j/git/commits{/sha}",
+  "comments_url": "https://api.github.com/repos/py4j/py4j/comments{/number}",
+  "issue_comment_url": "https://api.github.com/repos/py4j/py4j/issues/comments{/number}",
+  "contents_url": "https://api.github.com/repos/py4j/py4j/contents/{+path}",
+  "compare_url": "https://api.github.com/repos/py4j/py4j/compare/{base}...{head}",
+  "merges_url": "https://api.github.com/repos/py4j/py4j/merges",
+  "archive_url": "https://api.github.com/repos/py4j/py4j/{archive_format}{/ref}",
+  "downloads_url": "https://api.github.com/repos/py4j/py4j/downloads",
+  "issues_url": "https://api.github.com/repos/py4j/py4j/issues{/number}",
+  "pulls_url": "https://api.github.com/repos/py4j/py4j/pulls{/number}",
+  "milestones_url": "https://api.github.com/repos/py4j/py4j/milestones{/number}",
+  "notifications_url": "https://api.github.com/repos/py4j/py4j/notifications{?since,all,participating}",
+  "labels_url": "https://api.github.com/repos/py4j/py4j/labels{/name}",
+  "releases_url": "https://api.github.com/repos/py4j/py4j/releases{/id}",
+  "deployments_url": "https://api.github.com/repos/py4j/py4j/deployments",
+  "created_at": "2010-11-02T20:58:18Z",
+  "updated_at": "2026-04-28T05:45:04Z",
+  "pushed_at": "2025-12-11T00:04:38Z",
+  "git_url": "git://github.com/py4j/py4j.git",
+  "ssh_url": "git@github.com:py4j/py4j.git",
+  "clone_url": "https://github.com/py4j/py4j.git",
+  "svn_url": "https://github.com/py4j/py4j",
+  "homepage": "https://www.py4j.org",
+  "size": 17182,
+  "stargazers_count": 1288,
+  "watchers_count": 1288,
+  "language": "Java",
+  "has_issues": true,
+  "has_projects": true,
+  "has_downloads": true,
+  "has_wiki": false,
+  "has_pages": true,
+  "has_discussions": false,
+  "forks_count": 232,
+  "mirror_url": null,
+  "archived": false,
+  "disabled": false,
+  "open_issues_count": 186,
+  "license": {
+    "key": "other",
+    "name": "Other",
+    "spdx_id": "NOASSERTION",
+    "url": null,
+    "node_id": "MDc6TGljZW5zZTA="
+  },
+  "allow_forking": true,
+  "is_template": false,
+  "web_commit_signoff_required": false,
+  "has_pull_requests": true,
+  "pull_request_creation_policy": "all",
+  "topics": [
+    "distributed-systems",
+    "java",
+    "programming-languages",
+    "python"
+  ],
+  "visibility": "public",
+  "forks": 232,
+  "open_issues": 186,
+  "watchers": 1288,
+  "default_branch": "master",
+  "temp_clone_token": null,
+  "custom_properties": {
+
+  },
+  "organization": {
+    "login": "py4j",
+    "id": 99001623,
+
+exec
+/usr/bin/bash -lc "find metadata -name 'index.json' -o -name '*.json' | head -20" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/index.json
+metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/index.json
+metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-util/index.json
+metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+metadata/org.scalatest/scalatest-compatible/index.json
+metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/reachability-metadata.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/1.5.0/reachability-metadata.json
+metadata/com.github.ben-manes.caffeine/caffeine/3.1.2/reachability-metadata.json
+metadata/com.github.ben-manes.caffeine/caffeine/index.json
+metadata/com.github.ben-manes.caffeine/caffeine/2.9.3/reachability-metadata.json
+metadata/org.openjfx/javafx-base/index.json
+
+exec
+/usr/bin/bash -lc "rg 'source-code-url|test-code-url|documentation-url' -n build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/py4j/py4j/contents?ref=0.10.9.3 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 195ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "30d704d821f0700c859e9866c1c0e9811ef0251d",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/.github?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/.github",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/30d704d821f0700c859e9866c1c0e9811ef0251d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/.github?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/30d704d821f0700c859e9866c1c0e9811ef0251d",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "68fc6918412bde813266750dba42935e5d3ece1f",
+    "size": 17,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/.gitignore?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/.gitignore",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/68fc6918412bde813266750dba42935e5d3ece1f",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/.gitignore?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/68fc6918412bde813266750dba42935e5d3ece1f",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/.gitignore"
+    }
+  },
+  {
+    "name": "AUTHORS.txt",
+    "path": "AUTHORS.txt",
+    "sha": "d776d84e4a49dd705e4fac9fbc57e01bbc65f0e1",
+    "size": 1512,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/AUTHORS.txt?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/AUTHORS.txt",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/d776d84e4a49dd705e4fac9fbc57e01bbc65f0e1",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/AUTHORS.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/AUTHORS.txt?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/d776d84e4a49dd705e4fac9fbc57e01bbc65f0e1",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/AUTHORS.txt"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.rst",
+    "path": "CONTRIBUTING.rst",
+    "sha": "56ecfb78b79036ce15a034b70ac4143fd7ad6490",
+    "size": 8105,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/CONTRIBUTING.rst?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/CONTRIBUTING.rst",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/56ecfb78b79036ce15a034b70ac4143fd7ad6490",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/CONTRIBUTING.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/CONTRIBUTING.rst?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/56ecfb78b79036ce15a034b70ac4143fd7ad6490",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/CONTRIBUTING.rst"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+    "size": 1481,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/LICENSE.txt?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/LICENSE.txt?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/LICENSE.txt"
+    }
+  },
+  {
+    "name": "MANIFEST.in",
+    "path": "MANIFEST.in",
+    "sha": "18e52fb71301680454fd19c238152cd79f1c0b63",
+    "size": 179,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/MANIFEST.in?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/MANIFEST.in",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/18e52fb71301680454fd19c238152cd79f1c0b63",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/MANIFEST.in",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/MANIFEST.in?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/18e52fb71301680454fd19c238152cd79f1c0b63",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/MANIFEST.in"
+    }
+  },
+  {
+    "name": "README.rst",
+    "path": "README.rst",
+    "sha": "97295b29119c4b47e961081c07806f4345c22024",
+    "size": 1660,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/README.rst?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/README.rst",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/97295b29119c4b47e961081c07806f4345c22024",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/README.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/README.rst?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/97295b29119c4b47e961081c07806f4345c22024",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/README.rst"
+    }
+  },
+  {
+    "name": "py4j-java",
+    "path": "py4j-java",
+    "sha": "c832162c91e34300f1f5f2a4eb89149b07552455",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/c832162c91e34300f1f5f2a4eb89149b07552455",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/c832162c91e34300f1f5f2a4eb89149b07552455",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java"
+    }
+  },
+  {
+    "name": "py4j-python",
+    "path": "py4j-python",
+    "sha": "982b2ff1ff88c32de51ccff6d34b8754dfe2e684",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-python?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-python",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/982b2ff1ff88c32de51ccff6d34b8754dfe2e684",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-python?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/982b2ff1ff88c32de51ccff6d34b8754dfe2e684",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-python"
+    }
+  },
+  {
+    "name": "py4j-web",
+    "path": "py4j-web",
+    "sha": "3069af160fc7101853af206aa97dbf55f562003a",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-web",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/3069af160fc7101853af206aa97dbf55f562003a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/3069af160fc7101853af206aa97dbf55f562003a",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-web"
+    }
+  },
+  {
+    "name": "requirements.txt",
+    "path": "requirements.txt",
+    "sha": "6b3b8acd7ec46ab008f4925734f9d1fb25c33b64",
+    "size": 70,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/requirements.txt?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/requirements.txt",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/6b3b8acd7ec46ab008f4925734f9d1fb25c33b64",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/requirements.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/requirements.txt?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/6b3b8acd7ec46ab008f4925734f9d1fb25c33b64",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/requirements.txt"
+    }
+  },
+  {
+    "name": "setup.py",
+    "path": "setup.py",
+    "sha": "1cfb6c7a4457de631d4f5be7f75adb359ab56b74",
+    "size": 2479,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/setup.py?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/setup.py",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/1cfb6c7a4457de631d4f5be7f75adb359ab56b74",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/setup.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/setup.py?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/1cfb6c7a4457de631d4f5be7f75adb359ab56b74",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/setup.py"
+    }
+  }
+]
+
+codex
+I found the exact `0.10.9.3` tag in the upstream repository and confirmed the repo has separate Java, Python, and web documentation trees. Next I’m checking the tag’s Java test and docs paths so the non-Maven URLs are as narrow as possible.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/py4j/py4j/contents/py4j-java?ref=0.10.9.3 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/py4j/py4j/contents/py4j-java/src?ref=0.10.9.3 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/py4j/py4j/contents/py4j-web?ref=0.10.9.3 | sed -n '1,240p'" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 225ms:
+[
+  {
+    "name": ".classpath",
+    "path": "py4j-java/.classpath",
+    "sha": "577d9df7e82745500c7ec84354b26abceca0ffec",
+    "size": 489,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/.classpath?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/.classpath",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/577d9df7e82745500c7ec84354b26abceca0ffec",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/.classpath",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/.classpath?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/577d9df7e82745500c7ec84354b26abceca0ffec",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/.classpath"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": "py4j-java/.gitignore",
+    "sha": "043811ce35a2dbef8cf42531a77807fa7748cf4e",
+    "size": 286,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/.gitignore?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/.gitignore",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/043811ce35a2dbef8cf42531a77807fa7748cf4e",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/.gitignore?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/043811ce35a2dbef8cf42531a77807fa7748cf4e",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/.gitignore"
+    }
+  },
+  {
+    "name": ".project",
+    "path": "py4j-java/.project",
+    "sha": "d35be0efab12fba59fa356782d4f1a21cd4e6597",
+    "size": 368,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/.project?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/.project",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/d35be0efab12fba59fa356782d4f1a21cd4e6597",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/.project?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/d35be0efab12fba59fa356782d4f1a21cd4e6597",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/.project"
+    }
+  },
+  {
+    "name": ".settings",
+    "path": "py4j-java/.settings",
+    "sha": "89accf4d5534ae010110b59432d91e4a7a2e54da",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/.settings?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/.settings",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/89accf4d5534ae010110b59432d91e4a7a2e54da",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/.settings?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/89accf4d5534ae010110b59432d91e4a7a2e54da",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/.settings"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "py4j-java/LICENSE.txt",
+    "sha": "0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+    "size": 1481,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/LICENSE.txt?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/LICENSE.txt?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/LICENSE.txt"
+    }
+  },
+  {
+    "name": "ant.properties",
+    "path": "py4j-java/ant.properties",
+    "sha": "4bc662a6973d2b0034ace509acfd26eb232f2c34",
+    "size": 586,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/ant.properties?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/ant.properties",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/4bc662a6973d2b0034ace509acfd26eb232f2c34",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/ant.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/ant.properties?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/4bc662a6973d2b0034ace509acfd26eb232f2c34",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/ant.properties"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "py4j-java/build.gradle",
+    "sha": "d443b9306122d25a80b80792422564d47b1bb341",
+    "size": 11175,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/build.gradle?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/build.gradle",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/d443b9306122d25a80b80792422564d47b1bb341",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/build.gradle?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/d443b9306122d25a80b80792422564d47b1bb341",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/build.gradle"
+    }
+  },
+  {
+    "name": "build.xml",
+    "path": "py4j-java/build.xml",
+    "sha": "28249e6c15e6c50e0757cb6e5ae0f65adee2dd78",
+    "size": 11144,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/build.xml?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/build.xml",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/28249e6c15e6c50e0757cb6e5ae0f65adee2dd78",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/build.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/build.xml?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/28249e6c15e6c50e0757cb6e5ae0f65adee2dd78",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/build.xml"
+    }
+  },
+  {
+    "name": "gradle.properties",
+    "path": "py4j-java/gradle.properties",
+    "sha": "7b89a38162deead86463145cc51361bef00e061e",
+    "size": 267,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/gradle.properties?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/gradle.properties",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/7b89a38162deead86463145cc51361bef00e061e",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/gradle.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/gradle.properties?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/7b89a38162deead86463145cc51361bef00e061e",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/gradle.properties"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "py4j-java/gradle",
+    "sha": "abdd622e4b648023f61dc4fc21073ff824ba0632",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/gradle?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/gradle",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/abdd622e4b648023f61dc4fc21073ff824ba0632",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/gradle?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/abdd622e4b648023f61dc4fc21073ff824ba0632",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "py4j-java/gradlew",
+    "sha": "9d82f78915133e1c35a6ea51252590fb38efac2f",
+    "size": 4971,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/gradlew?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/gradlew",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/9d82f78915133e1c35a6ea51252590fb38efac2f",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/gradlew?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/9d82f78915133e1c35a6ea51252590fb38efac2f",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/gradlew"
+    }
+  },
+  {
+    "name": "gradlew.bat",
+    "path": "py4j-java/gradlew.bat",
+    "sha": "72d362dafd896f845f13c55bf925b14c5c8faa1d",
+    "size": 2404,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/gradlew.bat?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/gradlew.bat",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/72d362dafd896f845f13c55bf925b14c5c8faa1d",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/gradlew.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/gradlew.bat?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/72d362dafd896f845f13c55bf925b14c5c8faa1d",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/gradlew.bat"
+    }
+  },
+  {
+    "name": "junit-4.10.jar",
+    "path": "py4j-java/junit-4.10.jar",
+    "sha": "bf5c0b9c6ad26f515407effa28232a3e05200868",
+    "size": 253160,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/junit-4.10.jar?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/junit-4.10.jar",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/bf5c0b9c6ad26f515407effa28232a3e05200868",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/junit-4.10.jar",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/junit-4.10.jar?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/bf5c0b9c6ad26f515407effa28232a3e05200868",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/junit-4.10.jar"
+    }
+  },
+  {
+    "name": "junit-license.txt",
+    "path": "py4j-java/junit-license.txt",
+    "sha": "23b86ec65964c41b6b4cbf1bb3c863d58d9beee2",
+    "size": 11553,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/junit-license.txt?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/junit-license.txt",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/23b86ec65964c41b6b4cbf1bb3c863d58d9beee2",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/junit-license.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/junit-license.txt?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/23b86ec65964c41b6b4cbf1bb3c863d58d9beee2",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/junit-license.txt"
+    }
+  },
+  {
+    "name": "logging.properties",
+    "path": "py4j-java/logging.properties",
+    "sha": "894168b0db1561bbe1b2f375f5fb3fc7cbd27368",
+    "size": 178,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/logging.properties?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/logging.properties",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/894168b0db1561bbe1b2f375f5fb3fc7cbd27368",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-java/logging.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/logging.properties?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/894168b0db1561bbe1b2f375f5fb3fc7cbd27368",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-java/logging.properties"
+    }
+
+ succeeded in 180ms:
+[
+  {
+    "name": "main",
+    "path": "py4j-java/src/main",
+    "sha": "3b65667b7f4c546e9addaa8debbf30e49c51d725",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/src/main?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/main",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/3b65667b7f4c546e9addaa8debbf30e49c51d725",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/src/main?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/3b65667b7f4c546e9addaa8debbf30e49c51d725",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "py4j-java/src/test",
+    "sha": "5bdbb2f103252232e3874fb44360ae6a6c2c4af5",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/src/test?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/5bdbb2f103252232e3874fb44360ae6a6c2c4af5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-java/src/test?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/5bdbb2f103252232e3874fb44360ae6a6c2c4af5",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test"
+    }
+  }
+]
+
+ succeeded in 224ms:
+[
+  {
+    "name": ".gitignore",
+    "path": "py4j-web/.gitignore",
+    "sha": "682da1550cbca12e9f1f88b9a30d06fac3beaebf",
+    "size": 14,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/.gitignore?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/.gitignore",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/682da1550cbca12e9f1f88b9a30d06fac3beaebf",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/.gitignore?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/682da1550cbca12e9f1f88b9a30d06fac3beaebf",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/.gitignore"
+    }
+  },
+  {
+    "name": ".project",
+    "path": "py4j-web/.project",
+    "sha": "17a850679ab38f51233610193123acb92c7c70ee",
+    "size": 362,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/.project?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/.project",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/17a850679ab38f51233610193123acb92c7c70ee",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/.project",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/.project?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/17a850679ab38f51233610193123acb92c7c70ee",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/.project"
+    }
+  },
+  {
+    "name": ".pydevproject",
+    "path": "py4j-web/.pydevproject",
+    "sha": "266ba195c63ab46304cdb456259c7eec44785e97",
+    "size": 284,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/.pydevproject?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/.pydevproject",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/266ba195c63ab46304cdb456259c7eec44785e97",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/.pydevproject",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/.pydevproject?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/266ba195c63ab46304cdb456259c7eec44785e97",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/.pydevproject"
+    }
+  },
+  {
+    "name": ".settings",
+    "path": "py4j-web/.settings",
+    "sha": "ece168bfbb69fbe7c38efdcf3bf83b57f4cf933a",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/.settings?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-web/.settings",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/ece168bfbb69fbe7c38efdcf3bf83b57f4cf933a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/.settings?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/ece168bfbb69fbe7c38efdcf3bf83b57f4cf933a",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-web/.settings"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "py4j-web/LICENSE.txt",
+    "sha": "0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+    "size": 1481,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/LICENSE.txt?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/LICENSE.txt?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/0f45e3e464c1eaa0b965da6a87d79e5c9e065aac",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/LICENSE.txt"
+    }
+  },
+  {
+    "name": "Makefile",
+    "path": "py4j-web/Makefile",
+    "sha": "9ec452673da65eb7f658e4dd83ce7aff95212228",
+    "size": 2989,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/Makefile?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/Makefile",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/9ec452673da65eb7f658e4dd83ce7aff95212228",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/Makefile",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/Makefile?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/9ec452673da65eb7f658e4dd83ce7aff95212228",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/Makefile"
+    }
+  },
+  {
+    "name": "TODO",
+    "path": "py4j-web/TODO",
+    "sha": "87e68bbc9bd3ec6c5ff4633b28190c66f36c06d5",
+    "size": 257,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/TODO?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/TODO",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/87e68bbc9bd3ec6c5ff4633b28190c66f36c06d5",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/TODO",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/TODO?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/87e68bbc9bd3ec6c5ff4633b28190c66f36c06d5",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/TODO"
+    }
+  },
+  {
+    "name": "_static",
+    "path": "py4j-web/_static",
+    "sha": "417c01c8795a35b8e835113a85a5c0c1c77f67fb",
+    "size": 0,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/_static?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-web/_static",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/trees/417c01c8795a35b8e835113a85a5c0c1c77f67fb",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/_static?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/trees/417c01c8795a35b8e835113a85a5c0c1c77f67fb",
+      "html": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-web/_static"
+    }
+  },
+  {
+    "name": "about.rst",
+    "path": "py4j-web/about.rst",
+    "sha": "ea5371e7ff14660d48a3f454e7603f93ec9b0a0e",
+    "size": 1564,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/about.rst?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/about.rst",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/ea5371e7ff14660d48a3f454e7603f93ec9b0a0e",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/about.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/about.rst?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/ea5371e7ff14660d48a3f454e7603f93ec9b0a0e",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/about.rst"
+    }
+  },
+  {
+    "name": "advanced_topics.rst",
+    "path": "py4j-web/advanced_topics.rst",
+    "sha": "18504bbc930db4bea772cb7901799543d65f9999",
+    "size": 40490,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/advanced_topics.rst?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/advanced_topics.rst",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/18504bbc930db4bea772cb7901799543d65f9999",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/advanced_topics.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/advanced_topics.rst?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/18504bbc930db4bea772cb7901799543d65f9999",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/advanced_topics.rst"
+    }
+  },
+  {
+    "name": "changelog.rst",
+    "path": "py4j-web/changelog.rst",
+    "sha": "ac02e933a8292370f396430946ceb2e593505859",
+    "size": 25889,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/changelog.rst?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/changelog.rst",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/ac02e933a8292370f396430946ceb2e593505859",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/changelog.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/changelog.rst?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/ac02e933a8292370f396430946ceb2e593505859",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/changelog.rst"
+    }
+  },
+  {
+    "name": "conf.py",
+    "path": "py4j-web/conf.py",
+    "sha": "86b3b47e697ac6e98925cd180c42ca020e89c6fc",
+    "size": 6540,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/conf.py?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/conf.py",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/86b3b47e697ac6e98925cd180c42ca020e89c6fc",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/conf.py",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/conf.py?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/86b3b47e697ac6e98925cd180c42ca020e89c6fc",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/conf.py"
+    }
+  },
+  {
+    "name": "contents.rst",
+    "path": "py4j-web/contents.rst",
+    "sha": "79e1c468351861a511c77f2e35192a6279cbe070",
+    "size": 197,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/contents.rst?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/contents.rst",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/79e1c468351861a511c77f2e35192a6279cbe070",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/contents.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/contents.rst?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/79e1c468351861a511c77f2e35192a6279cbe070",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/contents.rst"
+    }
+  },
+  {
+    "name": "contributing.rst",
+    "path": "py4j-web/contributing.rst",
+    "sha": "1228d30d22c6ffc30559a710ad107a666b70612d",
+    "size": 7498,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/contributing.rst?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/contributing.rst",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/1228d30d22c6ffc30559a710ad107a666b70612d",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/contributing.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/contributing.rst?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/1228d30d22c6ffc30559a710ad107a666b70612d",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/contributing.rst"
+    }
+  },
+  {
+    "name": "download.rst",
+    "path": "py4j-web/download.rst",
+    "sha": "20a7818e8c37119e0e4722398106f5346f10be58",
+    "size": 1008,
+    "url": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/download.rst?ref=0.10.9.3",
+    "html_url": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/download.rst",
+    "git_url": "https://api.github.com/repos/py4j/py4j/git/blobs/20a7818e8c37119e0e4722398106f5346f10be58",
+    "download_url": "https://raw.githubusercontent.com/py4j/py4j/0.10.9.3/py4j-web/download.rst",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/py4j/py4j/contents/py4j-web/download.rst?ref=0.10.9.3",
+      "git": "https://api.github.com/repos/py4j/py4j/git/blobs/20a7818e8c37119e0e4722398106f5346f10be58",
+      "html": "https://github.com/py4j/py4j/blob/0.10.9.3/py4j-web/download.rst"
+    }
+
+codex
+I’ve got enough to write the metadata: Maven Central for source and Javadoc, GitHub tag for tests, repository as the current canonical GitHub repo. Py4J targets Java/Python interop but it is not Kotlin- or Scala-specific, so I’m leaving `language` absent.
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' -n metadata build/discovered-artifact-metadata | head -50" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/0.31.1/opencensus-api-0.31.1-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/openjfx/javafx-base/11.0.2/javafx-base-11.0.2-sources.jar",
+metadata/io.zipkin.zipkin2/zipkin/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/zipkin/zipkin2/zipkin/2.23.2/zipkin-2.23.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-jdk14/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.5.6/slf4j-jdk14-1.5.6-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-sources.jar",
+metadata/org.apache.activemq/activemq-client/index.json:35:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-sources.jar",
+metadata/com.squareup.okio/okio/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:27:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-sources.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-sources.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-sources.jar",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-sources.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.3.0/jackson-annotations-2.3.0-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.1.2/jackson-annotations-2.1.2-sources.jar",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-openwire-legacy/5.18.1/activemq-openwire-legacy-5.18.1-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.1.3/jackson-core-2.1.3-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77-sources.jar",
+metadata/org.jline/jline-terminal-jna/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jline/jline-terminal-jna/3.20.0/jline-terminal-jna-3.20.0-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+metadata/org.jline/jline/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/2.15.2/jackson-dataformat-toml-2.15.2-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' -n metadata build/discovered-artifact-metadata | head -50" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:9:    "documentation-url": "https://github.com/rnorth/duct-tape/blob/1.0.8/docs/index.md",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/commons-logging/commons-logging-api/index.json:8:    "documentation-url" : "https://github.com/apache/commons-logging/blob/LOGGING_1_1_0/xdocs/guide.xml",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-javadoc.jar",
+metadata/commons-logging/commons-logging/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-javadoc.jar",
+metadata/io.nats/jnats/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/io/nats/jnats/2.16.11/jnats-2.16.11-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-javadoc.jar",
+metadata/org.jooq/jooq/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-javadoc.jar",
+metadata/org.jooq/jooq/index.json:115:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+metadata/org.slf4j/slf4j-nop/index.json:8:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+metadata/org.immutables/value/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.6/value-2.8.6-javadoc.jar",
+metadata/org.immutables/value/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/immutables/value/2.8.2/value-2.8.2-javadoc.jar",
+metadata/org.slf4j/slf4j-jdk14/index.json:8:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
+metadata/org.apache.activemq/activemq-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-javadoc.jar",
+metadata/org.apache.activemq/activemq-client/index.json:38:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/5.18.1/activemq-client-5.18.1-javadoc.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/3.0.1/findbugs-annotations-3.0.1-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-javadoc.jar",
+metadata/com.google.code.findbugs/annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/annotations/3.0.1u2/annotations-3.0.1u2-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-javadoc.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:30:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-javadoc.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1-javadoc.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/activemq/artemis-log-annotation-processor/2.28.0/artemis-log-annotation-processor-2.28.0-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.0/cache-api-1.1.0-javadoc.jar",
+metadata/javax.cache/cache-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/javax/cache/cache-api/1.1.1/cache-api-1.1.1-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/org.attoparser/attoparser/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/2.0.5.RELEASE/attoparser-2.0.5.RELEASE-javadoc.jar",
+metadata/org.hamcrest/hamcrest-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-javadoc.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+metadata/org.hamcrest/hamcrest/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest/2.2/hamcrest-2.2-javadoc.jar",
+metadata/org.jctools/jctools-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-javadoc.jar",
+metadata/ch.qos.logback.contrib/logback-jackson/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/ch/qos/logback/contrib/logback-jackson/0.1.5/logback-jackson-0.1.5-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/sun/istack/istack-commons-runtime/3.0.7/istack-commons-runtime-3.0.7-javadoc.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/4.0.0/istack-commons-runtime-4.0.0-javadoc.jar",
+metadata/org.apache.commons/commons-compress/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg '\"test-code-url\"' -n metadata build/discovered-artifact-metadata | head -60" in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/org.rnorth.duct-tape/duct-tape/index.json:8:    "test-code-url": "https://github.com/rnorth/duct-tape/tree/1.0.8/src/test/java",
+metadata/org.slf4j/slf4j-api/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.3/slf4j-api-1.5.3-tests.jar",
+metadata/org.slf4j/slf4j-api/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-tests.jar",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.yaml/snakeyaml/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml/src/snakeyaml-1.32/src/test/",
+metadata/org.slf4j/slf4j-nop/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+metadata/org.slf4j/slf4j-jdk14/index.json:7:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-jdk14/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/2.36.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/2.32.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/2.29.0/artemis-jms-client/src/test",
+metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/2.28.0/artemis-jms-client/src/test",
+metadata/com.squareup.okio/okio/index.json:7:    "test-code-url" : "https://github.com/square/okio/tree/okio-parent-1.17.2/okio/src/test",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-tests.jar",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-tests.jar",
+metadata/com.sun.istack/istack-commons-runtime/index.json:6:    "test-code-url" : "https://github.com/javaee/jaxb-istack-commons/tree/3.0.7-RELEASE/istack-commons/test",
+metadata/com.sun.istack/istack-commons-runtime/index.json:21:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-istack-commons/tree/4.0.0/istack-commons/runtime/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/6.0.0/activemq-client-6.0.0-tests.jar",
+metadata/org.apache.activemq/activemq-client/index.json:37:    "test-code-url" : "https://github.com/apache/activemq/tree/activemq-5.18.1/activemq-client/src/test",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/5.18.1/activemq-broker-5.18.1-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0-tests.jar",
+metadata/com.google.guava/failureaccess/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/activemq-artemis/tree/2.28.0/artemis-log-annotation-processor/src/test",
+metadata/com.google.android/annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.apache.activemq/activemq-openwire-legacy/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jctools/jctools-core/index.json:10:    "test-code-url": "https://github.com/JCTools/JCTools/tree/v2.1.2/jctools-core/src/test",
+metadata/org.jline/jline-terminal-jna/index.json:7:    "test-code-url" : "https://github.com/jline/jline3/tree/jline-parent-3.20.0/terminal-jna/src/test",
+metadata/commons-logging/commons-logging-api/index.json:7:    "test-code-url" : "https://github.com/apache/commons-logging/tree/LOGGING_1_1_0/src/test",
+metadata/commons-logging/commons-logging/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2-test-sources.jar",
+metadata/org.jline/jline/index.json:11:    "test-code-url": "https://github.com/jline/jline3/tree/jline-parent-3.21.0",
+metadata/io.nats/jnats/index.json:10:    "test-code-url": "https://github.com/nats-io/nats.java/tree/2.16.11/src/test",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:8:    "test-code-url": "N/A",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/1.8.2/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/1.8/stax-ex/src/test",
+metadata/com.google.code.findbugs/annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.code.findbugs/jsr305/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.tomcat.embed/tomcat-embed-el/index.json:7:    "test-code-url" : "https://github.com/apache/tomcat/tree/9.0.83/test/org/apache/el",
+metadata/org.ehcache/ehcache/index.json:13:    "test-code-url": "https://github.com/ehcache/ehcache3/tree/v3.10.8/integration-test/src/test",
+metadata/io.opencensus/opencensus-api/index.json:8:    "test-code-url": "https://github.com/census-instrumentation/opencensus-java/tree/v0.31.1/api/src/test",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:8:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.1.0/test",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:87:    "test-code-url" : "https://github.com/apache/tomcat/tree/10.0.20/test",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-source-release.zip",
+metadata/io.zipkin.zipkin2/zipkin/index.json:7:    "test-code-url" : "https://github.com/openzipkin/zipkin/tree/2.23.2/zipkin-tests/src/test",
+metadata/org.freemarker/freemarker/index.json:11:    "test-code-url": "https://github.com/apache/freemarker/tree/v2.3.31/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:7:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:21:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.0.GA/src/test",
+metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+metadata/com.googlecode.javaewah/JavaEWAH/index.json:7:    "test-code-url" : "https://github.com/lemire/javaewah/tree/JavaEWAH-1.1.13/src/test",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.2.0/src/test",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v19.2/src/test",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/19.0/src/test",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-1.2.17/tests",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v19.1/src/test",
+metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url" : "https://github.com/javafxports/openjdk-jfx/tree/11.0.2+1/tests",
+metadata/org.hamcrest/hamcrest-core/index.json:7:    "test-code-url" : "https://github.com/hamcrest/JavaHamcrest/tree/hamcrest-java-1.3/hamcrest-unit-test/src/main/java",
+
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+diff --git a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+index 598cec0aaf5c364b89c83dddc8b92534a8e564d6..2f82ae453bd6d2e9a27be8aa2ec66ac486c31009
+--- a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
++++ b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.py4j:py4j:0.10.9.3"
++  "coordinates" : "net.sf.py4j:py4j:0.10.9.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-sources.jar",
++  "repository-url" : "https://github.com/py4j/py4j",
++  "test-code-url" : "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-javadoc.jar",
++  "description" : "Py4J lets Python programs running in a Python interpreter dynamically access Java objects in a JVM and use them much like local Python objects. It also supports callbacks from Java into Python, enabling bidirectional integration between Python and Java applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+index 598cec0aaf5c364b89c83dddc8b92534a8e564d6..2f82ae453bd6d2e9a27be8aa2ec66ac486c31009
+--- a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
++++ b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.py4j:py4j:0.10.9.3"
++  "coordinates" : "net.sf.py4j:py4j:0.10.9.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-sources.jar",
++  "repository-url" : "https://github.com/py4j/py4j",
++  "test-code-url" : "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-javadoc.jar",
++  "description" : "Py4J lets Python programs running in a Python interpreter dynamically access Java objects in a JVM and use them much like local Python objects. It also supports callbacks from Java into Python, enabling bidirectional integration between Python and Java applications."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+{
+  "coordinates": "net.sf.py4j:py4j:0.10.9.3",
+  "source-code-url": "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-sources.jar",
+  "repository-url": "https://github.com/py4j/py4j",
+  "test-code-url": "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-javadoc.jar",
+  "description": "Py4J lets Python programs running in a Python interpreter dynamically access Java objects in a JVM and use them much like local Python objects. It also supports callbacks from Java into Python, enabling bidirectional integration between Python and Java applications."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+index 598cec0aaf5c364b89c83dddc8b92534a8e564d6..2f82ae453bd6d2e9a27be8aa2ec66ac486c31009
+--- a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
++++ b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.py4j:py4j:0.10.9.3"
++  "coordinates" : "net.sf.py4j:py4j:0.10.9.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-sources.jar",
++  "repository-url" : "https://github.com/py4j/py4j",
++  "test-code-url" : "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-javadoc.jar",
++  "description" : "Py4J lets Python programs running in a Python interpreter dynamically access Java objects in a JVM and use them much like local Python objects. It also supports callbacks from Java into Python, enabling bidirectional integration between Python and Java applications."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json' in /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+index 598cec0aaf5c364b89c83dddc8b92534a8e564d6..2f82ae453bd6d2e9a27be8aa2ec66ac486c31009
+--- a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
++++ b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.py4j:py4j:0.10.9.3"
++  "coordinates" : "net.sf.py4j:py4j:0.10.9.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-sources.jar",
++  "repository-url" : "https://github.com/py4j/py4j",
++  "test-code-url" : "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-javadoc.jar",
++  "description" : "Py4J lets Python programs running in a Python interpreter dynamically access Java objects in a JVM and use them much like local Python objects. It also supports callbacks from Java into Python, enabling bidirectional integration between Python and Java applications."
+ }
+
+web search: 
+web search: Maven Central net.sf.py4j py4j 0.10.9.3 sources javadoc
+web search: 
+web search: https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test
+codex
+Updated [net.sf.py4j-py4j-0.10.9.3.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json).
+
+I used Maven Central for the exact-version sources and Javadoc artifacts, and the upstream `0.10.9.3` GitHub tag for the Java test suite path. I left `language` absent because this is not a Kotlin- or Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/?utm_source=openai))
+
+Validation: `jq .` passes.
+diff --git a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+index 598cec0aaf5c364b89c83dddc8b92534a8e564d6..2f82ae453bd6d2e9a27be8aa2ec66ac486c31009
+--- a/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
++++ b/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "net.sf.py4j:py4j:0.10.9.3"
++  "coordinates" : "net.sf.py4j:py4j:0.10.9.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-sources.jar",
++  "repository-url" : "https://github.com/py4j/py4j",
++  "test-code-url" : "https://github.com/py4j/py4j/tree/0.10.9.3/py4j-java/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/py4j-0.10.9.3-javadoc.jar",
++  "description" : "Py4J lets Python programs running in a Python interpreter dynamically access Java objects in a JVM and use them much like local Python objects. It also supports callbacks from Java into Python, enabling bidirectional integration between Python and Java applications."
+ }
+
+2026-04-28T20:12:24.978921Z ERROR codex_core::session: failed to record rollout items: thread 019dd5b7-61fa-7f53-9539-5da6b4b8fefe not found
+tokens used
+122,340
+Updated [net.sf.py4j-py4j-0.10.9.3.json](/home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089/build/discovered-artifact-metadata/net.sf.py4j-py4j-0.10.9.3.json).
+
+I used Maven Central for the exact-version sources and Javadoc artifacts, and the upstream `0.10.9.3` GitHub tag for the Java test suite path. I left `language` absent because this is not a Kotlin- or Scala-specific library. ([repo1.maven.org](https://repo1.maven.org/maven2/net/sf/py4j/py4j/0.10.9.3/?utm_source=openai))
+
+Validation: `jq .` passes.
+Ran agent for net.sf.py4j:py4j:0.10.9.3 (exit 0). Log: /home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089/build/agent-artifact-discovery-logs/net.sf.py4j-py4j-0.10.9.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/metadata-forge/local_repositories/forge_worktrees/2970-1592b089/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 4 executed, 5 from cache
