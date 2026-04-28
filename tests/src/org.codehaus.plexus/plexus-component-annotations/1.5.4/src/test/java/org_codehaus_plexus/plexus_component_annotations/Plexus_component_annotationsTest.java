@@ -47,6 +47,15 @@ public class Plexus_component_annotationsTest {
     }
 
     @Test
+    void componentAnnotationCanDescribeInterfaceComponents() {
+        Component component = InterfaceComponent.class.getAnnotation(Component.class);
+
+        assertThat(component.role()).isSameAs(InterfaceComponent.class);
+        assertThat(component.hint()).isEqualTo("contract");
+        assertThat(component.description()).isEqualTo("component interface contract");
+    }
+
+    @Test
     void componentAnnotationUsesDocumentedRuntimeTypeTargetAndExpectedDefaults() {
         assertThat(Component.class.isAnnotationPresent(Documented.class)).isTrue();
         assertThat(Component.class.isAnnotationPresent(Inherited.class)).isTrue();
@@ -162,6 +171,10 @@ public class Plexus_component_annotationsTest {
             configurator = "basic-configurator",
             isolatedRealm = true)
     public static class FullyConfiguredComponent {
+    }
+
+    @Component(role = InterfaceComponent.class, hint = "contract", description = "component interface contract")
+    public interface InterfaceComponent {
     }
 
     public static class DerivedComponent extends FullyConfiguredComponent {
