@@ -8,6 +8,8 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Field;
+
 import org.dom4j.Element;
 import org.dom4j.QName;
 import org.dom4j.bean.BeanDocumentFactory;
@@ -17,8 +19,9 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class BeanDocumentFactoryTest {
     @Test
-    void createsBeanBackedElementFromClassAttribute() {
+    void createsBeanBackedElementFromClassAttribute() throws Exception {
         BeanDocumentFactory factory = new BeanDocumentFactory();
+        clearCompilerGeneratedClassCache();
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "class", "class", "CDATA", factory.getClass().getName());
 
@@ -29,5 +32,11 @@ public class BeanDocumentFactoryTest {
         assertThat(element.getName()).isEqualTo("configuredBean");
         assertThat(data).isNotSameAs(factory);
         assertThat(data.getClass()).isEqualTo(factory.getClass());
+    }
+
+    private static void clearCompilerGeneratedClassCache() throws Exception {
+        Field field = BeanDocumentFactory.class.getDeclaredField("class$org$dom4j$bean$BeanDocumentFactory");
+        field.setAccessible(true);
+        field.set(null, null);
     }
 }
