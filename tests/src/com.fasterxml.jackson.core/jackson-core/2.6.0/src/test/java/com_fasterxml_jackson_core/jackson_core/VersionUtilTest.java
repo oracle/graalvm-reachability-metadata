@@ -12,23 +12,37 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class VersionUtilTest {
+public class VersionUtilTest {
     @Test
-    void versionForReadsVersionFileFromClassPackage() {
+    void versionForReadsPackageVersionFromClassPackage() {
         Version version = VersionUtil.versionFor(VersionUtilTest.class);
 
+        assertThat(version).isNotNull();
         assertThat(version.isUknownVersion()).isFalse();
-        assertThat(version.toString()).isEqualTo("2.1.3-test");
+        assertThat(version.toString()).isEqualTo("1.2.3-test");
         assertThat(version.getGroupId()).isEqualTo("com.fasterxml.jackson.core");
         assertThat(version.getArtifactId()).isEqualTo("jackson-core-test");
     }
 
+    @Test
+    void parseVersionPreservesSnapshotGroupAndArtifact() {
+        Version version = VersionUtil.parseVersion("4.5.6-SNAPSHOT", "com.example.versionutil", "versionutil-fixture");
+
+        assertThat(version).isNotNull();
+        assertThat(version.isUknownVersion()).isFalse();
+        assertThat(version.toString()).isEqualTo("4.5.6-SNAPSHOT");
+        assertThat(version.getGroupId()).isEqualTo("com.example.versionutil");
+        assertThat(version.getArtifactId()).isEqualTo("versionutil-fixture");
+    }
+
+    @SuppressWarnings("deprecation")
     @Test
     void mavenVersionForReadsPomPropertiesFromClassLoaderResource() {
         ClassLoader classLoader = VersionUtilTest.class.getClassLoader();
 
         Version version = VersionUtil.mavenVersionFor(classLoader, "com.example.versionutil", "versionutil-fixture");
 
+        assertThat(version).isNotNull();
         assertThat(version.isUknownVersion()).isFalse();
         assertThat(version.toString()).isEqualTo("4.5.6");
         assertThat(version.getGroupId()).isEqualTo("com.example.versionutil");
