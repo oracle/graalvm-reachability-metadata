@@ -8,6 +8,9 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 
 import org.dom4j.QName;
@@ -18,6 +21,16 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class BeanElementTest {
+    @Test
+    void compilerGeneratedClassLookupResolvesBeanElementType() throws Throwable {
+        MethodHandle classLookup = MethodHandles.privateLookupIn(BeanElement.class, MethodHandles.lookup())
+                .findStatic(BeanElement.class, "class$", MethodType.methodType(Class.class, String.class));
+
+        Class<?> resolvedClass = (Class<?>) classLookup.invoke(BeanElement.class.getName());
+
+        assertThat(resolvedClass).isEqualTo(BeanElement.class);
+    }
+
     @Test
     void saxClassAttributeInitializesBackingBean() throws Exception {
         clearCompilerGeneratedClassCache();
