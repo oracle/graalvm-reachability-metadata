@@ -8,12 +8,13 @@ package org.thymeleaf;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Map;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.thymeleaf.util.ExpressionUtils.isMemberAllowed;
+import static org.thymeleaf.util.ExpressionUtils.isMemberForbidden;
 
 /**
  * Not including test for {@link java.util.Set} here, as it doesn't have any methods of its own.
@@ -24,32 +25,31 @@ public class ExpressionUtilsTest {
 
     @Test
     void allowsCollectionMethods() {
-        assertThat(isMemberAllowed(Collections.emptySet(), "isEmpty")).isTrue();
+        assertThat(isMemberForbidden(Collections.emptySet(), "isEmpty")).isFalse();
     }
 
     @Test
     void allowsIterableMethods() {
-        assertThat(isMemberAllowed(Collections.emptyList(), "iterator")).isTrue();
+        assertThat(isMemberForbidden(Collections.emptyList(), "iterator")).isFalse();
     }
 
     @Test
     void allowsListMethods() {
-        assertThat(isMemberAllowed(Collections.emptyList(), "get")).isTrue();
+        assertThat(isMemberForbidden(Collections.emptyList(), "get")).isFalse();
     }
 
     @Test
     void allowsMapMethods() {
-        assertThat(isMemberAllowed(Collections.emptyMap(), "put")).isTrue();
+        assertThat(isMemberForbidden(new HashMap<>(), "put")).isFalse();
     }
 
     @Test
-    void allowsMapEntryMethods() {
-        Map.Entry<String, String> entry = Collections.singletonMap("key", "value").entrySet().iterator().next();
-        assertThat(isMemberAllowed(entry, "getKey")).isTrue();
+    void allowsLocaleMethods() {
+        assertThat(isMemberForbidden(Locale.getDefault(), "getDisplayName")).isFalse();
     }
 
     @Test
-    void allowsCalendarMethods() {
-        assertThat(isMemberAllowed(Calendar.getInstance(), "clear")).isTrue();
+    void allowsDateMethods() {
+        assertThat(isMemberForbidden(new Date(), "getTime")).isFalse();
     }
 }
