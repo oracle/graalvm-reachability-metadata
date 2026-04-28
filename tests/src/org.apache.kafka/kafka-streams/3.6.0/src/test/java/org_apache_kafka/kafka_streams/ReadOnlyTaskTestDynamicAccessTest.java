@@ -37,5 +37,6 @@ public class ReadOnlyTaskTestDynamicAccessTest {
         assertThat(summary.getTestsFoundCount()).isEqualTo(1);
         assertThat(summary.getTestsStartedCount()).isEqualTo(1);
         assertThat(summary.getTestsSkippedCount()).isZero();
+        assertThat(summary.getTestsFailedCount()).isZero();
     }
 }
