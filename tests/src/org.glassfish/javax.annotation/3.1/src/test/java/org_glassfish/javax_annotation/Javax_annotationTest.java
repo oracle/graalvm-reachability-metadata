@@ -86,6 +86,15 @@ public class Javax_annotationTest {
     }
 
     @Test
+    void typeLevelSecurityAnnotationsRepresentDefaultAccessPolicies() {
+        RolesAllowed rolesAllowed = annotation(RoleRestrictedComponent.class, RolesAllowed.class);
+
+        assertThat(rolesAllowed.value()).containsExactly("writer", "reviewer");
+        assertThat(annotationPresent(OpenComponent.class, PermitAll.class)).isTrue();
+        assertThat(annotationPresent(RoleRestrictedComponent.class, DenyAll.class)).isFalse();
+    }
+
+    @Test
     void resourceContainerAndAuthenticationEnumExposePublicApi() throws Exception {
         Resources resources = annotation(ResourceConfiguredComponent.class, Resources.class);
         Resource fieldResource = annotation(field(ResourceConfiguredComponent.class, "queueName"), Resource.class);
@@ -301,6 +310,14 @@ public class Javax_annotationTest {
         @DenyAll
         void blockedOperation() {
         }
+    }
+
+    @RolesAllowed({"writer", "reviewer"})
+    private static final class RoleRestrictedComponent {
+    }
+
+    @PermitAll
+    private static final class OpenComponent {
     }
 
     @Resources({
