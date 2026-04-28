@@ -33,7 +33,7 @@ public class XStreamTest {
 
         Object restored = xstream.fromXML(xml);
         assertThat(restored).isInstanceOf(List.class);
-        assertThat((List<?>) restored).containsExactlyElementsOf(values);
+        assertThat(restored).isEqualTo(values);
     }
 
     @Test
