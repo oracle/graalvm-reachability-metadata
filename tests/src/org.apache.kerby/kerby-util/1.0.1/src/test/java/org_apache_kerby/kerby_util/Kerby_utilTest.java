@@ -39,9 +39,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.PublicKey;
+import java.security.cert.Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -94,7 +99,7 @@ public class Kerby_utilTest {
 
     @Test
     void base64StreamsEncodeAndDecodeIncrementalWritesAndReads() throws Exception {
-        byte[] data = Utf8.toBytes("Kerby stream data with unicode: Привет 世界 and binary \u0000 markers");
+        byte[] data = Utf8.toBytes("Kerby stream data with unicode: \u041f\u0440\u0438\u0432\u0435\u0442 \u4e16\u754c and binary \u0000 markers");
 
         ByteArrayOutputStream encodedOutput = new ByteArrayOutputStream();
         try (Base64OutputStream stream = new Base64OutputStream(encodedOutput, true, 8, new byte[] {'~'})) {
@@ -147,7 +152,7 @@ public class Kerby_utilTest {
 
     @Test
     void utf8IoAndStreamUtilitiesPreserveContent(@TempDir Path tempDir) throws Exception {
-        String content = "first line\nsecond line with emoji 🚀\nthird line";
+        String content = "first line\nsecond line with emoji \uD83D\uDE80\nthird line";
         byte[] contentBytes = Utf8.toBytes(content);
         File file = tempDir.resolve("kerby-util.txt").toFile();
 
@@ -338,6 +343,26 @@ public class Kerby_utilTest {
     }
 
     @Test
+    void keyStoreComparisonHandlesNullsAndEntryKinds() throws Exception {
+        char[] password = "changeit".toCharArray();
+        SecretKey secretKey = new SecretKeySpec(new byte[] {
+                0, 1, 2, 3, 4, 5, 6, 7,
+                8, 9, 10, 11, 12, 13, 14, 15}, "AES");
+        KeyStore firstKeyStore = createInMemoryKeyStore();
+        KeyStore secondKeyStore = createInMemoryKeyStore();
+        addSecretKeyEntry(firstKeyStore, "session", secretKey, password);
+        addSecretKeyEntry(secondKeyStore, "session", secretKey, password);
+
+        assertThat(Util.equals(firstKeyStore, secondKeyStore)).isTrue();
+        assertThat(Util.equals(firstKeyStore, null)).isFalse();
+        assertThat(Util.equals(null, null)).isTrue();
+
+        KeyStore certificateStore = createInMemoryKeyStore();
+        certificateStore.setCertificateEntry("session", new TestCertificate(new byte[] {1, 2, 3}));
+        assertThat(Util.equals(firstKeyStore, certificateStore)).isFalse();
+    }
+
+    @Test
     void publicKeyDeriverRecreatesPublicKeyFromRsaPrivateKey() throws Exception {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(1024);
@@ -347,6 +372,49 @@ public class Kerby_utilTest {
 
         assertThat(derived.getAlgorithm()).isEqualTo("RSA");
         assertThat(derived.getEncoded()).containsExactly(keyPair.getPublic().getEncoded());
+    }
+
+    private static KeyStore createInMemoryKeyStore() throws Exception {
+        KeyStore keyStore = KeyStore.getInstance("JCEKS");
+        keyStore.load(null, null);
+        return keyStore;
+    }
+
+    private static void addSecretKeyEntry(KeyStore keyStore, String alias, SecretKey secretKey, char[] password)
+            throws Exception {
+        keyStore.setEntry(alias, new KeyStore.SecretKeyEntry(secretKey), new KeyStore.PasswordProtection(password));
+    }
+
+    private static final class TestCertificate extends Certificate {
+        private final byte[] encoded;
+
+        private TestCertificate(byte[] encoded) {
+            super("TEST");
+            this.encoded = encoded.clone();
+        }
+
+        @Override
+        public byte[] getEncoded() {
+            return encoded.clone();
+        }
+
+        @Override
+        public void verify(PublicKey key) {
+        }
+
+        @Override
+        public void verify(PublicKey key, String sigProvider) {
+        }
+
+        @Override
+        public String toString() {
+            return "TestCertificate";
+        }
+
+        @Override
+        public PublicKey getPublicKey() {
+            return null;
+        }
     }
 
     private static final class TestOption implements KOption {
