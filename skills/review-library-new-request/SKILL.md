@@ -22,6 +22,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 - Treat dynamic-access coverage counts as a minimum gate, not complete metadata evidence. They can miss metadata required through downstream libraries, so do not use high coverage alone to prove that the submitted metadata is complete or necessary.
 - Treat `0/0` dynamic-access coverage as a valid no-calls case, not as failed coverage. Do not reject a PR only because the exploded stats report `0/0` dynamic-access calls while the PR adds metadata; those stats can miss metadata required through downstream libraries.
 - Do not explicitly read or review individual metadata entries. Use the metadata entry count reported in the PR description for the metadata/dynamic-access mismatch check; do not manually count entries from metadata files. Only request investigation when the covered dynamic-access call count is at least 75% higher than the PR-reported metadata entry count.
+- Accept only `reachability-metadata.json` files as metadata files. Reject legacy native-image metadata config files such as `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, or `predefined-classes-config.json`.
 
 ## Workflow
 
@@ -40,6 +41,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
      - `tests/src/<group>/<artifact>/<version>/**`
    - Be suspicious of changes to build logic, workflows, unrelated libraries, generated sources outside the target test directory, or wide refactors.
    - Treat extra `metadata/**` or `tests/src/**` trees for other coordinates as a blocking scope violation, not as a minor cleanup issue.
+   - Reject legacy native-image metadata config files. New-library metadata must be provided through `reachability-metadata.json`, including any test-only metadata under `tests/src/**`.
 
 3. Review the test source.
    - The test must be library-specific, not a lightly edited scaffold.
@@ -97,6 +99,7 @@ Match the concise review style already used in this repository:
 - For insufficient dynamic-access coverage: say that new-library PRs need at least 50% dynamic-access coverage when there are dynamic-access calls to cover, and ask for stronger tests or refreshed coverage evidence.
 - For unsupported coverage claims: ask for refreshed coverage evidence when the PR makes concrete coverage claims that are not supported by the diff.
 - For metadata/dynamic-access entry mismatch: ask for investigation only when covered dynamic-access calls are at least 75% higher than the PR-reported metadata entry count. Do not manually count or argue from metadata contents.
+- For legacy metadata files: say that metadata must use `reachability-metadata.json` and ask for old config files such as `reflect-config.json` or `resource-config.json` to be replaced.
 
 Keep comments short, factual, and blocking. Focus on the concrete defect, not a long explanation.
 

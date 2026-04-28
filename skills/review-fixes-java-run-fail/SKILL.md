@@ -19,6 +19,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
 - Treat dynamic-access coverage preservation as the main quality gate. The new version should not report lower dynamic-access coverage than the previously tested version unless the PR gives a concrete, credible reason.
 - For numeric gates, compare the reported evidence as-is. Do not inspect generation filters, agent configuration, or metadata contents to second-guess why dynamic-access or metadata-count numbers are what they are.
 - Compare total metadata entry counts between the previous metadata version and the new metadata version only as a severe-drop guardrail, using the counts reported in the PR description. Report metadata entry count issues only when the PR-reported new total metadata entry count has fewer than 25% as many entries as the PR-reported original count.
+- Accept only `reachability-metadata.json` files as metadata files. Reject legacy native-image metadata config files such as `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, or `predefined-classes-config.json`.
 - Prefer small, targeted review comments. This label is for JVM runtime repair work, not a full redesign of historical tests.
 
 ## Workflow
@@ -40,6 +41,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - Treat generated test project files such as `.gitignore`, `build.gradle`, `gradle.properties`, `settings.gradle`, and `user-code-filter.json` as normal when they live under the target version's test directory.
    - Accept narrow runtime setup changes when they are necessary for the JVM test to exercise the same library behavior, such as test resources, dependency updates, system properties, service loading, or initialization ordering.
    - Be suspicious of unrelated build logic, workflows, generated sources, other libraries, or broad refactors.
+   - Reject legacy native-image metadata config files. Metadata for generated support and test-only metadata must use `reachability-metadata.json`.
    - Reject or request changes if the PR removes tests, disables test classes, catches and ignores the failing exception.
 
 3. Review the Java runtime fix.
@@ -106,4 +108,5 @@ Keep comments short and factual:
 - For deleted or bypassed coverage: say that the PR fixes Java runtime execution by removing coverage and should instead adapt the test to the new runtime behavior.
 - For swallowed exceptions: say that catching or ignoring the failing exception hides the runtime failure instead of proving the library behavior works.
 - For unrelated changes: say the PR should stay scoped to the `fixes-java-run-fail` repair and remove unrelated files.
+- For legacy metadata files: say that metadata must use `reachability-metadata.json` and ask for old config files such as `reflect-config.json` or `resource-config.json` to be replaced.
 - For missing stats: ask for regenerated library stats or CI evidence before approval.
