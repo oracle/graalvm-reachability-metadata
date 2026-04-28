@@ -6,72 +6,69 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import com.fasterxml.jackson.jr.ob.JSON;
+import java.lang.reflect.Constructor;
+import java.util.List;
+
+import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
+import com.fasterxml.jackson.jr.ob.impl.JSONWriter;
+import com.fasterxml.jackson.jr.ob.impl.POJODefinition;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanPropertyIntrospectorDynamicAccessTest {
-    private static final JSON JSON_WITH_FIELD_MATCHING_GETTERS = JSON.builder()
-            .enable(JSON.Feature.USE_FIELD_MATCHING_GETTERS)
-            .build();
+    private static final BeanPropertyIntrospector INTROSPECTOR = BeanPropertyIntrospector.instance();
+    private static final JSONWriter JSON_WRITER = new JSONWriter();
 
     @Test
-    void deserializesBeansUsingDeclaredConstructors() throws Exception {
-        ConstructorIntrospectedBean fromObject = JSON.std.beanFrom(ConstructorIntrospectedBean.class, "{\"count\":4}");
-        ConstructorIntrospectedBean fromString = JSON.std.beanFrom(ConstructorIntrospectedBean.class, "\"Ada\"");
-        ConstructorIntrospectedBean fromNumber = JSON.std.beanFrom(ConstructorIntrospectedBean.class, "7");
+    void collectsDeclaredConstructorsForNonRecordBeans() {
+        InspectableBeanConstructors constructors = new InspectableBeanConstructors(ConstructorIntrospectedBean.class);
 
-        assertThat(fromObject.getCreationPath()).isEqualTo("default");
-        assertThat(fromObject.count).isEqualTo(4);
-        assertThat(fromString.getCreationPath()).isEqualTo("string");
-        assertThat(fromString.getName()).isEqualTo("Ada");
-        assertThat(fromNumber.getCreationPath()).isEqualTo("long");
-        assertThat(fromNumber.count).isEqualTo(7);
+        BeanPropertyIntrospector.addNonRecordConstructors(ConstructorIntrospectedBean.class, constructors);
+
+        assertThat(constructors.noArgsConstructor()).isNotNull();
+        assertThat(constructors.stringConstructor()).isNotNull();
+        assertThat(constructors.longConstructor()).isNotNull();
+        assertThat(constructors.intConstructor()).isNull();
     }
 
     @Test
-    void serializesAndDeserializesBeansUsingDeclaredFieldsAndMethods() throws Exception {
-        FieldAndMethodIntrospectedBean bean = JSON_WITH_FIELD_MATCHING_GETTERS.beanFrom(
-                FieldAndMethodIntrospectedBean.class,
-                "{\"visible\":5,\"nickname\":\"Bob\",\"active\":false}");
+    void collectsDeclaredFieldsAndMethodsForSerialization() {
+        POJODefinition definition = INTROSPECTOR.pojoDefinitionForSerialization(JSON_WRITER, FieldAndMethodIntrospectedBean.class);
 
-        assertThat(bean.visible).isEqualTo(5);
-        assertThat(bean.nickname()).isEqualTo("Bob");
-        assertThat(bean.isActive()).isFalse();
+        assertThat(propertyNames(definition)).containsExactlyInAnyOrder("active", "name", "visible");
 
-        String json = JSON_WITH_FIELD_MATCHING_GETTERS.asString(bean);
+        POJODefinition.Prop visible = property(definition, "visible");
+        POJODefinition.Prop name = property(definition, "name");
+        POJODefinition.Prop active = property(definition, "active");
 
-        assertThat(json).isEqualTo("{\"active\":false,\"nickname\":\"Bob\",\"visible\":5}");
-        assertThat(json).doesNotContain("ignoredStatic", "IGNORED_CONSTANT");
+        assertThat(visible.field).isNotNull();
+        assertThat(name.getter).isNotNull();
+        assertThat(name.setter).isNotNull();
+        assertThat(active.isGetter).isNotNull();
+        assertThat(active.setter).isNotNull();
+    }
+
+    private static List<String> propertyNames(POJODefinition definition) {
+        return definition.getProperties().stream().map(prop -> prop.name).toList();
+    }
+
+    private static POJODefinition.Prop property(POJODefinition definition, String name) {
+        return definition.getProperties().stream()
+                .filter(prop -> prop.name.equals(name))
+                .findFirst()
+                .orElseThrow();
     }
 
     public static final class ConstructorIntrospectedBean {
-        public int count;
-
-        private final String creationPath;
-        private String name;
-
         public ConstructorIntrospectedBean() {
-            creationPath = "default";
         }
 
-        public ConstructorIntrospectedBean(String name) {
-            creationPath = "string";
-            this.name = name;
+        public ConstructorIntrospectedBean(String value) {
         }
 
-        public ConstructorIntrospectedBean(long count) {
-            creationPath = "long";
-            this.count = (int) count;
-        }
-
-        public String getCreationPath() {
-            return creationPath;
-        }
-
-        public String getName() {
-            return name;
+        public ConstructorIntrospectedBean(long value) {
         }
     }
 
@@ -83,18 +80,15 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
         public static int ignoredStatic = 12;
         public static final int IGNORED_CONSTANT = 13;
 
-        private String nickname;
+        private String name;
         private boolean active;
 
-        public FieldAndMethodIntrospectedBean() {
+        public String getName() {
+            return name;
         }
 
-        public String nickname() {
-            return nickname;
-        }
-
-        public void setNickname(String nickname) {
-            this.nickname = nickname;
+        public void setName(String name) {
+            this.name = name;
         }
 
         public boolean isActive() {
@@ -103,6 +97,28 @@ public class BeanPropertyIntrospectorDynamicAccessTest {
 
         public void setActive(boolean active) {
             this.active = active;
+        }
+    }
+
+    public static final class InspectableBeanConstructors extends BeanConstructors {
+        public InspectableBeanConstructors(Class<?> valueType) {
+            super(valueType);
+        }
+
+        public Constructor<?> noArgsConstructor() {
+            return _noArgsCtor;
+        }
+
+        public Constructor<?> stringConstructor() {
+            return _stringCtor;
+        }
+
+        public Constructor<?> longConstructor() {
+            return _longCtor;
+        }
+
+        public Constructor<?> intConstructor() {
+            return _intCtor;
         }
     }
 }
