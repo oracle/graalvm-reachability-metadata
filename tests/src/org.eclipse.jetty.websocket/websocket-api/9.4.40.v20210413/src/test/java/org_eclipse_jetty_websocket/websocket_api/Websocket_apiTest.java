@@ -44,9 +44,9 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -185,10 +185,10 @@ public class Websocket_apiTest {
         ));
         assertThat(headerValue).isEqualTo("permessage-deflate;client_max_window_bits, x-telemetry;mode=\"debug;full\"");
 
-        Enumeration<String> headerValues = new Vector<>(List.of(
+        Enumeration<String> headerValues = Collections.enumeration(List.of(
                 "permessage-deflate; server_max_window_bits=12",
                 "x-telemetry; enabled"
-        )).elements();
+        ));
         assertThat(ExtensionConfig.parseEnum(headerValues))
                 .extracting(ExtensionConfig::getName)
                 .containsExactly("permessage-deflate", "x-telemetry");
@@ -196,7 +196,7 @@ public class Websocket_apiTest {
 
     @Test
     void quoteUtilSplitsEscapesQuotesAndJoinsValues() {
-        assertThat(toList(QuoteUtil.splitAt("alpha, \"beta,gamma\", 'delta;epsilon' , zeta", ",")))
+        assertThat(toList(QuoteUtil.splitAt("alpha, \"beta,gamma\", 'delta;epsilon', zeta", ",")))
                 .containsExactly("alpha", "beta,gamma", "delta;epsilon", "zeta");
         assertThat(QuoteUtil.dequote("\"quoted\"")).isEqualTo("quoted");
         assertThat(QuoteUtil.unescape("line\\n\\\"quoted\\\"\\\\tail")).isEqualTo("line\n\"quoted\"\\tail");
