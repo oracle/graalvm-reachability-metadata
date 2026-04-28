@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("checkstyle:annotationAccess")
 public class Plexus_component_annotationsTest {
     @Test
     void componentAnnotationExposesAllConfiguredValuesAndIsInherited() {
