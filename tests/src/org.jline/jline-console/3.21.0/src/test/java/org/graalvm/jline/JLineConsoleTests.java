@@ -30,6 +30,7 @@ import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.impl.DumbTerminal;
 import org.jline.utils.AttributedString;
+import org.jline.widget.AutopairWidgets;
 import org.jline.widget.Widgets;
 import org.junit.Test;
 
@@ -230,8 +231,28 @@ public class JLineConsoleTests {
         assertNotNull(widgets.getKeyMap());
     }
 
+    @Test
+    public void autopairWidgetsInsertMatchingDelimitersWhileReadingInput() throws IOException {
+        String input = "(alpha\n(beta)\n\"quoted\"\n{block\n";
+        Terminal terminal = newTerminal(input);
+        LineReader reader = LineReaderBuilder.builder()
+                .terminal(terminal)
+                .parser(new DefaultParser())
+                .build();
+        new AutopairWidgets(reader, true).enable();
+
+        assertEquals("(alpha)", reader.readLine());
+        assertEquals("(beta)", reader.readLine());
+        assertEquals("\"quoted\"", reader.readLine());
+        assertEquals("{block}", reader.readLine());
+    }
+
     private static Terminal newTerminal() throws IOException {
-        return new DumbTerminal("test", "dumb", new ByteArrayInputStream(new byte[0]),
+        return newTerminal("");
+    }
+
+    private static Terminal newTerminal(String input) throws IOException {
+        return new DumbTerminal("test", "dumb", new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)),
                 new ByteArrayOutputStream(), StandardCharsets.UTF_8);
     }
 
