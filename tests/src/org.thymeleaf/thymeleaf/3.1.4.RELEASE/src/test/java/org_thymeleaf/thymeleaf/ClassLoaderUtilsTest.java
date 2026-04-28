@@ -21,6 +21,17 @@ public class ClassLoaderUtilsTest {
     private static final String TEMPLATE_ENGINE_CLASS_NAME = "org.thymeleaf.TemplateEngine";
 
     @Test
+    void loadClassUsesContextClassLoaderWhenItCanResolveTheClass() throws Exception {
+        ClassLoader delegatingContextClassLoader = new ClassLoader(ClassLoaderUtilsTest.class.getClassLoader()) {
+        };
+
+        Class<?> loadedClass = withContextClassLoader(delegatingContextClassLoader,
+                () -> ClassLoaderUtils.loadClass(TEMPLATE_ENGINE_CLASS_NAME));
+
+        assertThat(loadedClass).isSameAs(TemplateEngine.class);
+    }
+
+    @Test
     void loadClassFallsBackFromContextClassLoaderToLibraryClassLoader() throws Exception {
         ClassLoader missingContextClassLoader = new ClassLoader(null) {
         };
