@@ -15,6 +15,7 @@ import java.util.OptionalInt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
@@ -181,6 +182,37 @@ public class Jackson_databindTest {
         assertThat(restored.isEnabled()).isFalse();
     }
 
+    @Test
+    void jsonViewsSelectPropertiesForSerializationAndDeserialization() throws JacksonException {
+        ObjectMapper mapper = JsonMapper.builder()
+                .disable(DeserializationFeature.FAIL_ON_UNEXPECTED_VIEW_PROPERTIES)
+                .build();
+        ViewScopedAccount account = new ViewScopedAccount("ada", "Ada Lovelace", "rotates token monthly", true);
+
+        String publicJson = mapper.writer().withView(Views.Public.class).writeValueAsString(account);
+        String internalJson = mapper.writer().withView(Views.Internal.class).writeValueAsString(account);
+        ViewScopedAccount publicInput = mapper.readerFor(ViewScopedAccount.class)
+                .withView(Views.Public.class)
+                .readValue("{"
+                        + "\"username\": \"grace\","
+                        + "\"displayName\": \"Grace Hopper\","
+                        + "\"internalNotes\": \"should be ignored\","
+                        + "\"enabled\": true"
+                        + "}");
+
+        assertThat(publicJson).contains("\"username\":\"ada\"")
+                .contains("\"displayName\":\"Ada Lovelace\"")
+                .doesNotContain("internalNotes")
+                .doesNotContain("enabled");
+        assertThat(internalJson).contains("\"username\":\"ada\"")
+                .contains("\"internalNotes\":\"rotates token monthly\"")
+                .contains("\"enabled\":true");
+        assertThat(publicInput.getUsername()).isEqualTo("grace");
+        assertThat(publicInput.getDisplayName()).isEqualTo("Grace Hopper");
+        assertThat(publicInput.getInternalNotes()).isNull();
+        assertThat(publicInput.isEnabled()).isFalse();
+    }
+
     public record Order(String id, OrderStatus status, List<OrderLine> lines, Map<String, String> attributes,
             Optional<String> note, OptionalInt priority) {
     }
@@ -296,6 +328,71 @@ public class Jackson_databindTest {
 
         @JsonIgnore
         public abstract void setApiToken(String apiToken);
+    }
+
+    public static final class Views {
+        public interface Public {
+        }
+
+        public interface Internal extends Public {
+        }
+    }
+
+    public static final class ViewScopedAccount {
+        private String username;
+        private String displayName;
+        private String internalNotes;
+        private boolean enabled;
+
+        public ViewScopedAccount() {
+        }
+
+        public ViewScopedAccount(String username, String displayName, String internalNotes, boolean enabled) {
+            this.username = username;
+            this.displayName = displayName;
+            this.internalNotes = internalNotes;
+            this.enabled = enabled;
+        }
+
+        @JsonView(Views.Public.class)
+        public String getUsername() {
+            return username;
+        }
+
+        @JsonView(Views.Public.class)
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        @JsonView(Views.Public.class)
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        @JsonView(Views.Public.class)
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
+        }
+
+        @JsonView(Views.Internal.class)
+        public String getInternalNotes() {
+            return internalNotes;
+        }
+
+        @JsonView(Views.Internal.class)
+        public void setInternalNotes(String internalNotes) {
+            this.internalNotes = internalNotes;
+        }
+
+        @JsonView(Views.Internal.class)
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        @JsonView(Views.Internal.class)
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
     }
 
     public static final class ExternalAccount {
