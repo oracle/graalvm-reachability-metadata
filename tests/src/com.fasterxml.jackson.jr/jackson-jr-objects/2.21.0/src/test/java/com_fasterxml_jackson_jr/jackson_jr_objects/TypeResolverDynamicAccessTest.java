@@ -20,22 +20,25 @@ public class TypeResolverDynamicAccessTest {
     @Test
     void resolvesSyntheticGenericArrayTypesIntoArrayClasses() {
         TypeResolver resolver = new TypeResolver();
+        Class<?> elementType = runtimeSelectedElementType();
 
         ResolvedType resolvedArrayType = resolver.resolve(
                 TypeBindings.emptyBindings(),
-                new SyntheticGenericArrayType(String.class));
+                new SyntheticGenericArrayType(elementType));
 
         assertThat(resolvedArrayType.isArray()).isTrue();
-        assertThat(resolvedArrayType.erasedType()).isEqualTo(String[].class);
-        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(String.class);
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(arrayTypeFor(elementType));
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(elementType);
     }
 
     @Test
     void resolvesGenericArrayTypesFromBoundTypeVariables() throws Exception {
         TypeResolver resolver = new TypeResolver();
+        Class<?> elementType = runtimeSelectedElementType();
+        Class<? extends GenericArrayContainer<?>> containerType = runtimeSelectedContainerType();
         ResolvedType declaringType = resolver.resolve(
                 TypeBindings.emptyBindings(),
-                StringArrayContainer.class.getGenericSuperclass());
+                containerType.getGenericSuperclass());
         Type genericArrayType = GenericArrayContainer.class
                 .getDeclaredMethod("setValues", Object[].class)
                 .getGenericParameterTypes()[0];
@@ -43,8 +46,8 @@ public class TypeResolverDynamicAccessTest {
         ResolvedType resolvedArrayType = resolver.resolve(declaringType.typeBindings(), genericArrayType);
 
         assertThat(resolvedArrayType.isArray()).isTrue();
-        assertThat(resolvedArrayType.erasedType()).isEqualTo(String[].class);
-        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(String.class);
+        assertThat(resolvedArrayType.erasedType()).isEqualTo(arrayTypeFor(elementType));
+        assertThat(resolvedArrayType.elementType().erasedType()).isEqualTo(elementType);
     }
 
     static class GenericArrayContainer<T> {
@@ -60,6 +63,27 @@ public class TypeResolverDynamicAccessTest {
     }
 
     static final class StringArrayContainer extends GenericArrayContainer<String> {
+    }
+
+    static final class CharSequenceArrayContainer extends GenericArrayContainer<CharSequence> {
+    }
+
+    private static Class<?> runtimeSelectedElementType() {
+        return Thread.currentThread().getName().isEmpty() ? CharSequence.class : String.class;
+    }
+
+    private static Class<? extends GenericArrayContainer<?>> runtimeSelectedContainerType() {
+        if (Thread.currentThread().getName().isEmpty()) {
+            return CharSequenceArrayContainer.class;
+        }
+        return StringArrayContainer.class;
+    }
+
+    private static Class<?> arrayTypeFor(Class<?> elementType) {
+        if (elementType == String.class) {
+            return String[].class;
+        }
+        return CharSequence[].class;
     }
 
     static final class SyntheticGenericArrayType implements GenericArrayType {
