@@ -1,0 +1,155 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd61b-f4f5-7673-8f1e-5f1cb45813ce
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:osgi.core:6.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "6.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/metadata/org.osgi/osgi.core/index.json
+- Entry selector: "metadata-version" = "6.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "6.0.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar
+- repository-url: https://github.com/osgi/osgi
+- test-code-url: https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework
+- documentation-url: https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar
+- description: OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions.
+- language: <missing>
+
+Context:
+- Coordinate version: 6.0.0
+- Entry test-version: 6.0.0
+codex
+I’ll verify the existing entry first, then confirm the version-specific URLs before editing only fields that are actually missing.
+exec
+/bin/bash -lc "sed -n '1,220p' metadata/org.osgi/osgi.core/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "6.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
+    "repository-url" : "https://github.com/osgi/osgi",
+    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar",
+    "description" : "OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions.",
+    "tested-versions" : [
+      "6.0.0"
+    ],
+    "allowed-packages" : [
+      "org.osgi"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"6\\.0\\.0\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.osgi/osgi.core/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+4:    "metadata-version" : "6.0.0",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
+6:    "repository-url" : "https://github.com/osgi/osgi",
+7:    "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar",
+9:    "description" : "OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions.",
+
+web search: 
+web search: Maven org.osgi osgi.core 6.0.0 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/
+web search: 
+web search: https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework
+web search: 
+web search: 'Specification, API, implementation, and TCK source code' in https://github.com/osgi/osgi
+codex
+The target entry already has non-blank values for the URL and description fields. I’m checking whether `language` should be added; this artifact is Java API/specification code, not Kotlin or Scala-specific, so it should remain absent.
+exec
+/bin/bash -lc 'jq empty metadata/org.osgi/osgi.core/index.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'git diff -- metadata/org.osgi/osgi.core/index.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+web search: 
+web search: site:repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0 osgi.core-6.0.0-sources.jar osgi.core-6.0.0-javadoc.jar
+web search: 
+web search: https://github.com/osgi/osgi
+web search: 
+web search: https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework
+codex
+Checked [index.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/metadata/org.osgi/osgi.core/index.json:1). No edits were needed: all requested URL and description fields for `metadata-version` `6.0.0` are already non-blank, and `language` should remain absent because this is not Kotlin- or Scala-specific.
+
+I verified the Maven version directory contains the exact `6.0.0` sources and javadoc jars, and the GitHub repository/test path points at the `r6-core-ri-ct-final` tag with `org.osgi.test.cases.framework`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/?utm_source=openai))
+
+Validation: `jq empty metadata/org.osgi/osgi.core/index.json` passed, and `git diff -- metadata/org.osgi/osgi.core/index.json` is empty.
+2026-04-28T22:01:22.064378Z ERROR codex_core::session: failed to record rollout items: thread 019dd61b-f4f5-7673-8f1e-5f1cb45813ce not found
+tokens used
+43,753
+Checked [index.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/metadata/org.osgi/osgi.core/index.json:1). No edits were needed: all requested URL and description fields for `metadata-version` `6.0.0` are already non-blank, and `language` should remain absent because this is not Kotlin- or Scala-specific.
+
+I verified the Maven version directory contains the exact `6.0.0` sources and javadoc jars, and the GitHub repository/test path points at the `r6-core-ri-ct-final` tag with `org.osgi.test.cases.framework`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/?utm_source=openai))
+
+Validation: `jq empty metadata/org.osgi/osgi.core/index.json` passed, and `git diff -- metadata/org.osgi/osgi.core/index.json` is empty.
+Ran agent for org.osgi:osgi.core:6.0.0 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/build/agent-url-discovery-logs/org.osgi-osgi.core-6.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 36s
+9 actionable tasks: 1 executed, 8 up-to-date

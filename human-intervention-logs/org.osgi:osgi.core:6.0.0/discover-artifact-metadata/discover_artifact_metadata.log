@@ -1,0 +1,1017 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd619-828f-7d11-9799-3cd82f93b368
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.osgi:osgi.core:6.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "6.0.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+- Set "coordinates" to "org.osgi:osgi.core:6.0.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven/OSGi sources first, then update the JSON in place with exact-version URLs where they’re available.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:osgi.core:6.0.0"
+}
+
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.osgi-osgi\\.core-6\\.0\\.0\\.json"'$'"'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+
+web search: 
+web search: Maven Central org.osgi osgi.core 6.0.0 sources jar javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/
+web search: 
+web search: site:github.com/osgi org.osgi.core 6.0.0 r6-core-final
+codex
+Maven Central has the exact `org.osgi:osgi.core:6.0.0` sources and javadocs published, so I’ll prefer those over mirrored or regenerated pages. I’m checking whether an exact-version test artifact exists before deciding whether `test-code-url` must be `N/A`.
+exec
+/bin/bash -lc "rg '\"test-code-url\"' build/discovered-artifact-metadata | head -20" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0.pom' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/ | rg 'test|tests|source|javadoc|pom|jar'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+<a href="osgi.core-6.0.0-javadoc.jar" title="osgi.core-6.0.0-javadoc.jar">osgi.core-6.0.0-javadoc.jar</a>                       2015-01-18 11:18    905294      
+<a href="osgi.core-6.0.0-javadoc.jar.asc" title="osgi.core-6.0.0-javadoc.jar.asc">osgi.core-6.0.0-javadoc.jar.asc</a>                   2015-01-18 11:18       475      
+<a href="osgi.core-6.0.0-javadoc.jar.asc.md5" title="osgi.core-6.0.0-javadoc.jar.asc.md5">osgi.core-6.0.0-javadoc.jar.asc.md5</a>               2015-01-18 11:18        32      
+<a href="osgi.core-6.0.0-javadoc.jar.asc.sha1" title="osgi.core-6.0.0-javadoc.jar.asc.sha1">osgi.core-6.0.0-javadoc.jar.asc.sha1</a>              2015-01-18 11:18        40      
+<a href="osgi.core-6.0.0-javadoc.jar.md5" title="osgi.core-6.0.0-javadoc.jar.md5">osgi.core-6.0.0-javadoc.jar.md5</a>                   2015-01-18 11:18        32      
+<a href="osgi.core-6.0.0-javadoc.jar.sha1" title="osgi.core-6.0.0-javadoc.jar.sha1">osgi.core-6.0.0-javadoc.jar.sha1</a>                  2015-01-18 11:18        40      
+<a href="osgi.core-6.0.0-sources.jar" title="osgi.core-6.0.0-sources.jar">osgi.core-6.0.0-sources.jar</a>                       2015-01-18 11:18    293959      
+<a href="osgi.core-6.0.0-sources.jar.asc" title="osgi.core-6.0.0-sources.jar.asc">osgi.core-6.0.0-sources.jar.asc</a>                   2015-01-18 11:18       475      
+<a href="osgi.core-6.0.0-sources.jar.asc.md5" title="osgi.core-6.0.0-sources.jar.asc.md5">osgi.core-6.0.0-sources.jar.asc.md5</a>               2015-01-18 11:18        32      
+<a href="osgi.core-6.0.0-sources.jar.asc.sha1" title="osgi.core-6.0.0-sources.jar.asc.sha1">osgi.core-6.0.0-sources.jar.asc.sha1</a>              2015-01-18 11:18        40      
+<a href="osgi.core-6.0.0-sources.jar.md5" title="osgi.core-6.0.0-sources.jar.md5">osgi.core-6.0.0-sources.jar.md5</a>                   2015-01-18 11:18        32      
+<a href="osgi.core-6.0.0-sources.jar.sha1" title="osgi.core-6.0.0-sources.jar.sha1">osgi.core-6.0.0-sources.jar.sha1</a>                  2015-01-18 11:18        40      
+<a href="osgi.core-6.0.0.jar" title="osgi.core-6.0.0.jar">osgi.core-6.0.0.jar</a>                               2015-01-18 11:18    475256      
+<a href="osgi.core-6.0.0.jar.asc" title="osgi.core-6.0.0.jar.asc">osgi.core-6.0.0.jar.asc</a>                           2015-01-18 11:18       475      
+<a href="osgi.core-6.0.0.jar.asc.md5" title="osgi.core-6.0.0.jar.asc.md5">osgi.core-6.0.0.jar.asc.md5</a>                       2015-01-18 11:18        32      
+<a href="osgi.core-6.0.0.jar.asc.sha1" title="osgi.core-6.0.0.jar.asc.sha1">osgi.core-6.0.0.jar.asc.sha1</a>                      2015-01-18 11:18        40      
+<a href="osgi.core-6.0.0.jar.md5" title="osgi.core-6.0.0.jar.md5">osgi.core-6.0.0.jar.md5</a>                           2015-01-18 11:18        32      
+<a href="osgi.core-6.0.0.jar.sha1" title="osgi.core-6.0.0.jar.sha1">osgi.core-6.0.0.jar.sha1</a>                          2015-01-18 11:18        40      
+<a href="osgi.core-6.0.0.pom" title="osgi.core-6.0.0.pom">osgi.core-6.0.0.pom</a>                               2015-01-18 11:18      1315      
+<a href="osgi.core-6.0.0.pom.asc" title="osgi.core-6.0.0.pom.asc">osgi.core-6.0.0.pom.asc</a>                           2015-01-18 11:18       475      
+<a href="osgi.core-6.0.0.pom.asc.md5" title="osgi.core-6.0.0.pom.asc.md5">osgi.core-6.0.0.pom.asc.md5</a>                       2015-01-18 11:18        32      
+<a href="osgi.core-6.0.0.pom.asc.sha1" title="osgi.core-6.0.0.pom.asc.sha1">osgi.core-6.0.0.pom.asc.sha1</a>                      2015-01-18 11:18        40      
+<a href="osgi.core-6.0.0.pom.md5" title="osgi.core-6.0.0.pom.md5">osgi.core-6.0.0.pom.md5</a>                           2015-01-18 11:18        32      
+<a href="osgi.core-6.0.0.pom.sha1" title="osgi.core-6.0.0.pom.sha1">osgi.core-6.0.0.pom.sha1</a>                          2015-01-18 11:18        40      
+
+ succeeded in 115ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.osgi</groupId>
+  <artifactId>osgi.core</artifactId>
+  <version>6.0.0</version>
+  <description>OSGi Core Release 6, Interfaces and Classes for use in compiling bundles.</description>
+  <name>org.osgi:osgi.core</name>
+  <url>http://www.osgi.org/</url>
+  <organization>
+    <name>OSGi Alliance</name>
+    <url>http://www.osgi.org/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://opensource.org/licenses/apache2.0.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://www.osgi.org/members/git/build.git</url>
+    <connection>scm:git:https://www.osgi.org/members/git/build.git</connection>
+    <developerConnection>scm:git:https://www.osgi.org/members/git/build.git</developerConnection>
+  </scm>
+  <developers>
+    <developer>
+      <id>osgi</id>
+      <email>info@osgi.org</email>
+      <name>OSGi Alliance</name>
+      <organization>OSGi Alliance</organization>
+    </developer>
+  </developers>
+</project>
+
+exec
+/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' -maxdepth 1 | head -5 | xargs -r sed -n '1,80p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+{
+  "coordinates" : "org.osgi:osgi.core:6.0.0"
+}
+
+exec
+/bin/bash -lc "rg 'source-code-url|documentation-url|repository-url|language' -n . | head -60" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+./gradlew.bat:13:@rem See the License for the specific language governing permissions and
+./docs/CONTRIBUTING.md:108:* `source-code-url`: URL to the metadata source code location for this index entry.
+./docs/CONTRIBUTING.md:109:* `repository-url`: URL to the canonical project repository for this index entry.
+./docs/CONTRIBUTING.md:111:* `documentation-url`: URL to the project documentation for this index entry.
+./docs/CONTRIBUTING.md:140:     "source-code-url": "https://github.com/example/repo/tree/main/metadata/org.example/library/1.1.0",
+./docs/CONTRIBUTING.md:141:     "repository-url": "https://github.com/example/repo",
+./docs/CONTRIBUTING.md:143:     "documentation-url": "https://github.com/example/repo/tree/main/README.md",
+./docs/CONTRIBUTING.md:155:To populate `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` fields in matching `index.json` entries:
+./gradlew:15:# See the License for the specific language governing permissions and
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:67:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:68:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./metadata/com.fasterxml/classmate/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-sources.jar",
+./metadata/com.fasterxml/classmate/index.json:6:    "repository-url" : "https://github.com/FasterXML/java-classmate",
+./metadata/com.fasterxml/classmate/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-javadoc.jar",
+./metadata/dev.langchain4j/langchain4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/1.9.0/langchain4j-1.9.0-sources.jar",
+./metadata/dev.langchain4j/langchain4j/index.json:6:    "repository-url" : "https://github.com/langchain4j/langchain4j",
+./metadata/dev.langchain4j/langchain4j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/1.9.0/langchain4j-1.9.0-javadoc.jar",
+./metadata/dev.langchain4j/langchain4j/index.json:9:    "description" : "LangChain4j is an open-source Java library that simplifies integrating large language models into Java applications through a unified API. It provides abstractions and integrations for building AI features such as chat, retrieval-augmented generation, tool calling, and agents.",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-sources.jar",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:6:    "repository-url" : "https://github.com/wildfly/jboss-classfilewriter",
+./metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-javadoc.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+./metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-sources.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:5:    "repository-url" : "https://github.com/jakartaee/servlet",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-javadoc.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:20:    "repository-url" : "https://github.com/jakartaee/servlet",
+./metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-javadoc.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-sources.jar",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:6:    "repository-url" : "https://github.com/netty/netty",
+./metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:51:                .contains("Also determine whether this is a language-specific library.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:54:                .contains("If the library is not language-specific, leave the \"language\" field absent.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:57:                .contains("Fill only missing fields among \"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", \"description\", and \"language\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:58:                .contains("Set missing \"repository-url\" to the selected repository URL.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:59:                .contains("\"repository-url\" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no \"/tree/v_1.2.11\").")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:60:                .contains("Set missing \"documentation-url\" to the selected project documentation URL for version \"1.4.1\".")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:62:                .contains("Set missing \"language\" only when the library is language-specific; otherwise leave the field absent.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:65:                .contains("- source-code-url: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:67:                .contains("- language: <missing>")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:120:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:122:                .contains("- language: <missing>");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:149:                .contains("- source-code-url: https://example.com/source-a")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:151:                .contains("- language: <missing>");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:219:                    "source-code-url": "https://example.com/source-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:220:                    "repository-url": "https://example.com/repository-a",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLsTests.java:222:                    "documentation-url": "https://example.com/docs-a",
+./metadata/tools.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/tools/jackson/core/jackson-core/3.0.0-rc2/jackson-core-3.0.0-rc2-sources.jar",
+./metadata/tools.jackson.core/jackson-core/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-core",
+./metadata/tools.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/tools/jackson/core/jackson-core/3.0.0-rc2/jackson-core-3.0.0-rc2-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:50:                .contains("Also determine whether this is a language-specific library.")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:52:                .contains("If the library is not language-specific, leave the \"language\" field absent.")
+./metadata/xml-apis/xml-apis/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2-sources.jar",
+./metadata/xml-apis/xml-apis/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/",
+./metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+
+exec
+/bin/bash -lc "sed -n '60,75p' skills/review-library-bulk-update/SKILL.md" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc "sed -n '100,125p' docs/CONTRIBUTING.md" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+   - In this repository, approved automation PRs are expected to auto-merge after approval.
+   - Do this after the approval is submitted, and only when the PR is otherwise mergeable.
+
+## URL Verification Rules
+
+If any URL field changed, verify all of the following:
+
+- `repository-url` is the canonical repository root URL.
+- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+- Do not accept unversioned docs, `latest`, `current`, or branch-based docs unless there is no versioned source and the PR clearly justifies it.
+- Prefer Maven `-sources.jar`, `-test-sources.jar`, and `-javadoc.jar` when they exist and are valid.
+- If a Maven `-sources.jar` or `-test-sources.jar` is used, verify it contains real source files such as `.java`, `.kt`, `.scala`, or `.groovy`, not only metadata or license files.
+- If the URL points to a repository tree or archive instead of Maven, verify that it resolves to real source or test files for the exact version tag.
+- If a candidate source or test URL cannot be verified with confidence, it should not be approved as-is.
+
+
+ succeeded in 0ms:
+* `tested-versions`: An array of library versions verified to work with this specific metadata.
+* `allowed-packages`: An array of package prefixes. The TCK ensures that configuration entries (like reflection targets) belong strictly to these packages.
+
+**Optional Keys:**
+* `latest`: Boolean. If `true`, this is the default metadata version for the artifact.
+* `requires`: An array of `groupId:artifactId` coordinates for libraries this metadata depends on.
+* `default-for`: A Java-format regex used to match library versions if no exact match exists in `tested-versions` (e.g., `"0\\.0\\..*"`).
+* `test-version`: Defines the subdirectory in `tests/src` containing the test code. Use this to share a single test suite across multiple metadata versions.
+* `source-code-url`: URL to the metadata source code location for this index entry.
+* `repository-url`: URL to the canonical project repository for this index entry.
+* `test-code-url`: URL to the test source code location for this index entry.
+* `documentation-url`: URL to the project documentation for this index entry.
+* `description`: A concise explanation of the library in exactly two sentences.
+* `skipped-versions`: An array of objects (with `version` and `reason`) to explicitly exclude library versions known to be broken or incompatible.
+* `override`: Boolean. If `true`, excludes outdated builtin GraalVM metadata.
+
+#### Comprehensive Example
+
+```json
+[
+  {
+    "allowed-packages": ["org.example.library"],
+    "metadata-version": "1.0.0",
+    "tested-versions": [
+      "1.0.0",
+      "1.0.1"
+
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/com.fasterxml/classmate/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-sources.jar",
+    "repository-url" : "https://github.com/FasterXML/java-classmate",
+    "test-code-url" : "https://github.com/FasterXML/java-classmate/tree/classmate-1.5.1/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/classmate/1.5.1/classmate-1.5.1-javadoc.jar",
+    "tested-versions" : [
+      "1.5.1",
+      "1.6.0",
+      "1.7.0",
+      "1.7.1",
+      "1.7.2",
+      "1.7.3"
+    ],
+    "allowed-packages" : [
+      "com.fasterxml"
+    ],
+    "description" : "ClassMate is a Java library for introspecting types with full generic information, including resolved field and method types. It is especially useful for POJO and bean introspection."
+  }
+]
+
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar -o /tmp/osgi.core-6.0.0-sources.jar && jar tf /tmp/osgi.core-6.0.0-sources.jar | rg '\\.java"'$'"' | head -10" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar -o /tmp/osgi.core-6.0.0-javadoc.jar && jar tf /tmp/osgi.core-6.0.0-javadoc.jar | head -10' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc 'for c in test-sources tests test javadoc sources; do url="https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-${c}.jar"; code=$(curl -s -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 201ms:
+org/osgi/dto/DTO.java
+org/osgi/dto/package-info.java
+org/osgi/framework/AdaptPermission.java
+org/osgi/framework/AdminPermission.java
+org/osgi/framework/AllServiceListener.java
+org/osgi/framework/Bundle.java
+org/osgi/framework/BundleActivator.java
+org/osgi/framework/BundleContext.java
+org/osgi/framework/BundleEvent.java
+org/osgi/framework/BundleException.java
+
+ succeeded in 285ms:
+META-INF/
+META-INF/MANIFEST.MF
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+help-doc.html
+index.html
+LICENSE.html
+overview-frame.html
+
+ succeeded in 1335ms:
+404 https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-test-sources.jar
+404 https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-tests.jar
+404 https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-test.jar
+200 https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar
+200 https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar
+
+web search: 
+web search: "org.osgi:osgi.core" "6.0.0" "scm"
+web search: 
+web search: https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/
+web search: 
+web search: central sonatype org.osgi osgi.core 6.0.0 pom scm build.git
+exec
+/bin/bash -lc 'git ls-remote https://osgi.org/git/build.git HEAD | head -5' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc "for url in https://www.osgi.org/members/git/build.git https://osgi.org/git/build.git http://www.osgi.org/ https://github.com/osgi/osgi; do printf '%s ' \""'$url"; curl -L -s -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"; done' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc 'git ls-remote https://www.osgi.org/members/git/build.git HEAD | head -5' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 352ms:
+fatal: repository 'https://www.osgi.org/members/git/build.git/' not found
+
+ succeeded in 558ms:
+fatal: repository 'https://osgi.org/git/build.git/' not found
+
+ succeeded in 2411ms:
+404 https://www.osgi.org/members/git/build.git
+https://osgi.org/git/build.git 404 https://www.osgi.org/git/build.git
+http://www.osgi.org/ 200 https://www.osgi.org/
+https://github.com/osgi/osgi 200 https://github.com/osgi/osgi
+
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/osgi/osgi.git | rg -i '("'^|/)v?6'"\\.0\\.0|r6|core' | head -50" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc 'git ls-remote --tags https://github.com/osgi/osgi.git | head -50' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 386ms:
+846518ba0da82390ea1816dcd552ee4619fb72a8	refs/tags/r4-core-ri-tck-final
+e7e4667718c48aae1fbcebed2511cfa5d4bb6737	refs/tags/r4-core-ri-tck-final^{}
+efb18788e5390a59a810ae4b5c2623550169ea51	refs/tags/r4-core-spec-final
+d92b092034664ee57e3a6c625aaa3d74a460780b	refs/tags/r4-core-spec-final^{}
+3280b6e5fa401e36b12ba128300bf3bf83bda770	refs/tags/r401-core-ri-tck-final
+ba77e1ad550137b416efaf5bae0d39530a7e46b0	refs/tags/r401-core-ri-tck-final^{}
+4d9aa00c80f914a390493115c8970a99d348d365	refs/tags/r401-core-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r401-core-spec-final^{}
+964d8746e21100942730f9bbc4f1fcef66bf9853	refs/tags/r4v41-core-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-core-ri-tck-final^{}
+ec6b5ff8940c6a954a596f6b626233bcb671c299	refs/tags/r4v42-core-cmpn-final
+7f0db3bb6dfc444c2604b09e540f965df7ab8b29	refs/tags/r4v42-core-cmpn-final^{}
+6588345cffe98cc3885ffc6138d503a550ab4891	refs/tags/r4v42-core-spec-final
+9e385ab9be0ad9a9aaaeea34d535f0b1e4badc23	refs/tags/r4v42-core-spec-final^{}
+2ea0bea27df5ff7fcdc6855102290e179d1d24e9	refs/tags/r4v43-core-ri-ct-final
+13c1f9cb6ef8d36d40880a7b19b20376f1cf4a74	refs/tags/r4v43-core-ri-ct-final^{}
+9dec5f3b2288e0d993f1067cccbfee99272e2ff2	refs/tags/r4v43-core-spec-final
+d5a215e24afd9974ae387f4451477c1d2358f806	refs/tags/r4v43-core-spec-final^{}
+8f1f83c4ad1c427e0e10a1b9156dffef6711c4ba	refs/tags/r4v431-core-cmpn-spec-final
+c7da4c70103383ed4e94a520e8c337b441a512b3	refs/tags/r4v431-core-cmpn-spec-final^{}
+541dce37542a0be2a0dc4ed46f9c256588e96dac	refs/tags/r5-core-ri-ct-final
+8ae7389a2e63c5e8bfefa131ea4585305d2be813	refs/tags/r5-core-ri-ct-final^{}
+2af5800d300564d74586a6ac5dbd0fcfb106f0de	refs/tags/r5-core-spec-final
+d375fa2dee6bc966094c087e7df5a3d312b46f46	refs/tags/r5-core-spec-final^{}
+44369ee9127e86c27c1af59f1be763ecc263e34d	refs/tags/r6-cmpn-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-cmpn-ri-ct-final^{}
+482a684d7c95cdb8a7a308d9d12dcdded893fb34	refs/tags/r6-cmpn-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-cmpn-spec-final^{}
+2a11a3e5d8c60b50e4081343ebed6bcec311a598	refs/tags/r6-core-ri-ct-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-ri-ct-final^{}
+d8890daf8811f2c2c451a7ed793bac2d8dcce35a	refs/tags/r6-core-spec-final
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-spec-final^{}
+837e5d17769f3ef0646b913f1e02509291349d7f	refs/tags/r6-enterprise-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-enterprise-ri-ct-final^{}
+301ecbf2d2502438d34aeaedce156c45882ed856	refs/tags/r6-enterprise-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-enterprise-spec-final^{}
+234b425b53e5b3ef3e475750dc86561b81a7b1c2	refs/tags/r6-residential-ri-ct-final
+b181066028a00e34c1e0291469a596d2fc9dac55	refs/tags/r6-residential-ri-ct-final^{}
+5655cfae7d61f051746213bab0f386423fa38d8e	refs/tags/r6-residential-spec-final
+b0858c3b90a73ecc81055c7565fbbcbd4f76674e	refs/tags/r6-residential-spec-final^{}
+b23a773251adfcd4e3f8248318a1262cb22ee7cb	refs/tags/r6-residential-supplement-ri-ct-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-ri-ct-final^{}
+7742076a96cb0f7cdd869f0d47ab11678fae7bdb	refs/tags/r6-residential-supplement-spec-final
+5a6f80cf01bacbaf6b80388cd7774f079ba74301	refs/tags/r6-residential-supplement-spec-final^{}
+0da01b21e2eb092be2ffca6d64bc2101aab5c2d8	refs/tags/r7-core-ri-ct-final
+c886e125edee3b79de55b0a2002e6ea61570b481	refs/tags/r7-core-ri-ct-final^{}
+9f7d1961209d60a89013af62947e221b20c330da	refs/tags/r7-core-spec-final
+ac877b9fdaa36e26adb939cf9dd425e77243f449	refs/tags/r7-core-spec-final^{}
+1948b511fe978fb46950dde4c01b5f7a2f659bf2	refs/tags/r8-core-final
+6eee417af367c749a6f84a11239d94cc63f6bdcb	refs/tags/r8-core-final^{}
+
+ succeeded in 408ms:
+97109a1a3ffb206fde8e05339b88f3a74925713c	refs/tags/8.0.0.1
+ebe988342384ebafa6a1c6ecae843778617face5	refs/tags/8.0.0.1^{}
+705eba1ba09abdaaab755aed9d7e5d3bd87aadf1	refs/tags/8.1.0.cmpn
+8e96a2338c89bcf9976f71bd6f4fb3f5055f3f78	refs/tags/8.1.0.cmpn^{}
+9e1c74c47197691eb3f85e1d8cc914a5b3b836e3	refs/tags/8.1.0.cmpn-RC1
+a50e1dbfe4c99fa93bce3df288fd774973e7f09b	refs/tags/8.1.0.cmpn-RC1^{}
+673c20cef1a3f28c3cd46686739fd3eb7b270493	refs/tags/Post-new-SOW-interim
+2d75e76325565b394f39d628b5179948bd653ef4	refs/tags/Post-new-SOW-interim^{}
+f763359052e75b5c3825805fe08e66d7e34fcb56	refs/tags/ee.j2se-1.4-final
+f1cddae02ee07e25efe7e140c87e36d0462dc6d2	refs/tags/ee.j2se-1.4-final^{}
+a37d8033bbc06c33342b795f1518651c1b9b8115	refs/tags/ee.j2se-1.5-final
+8205fae853e28f9e18ab61321d89dfed44c1f53e	refs/tags/ee.j2se-1.5-final^{}
+6fee6a63685b033f4006b7d9fe44aac89ac72d7c	refs/tags/ee.j2se-1.6-final
+bc447e05f91354b9694b986cd49e73568047a3a2	refs/tags/ee.j2se-1.6-final^{}
+56435b732766a0ee3ad01c3375e96bbe00d17813	refs/tags/ee.j2se-1.7-final
+243393651826fc6dc4a60c88c2e989b1fc9e3309	refs/tags/ee.j2se-1.7-final^{}
+846518ba0da82390ea1816dcd552ee4619fb72a8	refs/tags/r4-core-ri-tck-final
+e7e4667718c48aae1fbcebed2511cfa5d4bb6737	refs/tags/r4-core-ri-tck-final^{}
+efb18788e5390a59a810ae4b5c2623550169ea51	refs/tags/r4-core-spec-final
+d92b092034664ee57e3a6c625aaa3d74a460780b	refs/tags/r4-core-spec-final^{}
+b1ba558dd485d6ca64ed4ab41cb149e8f7d3f4f3	refs/tags/r4-mobile-jsr232
+8e0e2ce9002f40cb5c104fd15986eb3cb7e940df	refs/tags/r4-mobile-jsr232^{}
+9b508fb09a61130d2e391bdab542570d2c108a15	refs/tags/r4-mobile-ri-tck-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r4-mobile-ri-tck-final^{}
+0f8c2f7f5d07163b14ad566341676fdfacff4ce7	refs/tags/r4-mobile-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r4-mobile-spec-final^{}
+b39cb733f4468ca67ee6a7a8c82762023fd8e539	refs/tags/r401-cmpn-ri-tck-final
+ba77e1ad550137b416efaf5bae0d39530a7e46b0	refs/tags/r401-cmpn-ri-tck-final^{}
+bcb8a044f35859cf7b63120d62f029d17fddaf76	refs/tags/r401-cmpn-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r401-cmpn-spec-final^{}
+3280b6e5fa401e36b12ba128300bf3bf83bda770	refs/tags/r401-core-ri-tck-final
+ba77e1ad550137b416efaf5bae0d39530a7e46b0	refs/tags/r401-core-ri-tck-final^{}
+4d9aa00c80f914a390493115c8970a99d348d365	refs/tags/r401-core-spec-final
+75bd7a9b81bec3c97c87e275b501aeae5ecb6191	refs/tags/r401-core-spec-final^{}
+d90b46c492395793d004bcd02199038f8f3631ef	refs/tags/r4v41-cmpn-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-cmpn-ri-tck-final^{}
+964d8746e21100942730f9bbc4f1fcef66bf9853	refs/tags/r4v41-core-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-core-ri-tck-final^{}
+cfe28312ab18988eff1e0b77cd11b2335b9d0d7b	refs/tags/r4v41-final
+cab003f20e989dcd809e6ed958df50681051560a	refs/tags/r4v41-final^{}
+08948a527de9e985db40f245f8dd48a077fc2529	refs/tags/r4v41-ri-tck-final
+56e5f4410639aaeef2a9be55e3f9b03c6fa28f96	refs/tags/r4v41-ri-tck-final^{}
+62094ff8637bf8e868ed2805c115e7d5a99a016e	refs/tags/r4v41-spec-final
+cab003f20e989dcd809e6ed958df50681051560a	refs/tags/r4v41-spec-final^{}
+0d9b2787fa8d341930d806f87aa2216bd041cb90	refs/tags/r4v42-cmpn-spec-final
+8b283d49469e805fd42dc8486416ff6d8e7359e3	refs/tags/r4v42-cmpn-spec-final^{}
+ec6b5ff8940c6a954a596f6b626233bcb671c299	refs/tags/r4v42-core-cmpn-final
+7f0db3bb6dfc444c2604b09e540f965df7ab8b29	refs/tags/r4v42-core-cmpn-final^{}
+6588345cffe98cc3885ffc6138d503a550ab4891	refs/tags/r4v42-core-spec-final
+9e385ab9be0ad9a9aaaeea34d535f0b1e4badc23	refs/tags/r4v42-core-spec-final^{}
+
+2026-04-28T21:59:21.306089Z ERROR codex_core::tools::router: error=exec_command failed for `/bin/bash -lc 'git ls-tree -d --name-only r6-core-spec-final 2>/dev/null | head'`: CreateProcess { message: "Rejected(\"Failed to create unified exec process: No such file or directory (os error 2)\")" }
+exec
+/bin/bash -lc 'git archive --remote=https://github.com/osgi/osgi.git r6-core-spec-final | tar -tf - | head -80' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+fatal: operation not supported by protocol
+tar: This does not look like a tar archive
+tar: Exiting with failure status due to previous errors
+
+exec
+/bin/bash -lc 'git ls-remote https://github.com/osgi/osgi.git refs/tags/r6-core-spec-final''^{}' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 467ms:
+8d66fa5f5dd5c11333da19e866590f85464fb9d4	refs/tags/r6-core-spec-final^{}
+
+web search: 
+web search: https://github.com/osgi/osgi/tree/r6-core-spec-final
+web search: 
+web search: Maven Central org.osgi.test.cases.framework 6.0.0
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.test.cases.framework/ | tail -60' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/osgi/org.osgi.test.cases.framework</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/osgi/org.osgi.test.cases.framework</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="8.0.0/" title="8.0.0/">8.0.0/</a>                                            2023-01-19 22:15         -      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2023-01-19 22:33       344      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2023-01-19 22:33        32      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2023-01-19 22:33        40      
+<a href="maven-metadata.xml.sha256" title="maven-metadata.xml.sha256">maven-metadata.xml.sha256</a>                         2023-01-19 22:33        64      
+<a href="maven-metadata.xml.sha512" title="maven-metadata.xml.sha512">maven-metadata.xml.sha512</a>                         2023-01-19 22:33       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.test.cases.framework/6.0.0/org.osgi.test.cases.framework-6.0.0.pom | sed -n '1,120p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/osgi/org.osgi.test.cases.framework/6.0.0/ | rg 'sources|jar|pom'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ exited 1 in 270ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 279ms:
+curl: (22) The requested URL returned error: 404
+
+codex
+There is no Maven test artifact for the 6.0.0 framework test cases under the newer `org.osgi.test.cases.framework` coordinates, so I’m using the exact OSGi R6 tag for the test suite instead of inventing a Maven URL.
+exec
+/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/osgi/osgi/contents?ref=r6-core-spec-final' | rg '\"name\"|\"path\"' | head -120" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+exec
+/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/osgi/osgi/contents?ref=r6-core-ri-ct-final' | rg '\"name\"|\"path\"' | head -160" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 372ms:
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "name": "build.xml",
+    "path": "build.xml",
+    "name": "cnf",
+    "path": "cnf",
+    "name": "dmforest",
+    "path": "dmforest",
+    "name": "ee.foundation",
+    "path": "ee.foundation",
+    "name": "ee.j2se",
+    "path": "ee.j2se",
+    "name": "ee.minimum",
+    "path": "ee.minimum",
+    "name": "licensed",
+    "path": "licensed",
+    "name": "org.osgi.annotation.versioning",
+    "path": "org.osgi.annotation.versioning",
+    "name": "org.osgi.application",
+    "path": "org.osgi.application",
+    "name": "org.osgi.dto",
+    "path": "org.osgi.dto",
+    "name": "org.osgi.framework",
+    "path": "org.osgi.framework",
+    "name": "org.osgi.impl.bundle.autoconf",
+    "path": "org.osgi.impl.bundle.autoconf",
+    "name": "org.osgi.impl.bundle.component.annotations",
+    "path": "org.osgi.impl.bundle.component.annotations",
+    "name": "org.osgi.impl.bundle.jaxp",
+    "path": "org.osgi.impl.bundle.jaxp",
+    "name": "org.osgi.impl.bundle.midletcontainer",
+    "path": "org.osgi.impl.bundle.midletcontainer",
+    "name": "org.osgi.impl.bundle.rsh",
+    "path": "org.osgi.impl.bundle.rsh",
+    "name": "org.osgi.impl.bundle.transaction",
+    "path": "org.osgi.impl.bundle.transaction",
+    "name": "org.osgi.impl.service.application",
+    "path": "org.osgi.impl.service.application",
+    "name": "org.osgi.impl.service.deploymentadmin",
+    "path": "org.osgi.impl.service.deploymentadmin",
+    "name": "org.osgi.impl.service.device.manager",
+    "path": "org.osgi.impl.service.device.manager",
+    "name": "org.osgi.impl.service.dmt",
+    "path": "org.osgi.impl.service.dmt",
+    "name": "org.osgi.impl.service.io",
+    "path": "org.osgi.impl.service.io",
+    "name": "org.osgi.impl.service.jdbc",
+    "path": "org.osgi.impl.service.jdbc",
+    "name": "org.osgi.impl.service.jndi",
+    "path": "org.osgi.impl.service.jndi",
+    "name": "org.osgi.impl.service.log",
+    "path": "org.osgi.impl.service.log",
+    "name": "org.osgi.impl.service.monitor",
+    "path": "org.osgi.impl.service.monitor",
+    "name": "org.osgi.impl.service.prefs",
+    "path": "org.osgi.impl.service.prefs",
+    "name": "org.osgi.impl.service.residentialmanagement",
+    "path": "org.osgi.impl.service.residentialmanagement",
+    "name": "org.osgi.impl.service.tr069todmt",
+    "path": "org.osgi.impl.service.tr069todmt",
+    "name": "org.osgi.impl.service.upnp.cd",
+    "path": "org.osgi.impl.service.upnp.cd",
+    "name": "org.osgi.impl.service.upnp.cp",
+    "path": "org.osgi.impl.service.upnp.cp",
+    "name": "org.osgi.impl.service.useradmin",
+    "path": "org.osgi.impl.service.useradmin",
+    "name": "org.osgi.jmx",
+    "path": "org.osgi.jmx",
+    "name": "org.osgi.multiplexer",
+    "path": "org.osgi.multiplexer",
+    "name": "org.osgi.namespace",
+    "path": "org.osgi.namespace",
+    "name": "org.osgi.resource",
+    "path": "org.osgi.resource",
+    "name": "org.osgi.service.application",
+    "path": "org.osgi.service.application",
+    "name": "org.osgi.service.async",
+    "path": "org.osgi.service.async",
+    "name": "org.osgi.service.blueprint",
+    "path": "org.osgi.service.blueprint",
+    "name": "org.osgi.service.cm",
+    "path": "org.osgi.service.cm",
+    "name": "org.osgi.service.component.annotations",
+    "path": "org.osgi.service.component.annotations",
+    "name": "org.osgi.service.component",
+    "path": "org.osgi.service.component",
+    "name": "org.osgi.service.condpermadmin",
+    "path": "org.osgi.service.condpermadmin",
+    "name": "org.osgi.service.coordinator",
+    "path": "org.osgi.service.coordinator",
+    "name": "org.osgi.service.deploymentadmin",
+    "path": "org.osgi.service.deploymentadmin",
+    "name": "org.osgi.service.device",
+    "path": "org.osgi.service.device",
+    "name": "org.osgi.service.dmt",
+    "path": "org.osgi.service.dmt",
+    "name": "org.osgi.service.event",
+    "path": "org.osgi.service.event",
+    "name": "org.osgi.service.http",
+    "path": "org.osgi.service.http",
+    "name": "org.osgi.service.io",
+    "path": "org.osgi.service.io",
+    "name": "org.osgi.service.jdbc",
+    "path": "org.osgi.service.jdbc",
+    "name": "org.osgi.service.jndi",
+    "path": "org.osgi.service.jndi",
+    "name": "org.osgi.service.jpa",
+    "path": "org.osgi.service.jpa",
+    "name": "org.osgi.service.log",
+    "path": "org.osgi.service.log",
+    "name": "org.osgi.service.metatype",
+    "path": "org.osgi.service.metatype",
+    "name": "org.osgi.service.monitor",
+    "path": "org.osgi.service.monitor",
+    "name": "org.osgi.service.packageadmin",
+    "path": "org.osgi.service.packageadmin",
+    "name": "org.osgi.service.permissionadmin",
+    "path": "org.osgi.service.permissionadmin",
+
+ succeeded in 371ms:
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "name": "build.xml",
+    "path": "build.xml",
+    "name": "cnf",
+    "path": "cnf",
+    "name": "dmforest",
+    "path": "dmforest",
+    "name": "ee.foundation",
+    "path": "ee.foundation",
+    "name": "ee.j2se",
+    "path": "ee.j2se",
+    "name": "ee.minimum",
+    "path": "ee.minimum",
+    "name": "licensed",
+    "path": "licensed",
+    "name": "org.osgi.annotation.versioning",
+    "path": "org.osgi.annotation.versioning",
+    "name": "org.osgi.application",
+    "path": "org.osgi.application",
+    "name": "org.osgi.dto",
+    "path": "org.osgi.dto",
+    "name": "org.osgi.framework",
+    "path": "org.osgi.framework",
+    "name": "org.osgi.impl.bundle.autoconf",
+    "path": "org.osgi.impl.bundle.autoconf",
+    "name": "org.osgi.impl.bundle.component.annotations",
+    "path": "org.osgi.impl.bundle.component.annotations",
+    "name": "org.osgi.impl.bundle.jaxp",
+    "path": "org.osgi.impl.bundle.jaxp",
+    "name": "org.osgi.impl.bundle.midletcontainer",
+    "path": "org.osgi.impl.bundle.midletcontainer",
+    "name": "org.osgi.impl.bundle.rsh",
+    "path": "org.osgi.impl.bundle.rsh",
+    "name": "org.osgi.impl.bundle.transaction",
+    "path": "org.osgi.impl.bundle.transaction",
+    "name": "org.osgi.impl.service.application",
+    "path": "org.osgi.impl.service.application",
+    "name": "org.osgi.impl.service.deploymentadmin",
+    "path": "org.osgi.impl.service.deploymentadmin",
+    "name": "org.osgi.impl.service.device.manager",
+    "path": "org.osgi.impl.service.device.manager",
+    "name": "org.osgi.impl.service.dmt",
+    "path": "org.osgi.impl.service.dmt",
+    "name": "org.osgi.impl.service.io",
+    "path": "org.osgi.impl.service.io",
+    "name": "org.osgi.impl.service.jdbc",
+    "path": "org.osgi.impl.service.jdbc",
+    "name": "org.osgi.impl.service.jndi",
+    "path": "org.osgi.impl.service.jndi",
+    "name": "org.osgi.impl.service.log",
+    "path": "org.osgi.impl.service.log",
+    "name": "org.osgi.impl.service.monitor",
+    "path": "org.osgi.impl.service.monitor",
+    "name": "org.osgi.impl.service.prefs",
+    "path": "org.osgi.impl.service.prefs",
+    "name": "org.osgi.impl.service.residentialmanagement",
+    "path": "org.osgi.impl.service.residentialmanagement",
+    "name": "org.osgi.impl.service.tr069todmt",
+    "path": "org.osgi.impl.service.tr069todmt",
+    "name": "org.osgi.impl.service.upnp.cd",
+    "path": "org.osgi.impl.service.upnp.cd",
+    "name": "org.osgi.impl.service.upnp.cp",
+    "path": "org.osgi.impl.service.upnp.cp",
+    "name": "org.osgi.impl.service.useradmin",
+    "path": "org.osgi.impl.service.useradmin",
+    "name": "org.osgi.jmx",
+    "path": "org.osgi.jmx",
+    "name": "org.osgi.multiplexer",
+    "path": "org.osgi.multiplexer",
+    "name": "org.osgi.namespace",
+    "path": "org.osgi.namespace",
+    "name": "org.osgi.resource",
+    "path": "org.osgi.resource",
+    "name": "org.osgi.service.application",
+    "path": "org.osgi.service.application",
+    "name": "org.osgi.service.async",
+    "path": "org.osgi.service.async",
+    "name": "org.osgi.service.blueprint",
+    "path": "org.osgi.service.blueprint",
+    "name": "org.osgi.service.cm",
+    "path": "org.osgi.service.cm",
+    "name": "org.osgi.service.component.annotations",
+    "path": "org.osgi.service.component.annotations",
+    "name": "org.osgi.service.component",
+    "path": "org.osgi.service.component",
+    "name": "org.osgi.service.condpermadmin",
+    "path": "org.osgi.service.condpermadmin",
+    "name": "org.osgi.service.coordinator",
+    "path": "org.osgi.service.coordinator",
+    "name": "org.osgi.service.deploymentadmin",
+    "path": "org.osgi.service.deploymentadmin",
+    "name": "org.osgi.service.device",
+    "path": "org.osgi.service.device",
+    "name": "org.osgi.service.dmt",
+    "path": "org.osgi.service.dmt",
+    "name": "org.osgi.service.event",
+    "path": "org.osgi.service.event",
+    "name": "org.osgi.service.http",
+    "path": "org.osgi.service.http",
+    "name": "org.osgi.service.io",
+    "path": "org.osgi.service.io",
+    "name": "org.osgi.service.jdbc",
+    "path": "org.osgi.service.jdbc",
+    "name": "org.osgi.service.jndi",
+    "path": "org.osgi.service.jndi",
+    "name": "org.osgi.service.jpa",
+    "path": "org.osgi.service.jpa",
+    "name": "org.osgi.service.log",
+    "path": "org.osgi.service.log",
+    "name": "org.osgi.service.metatype",
+    "path": "org.osgi.service.metatype",
+    "name": "org.osgi.service.monitor",
+    "path": "org.osgi.service.monitor",
+    "name": "org.osgi.service.packageadmin",
+    "path": "org.osgi.service.packageadmin",
+    "name": "org.osgi.service.permissionadmin",
+    "path": "org.osgi.service.permissionadmin",
+    "name": "org.osgi.service.prefs",
+    "path": "org.osgi.service.prefs",
+    "name": "org.osgi.service.provisioning",
+    "path": "org.osgi.service.provisioning",
+    "name": "org.osgi.service.remoteserviceadmin",
+    "path": "org.osgi.service.remoteserviceadmin",
+    "name": "org.osgi.service.repository",
+    "path": "org.osgi.service.repository",
+    "name": "org.osgi.service.resolver",
+    "path": "org.osgi.service.resolver",
+    "name": "org.osgi.service.serviceloader",
+    "path": "org.osgi.service.serviceloader",
+    "name": "org.osgi.service.startlevel",
+    "path": "org.osgi.service.startlevel",
+    "name": "org.osgi.service.subsystem",
+    "path": "org.osgi.service.subsystem",
+    "name": "org.osgi.service.tr069todmt",
+    "path": "org.osgi.service.tr069todmt",
+    "name": "org.osgi.service.upnp",
+    "path": "org.osgi.service.upnp",
+    "name": "org.osgi.service.url",
+    "path": "org.osgi.service.url",
+    "name": "org.osgi.service.useradmin",
+    "path": "org.osgi.service.useradmin",
+    "name": "org.osgi.service.wireadmin",
+    "path": "org.osgi.service.wireadmin",
+    "name": "org.osgi.test.cases.application",
+    "path": "org.osgi.test.cases.application",
+    "name": "org.osgi.test.cases.blueprint.java5",
+    "path": "org.osgi.test.cases.blueprint.java5",
+    "name": "org.osgi.test.cases.blueprint.secure",
+    "path": "org.osgi.test.cases.blueprint.secure",
+    "name": "org.osgi.test.cases.blueprint",
+    "path": "org.osgi.test.cases.blueprint",
+    "name": "org.osgi.test.cases.cm",
+    "path": "org.osgi.test.cases.cm",
+    "name": "org.osgi.test.cases.component.annotations",
+    "path": "org.osgi.test.cases.component.annotations",
+    "name": "org.osgi.test.cases.component",
+    "path": "org.osgi.test.cases.component",
+
+exec
+/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/osgi/osgi/contents?ref=r6-core-ri-ct-final' | rg 'org.osgi.test.cases.(framework|resolver|resource|namespace)' -C 1" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 232ms:
+  {
+    "name": "org.osgi.test.cases.framework.launch.secure",
+    "path": "org.osgi.test.cases.framework.launch.secure",
+    "sha": "78f15dc42a6622d378cd445771e1330cab41dde8",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.launch.secure?ref=r6-core-ri-ct-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework.launch.secure",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/78f15dc42a6622d378cd445771e1330cab41dde8",
+--
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.launch.secure?ref=r6-core-ri-ct-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/78f15dc42a6622d378cd445771e1330cab41dde8",
+      "html": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework.launch.secure"
+    }
+--
+  {
+    "name": "org.osgi.test.cases.framework.launch",
+    "path": "org.osgi.test.cases.framework.launch",
+    "sha": "8b3147499243e6c5a35d3418c1ed9a70764f8e7a",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.launch?ref=r6-core-ri-ct-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework.launch",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/8b3147499243e6c5a35d3418c1ed9a70764f8e7a",
+--
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.launch?ref=r6-core-ri-ct-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/8b3147499243e6c5a35d3418c1ed9a70764f8e7a",
+      "html": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework.launch"
+    }
+--
+  {
+    "name": "org.osgi.test.cases.framework.secure",
+    "path": "org.osgi.test.cases.framework.secure",
+    "sha": "91e431445e16c24f9b3e98c548a0abab6587327f",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.secure?ref=r6-core-ri-ct-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework.secure",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/91e431445e16c24f9b3e98c548a0abab6587327f",
+--
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework.secure?ref=r6-core-ri-ct-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/91e431445e16c24f9b3e98c548a0abab6587327f",
+      "html": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework.secure"
+    }
+--
+  {
+    "name": "org.osgi.test.cases.framework",
+    "path": "org.osgi.test.cases.framework",
+    "sha": "de8f58ac27aa35bee89d160f39b166de7526bff3",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework?ref=r6-core-ri-ct-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/de8f58ac27aa35bee89d160f39b166de7526bff3",
+--
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.framework?ref=r6-core-ri-ct-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/de8f58ac27aa35bee89d160f39b166de7526bff3",
+      "html": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework"
+    }
+--
+  {
+    "name": "org.osgi.test.cases.resolver",
+    "path": "org.osgi.test.cases.resolver",
+    "sha": "b4403af88c8d642dbab6d74e5ecc4e9a4f71a16e",
+    "size": 0,
+    "url": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.resolver?ref=r6-core-ri-ct-final",
+    "html_url": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.resolver",
+    "git_url": "https://api.github.com/repos/osgi/osgi/git/trees/b4403af88c8d642dbab6d74e5ecc4e9a4f71a16e",
+--
+    "_links": {
+      "self": "https://api.github.com/repos/osgi/osgi/contents/org.osgi.test.cases.resolver?ref=r6-core-ri-ct-final",
+      "git": "https://api.github.com/repos/osgi/osgi/git/trees/b4403af88c8d642dbab6d74e5ecc4e9a4f71a16e",
+      "html": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.resolver"
+    }
+
+codex
+I found the exact R6 GitHub tag for OSGi Core CT tests, but the artifact’s source and javadoc jars are present on Maven Central, so those fields will use Maven. I’m going to leave `language` absent because this is a Java API bundle, not a Kotlin or Scala-specific library.
+apply patch
+patch: completed
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+index b7160da50ee0aefdb17c704302887524d76977b2..814d7288de7bf6cf1514d834c3dd9ab198e83763
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.core:6.0.0"
++  "coordinates" : "org.osgi:osgi.core:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar",
++  "description" : "OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+index b7160da50ee0aefdb17c704302887524d76977b2..814d7288de7bf6cf1514d834c3dd9ab198e83763
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.core:6.0.0"
++  "coordinates" : "org.osgi:osgi.core:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar",
++  "description" : "OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+ succeeded in 0ms:
+{
+  "coordinates": "org.osgi:osgi.core:6.0.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
+  "repository-url": "https://github.com/osgi/osgi",
+  "test-code-url": "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
+  "documentation-url": "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar",
+  "description": "OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions."
+}
+
+exec
+/bin/bash -lc "for url in https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar https://github.com/osgi/osgi https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar; do printf '%s ' \""'$url"; curl -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+index b7160da50ee0aefdb17c704302887524d76977b2..814d7288de7bf6cf1514d834c3dd9ab198e83763
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.core:6.0.0"
++  "coordinates" : "org.osgi:osgi.core:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar",
++  "description" : "OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions."
+ }
+
+ succeeded in 2581ms:
+200
+https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework 200
+https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar 200
+
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+index b7160da50ee0aefdb17c704302887524d76977b2..814d7288de7bf6cf1514d834c3dd9ab198e83763
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.core:6.0.0"
++  "coordinates" : "org.osgi:osgi.core:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar",
++  "description" : "OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions."
+ }
+
+web search: 
+web search: repo1.maven.org org.osgi osgi.core 6.0.0 sources javadoc
+web search: 
+web search: https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework
+web search: 
+web search: 'Specification, API, implementation, and TCK source code' in https://github.com/osgi/osgi
+codex
+Updated [org.osgi-osgi.core-6.0.0.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json).
+
+I used the exact Maven Central `6.0.0` sources and javadoc jars, and the OSGi GitHub repository’s exact `r6-core-ri-ct-final` framework test-suite path. Maven Central lists the `osgi.core-6.0.0-sources.jar` and `osgi.core-6.0.0-javadoc.jar`, while the OSGi repo identifies itself as the specification/API/TCK source repository and exposes the tagged test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/?utm_source=openai))
+
+Validated the JSON with `jq`; no `language` field was added.
+diff --git a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+index b7160da50ee0aefdb17c704302887524d76977b2..814d7288de7bf6cf1514d834c3dd9ab198e83763
+--- a/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
++++ b/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.osgi:osgi.core:6.0.0"
++  "coordinates" : "org.osgi:osgi.core:6.0.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-sources.jar",
++  "repository-url" : "https://github.com/osgi/osgi",
++  "test-code-url" : "https://github.com/osgi/osgi/tree/r6-core-ri-ct-final/org.osgi.test.cases.framework",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/osgi.core-6.0.0-javadoc.jar",
++  "description" : "OSGi Core defines the core framework APIs and contracts for modular Java applications built from bundles. It provides interfaces and classes for bundle lifecycle management, services, permissions, namespaces, resources, and framework interactions."
+ }
+
+2026-04-28T22:00:18.868345Z ERROR codex_core::session: failed to record rollout items: thread 019dd619-828f-7d11-9799-3cd82f93b368 not found
+tokens used
+110,037
+Updated [org.osgi-osgi.core-6.0.0.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/build/discovered-artifact-metadata/org.osgi-osgi.core-6.0.0.json).
+
+I used the exact Maven Central `6.0.0` sources and javadoc jars, and the OSGi GitHub repository’s exact `r6-core-ri-ct-final` framework test-suite path. Maven Central lists the `osgi.core-6.0.0-sources.jar` and `osgi.core-6.0.0-javadoc.jar`, while the OSGi repo identifies itself as the specification/API/TCK source repository and exposes the tagged test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/org/osgi/osgi.core/6.0.0/?utm_source=openai))
+
+Validated the JSON with `jq`; no `language` field was added.
+Ran agent for org.osgi:osgi.core:6.0.0 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/build/agent-artifact-discovery-logs/org.osgi-osgi.core-6.0.0.log
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2987-f9b31c08/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 15s
+9 actionable tasks: 4 executed, 5 from cache
