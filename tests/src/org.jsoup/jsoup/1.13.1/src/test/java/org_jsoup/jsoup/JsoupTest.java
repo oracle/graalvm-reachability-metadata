@@ -8,6 +8,7 @@ package org_jsoup.jsoup;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,8 @@ import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
 import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
+import org.jsoup.select.NodeTraversor;
+import org.jsoup.select.NodeVisitor;
 import org.junit.jupiter.api.Test;
 
 public class JsoupTest {
@@ -237,6 +240,41 @@ public class JsoupTest {
         assertThat(link.text()).isEqualTo("A & B");
         assertThat(link.html()).isEqualTo("A &amp; B");
         assertThat(link.outerHtml()).contains("href=\"/file?a=1&amp;b=2\"");
+    }
+
+    @Test
+    public void traversesNodeTreeWithDepthAwareVisitorCallbacks() {
+        Document document = Jsoup.parseBodyFragment("<article><h1>Title</h1><p>Lead <em>details</em></p><!-- editorial note --></article>");
+        Element article = requireFirst(document, "article");
+        List<String> events = new ArrayList<>();
+
+        NodeTraversor.traverse(new NodeVisitor() {
+            @Override
+            public void head(Node node, int depth) {
+                events.add("enter:" + depth + ":" + node.nodeName());
+            }
+
+            @Override
+            public void tail(Node node, int depth) {
+                if (node instanceof Element) {
+                    events.add("exit:" + depth + ":" + node.nodeName());
+                }
+            }
+        }, article);
+
+        assertThat(events).containsExactly(
+                "enter:0:article",
+                "enter:1:h1",
+                "enter:2:#text",
+                "exit:1:h1",
+                "enter:1:p",
+                "enter:2:#text",
+                "enter:2:em",
+                "enter:3:#text",
+                "exit:2:em",
+                "exit:1:p",
+                "enter:1:#comment",
+                "exit:0:article");
     }
 
     private static Element requireFirst(Element root, String cssQuery) {
