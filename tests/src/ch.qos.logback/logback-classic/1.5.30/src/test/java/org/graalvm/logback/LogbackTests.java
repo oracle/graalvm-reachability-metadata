@@ -11,8 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +18,6 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import ch.qos.logback.classic.Logger;
@@ -29,6 +26,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LogbackServiceProvider;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
@@ -44,15 +42,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import org.xml.sax.InputSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LogbackTests {
 
-  private static final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+  private static final LoggerContext context = createLoggerContext();
 
   private static final Map<String, String> layoutTagMap = new HashMap<>();
   static {
@@ -93,7 +90,8 @@ public class LogbackTests {
 
   @BeforeEach
   public void setUp() {
-    MDC.put("test", "GraalVM");
+    context.reset();
+    context.getMDCAdapter().put("test", "GraalVM");
     context.putProperty("test", "GraalVM property");
     this.outputStreamCaptor = new ByteArrayOutputStream();
     System.setOut(new PrintStream(this.outputStreamCaptor));
@@ -102,11 +100,8 @@ public class LogbackTests {
   @ParameterizedTest
   @ValueSource(strings = {"patternLayout", "xmlLayout"})
   void testLayouts(String layoutName) throws Exception {
-    JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(context);
-
     String configXml = LayoutTags.CONFIG_TAG.formatted(layoutTagMap.get(layoutName));
-    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+    configure(configXml);
 
     Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
     testLogger.info("test info message");
@@ -117,13 +112,10 @@ public class LogbackTests {
 
   @Test
   void testFileAppender() throws Exception {
-    JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(context);
-
     String filePath = tempDirPath + "/log.txt";
     String filesTag = AppenderTags.FILE_TAG.formatted(filePath);
     String configXml = AppenderTags.CONFIG_TAG.formatted(filesTag);
-    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+    configure(configXml);
 
     Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
     testLogger.info("test info message");
@@ -134,13 +126,10 @@ public class LogbackTests {
 
   @Test
   void testRollingFileAppender() throws Exception {
-    JoranConfigurator joranConfigurator = new JoranConfigurator();
-    joranConfigurator.setContext(context);
-
     String filePath = tempDirPath + "/rolling-log.txt";
     String filesTag = AppenderTags.ROLLING_FILE_TAG.formatted(filePath);
     String configXml = AppenderTags.CONFIG_TAG.formatted(filesTag);
-    joranConfigurator.doConfigure(new ByteArrayInputStream(configXml.getBytes()));
+    configure(configXml);
 
     Logger testLogger = context.getLogger(Logger.ROOT_LOGGER_NAME);
     testLogger.info("test info message");
@@ -174,6 +163,19 @@ public class LogbackTests {
     assertThat(slf4jAvailable).isTrue();
   }
 
+  private static LoggerContext createLoggerContext() {
+    LogbackServiceProvider serviceProvider = new LogbackServiceProvider();
+    serviceProvider.initialize();
+    return (LoggerContext) serviceProvider.getLoggerFactory();
+  }
+
+  private void configure(String configXml) throws Exception {
+    JoranConfigurator joranConfigurator = new JoranConfigurator();
+    joranConfigurator.setContext(context);
+    InputSource inputSource = new InputSource(new ByteArrayInputStream(configXml.getBytes(StandardCharsets.UTF_8)));
+    joranConfigurator.doConfigure(inputSource);
+  }
+
   private boolean isClassPresent(String className) {
     try {
       Class.forName(className);
@@ -184,28 +186,8 @@ public class LogbackTests {
   }
 
   private static Stream<Arguments> converterSource() {
-    if (!PatternLayout.DEFAULT_CONVERTER_MAP.isEmpty()) {
-      return PatternLayout.DEFAULT_CONVERTER_MAP.entrySet().stream()
-          .map(entry -> Arguments.of(entry.getValue(), entry.getKey()));
-    }
-    return defaultConverterSupplierMap().entrySet().stream()
+    return PatternLayout.DEFAULT_CONVERTER_SUPPLIER_MAP.entrySet().stream()
         .map(entry -> Arguments.of(entry.getValue().get().getClass().getName(), entry.getKey()));
-  }
-
-  @SuppressWarnings("unchecked")
-  private static Map<String, Supplier<?>> defaultConverterSupplierMap() {
-    try {
-      Method method = PatternLayout.class.getMethod("getDefaultConverterSupplierMap");
-      return (Map<String, Supplier<?>>) method.invoke(new PatternLayout());
-    } catch (ReflectiveOperationException ignored) {
-      // Fall back to the field for compatibility with older or transitional versions.
-    }
-    try {
-      Field field = PatternLayout.class.getField("DEFAULT_CONVERTER_SUPPLIER_MAP");
-      return (Map<String, Supplier<?>>) field.get(null);
-    } catch (ReflectiveOperationException ex) {
-      throw new IllegalStateException("Could not resolve the Logback default converter supplier map.", ex);
-    }
   }
 
   private PatternLayoutEncoder createEncoder(String pattern) {
@@ -240,6 +222,7 @@ public class LogbackTests {
 
   @AfterEach
   public void tearDown() {
+    context.getMDCAdapter().clear();
     System.setOut(systemOut);
   }
 
