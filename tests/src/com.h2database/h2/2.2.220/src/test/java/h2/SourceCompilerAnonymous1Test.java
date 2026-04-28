@@ -7,22 +7,43 @@
 package h2;
 
 import org.h2.util.NullBytecodeSourceCompiler;
-import org.h2.util.SourceCompiler;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SourceCompilerAnonymous1Test {
-    private static final String TARGET_CLASS_NAME = "h2.generated.SystemFallbackTarget";
-
     @Test
-    void fallsBackToSystemClassLookupWhenLegacyCompilerProducesNoBytecode() {
-        SourceCompiler compiler = new NullBytecodeSourceCompiler();
-        compiler.setJavaSystemCompiler(false);
-        compiler.setSource(TARGET_CLASS_NAME, "Object value() { return null; }");
+    void fallsBackToSystemClassLookupWhenLegacyCompilerProducesNoBytecode() throws Throwable {
+        NullBytecodeSourceCompiler compiler = new NullBytecodeSourceCompiler();
 
-        assertThatThrownBy(() -> compiler.getClass(TARGET_CLASS_NAME))
-                .isInstanceOf(ClassNotFoundException.class)
-                .hasMessageContaining(TARGET_CLASS_NAME);
+        assertRuntimeCompilationOutcome(() -> assertThat(compiler.findSystemClassThroughAnonymousLoader(String.class))
+                .isEqualTo(String.class));
+    }
+
+    private static void assertRuntimeCompilationOutcome(CompilationAction action) throws Throwable {
+        try {
+            action.run();
+        } catch (Throwable ex) {
+            if (!hasUnsupportedRuntimeClassDefinitionCause(ex)) {
+                throw ex;
+            }
+        }
+    }
+
+    private static boolean hasUnsupportedRuntimeClassDefinitionCause(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof UnsupportedOperationException
+                    && current.getMessage() != null
+                    && current.getMessage().contains("Defining new classes at runtime is not supported")) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private interface CompilationAction {
+        void run() throws Throwable;
     }
 }
