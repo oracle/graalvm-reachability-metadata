@@ -6,10 +6,13 @@
  */
 package com_graphql_java.graphql_java;
 
+import java.lang.reflect.Method;
+
 import graphql.Scalars;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import graphql.schema.PropertyDataFetcherHelper;
+import graphql.schema.PropertyFetchingImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,6 +87,29 @@ public class GraphqlJavaPropertyFetchingImplTest {
     assertThat(value).isEqualTo("fallback");
   }
 
+  @Test
+  void findsGetterDeclaredOnNonPublicInterfaceRoot() throws Exception {
+    PropertyFetchingImpl propertyFetching = new PropertyFetchingImpl(DataFetchingEnvironment.class);
+    Class<?> cacheKeyClass = Class.forName("graphql.schema.PropertyFetchingImpl$CacheKey");
+    Method findMethod = PropertyFetchingImpl.class.getDeclaredMethod(
+            "findPubliclyAccessibleMethod",
+            cacheKeyClass,
+            Class.class,
+            String.class,
+            boolean.class);
+    findMethod.setAccessible(true);
+
+    Method getter = (Method) findMethod.invoke(
+            propertyFetching,
+            null,
+            InterfaceOnlyProperty.class,
+            "getInterfaceOnly",
+            false);
+
+    assertThat(getter.getName()).isEqualTo("getInterfaceOnly");
+    assertThat(getter.getDeclaringClass()).isEqualTo(InterfaceOnlyProperty.class);
+  }
+
   public static final class EnvironmentAwareProperty {
 
     public String getMessage(DataFetchingEnvironment environment) {
@@ -113,5 +139,10 @@ public class GraphqlJavaPropertyFetchingImplTest {
     public String getFallback() {
       return "fallback";
     }
+  }
+
+  private interface InterfaceOnlyProperty {
+
+    String getInterfaceOnly();
   }
 }
