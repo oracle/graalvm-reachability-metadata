@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ public class FieldSerializerTest {
         FieldSerializer<FieldSerializerSubject> serializer = new FieldSerializer<>(kryo, FieldSerializerSubject.class);
         FieldSerializerSubject original = FieldSerializerSubject.createSample();
 
-        FieldSerializerSubject read = roundTrip(kryo, serializer, original);
+        FieldSerializerSubject read = roundTrip(kryo, serializer, original, FieldSerializerSubject.class);
         FieldSerializerSubject copy = serializer.copy(kryo, original);
 
         assertThat(fieldNames(serializer)).contains("active", "createdAt", "id", "name", "score");
@@ -52,12 +53,29 @@ public class FieldSerializerTest {
         serializer.setUseAsm(false);
 
         FieldSerializerSubject original = FieldSerializerSubject.createSample();
-        FieldSerializerSubject read = roundTrip(kryo, serializer, original);
+        FieldSerializerSubject read = roundTrip(kryo, serializer, original, FieldSerializerSubject.class);
 
         assertThat(serializer.getField("name").toString()).isEqualTo("name");
         assertThat(read.name).isEqualTo(original.name);
         assertThat(read.id).isEqualTo(original.id);
         assertThat(read.score).isEqualTo(original.score);
+    }
+
+    @Test
+    void rebuildsCachedFieldsUsingUnsafeMemoryRegions() throws Exception {
+        Kryo kryo = newKryo();
+        kryo.setAsmEnabled(false);
+        FieldSerializer<PrimitiveRegionSubject> serializer = new FieldSerializer<>(kryo, PrimitiveRegionSubject.class);
+        enableMemoryRegions(serializer);
+
+        serializer.setUseAsm(false);
+        PrimitiveRegionSubject original = PrimitiveRegionSubject.createSample();
+        PrimitiveRegionSubject read = roundTrip(kryo, serializer, original, PrimitiveRegionSubject.class);
+
+        assertThat(serializer.getUseMemRegions()).isTrue();
+        assertThat(read.first).isEqualTo(original.first);
+        assertThat(read.second).isEqualTo(original.second);
+        assertThat(read.third).isEqualTo(original.third);
     }
 
     private static Kryo newKryo() {
@@ -66,14 +84,19 @@ public class FieldSerializerTest {
         return kryo;
     }
 
-    private static FieldSerializerSubject roundTrip(
-            Kryo kryo, FieldSerializer<FieldSerializerSubject> serializer, FieldSerializerSubject original) {
+    private static void enableMemoryRegions(FieldSerializer<?> serializer) throws Exception {
+        Field useMemRegions = FieldSerializer.class.getDeclaredField("useMemRegions");
+        useMemRegions.setAccessible(true);
+        useMemRegions.setBoolean(serializer, true);
+    }
+
+    private static <T> T roundTrip(Kryo kryo, FieldSerializer<T> serializer, T original, Class<T> type) {
         Output output = new Output(256, -1);
         serializer.write(kryo, output, original);
         kryo.reset();
 
         Input input = new Input(output.toBytes());
-        FieldSerializerSubject read = serializer.read(kryo, input, FieldSerializerSubject.class);
+        T read = serializer.read(kryo, input, type);
         kryo.reset();
         return read;
     }
@@ -109,6 +132,23 @@ public class FieldSerializerTest {
             value.score = 98.25d;
             value.createdAt = 123456789L;
             value.memo = "copy-only";
+            return value;
+        }
+    }
+
+    public static class PrimitiveRegionSubject {
+        public int first;
+        public long second;
+        public double third;
+
+        public PrimitiveRegionSubject() {
+        }
+
+        static PrimitiveRegionSubject createSample() {
+            PrimitiveRegionSubject value = new PrimitiveRegionSubject();
+            value.first = 7;
+            value.second = 987654321L;
+            value.third = 12.5d;
             return value;
         }
     }
