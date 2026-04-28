@@ -38,7 +38,7 @@ public class VariableLinkedBlockingQueueTest {
         byte[] serialized = serialize(queue);
 
         VariableLinkedBlockingQueue<?> restored = deserialize(serialized);
-        assertThat(restored).containsExactly("first", "second");
+        assertThat(restored.toArray()).containsExactly("first", "second");
         assertThat(restored.remainingCapacity()).isEqualTo(3);
     }
 
