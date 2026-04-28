@@ -1,0 +1,971 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd161-c5f1-7e61-be7b-06054b1695ed
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.jboss.logmanager:jboss-logmanager:1.2.1.GA
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.2.1.GA".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+- Entry selector: "metadata-version" = "1.2.1.GA"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.2.1.GA".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.2.1.GA
+- Entry test-version: 1.2.1.GA
+codex
+I’ll verify the artifact metadata and available versioned sources/tests/docs before editing the JSON, with Maven artifacts preferred where they exist.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.2\\.1\\.GA\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.jboss.logmanager/jboss-logmanager/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+4:    "metadata-version" : "1.2.1.GA",
+14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.0.GA/jboss-logmanager-1.2.0.GA-sources.jar",
+15:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+16:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.0.GA/src/test",
+17:    "documentation-url" : "N/A",
+18:    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+
+exec
+/usr/bin/bash -lc "rg -n 'org\\.jboss\\.logmanager|jboss-logmanager' metadata/org.jboss.logmanager -g 'index.json'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:9:      "org.jboss.logmanager"
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.0.GA/jboss-logmanager-1.2.0.GA-sources.jar",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:15:    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:16:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.0.GA/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:23:      "org.jboss.logmanager"
+
+codex
+The target entry already has non-blank fields in the worktree, but several point at `1.2.0.GA` while the selected entry is `1.2.1.GA`. I’m going to inspect the full entry and verify authoritative URLs before deciding whether this is a stale-value case rather than a genuinely missing-field case.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.jboss.logmanager/jboss-logmanager/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.2.1.GA",
+    "tested-versions" : [
+      "1.2.1.GA"
+    ],
+    "allowed-packages" : [
+      "org.jboss.logmanager"
+    ]
+  },
+  {
+    "metadata-version" : "1.2.0.GA",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.0.GA/jboss-logmanager-1.2.0.GA-sources.jar",
+    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
+    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.0.GA/src/test",
+    "documentation-url" : "N/A",
+    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+    "tested-versions" : [
+      "1.2.0.GA"
+    ],
+    "allowed-packages" : [
+      "org.jboss.logmanager"
+    ]
+  }
+]
+
+web search: 
+web search: Maven org.jboss.logmanager jboss-logmanager 1.2.1.GA sources jar
+web search: 
+web search: https://github.com/jboss-logging/jboss-logmanager
+codex
+Maven Central access through the browser tool is flaky here, so I’m checking the same canonical URLs directly from the workspace and asking Git for the repository’s tags. This will also confirm whether there is a versioned Maven source artifact and whether any test-source artifact exists.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA.pom' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 178ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/jboss/logmanager/jboss-logmanager/1.2.1.GA</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/jboss/logmanager/jboss-logmanager/1.2.1.GA</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jboss-logmanager-1.2.1.GA-sources.jar" title="jboss-logmanager-1.2.1.GA-sources.jar">jboss-logmanager-1.2.1.GA-sources.jar</a>             2011-12-07 15:16    115922      
+<a href="jboss-logmanager-1.2.1.GA-sources.jar.md5" title="jboss-logmanager-1.2.1.GA-sources.jar.md5">jboss-logmanager-1.2.1.GA-sources.jar.md5</a>         2011-12-07 15:16        32      
+<a href="jboss-logmanager-1.2.1.GA-sources.jar.sha1" title="jboss-logmanager-1.2.1.GA-sources.jar.sha1">jboss-logmanager-1.2.1.GA-sources.jar.sha1</a>        2011-12-07 15:16        40      
+<a href="jboss-logmanager-1.2.1.GA.jar" title="jboss-logmanager-1.2.1.GA.jar">jboss-logmanager-1.2.1.GA.jar</a>                     2011-12-07 15:16    183674      
+<a href="jboss-logmanager-1.2.1.GA.jar.md5" title="jboss-logmanager-1.2.1.GA.jar.md5">jboss-logmanager-1.2.1.GA.jar.md5</a>                 2011-12-07 15:16        32      
+<a href="jboss-logmanager-1.2.1.GA.jar.sha1" title="jboss-logmanager-1.2.1.GA.jar.sha1">jboss-logmanager-1.2.1.GA.jar.sha1</a>                2011-12-07 15:16        40      
+<a href="jboss-logmanager-1.2.1.GA.pom" title="jboss-logmanager-1.2.1.GA.pom">jboss-logmanager-1.2.1.GA.pom</a>                     2011-12-07 15:16      3756      
+<a href="jboss-logmanager-1.2.1.GA.pom.md5" title="jboss-logmanager-1.2.1.GA.pom.md5">jboss-logmanager-1.2.1.GA.pom.md5</a>                 2011-12-07 15:16        32      
+<a href="jboss-logmanager-1.2.1.GA.pom.sha1" title="jboss-logmanager-1.2.1.GA.pom.sha1">jboss-logmanager-1.2.1.GA.pom.sha1</a>                2011-12-07 15:16        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 189ms:
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2009, Red Hat Middleware LLC, and individual contributors
+  ~ as indicated by the @author tags. See the copyright.txt file in the
+  ~ distribution for a full listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>JBoss Log Manager</name>
+    <description>An implementation of java.util.logging.LogManager</description>
+    <groupId>org.jboss.logmanager</groupId>
+    <artifactId>jboss-logmanager</artifactId>
+    <packaging>jar</packaging>
+    <version>1.2.1.GA</version>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>6-beta-1</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.8</version>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Tests.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.6.1</version>
+                <configuration>
+                    <doclet>net.gleamynode.apiviz.APIviz</doclet>
+                    <docletArtifact>
+                        <groupId>org.jboss.apiviz</groupId>
+                        <artifactId>apiviz</artifactId>
+                        <version>1.3.0.GA</version>
+                    </docletArtifact>
+                    <doctitle>JBoss LogManager ${project.version}</doctitle>
+                    <header>JBoss LogManager ${project.version}</header>
+                    <footer>JBoss LogManager ${project.version}</footer>
+                    <bottom><![CDATA[<i>Copyright &#169; 2011 JBoss, a division of Red Hat, Inc.</i>]]></bottom>
+                    <links>
+                        <link>http://java.sun.com/javase/6/docs/api/</link>
+                    </links>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jboss-logging/jboss-logmanager.git '*1.2.1*'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 352ms:
+e065e7f4e29dd4a41a05a0f0cc1ec9946fba325c	refs/tags/1.2.1.GA
+6128fc0f87bc8eeb721ef6714f979f2a730f9262	refs/tags/1.2.1.GA^{}
+
+web search: 
+web search: "JBoss LogManager 1.2.1.GA" javadoc
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar
+web search: 
+web search: https://repository.jboss.org/maven2/org/jboss/logmanager/jboss-logmanager/
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-test-sources.jar || true' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-tests.jar || true' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 201ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 27 Apr 2026 23:59:44 GMT
+content-type: text/html
+cf-ray: 9f31c85f7b3623bc-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 231ms:
+HTTP/2 404 
+date: Mon, 27 Apr 2026 23:59:44 GMT
+content-type: text/html
+cf-ray: 9f31c85f7e2fbac5-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 308ms:
+HTTP/2 301 
+date: Mon, 27 Apr 2026 23:59:44 GMT
+content-length: 0
+location: /doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Ja46LGmrvW%2Bs4AIMiAhg6RFfayBFat%2BommFrpCffzA79Dk39wiViKMM8nZ9ORiGCNLtiZ3G9ChTn11hZZE9Ckb3iAU5BYhxqk0cFFIi2DHRVFIN93If2RrV%2ByuhbTMYomxSuYAScUpII"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f31c85fad663b5e-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Mon, 27 Apr 2026 23:59:44 GMT
+content-length: 0
+location: /doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=dlxmQJ5ztW4zx0hqkeDwz%2Fe%2FpnVzOd%2B4QvTpQ%2BIeN2HwUabwxtmhbJVNqw11QtEWWvZ%2FRpgSsMdg9WPKxSh1a%2FDyMpPUvX47pgIZCCBeFfPJD%2B5eROK59KW1mpgHIcCtWYYZucC90TEM"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f31c8604db23b5e-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 27 Apr 2026 23:59:44 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=R14E7%2FJ3%2FuKEv3P3PxWUePY4a%2F5BmLxteExOaCi%2BbSYxLbb5mCzHHqE9ighCwpYUJ6Wx3ZJTiWpO8XJ4Ef1dRsZlDj%2BfLJpcszkaOh%2FFgrj1GNm4263xr7g8kxzzbuEJtoaOaXVAr02V"}]}
+server: cloudflare
+cf-ray: 9f31c860ee0f3b5e-GVA
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 515ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 23:59:45 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"3a89b19ecd80ecd2101783728cd4d9da"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=rhxJTGnC91oeeLfLaqxw4Vyn5Ov1w9YLLQvTg9TECz4MBma29H7r4COFyD8HOhe9Sk7i%2Bx6aKbrKHiihKd4c5kuX9BE3gpNcZfqjqIplHOq9gOnmfAAL6NVXiREn3C4Bvmk%2FQKNAi%2BYkegP69w7CeGXb4%2BTEGxc0%2FD3ViME5uIwXPa0cwRG62Z1q5Op6Y7cNZL%2BoVfuKYOr6sWU1HT3JUpUxEU9Ameci0l70vuNtUwcuxyCq3sUaeXIpVB5xDLVvp5JiLGYInihcyaxyTV%2BLTg%3D%3D--4cjCdJMhM%2Bzd4mgE--JCG%2FzqIu3XAM92LK5ds%2BWA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.877770736.1777334384; expires=Tue, 27 Apr 2027 23:59:44 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 27 Apr 2027 23:59:44 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 727F:296CA8:53E28C7:3F33002:69EFF870
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jboss-logmanager 1.2.1.GA javadoc (org.jboss.logmanager)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/org.jboss.logmanager">org.jboss.logmanager</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jboss-logmanager
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/org.jboss.logmanager/jboss-logmanager" class="dropdown-item">
+							jboss-logmanager
+						</a>
+						
+						<a href="/doc/org.jboss.logmanager/log4j-jboss-logmanager" class="dropdown-item">
+							log4j-jboss-logmanager
+						</a>
+						
+						<a href="/doc/org.jboss.logmanager/log4j2-jboss-logmanager" class="dropdown-item">
+							log4j2-jboss-logmanager
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.2.1.GA
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/org.jboss.logmanager/jboss-logmanager/latest/index.html" class="dropdown-item">
+							3.2.2.Final
+						</a>
+
+						
+						<a href="/doc/org.jboss.logmanager/jboss-logmanager/3.2.1.Final/index.html" class="dropdown-item">
+							3.2.1.Final
+
+codex
+I found a Maven Central source jar for `1.2.1.GA`, no Maven `tests` or `test-sources` artifact, a matching Git tag `1.2.1.GA`, and versioned Javadocs at javadoc.io. I’m adding only the missing fields to the first `1.2.1.GA` entry and leaving the existing `1.2.0.GA` entry untouched.
+apply patch
+patch: completed
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..e50a5429f97891c0f5b2d441bf0419222fb9c8e9
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..e50a5429f97891c0f5b2d441bf0419222fb9c8e9
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+codex
+The JSON is patched. I’ll validate the file shape locally, then run the repository’s metadata validation for this coordinate so format/schema issues are caught.
+exec
+/usr/bin/bash -lc "jq 'map(select(.\"metadata-version\" == \"1.2.1.GA\"))' metadata/org.jboss.logmanager/jboss-logmanager/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+[
+  {
+    "latest": true,
+    "metadata-version": "1.2.1.GA",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
+    "repository-url": "https://github.com/jboss-logging/jboss-logmanager",
+    "test-code-url": "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
+    "documentation-url": "https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html",
+    "description": "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+    "tested-versions": [
+      "1.2.1.GA"
+    ],
+    "allowed-packages": [
+      "org.jboss.logmanager"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.jboss.logmanager/jboss-logmanager/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+diff --git i/metadata/org.jboss.logmanager/jboss-logmanager/index.json w/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c61..e50a5429f9 100644
+--- i/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ w/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..e50a5429f97891c0f5b2d441bf0419222fb9c8e9
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.jboss.logmanager:jboss-logmanager:1.2.1.GA --stacktrace' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..e50a5429f97891c0f5b2d441bf0419222fb9c8e9
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+ exited 1 in 2701ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/build/reports/problems/problems-report.html
+Metadata files check failed for org.jboss.logmanager:jboss-logmanager:1.2.1.GA: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/metadata/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.jboss.logmanager:jboss-logmanager:1.2.1.GA: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/metadata/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.jboss.logmanager:jboss-logmanager:1.2.1.GA: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/metadata/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted metadata check fails before/independently of the URL fields because the repository has no `metadata/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/reachability-metadata.json`. The `index.json` itself parses cleanly, so I’m doing one final diff check.
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.jboss.logmanager/jboss-logmanager/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.jboss.logmanager/jboss-logmanager/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+diff --git i/metadata/org.jboss.logmanager/jboss-logmanager/index.json w/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c61..e50a5429f9 100644
+--- i/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ w/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..e50a5429f97891c0f5b2d441bf0419222fb9c8e9
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+web search: 
+web search: https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html
+web search: 
+web search: "jboss-logmanager" "1.2.1.GA" "apidocs"
+codex
+The javadoc.io version page exists, but it explicitly says no JavaDoc is released for `org.jboss.logmanager:jboss-logmanager:1.2.1.GA`, so it is not a valid documentation URL. I’m correcting `documentation-url` to `N/A` rather than storing an error/placeholder page.
+apply patch
+patch: completed
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..8ea5354800712d8aa9142fb0b855779d1f8a6a92
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "N/A",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..8ea5354800712d8aa9142fb0b855779d1f8a6a92
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "N/A",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.jboss.logmanager/jboss-logmanager/index.json && git diff --check -- metadata/org.jboss.logmanager/jboss-logmanager/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.jboss.logmanager/jboss-logmanager/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee
+ succeeded in 0ms:
+diff --git i/metadata/org.jboss.logmanager/jboss-logmanager/index.json w/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c61..8ea5354800 100644
+--- i/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ w/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "N/A",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..8ea5354800712d8aa9142fb0b855779d1f8a6a92
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "N/A",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+web search: 
+web search: repo.maven.apache.org org/jboss/logmanager/jboss-logmanager/1.2.1.GA jboss-logmanager-1.2.1.GA-sources.jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jboss/logmanager/
+web search: 
+web search: https://javadoc.io/doc/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/index.html
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/
+web search: 
+web search: https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA
+codex
+Updated [index.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/metadata/org.jboss.logmanager/jboss-logmanager/index.json) for `metadata-version` `1.2.1.GA`. I used the Maven Central sources artifact, the canonical GitHub repo root, the tagged GitHub `src/test` path, set docs to `N/A` because javadoc.io reports no JavaDoc for `1.2.1.GA`, and left `language` absent because this is not Kotlin/Scala-specific. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/))
+
+Validation: `jq empty` and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.jboss.logmanager:jboss-logmanager:1.2.1.GA --stacktrace` failed because `metadata/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/reachability-metadata.json` is missing, which is outside the requested `index.json` URL/description update.
+diff --git a/metadata/org.jboss.logmanager/jboss-logmanager/index.json b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+index e944753c6109889bcf370397925acf8c0f5e3501..8ea5354800712d8aa9142fb0b855779d1f8a6a92
+--- a/metadata/org.jboss.logmanager/jboss-logmanager/index.json
++++ b/metadata/org.jboss.logmanager/jboss-logmanager/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.2.1.GA",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/jboss-logmanager-1.2.1.GA-sources.jar",
++    "repository-url" : "https://github.com/jboss-logging/jboss-logmanager",
++    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
++    "documentation-url" : "N/A",
++    "description" : "JBoss Log Manager is an implementation of java.util.logging.LogManager for applications and containers that need a replacement for the JDK log manager. It provides JBoss-specific logging infrastructure, including logger, handler, formatter, and configuration support.",
+     "tested-versions" : [
+       "1.2.1.GA"
+     ],
+
+2026-04-28T00:00:59.570395Z ERROR codex_core::session: failed to record rollout items: thread 019dd161-c5f1-7e61-be7b-06054b1695ed not found
+tokens used
+115,745
+Updated [index.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/metadata/org.jboss.logmanager/jboss-logmanager/index.json) for `metadata-version` `1.2.1.GA`. I used the Maven Central sources artifact, the canonical GitHub repo root, the tagged GitHub `src/test` path, set docs to `N/A` because javadoc.io reports no JavaDoc for `1.2.1.GA`, and left `language` absent because this is not Kotlin/Scala-specific. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/jboss/logmanager/jboss-logmanager/1.2.1.GA/))
+
+Validation: `jq empty` and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.jboss.logmanager:jboss-logmanager:1.2.1.GA --stacktrace` failed because `metadata/org.jboss.logmanager/jboss-logmanager/1.2.1.GA/reachability-metadata.json` is missing, which is outside the requested `index.json` URL/description update.
+Ran agent for org.jboss.logmanager:jboss-logmanager:1.2.1.GA (exit 0). Log: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/build/agent-url-discovery-logs/org.jboss.logmanager-jboss-logmanager-1.2.1.GA.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2047-cc7059ee/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 1s
+9 actionable tasks: 1 executed, 8 up-to-date
