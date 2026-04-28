@@ -8,8 +8,9 @@ package org_jboss_logmanager.jboss_logmanager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
+import java.lang.invoke.MethodType;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
@@ -67,10 +68,10 @@ public class FormattersAnonymous12Test {
     void extendedExceptionFormattingFallsBackToBootstrapLookupWhenLibraryLoaderRejectsFrameClass() throws Throwable {
         String className = "java.util.HexFormat";
         BootstrapFallbackClassLoader bootstrapFallbackClassLoader = new BootstrapFallbackClassLoader(className);
-        BootstrapFormattingAction[] formattingAction = new BootstrapFormattingAction[1];
+        MethodHandle[] formattingHandle = new MethodHandle[1];
 
         Throwable loadFailure = catchThrowable(
-                () -> formattingAction[0] = bootstrapFallbackClassLoader.loadFormattingAction()
+                () -> formattingHandle[0] = bootstrapFallbackClassLoader.loadFormattingHandle()
         );
         if (loadFailure != null) {
             String formatted = formatWithTccl(FormattersAnonymous12Test.class.getClassLoader(), newFailure(className));
@@ -78,10 +79,10 @@ public class FormattersAnonymous12Test {
             return;
         }
 
-        String formatted = formattingAction[0].format(newFailure(className));
+        String formatted = (String) formattingHandle[0].invoke(newFailure(className));
 
         assertThat(formatted).contains("\tat " + className + ".invoke");
-        assertThat(bootstrapFallbackClassLoader.wasRejected()).isTrue();
+        assertThat(bootstrapFallbackClassLoader.rejectedCount()).isGreaterThanOrEqualTo(2);
     }
 
     private static String formatWithTccl(final ClassLoader contextClassLoader, final Throwable thrown) {
@@ -109,23 +110,20 @@ public class FormattersAnonymous12Test {
         return failure;
     }
 
-    public interface BootstrapFormattingAction {
-        String format(Throwable thrown);
-    }
-
-    public static final class BootstrapFormattingInvoker implements BootstrapFormattingAction {
-        public static final BootstrapFormattingAction INSTANCE = new BootstrapFormattingInvoker();
-
+    public static final class BootstrapFormattingInvoker {
         private BootstrapFormattingInvoker() {
         }
 
-        @Override
-        public String format(final Throwable thrown) {
+        public static String format(final Throwable thrown) {
             ClassLoader originalTccl = Thread.currentThread().getContextClassLoader();
             try {
-                Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+                Thread.currentThread().setContextClassLoader(BootstrapFormattingInvoker.class.getClassLoader());
                 PatternFormatter formatter = new PatternFormatter("%E");
-                ExtLogRecord record = new ExtLogRecord(Level.SEVERE, "coverage", getClass().getName());
+                ExtLogRecord record = new ExtLogRecord(
+                        Level.SEVERE,
+                        "coverage",
+                        BootstrapFormattingInvoker.class.getName()
+                );
                 record.setThrown(thrown);
                 return formatter.format(record);
             } finally {
@@ -226,25 +224,24 @@ public class FormattersAnonymous12Test {
 
     private static final class BootstrapFallbackClassLoader extends ClassLoader {
         private final String rejectedClassName;
-        private boolean rejected;
+        private int rejectedCount;
 
         private BootstrapFallbackClassLoader(final String rejectedClassName) {
-            super(FormattersAnonymous12Test.class.getClassLoader());
+            super(ClassLoader.getPlatformClassLoader());
             this.rejectedClassName = rejectedClassName;
         }
 
-        BootstrapFormattingAction loadFormattingAction() throws Throwable {
+        MethodHandle loadFormattingHandle() throws Throwable {
             Class<?> actionClass = Class.forName(BootstrapFormattingInvoker.class.getName(), true, this);
-            VarHandle instanceHandle = MethodHandles.publicLookup().findStaticVarHandle(
+            return MethodHandles.publicLookup().findStatic(
                     actionClass,
-                    "INSTANCE",
-                    BootstrapFormattingAction.class
+                    "format",
+                    MethodType.methodType(String.class, Throwable.class)
             );
-            return BootstrapFormattingAction.class.cast(instanceHandle.get());
         }
 
-        boolean wasRejected() {
-            return rejected;
+        int rejectedCount() {
+            return rejectedCount;
         }
 
         @Override
@@ -255,7 +252,7 @@ public class FormattersAnonymous12Test {
                     return alreadyLoaded;
                 }
                 if (rejectedClassName.equals(name)) {
-                    rejected = true;
+                    rejectedCount++;
                     throw new ClassNotFoundException(name);
                 }
                 if (shouldDefineLocally(name)) {
@@ -283,6 +280,7 @@ public class FormattersAnonymous12Test {
 
         private boolean shouldDefineLocally(final String name) {
             return name.startsWith("org.jboss.logmanager.")
+                    || FormattersAnonymous12Test.class.getName().equals(name)
                     || BootstrapFormattingInvoker.class.getName().equals(name);
         }
     }
