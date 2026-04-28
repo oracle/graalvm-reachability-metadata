@@ -159,6 +159,14 @@ public class Osgi_annotationTest {
         assertThat(metadata.filter()).isEqualTo("(enabled=true)");
     }
 
+    @Test
+    void explicitContainerAnnotationsCanBeAppliedToBundleTypes() {
+        ContainerAnnotatedBundle bundle = new ContainerAnnotatedBundle("inventory");
+
+        assertThat(bundle.bundleName()).isEqualTo("inventory.bundle");
+        assertThat(bundle.componentName()).isEqualTo("inventory.component");
+    }
+
     @ConsumerType
     private interface ConsumerApi {
         String format(String value);
@@ -193,6 +201,35 @@ public class Osgi_annotationTest {
     @Referenced({Runnable.class, String.class})
     @ComponentMetadata(name = "example.component", filter = "(enabled=true)")
     private static final class AnnotatedComponent {
+    }
+
+    @Headers({
+            @Header(name = "Bundle-Name", value = "Inventory Bundle"),
+            @Header(name = "Bundle-Description", value = "Container annotation example")
+    })
+    @Capabilities({
+            @Capability(namespace = "osgi.extender", name = "inventory.component", version = "1.0.0"),
+            @Capability(namespace = "osgi.service", name = "inventory.Service", uses = ProviderApi.class)
+    })
+    @Requirements({
+            @Requirement(namespace = "osgi.ee", name = "JavaSE", version = "21"),
+            @Requirement(namespace = "osgi.service", filter = "(objectClass=inventory.Repository)",
+                    cardinality = Requirement.Cardinality.MULTIPLE)
+    })
+    private static final class ContainerAnnotatedBundle {
+        private final String name;
+
+        ContainerAnnotatedBundle(String name) {
+            this.name = name;
+        }
+
+        String bundleName() {
+            return name + ".bundle";
+        }
+
+        String componentName() {
+            return name + ".component";
+        }
     }
 
     @Capability(namespace = "example.metadata", attribute = "generated=true")
