@@ -6,6 +6,7 @@
  */
 package io_dropwizard_metrics.metrics_jmx;
 
+import java.lang.management.ManagementFactory;
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -94,6 +95,25 @@ public class Metrics_jmxTest {
         }
 
         assertThat(server.queryNames(new ObjectName(domain + ":*"), null)).isEmpty();
+    }
+
+    @Test
+    void reporterUsesPlatformMBeanServerWhenNoServerIsConfigured() throws Exception {
+        MetricRegistry registry = new MetricRegistry();
+        registry.counter("platform.requests");
+        MBeanServer platformServer = ManagementFactory.getPlatformMBeanServer();
+        String domain = uniqueDomain("platform");
+        ObjectName counterName = metricName(domain, "counters", "platform.requests");
+
+        try (JmxReporter reporter = JmxReporter.forRegistry(registry)
+                .inDomain(domain)
+                .build()) {
+            reporter.start();
+
+            assertThat(platformServer.isRegistered(counterName)).isTrue();
+        }
+
+        assertThat(platformServer.isRegistered(counterName)).isFalse();
     }
 
     @Test
