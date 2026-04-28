@@ -15,6 +15,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
@@ -54,11 +55,11 @@ public class Geronimo_annotation_1_1_specTest {
         assertDocumented(Resources.class);
         assertTarget(Resources.class, ElementType.TYPE);
 
-        ManagedBean managedBean = ManagedResourcesComponent.class.getAnnotation(ManagedBean.class);
-        Resource classLevelResource = ManagedResourcesComponent.class.getAnnotation(Resource.class);
+        ManagedBean managedBean = annotation(ManagedResourcesComponent.class, ManagedBean.class);
+        Resource classLevelResource = annotation(ManagedResourcesComponent.class, Resource.class);
         Resource defaultResource = annotationOnField(ManagedResourcesComponent.class, "defaultInjectedResource", Resource.class);
         Resource configuredResource = annotationOnMethod(ManagedResourcesComponent.class, "configuredExecutor", Resource.class);
-        Resources resources = ResourceCollectionComponent.class.getAnnotation(Resources.class);
+        Resources resources = annotation(ResourceCollectionComponent.class, Resources.class);
 
         assertThat(managedBean.value()).isEqualTo("orderProcessor");
         assertThat(classLevelResource.name()).isEqualTo("java:comp/env/applicationName");
@@ -122,10 +123,10 @@ public class Geronimo_annotation_1_1_specTest {
 
         assertThat(annotationOnMethod(SecurityLifecycleComponent.class, "initialize", PostConstruct.class)).isNotNull();
         assertThat(annotationOnMethod(SecurityLifecycleComponent.class, "destroy", PreDestroy.class)).isNotNull();
-        assertThat(SecurityLifecycleComponent.class.getAnnotation(DeclareRoles.class).value())
+        assertThat(annotation(SecurityLifecycleComponent.class, DeclareRoles.class).value())
                 .containsExactly("admin", "auditor");
-        assertThat(SecurityLifecycleComponent.class.getAnnotation(RunAs.class).value()).isEqualTo("system");
-        assertThat(SecurityLifecycleComponent.class.getAnnotation(PermitAll.class)).isNotNull();
+        assertThat(annotation(SecurityLifecycleComponent.class, RunAs.class).value()).isEqualTo("system");
+        assertThat(annotation(SecurityLifecycleComponent.class, PermitAll.class)).isNotNull();
         assertThat(annotationOnMethod(SecurityLifecycleComponent.class, "adminOnly", RolesAllowed.class).value())
                 .containsExactly("admin", "support");
         assertThat(annotationOnMethod(SecurityLifecycleComponent.class, "blocked", DenyAll.class)).isNotNull();
@@ -139,8 +140,8 @@ public class Geronimo_annotation_1_1_specTest {
         assertRuntimeRetention(DataSourceDefinitions.class);
         assertTarget(DataSourceDefinitions.class, ElementType.TYPE);
 
-        DataSourceDefinition defaults = SingleDataSourceComponent.class.getAnnotation(DataSourceDefinition.class);
-        DataSourceDefinitions dataSourceDefinitions = MultipleDataSourcesComponent.class.getAnnotation(DataSourceDefinitions.class);
+        DataSourceDefinition defaults = annotation(SingleDataSourceComponent.class, DataSourceDefinition.class);
+        DataSourceDefinitions dataSourceDefinitions = annotation(MultipleDataSourcesComponent.class, DataSourceDefinitions.class);
 
         assertThat(defaults.name()).isEqualTo("jdbc/defaults");
         assertThat(defaults.className()).isEqualTo("org.example.DefaultSource");
@@ -194,7 +195,7 @@ public class Geronimo_annotation_1_1_specTest {
     @Test
     void managedBeanAndTypedResourceDefaultsRemainUnresolvedInAnnotationMetadata()
             throws NoSuchFieldException, NoSuchMethodException {
-        ManagedBean managedBean = DefaultManagedResourceComponent.class.getAnnotation(ManagedBean.class);
+        ManagedBean managedBean = annotation(DefaultManagedResourceComponent.class, ManagedBean.class);
         Resource typedFieldResource = annotationOnField(DefaultManagedResourceComponent.class, "typedExecutor",
                 Resource.class);
         Resource typedMethodResource = annotationOnMethod(DefaultManagedResourceComponent.class,
@@ -221,10 +222,10 @@ public class Geronimo_annotation_1_1_specTest {
                 ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.LOCAL_VARIABLE,
                 ElementType.PARAMETER);
 
-        assertThat(GeneratedArtifact.class.getAnnotation(Generated.class)).isNull();
-        assertThat(GeneratedMarker.class.getAnnotation(Generated.class)).isNull();
-        assertThat(GeneratedArtifact.class.getDeclaredField("generatedField").getAnnotation(Generated.class)).isNull();
-        assertThat(GeneratedArtifact.class.getDeclaredMethod("generatedMethod").getAnnotation(Generated.class))
+        assertThat(annotation(GeneratedArtifact.class, Generated.class)).isNull();
+        assertThat(annotation(GeneratedMarker.class, Generated.class)).isNull();
+        assertThat(annotation(GeneratedArtifact.class.getDeclaredField("generatedField"), Generated.class)).isNull();
+        assertThat(annotation(GeneratedArtifact.class.getDeclaredMethod("generatedMethod"), Generated.class))
                 .isNull();
     }
 
@@ -260,34 +261,45 @@ public class Geronimo_annotation_1_1_specTest {
                 .hasMessage("Null completion strings not accepted.");
     }
 
+    // Checkstyle: allow direct annotation access
+    private static <A extends Annotation> A annotation(AnnotatedElement element, Class<A> annotationType) {
+        A[] annotations = element.getAnnotationsByType(annotationType);
+        return annotations.length == 0 ? null : annotations[0];
+    }
+
+    private static boolean annotationPresent(AnnotatedElement element, Class<? extends Annotation> annotationType) {
+        return element.getAnnotationsByType(annotationType).length > 0;
+    }
+    // Checkstyle: disallow direct annotation access
+
     private static <A extends Annotation> A annotationOnField(Class<?> declaringType, String fieldName,
             Class<A> annotationType) throws NoSuchFieldException {
-        return declaringType.getDeclaredField(fieldName).getAnnotation(annotationType);
+        return annotation(declaringType.getDeclaredField(fieldName), annotationType);
     }
 
     private static <A extends Annotation> A annotationOnMethod(Class<?> declaringType, String methodName,
             Class<A> annotationType) throws NoSuchMethodException {
-        return declaringType.getDeclaredMethod(methodName).getAnnotation(annotationType);
+        return annotation(declaringType.getDeclaredMethod(methodName), annotationType);
     }
 
     private static void assertRuntimeRetention(Class<? extends Annotation> annotationType) {
-        Retention retention = annotationType.getAnnotation(Retention.class);
+        Retention retention = annotation(annotationType, Retention.class);
         assertThat(retention).isNotNull();
         assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
     }
 
     private static void assertSourceRetention(Class<? extends Annotation> annotationType) {
-        Retention retention = annotationType.getAnnotation(Retention.class);
+        Retention retention = annotation(annotationType, Retention.class);
         assertThat(retention).isNotNull();
         assertThat(retention.value()).isEqualTo(RetentionPolicy.SOURCE);
     }
 
     private static void assertDocumented(Class<? extends Annotation> annotationType) {
-        assertThat(annotationType.isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(annotationPresent(annotationType, Documented.class)).isTrue();
     }
 
     private static void assertTarget(Class<? extends Annotation> annotationType, ElementType... expectedTargets) {
-        Target target = annotationType.getAnnotation(Target.class);
+        Target target = annotation(annotationType, Target.class);
         assertThat(target).isNotNull();
         assertThat(target.value()).containsExactlyInAnyOrder(expectedTargets);
     }
