@@ -1,0 +1,381 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd599-98e2-7320-9d99-c6433f7f9e47
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: javax.ws.rs:jsr311-api:1.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc/metadata/javax.ws.rs/jsr311-api/index.json
+- Entry selector: "metadata-version" = "1.1.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.1.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar
+- repository-url: https://github.com/javaee/jsr311
+- test-code-url: https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test
+- documentation-url: https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar
+- description: This library provides the JAX-RS 1.1 API interfaces and annotations in the javax.ws.rs package for building RESTful web services in Java. It defines resource method annotations, request and response abstractions, URI handling, media types, providers, and runtime extension points used by JAX-RS implementations.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.1.1
+- Entry test-version: 1.1.1
+codex
+I’ll verify the exact-version Maven artifacts and upstream tag, then inspect the JSON entry so I only touch fields that are actually missing.
+exec
+/usr/bin/zsh -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.1\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/javax.ws.rs/jsr311-api/index.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+ succeeded in 0ms:
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+4:    "metadata-version" : "1.1.1",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
+6:    "repository-url" : "https://github.com/javaee/jsr311",
+7:    "test-code-url" : "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar",
+9:    "description" : "This library provides the JAX-RS 1.1 API interfaces and annotations in the javax.ws.rs package for building RESTful web services in Java. It defines resource method annotations, request and response abstractions, URI handling, media types, providers, and runtime extension points used by JAX-RS implementations.",
+
+exec
+/usr/bin/zsh -lc 'git status --short' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+ succeeded in 183ms:
+?? metadata/javax.ws.rs/
+?? tests/src/javax.ws.rs/
+
+web search: 
+web search: javax.ws.rs jsr311-api 1.1.1 Maven sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/
+codex
+The entry already has non-blank source, repository, test, documentation, and description fields. I’m checking whether there is any exact-version test artifact on Maven before deciding whether a file edit is needed.
+exec
+/usr/bin/zsh -lc "sed -n '1,80p' metadata/javax.ws.rs/jsr311-api/index.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
+    "repository-url" : "https://github.com/javaee/jsr311",
+    "test-code-url" : "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar",
+    "description" : "This library provides the JAX-RS 1.1 API interfaces and annotations in the javax.ws.rs package for building RESTful web services in Java. It defines resource method annotations, request and response abstractions, URI handling, media types, providers, and runtime extension points used by JAX-RS implementations.",
+    "tested-versions" : [
+      "1.1.1"
+    ],
+    "allowed-packages" : [
+      "javax.ws.rs"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1.pom | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/ | rg 'test|tests|source|javadoc|pom|jar'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+ succeeded in 185ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.ws.rs</groupId>
+  <artifactId>jsr311-api</artifactId>
+  <packaging>jar</packaging>
+  <version>1.1.1</version>
+  <name>jsr311-api</name>
+  <url>https://jsr311.dev.java.net</url>
+
+<!--
+  <scm>
+    <connection>scm:svn:https://jsr311.dev.java.net/svn/jsr311/trunk/src</connection>
+    <developerConnection>scm:svn:https://jsr311.dev.java.net/svn/jsr311/trunk/src</developerConnection>
+  </scm>
+-->
+
+
+    <organization>
+        <name>Sun Microsystems, Inc</name>
+        <url>http://www.sun.com/</url>
+    </organization>
+
+    <issueManagement>
+        <system>bugzilla</system>
+        <url>https://jsr311.dev.java.net/servlets/ProjectIssues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>JSR311 Dev List</name>
+            <archive>dev@jsr311.dev.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR311 Users List</name>
+            <archive>users@jsr311.dev.java.net</archive>
+        </mailingList>
+        <mailingList>
+            <name>JSR311 Announce List</name>
+            <archive>announce@jsr311.dev.java.net</archive>
+        </mailingList>
+    </mailingLists>
+
+    <licenses>
+        <license>
+            <name>
+                CDDL License
+            </name>
+            <url>http://www.opensource.org/licenses/cddl1.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+              <source>1.5</source>
+              <target>1.5</target>
+          </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+            <manifestEntries>
+              <Specification-Title>JAX-RS: Java API for RESTful Web Services</Specification-Title>
+              <Specification-Version>${project.version}</Specification-Version>
+              <Specification-Vendor>Sun Microsystems, Inc.</Specification-Vendor>
+              <Extension-Name>javax.ws.rs</Extension-Name>
+              <Build-Id>${buildNumber}</Build-Id>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>buildnumber-maven-plugin</artifactId>
+          <configuration>
+            <format>{0,date,MM/dd/yyyy hh:mm aa}</format>
+            <items>
+              <item>timestamp</item>
+            </items>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>create</goal>
+              </goals>
+            </execution>
+          </executions>
+       </plugin>
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>validate</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+       </plugin>
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <configuration>
+              <instructions>
+                <Export-Package>javax.ws.rs.*</Export-Package>
+                <Import-Package></Import-Package>
+                <Bundle-Version>1.1.1</Bundle-Version> 
+              </instructions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+        <extensions>
+          <extension>
+            <groupId>org.jvnet.wagon-svn</groupId>
+              <artifactId>wagon-svn</artifactId>
+              <version>1.8</version>
+          </extension>
+        </extensions>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+    <distributionManagement>
+      <repository>
+        <uniqueVersion>false</uniqueVersion>
+        <id>java.net-m2-repository</id>
+        <url>java-net:/maven2-repository/trunk/repository/</url>
+      </repository>
+    </distributionManagement>
+
+</project>
+
+ succeeded in 199ms:
+<a href="jsr311-api-1.1.1-javadoc.jar" title="jsr311-api-1.1.1-javadoc.jar">jsr311-api-1.1.1-javadoc.jar</a>                      2009-11-23 23:41    304118      
+<a href="jsr311-api-1.1.1-javadoc.jar.md5" title="jsr311-api-1.1.1-javadoc.jar.md5">jsr311-api-1.1.1-javadoc.jar.md5</a>                  2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1-javadoc.jar.sha1" title="jsr311-api-1.1.1-javadoc.jar.sha1">jsr311-api-1.1.1-javadoc.jar.sha1</a>                 2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1-sources.jar" title="jsr311-api-1.1.1-sources.jar">jsr311-api-1.1.1-sources.jar</a>                      2009-11-23 23:41     70022      
+<a href="jsr311-api-1.1.1-sources.jar.md5" title="jsr311-api-1.1.1-sources.jar.md5">jsr311-api-1.1.1-sources.jar.md5</a>                  2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1-sources.jar.sha1" title="jsr311-api-1.1.1-sources.jar.sha1">jsr311-api-1.1.1-sources.jar.sha1</a>                 2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1.jar" title="jsr311-api-1.1.1.jar">jsr311-api-1.1.1.jar</a>                              2009-11-23 23:41     46367      
+<a href="jsr311-api-1.1.1.jar.md5" title="jsr311-api-1.1.1.jar.md5">jsr311-api-1.1.1.jar.md5</a>                          2009-11-23 23:41        32      
+<a href="jsr311-api-1.1.1.jar.sha1" title="jsr311-api-1.1.1.jar.sha1">jsr311-api-1.1.1.jar.sha1</a>                         2009-11-23 23:41        40      
+<a href="jsr311-api-1.1.1.pom" title="jsr311-api-1.1.1.pom">jsr311-api-1.1.1.pom</a>                              2009-11-23 23:41      5469      
+<a href="jsr311-api-1.1.1.pom.md5" title="jsr311-api-1.1.1.pom.md5">jsr311-api-1.1.1.pom.md5</a>                          2009-11-23 23:41        55      
+<a href="jsr311-api-1.1.1.pom.sha1" title="jsr311-api-1.1.1.pom.sha1">jsr311-api-1.1.1.pom.sha1</a>                         2009-11-23 23:41        63      
+
+web search: 
+web search: Maven Central javax.ws.rs jsr311-api 1.1.1 sources javadoc
+web search: 
+web search: https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1
+codex
+Maven Central publishes sources and Javadoc jars for `1.1.1`, but no test jar; the upstream tag has a versioned `test` directory. Since the only missing candidate field is `language` and this is not a Kotlin/Groovy/Scala-specific library, I’m leaving it absent per your rules.
+exec
+/usr/bin/zsh -lc 'jq empty metadata/javax.ws.rs/jsr311-api/index.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'git diff -- metadata/javax.ws.rs/jsr311-api/index.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc
+ succeeded in 0ms:
+web search: 
+web search: https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/
+web search: 
+web search: https://github.com/javaee/jsr311
+codex
+I inspected [index.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc/metadata/javax.ws.rs/jsr311-api/index.json:4). No edit was needed: all requested fields are already non-blank, and `language` should remain absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Selected values remain:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
+  "repository-url": "https://github.com/javaee/jsr311",
+  "test-code-url": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
+  "documentation-url": "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar"
+}
+```
+
+Maven Central confirms the exact `1.1.1` sources and Javadoc jars, and the GitHub tag path confirms the exact-version test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/)) The canonical repository root is `javaee/jsr311`, described as legacy JAX-RS / JSR-311 development. ([github.com](https://github.com/javaee/jsr311))
+
+Validation: `jq empty metadata/javax.ws.rs/jsr311-api/index.json` passed.
+2026-04-28T19:39:18.320771Z ERROR codex_core::session: failed to record rollout items: thread 019dd599-98e2-7320-9d99-c6433f7f9e47 not found
+tokens used
+47,191
+I inspected [index.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc/metadata/javax.ws.rs/jsr311-api/index.json:4). No edit was needed: all requested fields are already non-blank, and `language` should remain absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Selected values remain:
+
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-sources.jar",
+  "repository-url": "https://github.com/javaee/jsr311",
+  "test-code-url": "https://github.com/javaee/jsr311/tree/jsr311-api-1.1.1/test",
+  "documentation-url": "https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/jsr311-api-1.1.1-javadoc.jar"
+}
+```
+
+Maven Central confirms the exact `1.1.1` sources and Javadoc jars, and the GitHub tag path confirms the exact-version test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/javax/ws/rs/jsr311-api/1.1.1/)) The canonical repository root is `javaee/jsr311`, described as legacy JAX-RS / JSR-311 development. ([github.com](https://github.com/javaee/jsr311))
+
+Validation: `jq empty metadata/javax.ws.rs/jsr311-api/index.json` passed.
+Ran agent for javax.ws.rs:jsr311-api:1.1.1 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc/build/agent-url-discovery-logs/javax.ws.rs-jsr311-api-1.1.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/2839-481575fc/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 53s
+9 actionable tasks: 1 executed, 8 up-to-date
