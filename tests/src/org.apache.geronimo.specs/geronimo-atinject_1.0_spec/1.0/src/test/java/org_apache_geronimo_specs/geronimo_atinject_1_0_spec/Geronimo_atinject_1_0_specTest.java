@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -128,6 +129,23 @@ public class Geronimo_atinject_1_0_specTest {
         assertThat(service.label(defaultFormatter, "box")).isEqualTo("DEFAULT-BOX");
         assertThat(service.label(compactFormatter, "crate")).isEqualTo("CMP-CRATE");
         assertThat(service.label(detailedFormatter, "pallet")).isEqualTo("DETAIL-PALLET");
+    }
+
+    @Test
+    void providersCanDeferLookupToResolveMutuallyDependentComponents() {
+        AtomicInteger cartLookups = new AtomicInteger();
+        AtomicReference<Cart> cartReference = new AtomicReference<>();
+        Provider<Cart> cartProvider = () -> {
+            cartLookups.incrementAndGet();
+            return cartReference.get();
+        };
+        DiscountPolicy discountPolicy = new DiscountPolicy(cartProvider, 10);
+        Cart cart = new Cart(List.of(25, 15, 10), discountPolicy);
+        cartReference.set(cart);
+
+        assertThat(cartLookups).hasValue(0);
+        assertThat(cart.totalAfterDiscount()).isEqualTo(45);
+        assertThat(cartLookups).hasValue(1);
     }
 
     private static Named namedAnnotation(String name) {
@@ -311,6 +329,41 @@ public class Geronimo_atinject_1_0_specTest {
         @Override
         public String get() {
             return value;
+        }
+    }
+
+    private static final class Cart {
+        private final List<Integer> prices;
+        private final DiscountPolicy discountPolicy;
+
+        @Inject
+        private Cart(List<Integer> prices, DiscountPolicy discountPolicy) {
+            this.prices = prices;
+            this.discountPolicy = discountPolicy;
+        }
+
+        private int subtotal() {
+            return prices.stream().mapToInt(Integer::intValue).sum();
+        }
+
+        private int totalAfterDiscount() {
+            return subtotal() - discountPolicy.discount();
+        }
+    }
+
+    private static final class DiscountPolicy {
+        private final Provider<Cart> cartProvider;
+        private final int minimumSubtotal;
+
+        @Inject
+        private DiscountPolicy(Provider<Cart> cartProvider, int minimumSubtotal) {
+            this.cartProvider = cartProvider;
+            this.minimumSubtotal = minimumSubtotal;
+        }
+
+        private int discount() {
+            Cart cart = cartProvider.get();
+            return cart.subtotal() >= minimumSubtotal ? 5 : 0;
         }
     }
 
