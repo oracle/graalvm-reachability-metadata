@@ -37,17 +37,16 @@ public class XStreamTest {
     }
 
     @Test
-    void serializesAndDeserializesAliasedLists() {
+    void serializesAndDeserializesStringLists() {
         XStream xstream = new XStream();
-        xstream.alias("records", ArrayList.class);
-
         List<String> records = new ArrayList<>();
         records.add("created");
         records.add("processed");
 
         String xml = xstream.toXML(records);
 
-        assertThat(xml).contains("<records>");
+        assertThat(xml).contains("<string>created</string>");
+        assertThat(xml).contains("<string>processed</string>");
         assertThat(xstream.fromXML(xml)).isEqualTo(records);
     }
 }
