@@ -15,6 +15,8 @@ import org.mozilla.javascript.tools.shell.ShellConsole;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,59 @@ public class ShellConsoleTest {
         } finally {
             Context.exit();
         }
+    }
+
+    @Test
+    void createsJLineV1ConsoleAndDelegatesToReader() throws Exception {
+        Context cx = Context.enter();
+        try {
+            Scriptable scope = cx.initStandardObjects();
+            scope.put("betaValue", scope, "covered");
+
+            ShellConsole console = createJLineV1Console(scope, StandardCharsets.UTF_8);
+
+            jline.ConsoleReader reader = jline.ConsoleReader.lastInstance();
+            assertThat(console).isNotNull();
+            assertThat(reader.isBellEnabled()).isFalse();
+            assertThat(reader.getCompletor()).isNotNull();
+
+            reader.addInput("first v1 line");
+            assertThat(console.readLine("v1> ")).isEqualTo("first v1 line");
+            assertThat(reader.getPrompts()).containsExactly("v1> ");
+
+            console.print("hello");
+            console.println(" v1");
+            console.println();
+            console.flush();
+            assertThat(reader.getOutput()).isEqualTo("hello v1" + System.lineSeparator() + System.lineSeparator());
+            assertThat(reader.isFlushed()).isTrue();
+
+            reader.addInput("v1 stream line");
+            assertThat(readConsoleInput(console.getIn())).isEqualTo("v1 stream line\n");
+
+            List<String> candidates = new ArrayList<>();
+            int replacementStart = reader.getCompletor().complete("bet", 3, candidates);
+            assertThat(replacementStart).isZero();
+            assertThat(candidates).contains("betaValue");
+        } finally {
+            Context.exit();
+        }
+    }
+
+    private static ShellConsole createJLineV1Console(Scriptable scope, Charset charset) throws Exception {
+        Method factory = ShellConsole.class.getDeclaredMethod(
+                "getJLineShellConsoleV1",
+                ClassLoader.class,
+                Class.class,
+                Scriptable.class,
+                Charset.class);
+        factory.setAccessible(true);
+        return (ShellConsole) factory.invoke(
+                null,
+                ShellConsole.class.getClassLoader(),
+                jline.ConsoleReader.class,
+                scope,
+                charset);
     }
 
     private static String readConsoleInput(InputStream in) throws IOException {
