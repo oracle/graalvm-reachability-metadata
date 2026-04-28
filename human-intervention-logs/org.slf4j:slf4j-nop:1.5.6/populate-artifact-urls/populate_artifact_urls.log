@@ -1,0 +1,690 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd429-d32f-7f33-8d1e-340792207e1f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.slf4j:slf4j-nop:1.5.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.5.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/metadata/org.slf4j/slf4j-nop/index.json
+- Entry selector: "metadata-version" = "1.5.6"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.5.6".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.5.6
+- Entry test-version: 1.5.6
+codex
+I’ll verify the SLF4J 1.5.6 artifact URLs against Maven Central and the upstream tags, then update only the blank fields in the index entry.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.5\\.6\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.slf4j/slf4j-nop/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+4:    "metadata-version" : "1.5.6",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+15:    "repository-url" : "https://github.com/qos-ch/slf4j",
+16:    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+17:    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+18:    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+web search: 
+web search: Maven Central org.slf4j slf4j-nop 1.5.6 sources javadoc tests
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar
+codex
+The local index already has adjacent SLF4J metadata for `1.5.3`, so I’m using that as a formatting and URL-pattern reference while checking whether Maven Central actually has the `1.5.6` source/test/doc artifacts.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.slf4j/slf4j-nop/index.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.6",
+    "tested-versions" : [
+      "1.5.6"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  },
+  {
+    "metadata-version" : "1.5.3",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+    "repository-url" : "https://github.com/qos-ch/slf4j",
+    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+    "tested-versions" : [
+      "1.5.3",
+      "1.5.4",
+      "1.5.5"
+    ],
+    "allowed-packages" : [
+      "org.slf4j.impl"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/ | sed -n '1,160p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/slf4j/slf4j-nop</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/slf4j/slf4j-nop</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="1.0/" title="1.0/">1.0/</a>                                              2006-03-10 21:31         -      
+<a href="1.0-beta4/" title="1.0-beta4/">1.0-beta4/</a>                                        2006-11-06 01:09         -      
+<a href="1.0-beta7/" title="1.0-beta7/">1.0-beta7/</a>                                        2006-11-06 01:09         -      
+<a href="1.0-beta9/" title="1.0-beta9/">1.0-beta9/</a>                                        2005-10-20 00:02         -      
+<a href="1.0-rc1/" title="1.0-rc1/">1.0-rc1/</a>                                          2005-11-22 02:11         -      
+<a href="1.0-rc2/" title="1.0-rc2/">1.0-rc2/</a>                                          2005-12-01 01:32         -      
+<a href="1.0-rc3/" title="1.0-rc3/">1.0-rc3/</a>                                          2005-12-11 01:31         -      
+<a href="1.0-rc5/" title="1.0-rc5/">1.0-rc5/</a>                                          2006-01-17 05:32         -      
+<a href="1.0.1/" title="1.0.1/">1.0.1/</a>                                            2006-07-02 15:17         -      
+<a href="1.1.0/" title="1.1.0/">1.1.0/</a>                                            2006-12-20 22:32         -      
+<a href="1.1.0-RC0/" title="1.1.0-RC0/">1.1.0-RC0/</a>                                        2006-11-09 20:49         -      
+<a href="1.1.0-RC1/" title="1.1.0-RC1/">1.1.0-RC1/</a>                                        2006-11-16 22:48         -      
+<a href="1.1.0-beta0/" title="1.1.0-beta0/">1.1.0-beta0/</a>                                      2006-09-19 14:21         -      
+<a href="1.2/" title="1.2/">1.2/</a>                                              2007-01-24 20:17         -      
+<a href="1.3.0/" title="1.3.0/">1.3.0/</a>                                            2007-02-25 16:39         -      
+<a href="1.3.1/" title="1.3.1/">1.3.1/</a>                                            2007-04-15 20:08         -      
+<a href="1.4.0/" title="1.4.0/">1.4.0/</a>                                            2007-05-22 17:40         -      
+<a href="1.4.1/" title="1.4.1/">1.4.1/</a>                                            2007-07-04 19:29         -      
+<a href="1.4.2/" title="1.4.2/">1.4.2/</a>                                            2007-07-12 20:29         -      
+<a href="1.4.3/" title="1.4.3/">1.4.3/</a>                                            2007-08-20 21:35         -      
+<a href="1.5.0/" title="1.5.0/">1.5.0/</a>                                            2008-02-26 20:19         -      
+<a href="1.5.0-M0/" title="1.5.0-M0/">1.5.0-M0/</a>                                         2008-01-29 21:39         -      
+<a href="1.5.10/" title="1.5.10/">1.5.10/</a>                                           2009-12-02 23:37         -      
+<a href="1.5.11/" title="1.5.11/">1.5.11/</a>                                           2010-02-25 11:50         -      
+<a href="1.5.2/" title="1.5.2/">1.5.2/</a>                                            2008-06-09 15:46         -      
+<a href="1.5.3/" title="1.5.3/">1.5.3/</a>                                            2008-09-12 15:36         -      
+<a href="1.5.4/" title="1.5.4/">1.5.4/</a>                                            2008-10-16 17:19         -      
+<a href="1.5.5/" title="1.5.5/">1.5.5/</a>                                            2008-10-17 15:54         -      
+<a href="1.5.6/" title="1.5.6/">1.5.6/</a>                                            2008-11-21 13:56         -      
+<a href="1.5.7/" title="1.5.7/">1.5.7/</a>                                            2009-06-10 19:38         -      
+<a href="1.5.8/" title="1.5.8/">1.5.8/</a>                                            2009-06-11 11:58         -      
+<a href="1.5.9-RC0/" title="1.5.9-RC0/">1.5.9-RC0/</a>                                        2009-09-04 18:25         -      
+<a href="1.5.9.RC1/" title="1.5.9.RC1/">1.5.9.RC1/</a>                                        2009-10-29 18:37         -      
+<a href="1.6.0/" title="1.6.0/">1.6.0/</a>                                            2010-05-08 10:45         -      
+<a href="1.6.0-RC0/" title="1.6.0-RC0/">1.6.0-RC0/</a>                                        2010-04-21 21:02         -      
+<a href="1.6.0-alpha2/" title="1.6.0-alpha2/">1.6.0-alpha2/</a>                                     2010-04-26 05:19         -      
+<a href="1.6.1/" title="1.6.1/">1.6.1/</a>                                            2010-07-05 20:29         -      
+<a href="1.6.2/" title="1.6.2/">1.6.2/</a>                                            2011-08-18 22:13         -      
+<a href="1.6.3/" title="1.6.3/">1.6.3/</a>                                            2011-10-17 19:55         -      
+<a href="1.6.4/" title="1.6.4/">1.6.4/</a>                                            2011-10-31 22:45         -      
+<a href="1.6.5/" title="1.6.5/">1.6.5/</a>                                            2012-06-04 06:19         -      
+<a href="1.6.6/" title="1.6.6/">1.6.6/</a>                                            2012-06-11 14:42         -      
+<a href="1.7.0/" title="1.7.0/">1.7.0/</a>                                            2012-09-06 21:55         -      
+<a href="1.7.1/" title="1.7.1/">1.7.1/</a>                                            2012-09-14 21:11         -      
+<a href="1.7.10/" title="1.7.10/">1.7.10/</a>                                           2015-01-06 20:11         -      
+<a href="1.7.11/" title="1.7.11/">1.7.11/</a>                                           2015-03-26 14:10         -      
+<a href="1.7.12/" title="1.7.12/">1.7.12/</a>                                           2015-03-26 20:50         -      
+<a href="1.7.13/" title="1.7.13/">1.7.13/</a>                                           2015-11-10 20:16         -      
+<a href="1.7.14/" title="1.7.14/">1.7.14/</a>                                           2016-01-24 20:47         -      
+<a href="1.7.15/" title="1.7.15/">1.7.15/</a>                                           2016-02-09 16:30         -      
+<a href="1.7.16/" title="1.7.16/">1.7.16/</a>                                           2016-02-11 20:26         -      
+<a href="1.7.18/" title="1.7.18/">1.7.18/</a>                                           2016-02-26 18:52         -      
+<a href="1.7.19/" title="1.7.19/">1.7.19/</a>                                           2016-03-14 21:34         -      
+<a href="1.7.2/" title="1.7.2/">1.7.2/</a>                                            2012-10-11 18:55         -      
+<a href="1.7.20/" title="1.7.20/">1.7.20/</a>                                           2016-03-29 15:12         -      
+<a href="1.7.21/" title="1.7.21/">1.7.21/</a>                                           2016-04-04 18:37         -      
+<a href="1.7.22/" title="1.7.22/">1.7.22/</a>                                           2016-12-13 17:05         -      
+<a href="1.7.23/" title="1.7.23/">1.7.23/</a>                                           2017-02-14 22:32         -      
+<a href="1.7.24/" title="1.7.24/">1.7.24/</a>                                           2017-02-24 11:05         -      
+<a href="1.7.25/" title="1.7.25/">1.7.25/</a>                                           2017-03-16 16:36         -      
+<a href="1.7.26/" title="1.7.26/">1.7.26/</a>                                           2019-02-18 23:17         -      
+<a href="1.7.27/" title="1.7.27/">1.7.27/</a>                                           2019-08-06 09:18         -      
+<a href="1.7.28/" title="1.7.28/">1.7.28/</a>                                           2019-08-10 08:27         -      
+<a href="1.7.29/" title="1.7.29/">1.7.29/</a>                                           2019-10-31 12:25         -      
+<a href="1.7.3/" title="1.7.3/">1.7.3/</a>                                            2013-03-15 10:25         -      
+<a href="1.7.30/" title="1.7.30/">1.7.30/</a>                                           2019-12-16 21:03         -      
+<a href="1.7.31/" title="1.7.31/">1.7.31/</a>                                           2021-06-17 21:35         -      
+<a href="1.7.32/" title="1.7.32/">1.7.32/</a>                                           2021-07-20 11:57         -      
+<a href="1.7.33/" title="1.7.33/">1.7.33/</a>                                           2022-01-13 14:36         -      
+<a href="1.7.34/" title="1.7.34/">1.7.34/</a>                                           2022-01-25 08:10         -      
+<a href="1.7.35/" title="1.7.35/">1.7.35/</a>                                           2022-01-25 10:39         -      
+<a href="1.7.36/" title="1.7.36/">1.7.36/</a>                                           2022-02-08 13:34         -      
+<a href="1.7.4/" title="1.7.4/">1.7.4/</a>                                            2013-03-18 14:49         -      
+<a href="1.7.5/" title="1.7.5/">1.7.5/</a>                                            2013-03-25 20:52         -      
+<a href="1.7.6/" title="1.7.6/">1.7.6/</a>                                            2014-02-05 22:37         -      
+<a href="1.7.7/" title="1.7.7/">1.7.7/</a>                                            2014-04-04 11:13         -      
+<a href="1.7.8/" title="1.7.8/">1.7.8/</a>                                            2014-12-14 16:55         -      
+<a href="1.7.9/" title="1.7.9/">1.7.9/</a>                                            2014-12-16 21:58         -      
+<a href="1.8.0-alpha0/" title="1.8.0-alpha0/">1.8.0-alpha0/</a>                                     2017-04-07 09:46         -      
+<a href="1.8.0-alpha1/" title="1.8.0-alpha1/">1.8.0-alpha1/</a>                                     2017-04-13 13:44         -      
+<a href="1.8.0-alpha2/" title="1.8.0-alpha2/">1.8.0-alpha2/</a>                                     2017-04-25 22:12         -      
+<a href="1.8.0-beta0/" title="1.8.0-beta0/">1.8.0-beta0/</a>                                      2017-10-20 12:59         -      
+<a href="1.8.0-beta1/" title="1.8.0-beta1/">1.8.0-beta1/</a>                                      2018-01-30 12:23         -      
+<a href="1.8.0-beta2/" title="1.8.0-beta2/">1.8.0-beta2/</a>                                      2018-03-21 22:02         -      
+<a href="1.8.0-beta4/" title="1.8.0-beta4/">1.8.0-beta4/</a>                                      2019-02-19 17:30         -      
+<a href="2.0.0/" title="2.0.0/">2.0.0/</a>                                            2022-08-20 19:09         -      
+<a href="2.0.0-alpha0/" title="2.0.0-alpha0/">2.0.0-alpha0/</a>                                     2019-06-12 23:19         -      
+<a href="2.0.0-alpha1/" title="2.0.0-alpha1/">2.0.0-alpha1/</a>                                     2019-10-01 19:09         -      
+<a href="2.0.0-alpha2/" title="2.0.0-alpha2/">2.0.0-alpha2/</a>                                     2021-07-02 14:57         -      
+<a href="2.0.0-alpha3/" title="2.0.0-alpha3/">2.0.0-alpha3/</a>                                     2021-08-10 14:00         -      
+<a href="2.0.0-alpha4/" title="2.0.0-alpha4/">2.0.0-alpha4/</a>                                     2021-08-12 21:32         -      
+<a href="2.0.0-alpha5/" title="2.0.0-alpha5/">2.0.0-alpha5/</a>                                     2021-08-30 16:05         -      
+<a href="2.0.0-alpha6/" title="2.0.0-alpha6/">2.0.0-alpha6/</a>                                     2022-01-13 15:40         -      
+<a href="2.0.0-alpha7/" title="2.0.0-alpha7/">2.0.0-alpha7/</a>                                     2022-03-17 18:37         -      
+<a href="2.0.0-beta0/" title="2.0.0-beta0/">2.0.0-beta0/</a>                                      2022-08-05 20:52         -      
+<a href="2.0.0-beta1/" title="2.0.0-beta1/">2.0.0-beta1/</a>                                      2022-08-06 21:34         -      
+<a href="2.0.1/" title="2.0.1/">2.0.1/</a>                                            2022-09-14 14:31         -      
+<a href="2.0.10/" title="2.0.10/">2.0.10/</a>                                           2023-12-28 20:51         -      
+<a href="2.0.11/" title="2.0.11/">2.0.11/</a>                                           2024-01-08 18:02         -      
+<a href="2.0.12/" title="2.0.12/">2.0.12/</a>                                           2024-02-05 21:33         -      
+<a href="2.0.13/" title="2.0.13/">2.0.13/</a>                                           2024-04-12 14:24         -      
+<a href="2.0.14/" title="2.0.14/">2.0.14/</a>                                           2024-08-06 20:34         -      
+<a href="2.0.15/" title="2.0.15/">2.0.15/</a>                                           2024-08-08 13:00         -      
+<a href="2.0.16/" title="2.0.16/">2.0.16/</a>                                           2024-08-10 09:15         -      
+<a href="2.0.17/" title="2.0.17/">2.0.17/</a>                                           2025-02-25 16:43         -      
+<a href="2.0.2/" title="2.0.2/">2.0.2/</a>                                            2022-09-20 19:40         -      
+<a href="2.0.3/" title="2.0.3/">2.0.3/</a>                                            2022-09-28 10:18         -      
+<a href="2.0.4/" title="2.0.4/">2.0.4/</a>                                            2022-11-17 20:27         -      
+<a href="2.0.5/" title="2.0.5/">2.0.5/</a>                                            2022-11-25 11:43         -      
+<a href="2.0.6/" title="2.0.6/">2.0.6/</a>                                            2022-12-12 19:14         -      
+<a href="2.0.7/" title="2.0.7/">2.0.7/</a>                                            2023-03-17 19:37         -      
+<a href="2.0.8/" title="2.0.8/">2.0.8/</a>                                            2023-09-03 15:24         -      
+<a href="2.0.9/" title="2.0.9/">2.0.9/</a>                                            2023-09-03 16:14         -      
+<a href="2.1.0-alpha0/" title="2.1.0-alpha0/">2.1.0-alpha0/</a>                                     2023-12-28 19:42         -      
+<a href="2.1.0-alpha1/" title="2.1.0-alpha1/">2.1.0-alpha1/</a>                                     2024-01-02 19:25         -      
+<a href="maven-metadata.xml" title="maven-metadata.xml">maven-metadata.xml</a>                                2025-02-25 16:50      4109      
+<a href="maven-metadata.xml.md5" title="maven-metadata.xml.md5">maven-metadata.xml.md5</a>                            2025-02-25 16:50        32      
+<a href="maven-metadata.xml.sha1" title="maven-metadata.xml.sha1">maven-metadata.xml.sha1</a>                           2025-02-25 16:50        40      
+<a href="maven-metadata.xml.sha256" title="maven-metadata.xml.sha256">maven-metadata.xml.sha256</a>                         2025-02-25 16:50        64      
+<a href="maven-metadata.xml.sha512" title="maven-metadata.xml.sha512">maven-metadata.xml.sha512</a>                         2025-02-25 16:50       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/ | sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/slf4j/slf4j-nop/1.5.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/slf4j/slf4j-nop/1.5.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="slf4j-nop-1.5.6-sources.jar" title="slf4j-nop-1.5.6-sources.jar">slf4j-nop-1.5.6-sources.jar</a>                       2008-11-21 13:56      5371      
+<a href="slf4j-nop-1.5.6-sources.jar.md5" title="slf4j-nop-1.5.6-sources.jar.md5">slf4j-nop-1.5.6-sources.jar.md5</a>                   2008-11-21 13:56        32      
+<a href="slf4j-nop-1.5.6-sources.jar.sha1" title="slf4j-nop-1.5.6-sources.jar.sha1">slf4j-nop-1.5.6-sources.jar.sha1</a>                  2008-11-21 13:56        40      
+<a href="slf4j-nop-1.5.6.jar" title="slf4j-nop-1.5.6.jar">slf4j-nop-1.5.6.jar</a>                               2008-11-21 13:56      5283      
+<a href="slf4j-nop-1.5.6.jar.md5" title="slf4j-nop-1.5.6.jar.md5">slf4j-nop-1.5.6.jar.md5</a>                           2008-11-21 13:56        32      
+<a href="slf4j-nop-1.5.6.jar.sha1" title="slf4j-nop-1.5.6.jar.sha1">slf4j-nop-1.5.6.jar.sha1</a>                          2008-11-21 13:56        40      
+<a href="slf4j-nop-1.5.6.pom" title="slf4j-nop-1.5.6.pom">slf4j-nop-1.5.6.pom</a>                               2008-11-21 13:56      1462      
+<a href="slf4j-nop-1.5.6.pom.md5" title="slf4j-nop-1.5.6.pom.md5">slf4j-nop-1.5.6.pom.md5</a>                           2008-11-21 13:56        32      
+<a href="slf4j-nop-1.5.6.pom.sha1" title="slf4j-nop-1.5.6.pom.sha1">slf4j-nop-1.5.6.pom.sha1</a>                          2008-11-21 13:56        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+<project 
+ xmlns="http://maven.apache.org/POM/4.0.0" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-parent</artifactId>
+    	<version>1.5.6</version>
+	</parent>
+	
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.slf4j</groupId>
+	<artifactId>slf4j-nop</artifactId>
+	<packaging>jar</packaging>
+	<name>SLF4J NOP Binding</name>
+
+	<url>http://www.slf4j.org</url>
+		<description>
+		The slf4j NOP binding
+	</description>
+
+  <dependencies>
+	  <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+		</dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+			
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Bundle-Version>${project.version}</Bundle-Version>
+              <Bundle-Description>${project.description}</Bundle-Description>
+              <Implementation-Version>${project.version}</Implementation-Version>
+            </manifestEntries>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>			
+      </plugin>      
+    </plugins>
+
+  </build>
+
+</project>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/qos-ch/slf4j.git 'refs/tags/SLF4J_1.5.6' 'refs/tags/v_1.5.6'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java \\
+  https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html \\
+  https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar; do
+  printf '%s ' \""'$url";
+  curl -sIL -o /dev/null -w '"'%{http_code}\\n' \""'$url";
+done' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 348ms:
+233e3cae7f72d27620ee1e488ffe251a8125b654	refs/tags/SLF4J_1.5.6
+
+ succeeded in 1563ms:
+200
+https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html 200
+https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar 200
+
+codex
+Maven Central has the `1.5.6` sources jar, but no test-sources or javadoc artifact in that artifact directory. The upstream `SLF4J_1.5.6` tag exists, and the tagged test and manual pages resolve, so I’m going to fill those versioned URLs and leave `language` absent because this is not a Kotlin or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/metadata/org.slf4j/slf4j-nop/index.json
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.slf4j/slf4j-nop/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.slf4j:slf4j-nop:1.5.6' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+ exited 1 in 1508ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.slf4j:slf4j-nop:1.5.6: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/metadata/org.slf4j/slf4j-nop/1.5.6/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.slf4j:slf4j-nop:1.5.6: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/metadata/org.slf4j/slf4j-nop/1.5.6/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+BUILD FAILED
+ in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The JSON parses cleanly. I’ve started the repository’s targeted metadata validation for `org.slf4j:slf4j-nop:1.5.6` and will report the result when it finishes.
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+exec
+/usr/bin/bash -lc 'ls -la metadata/org.slf4j/slf4j-nop' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+total 20
+drwxrwxr-x 4 vjovanov vjovanov 4096 Apr 28 14:56 .
+drwxrwxr-x 5 vjovanov vjovanov 4096 Apr 28 14:56 ..
+drwxrwxr-x 2 vjovanov vjovanov 4096 Apr 28 14:56 1.5.3
+drwxrwxr-x 2 vjovanov vjovanov 4096 Apr 28 14:56 1.5.6
+-rw-rw-r-- 1 vjovanov vjovanov 1448 Apr 28 14:57 index.json
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.slf4j/slf4j-nop/index.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+diff --git i/metadata/org.slf4j/slf4j-nop/index.json w/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de24..760584cebd 100644
+--- i/metadata/org.slf4j/slf4j-nop/index.json
++++ w/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+exec
+/usr/bin/bash -lc 'find metadata/org.slf4j/slf4j-nop/1.5.6 -maxdepth 1 -type f -print' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+ M metadata/org.slf4j/slf4j-nop/index.json
+
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.slf4j/slf4j-nop/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.5.6",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
+     6	    "repository-url" : "https://github.com/qos-ch/slf4j",
+     7	    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
+     8	    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
+     9	    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+    10	    "tested-versions" : [
+    11	      "1.5.6"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.slf4j.impl"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.5.3",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.3/slf4j-nop-1.5.3-sources.jar",
+    20	    "repository-url" : "https://github.com/qos-ch/slf4j",
+    21	    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.3/slf4j-nop/src/test/java",
+    22	    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.3/slf4j-site/src/site/pages/manual.html",
+    23	    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+    24	    "tested-versions" : [
+
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+codex
+Updated [metadata/org.slf4j/slf4j-nop/index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/metadata/org.slf4j/slf4j-nop/index.json:4) for `metadata-version` `1.5.6` with source, repository, test suite, documentation, and a two-sentence description. I left `language` absent because `slf4j-nop` is not Kotlin- or Scala-specific.
+
+Validation:
+- `jq empty metadata/org.slf4j/slf4j-nop/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.slf4j:slf4j-nop:1.5.6` failed because `metadata/org.slf4j/slf4j-nop/1.5.6/reachability-metadata.json` is missing; that is outside the requested URL/description update.
+diff --git a/metadata/org.slf4j/slf4j-nop/index.json b/metadata/org.slf4j/slf4j-nop/index.json
+index 962599de248bda51148a5be0d66116d1aafade3f..760584cebdc5a57f06ef008adf3bbd6f487ccc14
+--- a/metadata/org.slf4j/slf4j-nop/index.json
++++ b/metadata/org.slf4j/slf4j-nop/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.5.6",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.5.6/slf4j-nop-1.5.6-sources.jar",
++    "repository-url" : "https://github.com/qos-ch/slf4j",
++    "test-code-url" : "https://github.com/qos-ch/slf4j/tree/SLF4J_1.5.6/slf4j-nop/src/test/java",
++    "documentation-url" : "https://github.com/qos-ch/slf4j/blob/SLF4J_1.5.6/slf4j-site/src/site/pages/manual.html",
++    "description" : "SLF4J NOP is a no-operation binding for the SLF4J logging facade. It satisfies SLF4J's binding requirement while discarding all logging output.",
+     "tested-versions" : [
+       "1.5.6"
+     ],
+
+2026-04-28T12:57:48.115284Z ERROR codex_core::session: failed to record rollout items: thread 019dd429-d32f-7f33-8d1e-340792207e1f not found
+tokens used
+55,697
+Updated [metadata/org.slf4j/slf4j-nop/index.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/metadata/org.slf4j/slf4j-nop/index.json:4) for `metadata-version` `1.5.6` with source, repository, test suite, documentation, and a two-sentence description. I left `language` absent because `slf4j-nop` is not Kotlin- or Scala-specific.
+
+Validation:
+- `jq empty metadata/org.slf4j/slf4j-nop/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.slf4j:slf4j-nop:1.5.6` failed because `metadata/org.slf4j/slf4j-nop/1.5.6/reachability-metadata.json` is missing; that is outside the requested URL/description update.
+Ran agent for org.slf4j:slf4j-nop:1.5.6 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/build/agent-url-discovery-logs/org.slf4j-slf4j-nop-1.5.6.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2573-60ec08db/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 5s
+9 actionable tasks: 1 executed, 8 up-to-date
