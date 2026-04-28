@@ -121,6 +121,18 @@ public class Kotlin_testTest {
     }
 
     @Test
+    fun failWithCausePreservesOriginalException() {
+        val cause = IllegalStateException("root cause")
+
+        val failure = assertFailsWith<AssertionError> {
+            fail("failure with cause", cause)
+        }
+
+        assertContains(failure.message ?: "", "failure with cause")
+        assertSame(cause, failure.cause)
+    }
+
+    @Test
     fun expectAndFailComposeWithAssertionFailures() {
         expect("GRAALVM") { "graalvm".uppercase() }
         expect(6, "computed expectation should match") { (1..3).sum() }
