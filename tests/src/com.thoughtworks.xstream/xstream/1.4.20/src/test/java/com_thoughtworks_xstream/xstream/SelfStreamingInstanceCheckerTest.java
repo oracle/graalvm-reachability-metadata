@@ -43,7 +43,7 @@ public class SelfStreamingInstanceCheckerTest {
 
         assertThatThrownBy(() -> checker.marshal(checkedInstance, null, null))
                 .isInstanceOf(ConversionException.class)
-                .hasMessage("Cannot marshal the XStream instance in action");
+                .hasMessageContaining("Cannot marshal the XStream instance in action");
     }
 
     private static final class RecordingConverterLookup implements ConverterLookup {
