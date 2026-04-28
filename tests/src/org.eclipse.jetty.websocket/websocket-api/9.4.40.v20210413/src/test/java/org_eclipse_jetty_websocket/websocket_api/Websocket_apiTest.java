@@ -27,7 +27,12 @@ import org.eclipse.jetty.websocket.api.WebSocketConstants;
 import org.eclipse.jetty.websocket.api.WebSocketPolicy;
 import org.eclipse.jetty.websocket.api.WebSocketTimeoutException;
 import org.eclipse.jetty.websocket.api.WriteCallback;
+import org.eclipse.jetty.websocket.api.extensions.Extension;
 import org.eclipse.jetty.websocket.api.extensions.ExtensionConfig;
+import org.eclipse.jetty.websocket.api.extensions.ExtensionFactory;
+import org.eclipse.jetty.websocket.api.extensions.Frame;
+import org.eclipse.jetty.websocket.api.extensions.IncomingFrames;
+import org.eclipse.jetty.websocket.api.extensions.OutgoingFrames;
 import org.eclipse.jetty.websocket.api.util.QuoteUtil;
 import org.eclipse.jetty.websocket.api.util.WSURI;
 import org.junit.jupiter.api.Test;
@@ -293,10 +298,271 @@ public class Websocket_apiTest {
         assertThat(invalidWebSocketException).hasMessage("invalid endpoint").hasCause(cause);
     }
 
+    @Test
+    void extensionFactoryRegistersExtensionsAndRoutesFramesByType() {
+        RecordingExtensionFactory factory = new RecordingExtensionFactory();
+        factory.register("tracking", TrackingExtension.class);
+
+        assertThat(factory.isAvailable("tracking")).isTrue();
+        assertThat(factory.getExtension("tracking")).isEqualTo(TrackingExtension.class);
+        assertThat(factory.getAvailableExtensions()).containsEntry("tracking", TrackingExtension.class);
+        assertThat(factory.getExtensionNames()).contains("tracking");
+
+        ExtensionConfig config = ExtensionConfig.parse("tracking; mode=record");
+        TrackingExtension extension = (TrackingExtension) factory.newInstance(config);
+        RecordingIncomingFrames incomingFrames = new RecordingIncomingFrames();
+        RecordingOutgoingFrames outgoingFrames = new RecordingOutgoingFrames();
+        RecordingWriteCallback callback = new RecordingWriteCallback();
+        StubFrame textFrame = new StubFrame(Frame.Type.TEXT, "hello jetty", true);
+        StubFrame pingFrame = new StubFrame(Frame.Type.PING, "ping", true);
+
+        extension.setNextIncomingFrames(incomingFrames);
+        extension.setNextOutgoingFrames(outgoingFrames);
+        extension.incomingFrame(textFrame);
+        extension.outgoingFrame(pingFrame, callback, BatchMode.ON);
+
+        assertThat(extension.getConfig().getParameter("mode", "missing")).isEqualTo("record");
+        assertThat(extension.getName()).isEqualTo("tracking");
+        assertThat(extension.getLastIncomingFrame()).isSameAs(textFrame);
+        assertThat(extension.getLastOutgoingFrame()).isSameAs(pingFrame);
+        assertThat(extension.getLastBatchMode()).isEqualTo(BatchMode.ON);
+        assertThat(incomingFrames.getFrame()).isSameAs(textFrame);
+        assertThat(outgoingFrames.getFrame()).isSameAs(pingFrame);
+        assertThat(outgoingFrames.getBatchMode()).isEqualTo(BatchMode.ON);
+        assertThat(callback.isSuccess()).isTrue();
+        assertThat(callback.getFailure()).isNull();
+
+        assertThat(textFrame.hasPayload()).isTrue();
+        assertThat(textFrame.getPayloadLength()).isEqualTo("hello jetty".getBytes(StandardCharsets.UTF_8).length);
+        assertThat(textFrame.getType()).isEqualTo(Frame.Type.TEXT);
+        assertThat(Frame.Type.from(textFrame.getOpCode())).isEqualTo(Frame.Type.TEXT);
+        assertThat(textFrame.getType().isData()).isTrue();
+        assertThat(pingFrame.getType().isControl()).isTrue();
+        assertThat(pingFrame.isLast()).isTrue();
+        assertThat(pingFrame.isMasked()).isFalse();
+        assertThatThrownBy(() -> Frame.Type.from((byte) 7))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("not a valid Frame.Type");
+
+        factory.unregister("tracking");
+        assertThat(factory.isAvailable("tracking")).isFalse();
+    }
+
     private static List<String> toList(Iterator<String> iterator) {
         List<String> values = new ArrayList<>();
         iterator.forEachRemaining(values::add);
         return values;
+    }
+
+    private static final class RecordingExtensionFactory extends ExtensionFactory {
+        @Override
+        public Extension newInstance(ExtensionConfig config) {
+            if (TrackingExtension.class.equals(getExtension(config.getName()))) {
+                return new TrackingExtension(config);
+            }
+            return null;
+        }
+    }
+
+    private static final class TrackingExtension implements Extension {
+        private final ExtensionConfig config;
+        private IncomingFrames nextIncomingFrames;
+        private OutgoingFrames nextOutgoingFrames;
+        private Frame lastIncomingFrame;
+        private Frame lastOutgoingFrame;
+        private BatchMode lastBatchMode;
+
+        private TrackingExtension(ExtensionConfig config) {
+            this.config = config;
+        }
+
+        @Override
+        public ExtensionConfig getConfig() {
+            return config;
+        }
+
+        @Override
+        public String getName() {
+            return config.getName();
+        }
+
+        @Override
+        public boolean isRsv1User() {
+            return false;
+        }
+
+        @Override
+        public boolean isRsv2User() {
+            return false;
+        }
+
+        @Override
+        public boolean isRsv3User() {
+            return false;
+        }
+
+        @Override
+        public void setNextIncomingFrames(IncomingFrames nextIncomingFrames) {
+            this.nextIncomingFrames = nextIncomingFrames;
+        }
+
+        @Override
+        public void setNextOutgoingFrames(OutgoingFrames nextOutgoingFrames) {
+            this.nextOutgoingFrames = nextOutgoingFrames;
+        }
+
+        @Override
+        public void incomingFrame(Frame frame) {
+            lastIncomingFrame = frame;
+            nextIncomingFrames.incomingFrame(frame);
+        }
+
+        @Override
+        public void outgoingFrame(Frame frame, WriteCallback callback, BatchMode batchMode) {
+            lastOutgoingFrame = frame;
+            lastBatchMode = batchMode;
+            nextOutgoingFrames.outgoingFrame(frame, callback, batchMode);
+        }
+
+        private Frame getLastIncomingFrame() {
+            return lastIncomingFrame;
+        }
+
+        private Frame getLastOutgoingFrame() {
+            return lastOutgoingFrame;
+        }
+
+        private BatchMode getLastBatchMode() {
+            return lastBatchMode;
+        }
+    }
+
+    private static final class RecordingIncomingFrames implements IncomingFrames {
+        private Frame frame;
+
+        @Override
+        public void incomingFrame(Frame frame) {
+            this.frame = frame;
+        }
+
+        private Frame getFrame() {
+            return frame;
+        }
+    }
+
+    private static final class RecordingOutgoingFrames implements OutgoingFrames {
+        private Frame frame;
+        private BatchMode batchMode;
+
+        @Override
+        public void outgoingFrame(Frame frame, WriteCallback callback, BatchMode batchMode) {
+            this.frame = frame;
+            this.batchMode = batchMode;
+            callback.writeSuccess();
+        }
+
+        private Frame getFrame() {
+            return frame;
+        }
+
+        private BatchMode getBatchMode() {
+            return batchMode;
+        }
+    }
+
+    private static final class RecordingWriteCallback implements WriteCallback {
+        private boolean success;
+        private Throwable failure;
+
+        @Override
+        public void writeFailed(Throwable cause) {
+            failure = cause;
+        }
+
+        @Override
+        public void writeSuccess() {
+            success = true;
+        }
+
+        private boolean isSuccess() {
+            return success;
+        }
+
+        private Throwable getFailure() {
+            return failure;
+        }
+    }
+
+    private static final class StubFrame implements Frame {
+        private final Frame.Type type;
+        private final ByteBuffer payload;
+        private final boolean fin;
+
+        private StubFrame(Frame.Type type, String payloadText, boolean fin) {
+            this.type = type;
+            this.payload = ByteBuffer.wrap(payloadText.getBytes(StandardCharsets.UTF_8));
+            this.fin = fin;
+        }
+
+        @Override
+        public byte[] getMask() {
+            return null;
+        }
+
+        @Override
+        public byte getOpCode() {
+            return type.getOpCode();
+        }
+
+        @Override
+        public ByteBuffer getPayload() {
+            return payload.asReadOnlyBuffer();
+        }
+
+        @Override
+        public int getPayloadLength() {
+            return payload.remaining();
+        }
+
+        @Override
+        public Frame.Type getType() {
+            return type;
+        }
+
+        @Override
+        public boolean hasPayload() {
+            return payload.hasRemaining();
+        }
+
+        @Override
+        public boolean isFin() {
+            return fin;
+        }
+
+        @Override
+        public boolean isLast() {
+            return fin;
+        }
+
+        @Override
+        public boolean isMasked() {
+            return false;
+        }
+
+        @Override
+        public boolean isRsv1() {
+            return false;
+        }
+
+        @Override
+        public boolean isRsv2() {
+            return false;
+        }
+
+        @Override
+        public boolean isRsv3() {
+            return false;
+        }
     }
 
     private static final class StubSession implements Session {
