@@ -51,6 +51,7 @@ dependencies {
 
 test {
     systemProperty 'h2.javaObjectSerializer', 'h2.JdbcUtilsTest$PassThroughJavaObjectSerializer'
+    systemProperty 'h2.nioCleanerHack', 'true'
     dependsOn prepareExplodedH2Runtime
     classpath = files(explodedH2Runtime).builtBy(prepareExplodedH2Runtime) + classpath.filter { file ->
         file.name != "h2-${libraryVersion}.jar"
@@ -61,7 +62,9 @@ graalvmNative {
     binaries {
         test {
             buildArgs.add('-Dh2.javaObjectSerializer=h2.JdbcUtilsTest$PassThroughJavaObjectSerializer')
+            buildArgs.add('-Dh2.nioCleanerHack=true')
             runtimeArgs('-Dh2.javaObjectSerializer=h2.JdbcUtilsTest$PassThroughJavaObjectSerializer')
+            runtimeArgs('-Dh2.nioCleanerHack=true')
         }
     }
     agent {
