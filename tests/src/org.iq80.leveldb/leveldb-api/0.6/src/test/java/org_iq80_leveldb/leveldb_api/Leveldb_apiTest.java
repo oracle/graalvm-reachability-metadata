@@ -225,6 +225,24 @@ public class Leveldb_apiTest {
     }
 
     @Test
+    void approximateSizesCanEvaluateMultipleRangesInOneCall() throws Exception {
+        try (DB db = new InMemoryDB(BYTEWISE_COMPARATOR)) {
+            db.put(bytes("alpha"), bytes("one"));
+            db.put(bytes("bravo"), bytes("two"));
+            db.put(bytes("charlie"), bytes("three"));
+            db.put(bytes("delta"), bytes("four"));
+            db.put(bytes("echo"), bytes("five"));
+
+            long[] sizes = db.getApproximateSizes(
+                    new Range(bytes("alpha"), bytes("charlie")),
+                    new Range(bytes("charlie"), bytes("foxtrot")),
+                    new Range(bytes("beta"), bytes("delta")));
+
+            assertThat(sizes).containsExactly(2L, 3L, 2L);
+        }
+    }
+
+    @Test
     void dbExceptionConstructorsPreserveMessagesAndCauses() {
         IllegalStateException cause = new IllegalStateException("disk full");
 
