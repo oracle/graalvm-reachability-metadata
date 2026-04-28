@@ -13,16 +13,42 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompositeClassLoaderTest {
+    private static final String CONTEXT_ONLY_CLASS_NAME = "context.only.LoadableFixture";
+
     @Test
-    void loadsClassThroughAddedClassLoader() throws ClassNotFoundException {
+    void fallsBackToThreadContextClassLoader() throws ClassNotFoundException {
         CompositeClassLoader loader = new CompositeClassLoader();
-        loader.add(CompositeClassLoaderTest.class.getClassLoader());
+        ContextOnlyClassLoader contextOnlyClassLoader = new ContextOnlyClassLoader();
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(contextOnlyClassLoader);
 
-        Class<?> loadedClass = loader.loadClass(LoadableFixture.class.getName());
+            Class<?> loadedClass = loader.loadClass(CONTEXT_ONLY_CLASS_NAME);
 
-        assertThat(loadedClass).isSameAs(LoadableFixture.class);
+            assertThat(loadedClass).isSameAs(LoadableFixture.class);
+            assertThat(contextOnlyClassLoader.requestedName).isEqualTo(CONTEXT_ONLY_CLASS_NAME);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
     }
 
     public static final class LoadableFixture {
+    }
+
+    private static final class ContextOnlyClassLoader extends ClassLoader {
+        private String requestedName;
+
+        private ContextOnlyClassLoader() {
+            super(null);
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            requestedName = name;
+            if (CONTEXT_ONLY_CLASS_NAME.equals(name)) {
+                return LoadableFixture.class;
+            }
+            throw new ClassNotFoundException(name);
+        }
     }
 }
