@@ -9,6 +9,7 @@ package org_jetbrains_kotlinx.atomicfu_jvm
 import kotlinx.atomicfu.AtomicBooleanArray
 import kotlinx.atomicfu.AtomicIntArray
 import kotlinx.atomicfu.AtomicLongArray
+import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.Trace
 import kotlinx.atomicfu.TraceFormat
 import kotlinx.atomicfu.atomic
@@ -17,6 +18,7 @@ import kotlinx.atomicfu.getAndUpdate
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.synchronized as atomicSynchronized
 import kotlinx.atomicfu.locks.withLock
+import kotlinx.atomicfu.loop
 import kotlinx.atomicfu.named
 import kotlinx.atomicfu.update
 import kotlinx.atomicfu.updateAndGet
@@ -192,6 +194,21 @@ public class Atomicfu_jvmTest {
     }
 
     @Test
+    fun loopRetriesWithLatestAtomicReferenceValueUntilOperationCompletes() {
+        val pending = atomic(listOf("alpha", "beta"))
+        val observedSnapshots = mutableListOf<List<String>>()
+
+        val removed = removeFirstAfterSyntheticRace(pending, observedSnapshots)
+
+        assertThat(removed).isEqualTo("urgent")
+        assertThat(observedSnapshots).containsExactly(
+            listOf("alpha", "beta"),
+            listOf("urgent", "alpha", "beta"),
+        )
+        assertThat(pending.value).containsExactly("alpha", "beta")
+    }
+
+    @Test
     fun locksCoordinateMutableStateAcrossThreads() {
         val lock = reentrantLock()
         val monitor = Any()
@@ -269,6 +286,26 @@ public class Atomicfu_jvmTest {
         assertThat(winnerChosen.value).isTrue()
         assertThat(winners.value).isEqualTo(1)
         assertThat(seenWorkers.value).containsExactlyInAnyOrder(0, 1, 2, 3)
+    }
+}
+
+private fun removeFirstAfterSyntheticRace(
+    pending: AtomicRef<List<String>>,
+    observedSnapshots: MutableList<List<String>>,
+): String? {
+    var interfereOnce = true
+    return pending.loop { snapshot ->
+        observedSnapshots += snapshot
+        if (snapshot.isEmpty()) {
+            return null
+        }
+        if (interfereOnce) {
+            interfereOnce = false
+            pending.value = listOf("urgent") + snapshot
+        }
+        if (pending.compareAndSet(snapshot, snapshot.drop(1))) {
+            return snapshot.first()
+        }
     }
 }
 
