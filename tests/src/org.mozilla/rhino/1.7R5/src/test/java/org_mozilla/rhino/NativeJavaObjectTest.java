@@ -65,6 +65,7 @@ public class NativeJavaObjectTest {
         NativeObject delegee = new NativeObject();
         SerializableAdapterSample adapter = new SerializableAdapterSample(delegee);
         NativeJavaObject wrapper = new NativeJavaObject(scope, adapter, SerializableAdapterSample.class, true);
+        wrapper.setParentScope(null);
 
         byte[] serialized = serialize(wrapper);
         Object restored = deserializeAdapter(serialized);
