@@ -117,6 +117,38 @@ public class JtaTest {
     }
 
     @Test
+    void readOnlyXaResourceVotesAreNotCommittedInSecondPhase() throws Exception {
+        InMemoryTransactionManager manager = new InMemoryTransactionManager();
+        manager.begin();
+        Transaction transaction = manager.getTransaction();
+        ReadOnlyXaResource readOnlyResource = new ReadOnlyXaResource("read-only");
+        RecordingXaResource updatingResource = new RecordingXaResource("updating");
+        RecordingSynchronization synchronization = new RecordingSynchronization("sync");
+
+        assertThat(transaction.enlistResource(readOnlyResource)).isTrue();
+        assertThat(transaction.enlistResource(updatingResource)).isTrue();
+        transaction.registerSynchronization(synchronization);
+        assertThat(transaction.delistResource(readOnlyResource, XAResource.TMSUCCESS)).isTrue();
+        assertThat(transaction.delistResource(updatingResource, XAResource.TMSUCCESS)).isTrue();
+
+        manager.commit();
+
+        assertThat(transaction.getStatus()).isEqualTo(Status.STATUS_COMMITTED);
+        assertThat(readOnlyResource.events()).containsExactly(
+                "read-only:start:4660:0",
+                "read-only:end:67108864",
+                "read-only:prepare:4660");
+        assertThat(updatingResource.events()).containsExactly(
+                "updating:start:4660:0",
+                "updating:end:67108864",
+                "updating:prepare:4660",
+                "updating:commit:false");
+        assertThat(synchronization.events()).containsExactly(
+                "sync:beforeCompletion",
+                "sync:afterCompletion:3");
+    }
+
+    @Test
     void rollbackOnlyTransactionRollsBackAndReportsRollbackException() throws Exception {
         InMemoryTransactionManager manager = new InMemoryTransactionManager();
         manager.begin();
@@ -436,12 +468,17 @@ public class JtaTest {
             try {
                 beforeCompletion();
                 status = Status.STATUS_PREPARING;
+                List<XAResource> readOnlyResources = new ArrayList<>();
                 for (XAResource resource : xaResources) {
-                    resource.prepare(xid);
+                    if (resource.prepare(xid) == XAResource.XA_RDONLY) {
+                        readOnlyResources.add(resource);
+                    }
                 }
                 status = Status.STATUS_COMMITTING;
                 for (XAResource resource : xaResources) {
-                    resource.commit(xid, false);
+                    if (!readOnlyResources.contains(resource)) {
+                        resource.commit(xid, false);
+                    }
                 }
                 status = Status.STATUS_COMMITTED;
                 afterCompletion(Status.STATUS_COMMITTED);
@@ -634,6 +671,70 @@ public class JtaTest {
         @Override
         public boolean setTransactionTimeout(int seconds) {
             timeoutSeconds = seconds;
+            return true;
+        }
+
+        @Override
+        public void start(Xid xid, int flags) {
+            events.add(name + ":start:" + xid.getFormatId() + ":" + flags);
+        }
+
+        List<String> events() {
+            return events;
+        }
+    }
+
+    private static final class ReadOnlyXaResource implements XAResource {
+        private final String name;
+        private final List<String> events = new ArrayList<>();
+
+        ReadOnlyXaResource(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public void commit(Xid xid, boolean onePhase) {
+            events.add(name + ":commit:" + onePhase);
+        }
+
+        @Override
+        public void end(Xid xid, int flags) {
+            events.add(name + ":end:" + flags);
+        }
+
+        @Override
+        public void forget(Xid xid) {
+            events.add(name + ":forget:" + xid.getFormatId());
+        }
+
+        @Override
+        public int getTransactionTimeout() {
+            return 0;
+        }
+
+        @Override
+        public boolean isSameRM(XAResource xaResource) {
+            return this == xaResource;
+        }
+
+        @Override
+        public int prepare(Xid xid) {
+            events.add(name + ":prepare:" + xid.getFormatId());
+            return XA_RDONLY;
+        }
+
+        @Override
+        public Xid[] recover(int flag) {
+            return new Xid[0];
+        }
+
+        @Override
+        public void rollback(Xid xid) {
+            events.add(name + ":rollback:" + xid.getFormatId());
+        }
+
+        @Override
+        public boolean setTransactionTimeout(int seconds) {
             return true;
         }
 
