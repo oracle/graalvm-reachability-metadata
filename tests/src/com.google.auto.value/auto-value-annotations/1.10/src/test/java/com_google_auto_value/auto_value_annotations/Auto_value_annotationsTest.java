@@ -79,8 +79,8 @@ class Auto_value_annotationsTest {
     }
 
     @Test
-    void sourceRetentionAnnotationsRemainCompileTimeOnly() throws NoSuchMethodException {
-        assertRetention(AutoAnnotation.class, RetentionPolicy.SOURCE);
+    void nonRuntimeAnnotationsRemainInvisibleToReflection() throws NoSuchMethodException {
+        assertRetention(AutoAnnotation.class, RetentionPolicy.CLASS);
         assertRetention(SerializableAutoValue.class, RetentionPolicy.SOURCE);
         assertTargets(AutoAnnotation.class, ElementType.METHOD);
         assertTargets(SerializableAutoValue.class, ElementType.TYPE);
