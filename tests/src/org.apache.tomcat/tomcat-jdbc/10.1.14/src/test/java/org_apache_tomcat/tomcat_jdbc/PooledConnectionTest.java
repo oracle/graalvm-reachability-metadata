@@ -6,7 +6,9 @@
  */
 package org_apache_tomcat.tomcat_jdbc;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.ConnectionPool;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.apache.tomcat.jdbc.pool.PooledConnection;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -20,9 +22,12 @@ public class PooledConnectionTest {
 
     @Test
     void opensConnectionWithConfiguredDriverClass() throws SQLException {
-        DataSource dataSource = createDataSource();
+        PoolProperties poolProperties = createPoolProperties();
+        ConnectionPool connectionPool = new ConnectionPool(poolProperties);
+        PooledConnection pooledConnection = new PooledConnection(poolProperties, connectionPool);
         try {
-            try (Connection connection = dataSource.getConnection();
+            pooledConnection.connect();
+            try (Connection connection = pooledConnection.getConnection();
                     Statement statement = connection.createStatement()) {
                 statement.executeUpdate("""
                         CREATE TABLE pooled_connection_item (
@@ -38,19 +43,21 @@ public class PooledConnectionTest {
                 assertInsertedItem(statement);
             }
         } finally {
-            dataSource.close(true);
+            pooledConnection.release();
         }
     }
 
-    private DataSource createDataSource() {
-        DataSource dataSource = new DataSource();
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:pooled_connection");
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
-        dataSource.setInitialSize(0);
-        dataSource.setMaxActive(1);
-        return dataSource;
+    private PoolProperties createPoolProperties() {
+        PoolProperties poolProperties = new PoolProperties();
+        poolProperties.setDriverClassName("org.h2.Driver");
+        poolProperties.setUrl("jdbc:h2:mem:pooled_connection");
+        poolProperties.setUsername("sa");
+        poolProperties.setPassword("");
+        poolProperties.setInitialSize(0);
+        poolProperties.setMaxActive(1);
+        poolProperties.setJmxEnabled(false);
+        poolProperties.setTimeBetweenEvictionRunsMillis(0);
+        return poolProperties;
     }
 
     private void assertInsertedItem(Statement statement) throws SQLException {
