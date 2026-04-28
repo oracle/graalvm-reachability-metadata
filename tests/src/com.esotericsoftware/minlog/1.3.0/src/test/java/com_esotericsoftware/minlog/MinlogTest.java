@@ -138,6 +138,20 @@ public class MinlogTest {
     }
 
     @Test
+    void setLoggerReplacesActiveSinkForSubsequentMessages() {
+        RecordingLogger firstLogger = logger;
+        RecordingLogger secondLogger = new RecordingLogger();
+
+        Log.info("startup complete");
+        Log.setLogger(secondLogger);
+        Log.warn("configuration", "using fallback");
+
+        assertThat(firstLogger.records).containsExactly(new LogRecord(Log.LEVEL_INFO, null, "startup complete", null));
+        assertThat(secondLogger.records)
+                .containsExactly(new LogRecord(Log.LEVEL_WARN, "configuration", "using fallback", null));
+    }
+
+    @Test
     void thresholdPreventsDisabledMessagesFromReachingLogger() {
         Log.ERROR();
         Log.error("visible");
