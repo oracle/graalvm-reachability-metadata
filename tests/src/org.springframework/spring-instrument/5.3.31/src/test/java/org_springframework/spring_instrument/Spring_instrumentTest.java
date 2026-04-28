@@ -59,6 +59,15 @@ public class Spring_instrumentTest {
     }
 
     @Test
+    void agentmainCanClearSavedInstrumentationWhenGivenNull() {
+        InstrumentationSavingAgent.premain("startup options", new TestInstrumentation("temporary"));
+
+        InstrumentationSavingAgent.agentmain("clear", null);
+
+        assertThat(InstrumentationSavingAgent.getInstrumentation()).isNull();
+    }
+
+    @Test
     void savedInstrumentationIsVisibleToOtherThreads() throws Exception {
         Instrumentation instrumentation = new TestInstrumentation("shared");
         CountDownLatch readerStarted = new CountDownLatch(1);
