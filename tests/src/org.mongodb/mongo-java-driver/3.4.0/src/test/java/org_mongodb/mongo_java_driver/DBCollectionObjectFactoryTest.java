@@ -7,6 +7,7 @@
 package org_mongodb.mongo_java_driver;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.DefaultDBDecoder;
 import com.mongodb.DefaultDBEncoder;
@@ -23,7 +24,7 @@ public class DBCollectionObjectFactoryTest {
         BasicOutputBuffer outputBuffer = new BasicOutputBuffer();
         DefaultDBEncoder.FACTORY.create().writeObject(outputBuffer, source);
 
-        DBObject decoded = DefaultDBDecoder.FACTORY.create().decode(outputBuffer.toByteArray(), null);
+        DBObject decoded = DefaultDBDecoder.FACTORY.create().decode(outputBuffer.toByteArray(), (DBCollection) null);
 
         assertThat(decoded).isInstanceOf(BasicDBObject.class);
         assertThat(decoded.get("name")).isEqualTo("Ada Lovelace");
