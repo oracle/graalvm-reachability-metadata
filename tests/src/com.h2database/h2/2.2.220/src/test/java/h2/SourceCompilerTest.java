@@ -28,7 +28,7 @@ public class SourceCompilerTest {
                 }
                 """);
 
-        assertRuntimeCompilationOutcome(() -> {
+        assertRuntimeCompilationOutcome(JAVAX_TOOLS_CLASS_NAME, () -> {
             Method method = compiler.getMethod(JAVAX_TOOLS_CLASS_NAME);
 
             assertThat(method).isNotNull();
@@ -50,7 +50,7 @@ public class SourceCompilerTest {
                 }
                 """);
 
-        assertRuntimeCompilationOutcome(() -> {
+        assertRuntimeCompilationOutcome(LEGACY_JAVAC_CLASS_NAME, () -> {
             Class<?> compiledClass = compiler.getClass(LEGACY_JAVAC_CLASS_NAME);
 
             assertThat(compiledClass.getName()).isEqualTo(LEGACY_JAVAC_CLASS_NAME);
@@ -58,29 +58,17 @@ public class SourceCompilerTest {
         });
     }
 
-    private static void assertRuntimeCompilationOutcome(CompilationAction action) throws Exception {
+    private static void assertRuntimeCompilationOutcome(String generatedClassName, CompilationAction action)
+            throws Exception {
         try {
             action.run();
         } catch (UnsupportedOperationException ex) {
             assertThat(ex).hasMessageContaining("Defining new classes at runtime is not supported");
-        } catch (RuntimeException ex) {
-            if (!hasUnsupportedRuntimeClassDefinitionCause(ex)) {
+        } catch (Exception ex) {
+            if (!NativeImageTestSupport.hasUnsupportedRuntimeClassDefinitionCause(ex, generatedClassName)) {
                 fail("Runtime source compilation failed before class definition", ex);
             }
         }
-    }
-
-    private static boolean hasUnsupportedRuntimeClassDefinitionCause(Throwable throwable) {
-        Throwable current = throwable;
-        while (current != null) {
-            if (current instanceof UnsupportedOperationException
-                    && current.getMessage() != null
-                    && current.getMessage().contains("Defining new classes at runtime is not supported")) {
-                return true;
-            }
-            current = current.getCause();
-        }
-        return false;
     }
 
     private interface CompilationAction {

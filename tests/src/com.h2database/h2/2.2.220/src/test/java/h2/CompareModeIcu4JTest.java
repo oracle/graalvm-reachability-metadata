@@ -43,7 +43,7 @@ public class CompareModeIcu4JTest {
 
         assertThat(compareMode.getName()).isEqualTo("ENGLISH_UNITED_STATES");
         assertThat(compareMode).isInstanceOf(CompareModeIcu4J.class);
-        assertThat(compareMode.compareString("resume", "résumé", false)).isZero();
+        assertThat(compareMode.compareString("resume", "r\u00E9sum\u00E9", false)).isZero();
         assertThat(compareMode.compareString("alpha", "omega", false)).isNegative();
     }
 }

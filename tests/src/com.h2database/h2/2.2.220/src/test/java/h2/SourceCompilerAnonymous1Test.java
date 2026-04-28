@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SourceCompilerAnonymous1Test {
+    private static final String SOURCE_COMPILER_LOADER_ANCHOR = "h2.generated.SourceCompilerLoaderAnchor";
+
     @Test
     void fallsBackToSystemClassLookupWhenLegacyCompilerProducesNoBytecode() throws Throwable {
         NullBytecodeSourceCompiler compiler = new NullBytecodeSourceCompiler();
@@ -24,23 +26,10 @@ public class SourceCompilerAnonymous1Test {
         try {
             action.run();
         } catch (Throwable ex) {
-            if (!hasUnsupportedRuntimeClassDefinitionCause(ex)) {
+            if (!NativeImageTestSupport.hasUnsupportedRuntimeClassDefinitionCause(ex, SOURCE_COMPILER_LOADER_ANCHOR)) {
                 throw ex;
             }
         }
-    }
-
-    private static boolean hasUnsupportedRuntimeClassDefinitionCause(Throwable throwable) {
-        Throwable current = throwable;
-        while (current != null) {
-            if (current instanceof UnsupportedOperationException
-                    && current.getMessage() != null
-                    && current.getMessage().contains("Defining new classes at runtime is not supported")) {
-                return true;
-            }
-            current = current.getCause();
-        }
-        return false;
     }
 
     private interface CompilationAction {

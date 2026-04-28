@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TriggerObjectTest {
     private static final String CLASS_TRIGGER_URL = "jdbc:h2:mem:trigger-object-class";
     private static final String SOURCE_TRIGGER_URL = "jdbc:h2:mem:trigger-object-source";
+    private static final String SOURCE_TRIGGER_CLASS_NAME = "org.h2.dynamic.trigger.SOURCE_TRIGGER";
 
     @Test
     void createsTriggerCallbackFromConfiguredClassName() throws Exception {
@@ -72,7 +73,7 @@ public class TriggerObjectTest {
                 statement.execute("UPDATE trigger_events SET name = 'bravo' WHERE id = 1");
             }
         } catch (SQLException ex) {
-            if (hasUnsupportedRuntimeClassDefinitionCause(ex)) {
+            if (NativeImageTestSupport.hasUnsupportedRuntimeClassDefinitionCause(ex, SOURCE_TRIGGER_CLASS_NAME)) {
                 return;
             }
             throw ex;
@@ -87,18 +88,6 @@ public class TriggerObjectTest {
 
     private static String escapeSql(String value) {
         return value.replace("'", "''");
-    }
-
-    private static boolean hasUnsupportedRuntimeClassDefinitionCause(Throwable throwable) {
-        Throwable current = throwable;
-        while (current != null) {
-            String message = current.getMessage();
-            if (message != null && message.contains("Defining new classes at runtime is not supported")) {
-                return true;
-            }
-            current = current.getCause();
-        }
-        return false;
     }
 
     public static class RecordingTrigger implements Trigger {

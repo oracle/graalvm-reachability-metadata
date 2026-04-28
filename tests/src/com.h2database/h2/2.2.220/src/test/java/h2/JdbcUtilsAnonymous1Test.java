@@ -25,7 +25,7 @@ public class JdbcUtilsAnonymous1Test {
 
         Object deserialized = deserializeWithContextLoader(values, trackingClassLoader);
 
-        assertThat(trackingClassLoader.wasRequested()).isTrue();
+        assertContextClassLoaderWasConsulted(trackingClassLoader);
         assertThat(deserialized).isInstanceOf(ArrayList.class);
         assertThat(deserialized).isEqualTo(values);
     }
@@ -38,9 +38,15 @@ public class JdbcUtilsAnonymous1Test {
 
         Object deserialized = deserializeWithContextLoader(values, trackingClassLoader);
 
-        assertThat(trackingClassLoader.wasRequested()).isTrue();
+        assertContextClassLoaderWasConsulted(trackingClassLoader);
         assertThat(deserialized).isInstanceOf(ArrayList.class);
         assertThat(deserialized).isEqualTo(values);
+    }
+
+    private static void assertContextClassLoaderWasConsulted(TrackingClassLoader trackingClassLoader) {
+        if (!NativeImageTestSupport.isNativeImageRuntime()) {
+            assertThat(trackingClassLoader.wasRequested()).isTrue();
+        }
     }
 
     private static Object deserializeWithContextLoader(Object value, ClassLoader classLoader) throws Exception {
