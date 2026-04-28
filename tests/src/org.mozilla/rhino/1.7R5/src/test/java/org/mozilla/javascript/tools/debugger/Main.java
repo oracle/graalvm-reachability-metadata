@@ -10,6 +10,8 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ContextListener;
 
+import javax.swing.JSplitPane;
+
 public class Main implements ContextListener {
     private ContextFactory attachedFactory;
 
@@ -19,6 +21,10 @@ public class Main implements ContextListener {
 
     public ContextFactory getAttachedFactory() {
         return attachedFactory;
+    }
+
+    public static void setResizeWeight(JSplitPane pane, double weight) {
+        SwingGui.setResizeWeight(pane, weight);
     }
 
     @Override
