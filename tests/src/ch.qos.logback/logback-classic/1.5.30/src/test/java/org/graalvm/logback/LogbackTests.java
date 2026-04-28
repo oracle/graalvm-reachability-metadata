@@ -11,8 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +18,6 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import ch.qos.logback.classic.Logger;
@@ -29,6 +26,8 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LogbackServiceProvider;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
@@ -44,15 +43,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LogbackTests {
 
-  private static final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+  private LogbackMDCAdapter mdcAdapter;
+
+  private LoggerContext context;
 
   private static final Map<String, String> layoutTagMap = new HashMap<>();
   static {
@@ -74,6 +72,8 @@ public class LogbackTests {
 
   @BeforeAll
   void beforeAll() throws IOException {
+    mdcAdapter = new LogbackMDCAdapter();
+    context = createLoggerContext();
     tempDirPath = Files.createTempDirectory("logback-metadata-test");
   }
 
@@ -93,7 +93,7 @@ public class LogbackTests {
 
   @BeforeEach
   public void setUp() {
-    MDC.put("test", "GraalVM");
+    mdcAdapter.put("test", "GraalVM");
     context.putProperty("test", "GraalVM property");
     this.outputStreamCaptor = new ByteArrayOutputStream();
     System.setOut(new PrintStream(this.outputStreamCaptor));
@@ -151,8 +151,10 @@ public class LogbackTests {
 
   @Test
   void consoleAppenderPropertySetter() {
-    ConsoleAppender consoleAppender = new ConsoleAppender();
-    PropertySetter propertySetter = new PropertySetter(new BeanDescriptionCache(null), consoleAppender);
+    ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<>();
+    consoleAppender.setContext(context);
+    PropertySetter propertySetter = new PropertySetter(new BeanDescriptionCache(context), consoleAppender);
+    propertySetter.setContext(context);
     propertySetter.setProperty("withJansi", "true");
     assertThat(consoleAppender.isWithJansi()).isTrue();
   }
@@ -169,9 +171,12 @@ public class LogbackTests {
   }
 
   @Test
-  void slf4jCanBeDetected() {
-    boolean slf4jAvailable = isClassPresent("org.slf4j.Logger") && isClassPresent("org.slf4j.spi.SLF4JServiceProvider");
-    assertThat(slf4jAvailable).isTrue();
+  void logbackServiceProviderCanInitialize() {
+    LogbackServiceProvider serviceProvider = new LogbackServiceProvider();
+    serviceProvider.initialize();
+    assertThat(serviceProvider.getLoggerFactory()).isInstanceOf(LoggerContext.class);
+    assertThat(serviceProvider.getMDCAdapter()).isInstanceOf(LogbackMDCAdapter.class);
+    assertThat(isClassPresent("org.slf4j.spi.SLF4JServiceProvider")).isTrue();
   }
 
   private boolean isClassPresent(String className) {
@@ -184,28 +189,14 @@ public class LogbackTests {
   }
 
   private static Stream<Arguments> converterSource() {
-    if (!PatternLayout.DEFAULT_CONVERTER_MAP.isEmpty()) {
-      return PatternLayout.DEFAULT_CONVERTER_MAP.entrySet().stream()
-          .map(entry -> Arguments.of(entry.getValue(), entry.getKey()));
-    }
-    return defaultConverterSupplierMap().entrySet().stream()
+    return PatternLayout.DEFAULT_CONVERTER_SUPPLIER_MAP.entrySet().stream()
         .map(entry -> Arguments.of(entry.getValue().get().getClass().getName(), entry.getKey()));
   }
 
-  @SuppressWarnings("unchecked")
-  private static Map<String, Supplier<?>> defaultConverterSupplierMap() {
-    try {
-      Method method = PatternLayout.class.getMethod("getDefaultConverterSupplierMap");
-      return (Map<String, Supplier<?>>) method.invoke(new PatternLayout());
-    } catch (ReflectiveOperationException ignored) {
-      // Fall back to the field for compatibility with older or transitional versions.
-    }
-    try {
-      Field field = PatternLayout.class.getField("DEFAULT_CONVERTER_SUPPLIER_MAP");
-      return (Map<String, Supplier<?>>) field.get(null);
-    } catch (ReflectiveOperationException ex) {
-      throw new IllegalStateException("Could not resolve the Logback default converter supplier map.", ex);
-    }
+  private LoggerContext createLoggerContext() {
+    LoggerContext loggerContext = new LoggerContext();
+    loggerContext.setMDCAdapter(mdcAdapter);
+    return loggerContext;
   }
 
   private PatternLayoutEncoder createEncoder(String pattern) {
@@ -240,6 +231,7 @@ public class LogbackTests {
 
   @AfterEach
   public void tearDown() {
+    mdcAdapter.clear();
     System.setOut(systemOut);
   }
 
