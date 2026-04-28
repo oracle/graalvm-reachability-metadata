@@ -8,18 +8,25 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.rmi.Remote;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Rmic;
 import org.apache.tools.ant.taskdefs.rmic.WLRmic;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class WLRmicTest {
+    @BeforeEach
+    void resetWebLogicRmic() throws ReflectiveOperationException {
+        weblogic.rmic.reset();
+        resetLegacyClassLiteralCache();
+    }
+
     @Test
     void executesWebLogicRmicAdapterWithMainMethod(@TempDir Path baseDirectory) {
-        weblogic.rmic.reset();
         WLRmic adapter = new WLRmic();
         adapter.setRmic(newRmic(baseDirectory));
 
@@ -29,6 +36,12 @@ public class WLRmicTest {
         assertThat(weblogic.rmic.getLastArguments())
                 .containsSubsequence("-noexit", "-d", baseDirectory.toFile().getAbsolutePath())
                 .contains("-classpath", ExampleRemoteService.class.getName());
+    }
+
+    private static void resetLegacyClassLiteralCache() throws ReflectiveOperationException {
+        Field field = WLRmic.class.getDeclaredField("array$Ljava$lang$String");
+        field.setAccessible(true);
+        field.set(null, null);
     }
 
     private static Rmic newRmic(Path baseDirectory) {
