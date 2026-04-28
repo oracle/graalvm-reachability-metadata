@@ -8,6 +8,8 @@ package net_razorvine.pickle;
 
 import java.nio.charset.StandardCharsets;
 
+import net.razorvine.pickle.IObjectConstructor;
+import net.razorvine.pickle.Unpickler;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

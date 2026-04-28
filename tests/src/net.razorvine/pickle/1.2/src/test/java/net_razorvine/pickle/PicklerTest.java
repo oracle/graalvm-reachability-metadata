@@ -9,6 +9,8 @@ package net_razorvine.pickle;
 import java.io.Serializable;
 import java.util.Map;
 
+import net.razorvine.pickle.Pickler;
+import net.razorvine.pickle.Unpickler;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,11 +25,10 @@ public class PicklerTest {
 
         assertThat(unpickled).isInstanceOfSatisfying(Map.class, rawMap -> {
             Map<?, ?> map = (Map<?, ?>) rawMap;
-            assertThat(map)
-                    .containsEntry("name", "alpha")
-                    .containsEntry("active", true)
-                    .containsEntry("URL", "https://example.test/pickle")
-                    .containsEntry("__class__", JavaBean.class.getName());
+            assertThat(map.get("name")).isEqualTo("alpha");
+            assertThat(map.get("active")).isEqualTo(true);
+            assertThat(map.get("URL")).isEqualTo("https://example.test/pickle");
+            assertThat(map.get("__class__")).isEqualTo(JavaBean.class.getName());
         });
     }
 

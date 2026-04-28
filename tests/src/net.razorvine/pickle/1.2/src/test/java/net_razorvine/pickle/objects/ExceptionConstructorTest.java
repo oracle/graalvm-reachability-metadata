@@ -6,6 +6,7 @@
  */
 package net_razorvine.pickle.objects;
 
+import net.razorvine.pickle.objects.ExceptionConstructor;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
