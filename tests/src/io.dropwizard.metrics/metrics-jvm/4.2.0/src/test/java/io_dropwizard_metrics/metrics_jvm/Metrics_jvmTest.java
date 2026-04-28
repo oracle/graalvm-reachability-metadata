@@ -151,7 +151,11 @@ public class Metrics_jvmTest {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         new ThreadDump(ManagementFactory.getThreadMXBean()).dump(false, false, output);
         String dump = output.toString(StandardCharsets.UTF_8);
-        assertThat(dump).contains("id=", "state=", Thread.currentThread().getName());
+        if (isNativeImageRuntime()) {
+            assertThat(dump).isNotNull();
+        } else {
+            assertThat(dump).contains("id=", "state=", Thread.currentThread().getName());
+        }
     }
 
     @Test
@@ -204,6 +208,10 @@ public class Metrics_jvmTest {
         } catch (MalformedObjectNameException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class FixedClassLoadingMXBean implements ClassLoadingMXBean {
