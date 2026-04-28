@@ -6,12 +6,25 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
+    id "com.gradleup.shadow" version "9.2.2"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations {
+    relocatedGuava
+}
+
+tasks.register("relocatedGuavaJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveClassifier = "relocated-guava"
+    configurations = [project.configurations.relocatedGuava]
+    relocate "com.google.common", "graphql.com.google.common"
+}
+
 dependencies {
     testImplementation "com.graphql-java:graphql-java:$libraryVersion"
+    testImplementation files(tasks.named("relocatedGuavaJar"))
+    relocatedGuava "com.google.guava:guava:31.0.1-jre"
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.awaitility:awaitility:4.2.0'
 }
