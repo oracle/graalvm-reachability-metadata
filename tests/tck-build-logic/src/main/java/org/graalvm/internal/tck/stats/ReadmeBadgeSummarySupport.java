@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -155,6 +156,46 @@ public final class ReadmeBadgeSummarySupport {
         );
     }
 
+    public static void writeCoverageMarkdown(
+            Path coverageFile,
+            Path statsRoot,
+            Path metadataRoot,
+            ReadmeBadgeSummary summary
+    ) {
+        writeTextWithTrailingNewline(
+                coverageFile,
+                buildCoverageMarkdown(statsRoot, metadataRoot, summary),
+                "Failed to write coverage Markdown to "
+        );
+    }
+
+    public static String buildCoverageMarkdown(
+            Path statsRoot,
+            Path metadataRoot,
+            ReadmeBadgeSummary summary
+    ) {
+        List<CoverageTableEntry> entries = buildCoverageTableEntries(statsRoot, metadataRoot);
+        StringBuilder markdown = new StringBuilder();
+        markdown.append("# Coverage\n\n");
+        markdown.append("Updated: ")
+                .append(summary.date())
+                .append("\n\n");
+        markdown.append("![Coverage over time](latest/metrics-over-time.svg)\n\n");
+        markdown.append("## Libraries\n\n");
+        markdown.append("| Library | Description | Dynamic access coverage |\n");
+        markdown.append("| --- | --- | ---: |\n");
+        for (CoverageTableEntry entry : entries) {
+            markdown.append("| `")
+                    .append(markdownCell(entry.coordinate()))
+                    .append("` | ")
+                    .append(markdownCell(entry.description()))
+                    .append(" | ")
+                    .append(markdownCell(formatDynamicAccessCoverage(entry.dynamicAccessCoverage())))
+                    .append(" |\n");
+        }
+        return markdown.toString();
+    }
+
     private static StatsMetrics buildStatsMetrics(LibraryStatsModels.LibraryStats libraryStats) {
         int coverageStatsArtifacts = libraryStats.entries() == null ? 0 : libraryStats.entries().size();
 
@@ -239,6 +280,104 @@ public final class ReadmeBadgeSummarySupport {
                 metadataIndexes,
                 testedVersions
         );
+    }
+
+    private static List<CoverageTableEntry> buildCoverageTableEntries(Path statsRoot, Path metadataRoot) {
+        if (!Files.isDirectory(metadataRoot)) {
+            throw new GradleException("Missing metadata root: " + metadataRoot);
+        }
+        LibraryStatsModels.LibraryStats libraryStats = LibraryStatsSupport.loadRepositoryStats(statsRoot);
+        Map<String, CoverageTableEntry> entriesByCoordinate = new TreeMap<>();
+
+        try (Stream<Path> paths = Files.find(metadataRoot, 3, (path, attrs) -> {
+            if (!attrs.isRegularFile()) {
+                return false;
+            }
+            Path relative = metadataRoot.relativize(path);
+            if (relative.getNameCount() != 3) {
+                return false;
+            }
+            String groupId = relative.getName(0).toString();
+            return "index.json".equals(relative.getName(2).toString()) && !EXCLUDED_GROUP_IDS.contains(groupId);
+        })) {
+            for (Path indexFile : paths.sorted().toList()) {
+                Path relative = metadataRoot.relativize(indexFile);
+                String coordinate = relative.getName(0) + ":" + relative.getName(1);
+                List<MetadataVersionsIndexEntry> indexEntries = readIndexEntries(indexFile);
+                entriesByCoordinate.put(
+                        coordinate,
+                        new CoverageTableEntry(
+                                coordinate,
+                                selectDescription(indexEntries),
+                                aggregateDynamicAccessCoverage(libraryStats.entries().get(coordinate))
+                        )
+                );
+            }
+        } catch (IOException e) {
+            throw new GradleException("Failed to traverse metadata root " + metadataRoot, e);
+        }
+
+        return List.copyOf(entriesByCoordinate.values());
+    }
+
+    private static String selectDescription(List<MetadataVersionsIndexEntry> entries) {
+        if (entries == null || entries.isEmpty()) {
+            return "";
+        }
+        for (MetadataVersionsIndexEntry entry : entries) {
+            if (entry != null && Boolean.TRUE.equals(entry.latest()) && !isBlank(entry.description())) {
+                return entry.description();
+            }
+        }
+        for (MetadataVersionsIndexEntry entry : entries) {
+            if (entry != null && !isBlank(entry.description())) {
+                return entry.description();
+            }
+        }
+        return "";
+    }
+
+    private static DynamicAccessCoverage aggregateDynamicAccessCoverage(LibraryStatsModels.ArtifactStats artifactStats) {
+        if (artifactStats == null || artifactStats.metadataVersions() == null) {
+            return DynamicAccessCoverage.notAvailable();
+        }
+
+        BigDecimal ratioSum = BigDecimal.ZERO;
+        long ratioCount = 0;
+        long coveredCalls = 0;
+        long totalCalls = 0;
+        for (LibraryStatsModels.MetadataVersionStats metadataVersionStats : artifactStats.metadataVersions().values()) {
+            if (metadataVersionStats == null || metadataVersionStats.versions() == null) {
+                continue;
+            }
+            for (LibraryStatsModels.VersionStats versionStats : metadataVersionStats.versions()) {
+                if (versionStats == null || versionStats.dynamicAccess() == null || !versionStats.dynamicAccess().isAvailable()) {
+                    continue;
+                }
+                ratioSum = ratioSum.add(versionStats.dynamicAccess().coverageRatio());
+                ratioCount++;
+                coveredCalls += versionStats.dynamicAccess().coveredCalls();
+                totalCalls += versionStats.dynamicAccess().totalCalls();
+            }
+        }
+
+        if (ratioCount == 0) {
+            return DynamicAccessCoverage.notAvailable();
+        }
+
+        BigDecimal coveragePercent;
+        if (totalCalls > 0) {
+            coveragePercent = BigDecimal.valueOf(coveredCalls)
+                    .divide(BigDecimal.valueOf(totalCalls), AVERAGE_SCALE, RoundingMode.HALF_UP)
+                    .multiply(HUNDRED)
+                    .setScale(1, RoundingMode.HALF_UP);
+        } else {
+            coveragePercent = ratioSum
+                    .divide(BigDecimal.valueOf(ratioCount), AVERAGE_SCALE, RoundingMode.HALF_UP)
+                    .multiply(HUNDRED)
+                    .setScale(1, RoundingMode.HALF_UP);
+        }
+        return new DynamicAccessCoverage(coveragePercent, coveredCalls, totalCalls, true);
     }
 
     private static List<MetadataVersionsIndexEntry> readIndexEntries(Path indexFile) {
@@ -716,6 +855,31 @@ public final class ReadmeBadgeSummarySupport {
         return formatInteger(value.setScale(0, RoundingMode.HALF_UP).intValue());
     }
 
+    private static String formatDynamicAccessCoverage(DynamicAccessCoverage coverage) {
+        if (!coverage.available()) {
+            return "N/A";
+        }
+        return formatPercent(coverage.coveragePercent())
+                + " ("
+                + formatInteger(coverage.coveredCalls())
+                + "/"
+                + formatInteger(coverage.totalCalls())
+                + " calls)";
+    }
+
+    private static String markdownCell(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.trim()
+                .replaceAll("\\s+", " ")
+                .replace("|", "\\|");
+    }
+
+    private static boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
     private static String escapeXml(String value) {
         return value
                 .replace("&", "&amp;")
@@ -764,6 +928,10 @@ public final class ReadmeBadgeSummarySupport {
     }
 
     private static String formatInteger(int value) {
+        return formatInteger((long) value);
+    }
+
+    private static String formatInteger(long value) {
         NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
         format.setGroupingUsed(true);
         return format.format(value);
@@ -848,5 +1016,24 @@ public final class ReadmeBadgeSummarySupport {
             BigDecimal minValue,
             BigDecimal maxValue
     ) {
+    }
+
+    private record CoverageTableEntry(
+            String coordinate,
+            String description,
+            DynamicAccessCoverage dynamicAccessCoverage
+    ) {
+    }
+
+    private record DynamicAccessCoverage(
+            BigDecimal coveragePercent,
+            long coveredCalls,
+            long totalCalls,
+            boolean available
+    ) {
+
+        static DynamicAccessCoverage notAvailable() {
+            return new DynamicAccessCoverage(BigDecimal.ZERO, 0, 0, false);
+        }
     }
 }

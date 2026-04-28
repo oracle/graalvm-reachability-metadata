@@ -33,6 +33,12 @@ public abstract class GenerateReadmeBadgeSummaryTask extends AbstractReadmeBadge
                 getMetricsOverviewGraphFile(),
                 updatedHistory
         );
+        ReadmeBadgeSummarySupport.writeCoverageMarkdown(
+                getCoverageMarkdownFile(),
+                getStatsRoot(),
+                getMetadataRoot(),
+                summary
+        );
         getLogger().quiet("Updated README metrics artifacts under {}.", getOutputRoot());
     }
 }

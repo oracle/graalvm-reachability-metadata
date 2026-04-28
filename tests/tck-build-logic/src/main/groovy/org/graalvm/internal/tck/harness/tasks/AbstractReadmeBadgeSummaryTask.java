@@ -44,7 +44,11 @@ public abstract class AbstractReadmeBadgeSummaryTask extends DefaultTask {
     protected Path getOutputRoot() {
         Object property = getProject().findProperty("readmeMetricsOutputRoot");
         if (property != null && !property.toString().isBlank()) {
-            return Path.of(property.toString());
+            Path configuredPath = Path.of(property.toString());
+            if (configuredPath.isAbsolute()) {
+                return configuredPath;
+            }
+            return getRepoRoot().resolve(configuredPath).normalize();
         }
         return getProject().getLayout().getBuildDirectory().dir("coverage-stats").get().getAsFile().toPath();
     }
@@ -57,6 +61,11 @@ public abstract class AbstractReadmeBadgeSummaryTask extends DefaultTask {
     @Internal
     protected Path getMetricsOverviewGraphFile() {
         return getOutputRoot().resolve("latest").resolve("metrics-over-time.svg");
+    }
+
+    @Internal
+    protected Path getCoverageMarkdownFile() {
+        return getOutputRoot().resolve("COVERAGE.md");
     }
 
     @Internal

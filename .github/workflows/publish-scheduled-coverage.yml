@@ -2,7 +2,7 @@ name: "Publish coverage"
 
 on:
   schedule:
-    - cron: "15 3 * * *"
+    - cron: "15 */4 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -69,7 +69,7 @@ jobs:
         run: |
           cd "${COVERAGE_DIR}"
           mkdir -p latest history
-          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name latest ! -name history -exec rm -rf {} +
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name latest ! -name history ! -name COVERAGE.md -exec rm -rf {} +
           find latest -mindepth 1 ! -name badges.json ! -name metrics-over-time.svg -exec rm -rf {} +
           find history -mindepth 1 ! -name history.json -exec rm -rf {} +
 

@@ -325,6 +325,126 @@ class ReadmeBadgeSummarySupportTests {
         assertThat(svg).contains("text-anchor=\"end\">Jun 2026</text>");
     }
 
+    @Test
+    void buildCoverageMarkdownListsLibrariesWithDescriptionsAndDynamicAccessCoverage() throws IOException {
+        writeStatsFile(
+                "com.example",
+                "zeta",
+                "2.0.0",
+                """
+                {
+                  "versions": [
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                        },
+                        "coveredCalls": 1,
+                        "coverageRatio": 0.25,
+                        "totalCalls": 4
+                      },
+                      "version": "2.0.0"
+                    }
+                  ]
+                }
+                """
+        );
+        writeStatsFile(
+                "com.example",
+                "alpha",
+                "1.0.0",
+                """
+                {
+                  "versions": [
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                        },
+                        "coveredCalls": 1,
+                        "coverageRatio": 0.5,
+                        "totalCalls": 2
+                      },
+                      "version": "1.0.0"
+                    },
+                    {
+                      "dynamicAccess": {
+                        "breakdown": {
+                        },
+                        "coveredCalls": 2,
+                        "coverageRatio": 1.0,
+                        "totalCalls": 2
+                      },
+                      "version": "1.0.1"
+                    }
+                  ]
+                }
+                """
+        );
+        writeIndexFile(
+                "com.example",
+                "zeta",
+                """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "2.0.0",
+                    "description": "Zeta library"
+                  }
+                ]
+                """
+        );
+        writeIndexFile(
+                "com.example",
+                "alpha",
+                """
+                [
+                  {
+                    "metadata-version": "0.9.0",
+                    "description": "Old alpha description"
+                  },
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "description": "Alpha | library"
+                  }
+                ]
+                """
+        );
+        writeIndexFile(
+                "org.example",
+                "ignored",
+                """
+                [
+                  {
+                    "latest": true,
+                    "metadata-version": "1.0.0",
+                    "description": "Ignored sample library"
+                  }
+                ]
+                """
+        );
+
+        ReadmeBadgeSummarySupport.ReadmeBadgeSummary summary = ReadmeBadgeSummarySupport.buildSummary(
+                tempDir.resolve("stats"),
+                tempDir.resolve("metadata"),
+                LocalDate.of(2026, 4, 8)
+        );
+        String markdown = ReadmeBadgeSummarySupport.buildCoverageMarkdown(
+                tempDir.resolve("stats"),
+                tempDir.resolve("metadata"),
+                summary
+        );
+
+        assertThat(markdown).contains("# Coverage");
+        assertThat(markdown).contains("Updated: 2026-04-08");
+        assertThat(markdown).contains("![Coverage over time](latest/metrics-over-time.svg)");
+        assertThat(markdown).contains("| Library | Description | Dynamic access coverage |");
+        assertThat(markdown).contains("| `com.example:alpha` | Alpha \\| library | 75.0% (3/4 calls) |");
+        assertThat(markdown).contains("| `com.example:zeta` | Zeta library | 25.0% (1/4 calls) |");
+        assertThat(markdown).doesNotContain("org.example:ignored");
+        assertThat(markdown.indexOf("`com.example:alpha`")).isLessThan(markdown.indexOf("`com.example:zeta`"));
+        assertThat(markdown.indexOf("![Coverage over time]")).isLessThan(markdown.indexOf("## Libraries"));
+    }
+
     private void writeIndexFile(String groupId, String artifactId, String content) throws IOException {
         Path indexFile = tempDir.resolve("metadata").resolve(groupId).resolve(artifactId).resolve("index.json");
         Files.createDirectories(indexFile.getParent());
