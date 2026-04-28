@@ -106,7 +106,7 @@ public class Apiguardian_apiTest {
 
     @Test
     void apiAnnotationExposesDefaultMembersAtRuntime() {
-        API annotation = DefaultAudienceApi.class.getAnnotation(API.class);
+        API annotation = DefaultAudienceApi.class.getAnnotationsByType(API.class)[0];
 
         assertThat(annotation).isNotNull();
         assertThat(annotation.status()).isSameAs(API.Status.MAINTAINED);
@@ -117,7 +117,7 @@ public class Apiguardian_apiTest {
 
     @Test
     void apiAnnotationRetainsConfiguredInterfaceMetadataAtRuntime() {
-        API annotation = PublishedExtensionPoint.class.getAnnotation(API.class);
+        API annotation = PublishedExtensionPoint.class.getAnnotationsByType(API.class)[0];
 
         assertThat(annotation).isNotNull();
         assertThat(annotation.status()).isSameAs(API.Status.EXPERIMENTAL);
