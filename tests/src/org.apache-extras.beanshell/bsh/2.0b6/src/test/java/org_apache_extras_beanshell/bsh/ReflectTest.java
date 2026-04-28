@@ -39,6 +39,16 @@ public class ReflectTest {
     }
 
     @Test
+    public void publicFieldAccessUsesStandardLookupByDefault() throws Exception {
+        Interpreter interpreter = new Interpreter();
+        interpreter.set("bean", new FieldAccessBean());
+
+        Object result = interpreter.eval("return bean.publicText;");
+
+        assertThat(result).isEqualTo("visible");
+    }
+
+    @Test
     public void accessibilityModeUsesDeclaredConstructorsFieldsAndMethods() throws Exception {
         Capabilities.setAccessibility(true);
         Interpreter interpreter = new Interpreter();
