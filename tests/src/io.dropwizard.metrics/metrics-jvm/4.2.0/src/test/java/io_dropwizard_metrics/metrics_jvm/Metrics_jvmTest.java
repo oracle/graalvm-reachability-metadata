@@ -37,6 +37,7 @@ import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadDeadlockDetector;
 import com.codahale.metrics.jvm.ThreadDump;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
+import com.sun.management.UnixOperatingSystemMXBean;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -180,6 +181,13 @@ public class Metrics_jvmTest {
         Double fileDescriptorUsage = new FileDescriptorRatioGauge().getValue();
         assertThat(fileDescriptorUsage.isNaN() || (fileDescriptorUsage >= 0.0d && fileDescriptorUsage <= 1.0d))
                 .isTrue();
+    }
+
+    @Test
+    void fileDescriptorRatioGaugeUsesProvidedUnixOperatingSystemMxBean() {
+        FileDescriptorRatioGauge gauge = new FileDescriptorRatioGauge(new FixedUnixOperatingSystemMXBean(8L, 32L));
+
+        assertThat(gauge.getValue()).isEqualTo(0.25d);
     }
 
     @SuppressWarnings("unchecked")
@@ -379,6 +387,96 @@ public class Metrics_jvmTest {
         @Override
         public ObjectName getObjectName() {
             return objectName("java.lang:type=MemoryPool,name=" + name);
+        }
+    }
+
+    private static final class FixedUnixOperatingSystemMXBean implements UnixOperatingSystemMXBean {
+        private final long openFileDescriptorCount;
+        private final long maxFileDescriptorCount;
+
+        FixedUnixOperatingSystemMXBean(long openFileDescriptorCount, long maxFileDescriptorCount) {
+            this.openFileDescriptorCount = openFileDescriptorCount;
+            this.maxFileDescriptorCount = maxFileDescriptorCount;
+        }
+
+        @Override
+        public long getOpenFileDescriptorCount() {
+            return openFileDescriptorCount;
+        }
+
+        @Override
+        public long getMaxFileDescriptorCount() {
+            return maxFileDescriptorCount;
+        }
+
+        @Override
+        public long getCommittedVirtualMemorySize() {
+            return 0L;
+        }
+
+        @Override
+        public long getTotalSwapSpaceSize() {
+            return 0L;
+        }
+
+        @Override
+        public long getFreeSwapSpaceSize() {
+            return 0L;
+        }
+
+        @Override
+        public long getProcessCpuTime() {
+            return 0L;
+        }
+
+        @Override
+        public long getFreeMemorySize() {
+            return 0L;
+        }
+
+        @Override
+        public long getTotalMemorySize() {
+            return 0L;
+        }
+
+        @Override
+        public double getCpuLoad() {
+            return 0.0d;
+        }
+
+        @Override
+        public double getProcessCpuLoad() {
+            return 0.0d;
+        }
+
+        @Override
+        public String getName() {
+            return "test-os";
+        }
+
+        @Override
+        public String getArch() {
+            return "test-arch";
+        }
+
+        @Override
+        public String getVersion() {
+            return "test-version";
+        }
+
+        @Override
+        public int getAvailableProcessors() {
+            return 1;
+        }
+
+        @Override
+        public double getSystemLoadAverage() {
+            return 0.0d;
+        }
+
+        @Override
+        public ObjectName getObjectName() {
+            return objectName("java.lang:type=OperatingSystem");
         }
     }
 
