@@ -154,6 +154,34 @@ public class Transaction_apiTest {
     }
 
     @Test
+    void readOnlyXaResourceVotesArePreparedButNotCommitted() throws Exception {
+        RecordingTransactionManager transactionManager = new RecordingTransactionManager();
+        transactionManager.begin();
+
+        Transaction transaction = transactionManager.getTransaction();
+        RecordingXAResource readWriteResource = new RecordingXAResource("read-write-resource");
+        RecordingXAResource readOnlyResource = new RecordingXAResource("read-only-resource", XAResource.XA_RDONLY);
+
+        assertThat(transaction.enlistResource(readWriteResource)).isTrue();
+        assertThat(transaction.enlistResource(readOnlyResource)).isTrue();
+        assertThat(transaction.delistResource(readWriteResource, XAResource.TMSUCCESS)).isTrue();
+        assertThat(transaction.delistResource(readOnlyResource, XAResource.TMSUCCESS)).isTrue();
+
+        transactionManager.commit();
+
+        assertThat(transaction.getStatus()).isEqualTo(Status.STATUS_COMMITTED);
+        assertThat(readWriteResource.events).containsExactly(
+                "start:101:" + XAResource.TMNOFLAGS,
+                "end:101:" + XAResource.TMSUCCESS,
+                "prepare:101",
+                "commit:101:false");
+        assertThat(readOnlyResource.events).containsExactly(
+                "start:101:" + XAResource.TMNOFLAGS,
+                "end:101:" + XAResource.TMSUCCESS,
+                "prepare:101");
+    }
+
+    @Test
     void rollbackOnlyTransactionRollsBackOnCommit() throws Exception {
         RecordingTransactionManager transactionManager = new RecordingTransactionManager();
         transactionManager.begin();
@@ -408,15 +436,18 @@ public class Transaction_apiTest {
                     synchronization.beforeCompletion();
                 }
                 status = Status.STATUS_PREPARING;
+                List<XAResource> committableResources = new ArrayList<>();
                 for (XAResource resource : resources) {
                     int vote = resource.prepare(xid);
-                    if (vote != XAResource.XA_OK && vote != XAResource.XA_RDONLY) {
+                    if (vote == XAResource.XA_OK) {
+                        committableResources.add(resource);
+                    } else if (vote != XAResource.XA_RDONLY) {
                         throw new SystemException(vote);
                     }
                 }
                 status = Status.STATUS_COMMITTING;
                 boolean onePhase = resources.size() == 1;
-                for (XAResource resource : resources) {
+                for (XAResource resource : committableResources) {
                     resource.commit(xid, onePhase);
                 }
                 status = Status.STATUS_COMMITTED;
@@ -599,12 +630,18 @@ public class Transaction_apiTest {
 
     private static final class RecordingXAResource implements XAResource {
         private final String resourceManagerName;
+        private final int prepareResult;
         private final List<String> events = new ArrayList<>();
         private final List<Xid> knownXids = new ArrayList<>();
         private int timeoutSeconds;
 
         private RecordingXAResource(String resourceManagerName) {
+            this(resourceManagerName, XA_OK);
+        }
+
+        private RecordingXAResource(String resourceManagerName, int prepareResult) {
             this.resourceManagerName = resourceManagerName;
+            this.prepareResult = prepareResult;
         }
 
         @Override
@@ -637,7 +674,7 @@ public class Transaction_apiTest {
         @Override
         public int prepare(Xid xid) {
             events.add("prepare:" + xid.getFormatId());
-            return XA_OK;
+            return prepareResult;
         }
 
         @Override
