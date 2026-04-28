@@ -9,6 +9,7 @@ package org_apache_commons.commons_crypto;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -47,6 +48,25 @@ public class CryptoInputStreamTest {
                 iv)) {
             assertThat(inputStream.readAllBytes()).isEqualTo(plaintext);
             assertThat(inputStream.read()).isEqualTo(-1);
+        }
+    }
+
+    @Test
+    void closesDirectBuffersWhenUsingReadableByteChannelConstructor() throws Exception {
+        byte[] plaintext = "commons-crypto-channel".getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec key = new SecretKeySpec("0123456789abcdef".getBytes(StandardCharsets.UTF_8), "AES");
+        IvParameterSpec iv = new IvParameterSpec(new byte[16]);
+        byte[] ciphertext = encrypt(plaintext, key, iv);
+        ByteBuffer decrypted = ByteBuffer.allocate(plaintext.length);
+
+        try (CryptoInputStream inputStream = new CryptoInputStream(
+                "AES/CTR/NoPadding",
+                jceProperties(),
+                Channels.newChannel(new ByteArrayInputStream(ciphertext)),
+                key,
+                iv)) {
+            assertThat(inputStream.read(decrypted)).isEqualTo(plaintext.length);
+            assertThat(decrypted.array()).isEqualTo(plaintext);
         }
     }
 
