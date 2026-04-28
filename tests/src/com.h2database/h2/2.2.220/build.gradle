@@ -51,6 +51,7 @@ dependencies {
 
 test {
     systemProperty 'h2.javaObjectSerializer', 'h2.JdbcUtilsTest$PassThroughJavaObjectSerializer'
+    systemProperty 'h2.useThreadContextClassLoader', 'true'
     systemProperty 'h2.nioCleanerHack', 'true'
     dependsOn prepareExplodedH2Runtime
     classpath = files(explodedH2Runtime).builtBy(prepareExplodedH2Runtime) + classpath.filter { file ->
@@ -62,9 +63,11 @@ graalvmNative {
     binaries {
         test {
             buildArgs.add('-Dh2.javaObjectSerializer=h2.JdbcUtilsTest$PassThroughJavaObjectSerializer')
+            buildArgs.add('-Dh2.useThreadContextClassLoader=true')
             buildArgs.add('-Dh2.nioCleanerHack=true')
             buildArgs.add('--initialize-at-run-time=org.h2.util.MemoryUnmapper')
             runtimeArgs('-Dh2.javaObjectSerializer=h2.JdbcUtilsTest$PassThroughJavaObjectSerializer')
+            runtimeArgs('-Dh2.useThreadContextClassLoader=true')
             runtimeArgs('-Dh2.nioCleanerHack=true')
         }
     }

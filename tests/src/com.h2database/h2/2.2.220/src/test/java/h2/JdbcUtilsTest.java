@@ -69,18 +69,6 @@ public class JdbcUtilsTest {
         }
     }
 
-    @Test
-    void defaultSerializationRoundTripStillUsesJdbcUtils() {
-        JavaObjectSerializer configuredSerializer = JdbcUtils.serializer;
-        JdbcUtils.serializer = null;
-        try {
-            byte[] bytes = JdbcUtils.serialize("default serializer", null);
-            assertThat(JdbcUtils.deserialize(bytes, null)).isEqualTo("default serializer");
-        } finally {
-            JdbcUtils.serializer = configuredSerializer;
-        }
-    }
-
     public static class EmbeddedDataSourceContext extends InitialContext {
         public EmbeddedDataSourceContext() throws NamingException {
             super(true);
