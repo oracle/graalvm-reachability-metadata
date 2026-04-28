@@ -6,6 +6,7 @@
  */
 package javassist_javassist;
 
+import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
 
 import javassist.ClassPool;
@@ -21,6 +22,16 @@ public class ClassPoolTest {
 
         assertThat(classPool).isNotNull();
         assertThat(classPool.find(Object.class.getName())).isNotNull();
+    }
+
+    @Test
+    void syntheticClassLookupResolvesClassPoolInitializationTypes() throws Exception {
+        Method classLookup = ClassPool.class.getDeclaredMethod("class$", String.class);
+        classLookup.setAccessible(true);
+
+        assertThat(classLookup.invoke(null, String.class.getName())).isEqualTo(String.class);
+        assertThat(classLookup.invoke(null, "[B")).isEqualTo(byte[].class);
+        assertThat(classLookup.invoke(null, ProtectionDomain.class.getName())).isEqualTo(ProtectionDomain.class);
     }
 
     @Test
