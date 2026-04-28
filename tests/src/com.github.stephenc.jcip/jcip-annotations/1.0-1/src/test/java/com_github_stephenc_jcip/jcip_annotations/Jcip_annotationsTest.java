@@ -71,6 +71,20 @@ public class Jcip_annotationsTest {
     }
 
     @Test
+    void guardedByCanDocumentAccessorProvidedLocks() {
+        PermitPool pool = new PermitPool(3);
+
+        assertThat(pool.snapshot()).isEqualTo("available=3,acquired=0");
+        assertThat(pool.tryAcquire(2)).isTrue();
+        assertThat(pool.tryAcquire(2)).isFalse();
+        assertThat(pool.snapshot()).isEqualTo("available=1,acquired=2");
+
+        pool.release(1);
+        assertThat(pool.tryAcquire(2)).isTrue();
+        assertThat(pool.snapshot()).isEqualTo("available=0,acquired=4");
+    }
+
+    @Test
     void annotationsCanDocumentExecutableConcurrencyExamples() {
         ThreadSafeCounter counter = new ThreadSafeCounter();
         MutableLedger ledger = new MutableLedger();
@@ -316,6 +330,58 @@ public class Jcip_annotationsTest {
 
         String describeState() {
             return snapshotUsingThisMonitor();
+        }
+    }
+
+    @ThreadSafe
+    private static final class PermitPool {
+        private final Object monitor = new Object();
+
+        @GuardedBy("monitor()")
+        private int available;
+
+        @GuardedBy("monitor()")
+        private int acquired;
+
+        private PermitPool(int available) {
+            this.available = available;
+        }
+
+        private Object monitor() {
+            return monitor;
+        }
+
+        boolean tryAcquire(int permits) {
+            synchronized (monitor()) {
+                if (!hasAvailable(permits)) {
+                    return false;
+                }
+                available -= permits;
+                acquired += permits;
+                return true;
+            }
+        }
+
+        void release(int permits) {
+            synchronized (monitor()) {
+                available += permits;
+            }
+        }
+
+        String snapshot() {
+            synchronized (monitor()) {
+                return describeLocked();
+            }
+        }
+
+        @GuardedBy("monitor()")
+        private boolean hasAvailable(int permits) {
+            return available >= permits;
+        }
+
+        @GuardedBy("monitor()")
+        private String describeLocked() {
+            return "available=" + available + ",acquired=" + acquired;
         }
     }
 
