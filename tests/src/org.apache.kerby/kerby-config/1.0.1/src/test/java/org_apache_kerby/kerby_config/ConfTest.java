@@ -26,7 +26,6 @@ public class ConfTest {
 
         conf.addMapConfig(rootConfig);
 
-        assertThat(conf.getConfig("root")).isNotNull();
-        assertThat(conf.getConfig("root").getString("child")).isEqualTo("value");
+        assertThat(conf.getString("child")).isEqualTo("value");
     }
 }
