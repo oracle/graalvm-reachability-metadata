@@ -114,6 +114,24 @@ public class Jcip_annotationsTest {
         assertThat(translated.manhattanDistance()).isEqualTo(8);
     }
 
+    @Test
+    void markerAnnotationsApplyToInterfacesEnumsAndAnnotationTypes() {
+        ThreadSafe threadSafeInterface = ConcurrencyContract.class.getAnnotation(ThreadSafe.class);
+        NotThreadSafe notThreadSafeEnum = LifecycleMode.class.getAnnotation(NotThreadSafe.class);
+        Immutable immutableAnnotationType = SnapshotState.class.getAnnotation(Immutable.class);
+
+        assertThat(ConcurrencyContract.class.isInterface()).isTrue();
+        assertThat(LifecycleMode.class.isEnum()).isTrue();
+        assertThat(SnapshotState.class.isAnnotation()).isTrue();
+
+        assertThat(threadSafeInterface).isNotNull();
+        assertThat(threadSafeInterface.annotationType()).isSameAs(ThreadSafe.class);
+        assertThat(notThreadSafeEnum).isNotNull();
+        assertThat(notThreadSafeEnum.annotationType()).isSameAs(NotThreadSafe.class);
+        assertThat(immutableAnnotationType).isNotNull();
+        assertThat(immutableAnnotationType.annotationType()).isSameAs(Immutable.class);
+    }
+
     @SuppressWarnings("annotationAccess")
     private static void assertMarkerAnnotation(Class<? extends Annotation> annotationType, String expectedName) {
         Retention retention = annotationType.getAnnotation(Retention.class);
@@ -141,6 +159,20 @@ public class Jcip_annotationsTest {
 
     @ThreadSafe
     private static final class AnotherThreadSafeType {
+    }
+
+    @ThreadSafe
+    private interface ConcurrencyContract {
+    }
+
+    @NotThreadSafe
+    private enum LifecycleMode {
+        SINGLE_WRITER,
+        BEST_EFFORT
+    }
+
+    @Immutable
+    private @interface SnapshotState {
     }
 
     @ThreadSafe
