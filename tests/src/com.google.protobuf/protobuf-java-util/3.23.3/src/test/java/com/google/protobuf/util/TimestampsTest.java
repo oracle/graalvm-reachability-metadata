@@ -377,6 +377,19 @@ public class TimestampsTest {
     }
 
     @Test
+    public void testNowUsesBestAvailableClock() {
+        long beforeMillis = System.currentTimeMillis();
+        Timestamp timestamp = Timestamps.now();
+        long afterMillis = System.currentTimeMillis();
+
+        assertThat(Timestamps.isValid(timestamp)).isTrue();
+        assertThat(timestamp.getNanos()).isAtLeast(0);
+        assertThat(timestamp.getNanos()).isLessThan(1_000_000_000);
+        assertThat(Timestamps.toMillis(timestamp)).isAtLeast(beforeMillis - 1000L);
+        assertThat(Timestamps.toMillis(timestamp)).isAtMost(afterMillis + 1000L);
+    }
+
+    @Test
     public void testFromDate_after9999CE() {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
