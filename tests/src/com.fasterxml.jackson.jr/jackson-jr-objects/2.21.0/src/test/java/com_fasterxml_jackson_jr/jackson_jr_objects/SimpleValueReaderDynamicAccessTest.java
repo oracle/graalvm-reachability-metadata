@@ -6,55 +6,81 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
 
-import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.jr.ob.JSONObjectException;
+import com.fasterxml.jackson.jr.ob.impl.SimpleValueReader;
+import com.fasterxml.jackson.jr.ob.impl.ValueLocatorBase;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SimpleValueReaderDynamicAccessTest {
     @Test
-    void resolvesTopLevelClassesFromStringValues() throws Exception {
-        String className = lateBoundClassName();
+    void resolvesClassNamesFromTheCurrentParserToken() throws Exception {
+        SimpleValueReader reader = classReader();
 
-        Class<?> resolved = JSON.std.beanFrom(Class.class, '"' + className + '"');
+        try (JsonParser parser = jsonParser(quotedClassName())) {
+            assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_STRING);
 
-        assertThat(resolved).isEqualTo(LateBoundType.class);
+            Class<?> resolved = (Class<?>) reader.read(null, parser);
+
+            assertThat(resolved).isEqualTo(SimpleValueReaderDynamicAccessLateBoundType.class);
+        }
     }
 
     @Test
-    void resolvesClassTypedBeanPropertiesFromStringValues() throws Exception {
-        String className = lateBoundClassName();
+    void resolvesClassNamesWhenAdvancingTheParser() throws Exception {
+        SimpleValueReader reader = classReader();
 
-        TypeHolder holder = JSON.std.beanFrom(TypeHolder.class,
-                "{\"type\":\"" + className + "\"}");
+        try (JsonParser parser = jsonParser(quotedClassName())) {
+            Class<?> resolved = (Class<?>) reader.readNext(null, parser);
 
-        assertThat(holder.type).isEqualTo(LateBoundType.class);
+            assertThat(resolved).isEqualTo(SimpleValueReaderDynamicAccessLateBoundType.class);
+        }
     }
 
     @Test
-    void resolvesClassesInsideTypedMapsAndLists() throws Exception {
-        String className = lateBoundClassName();
+    void reportsInvalidClassNamesAfterAttemptingLookup() throws Exception {
+        SimpleValueReader reader = classReader();
 
-        Map<String, Class> classesByName = JSON.std.mapOfFrom(Class.class,
-                "{\"primary\":\"" + className + "\"}");
-        List<Class> classes = JSON.std.listOfFrom(Class.class,
-                "[\"" + className + "\"]");
-
-        assertThat(classesByName.get("primary")).isEqualTo(LateBoundType.class);
-        assertThat(classes).singleElement().isEqualTo(LateBoundType.class);
+        try (JsonParser parser = jsonParser(quotedMissingClassName())) {
+            assertThatThrownBy(() -> reader.readNext(null, parser))
+                    .isInstanceOf(JSONObjectException.class)
+                    .hasMessageContaining("Failed to bind `java.lang.Class`")
+                    .hasMessageContaining(missingClassName());
+        }
     }
 
-    private static String lateBoundClassName() {
-        return SimpleValueReaderDynamicAccessTest.class.getName() + "$LateBoundType";
+    private static SimpleValueReader classReader() {
+        return new SimpleValueReader(Class.class, ValueLocatorBase.SER_CLASS);
     }
 
-    public static final class TypeHolder {
-        public Class<?> type;
+    private static JsonParser jsonParser(String json) throws IOException {
+        return new JsonFactory().createParser(json);
     }
 
-    public static final class LateBoundType {
+    private static String quotedClassName() {
+        return '"' + className() + '"';
     }
+
+    private static String quotedMissingClassName() {
+        return '"' + missingClassName() + '"';
+    }
+
+    private static String className() {
+        Class<?> valueType = new SimpleValueReaderDynamicAccessLateBoundType().getClass();
+        return valueType.getPackageName() + "." + valueType.getSimpleName();
+    }
+
+    private static String missingClassName() {
+        return className() + "Missing";
+    }
+}
+
+final class SimpleValueReaderDynamicAccessLateBoundType {
 }
