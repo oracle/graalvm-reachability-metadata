@@ -53,8 +53,9 @@ public class Cleaner0Test {
                 Class<?> platformDependentClass =
                         Class.forName("io.netty.util.internal.PlatformDependent", true, classLoader);
 
-                Assertions.assertTrue(invokeBoolean(platformDependentClass, "hasUnsafe"));
+                boolean hasUnsafe = invokeBoolean(platformDependentClass, "hasUnsafe");
                 Assertions.assertDoesNotThrow(() -> invokeFreeDirectBuffer(platformDependentClass, buffer));
+                Assertions.assertEquals(hasUnsafe, invokeBoolean(platformDependentClass, "hasUnsafe"));
             }
         }
     }
