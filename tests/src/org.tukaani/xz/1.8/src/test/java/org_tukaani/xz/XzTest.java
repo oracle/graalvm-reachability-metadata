@@ -29,6 +29,7 @@ import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.LZMAInputStream;
 import org.tukaani.xz.LZMAOutputStream;
 import org.tukaani.xz.MemoryLimitException;
+import org.tukaani.xz.PowerPCOptions;
 import org.tukaani.xz.SeekableInputStream;
 import org.tukaani.xz.SeekableXZInputStream;
 import org.tukaani.xz.SingleXZInputStream;
@@ -209,6 +210,32 @@ public class XzTest {
                 new ByteArrayInputStream(lzma2Encoded),
                 lzma2.getDictSize())) {
             assertThat(readWithSmallBuffers(decoded)).containsExactly(original);
+        }
+    }
+
+    @Test
+    void powerPcBcjFilterTranslatesBranchTargetsAndRoundTrips() throws Exception {
+        byte[] machineCode = new byte[] {
+                0x60, 0x00, 0x00, 0x00,
+                0x48, 0x00, 0x00, 0x01,
+                0x48, 0x00, 0x00, 0x01,
+                0x4E, (byte) 0x80, 0x00, 0x20
+        };
+        PowerPCOptions options = new PowerPCOptions();
+        options.setStartOffset(16);
+
+        byte[] encoded = encodeWithFilter(options, machineCode);
+
+        assertThat(encoded).isNotEqualTo(machineCode);
+        assertThat(encoded).containsExactly(
+                0x60, 0x00, 0x00, 0x00,
+                0x48, 0x00, 0x00, 0x15,
+                0x48, 0x00, 0x00, 0x19,
+                0x4E, (byte) 0x80, 0x00, 0x20);
+        try (InputStream decoded = options.getInputStream(
+                new ByteArrayInputStream(encoded),
+                ArrayCache.getDummyCache())) {
+            assertThat(readWithSmallBuffers(decoded)).containsExactly(machineCode);
         }
     }
 
