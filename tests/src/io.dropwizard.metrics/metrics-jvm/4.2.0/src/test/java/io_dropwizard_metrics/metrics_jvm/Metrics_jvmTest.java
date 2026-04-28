@@ -154,6 +154,23 @@ public class Metrics_jvmTest {
     }
 
     @Test
+    void memoryUsageGaugeSetOmitsPostGcPoolGaugeWhenCollectionUsageUnavailable() {
+        MemoryUsage heap = new MemoryUsage(1, 2, 4, 8);
+        MemoryUsage nonHeap = new MemoryUsage(1, 3, 6, 12);
+        MemoryUsage poolUsage = new MemoryUsage(2, 4, 8, 16);
+        Map<String, Metric> metrics = new MemoryUsageGaugeSet(new FixedMemoryMXBean(heap, nonHeap),
+                List.of(new FixedMemoryPoolMXBean("Metaspace No Collection", poolUsage, null))).getMetrics();
+
+        assertThat(metrics)
+                .containsKeys("pools.Metaspace-No-Collection.init", "pools.Metaspace-No-Collection.used",
+                        "pools.Metaspace-No-Collection.max", "pools.Metaspace-No-Collection.committed",
+                        "pools.Metaspace-No-Collection.usage")
+                .doesNotContainKey("pools.Metaspace-No-Collection.used-after-gc");
+        assertThat(gaugeValue(metrics, "pools.Metaspace-No-Collection.init", Long.class)).isEqualTo(2L);
+        assertThat(gaugeValue(metrics, "pools.Metaspace-No-Collection.usage", Double.class)).isEqualTo(0.25d);
+    }
+
+    @Test
     void cpuTimeClockAndFileDescriptorRatioGaugeReturnRuntimeValues() {
         CpuTimeClock clock = new CpuTimeClock();
         long before = clock.getTick();
