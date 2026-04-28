@@ -39,6 +39,27 @@ class Scala3_interfacesTest {
   }
 
   @Test
+  def sourceFilesCanBeHandledAsAbstractFilesInSharedFilePipelines(): Unit = {
+    val backingFile = new File("build/test-input/Pipeline.scala")
+    val sourceFile: SourceFile = TestSourceFile(
+      "Pipeline.scala",
+      backingFile.getPath,
+      Optional.of(backingFile),
+      "class Pipeline"
+    )
+    val generatedFile: AbstractFile = TestAbstractFile("Pipeline.class", "build/classes/Pipeline.class", Optional.empty())
+    val files = ArrayList[AbstractFile]()
+
+    files.add(sourceFile)
+    files.add(generatedFile)
+
+    assertThat(abstractFileDescriptions(files)).containsExactly(
+      s"Pipeline.scala:${backingFile.getPath}:has-java-file",
+      "Pipeline.class:build/classes/Pipeline.class:virtual"
+    )
+  }
+
+  @Test
   def sourcePositionDescribesPrimaryRangeAndOwningSource(): Unit = {
     val sourceFile = TestSourceFile("Calculator.scala", "memory:///Calculator.scala", Optional.empty(), "val result = 40 + 2")
     val position = TestSourcePosition(
@@ -130,6 +151,15 @@ class Scala3_interfacesTest {
 
     assertThat(callback.compiledSources).containsExactly(sourceFile)
     assertThat(callback.generatedClasses).containsExactly(GeneratedClass(sourceFile, generatedFile, "example.Service"))
+  }
+
+  private def abstractFileDescriptions(files: JList[AbstractFile]): ArrayList[String] = {
+    val descriptions = ArrayList[String]()
+    files.forEach { file =>
+      val fileKind = if file.jfile().isPresent then "has-java-file" else "virtual"
+      descriptions.add(s"${file.name()}:${file.path()}:$fileKind")
+    }
+    descriptions
   }
 
   private final case class TestAbstractFile(
