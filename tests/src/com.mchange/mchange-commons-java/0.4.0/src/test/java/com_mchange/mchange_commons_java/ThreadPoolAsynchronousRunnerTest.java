@@ -27,20 +27,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ThreadPoolAsynchronousRunnerTest {
     private static final String THREAD_POOL_LOGGER_NAME = "com.mchange.v2.async.ThreadPoolAsynchronousRunner";
-    private static final String FALLBACK_CUTOFF_PROPERTY = "com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL";
 
     private static Logger rootLogger;
     private static Logger threadPoolLogger;
     private static Level previousRootLevel;
     private static Level previousThreadPoolLoggerLevel;
     private static Map<Handler, Level> previousHandlerLevels;
-    private static String previousFallbackCutoffLevel;
+    private static MLog previousMLog;
 
     @BeforeAll
     static void enableFinestLogging() {
-        previousFallbackCutoffLevel = System.getProperty(FALLBACK_CUTOFF_PROPERTY);
-        System.setProperty(FALLBACK_CUTOFF_PROPERTY, "FINEST");
-        MLog.refreshConfig(null, null);
+        previousMLog = MLog.forceFallback(MLevel.FINEST);
 
         rootLogger = LogManager.getLogManager().getLogger("");
         threadPoolLogger = Logger.getLogger(THREAD_POOL_LOGGER_NAME);
@@ -69,12 +66,9 @@ public class ThreadPoolAsynchronousRunnerTest {
             }
         }
 
-        if (previousFallbackCutoffLevel == null) {
-            System.clearProperty(FALLBACK_CUTOFF_PROPERTY);
-        } else {
-            System.setProperty(FALLBACK_CUTOFF_PROPERTY, previousFallbackCutoffLevel);
+        if (previousMLog != null) {
+            MLog.forceMLog(previousMLog);
         }
-        MLog.refreshConfig(null, null);
     }
 
     @Test
