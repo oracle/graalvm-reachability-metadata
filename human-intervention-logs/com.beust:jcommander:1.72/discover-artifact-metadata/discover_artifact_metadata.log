@@ -1,0 +1,1751 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd32f-78a4-7b40-9765-d9b3b4ef3094
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.beust:jcommander:1.72
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.72".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+- Set "coordinates" to "com.beust:jcommander:1.72".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream tag, then patch the JSON in place.
+web search: 
+web search: Maven Central com.beust jcommander 1.72 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/com/beust/jcommander/1.72
+codex
+Maven Central has the `1.72` source and javadoc artifacts, but I need to verify whether test sources were published and what upstream tag corresponds to that release before writing the file.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/com.beust-jcommander-1.72.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+-rw-rw-r-- 1 vjovanov vjovanov 50 Apr 28 10:23 build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/com.beust-jcommander-1.72.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+{
+  "coordinates" : "com.beust:jcommander:1.72"
+}
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72.pom' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.beust</groupId>
+  <artifactId>jcommander</artifactId>
+  <version>1.72</version>
+  <name>jcommander</name>
+  <description>Command line parsing</description>
+  <url>http://jcommander.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Cedric Beust</name>
+      <email>cedric@beust.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>https://github.com/cbeust/jcommander.git</connection>
+    <developerConnection>git@github.com:cbeust/jcommander.git</developerConnection>
+    <url>http://github.com/cbeust/jcommander</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.10</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/beust/jcommander/1.72/ | sed -n '1,220p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/beust/jcommander/1.72</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/beust/jcommander/1.72</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jcommander-1.72-javadoc.jar" title="jcommander-1.72-javadoc.jar">jcommander-1.72-javadoc.jar</a>                       2017-06-04 01:20        22      
+<a href="jcommander-1.72-javadoc.jar.asc" title="jcommander-1.72-javadoc.jar.asc">jcommander-1.72-javadoc.jar.asc</a>                   2017-06-04 01:20       801      
+<a href="jcommander-1.72-javadoc.jar.md5" title="jcommander-1.72-javadoc.jar.md5">jcommander-1.72-javadoc.jar.md5</a>                   2017-06-04 01:20        32      
+<a href="jcommander-1.72-javadoc.jar.sha1" title="jcommander-1.72-javadoc.jar.sha1">jcommander-1.72-javadoc.jar.sha1</a>                  2017-06-04 01:20        40      
+<a href="jcommander-1.72-sources.jar" title="jcommander-1.72-sources.jar">jcommander-1.72-sources.jar</a>                       2017-06-04 01:20     60907      
+<a href="jcommander-1.72-sources.jar.asc" title="jcommander-1.72-sources.jar.asc">jcommander-1.72-sources.jar.asc</a>                   2017-06-04 01:20       801      
+<a href="jcommander-1.72-sources.jar.md5" title="jcommander-1.72-sources.jar.md5">jcommander-1.72-sources.jar.md5</a>                   2017-06-04 01:20        32      
+<a href="jcommander-1.72-sources.jar.sha1" title="jcommander-1.72-sources.jar.sha1">jcommander-1.72-sources.jar.sha1</a>                  2017-06-04 01:20        40      
+<a href="jcommander-1.72.jar" title="jcommander-1.72.jar">jcommander-1.72.jar</a>                               2017-06-04 01:20     69254      
+<a href="jcommander-1.72.jar.asc" title="jcommander-1.72.jar.asc">jcommander-1.72.jar.asc</a>                           2017-06-04 01:20       801      
+<a href="jcommander-1.72.jar.md5" title="jcommander-1.72.jar.md5">jcommander-1.72.jar.md5</a>                           2017-06-04 01:20        32      
+<a href="jcommander-1.72.jar.sha1" title="jcommander-1.72.jar.sha1">jcommander-1.72.jar.sha1</a>                          2017-06-04 01:20        40      
+<a href="jcommander-1.72.pom" title="jcommander-1.72.pom">jcommander-1.72.pom</a>                               2017-06-04 01:20      1204      
+<a href="jcommander-1.72.pom.asc" title="jcommander-1.72.pom.asc">jcommander-1.72.pom.asc</a>                           2017-06-04 01:20       801      
+<a href="jcommander-1.72.pom.md5" title="jcommander-1.72.pom.md5">jcommander-1.72.pom.md5</a>                           2017-06-04 01:20        32      
+<a href="jcommander-1.72.pom.sha1" title="jcommander-1.72.pom.sha1">jcommander-1.72.pom.sha1</a>                          2017-06-04 01:20        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/cbeust/jcommander/tags?per_page=100' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://javadoc.io/doc/com.beust/jcommander/1.72/ 2>&1 | sed -n '1,40p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 226ms:
+[
+  {
+    "name": "jcommander-1.48",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.48",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.48",
+    "commit": {
+      "sha": "14fbe2bc5a2c402b456ed68578a5d5dc2c343fa2",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/14fbe2bc5a2c402b456ed68578a5d5dc2c343fa2"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNDg="
+  },
+  {
+    "name": "jcommander-1.47",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.47",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.47",
+    "commit": {
+      "sha": "7e7bb2f4739057be398ff7f7eb64c456b834b508",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/7e7bb2f4739057be398ff7f7eb64c456b834b508"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNDc="
+  },
+  {
+    "name": "jcommander-1.46",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.46",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.46",
+    "commit": {
+      "sha": "fe30bab3e38f9f7e10c24bcedddf201e4ff0598d",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/fe30bab3e38f9f7e10c24bcedddf201e4ff0598d"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNDY="
+  },
+  {
+    "name": "jcommander-1.45",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.45",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.45",
+    "commit": {
+      "sha": "878419eb82d03e32325d0993f95a906244f7a507",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/878419eb82d03e32325d0993f95a906244f7a507"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNDU="
+  },
+  {
+    "name": "jcommander-1.44",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.44",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.44",
+    "commit": {
+      "sha": "9f224876ea601f99e57733f89502702e3cb05f91",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/9f224876ea601f99e57733f89502702e3cb05f91"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNDQ="
+  },
+  {
+    "name": "jcommander-1.42",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.42",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.42",
+    "commit": {
+      "sha": "0c5c5e95cfd9b79a4c25a28387035675f4e6c347",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/0c5c5e95cfd9b79a4c25a28387035675f4e6c347"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNDI="
+  },
+  {
+    "name": "jcommander-1.39",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.39",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.39",
+    "commit": {
+      "sha": "9d79877f6794f9c4560523a87c8ef34f364b8747",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/9d79877f6794f9c4560523a87c8ef34f364b8747"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMzk="
+  },
+  {
+    "name": "jcommander-1.37",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.37",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.37",
+    "commit": {
+      "sha": "006e02166d976203b246f19cabbb2f918c20f726",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/006e02166d976203b246f19cabbb2f918c20f726"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMzc="
+  },
+  {
+    "name": "jcommander-1.35",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.35",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.35",
+    "commit": {
+      "sha": "480c8c2f75dcdae83685bcb146c947868ca660bf",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/480c8c2f75dcdae83685bcb146c947868ca660bf"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMzU="
+  },
+  {
+    "name": "jcommander-1.34",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.34",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.34",
+    "commit": {
+      "sha": "0b9a5702c9add87c720f4d7ae91fe44da47daaf7",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/0b9a5702c9add87c720f4d7ae91fe44da47daaf7"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMzQ="
+  },
+  {
+    "name": "jcommander-1.32",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.32",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.32",
+    "commit": {
+      "sha": "58d47ed1cda61db4d1843cec2ced45578858d534",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/58d47ed1cda61db4d1843cec2ced45578858d534"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMzI="
+  },
+  {
+    "name": "jcommander-1.30",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.30",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.30",
+    "commit": {
+      "sha": "f33601791cd2bbd01009b7dd26f45329d23fb6bf",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/f33601791cd2bbd01009b7dd26f45329d23fb6bf"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMzA="
+  },
+  {
+    "name": "jcommander-1.29",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.29",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.29",
+    "commit": {
+      "sha": "9b0e40293867dbba249018cb3c882fe880bbd93e",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/9b0e40293867dbba249018cb3c882fe880bbd93e"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjk="
+  },
+  {
+    "name": "jcommander-1.28",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.28",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.28",
+    "commit": {
+      "sha": "7c9f6fec0666ce491801f475f0dcdd0044fe7744",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/7c9f6fec0666ce491801f475f0dcdd0044fe7744"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjg="
+  },
+  {
+    "name": "jcommander-1.27",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.27",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.27",
+    "commit": {
+      "sha": "4fffe9695cd7de30af26aa8f5f26b3752df93e35",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/4fffe9695cd7de30af26aa8f5f26b3752df93e35"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjc="
+  },
+  {
+    "name": "jcommander-1.26",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.26",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.26",
+    "commit": {
+      "sha": "2d98ac7055e9d8795989f5859d331a314b853a5b",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/2d98ac7055e9d8795989f5859d331a314b853a5b"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjY="
+  },
+  {
+    "name": "jcommander-1.25",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.25",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.25",
+    "commit": {
+      "sha": "b5dd1313bfdde307c92c79974b58a5fe069af551",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/b5dd1313bfdde307c92c79974b58a5fe069af551"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjU="
+  },
+  {
+    "name": "jcommander-1.23",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.23",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.23",
+    "commit": {
+      "sha": "107d0fba6ecf0434da07b54466aea10d8b05000f",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/107d0fba6ecf0434da07b54466aea10d8b05000f"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjM="
+  },
+  {
+    "name": "jcommander-1.22",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.22",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.22",
+    "commit": {
+      "sha": "dc5ad86a31ec259d082eb82496e6a60a769a531c",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/dc5ad86a31ec259d082eb82496e6a60a769a531c"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjI="
+  },
+  {
+    "name": "jcommander-1.21",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.21",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.21",
+    "commit": {
+      "sha": "82241ebd6be1231463509bfede2cd1cf707682d7",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/82241ebd6be1231463509bfede2cd1cf707682d7"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjE="
+  },
+  {
+    "name": "jcommander-1.20",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.20",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.20",
+    "commit": {
+      "sha": "e4e33f0b418ca48230157de1c04987fddbd22860",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/e4e33f0b418ca48230157de1c04987fddbd22860"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMjA="
+  },
+  {
+    "name": "jcommander-1.19",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.19",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.19",
+    "commit": {
+      "sha": "b4b91aac90dc66600cdfee0ca5c5af2d7db7c7f6",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/b4b91aac90dc66600cdfee0ca5c5af2d7db7c7f6"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTk="
+  },
+  {
+    "name": "jcommander-1.18",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.18",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.18",
+    "commit": {
+      "sha": "637e2bfe7b9601811ca0d6082a1054cc8fbc3357",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/637e2bfe7b9601811ca0d6082a1054cc8fbc3357"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTg="
+  },
+  {
+    "name": "jcommander-1.17",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.17",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.17",
+    "commit": {
+      "sha": "8241c1e0d8b38b8fe36bfc4ade3a789e44f2c851",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/8241c1e0d8b38b8fe36bfc4ade3a789e44f2c851"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTc="
+  },
+  {
+    "name": "jcommander-1.16",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.16",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.16",
+    "commit": {
+      "sha": "0e5234ded49df9e0b19fff6d551c08c9d1182419",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/0e5234ded49df9e0b19fff6d551c08c9d1182419"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTY="
+  },
+  {
+    "name": "jcommander-1.15",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.15",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.15",
+    "commit": {
+      "sha": "22ae988b983b3d07649946f5a3743a53c0391537",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/22ae988b983b3d07649946f5a3743a53c0391537"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTU="
+  },
+  {
+    "name": "jcommander-1.13",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.13",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.13",
+    "commit": {
+      "sha": "4bdf09bffd90d164f7acf494dd6ef3d97d2cf310",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/4bdf09bffd90d164f7acf494dd6ef3d97d2cf310"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTM="
+  },
+  {
+    "name": "jcommander-1.12",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.12",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.12",
+    "commit": {
+      "sha": "a6491f05ea6cbe741bca01d6312bf3fda318f981",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/a6491f05ea6cbe741bca01d6312bf3fda318f981"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTI="
+  },
+  {
+    "name": "jcommander-1.11",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.11",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.11",
+    "commit": {
+      "sha": "45085a061b7e1bcb5cb6af2f10361951b26530e2",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/45085a061b7e1bcb5cb6af2f10361951b26530e2"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTE="
+  },
+  {
+    "name": "jcommander-1.10",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.10",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.10",
+    "commit": {
+      "sha": "7dc776f48d66301c2652b3a16dbbdeed78b5b572",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/7dc776f48d66301c2652b3a16dbbdeed78b5b572"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMTA="
+  },
+  {
+    "name": "jcommander-1.9",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.9",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.9",
+    "commit": {
+      "sha": "ffba6dc741950e970ce37e44463fd6b44863ea83",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/ffba6dc741950e970ce37e44463fd6b44863ea83"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuOQ=="
+  },
+  {
+    "name": "jcommander-1.8",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.8",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.8",
+    "commit": {
+      "sha": "d6b7acf32a7ae9cbc5d3195fb053fa4288cea671",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/d6b7acf32a7ae9cbc5d3195fb053fa4288cea671"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuOA=="
+  },
+  {
+    "name": "jcommander-1.7",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.7",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.7",
+    "commit": {
+      "sha": "0950e02eebdb274238b7dc998092279ce466cda4",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/0950e02eebdb274238b7dc998092279ce466cda4"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNw=="
+  },
+  {
+    "name": "jcommander-1.6",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.6",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.6",
+    "commit": {
+      "sha": "bf0a9ff5540101854db06ab3f6e474a0e7a10d76",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/bf0a9ff5540101854db06ab3f6e474a0e7a10d76"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNg=="
+  },
+  {
+    "name": "jcommander-1.5",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.5",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.5",
+    "commit": {
+      "sha": "3d2c641fc513ffb4fbbd2515957fbf6767974577",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/3d2c641fc513ffb4fbbd2515957fbf6767974577"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNQ=="
+  },
+  {
+    "name": "jcommander-1.4",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.4",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.4",
+    "commit": {
+      "sha": "c332827673a7e61b8ec3fa66d20673155038a4a6",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/c332827673a7e61b8ec3fa66d20673155038a4a6"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuNA=="
+  },
+  {
+    "name": "jcommander-1.3",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.3",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.3",
+    "commit": {
+      "sha": "d75b81810031f49f77c59d0fe65f7ff7045ea9e9",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/d75b81810031f49f77c59d0fe65f7ff7045ea9e9"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMw=="
+  },
+  {
+    "name": "jcommander-1.2",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.2",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.2",
+    "commit": {
+      "sha": "e16275b7a608a36d73671c319f0b8a2209f0e3ac",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/e16275b7a608a36d73671c319f0b8a2209f0e3ac"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMg=="
+  },
+  {
+    "name": "jcommander-1.1",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/jcommander-1.1",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/jcommander-1.1",
+    "commit": {
+      "sha": "a8e2fed790c7764d1c3c6aad18a00a5322df08b7",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/a8e2fed790c7764d1c3c6aad18a00a5322df08b7"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy9qY29tbWFuZGVyLTEuMQ=="
+  },
+  {
+    "name": "3.0",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/3.0",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/3.0",
+    "commit": {
+      "sha": "a1d85057b6f6d4cca2fef965c5367bde9da45860",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/a1d85057b6f6d4cca2fef965c5367bde9da45860"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8zLjA="
+  },
+  {
+    "name": "2.0",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/2.0",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/2.0",
+    "commit": {
+      "sha": "3ace192d829b1f1ab065745b1741de66a33199a2",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/3ace192d829b1f1ab065745b1741de66a33199a2"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8yLjA="
+  },
+  {
+    "name": "1.85",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.85",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.85",
+    "commit": {
+      "sha": "8ab73fd92c8ca25bd9358e8e6445ad9bff851747",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/8ab73fd92c8ca25bd9358e8e6445ad9bff851747"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjg1"
+  },
+  {
+    "name": "1.84",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.84",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.84",
+    "commit": {
+      "sha": "b8c23ad0d17cca4f8a16ba76913dcef60ca0f8c9",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/b8c23ad0d17cca4f8a16ba76913dcef60ca0f8c9"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjg0"
+  },
+  {
+    "name": "1.83",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.83",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.83",
+    "commit": {
+      "sha": "75a6269d2b74990505e2c4b002de97fd8314cb39",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/75a6269d2b74990505e2c4b002de97fd8314cb39"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjgz"
+  },
+  {
+    "name": "1.82",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.82",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.82",
+    "commit": {
+      "sha": "dc0c1bf4969af858beeaf2563d6ffd358e59a62d",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/dc0c1bf4969af858beeaf2563d6ffd358e59a62d"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjgy"
+  },
+  {
+    "name": "1.81",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.81",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.81",
+    "commit": {
+      "sha": "7cda8048ed5e6651f5da381a8e967a5a7d89a954",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/7cda8048ed5e6651f5da381a8e967a5a7d89a954"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjgx"
+  },
+  {
+    "name": "1.80",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.80",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.80",
+    "commit": {
+      "sha": "b106d2b51256b129fee58cfd0aa7de258e7f8a98",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/b106d2b51256b129fee58cfd0aa7de258e7f8a98"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjgw"
+  },
+  {
+    "name": "1.78",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.78",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.78",
+    "commit": {
+      "sha": "dcf154b6d40dd3865e317de7250b7019044543a9",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/dcf154b6d40dd3865e317de7250b7019044543a9"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjc4"
+  },
+  {
+    "name": "1.75",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.75",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.75",
+    "commit": {
+      "sha": "85cb6f7217e15f62225185ffd97491f34b7b49bb",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/85cb6f7217e15f62225185ffd97491f34b7b49bb"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjc1"
+  },
+  {
+    "name": "1.71",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.71",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.71",
+    "commit": {
+      "sha": "453bb0178575a16d0aaebda07d5b8a8f19034e59",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/453bb0178575a16d0aaebda07d5b8a8f19034e59"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjcx"
+  },
+  {
+    "name": "1.66",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.66",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.66",
+    "commit": {
+      "sha": "cc5a8e341e7ac9df6b7dcd05519d8ac9f44dedeb",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/cc5a8e341e7ac9df6b7dcd05519d8ac9f44dedeb"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjY2"
+  },
+  {
+    "name": "1.65",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.65",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.65",
+    "commit": {
+      "sha": "9204d90557da604b203b6d5317b8067d8d0312c5",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/9204d90557da604b203b6d5317b8067d8d0312c5"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjY1"
+  },
+  {
+    "name": "1.64",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.64",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.64",
+    "commit": {
+      "sha": "843735da915a15267c01713a7ba051dd59ff9e66",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/843735da915a15267c01713a7ba051dd59ff9e66"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjY0"
+  },
+  {
+    "name": "1.63",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.63",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.63",
+    "commit": {
+      "sha": "352d96d3705e9644fae9b4bf86fd424f096d8d38",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/352d96d3705e9644fae9b4bf86fd424f096d8d38"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjYz"
+  },
+  {
+    "name": "1.62",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.62",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.62",
+    "commit": {
+      "sha": "ad8b7278cb3ce5fbb441aa37781bfb08c0d1ab7c",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/ad8b7278cb3ce5fbb441aa37781bfb08c0d1ab7c"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjYy"
+  },
+  {
+    "name": "1.61",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.61",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.61",
+    "commit": {
+      "sha": "ad198f005c8dd84d4516e2fd9f81358844e3e983",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/ad198f005c8dd84d4516e2fd9f81358844e3e983"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjYx"
+  },
+  {
+    "name": "1.60",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.60",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.60",
+    "commit": {
+      "sha": "1818f4065b75d54deaa1ce9e79df4d2f67c143ac",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/1818f4065b75d54deaa1ce9e79df4d2f67c143ac"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjYw"
+  },
+  {
+    "name": "1.58",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.58",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.58",
+    "commit": {
+      "sha": "3f95e02af31f8cc167b9b33888ea4fb4132b8282",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/3f95e02af31f8cc167b9b33888ea4fb4132b8282"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjU4"
+  },
+  {
+    "name": "1.57",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.57",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.57",
+    "commit": {
+      "sha": "3f95e02af31f8cc167b9b33888ea4fb4132b8282",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/3f95e02af31f8cc167b9b33888ea4fb4132b8282"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjU3"
+  },
+  {
+    "name": "1.56",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.56",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.56",
+    "commit": {
+      "sha": "f4b4dff9b38622f4bbc094c1a5b1feeac38d0e72",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/f4b4dff9b38622f4bbc094c1a5b1feeac38d0e72"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjU2"
+  },
+  {
+    "name": "1.1",
+    "zipball_url": "https://api.github.com/repos/cbeust/jcommander/zipball/refs/tags/1.1",
+    "tarball_url": "https://api.github.com/repos/cbeust/jcommander/tarball/refs/tags/1.1",
+    "commit": {
+      "sha": "b45c8d8f7af1d808a9073a436e27002edad3b451",
+      "url": "https://api.github.com/repos/cbeust/jcommander/commits/b45c8d8f7af1d808a9073a436e27002edad3b451"
+    },
+    "node_id": "MDM6UmVmNzcxODg2OnJlZnMvdGFncy8xLjE="
+  }
+]
+
+ succeeded in 325ms:
+HTTP/2 301 
+date: Tue, 28 Apr 2026 08:23:33 GMT
+content-length: 0
+location: /doc/com.beust/jcommander/1.72
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=R5HV1ljNRhXNsTaGJlH4a9YmFaeet3zDxMfHeCkQeB%2FcVfkwN%2Bhe4zjl7buPPmM%2FKkv2%2BQ7Ul33R%2FpLQFtaHHUEniaP1evx%2BBDNzmiFit84CdZd2%2BSMQ%2FjRST1eNzaydFcC4m3YYTzmk"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f34aa632be43b5e-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 303 
+date: Tue, 28 Apr 2026 08:23:33 GMT
+content-length: 0
+location: /doc/com.beust/jcommander/1.72/index.html
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+cf-cache-status: DYNAMIC
+strict-transport-security: max-age=15552000; includeSubDomains
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=crM5OZky0nmLnoy8IOCxkZloQzqIbNA0PxmssZaRQ9OSEcrwaKDvbbTxUaMSEisc4ETUlzm6wRpIsPI7hgyyr3MLP3oC3zufgj6V8yMhARZlsvPIcc90yDvitSKQRsU8%2BwKGuQUKbsoE"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: 9f34aa63dca33b5e-GVA
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 28 Apr 2026 08:23:33 GMT
+content-type: text/html; charset=UTF-8
+link: <https://javadoc.io/doc/com.beust/jcommander/latest/index.html>; rel="canonical"
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: master-only
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/beust/jcommander/1.72/
+web search: 
+web search: jcommander 1.72 javadoc.io
+exec
+/usr/bin/bash -lc "rg '\"documentation-url\"' -n build/discovered-artifact-metadata | head -40" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg 'javadoc.io/doc|repo1.maven.org/.+-javadoc.jar|github.com/.+/tree/.+/docs' -n build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72-javadoc.jar | wc -c && curl -fsSL https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72-javadoc.jar | xxd' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+22
+00000000: 504b 0506 0000 0000 0000 0000 0000 0000  PK..............
+00000010: 0000 0000 0000                           ......
+
+codex
+The upstream GitHub repository does not expose a `1.72` tag in the tag list; Maven Central does publish `jcommander-1.72-sources.jar`, while the `1.72` javadoc jar is an empty zip. I’m checking whether there is another exact-version documentation or test source location before deciding whether those fields need `N/A`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72-sources.jar -o /tmp/jcommander-1.72-sources.jar && jar tf /tmp/jcommander-1.72-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+com/beust/jcommander/converters/BaseConverter.java
+com/beust/jcommander/converters/BigDecimalConverter.java
+com/beust/jcommander/converters/BooleanConverter.java
+com/beust/jcommander/converters/CharArrayConverter.java
+com/beust/jcommander/converters/CommaParameterSplitter.java
+com/beust/jcommander/converters/DefaultListConverter.java
+com/beust/jcommander/converters/DoubleConverter.java
+com/beust/jcommander/converters/EnumConverter.java
+com/beust/jcommander/converters/FileConverter.java
+com/beust/jcommander/converters/FloatConverter.java
+com/beust/jcommander/converters/InetAddressConverter.java
+com/beust/jcommander/converters/IntegerConverter.java
+com/beust/jcommander/converters/IParameterSplitter.java
+com/beust/jcommander/converters/ISO8601DateConverter.java
+com/beust/jcommander/converters/LongConverter.java
+com/beust/jcommander/converters/NoConverter.java
+com/beust/jcommander/converters/PathConverter.java
+com/beust/jcommander/converters/StringConverter.java
+com/beust/jcommander/converters/URIConverter.java
+com/beust/jcommander/converters/URLConverter.java
+com/beust/jcommander/defaultprovider/PropertyFileDefaultProvider.java
+com/beust/jcommander/DynamicParameter.java
+com/beust/jcommander/FuzzyMap.java
+com/beust/jcommander/IDefaultProvider.java
+com/beust/jcommander/internal/Console.java
+com/beust/jcommander/internal/DefaultConsole.java
+com/beust/jcommander/internal/DefaultConverterFactory.java
+com/beust/jcommander/internal/JDK6Console.java
+com/beust/jcommander/internal/Lists.java
+com/beust/jcommander/internal/Maps.java
+com/beust/jcommander/internal/Nullable.java
+com/beust/jcommander/internal/Sets.java
+com/beust/jcommander/IParameterValidator.java
+com/beust/jcommander/IParameterValidator2.java
+com/beust/jcommander/IStringConverter.java
+com/beust/jcommander/IStringConverterFactory.java
+com/beust/jcommander/IStringConverterInstanceFactory.java
+com/beust/jcommander/IValueValidator.java
+com/beust/jcommander/IVariableArity.java
+com/beust/jcommander/JCommander.java
+com/beust/jcommander/MissingCommandException.java
+com/beust/jcommander/Parameter.java
+com/beust/jcommander/ParameterDescription.java
+com/beust/jcommander/ParameterException.java
+com/beust/jcommander/Parameterized.java
+com/beust/jcommander/Parameters.java
+com/beust/jcommander/ParametersDelegate.java
+com/beust/jcommander/ResourceBundle.java
+com/beust/jcommander/StringKey.java
+com/beust/jcommander/Strings.java
+com/beust/jcommander/SubParameter.java
+com/beust/jcommander/validators/NoValidator.java
+com/beust/jcommander/validators/NoValueValidator.java
+com/beust/jcommander/validators/PositiveInteger.java
+com/beust/jcommander/WrappedParameter.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/cbeust/jcommander/1.71/README.md | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/cbeust/jcommander/git/matching-refs/tags/jcommander-1.72' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/cbeust/jcommander/git/matching-refs/tags/1.72' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 174ms:
+[
+
+]
+
+ succeeded in 176ms:
+[
+
+]
+
+ succeeded in 191ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/cbeust/jcommander.git | rg '1\\.72|1\\.71|1\\.75'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/cbeust/jcommander/contents?ref=1.71' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+exec
+/usr/bin/bash -lc "curl -fsSL https://javadoc.io/doc/com.beust/jcommander/1.72/index.html | sed -n '1,100p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		
+		<title>jcommander 1.72 javadoc (com.beust)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/fb2db6ea7688d54ae047109e0d71e3a0-favicon-32.png"/>
+
+		
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+		<link rel="stylesheet" media="screen" href="/assets/stylesheets/4642020abc00142d0f00e891a0be57e0-main.css">
+
+		
+	<link rel="stylesheet" media="screen" href="/assets/stylesheets/ec8cbc970044e0f38797a8709a186644-doc.css">
+
+
+		<link rel="shortcut icon" type="image/png" href="/assets/images/1fbfb06ee55c8f0c1fa3eb2872b64375-favicon.png">
+
+	</head>
+
+	
+	<body>
+		
+		
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top" id="main-nav">
+		<a href="/" class="navbar-brand">
+			<i class="fas fa-home"></i>
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbar-collapse">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/doc/com.beust">com.beust</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						jcommander
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						
+						<a href="/doc/com.beust/jbus" class="dropdown-item">
+							jbus
+						</a>
+						
+						<a href="/doc/com.beust/jcommander" class="dropdown-item">
+							jcommander
+						</a>
+						
+						<a href="/doc/com.beust/klaxon" class="dropdown-item">
+							klaxon
+						</a>
+						
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						1.72
+					</a>
+					<div class="dropdown-menu scrollable-menu">
+						<a href="/doc/com.beust/jcommander/latest/index.html" class="dropdown-item">
+							1.82
+						</a>
+
+						
+						<a href="/doc/com.beust/jcommander/1.81/index.html" class="dropdown-item">
+							1.81
+						</a>
+						
+						<a href="/doc/com.beust/jcommander/1.78/index.html" class="dropdown-item">
+							1.78
+						</a>
+						
+						<a href="/doc/com.beust/jcommander/1.75/index.html" class="dropdown-item">
+							1.75
+						</a>
+						
+						<a href="/doc/com.beust/jcommander/1.72/index.html" class="dropdown-item">
+							1.72
+						</a>
+						
+						<a href="/doc/com.beust/jcommander/1.69/index.html" class="dropdown-item">
+							1.69
+						</a>
+						
+						<a href="/doc/com.beust/jcommander/1.64/index.html" class="dropdown-item">
+							1.64
+
+ succeeded in 201ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "4af1799c6e29e3467c106039505da631d2d3e5a2",
+    "size": 227,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/.gitignore?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/.gitignore",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/4af1799c6e29e3467c106039505da631d2d3e5a2",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/.gitignore?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/4af1799c6e29e3467c106039505da631d2d3e5a2",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/.gitignore"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "46dc775db9bae2a78a775dce863e10fab4adb1d6",
+    "size": 128,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/.travis.yml?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/.travis.yml",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/46dc775db9bae2a78a775dce863e10fab4adb1d6",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/.travis.yml?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/46dc775db9bae2a78a775dce863e10fab4adb1d6",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/.travis.yml"
+    }
+  },
+  {
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "sha": "3fcc135a52be6934388c2f61cd9256e5c98a5a6e",
+    "size": 8280,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/CHANGELOG.md?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/CHANGELOG.md",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/3fcc135a52be6934388c2f61cd9256e5c98a5a6e",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/CHANGELOG.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/CHANGELOG.md?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/3fcc135a52be6934388c2f61cd9256e5c98a5a6e",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/CHANGELOG.md"
+    }
+  },
+  {
+    "name": "README.markdown",
+    "path": "README.markdown",
+    "sha": "b29263ddf7444fa1bb781a1b32ee314713798d32",
+    "size": 1369,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/README.markdown?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/README.markdown",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/b29263ddf7444fa1bb781a1b32ee314713798d32",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/README.markdown",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/README.markdown?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/b29263ddf7444fa1bb781a1b32ee314713798d32",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/README.markdown"
+    }
+  },
+  {
+    "name": "build.gradle",
+    "path": "build.gradle",
+    "sha": "484d594934e4cd46d2e685ef0b5a0f45fa36802d",
+    "size": 712,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/build.gradle?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/build.gradle",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/484d594934e4cd46d2e685ef0b5a0f45fa36802d",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/build.gradle",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/build.gradle?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/484d594934e4cd46d2e685ef0b5a0f45fa36802d",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/build.gradle"
+    }
+  },
+  {
+    "name": "doc",
+    "path": "doc",
+    "sha": "468e9aa7b80e412db41fc3c97466b0939e29e966",
+    "size": 0,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/doc?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/tree/1.71/doc",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/trees/468e9aa7b80e412db41fc3c97466b0939e29e966",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/doc?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/trees/468e9aa7b80e412db41fc3c97466b0939e29e966",
+      "html": "https://github.com/cbeust/jcommander/tree/1.71/doc"
+    }
+  },
+  {
+    "name": "gradle",
+    "path": "gradle",
+    "sha": "be2573ec22218a19a77aeb2494883fab3e708699",
+    "size": 0,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/gradle?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/tree/1.71/gradle",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/trees/be2573ec22218a19a77aeb2494883fab3e708699",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/gradle?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/trees/be2573ec22218a19a77aeb2494883fab3e708699",
+      "html": "https://github.com/cbeust/jcommander/tree/1.71/gradle"
+    }
+  },
+  {
+    "name": "gradlew",
+    "path": "gradlew",
+    "sha": "91a7e269e19dfc62e27137a0b57ef3e430cee4fd",
+    "size": 5080,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/gradlew?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/gradlew",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/91a7e269e19dfc62e27137a0b57ef3e430cee4fd",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/gradlew",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/gradlew?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/91a7e269e19dfc62e27137a0b57ef3e430cee4fd",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/gradlew"
+    }
+  },
+  {
+    "name": "kobalt",
+    "path": "kobalt",
+    "sha": "3576d2dd238361a51352a7c5811fcb789564cf08",
+    "size": 0,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/kobalt?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/tree/1.71/kobalt",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/trees/3576d2dd238361a51352a7c5811fcb789564cf08",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/kobalt?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/trees/3576d2dd238361a51352a7c5811fcb789564cf08",
+      "html": "https://github.com/cbeust/jcommander/tree/1.71/kobalt"
+    }
+  },
+  {
+    "name": "kobaltw",
+    "path": "kobaltw",
+    "sha": "c5186d5afef9c0247ea8a39890281e8bd1d81c6d",
+    "size": 82,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/kobaltw?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/kobaltw",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/c5186d5afef9c0247ea8a39890281e8bd1d81c6d",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/kobaltw",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/kobaltw?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/c5186d5afef9c0247ea8a39890281e8bd1d81c6d",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/kobaltw"
+    }
+  },
+  {
+    "name": "lib",
+    "path": "lib",
+    "sha": "f7490dfbc169d670966b4186c1083e5986ffab5e",
+    "size": 0,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/lib?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/tree/1.71/lib",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/trees/f7490dfbc169d670966b4186c1083e5986ffab5e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/lib?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/trees/f7490dfbc169d670966b4186c1083e5986ffab5e",
+      "html": "https://github.com/cbeust/jcommander/tree/1.71/lib"
+    }
+  },
+  {
+    "name": "license.txt",
+    "path": "license.txt",
+    "sha": "d0c18cffa61e3e000ec8b27cb8e7302f279bc15e",
+    "size": 11345,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/license.txt?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/license.txt",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/d0c18cffa61e3e000ec8b27cb8e7302f279bc15e",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/license.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/license.txt?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/d0c18cffa61e3e000ec8b27cb8e7302f279bc15e",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/license.txt"
+    }
+  },
+  {
+    "name": "misc.xml",
+    "path": "misc.xml",
+    "sha": "e46d8476e4c57df9d8f34024cf2c493f4cf219a9",
+    "size": 250,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/misc.xml?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/misc.xml",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/e46d8476e4c57df9d8f34024cf2c493f4cf219a9",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/misc.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/misc.xml?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/e46d8476e4c57df9d8f34024cf2c493f4cf219a9",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/misc.xml"
+    }
+  },
+  {
+    "name": "notice.md",
+    "path": "notice.md",
+    "sha": "64fc84a5206fc6be41a08e0849b6354177d7b764",
+    "size": 108,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/notice.md?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/notice.md",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/64fc84a5206fc6be41a08e0849b6354177d7b764",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/notice.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/notice.md?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/64fc84a5206fc6be41a08e0849b6354177d7b764",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/notice.md"
+    }
+  },
+  {
+    "name": "release",
+    "path": "release",
+    "sha": "2a0163ce06dde55d9d3e028d39038db1ea8f1887",
+    "size": 292,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/release?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/release",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/2a0163ce06dde55d9d3e028d39038db1ea8f1887",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/release",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/release?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/2a0163ce06dde55d9d3e028d39038db1ea8f1887",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/release"
+    }
+  },
+  {
+    "name": "src",
+    "path": "src",
+    "sha": "6fbb0dde1ffb43385644354a2b36e41961f6a76e",
+    "size": 0,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/src?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/tree/1.71/src",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/trees/6fbb0dde1ffb43385644354a2b36e41961f6a76e",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/src?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/trees/6fbb0dde1ffb43385644354a2b36e41961f6a76e",
+      "html": "https://github.com/cbeust/jcommander/tree/1.71/src"
+    }
+  },
+  {
+    "name": "upload",
+    "path": "upload",
+    "sha": "ee465164deea9289bdc84bdcb87906ccbdf12cbf",
+    "size": 192,
+    "url": "https://api.github.com/repos/cbeust/jcommander/contents/upload?ref=1.71",
+    "html_url": "https://github.com/cbeust/jcommander/blob/1.71/upload",
+    "git_url": "https://api.github.com/repos/cbeust/jcommander/git/blobs/ee465164deea9289bdc84bdcb87906ccbdf12cbf",
+    "download_url": "https://raw.githubusercontent.com/cbeust/jcommander/1.71/upload",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/cbeust/jcommander/contents/upload?ref=1.71",
+      "git": "https://api.github.com/repos/cbeust/jcommander/git/blobs/ee465164deea9289bdc84bdcb87906ccbdf12cbf",
+      "html": "https://github.com/cbeust/jcommander/blob/1.71/upload"
+    }
+  }
+]
+
+ succeeded in 331ms:
+453bb0178575a16d0aaebda07d5b8a8f19034e59	refs/tags/1.71
+cfd98f8ba4a389a6052aefcef26ab3bb3025c33d	refs/tags/1.75
+85cb6f7217e15f62225185ffd97491f34b7b49bb	refs/tags/1.75^{}
+
+exec
+/usr/bin/bash -lc "rm -rf /tmp/jcommander-repo && git clone --filter=blob:none --no-checkout https://github.com/cbeust/jcommander.git /tmp/jcommander-repo && git -C /tmp/jcommander-repo log --all --decorate --date=short --pretty='%h %ad %d %s' --since='2017-05-01' --until='2017-08-01'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 698ms:
+161d31055c 2017-07-14  Merge pull request #387 from Dougrinch/patch-1
+045eed1eb2 2017-07-14  Fixed javadoc issue
+399e06125d 2017-07-13  Merge pull request #386 from jodastephen/module-info
+71285329ad 2017-07-13  Add module-info for Java 9
+35cdc8de86 2017-07-06  Merge pull request #384 from tom-haines/master
+d6f79b79d4 2017-07-06  Fix typo in example usage
+b4ae0fcc5a 2017-07-03  Merge pull request #382 from shekhargulati/patch-1
+ca95ce02ea 2017-07-04  Use Builder API as constructor is deprecated
+656a86f1d2 2017-06-25  allow System.out to be replaced by something else (f.e. System.err)
+d619e83a23 2017-06-25  make console configurable by JCommander.Builder
+38e814550d 2017-06-16  Merge pull request #373 from glhez/Boolean_and_null
+9c76fd0083 2017-06-16  Merge pull request #372 from glhez/master
+e7d9c0ab0a 2017-06-17  Fixes changes introduced by #369 and commit 4435722a0b45be660b1b58834d4f5326fc78c9ad
+c8f205a7d8 2017-06-16  Fixed various stuff:
+d582ca7ec4 2017-06-16  Merge pull request #371 from glhez/master
+3a021a9ec7 2017-06-16  Provide user of the lib debugging symbols.
+bcfb94452d 2017-06-15  Remove the generic in IStringConverterFactory
+27f2a158f6 2017-06-14  Merge pull request #370 from Woodham/master
+7f9232d5e6 2017-06-14  Allow generics of type <? extends X> and <? super Y> in parameters
+152a25dbe6 2017-06-07  Merge pull request #369 from jeremysolarz/issue-367-npe-boolean-default-null
+77572e8fa0 2017-06-07  Use get<fieldname> default getter approach if is<fieldname> method is not found
+3962337d05 2017-06-07  Add changelog entry for issue 367
+4447d6c54b 2017-06-07  Get boolean/Boolean getter with "is" prefix
+4df1f2d552 2017-06-07  Add check if Boolean parameter is default null, then do not flip value
+0b16965756 2017-06-07  Add test case for issue 367
+7eb2b67ce8 2017-05-23  Merge pull request #361 from jeremysolarz/issue-360-add-testcase-for-enumconverter
+4fb124d03a 2017-05-22  Merge branch 'master' of https://github.com/cbeust/jcommander into issue-360-add-testcase-for-enumconverter
+51dcfeb12c 2017-05-22  Remove warnings.
+cd836775f8 2017-05-22  Merge pull request #362 from jeremysolarz/DevFactory-staging/code-qualify-fix-1
+157d4738e2 2017-05-22  Add changelog entry for 254
+e9edc6a2eb 2017-05-22  Merge branch 'staging/code-qualify-fix-1' of https://github.com/DevFactory/jcommander into DevFactory-staging/code-qualify-fix-1
+52c2939de5 2017-05-22  Add changelog entry for 360
+3c675dfdd3 2017-05-22  Add testcase for enum converter
+1865794f19 2017-05-18  Fix indentation.
+a431862034 2017-05-18  Fix test.
+6362e2a607 2017-05-18  Merge pull request #359 from simon04/only-one-DefaultConverterFactory
+2c64046dc2 2017-05-18  Add changelog entry
+667b597b03 2017-05-18  Only one DefaultConverterFactory
+9b25cd409c 2017-05-15  Doc update.
+459e177177 2017-05-15  1.72.
+d51a5b7223 2017-05-15  Allow main parameters to be a single field.
+a7a95e6c2a 2017-05-12  Encapsulate MainParameter.
+1ae72581ac 2017-05-12  Bump Kobalt.
+192ec86956 2017-05-12  Support arity for main parameters.
+f6c3dc5db8 2017-05-10  Merge pull request #264 from tfiskgul/master
+453bb01785 2017-05-03  (tag: 1.71) Indent with four spaces.
+dcd1ff5fd6 2017-05-02  Update doc.
+e266cb00e9 2017-05-02  Update version in doc.
+3f4050e814 2017-04-27  Restore OSGi manifest.
+
+exec
+/usr/bin/bash -lc 'git -C /tmp/jcommander-repo ls-tree -d --name-only 459e177177:src && git -C /tmp/jcommander-repo ls-tree -d --name-only 459e177177:src/test || true' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+main
+test
+java
+resources
+
+exec
+/usr/bin/bash -lc 'git -C /tmp/jcommander-repo show --stat --oneline --decorate --no-renames 459e177177' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+exec
+/usr/bin/bash -lc "git -C /tmp/jcommander-repo show 459e177177:build.gradle | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/cbeust/jcommander/459e177177d85baf5fe788eb18a90d23edd79dcf/README.markdown | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 173ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 361ms:
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url 'http://oss.sonatype.org/content/repositories/snapshots'
+        }
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.2"
+}
+
+version = '1.58'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply from: 'gradle/publishing.gradle'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testCompile 'org.testng:testng:6.9.13'
+}
+
+task sourceJar(type: Jar) {
+    group 'Build'
+    description 'An archive of the source code'
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    sourceJar
+}
+
+test {
+    // enable TestNG support (default is JUnit)
+    useTestNG()
+}
+
+ succeeded in 364ms:
+459e177177 1.72.
+ kobalt/src/Build.kt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+exec
+/usr/bin/bash -lc "git -C /tmp/jcommander-repo rev-parse 459e177177 && git -C /tmp/jcommander-repo ls-tree --name-only 459e177177 && git -C /tmp/jcommander-repo show 459e177177:kobalt/src/Build.kt | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+459e1771777df0ed7842e3f3e655a54541f1c957
+.gitignore
+.travis.yml
+CHANGELOG.md
+README.markdown
+build.gradle
+doc
+gradle
+gradlew
+kobalt
+kobaltw
+lib
+license.txt
+misc.xml
+notice.md
+release
+src
+upload
+
+import com.beust.kobalt.plugin.java.javaCompiler
+import com.beust.kobalt.plugin.osgi.osgi
+import com.beust.kobalt.plugin.packaging.assemble
+import com.beust.kobalt.plugin.publish.bintray
+import com.beust.kobalt.project
+import org.apache.maven.model.Developer
+import org.apache.maven.model.License
+import org.apache.maven.model.Model
+import org.apache.maven.model.Scm
+
+val jcommander = project {
+    name = "jcommander"
+    group = "com.beust"
+    artifactId = name
+    version = "1.72"
+    description = "A Java library to parse command line options"
+
+    dependenciesTest {
+        compile("org.testng:testng:6.10")
+        exclude("com.beust:jcommander:1.48")
+    }
+
+    assemble {
+        mavenJars {
+        }
+    }
+
+    bintray {
+        publish = true
+        sign = true
+    }
+
+    javaCompiler {
+        args("-target", "1.7", "-source", "1.7")
+    }
+
+    osgi {}
+
+    pom = Model().apply {
+        name = project.name
+        description = "Command line parsing"
+        url = "http://jcommander.org"
+        licenses = listOf(License().apply {
+            name = "Apache 2.0"
+            url = "http://www.apache.org/licenses/LICENSE-2.0"
+        })
+        scm = Scm().apply {
+            url = "http://github.com/cbeust/jcommander"
+            connection = "https://github.com/cbeust/jcommander.git"
+            developerConnection = "git@github.com:cbeust/jcommander.git"
+        }
+        developers = listOf(Developer().apply {
+            name = "Cedric Beust"
+            email = "cedric@beust.com"
+        })
+    }
+
+}
+
+exec
+/usr/bin/bash -lc "git -C /tmp/jcommander-repo ls-tree -r --name-only 459e1771777df0ed7842e3f3e655a54541f1c957:doc | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+colony.css
+generate-doc.sh
+golo.css
+index.adoc
+index.html
+old-index.html
+
+exec
+/usr/bin/bash -lc "git -C /tmp/jcommander-repo ls-tree -r --name-only 459e1771777df0ed7842e3f3e655a54541f1c957:src/test | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+java/com/beust/jcommander/ArgMultiNameValidator.java
+java/com/beust/jcommander/ArgsRequiredWrongMain.java
+java/com/beust/jcommander/ArgsValidate2.java
+java/com/beust/jcommander/CmdTest.java
+java/com/beust/jcommander/ConverterFactoryTest.java
+java/com/beust/jcommander/DefaultProviderTest.java
+java/com/beust/jcommander/DefaultValueTest.java
+java/com/beust/jcommander/FinderTest.java
+java/com/beust/jcommander/HiddenConverter.java
+java/com/beust/jcommander/HiddenParameterSplitter.java
+java/com/beust/jcommander/HostPort.java
+java/com/beust/jcommander/HostPortConverter.java
+java/com/beust/jcommander/JCommanderTest.java
+java/com/beust/jcommander/MethodSetterTest.java
+java/com/beust/jcommander/MyClass.java
+java/com/beust/jcommander/ParametersDelegateTest.java
+java/com/beust/jcommander/ParametersNotEmptyTest.java
+java/com/beust/jcommander/PasswordTest.java
+java/com/beust/jcommander/PositiveIntegerTest.java
+java/com/beust/jcommander/SetConverter.java
+java/com/beust/jcommander/SimpleExample.java
+java/com/beust/jcommander/TypeHierarchyTest.java
+java/com/beust/jcommander/ValidatePropertiesWhenParsingTest.java
+java/com/beust/jcommander/VariableArityTest.java
+java/com/beust/jcommander/args/AlternateNamesForListArgs.java
+java/com/beust/jcommander/args/Args1.java
+java/com/beust/jcommander/args/Args1Setter.java
+java/com/beust/jcommander/args/Args2.java
+java/com/beust/jcommander/args/ArgsArityInteger.java
+java/com/beust/jcommander/args/ArgsArityString.java
+java/com/beust/jcommander/args/ArgsBooleanArity.java
+java/com/beust/jcommander/args/ArgsBooleanArity0.java
+java/com/beust/jcommander/args/ArgsConverter.java
+java/com/beust/jcommander/args/ArgsConverterFactory.java
+java/com/beust/jcommander/args/ArgsDefault.java
+java/com/beust/jcommander/args/ArgsEnum.java
+java/com/beust/jcommander/args/ArgsEquals.java
+java/com/beust/jcommander/args/ArgsHelp.java
+java/com/beust/jcommander/args/ArgsI18N1.java
+java/com/beust/jcommander/args/ArgsI18N2.java
+java/com/beust/jcommander/args/ArgsI18N2New.java
+java/com/beust/jcommander/args/ArgsInherited.java
+java/com/beust/jcommander/args/ArgsList.java
+java/com/beust/jcommander/args/ArgsLongCommandDescription.java
+java/com/beust/jcommander/args/ArgsLongDescription.java
+java/com/beust/jcommander/args/ArgsLongMainParameterDescription.java
+java/com/beust/jcommander/args/ArgsMainParameter1.java
+java/com/beust/jcommander/args/ArgsMainParameter2.java
+java/com/beust/jcommander/args/ArgsMaster.java
+java/com/beust/jcommander/args/ArgsMultiValidate.java
+java/com/beust/jcommander/args/ArgsMultipleUnparsed.java
+java/com/beust/jcommander/args/ArgsOutOfMemory.java
+java/com/beust/jcommander/args/ArgsPassword.java
+java/com/beust/jcommander/args/ArgsPrivate.java
+java/com/beust/jcommander/args/ArgsRequired.java
+java/com/beust/jcommander/args/ArgsSlave.java
+java/com/beust/jcommander/args/ArgsSlaveBogus.java
+java/com/beust/jcommander/args/ArgsValidate1.java
+java/com/beust/jcommander/args/ArgsWithSet.java
+java/com/beust/jcommander/args/Arity1.java
+java/com/beust/jcommander/args/CommandLineArgs.java
+java/com/beust/jcommander/args/CommandLineArgs2.java
+java/com/beust/jcommander/args/HiddenArgs.java
+java/com/beust/jcommander/args/IHostPorts.java
+java/com/beust/jcommander/args/SeparatorColon.java
+java/com/beust/jcommander/args/SeparatorEqual.java
+java/com/beust/jcommander/args/SeparatorMixed.java
+java/com/beust/jcommander/args/SlashSeparator.java
+java/com/beust/jcommander/args/VariableArity.java
+java/com/beust/jcommander/command/CommandAdd.java
+java/com/beust/jcommander/command/CommandAliasTest.java
+java/com/beust/jcommander/command/CommandCommit.java
+java/com/beust/jcommander/command/CommandHidden.java
+java/com/beust/jcommander/command/CommandMain.java
+java/com/beust/jcommander/command/CommandNoParametersAnnotation.java
+java/com/beust/jcommander/command/CommandTest.java
+java/com/beust/jcommander/command/NamedCommandAdd.java
+java/com/beust/jcommander/converters/CharArrayConverterTest.java
+java/com/beust/jcommander/converters/InetAddressConverterTest.java
+java/com/beust/jcommander/dynamic/DSimple.java
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/src/test 2>&1 | sed -n '1,60p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/doc 2>&1 | sed -n '1,60p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 511ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 08:24:25 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"956bb1e1bf500f5feba8dd895c1570b7"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kwPMbnaBo%2F9eeJz9uuiw08cklkckO5Dwpzkdz%2BIgxRfdIUUfOWYsZcX4t%2BwtBEB3cRovVUye5RNfqEahEJxaD%2FksSxc1HBIFwnTHvdWmFh%2FAOQSLH3layZzaAZ3rQc%2F3fx%2BQ7dIQFGGBygHrSnuIYEZId5pQf%2BYb3DcBwd1nz5BWBXdPjYZOCpba8dMWeaYOcmXHyxkBuJ0LCF6qDDW2Mrf8sY6UzOacjtoZH8nTEalz1Ct79HBOhPUk9Jk3ZCP1TIpB1WJb6fJxHsby2WX9Ew%3D%3D--VgKMonFp%2Fe%2BWATjw--VsckvdXxfHSuVyshko0Pmw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1362373122.1777364664; expires=Wed, 28 Apr 2027 08:24:24 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 08:24:24 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5128:296CA8:97BDE64:7458B4B:69F06EB8
+
+
+ succeeded in 577ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 08:24:25 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ddb715fbbf34ddf8c3d601fb49bcab42"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=3itt9AVwCzy5imx3EOTwtVDPKEEd3b3qTWkd9LAZ1s6VrD382tJRsnt80c9ecQoNGj8UXbgZDjJofnl8jBikaP%2F5RtfTf%2FdDHfM%2F0QA%2BvZtSigCnANGkBfKPKj46V4D1AEvYe0oJjTq90NI99CJz97nT6Od2SFtBB5VqV4YOI0z0AddodfVtVqlQBo%2FwzCQK5hAptTfg87kcO380wkn6XBmwUaZWPmGSBqrEyn%2BlwGZMuPO23TiK1wfhj9tVop2JqXoGQxlAzBiBFh%2BJ6gvXBQ%3D%3D--YDqBn%2FZTLpN0TAuC--m8%2BwJDCZzwCovNU8cIDt%2Fw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.31884203.1777364664; expires=Wed, 28 Apr 2027 08:24:24 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 08:24:24 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5127:296CA8:97BDE1B:7458B09:69F06EB8
+
+
+exec
+/usr/bin/bash -lc "rm -rf /tmp/jcommander-srcjar /tmp/jcommander-gitsrc && mkdir -p /tmp/jcommander-srcjar /tmp/jcommander-gitsrc && (cd /tmp/jcommander-srcjar && jar xf /tmp/jcommander-1.72-sources.jar) && git -C /tmp/jcommander-repo archive 459e1771777df0ed7842e3f3e655a54541f1c957:src/main/java | tar -x -C /tmp/jcommander-gitsrc && diff -qr /tmp/jcommander-srcjar /tmp/jcommander-gitsrc | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 418ms:
+codex
+I found the release commit that produced the Maven source jar: commit `459e1771777df0ed7842e3f3e655a54541f1c957` is the `1.72` version bump, and its `src/main/java` matches the Maven sources jar byte-for-byte after extraction. I’m going to use the Maven sources jar for `source-code-url`, the release commit’s `src/test` and `doc` directories for tests and docs, and omit `language` because this is not a Kotlin or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+diff --git a/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json b/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+index c089f706cbd4e29cd01ef2a3d69922fada890ec5..20e0ecdc5a24bb3375badd43a6ca95c7ab57322d
+--- a/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
++++ b/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.beust:jcommander:1.72"
++  "coordinates" : "com.beust:jcommander:1.72",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72-sources.jar",
++  "repository-url" : "https://github.com/cbeust/jcommander",
++  "test-code-url" : "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/src/test",
++  "documentation-url" : "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/doc",
++  "description" : "JCommander is a Java library for parsing command-line options into annotated objects. It supports typed converters, validation, default providers, variable arity, and command/subcommand definitions for building command-line interfaces."
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json b/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+index c089f706cbd4e29cd01ef2a3d69922fada890ec5..20e0ecdc5a24bb3375badd43a6ca95c7ab57322d
+--- a/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
++++ b/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.beust:jcommander:1.72"
++  "coordinates" : "com.beust:jcommander:1.72",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72-sources.jar",
++  "repository-url" : "https://github.com/cbeust/jcommander",
++  "test-code-url" : "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/src/test",
++  "documentation-url" : "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/doc",
++  "description" : "JCommander is a Java library for parsing command-line options into annotated objects. It supports typed converters, validation, default providers, variable arity, and command/subcommand definitions for building command-line interfaces."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.beust-jcommander-1.72.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+{
+  "coordinates": "com.beust:jcommander:1.72",
+  "source-code-url": "https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72-sources.jar",
+  "repository-url": "https://github.com/cbeust/jcommander",
+  "test-code-url": "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/src/test",
+  "documentation-url": "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/doc",
+  "description": "JCommander is a Java library for parsing command-line options into annotated objects. It supports typed converters, validation, default providers, variable arity, and command/subcommand definitions for building command-line interfaces."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.beust-jcommander-1.72.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json b/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+index c089f706cbd4e29cd01ef2a3d69922fada890ec5..20e0ecdc5a24bb3375badd43a6ca95c7ab57322d
+--- a/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
++++ b/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.beust:jcommander:1.72"
++  "coordinates" : "com.beust:jcommander:1.72",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72-sources.jar",
++  "repository-url" : "https://github.com/cbeust/jcommander",
++  "test-code-url" : "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/src/test",
++  "documentation-url" : "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/doc",
++  "description" : "JCommander is a Java library for parsing command-line options into annotated objects. It supports typed converters, validation, default providers, variable arity, and command/subcommand definitions for building command-line interfaces."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/com/beust/jcommander/1.72/
+web search: 
+web search: https://github.com/cbeust/jcommander
+codex
+Updated [com.beust-jcommander-1.72.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json) with the discovered metadata. Maven Central provides the exact `1.72` sources jar, and the upstream repository/test/doc links were set to the verified `459e1771777df0ed7842e3f3e655a54541f1c957` commit directories. ([repo1.maven.org](https://repo1.maven.org/maven2/com/beust/jcommander/1.72/))
+
+I left `language` absent because this is a Java command-line parsing library, not Kotlin- or Scala-specific. JSON validity was checked with `jq`.
+diff --git a/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json b/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+index c089f706cbd4e29cd01ef2a3d69922fada890ec5..20e0ecdc5a24bb3375badd43a6ca95c7ab57322d
+--- a/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
++++ b/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "com.beust:jcommander:1.72"
++  "coordinates" : "com.beust:jcommander:1.72",
++  "source-code-url" : "https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72-sources.jar",
++  "repository-url" : "https://github.com/cbeust/jcommander",
++  "test-code-url" : "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/src/test",
++  "documentation-url" : "https://github.com/cbeust/jcommander/tree/459e1771777df0ed7842e3f3e655a54541f1c957/doc",
++  "description" : "JCommander is a Java library for parsing command-line options into annotated objects. It supports typed converters, validation, default providers, variable arity, and command/subcommand definitions for building command-line interfaces."
+ }
+
+2026-04-28T08:24:56.791899Z ERROR codex_core::session: failed to record rollout items: thread 019dd32f-78a4-7b40-9765-d9b3b4ef3094 not found
+tokens used
+78,921
+Updated [com.beust-jcommander-1.72.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228/build/discovered-artifact-metadata/com.beust-jcommander-1.72.json) with the discovered metadata. Maven Central provides the exact `1.72` sources jar, and the upstream repository/test/doc links were set to the verified `459e1771777df0ed7842e3f3e655a54541f1c957` commit directories. ([repo1.maven.org](https://repo1.maven.org/maven2/com/beust/jcommander/1.72/))
+
+I left `language` absent because this is a Java command-line parsing library, not Kotlin- or Scala-specific. JSON validity was checked with `jq`.
+Ran agent for com.beust:jcommander:1.72 (exit 0). Log: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228/build/agent-artifact-discovery-logs/com.beust-jcommander-1.72.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/2365-9652e228/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 41s
+9 actionable tasks: 4 executed, 5 from cache
