@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.JsonParser;
@@ -155,6 +158,29 @@ public class Jackson_databindTest {
         assertThat(orderedJson).isEqualTo("{\"a\":2,\"b\":1.25}");
     }
 
+    @Test
+    void mixInsApplyExternalPropertyAnnotationsWithoutChangingTargetType() throws JacksonException {
+        ObjectMapper mapper = JsonMapper.builder()
+                .addMixIn(ExternalAccount.class, ExternalAccountMixin.class)
+                .build();
+        ExternalAccount account = new ExternalAccount("ada", "token-123", true);
+
+        String json = mapper.writeValueAsString(account);
+        ExternalAccount restored = mapper.readValue("{"
+                + "\"login_name\": \"grace\","
+                + "\"apiToken\": \"ignored-token\","
+                + "\"enabled\": false"
+                + "}", ExternalAccount.class);
+
+        assertThat(json).contains("\"login_name\":\"ada\"")
+                .contains("\"enabled\":true")
+                .doesNotContain("apiToken")
+                .doesNotContain("loginName");
+        assertThat(restored.getLoginName()).isEqualTo("grace");
+        assertThat(restored.getApiToken()).isNull();
+        assertThat(restored.isEnabled()).isFalse();
+    }
+
     public record Order(String id, OrderStatus status, List<OrderLine> lines, Map<String, String> attributes,
             Optional<String> note, OptionalInt priority) {
     }
@@ -255,6 +281,59 @@ public class Jackson_databindTest {
 
         public void setHealthy(boolean healthy) {
             this.healthy = healthy;
+        }
+    }
+
+    public abstract static class ExternalAccountMixin {
+        @JsonProperty("login_name")
+        public abstract String getLoginName();
+
+        @JsonProperty("login_name")
+        public abstract void setLoginName(String loginName);
+
+        @JsonIgnore
+        public abstract String getApiToken();
+
+        @JsonIgnore
+        public abstract void setApiToken(String apiToken);
+    }
+
+    public static final class ExternalAccount {
+        private String loginName;
+        private String apiToken;
+        private boolean enabled;
+
+        public ExternalAccount() {
+        }
+
+        public ExternalAccount(String loginName, String apiToken, boolean enabled) {
+            this.loginName = loginName;
+            this.apiToken = apiToken;
+            this.enabled = enabled;
+        }
+
+        public String getLoginName() {
+            return loginName;
+        }
+
+        public void setLoginName(String loginName) {
+            this.loginName = loginName;
+        }
+
+        public String getApiToken() {
+            return apiToken;
+        }
+
+        public void setApiToken(String apiToken) {
+            this.apiToken = apiToken;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
     }
 }
