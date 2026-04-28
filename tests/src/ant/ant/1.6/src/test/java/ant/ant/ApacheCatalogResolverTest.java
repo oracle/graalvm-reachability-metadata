@@ -38,6 +38,9 @@ public class ApacheCatalogResolverTest {
         ApacheCatalogResolver resolver = new ApacheCatalogResolver();
         resolver.setXMLCatalog(catalog);
 
+        assertThat(System.getProperty("xml.catalog.className"))
+                .isEqualTo("org.apache.tools.ant.types.resolver.ApacheCatalog");
+
         resolver.parseCatalog(catalogFile.toString());
 
         InputSource entity = catalog.resolveEntity(PUBLIC_ID, "urn:example:missing-dtd");
