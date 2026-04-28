@@ -99,6 +99,14 @@ public class Org_osgi_annotation_bundleTest {
     }
 
     @Test
+    void repeatedAnnotationsCanBeDeclaredDirectlyOnOneApplicationType() {
+        MetricsService component = new MultiClauseComponent();
+
+        assertThat(component.record("connections", 3)).isEqualTo("connections=3:multi");
+        assertThat(component.listener().name()).isEqualTo("multi-listener");
+    }
+
+    @Test
     void headersDescribeManifestMetadataAndRepeatableHeaderContainer() {
         Header symbolicName = new BundleHeader("Bundle-SymbolicName", "com.acme.telemetry;singleton:=true");
         Header activator = new BundleHeader("Bundle-Activator", "com.acme.telemetry.internal.Activator");
@@ -187,6 +195,24 @@ public class Org_osgi_annotation_bundleTest {
         @Override
         public MetricsListener listener() {
             return () -> "default-listener";
+        }
+    }
+
+    @Header(name = "Bundle-Category", value = "monitoring")
+    @Header(name = "Bundle-ContactAddress", value = "ops@example.invalid")
+    @Capability(namespace = "osgi.service", name = "com.acme.telemetry.MetricsService")
+    @Capability(namespace = "osgi.implementation", name = "com.acme.telemetry.runtime", version = "1.0.0")
+    @Requirement(namespace = "osgi.extender", name = "osgi.component", resolution = Resolution.OPTIONAL)
+    @Requirement(namespace = "osgi.contract", name = "JavaServlet", version = "5.0.0")
+    private static final class MultiClauseComponent implements MetricsService {
+        @Override
+        public String record(String metric, long value) {
+            return metric + "=" + value + ":multi";
+        }
+
+        @Override
+        public MetricsListener listener() {
+            return () -> "multi-listener";
         }
     }
 
