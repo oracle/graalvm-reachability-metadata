@@ -18,6 +18,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 import javassist.tools.rmi.ObjectImporter;
+import javassist.tools.rmi.ObjectImporterClassAccess;
 import javassist.tools.rmi.Proxy;
 import javassist.tools.rmi.RemoteRef;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,11 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ObjectImporterTest {
+    @Test
+    void generatedClassLiteralAccessorLoadsImporterClass() {
+        assertThat(ObjectImporterClassAccess.loadImporterClassByGeneratedAccessor()).isEqualTo(ObjectImporter.class);
+    }
+
     @Test
     void lookupObjectCreatesProxyFromServerResponse() throws Exception {
         try (SingleRequestServer server = new SingleRequestServer(socket -> {
