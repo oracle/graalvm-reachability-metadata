@@ -6,7 +6,7 @@
  */
 package io_micrometer.micrometer_core;
 
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import com.hazelcast.monitor.LocalMapStats;
 import com.hazelcast.monitor.NearCacheStats;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -24,7 +24,7 @@ public class HazelcastIMapAdapterTest {
     private static final String CACHE_NAME = "orders-cache";
 
     @Test
-    void bindsHazelcast3MapMetricsThroughPublicApi() {
+    void bindsMapMetricsThroughPrimaryIMapTypeAndLegacyStatsTypes() {
         NearCacheStats nearCacheStats = proxy(NearCacheStats.class, new NearCacheStatsHandler());
         LocalMapStats localMapStats = proxy(LocalMapStats.class, new LocalMapStatsHandler(nearCacheStats));
         Object cache = proxy(IMap.class, new IMapHandler(localMapStats));
