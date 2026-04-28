@@ -50,6 +50,7 @@ import javax.portlet.PortletSecurityException;
 import javax.portlet.PortletSession;
 import javax.portlet.PortletSessionUtil;
 import javax.portlet.PortletURL;
+import javax.portlet.PreferencesValidator;
 import javax.portlet.ReadOnlyException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -265,6 +266,32 @@ public class Portlet_apiTest {
         assertThat(preferences.getValues("columns", new String[] {"missing"})).containsExactly("name", "status");
         assertThat(Collections.list(preferences.getNames())).containsExactly("theme", "columns");
         assertThat(preferences.getMap()).containsKeys("theme", "columns");
+    }
+
+    @Test
+    void preferencesValidatorAcceptsValidPreferencesAndReportsInvalidKeys() throws Exception {
+        RecordingPortletPreferences preferences = new RecordingPortletPreferences(Map.of("theme", "light"));
+        PreferencesValidator validator = portletPreferences -> {
+            List<String> failedKeys = new ArrayList<>();
+            if (!List.of("light", "dark").contains(portletPreferences.getValue("theme", ""))) {
+                failedKeys.add("theme");
+            }
+            if (portletPreferences.getValues("columns", new String[0]).length == 0) {
+                failedKeys.add("columns");
+            }
+            if (!failedKeys.isEmpty()) {
+                throw new ValidatorException("invalid preferences", failedKeys);
+            }
+        };
+
+        preferences.setValues("columns", new String[] {"name", "status"});
+        validator.validate(preferences);
+
+        preferences.setValue("theme", "contrast");
+        preferences.reset("columns");
+        ValidatorException exception = assertThrows(ValidatorException.class, () -> validator.validate(preferences));
+
+        assertThat(Collections.list(exception.getFailedKeys())).containsExactly("theme", "columns");
     }
 
     @Test
