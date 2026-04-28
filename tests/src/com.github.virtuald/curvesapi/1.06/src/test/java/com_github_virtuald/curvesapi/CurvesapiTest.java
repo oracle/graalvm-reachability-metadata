@@ -79,6 +79,25 @@ public class CurvesapiTest {
     }
 
     @Test
+    void defaultFunctionMapEvaluatesBuiltInMathFunctions() {
+        FuncMap functions = new FuncMap();
+        functions.loadDefaultFunctions();
+        VarMap variables = new VarMap();
+
+        assertThat(functions.getFunctionNames())
+                .contains("sin", "pi", "sqrt", "pow", "min", "max", "avg", "fact", "combin", "log", "ln", "e");
+        assertThat(ExpressionTree.parse("sin(pi() / 2)").eval(variables, functions)).isCloseTo(1.0, within(TOLERANCE));
+        assertThat(ExpressionTree.parse("sqrt(pow(3, 2) + pow(4, 2))").eval(variables, functions))
+                .isCloseTo(5.0, within(TOLERANCE));
+        assertThat(ExpressionTree.parse("min(5, 2, 7) + max(5, 2, 7) + avg(2, 4, 6)").eval(variables, functions))
+                .isCloseTo(13.0, within(TOLERANCE));
+        assertThat(ExpressionTree.parse("fact(5) + combin(5, 2)").eval(variables, functions))
+                .isCloseTo(130.0, within(TOLERANCE));
+        assertThat(ExpressionTree.parse("log(100) + ln(e())").eval(variables, functions))
+                .isCloseTo(3.0, within(TOLERANCE));
+    }
+
+    @Test
     void groupIteratorParsesExpressionBasedRangesAndCanBeReset() {
         GroupIterator iterator = new GroupIterator("0:n-1, n-1:0", 4);
 
