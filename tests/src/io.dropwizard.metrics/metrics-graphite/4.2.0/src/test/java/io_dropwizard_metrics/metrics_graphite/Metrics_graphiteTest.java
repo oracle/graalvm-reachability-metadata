@@ -23,10 +23,13 @@ import com.codahale.metrics.graphite.GraphiteUDP;
 import com.codahale.metrics.graphite.PickledGraphite;
 import org.junit.jupiter.api.Test;
 
+import javax.net.SocketFactory;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -34,6 +37,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -170,6 +174,27 @@ public class Metrics_graphiteTest {
     }
 
     @Test
+    void tcpGraphiteSenderUsesConfiguredCharsetWhenWritingLineProtocol() throws Exception {
+        Charset charset = StandardCharsets.ISO_8859_1;
+        try (ServerSocket serverSocket = new ServerSocket(0, 1, LOOPBACK)) {
+            CompletableFuture<byte[]> receivedLine = CompletableFuture.supplyAsync(
+                    () -> readSingleTcpLineBytes(serverSocket));
+            Graphite graphite = new Graphite(new InetSocketAddress(LOOPBACK, serverSocket.getLocalPort()),
+                    SocketFactory.getDefault(), charset);
+
+            graphite.connect();
+            graphite.send("accented.metric", "café", 314L);
+            graphite.flush();
+            graphite.close();
+
+            assertThat(receivedLine.get(5L, TimeUnit.SECONDS))
+                    .containsExactly("accented.metric café 314\n".getBytes(charset));
+            assertThat(graphite.getFailures()).isZero();
+            assertThat(graphite.isConnected()).isFalse();
+        }
+    }
+
+    @Test
     void udpGraphiteSenderWritesSanitizedDatagramProtocol() throws Exception {
         try (DatagramSocket socket = new DatagramSocket(new InetSocketAddress(LOOPBACK, 0))) {
             socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(5L));
@@ -241,6 +266,24 @@ public class Metrics_graphiteTest {
             return reader.readLine();
         } catch (IOException e) {
             throw new IllegalStateException("Unable to read Graphite TCP line", e);
+        }
+    }
+
+    private static byte[] readSingleTcpLineBytes(ServerSocket serverSocket) {
+        try (Socket socket = serverSocket.accept();
+             InputStream input = socket.getInputStream()) {
+            socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(5L));
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            int nextByte;
+            while ((nextByte = input.read()) != -1) {
+                output.write(nextByte);
+                if (nextByte == '\n') {
+                    return output.toByteArray();
+                }
+            }
+            return output.toByteArray();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to read Graphite TCP line bytes", e);
         }
     }
 
