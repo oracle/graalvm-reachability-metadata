@@ -1,0 +1,1346 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd1a9-cb90-7831-a713-8e0a97105ecd
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.opengauss:opengauss-jdbc:3.1.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.1.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/metadata/org.opengauss/opengauss-jdbc/index.json
+- Entry selector: "metadata-version" = "3.1.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.1.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 3.1.1
+- Entry test-version: 3.1.1
+codex
+I’ll verify the artifact’s versioned source/test/doc locations first, then patch only the missing fields in the selected JSON entry.
+web search: 
+web search: org.opengauss opengauss-jdbc 3.1.1 Maven sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/
+codex
+Maven Central lists `3.1.1` as a published version and the openGauss docs have a versioned `3.1.1` documentation tree. I’m checking whether Maven Central carries source/test artifacts before falling back to the tagged upstream repository.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"3\\.1\\.1\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.opengauss/opengauss-jdbc/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+4:    "metadata-version" : "3.1.1",
+14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.0-og/opengauss-jdbc-3.1.0-og-sources.jar",
+15:    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
+16:    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+17:    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+18:    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+ succeeded in 332ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/opengauss/opengauss-jdbc/3.1.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/opengauss/opengauss-jdbc/3.1.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="opengauss-jdbc-3.1.1-javadoc.jar" title="opengauss-jdbc-3.1.1-javadoc.jar">opengauss-jdbc-3.1.1-javadoc.jar</a>                  2023-02-01 02:15   1855749      
+<a href="opengauss-jdbc-3.1.1-javadoc.jar.asc" title="opengauss-jdbc-3.1.1-javadoc.jar.asc">opengauss-jdbc-3.1.1-javadoc.jar.asc</a>              2023-02-01 02:15       659      
+<a href="opengauss-jdbc-3.1.1-javadoc.jar.md5" title="opengauss-jdbc-3.1.1-javadoc.jar.md5">opengauss-jdbc-3.1.1-javadoc.jar.md5</a>              2023-02-01 02:15        32      
+<a href="opengauss-jdbc-3.1.1-javadoc.jar.sha1" title="opengauss-jdbc-3.1.1-javadoc.jar.sha1">opengauss-jdbc-3.1.1-javadoc.jar.sha1</a>             2023-02-01 02:15        40      
+<a href="opengauss-jdbc-3.1.1-sources.jar" title="opengauss-jdbc-3.1.1-sources.jar">opengauss-jdbc-3.1.1-sources.jar</a>                  2023-02-01 02:15    816979      
+<a href="opengauss-jdbc-3.1.1-sources.jar.asc" title="opengauss-jdbc-3.1.1-sources.jar.asc">opengauss-jdbc-3.1.1-sources.jar.asc</a>              2023-02-01 02:15       659      
+<a href="opengauss-jdbc-3.1.1-sources.jar.md5" title="opengauss-jdbc-3.1.1-sources.jar.md5">opengauss-jdbc-3.1.1-sources.jar.md5</a>              2023-02-01 02:15        32      
+<a href="opengauss-jdbc-3.1.1-sources.jar.sha1" title="opengauss-jdbc-3.1.1-sources.jar.sha1">opengauss-jdbc-3.1.1-sources.jar.sha1</a>             2023-02-01 02:15        40      
+<a href="opengauss-jdbc-3.1.1.jar" title="opengauss-jdbc-3.1.1.jar">opengauss-jdbc-3.1.1.jar</a>                          2023-02-01 02:15    848499      
+<a href="opengauss-jdbc-3.1.1.jar.asc" title="opengauss-jdbc-3.1.1.jar.asc">opengauss-jdbc-3.1.1.jar.asc</a>                      2023-02-01 02:15       659      
+<a href="opengauss-jdbc-3.1.1.jar.md5" title="opengauss-jdbc-3.1.1.jar.md5">opengauss-jdbc-3.1.1.jar.md5</a>                      2023-02-01 02:15        32      
+<a href="opengauss-jdbc-3.1.1.jar.sha1" title="opengauss-jdbc-3.1.1.jar.sha1">opengauss-jdbc-3.1.1.jar.sha1</a>                     2023-02-01 02:15        40      
+<a href="opengauss-jdbc-3.1.1.pom" title="opengauss-jdbc-3.1.1.pom">opengauss-jdbc-3.1.1.pom</a>                          2023-02-01 02:15     13587      
+<a href="opengauss-jdbc-3.1.1.pom.asc" title="opengauss-jdbc-3.1.1.pom.asc">opengauss-jdbc-3.1.1.pom.asc</a>                      2023-02-01 02:15       659      
+<a href="opengauss-jdbc-3.1.1.pom.md5" title="opengauss-jdbc-3.1.1.pom.md5">opengauss-jdbc-3.1.1.pom.md5</a>                      2023-02-01 02:15        32      
+<a href="opengauss-jdbc-3.1.1.pom.sha1" title="opengauss-jdbc-3.1.1.pom.sha1">opengauss-jdbc-3.1.1.pom.sha1</a>                     2023-02-01 02:15        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.opengauss/opengauss-jdbc/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1.1",
+    "tested-versions" : [
+      "3.1.1"
+    ],
+    "allowed-packages" : [
+      "org.opengauss"
+    ]
+  },
+  {
+    "metadata-version" : "3.1.0-og",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.0-og/opengauss-jdbc-3.1.0-og-sources.jar",
+    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
+    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+    "tested-versions" : [
+      "3.1.0-og"
+    ],
+    "allowed-packages" : [
+      "org.opengauss"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1.pom' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+<?xml version="1.0" encoding="utf-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.opengauss</groupId>
+  <artifactId>opengauss-jdbc</artifactId>
+  <name>openGauss JDBC Driver</name>
+  <version>3.1.1</version>
+  <description>Java JDBC driver for openGauss</description>
+  <url>https://gitee.com/opengauss/openGauss-connector-jdbc</url>
+
+  <licenses>
+    <license>
+      <name>BSD-2-Clause</name>
+      <url>https://jdbc.postgresql.org/about/license.html</url>
+    </license>
+  </licenses>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+  <organization>
+    <name>openGauss</name>
+    <url>https://opengauss.org/</url>
+  </organization>
+
+  <properties>
+    <!-- Require JDK 1.8 or later -->
+    <javac.target>1.8</javac.target>
+    <postgresql.enforce.jdk.version>1.8</postgresql.enforce.jdk.version>
+    <jdbc.specification.version>4.2</jdbc.specification.version>
+    <jdbc.specification.version.nodot>42</jdbc.specification.version.nodot>
+    <skip.assembly>false</skip.assembly>
+    <checkstyle.version>8.5</checkstyle.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.30</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>translate</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.vlsi.gettext</groupId>
+            <artifactId>gettext-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <executions>
+              <execution>
+                <id>update_po_with_new_messages</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>gettext</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>remove_obsolete_translations</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>attrib</goal>
+                </goals>
+                <configuration>
+                  <extraArgs>
+                    <extraArg>--no-obsolete</extraArg>
+                  </extraArgs>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate_pot_and_po_files</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>merge</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>generate_resource_bundles</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>dist</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <outputFormat>java</outputFormat>
+              <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+              <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+              <keysFile>messages.pot</keysFile>
+              <poDirectory>src/java/main/org/postgresql/translation</poDirectory>
+              <targetBundle>org.postgresql.translation.messages</targetBundle>
+              <keywords>-kGT.tr</keywords>
+              <msgmergeCmd>msgmerge</msgmergeCmd>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>excludeWaffleFiles</id>
+      <activation>
+        <property>
+          <name>waffleEnabled</name>
+          <value>false</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>org/postgresql/sspi/NTDSAPI.java</exclude>
+                <exclude>org/postgresql/sspi/NTDSAPIWrapper.java</exclude>
+                <exclude>org/postgresql/sspi/SSPIClient.java</exclude>
+              </excludes>
+              <testExcludes>
+                <exclude>org.postgresql/test/sspi/*.java</exclude>
+              </testExcludes>
+              <source>1.8</source>
+              <target>1.8</target>
+              <showWarnings>true</showWarnings>
+              <compilerArgs>
+                <arg>-Xlint:all</arg>
+              </compilerArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>excludeOsgiFiles</id>
+      <activation>
+        <property>
+          <name>osgiEnabled</name>
+          <value>false</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>org/postgresql/osgi/PGBundleActivator.java</exclude>
+                <exclude>org/postgresql/osgi/PGDataSourceFactory.java</exclude>
+              </excludes>
+              <testExcludes combine.children="append">
+                <exclude>**/PGDataSourceFactoryTest.java</exclude>
+                <exclude>**/OsgiTestSuite.java</exclude>
+              </testExcludes>
+              <source>1.8</source>
+              <target>1.8</target>
+              <showWarnings>true</showWarnings>
+              <compilerArgs>
+                <arg>-Xlint:all</arg>
+              </compilerArgs>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludes>
+                <exclude>**/OsgiTestSuite.java</exclude>
+                <exclude>**/PGDataSourceFactoryTest.java</exclude>
+              </excludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>jdk9-workarounds</id>
+      <!-- see https://github.com/pgjdbc/pgjdbc/pull/565 -->
+      <activation>
+        <property>
+          <name>javac.target</name>
+          <value>1.9</value>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-source-plugin</artifactId>
+              <dependencies>
+                <dependency>
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-archiver</artifactId>
+                  <version>2.4.4</version>
+                  <!-- newer versions fail as described in http://stackoverflow.com/a/36605759/1261287
+                       Caused by: java.lang.ArrayIndexOutOfBoundsException: 1
+                        at org.codehaus.plexus.archiver.zip.AbstractZipArchiver.<clinit>(AbstractZipArchiver.java:116)
+                  -->
+                </dependency>
+              </dependencies>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <dependencies>
+                <dependency>
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-archiver</artifactId>
+                  <version>2.4.4</version>
+                </dependency>
+              </dependencies>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>2.4.1</version> <!-- override version to older one -->
+              <dependencies>
+                <dependency>
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-archiver</artifactId>
+                  <version>2.4.4</version>
+                </dependency>
+              </dependencies>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.8</version>
+        <extensions>true</extensions>
+        <configuration>
+          <!-- 与 setting.xml 的 server 配置中的 sonatype-release 对应-->
+          <serverId>sonatype-nexus-staging</serverId>
+          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+      <!--Maven GPG插件用于使用以下配置对组件进行签名-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <chmod>true</chmod>
+          <inputEncoding>UTF-8</inputEncoding>
+          <outputEncoding>UTF-8</outputEncoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <minimizeJar>false</minimizeJar>
+          <filters>
+            <filter>
+              <artifact>com.ongres.scram:client</artifact>
+              <includes>
+                <include>**</include>
+              </includes>
+            </filter>
+            <filter>
+              <artifact>com.github.dblock.waffle:waffle-jna</artifact>
+              <excludes>
+                <exclude>**</exclude>
+              </excludes>
+            </filter>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>com/sun/jna/**</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>com.ongres</pattern>
+                  <shadedPattern>org.postgresql.shaded.com.ongres</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>2.17</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyle.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <configLocation>src/main/checkstyle/checks.xml</configLocation>
+            <suppressionsLocation>src/main/checkstyle/suppressions.xml</suppressionsLocation>
+            <violationSeverity>error</violationSeverity>
+            <failOnViolation>true</failOnViolation>
+            <failsOnError>true</failsOnError>
+            <consoleOutput>true</consoleOutput>
+            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+             <source>1.8</source>
+              <target>1.8</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <failOnWarnings>false</failOnWarnings>
+            <failOnError>false</failOnError>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <showWarnings>true</showWarnings>
+            <compilerArgs>
+              <arg>-Xlint:all</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <scm>
+    <tag>REL42.2.5</tag>
+  </scm>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-test-sources.jar || true
+curl -fsI https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-tests.jar || true' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 589ms:
+HTTP/2 404 
+date: Tue, 28 Apr 2026 01:18:02 GMT
+content-type: text/html
+cf-ray: 9f323b12fd156aa1-GVA
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 28 Apr 2026 01:18:03 GMT
+content-type: text/html
+cf-ray: 9f323b14e92f3b58-GVA
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: 
+web search: 
+web search: site:gitee.com/opengauss/openGauss-connector-jdbc 3.1.1 opengauss-jdbc
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://gitee.com/opengauss/openGauss-connector-jdbc.git' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://gitee.com/opengauss/openGauss-connector-jdbc.git' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+exec
+/usr/bin/bash -lc 'curl -fsI https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1 || true
+curl -fsI https://gitee.com/opengauss/openGauss-connector-jdbc/tree/3.1.1 || true
+curl -fsI https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0 || true' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 1809ms:
+044dc5f9c10f2d16525689caba76eb933fa7a478	refs/tags/1.0.0
+ac7046db822401d53652907b2d255b0449ed2622	refs/tags/1.0.1
+eb444a2b9662f8877e58e4cabc333bccbb4d21fb	refs/tags/1.0.1^{}
+fd5cce52d6776feb86b204fa9489d437e3f2ed07	refs/tags/1.1.0
+4f82f621cd9f04a43afb1243afc6383efcd54c67	refs/tags/1.1.0^{}
+2c3a2574aaca14154e80cb67ec5b72d3a98cffa4	refs/tags/v2.0.0
+00f1307ee2e5f625915521076259455bcd3e4c18	refs/tags/v2.0.0^{}
+190a91f281fadcfef0d55c1708bae4c7300c6073	refs/tags/v2.1.0
+662cf9e506c0bf7f244955c828fc910b87d904ca	refs/tags/v2.1.0^{}
+85a36fa63c73e3cd8745398c87c4a209e623d2f5	refs/tags/v3.0.0
+45d325fec46178c1c8325eaba38b5b500520a750	refs/tags/v3.0.0^{}
+6f6cde77e8807ba38d02f8c043b3e12159d131b9	refs/tags/v3.0.1
+de855dd45972a018e6a0db188c7dd0e54a4d3ee3	refs/tags/v3.0.1^{}
+d53ed6f37ae2c234b8d8af72bdaac2055347e457	refs/tags/v3.0.3
+1f1b812e227b00dd5bcb1c84c7342d27963d2ee4	refs/tags/v3.0.3^{}
+951c6fa4d25a1c2f8ab01c7913badae55a8974f8	refs/tags/v3.0.5
+1f1b812e227b00dd5bcb1c84c7342d27963d2ee4	refs/tags/v3.0.5^{}
+e6e259732ddf0f1a334a083a5cc2f74cea3ad641	refs/tags/v3.1.0
+0e3bf1bdf20b9fc1c520acd51dae57d83c4f7e4f	refs/tags/v3.1.0^{}
+70072b9b651c173caade1443ee704d93623506af	refs/tags/v3.1.1
+78770d73824bc145aaa5481d0d94d6703c9f77be	refs/tags/v3.1.1^{}
+cc7d43d3a35e6e5ff280b8ae324c5c07ba7c3cfb	refs/tags/v5.0.0
+c0cec35626189b654be0e33f807dde3aa002b71b	refs/tags/v5.0.0^{}
+8915b1d5712b0737449786874c42bf17ffef4ba4	refs/tags/v5.0.1
+1676ae752da6ad934db8fb7675d7425f691ba71a	refs/tags/v5.0.1^{}
+86b9b6b2a1f807c571b5a18a1c2e9e1fadfb395d	refs/tags/v5.0.1-RC1
+702ee1613245a2f7efbcf5aafd859a157b13055e	refs/tags/v5.0.1-RC1^{}
+a05e3072ace065e0e083c81870dca9003d078a3f	refs/tags/v5.0.2
+97a88927951ea8b2acb686ae776dd44fc1076261	refs/tags/v5.0.2^{}
+9eeb7e33d4e70ee43f80af4de7e06be43ea126c5	refs/tags/v5.0.3
+9283fdfb7921fe663b67da177e5f530668878d25	refs/tags/v5.0.3^{}
+be65f1476f4e779f7c76b0558148008893302e3d	refs/tags/v5.1.0
+c0bc9e9029c72daf3dca035f8353c78033376843	refs/tags/v5.1.0^{}
+bdf4c2c86e67662c28527157b6fa084a9247d88c	refs/tags/v6.0.0
+9deecee765e02ec829ed1dcff5fe543fad9ec33a	refs/tags/v6.0.0^{}
+547adda28cf271c8ea6dceedb4821b4817ca2904	refs/tags/v6.0.0-RC1
+5b7a8926100d53ceb96574f40ae2ffc8eef1e985	refs/tags/v6.0.0-RC1^{}
+9bd1620e8b28e1e81f8e29b60942b61bd90e009c	refs/tags/v6.0.1
+ad6fa2e9ff87352040af9e06cbbd889d5b475bbb	refs/tags/v6.0.1^{}
+
+ succeeded in 2733ms:
+044dc5f9c10f2d16525689caba76eb933fa7a478	refs/heads/1.0.0
+eb444a2b9662f8877e58e4cabc333bccbb4d21fb	refs/heads/1.0.1
+4f82f621cd9f04a43afb1243afc6383efcd54c67	refs/heads/1.1.0
+7c867720796dc0e0ad2bae202b0e4467663cb131	refs/heads/2.0.0
+b65ed7c21c678d1b3cca03afba9c2769099c7916	refs/heads/2.1.0
+7cd8f7d5f692bbcac219c5563e94cbd9474c743c	refs/heads/3.0.0
+7260dcb366ddea0e993dce6b49c0ae82c3d8473a	refs/heads/3.1.0
+4e6d1c5c7bf087ae9f1bdb555b0b1eb315b66623	refs/heads/5.0.0
+c0bc9e9029c72daf3dca035f8353c78033376843	refs/heads/5.1.0
+1375ccc1fb5a638e05c4ebfc512ac965b1e4407b	refs/heads/6.0.0
+14548d74a9b3ee356d7c492a10be295592d79184	refs/heads/7.0.0-RC1
+d57bd1c4af39eb23a7015f758bd64b909a6df8a2	refs/heads/master
+
+codex
+The `3.1.1` entry is genuinely missing those fields in the local `index.json`; the nonblank values I saw are on the separate `3.1.0-og` entry. Maven has sources and javadoc jars for `3.1.1`, but no test or test-sources jar, so I’m resolving the correct upstream tag for tests/docs.
+ succeeded in 9435ms:
+HTTP/1.1 200 OK
+Server: ADAS/1.0.214
+Date: Tue, 28 Apr 2026 01:18:15 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-UA-Compatible: chrome=1
+Referrer-Policy: same-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Expires: Sun, 1 Jan 2000 01:00:00 GMT
+Pragma: must-revalidate, no-cache, private
+Cache-Control: no-cache
+Set-Cookie: user_locale=; domain=.gitee.com; path=/; expires=Sat, 28 Apr 2046 01:18:15 -0000
+Set-Cookie: oschina_new_user=false; path=/; expires=Sat, 28 Apr 2046 01:18:15 -0000
+Set-Cookie: gitee-session-n=YThnejZkaFNzalNvTG8wTHdTOWFqaXlFMXNmOWtPQWtMZmFVdmlJVlVBb081YjYzd0J3aHZGWU5LVGVnV3Iza2dTWFZ2WVloZ1dLVHhvNXMzbGl3WGZaelk5VElaY2FGRHh0bGlVZEcyQ2g4VW5YNUtZMUQyRXl6a3hESEs0ZGxGREFIVi9GNzRMeHFRVXlVTklvUG5nWVpscTRuZGtISUVKT0tpQXZUTDc3bG5LVTkzMVJEV0ErN24vSHhSQzQyLS1halJoMmRteUVZMDBjR292YjFLWEN3PT0%3D--c5f5be438a4945a872314287e5b51381464a7a61; domain=.gitee.com; path=/; secure; HttpOnly; SameSite=Lax
+X-Request-Id: b11b7d9d58189a19c30ae7b41e4f0a18
+X-Runtime: 0.865309
+Vary: Origin
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: frame-ancestors 'self' https://*.gitee.com
+BDWAF-Request-ID: 07709259-6065-431e-b395-0bfe91564cca
+Set-Cookie: BEC=8ddb6c1710618f9098bae11a2ceedd43;Path=/;Max-Age=126000
+
+HTTP/1.1 404 Not Found
+Server: ADAS/1.0.214
+Date: Tue, 28 Apr 2026 01:18:19 GMT
+Content-Type: application/json; charset=utf-8
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-UA-Compatible: chrome=1
+Referrer-Policy: same-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Expires: Sun, 1 Jan 2000 01:00:00 GMT
+Pragma: must-revalidate, no-cache, private
+Cache-Control: no-cache
+Set-Cookie: user_locale=; domain=.gitee.com; path=/; expires=Sat, 28 Apr 2046 01:18:19 -0000
+Set-Cookie: oschina_new_user=false; path=/; expires=Sat, 28 Apr 2046 01:18:19 -0000
+Set-Cookie: gitee-session-n=cERFdmNUUmh1RDlBZVBHMko1alVCT2gxTy9DRmczTU53N21aMlV2RlpHclJxN2xpRmczMUZVWmxuOTlJNHFWeU8yMTRSN3RZYU5xV2dZMEpjT25ZR3c9PS0tL3JZNGoyZ0FRTXc3TEtseno2QVlRdz09--4842c794553b2de39c6352630938d507cb97d5d4; domain=.gitee.com; path=/; secure; HttpOnly; SameSite=Lax
+X-Request-Id: 9f1c11231fe2b179573e92daa2c6c417
+X-Runtime: 0.039582
+Vary: Origin
+X-Frame-Options: SAMEORIGIN
+BDWAF-Request-ID: 9641c2d8-e9d5-4d0a-8e4b-55ce467dc2d0
+
+HTTP/1.1 200 OK
+Server: ADAS/1.0.214
+Date: Tue, 28 Apr 2026 01:18:21 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-UA-Compatible: chrome=1
+Referrer-Policy: same-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Expires: Sun, 1 Jan 2000 01:00:00 GMT
+Pragma: must-revalidate, no-cache, private
+Cache-Control: no-cache
+Set-Cookie: user_locale=; domain=.gitee.com; path=/; expires=Sat, 28 Apr 2046 01:18:21 -0000
+Set-Cookie: oschina_new_user=false; path=/; expires=Sat, 28 Apr 2046 01:18:21 -0000
+Set-Cookie: gitee-session-n=TERFNlNiWjZjK3F2VEljTys2VGVOY3pUb3NNLzZYZ002V2ZEM01ySHpyYXZHbFAxQjlBOElrSmczYiswMXdoQ245WHRmVlJnNTMwcm1oY1VuTTdrZ2k5OVdUSHBzejlXdGpDZWg4enE0bXhTR3JSVFFvVU55c3ErODlONjBXV1Babk1DL2RrMFZTVmZ6U1l4WlV3NVRQcDhNWXY3amh5V21iNi9IOGhxa0lFdUZwV1lZeWtvQWxWMWVySzZRa1ZmLS1WdVB2dUxpYzVldll4WWZMTnRYVFlBPT0%3D--15c5b351fd6330c192eaba50bf14e2c51e329cbb; domain=.gitee.com; path=/; secure; HttpOnly; SameSite=Lax
+X-Request-Id: a2730f8fff85cecb8a349082962ebade
+X-Runtime: 0.746564
+Vary: Origin
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: frame-ancestors 'self' https://*.gitee.com
+BDWAF-Request-ID: 795d15b0-9442-4fb5-a3bd-47657b18b0f3
+Set-Cookie: BEC=8ddb6c1710618f9098bae11a2ceedd43;Path=/;Max-Age=126000
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test || true
+curl -fsI https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs || true
+curl -fsI https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/README.md || true' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+exec
+/usr/bin/bash -lc "curl -fsSL https://gitee.com/opengauss/openGauss-connector-jdbc/raw/v3.1.1/pom.xml | sed -n '1,80p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+exec
+/usr/bin/bash -lc "curl -fsSL https://gitee.com/opengauss/openGauss-connector-jdbc/raw/v3.1.1/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 1077ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 3032ms:
+<?xml version="1.0" encoding="utf-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.huawei</groupId>
+
+  <artifactId>pgjdbc-aggregate</artifactId>
+  <packaging>pom</packaging>
+  <name>PostgreSQL JDBC Driver aggregate</name>
+  <version>42.2.5</version>
+  <description>PgJDBC aggregate project</description>
+  <url>https://github.com/pgjdbc/pgjdbc</url>
+
+  <modules>
+    <module>pgjdbc</module>
+  </modules>
+  
+  <!-- If inherited from parent pom, maven tries to add artifactId to URLs -->
+  <scm>
+      <url>https://gitee.com/opengauss/openGauss-connector-jdbc</url>
+      <connection>scm:git:https://gitee.com/opengauss/openGauss-connector-jdbc.git</connection>
+      <developerConnection>scm:git:git@gitee.com:opengauss/openGauss-connector-jdbc.git</developerConnection>
+      <tag>REL42.2.5</tag>
+  </scm>
+  <distributionManagement>
+      <snapshotRepository>
+          <id>sonatype-nexus-snapshots</id>
+          <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+      </snapshotRepository>
+      <repository>
+          <id>sonatype-nexus-staging</id>
+          <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      </repository>
+  </distributionManagement>
+  <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <target>1.8</target>
+                    <source>1.8</source>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+              	    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+ succeeded in 4636ms:
+HTTP/1.1 200 OK
+Server: ADAS/1.0.214
+Date: Tue, 28 Apr 2026 01:18:30 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-UA-Compatible: chrome=1
+Referrer-Policy: same-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Expires: Sun, 1 Jan 2000 01:00:00 GMT
+Pragma: must-revalidate, no-cache, private
+Cache-Control: no-cache
+Set-Cookie: user_locale=; domain=.gitee.com; path=/; expires=Sat, 28 Apr 2046 01:18:29 -0000
+Set-Cookie: oschina_new_user=false; path=/; expires=Sat, 28 Apr 2046 01:18:29 -0000
+Set-Cookie: gitee-session-n=bWlrUEM2NEZkVGl4TmpJbFhwMGc2eXFNSjJzb29TRUlkb0NDelAvcmRTenhhbXpuc2dyMUc4am9NN04weTZ5RHI1ZW14eUg5RUM1VzNBditXSW5JaVVoVDRJZlJPOUM4ZkVUWGQ0SFNjcTJNN0NpSm9PWUw4d1FqZkQ0blkwK29iVXF6ZUlCVHdaS2ljUk4rb3VNd1BsUStRL1M2SytIK0VVcyttM0xoZUZ2cmhSdWxXUUV4dndjR093Sy9YVkdFLS03UStCdW82T2dDWlovUnFiclJDUXB3PT0%3D--85ea16fa95b8028a53f7a8a23897000cccdfbb47; domain=.gitee.com; path=/; secure; HttpOnly; SameSite=Lax
+X-Request-Id: 52892cb253931647a8c490066f575d0f
+X-Runtime: 0.751327
+Vary: Origin
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: frame-ancestors 'self' https://*.gitee.com
+BDWAF-Request-ID: 2048785a-8ef1-44e4-ab10-85f5c84eda0d
+Set-Cookie: BEC=8ddb6c1710618f9098bae11a2ceedd43;Path=/;Max-Age=126000
+
+HTTP/1.1 200 OK
+Server: ADAS/1.0.214
+Date: Tue, 28 Apr 2026 01:18:32 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-UA-Compatible: chrome=1
+Referrer-Policy: same-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Expires: Sun, 1 Jan 2000 01:00:00 GMT
+Pragma: must-revalidate, no-cache, private
+Cache-Control: no-cache
+Set-Cookie: user_locale=; domain=.gitee.com; path=/; expires=Sat, 28 Apr 2046 01:18:31 -0000
+Set-Cookie: oschina_new_user=false; path=/; expires=Sat, 28 Apr 2046 01:18:31 -0000
+Set-Cookie: gitee-session-n=UHFUbWNiQWNPV1VOT01mdk1Na1dzSjRQV0t1dWhxeEhPSWpaZnhQdExuSUFwTXZZM0lOYUVTYi9vZ3dVWVJpelF1NSs5aXZBVlNKZEQyTUxkbTRIblphRVNLYVc1UVE2UFRxRjJhMWRhZmFKSVBSZUJDNVBVTWVFWnZ1WjQzb2ZpcG5lelBmYTN1V3FWSVJzV21obWpmUWNYNlJPRzM4RW1jTkZxRkE3U1NteFYzcnorM0pvMWMrN3hZUzVKMUcyLS1RbVVOSnhneGVjWEdJL3JXQks3ZFdRPT0%3D--816a3382569355e450cb61a3336d6107dc269f96; domain=.gitee.com; path=/; secure; HttpOnly; SameSite=Lax
+X-Request-Id: 4140546a173d4329894412bbc7fefc26
+X-Runtime: 0.669433
+Vary: Origin
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: frame-ancestors 'self' https://*.gitee.com
+BDWAF-Request-ID: 8e70f257-aef1-4e7e-b13c-a6d1e5ce7412
+Set-Cookie: BEC=4431548549a19240b277aa1ec69b0837;Path=/;Max-Age=126000
+
+HTTP/1.1 404 Not Found
+Server: ADAS/1.0.214
+Date: Tue, 28 Apr 2026 01:18:33 GMT
+Content-Type: application/json; charset=utf-8
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-UA-Compatible: chrome=1
+Referrer-Policy: same-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Expires: Sun, 1 Jan 2000 01:00:00 GMT
+Pragma: must-revalidate, no-cache, private
+Cache-Control: no-cache
+Set-Cookie: user_locale=; domain=.gitee.com; path=/; expires=Sat, 28 Apr 2046 01:18:33 -0000
+Set-Cookie: oschina_new_user=false; path=/; expires=Sat, 28 Apr 2046 01:18:33 -0000
+Set-Cookie: gitee-session-n=U3JEbW1KQ2wwcGhtSE5nVGl0c1RtQVFMWSt5LzFCUnZjOHRwNzlLSEh4aXZ3RzZwRHNwWUR1M0duWnBxWVFYeUptdFlkU1RQRkxXb25paXhyQ2FpK1E9PS0tNGFoZHdPOWhycXdZQ2o5ZnNPNXRLQT09--83c978c69bbf3de0be4b06607f8ccf964591e75e; domain=.gitee.com; path=/; secure; HttpOnly; SameSite=Lax
+X-Request-Id: fdf41f1c66c562eecf7ec6cf890f2bd9
+X-Runtime: 0.047651
+Vary: Origin
+X-Frame-Options: SAMEORIGIN
+BDWAF-Request-ID: 84ef768f-2827-41b5-9fae-c6cbe2e38c36
+
+
+web search: 
+web search: https://gitee.com/opengauss/openGauss-connector-jdbc
+web search: 
+web search: repo.maven.apache.org maven2 org opengauss opengauss-jdbc 3.1.1 sources jar
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/
+codex
+I found a `v3.1.1` tag in the canonical Gitee repository, and the tagged `pgjdbc/src/test` and `docs` paths both resolve. I’m going to add only the missing fields on the first `3.1.1` object and leave the `3.1.0-og` object untouched.
+apply patch
+patch: completed
+/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/metadata/org.opengauss/opengauss-jdbc/index.json
+diff --git a/metadata/org.opengauss/opengauss-jdbc/index.json b/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e87be4bbb66795a408fbdc10d712095d..1c2849888f95c0184d6bc3cac0915bb3c5fa59b6
+--- a/metadata/org.opengauss/opengauss-jdbc/index.json
++++ b/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+diff --git a/metadata/org.opengauss/opengauss-jdbc/index.json b/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e87be4bbb66795a408fbdc10d712095d..1c2849888f95c0184d6bc3cac0915bb3c5fa59b6
+--- a/metadata/org.opengauss/opengauss-jdbc/index.json
++++ b/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.1.1\")' metadata/org.opengauss/opengauss-jdbc/index.json" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.1.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
+  "repository-url": "https://gitee.com/opengauss/openGauss-connector-jdbc",
+  "test-code-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
+  "documentation-url": "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
+  "description": "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+  "tested-versions": [
+    "3.1.1"
+  ],
+  "allowed-packages": [
+    "org.opengauss"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.opengauss/opengauss-jdbc/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+ M metadata/org.opengauss/opengauss-jdbc/index.json
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.opengauss/opengauss-jdbc/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+diff --git i/metadata/org.opengauss/opengauss-jdbc/index.json w/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e8..1c2849888f 100644
+--- i/metadata/org.opengauss/opengauss-jdbc/index.json
++++ w/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+diff --git a/metadata/org.opengauss/opengauss-jdbc/index.json b/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e87be4bbb66795a408fbdc10d712095d..1c2849888f95c0184d6bc3cac0915bb3c5fa59b6
+--- a/metadata/org.opengauss/opengauss-jdbc/index.json
++++ b/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+codex
+The JSON parses cleanly after the patch, and the diff is limited to the selected `3.1.1` entry. I’m running the repository metadata validator for that coordinate now.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.opengauss:opengauss-jdbc:3.1.1 --stacktrace' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+diff --git a/metadata/org.opengauss/opengauss-jdbc/index.json b/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e87be4bbb66795a408fbdc10d712095d..1c2849888f95c0184d6bc3cac0915bb3c5fa59b6
+--- a/metadata/org.opengauss/opengauss-jdbc/index.json
++++ b/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+ exited 1 in 1690ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCKMetadata files check failed for org.opengauss:opengauss-jdbc:3.1.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/metadata/org.opengauss/opengauss-jdbc/3.1.1/
+
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.opengauss:opengauss-jdbc:3.1.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/metadata/org.opengauss/opengauss-jdbc/3.1.1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.opengauss:opengauss-jdbc:3.1.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/metadata/org.opengauss/opengauss-jdbc/3.1.1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+BUILD FAILED in 1s
+
+diff --git a/metadata/org.opengauss/opengauss-jdbc/index.json b/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e87be4bbb66795a408fbdc10d712095d..1c2849888f95c0184d6bc3cac0915bb3c5fa59b6
+--- a/metadata/org.opengauss/opengauss-jdbc/index.json
++++ b/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+web search: 
+web search: Maven Central org.opengauss opengauss-jdbc 3.1.1 sources javadoc
+web search: 
+web search: 
+web search: 
+web search: "opengauss-jdbc-3.1.1-sources.jar"
+web search: 
+web search: https://gitee.com/opengauss/openGauss-connector-jdbc
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.opengauss/opengauss-jdbc/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "3.1.1",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
+     6	    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
+     7	    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
+     8	    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
+     9	    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+    10	    "tested-versions" : [
+    11	      "3.1.1"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.opengauss"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "3.1.0-og",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.0-og/opengauss-jdbc-3.1.0-og-sources.jar",
+    20	    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
+    21	    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/pgjdbc/src/test",
+    22	    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.0/docs",
+    23	    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+    24	    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.opengauss/opengauss-jdbc/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+diff --git a/metadata/org.opengauss/opengauss-jdbc/index.json b/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e87be4bbb66795a408fbdc10d712095d..1c2849888f95c0184d6bc3cac0915bb3c5fa59b6
+--- a/metadata/org.opengauss/opengauss-jdbc/index.json
++++ b/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+exec
+/usr/bin/bash -lc 'git diff --stat -- metadata/org.opengauss/opengauss-jdbc/index.json' in /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a
+ succeeded in 0ms:
+ metadata/org.opengauss/opengauss-jdbc/index.json | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/metadata/org.opengauss/opengauss-jdbc/index.json b/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e87be4bbb66795a408fbdc10d712095d..1c2849888f95c0184d6bc3cac0915bb3c5fa59b6
+--- a/metadata/org.opengauss/opengauss-jdbc/index.json
++++ b/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+web search: 
+web search: opengauss-jdbc 3.1.1 Maven Central
+web search: 
+web search: 
+codex
+Updated [index.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/metadata/org.opengauss/opengauss-jdbc/index.json:5) for `metadata-version` `3.1.1` with the Maven sources jar, canonical Gitee repository root, tagged `v3.1.1` test/docs URLs, and a two-sentence description. I left `language` absent because this is a Java JDBC driver, not a Kotlin or Scala-specific library. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/?utm_source=openai))
+
+Verification: `jq` parsing and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.opengauss:opengauss-jdbc:3.1.1 --stacktrace` failed because `metadata/org.opengauss/opengauss-jdbc/3.1.1/reachability-metadata.json` is missing, which is outside this requested `index.json` metadata update.
+diff --git a/metadata/org.opengauss/opengauss-jdbc/index.json b/metadata/org.opengauss/opengauss-jdbc/index.json
+index d38082d9e87be4bbb66795a408fbdc10d712095d..1c2849888f95c0184d6bc3cac0915bb3c5fa59b6
+--- a/metadata/org.opengauss/opengauss-jdbc/index.json
++++ b/metadata/org.opengauss/opengauss-jdbc/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/3.1.1/opengauss-jdbc-3.1.1-sources.jar",
++    "repository-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc",
++    "test-code-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/pgjdbc/src/test",
++    "documentation-url" : "https://gitee.com/opengauss/openGauss-connector-jdbc/tree/v3.1.1/docs",
++    "description" : "This artifact is the Java JDBC driver for openGauss. It enables Java applications to connect to openGauss databases and execute SQL through the standard JDBC API.",
+     "tested-versions" : [
+       "3.1.1"
+     ],
+
+2026-04-28T01:20:01.095727Z ERROR codex_core::session: failed to record rollout items: thread 019dd1a9-cb90-7831-a713-8e0a97105ecd not found
+tokens used
+119,920
+Updated [index.json](/home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/metadata/org.opengauss/opengauss-jdbc/index.json:5) for `metadata-version` `3.1.1` with the Maven sources jar, canonical Gitee repository root, tagged `v3.1.1` test/docs URLs, and a two-sentence description. I left `language` absent because this is a Java JDBC driver, not a Kotlin or Scala-specific library. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/opengauss/opengauss-jdbc/?utm_source=openai))
+
+Verification: `jq` parsing and `git diff --check` passed. `./gradlew checkMetadataFiles -Pcoordinates=org.opengauss:opengauss-jdbc:3.1.1 --stacktrace` failed because `metadata/org.opengauss/opengauss-jdbc/3.1.1/reachability-metadata.json` is missing, which is outside this requested `index.json` metadata update.
+Ran agent for org.opengauss:opengauss-jdbc:3.1.1 (exit 0). Log: /home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/build/agent-url-discovery-logs/org.opengauss-opengauss-jdbc-3.1.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge4/metadata-forge/local_repositories/forge_worktrees/719-7e02255a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 23s
+9 actionable tasks: 1 executed, 8 up-to-date
