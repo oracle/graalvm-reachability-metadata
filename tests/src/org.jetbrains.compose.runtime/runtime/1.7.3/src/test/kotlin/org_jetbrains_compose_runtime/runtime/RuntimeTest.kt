@@ -127,6 +127,33 @@ class RuntimeTest {
     }
 
     @Test
+    fun applyObserversReceiveChangedStateUntilDisposed() {
+        val state: MutableState<String> = mutableStateOf("initial")
+        val appliedChanges = mutableListOf<Set<Any>>()
+        val observerHandle = Snapshot.registerApplyObserver { changed, _ ->
+            appliedChanges += changed
+        }
+
+        try {
+            Snapshot.withMutableSnapshot {
+                state.value = "updated"
+            }
+
+            assertThat(appliedChanges).hasSize(1)
+            assertThat(appliedChanges.single()).contains(state)
+        } finally {
+            observerHandle.dispose()
+        }
+
+        appliedChanges.clear()
+        Snapshot.withMutableSnapshot {
+            state.value = "ignored"
+        }
+
+        assertThat(appliedChanges).isEmpty()
+    }
+
+    @Test
     fun stateListSupportsListOperationsAndStableSnapshots() {
         val list = mutableStateListOf("alpha", "gamma")
         list.add(1, "beta")
