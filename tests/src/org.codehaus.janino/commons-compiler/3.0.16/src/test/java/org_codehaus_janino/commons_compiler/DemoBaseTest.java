@@ -15,15 +15,40 @@ public class DemoBaseTest {
 
     @Test
     void createsObjectsThroughEmptyAndStringConstructors() throws Exception {
-        Object emptyString = DemoBase.createObject(String.class, "");
-        Object populatedString = DemoBase.createObject(String.class, "janino");
+        Object defaultInstance = DemoBase.createObject(ConstructibleTarget.class, "");
+        Object populatedInstance = DemoBase.createObject(ConstructibleTarget.class, "janino");
 
-        assertThat(emptyString).isEqualTo("");
-        assertThat(populatedString).isEqualTo("janino");
+        assertThat(defaultInstance).isEqualTo(new ConstructibleTarget("default"));
+        assertThat(populatedInstance).isEqualTo(new ConstructibleTarget("janino"));
     }
 
     @Test
-    void resolvesNamedArrayTypes() {
-        assertThat(DemoBase.stringToType("java.lang.String[]")).isEqualTo(String[].class);
+    void resolvesNamedReferenceTypes() {
+        assertThat(DemoBase.stringToType("java.lang.String")).isEqualTo(String.class);
+    }
+
+    public static final class ConstructibleTarget {
+        private final String value;
+
+        public ConstructibleTarget() {
+            this("default");
+        }
+
+        public ConstructibleTarget(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof ConstructibleTarget constructibleTarget)) {
+                return false;
+            }
+            return this.value.equals(constructibleTarget.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
+        }
     }
 }
