@@ -1,0 +1,858 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd1d7-a32e-7552-b7ef-729fb6309b9a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.r2dbc:r2dbc-spi:1.0.0.RELEASE
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0.0.RELEASE".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/metadata/io.r2dbc/r2dbc-spi/index.json
+- Entry selector: "metadata-version" = "1.0.0.RELEASE"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.0.0.RELEASE".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0.0.RELEASE
+- Entry test-version: 1.0.0.RELEASE
+codex
+I’ll verify the artifact metadata and versioned upstream links first, then patch only the blank fields in the existing JSON entry.
+web search: 
+web search: io.r2dbc r2dbc-spi 1.0.0.RELEASE Maven Central
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.r2dbc/r2dbc-spi/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.0.RELEASE",
+    "tested-versions" : [
+      "1.0.0.RELEASE"
+    ],
+    "allowed-packages" : [
+      "io.r2dbc.spi"
+    ]
+  },
+  {
+    "metadata-version" : "0.9.1.RELEASE",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-sources.jar",
+    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v0.9.1.RELEASE/r2dbc-spi/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-javadoc.jar",
+    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+    "tested-versions" : [
+      "0.9.1.RELEASE"
+    ],
+    "allowed-packages" : [
+      "io.r2dbc.spi"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"1\\.0\\.0\\.RELEASE\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/io.r2dbc/r2dbc-spi/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+4:    "metadata-version" : "1.0.0.RELEASE",
+14:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-sources.jar",
+15:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+16:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v0.9.1.RELEASE/r2dbc-spi/src/test",
+17:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-javadoc.jar",
+18:    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+
+web search: 
+web search: 
+web search: 
+web search: Maven r2dbc-spi 1.0.0.RELEASE repo1.maven.org
+web search: 
+web search: https://github.com/r2dbc/r2dbc-spi/tree/v1.0.0.RELEASE
+web search: 
+web search: https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/
+web search: 
+web search: 
+web search: 
+web search: 'src/test' in https://github.com/r2dbc/r2dbc-spi/tree/v1.0.0.RELEASE/r2dbc-spi/src/test
+web search: 
+web search: repo1.maven.org io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE sources jar
+codex
+The 1.0.0.RELEASE Maven directory publishes the source and Javadoc jars for `r2dbc-spi`, but no test-sources classifier for that artifact. The repository tag also contains `r2dbc-spi/src/test`, so I’m using Maven for source/docs and the tagged GitHub test directory for tests.
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"https://repo1.maven.org.*-sources.jar\"' metadata | head -20" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.3/logback-core-1.1.3-test-sources.jar",
+metadata/ch.qos.logback/logback-core/index.json:21:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.12/logback-core-1.2.12-test-sources.jar",
+metadata/dev.langchain4j/langchain4j/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/dev/langchain4j/langchain4j/1.9.0/langchain4j-1.9.0-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.5.7/logback-classic-1.5.7-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:44:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.9/logback-classic-1.4.9-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:72:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.1/logback-classic-1.4.1-test-sources.jar",
+metadata/ch.qos.logback/logback-classic/index.json:87:    "test-code-url" : "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11-test-sources.jar",
+metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-test-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg -n 'r2dbc-spi-test|r2dbc-spi/src/test|repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test' metadata/io.r2dbc metadata | head -50" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+metadata/io.r2dbc/r2dbc-spi/index.json:16:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v0.9.1.RELEASE/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:16:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v0.9.1.RELEASE/r2dbc-spi/src/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE.pom | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 112ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2017-2022 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.r2dbc</groupId>
+    <artifactId>r2dbc-spi-parent</artifactId>
+    <version>1.0.0.RELEASE</version>
+  </parent>
+  <groupId>io.r2dbc</groupId>
+  <artifactId>r2dbc-spi</artifactId>
+  <version>1.0.0.RELEASE</version>
+  <name>Reactive Relational Database Connectivity - SPI</name>
+  <description>Parent module for Reactive Relational Database Connectivity</description>
+  <url>https://r2dbc.io/r2dbc-spi</url>
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Ben Hale</name>
+      <email>bhale@pivotal.io</email>
+    </developer>
+    <developer>
+      <name>Mark Paluch</name>
+      <email>mpaluch@vmware.com</email>
+    </developer>
+    <developer>
+      <name>Mirro Mutth</name>
+      <email>mirromutth@gmail.com</email>
+    </developer>
+    <developer>
+      <name>Greg Turnquist</name>
+      <email>gturnquist@pivotal.io</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/r2dbc/r2dbc-spi/r2dbc-spi</connection>
+    <url>https://github.com/r2dbc/r2dbc-spi/r2dbc-spi</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.reactivestreams</groupId>
+      <artifactId>reactive-streams</artifactId>
+      <version>1.0.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:08:24 GMT
+content-type: application/java-archive
+content-length: 295226
+cf-ray: 9f3284d81e6e6aa0-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 485657
+etag: "34f0414e1358681b454c4b4c112fcf77"
+last-modified: Mon, 25 Apr 2022 12:54:46 GMT
+x-checksum-md5: 34f0414e1358681b454c4b4c112fcf77
+x-checksum-sha1: a917ddf10f74e2301fa001dd6a211c368e8de26e
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:08:24 GMT
+content-type: application/java-archive
+content-length: 73617
+cf-ray: 9f3284d81d6f6aa1-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 427829
+etag: "618becff3efd7ff4283543880e403f87"
+last-modified: Mon, 25 Apr 2022 12:54:46 GMT
+x-checksum-md5: 618becff3efd7ff4283543880e403f87
+x-checksum-sha1: 232dbc5e46fce7495eef2d40df25b0d1340a763c
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/r2dbc/r2dbc-spi.git 'refs/tags/v1.0.0.RELEASE'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-test-sources.jar | sed -n '1,12p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 260ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 02:08:24 GMT
+content-type: text/html
+cf-ray: 9f3284d8293b3b57-GVA
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 336ms:
+fc07457586183f32bf88ca65ada62c819bc164e4	refs/tags/v1.0.0.RELEASE
+
+exec
+/usr/bin/bash -lc "curl -fsSI https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE-sources.jar | sed -n '1,12p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE.pom | sed -n '1,180p' || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+exec
+/usr/bin/bash -lc "curl -fsSI https://github.com/r2dbc/r2dbc-spi/tree/v1.0.0.RELEASE/r2dbc-spi/src/test | sed -n '1,12p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/ | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/r2dbc/r2dbc-spi/1.0.0.RELEASE</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/r2dbc/r2dbc-spi/1.0.0.RELEASE</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="r2dbc-spi-1.0.0.RELEASE-javadoc.jar" title="r2dbc-spi-1.0.0.RELEASE-javadoc.jar">r2dbc-spi-1.0.0.RELEASE-javadoc.jar</a>               2022-04-25 12:54    295226      
+<a href="r2dbc-spi-1.0.0.RELEASE-javadoc.jar.asc" title="r2dbc-spi-1.0.0.RELEASE-javadoc.jar.asc">r2dbc-spi-1.0.0.RELEASE-javadoc.jar.asc</a>           2022-04-25 12:54       833      
+<a href="r2dbc-spi-1.0.0.RELEASE-javadoc.jar.md5" title="r2dbc-spi-1.0.0.RELEASE-javadoc.jar.md5">r2dbc-spi-1.0.0.RELEASE-javadoc.jar.md5</a>           2022-04-25 12:54        32      
+<a href="r2dbc-spi-1.0.0.RELEASE-javadoc.jar.sha1" title="r2dbc-spi-1.0.0.RELEASE-javadoc.jar.sha1">r2dbc-spi-1.0.0.RELEASE-javadoc.jar.sha1</a>          2022-04-25 12:54        40      
+<a href="r2dbc-spi-1.0.0.RELEASE-sources.jar" title="r2dbc-spi-1.0.0.RELEASE-sources.jar">r2dbc-spi-1.0.0.RELEASE-sources.jar</a>               2022-04-25 12:54     73617      
+<a href="r2dbc-spi-1.0.0.RELEASE-sources.jar.asc" title="r2dbc-spi-1.0.0.RELEASE-sources.jar.asc">r2dbc-spi-1.0.0.RELEASE-sources.jar.asc</a>           2022-04-25 12:54       833      
+<a href="r2dbc-spi-1.0.0.RELEASE-sources.jar.md5" title="r2dbc-spi-1.0.0.RELEASE-sources.jar.md5">r2dbc-spi-1.0.0.RELEASE-sources.jar.md5</a>           2022-04-25 12:54        32      
+<a href="r2dbc-spi-1.0.0.RELEASE-sources.jar.sha1" title="r2dbc-spi-1.0.0.RELEASE-sources.jar.sha1">r2dbc-spi-1.0.0.RELEASE-sources.jar.sha1</a>          2022-04-25 12:54        40      
+<a href="r2dbc-spi-1.0.0.RELEASE.jar" title="r2dbc-spi-1.0.0.RELEASE.jar">r2dbc-spi-1.0.0.RELEASE.jar</a>                       2022-04-25 12:54     67645      
+<a href="r2dbc-spi-1.0.0.RELEASE.jar.asc" title="r2dbc-spi-1.0.0.RELEASE.jar.asc">r2dbc-spi-1.0.0.RELEASE.jar.asc</a>                   2022-04-25 12:54       833      
+<a href="r2dbc-spi-1.0.0.RELEASE.jar.md5" title="r2dbc-spi-1.0.0.RELEASE.jar.md5">r2dbc-spi-1.0.0.RELEASE.jar.md5</a>                   2022-04-25 12:54        32      
+<a href="r2dbc-spi-1.0.0.RELEASE.jar.sha1" title="r2dbc-spi-1.0.0.RELEASE.jar.sha1">r2dbc-spi-1.0.0.RELEASE.jar.sha1</a>                  2022-04-25 12:54        40      
+<a href="r2dbc-spi-1.0.0.RELEASE.pom" title="r2dbc-spi-1.0.0.RELEASE.pom">r2dbc-spi-1.0.0.RELEASE.pom</a>                       2022-04-25 12:54      2583      
+<a href="r2dbc-spi-1.0.0.RELEASE.pom.asc" title="r2dbc-spi-1.0.0.RELEASE.pom.asc">r2dbc-spi-1.0.0.RELEASE.pom.asc</a>                   2022-04-25 12:54       833      
+<a href="r2dbc-spi-1.0.0.RELEASE.pom.md5" title="r2dbc-spi-1.0.0.RELEASE.pom.md5">r2dbc-spi-1.0.0.RELEASE.pom.md5</a>                   2022-04-25 12:54        32      
+<a href="r2dbc-spi-1.0.0.RELEASE.pom.sha1" title="r2dbc-spi-1.0.0.RELEASE.pom.sha1">r2dbc-spi-1.0.0.RELEASE.pom.sha1</a>                  2022-04-25 12:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 190ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:08:32 GMT
+content-type: application/java-archive
+content-length: 38219
+cf-ray: 9f3285091e783b58-GVA
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "9ec83cdf72734c9def06f4803ceee9d5"
+last-modified: Mon, 25 Apr 2022 12:54:46 GMT
+x-checksum-md5: 9ec83cdf72734c9def06f4803ceee9d5
+x-checksum-sha1: 911cf3d60a4b9a35775992515ebe961078a34464
+server: cloudflare
+
+ succeeded in 281ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2017-2022 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.r2dbc</groupId>
+    <artifactId>r2dbc-spi-parent</artifactId>
+    <version>1.0.0.RELEASE</version>
+  </parent>
+  <groupId>io.r2dbc</groupId>
+  <artifactId>r2dbc-spi-test</artifactId>
+  <version>1.0.0.RELEASE</version>
+  <name>Reactive Relational Database Connectivity - SPI Test</name>
+  <description>Parent module for Reactive Relational Database Connectivity</description>
+  <url>https://r2dbc.io/r2dbc-spi-test</url>
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Ben Hale</name>
+      <email>bhale@pivotal.io</email>
+    </developer>
+    <developer>
+      <name>Mark Paluch</name>
+      <email>mpaluch@vmware.com</email>
+    </developer>
+    <developer>
+      <name>Mirro Mutth</name>
+      <email>mirromutth@gmail.com</email>
+    </developer>
+    <developer>
+      <name>Greg Turnquist</name>
+      <email>gturnquist@pivotal.io</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/r2dbc/r2dbc-spi/r2dbc-spi-test</connection>
+    <url>https://github.com/r2dbc/r2dbc-spi/r2dbc-spi-test</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+      <version>3.3.22.RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <version>3.3.22.RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.r2dbc</groupId>
+      <artifactId>r2dbc-spi</artifactId>
+      <version>1.0.0.RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.8.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>5.3.19</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 564ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 02:08:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"acc44eaeec8efb61db9127827e214f20"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+
+web search: 
+web search: r2dbc 1.0.0.RELEASE spec html documentation
+web search: 
+web search: https://r2dbc.io/spec/1.0.0.RELEASE/spec/html/
+web search: 
+web search: https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://["'^'"\\\"]*/[0-9]["'^'"\\\"]*\"' metadata | head -40" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/0.9.1.RELEASE/r2dbc-spi-0.9.1.RELEASE-javadoc.jar",
+metadata/org.osgi/org.osgi.annotation.versioning/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/osgi/org.osgi.annotation.versioning/1.1.2/org.osgi.annotation.versioning-1.1.2-javadoc.jar",
+metadata/org.codehaus.mojo/animal-sniffer-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.17/animal-sniffer-annotations-1.17-javadoc.jar",
+metadata/org.codehaus.woodstox/stax2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/woodstox/stax2-api/4.2.2/stax2-api-4.2.2-javadoc.jar",
+metadata/javax.el/javax.el-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0-javadoc.jar",
+metadata/org.testcontainers/testcontainers/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8-javadoc.jar",
+metadata/org.testcontainers/testcontainers/index.json:39:    "documentation-url" : "https://repo1.maven.org/maven2/org/testcontainers/testcontainers/1.17.6/testcontainers-1.17.6-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.5/httpclient-4.5.5-javadoc.jar",
+metadata/org.apache.httpcomponents/httpclient/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14-javadoc.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/3.0.0/jakarta.validation-api-3.0.0-javadoc.jar",
+metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-docs.zip",
+metadata/com.zaxxer/HikariCP/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/4.0.3/HikariCP-4.0.3-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:21:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/5.0.1/HikariCP-5.0.1-javadoc.jar",
+metadata/com.zaxxer/HikariCP/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/com/zaxxer/HikariCP/6.0.0/HikariCP-6.0.0-javadoc.jar",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:9:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.1.0/webapps/docs",
+metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json:88:    "documentation-url" : "https://github.com/apache/tomcat/tree/10.0.20/webapps/docs",
+metadata/werken-xpath/werken-xpath/index.json:8:    "documentation-url" : "https://sources.debian.org/src/werken.xpath/0.9.4-16/apidocs/",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.32/snakeyaml-1.32-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+metadata/org.slf4j/slf4j-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-site/1.5.3/slf4j-site-1.5.3-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36-javadoc.jar",
+metadata/javax.annotation/javax.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2-javadoc.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-javadoc.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-javadoc.jar",
+metadata/org.objenesis/objenesis/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis/3.2/objenesis-3.2-javadoc.jar",
+metadata/com.vaadin.external.google/android-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.36.0/artemis-jms-client-2.36.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.32.0/artemis-jms-client-2.32.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.29.0/artemis-jms-client-2.29.0-javadoc.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/2.28.0/artemis-jms-client-2.28.0-javadoc.jar",
+metadata/com.squareup.okio/okio/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2-javadoc.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+metadata/javax.servlet.jsp/jsp-api/index.json:8:    "documentation-url" : "https://javadoc.io/doc/javax.servlet.jsp/jsp-api/2.1",
+
+exec
+/usr/bin/bash -lc "rg -n 'r2dbc.io/spec/.*/spec/html|r2dbc.io/spec/.*/api|repo1.maven.org.*/javadoc.jar' metadata/io.r2dbc metadata | head -80" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+web search: 
+web search: repo1.maven.org io r2dbc r2dbc-spi 1.0.0.RELEASE javadoc sources
+web search: 
+web search: https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/
+web search: 
+web search: https://r2dbc.io/spec/1.0.0.RELEASE/spec/html/
+codex
+I’m going to fill the first entry with exact-version Maven source/Javadoc artifacts, the canonical GitHub root, and the published Maven `r2dbc-spi-test` source jar for the test suite because that exists for the same release. No `language` field will be added since this is a JVM/Java SPI, not a Kotlin- or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/metadata/io.r2dbc/r2dbc-spi/index.json
+diff --git a/metadata/io.r2dbc/r2dbc-spi/index.json b/metadata/io.r2dbc/r2dbc-spi/index.json
+index 0c1b41307d523978a9cd539e8621fe3b5463f392..21741fb1419ffd5ef480498cbd8ec14543e7f1df
+--- a/metadata/io.r2dbc/r2dbc-spi/index.json
++++ b/metadata/io.r2dbc/r2dbc-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0.RELEASE",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-sources.jar",
++    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-javadoc.jar",
++    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+     "tested-versions" : [
+       "1.0.0.RELEASE"
+     ],
+
+diff --git a/metadata/io.r2dbc/r2dbc-spi/index.json b/metadata/io.r2dbc/r2dbc-spi/index.json
+index 0c1b41307d523978a9cd539e8621fe3b5463f392..21741fb1419ffd5ef480498cbd8ec14543e7f1df
+--- a/metadata/io.r2dbc/r2dbc-spi/index.json
++++ b/metadata/io.r2dbc/r2dbc-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0.RELEASE",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-sources.jar",
++    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-javadoc.jar",
++    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+     "tested-versions" : [
+       "1.0.0.RELEASE"
+     ],
+
+codex
+The JSON patch is in place. I’ll do a quick structural validation and run the targeted metadata check for this coordinate so the change is not just syntactically correct.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.0.0.RELEASE\")' metadata/io.r2dbc/r2dbc-spi/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.0.0.RELEASE",
+  "source-code-url": "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-sources.jar",
+  "repository-url": "https://github.com/r2dbc/r2dbc-spi",
+  "test-code-url": "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE-sources.jar",
+  "documentation-url": "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-javadoc.jar",
+  "description": "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+  "tested-versions": [
+    "1.0.0.RELEASE"
+  ],
+  "allowed-packages": [
+    "io.r2dbc.spi"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.r2dbc/r2dbc-spi/index.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+ succeeded in 0ms:
+diff --git i/metadata/io.r2dbc/r2dbc-spi/index.json w/metadata/io.r2dbc/r2dbc-spi/index.json
+index 0c1b41307d..21741fb141 100644
+--- i/metadata/io.r2dbc/r2dbc-spi/index.json
++++ w/metadata/io.r2dbc/r2dbc-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0.RELEASE",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-sources.jar",
++    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-javadoc.jar",
++    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+     "tested-versions" : [
+       "1.0.0.RELEASE"
+     ],
+
+diff --git a/metadata/io.r2dbc/r2dbc-spi/index.json b/metadata/io.r2dbc/r2dbc-spi/index.json
+index 0c1b41307d523978a9cd539e8621fe3b5463f392..21741fb1419ffd5ef480498cbd8ec14543e7f1df
+--- a/metadata/io.r2dbc/r2dbc-spi/index.json
++++ b/metadata/io.r2dbc/r2dbc-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0.RELEASE",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-sources.jar",
++    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-javadoc.jar",
++    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+     "tested-versions" : [
+       "1.0.0.RELEASE"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=io.r2dbc:r2dbc-spi:1.0.0.RELEASE --stacktrace' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d
+diff --git a/metadata/io.r2dbc/r2dbc-spi/index.json b/metadata/io.r2dbc/r2dbc-spi/index.json
+index 0c1b41307d523978a9cd539e8621fe3b5463f392..21741fb1419ffd5ef480498cbd8ec14543e7f1df
+--- a/metadata/io.r2dbc/r2dbc-spi/index.json
++++ b/metadata/io.r2dbc/r2dbc-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0.RELEASE",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-sources.jar",
++    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-javadoc.jar",
++    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+     "tested-versions" : [
+       "1.0.0.RELEASE"
+     ],
+
+ exited 1 in 3116ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for io.r2dbc:r2dbc-spi:1.0.0.RELEASE: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/metadata/io.r2dbc/r2dbc-spi/1.0.0.RELEASE/
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - io.r2dbc:r2dbc-spi:1.0.0.RELEASE: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/metadata/io.r2dbc/r2dbc-spi/1.0.0.RELEASE/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - io.r2dbc:r2dbc-spi:1.0.0.RELEASE: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/metadata/io.r2dbc/r2dbc-spi/1.0.0.RELEASE/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: Central Repository io/r2dbc/r2dbc-spi/1.0.0.RELEASE r2dbc-spi-1.0.0.RELEASE-sources.jar
+web search: 
+web search: github.com r2dbc r2dbc-spi v1.0.0.RELEASE tag r2dbc-spi
+codex
+Updated [index.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/metadata/io.r2dbc/r2dbc-spi/index.json:4) for `metadata-version` `1.0.0.RELEASE`.
+
+Filled the missing source, repository, test suite, documentation, and two-sentence description fields. I used the exact Maven Central `1.0.0.RELEASE` source/Javadoc artifacts and the Maven `r2dbc-spi-test` source artifact for the test suite. ([repo1.maven.org](https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/?utm_source=openai))
+
+I left `language` absent because `r2dbc-spi` is not Kotlin- or Scala-specific. JSON validation with `jq` passed. The targeted `./gradlew checkMetadataFiles -Pcoordinates=io.r2dbc:r2dbc-spi:1.0.0.RELEASE --stacktrace` check failed because the repository is missing `metadata/io.r2dbc/r2dbc-spi/1.0.0.RELEASE/reachability-metadata.json`, which is unrelated to these URL/description fields.
+diff --git a/metadata/io.r2dbc/r2dbc-spi/index.json b/metadata/io.r2dbc/r2dbc-spi/index.json
+index 0c1b41307d523978a9cd539e8621fe3b5463f392..21741fb1419ffd5ef480498cbd8ec14543e7f1df
+--- a/metadata/io.r2dbc/r2dbc-spi/index.json
++++ b/metadata/io.r2dbc/r2dbc-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.0.0.RELEASE",
++    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-sources.jar",
++    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
++    "test-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi-test/1.0.0.RELEASE/r2dbc-spi-test-1.0.0.RELEASE-sources.jar",
++    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/r2dbc-spi-1.0.0.RELEASE-javadoc.jar",
++    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+     "tested-versions" : [
+       "1.0.0.RELEASE"
+     ],
+
+2026-04-28T02:09:55.433913Z ERROR codex_core::session: failed to record rollout items: thread 019dd1d7-a32e-7552-b7ef-729fb6309b9a not found
+tokens used
+108,218
+Updated [index.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/metadata/io.r2dbc/r2dbc-spi/index.json:4) for `metadata-version` `1.0.0.RELEASE`.
+
+Filled the missing source, repository, test suite, documentation, and two-sentence description fields. I used the exact Maven Central `1.0.0.RELEASE` source/Javadoc artifacts and the Maven `r2dbc-spi-test` source artifact for the test suite. ([repo1.maven.org](https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/1.0.0.RELEASE/?utm_source=openai))
+
+I left `language` absent because `r2dbc-spi` is not Kotlin- or Scala-specific. JSON validation with `jq` passed. The targeted `./gradlew checkMetadataFiles -Pcoordinates=io.r2dbc:r2dbc-spi:1.0.0.RELEASE --stacktrace` check failed because the repository is missing `metadata/io.r2dbc/r2dbc-spi/1.0.0.RELEASE/reachability-metadata.json`, which is unrelated to these URL/description fields.
+Ran agent for io.r2dbc:r2dbc-spi:1.0.0.RELEASE (exit 0). Log: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/build/agent-url-discovery-logs/io.r2dbc-r2dbc-spi-1.0.0.RELEASE.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2567-2d0e626d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 13s
+9 actionable tasks: 1 executed, 8 up-to-date
