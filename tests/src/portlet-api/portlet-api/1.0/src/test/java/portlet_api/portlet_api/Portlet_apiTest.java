@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +29,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -267,6 +267,31 @@ public class Portlet_apiTest {
         assertThat(preferences.getMap()).containsKeys("theme", "columns");
     }
 
+    @Test
+    void portletContextExposesResourcesDispatchersAndDiagnosticsThroughPublicInterface() throws Exception {
+        RecordingPortletContext context = new RecordingPortletContext();
+        RecordingRenderResponse response = new RecordingRenderResponse();
+        RenderRequest request = new TestRenderRequest(WindowState.NORMAL, PortletMode.VIEW);
+
+        context.getRequestDispatcher("/WEB-INF/view.jsp").include(request, response);
+        context.getNamedDispatcher("header").include(request, response);
+        context.log("rendered");
+        context.log("failed", new IllegalStateException("boom"));
+
+        assertThat(new String(context.getResourceAsStream("/index.html").readAllBytes(), StandardCharsets.UTF_8))
+                .isEqualTo("/index.html");
+        assertThat(context.getMimeType("/index.html")).isEqualTo("text/html");
+        assertThat(context.getMimeType("/assets/app.bin")).isEqualTo("application/octet-stream");
+        assertThat(context.getRealPath("/index.html")).isEqualTo("/portal/index.html");
+        assertThat(context.getResource("/index.html")).isEqualTo(new URL("file", "", "/portal/index.html"));
+        assertThat(context.getResourcePaths("/public")).containsExactly("/public/index.html");
+        assertThat(context.getPortletContextName()).isEqualTo("sample-context");
+        assertThat(context.getInitParameter("application")).isEqualTo("sample");
+        assertThat(Collections.list(context.getInitParameterNames())).containsExactly("application");
+        assertThat(response.writer.toString()).isEqualTo("included:/WEB-INF/view.jspincluded:header");
+        assertThat(context.getAttribute("lastLog")).isEqualTo("failed:IllegalStateException");
+    }
+
     private static void assertRenderModeDispatchesTo(RecordingGenericPortlet portlet, PortletMode mode,
             String expectedEvent) throws Exception {
         RecordingRenderResponse response = new RecordingRenderResponse();
@@ -325,10 +350,15 @@ public class Portlet_apiTest {
 
         @Override
         public ResourceBundle getResourceBundle(Locale locale) {
-            return new ListResourceBundle() {
+            return new ResourceBundle() {
                 @Override
-                protected Object[][] getContents() {
-                    return new Object[][] {{"javax.portlet.title", "Localized Sample Portlet"}};
+                protected Object handleGetObject(String key) {
+                    return "javax.portlet.title".equals(key) ? "Localized Sample Portlet" : null;
+                }
+
+                @Override
+                public Enumeration<String> getKeys() {
+                    return Collections.enumeration(List.of("javax.portlet.title"));
                 }
             };
         }
