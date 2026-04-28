@@ -9,6 +9,7 @@ package com_mchange.mchange_commons_java;
 import com.mchange.v2.naming.ReferenceableUtils;
 import org.junit.jupiter.api.Test;
 
+import javax.naming.CompositeName;
 import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.Reference;
@@ -30,7 +31,7 @@ public class ReferenceableUtilsTest {
 
         Object resolved = ReferenceableUtils.referenceToObject(
             reference,
-            null,
+            new CompositeName("java:comp/env/example"),
             null,
             environment,
             Collections.singleton(CapturingObjectFactory.class.getName())
