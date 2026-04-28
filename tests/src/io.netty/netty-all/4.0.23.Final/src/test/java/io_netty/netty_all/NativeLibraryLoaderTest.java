@@ -121,7 +121,7 @@ public class NativeLibraryLoaderTest {
             return null;
         }
 
-        private List<String> resourceNames() {
+        protected List<String> resourceNames() {
             return resourceNames;
         }
     }
