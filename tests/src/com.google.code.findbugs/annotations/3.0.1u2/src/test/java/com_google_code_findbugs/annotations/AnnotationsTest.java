@@ -25,10 +25,15 @@ import javax.annotation.meta.TypeQualifierValidator;
 import edu.umd.cs.findbugs.annotations.CleanupObligation;
 import edu.umd.cs.findbugs.annotations.Confidence;
 import edu.umd.cs.findbugs.annotations.CreatesObligation;
+import edu.umd.cs.findbugs.annotations.DefaultAnnotation;
+import edu.umd.cs.findbugs.annotations.DefaultAnnotationForFields;
+import edu.umd.cs.findbugs.annotations.DefaultAnnotationForMethods;
+import edu.umd.cs.findbugs.annotations.DefaultAnnotationForParameters;
 import edu.umd.cs.findbugs.annotations.DesireWarning;
 import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import edu.umd.cs.findbugs.annotations.ExpectWarning;
 import edu.umd.cs.findbugs.annotations.NoWarning;
+import edu.umd.cs.findbugs.annotations.Priority;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.jupiter.api.Test;
 
@@ -140,6 +145,47 @@ public class AnnotationsTest {
         assertThat(jcipGuardedBy.annotationType()).isSameAs(net.jcip.annotations.GuardedBy.class);
         assertThat(concurrentGuardedBy.value()).isEqualTo("stateLock");
         assertThat(concurrentGuardedBy.annotationType()).isSameAs(javax.annotation.concurrent.GuardedBy.class);
+    }
+
+    @Test
+    void defaultQualifierAnnotationsExposeConfiguredScopesAndPriorities() {
+        DefaultAnnotation defaultAnnotation = defaultAnnotation(
+                Priority.MEDIUM,
+                Confidence.HIGH,
+                annotationTypes(Nonnull.class, CheckReturnValue.class));
+        DefaultAnnotationForFields defaultAnnotationForFields = defaultAnnotationForFields(
+                Priority.HIGH,
+                Confidence.MEDIUM,
+                annotationTypes(CheckForNull.class, Nullable.class));
+        DefaultAnnotationForMethods defaultAnnotationForMethods = defaultAnnotationForMethods(
+                Priority.LOW,
+                Confidence.LOW,
+                annotationTypes(Nonnull.class, CheckReturnValue.class));
+        DefaultAnnotationForParameters defaultAnnotationForParameters = defaultAnnotationForParameters(
+                Priority.IGNORE,
+                Confidence.IGNORE,
+                annotationTypes(Nullable.class, CheckForNull.class));
+
+        assertThat(defaultAnnotation.value()).containsExactly(Nonnull.class, CheckReturnValue.class);
+        assertThat(defaultAnnotation.priority()).isSameAs(Priority.MEDIUM);
+        assertThat(defaultAnnotation.confidence()).isSameAs(Confidence.HIGH);
+        assertThat(defaultAnnotation.annotationType()).isSameAs(DefaultAnnotation.class);
+
+        assertThat(defaultAnnotationForFields.value()).containsExactly(CheckForNull.class, Nullable.class);
+        assertThat(defaultAnnotationForFields.priority()).isSameAs(Priority.HIGH);
+        assertThat(defaultAnnotationForFields.confidence()).isSameAs(Confidence.MEDIUM);
+        assertThat(defaultAnnotationForFields.annotationType()).isSameAs(DefaultAnnotationForFields.class);
+
+        assertThat(defaultAnnotationForMethods.value()).containsExactly(Nonnull.class, CheckReturnValue.class);
+        assertThat(defaultAnnotationForMethods.priority()).isSameAs(Priority.LOW);
+        assertThat(defaultAnnotationForMethods.priority().getPriorityValue()).isEqualTo(3);
+        assertThat(defaultAnnotationForMethods.confidence()).isSameAs(Confidence.LOW);
+        assertThat(defaultAnnotationForMethods.annotationType()).isSameAs(DefaultAnnotationForMethods.class);
+
+        assertThat(defaultAnnotationForParameters.value()).containsExactly(Nullable.class, CheckForNull.class);
+        assertThat(defaultAnnotationForParameters.priority()).isSameAs(Priority.IGNORE);
+        assertThat(defaultAnnotationForParameters.confidence()).isSameAs(Confidence.IGNORE);
+        assertThat(defaultAnnotationForParameters.annotationType()).isSameAs(DefaultAnnotationForParameters.class);
     }
 
     @Test
@@ -330,6 +376,119 @@ public class AnnotationsTest {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return Nonnegative.class;
+            }
+        };
+    }
+
+    @SafeVarargs
+    private static Class<? extends Annotation>[] annotationTypes(Class<? extends Annotation>... value) {
+        return value;
+    }
+
+    private static DefaultAnnotation defaultAnnotation(
+            Priority priority,
+            Confidence confidence,
+            Class<? extends Annotation>[] value) {
+        return new DefaultAnnotation() {
+            @Override
+            public Class<? extends Annotation>[] value() {
+                return value;
+            }
+
+            @Override
+            public Priority priority() {
+                return priority;
+            }
+
+            @Override
+            public Confidence confidence() {
+                return confidence;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return DefaultAnnotation.class;
+            }
+        };
+    }
+
+    private static DefaultAnnotationForFields defaultAnnotationForFields(
+            Priority priority,
+            Confidence confidence,
+            Class<? extends Annotation>[] value) {
+        return new DefaultAnnotationForFields() {
+            @Override
+            public Class<? extends Annotation>[] value() {
+                return value;
+            }
+
+            @Override
+            public Priority priority() {
+                return priority;
+            }
+
+            @Override
+            public Confidence confidence() {
+                return confidence;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return DefaultAnnotationForFields.class;
+            }
+        };
+    }
+
+    private static DefaultAnnotationForMethods defaultAnnotationForMethods(
+            Priority priority,
+            Confidence confidence,
+            Class<? extends Annotation>[] value) {
+        return new DefaultAnnotationForMethods() {
+            @Override
+            public Class<? extends Annotation>[] value() {
+                return value;
+            }
+
+            @Override
+            public Priority priority() {
+                return priority;
+            }
+
+            @Override
+            public Confidence confidence() {
+                return confidence;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return DefaultAnnotationForMethods.class;
+            }
+        };
+    }
+
+    private static DefaultAnnotationForParameters defaultAnnotationForParameters(
+            Priority priority,
+            Confidence confidence,
+            Class<? extends Annotation>[] value) {
+        return new DefaultAnnotationForParameters() {
+            @Override
+            public Class<? extends Annotation>[] value() {
+                return value;
+            }
+
+            @Override
+            public Priority priority() {
+                return priority;
+            }
+
+            @Override
+            public Confidence confidence() {
+                return confidence;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return DefaultAnnotationForParameters.class;
             }
         };
     }
