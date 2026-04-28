@@ -144,6 +144,30 @@ public class JtaTest {
     }
 
     @Test
+    void transactionSetRollbackOnlyRejectsNewTransactionalWorkUntilRollback() throws Exception {
+        InMemoryTransactionManager manager = new InMemoryTransactionManager();
+        TransactionSynchronizationRegistry registry = manager;
+        manager.begin();
+        Transaction transaction = manager.getTransaction();
+
+        transaction.setRollbackOnly();
+
+        assertThat(transaction.getStatus()).isEqualTo(Status.STATUS_MARKED_ROLLBACK);
+        assertThat(registry.getRollbackOnly()).isTrue();
+        assertThatThrownBy(() -> transaction.enlistResource(new RecordingXaResource("late")))
+                .isInstanceOf(RollbackException.class)
+                .hasMessage("transaction was marked rollback-only");
+        assertThatThrownBy(() -> transaction.registerSynchronization(new RecordingSynchronization("late")))
+                .isInstanceOf(RollbackException.class)
+                .hasMessage("transaction was marked rollback-only");
+
+        transaction.rollback();
+
+        assertThat(transaction.getStatus()).isEqualTo(Status.STATUS_ROLLEDBACK);
+        assertThat(manager.getStatus()).isEqualTo(Status.STATUS_ROLLEDBACK);
+    }
+
+    @Test
     void xaPrepareFailureIsMappedToSystemExceptionWithTheXaErrorCode() throws Exception {
         InMemoryTransactionManager manager = new InMemoryTransactionManager();
         manager.begin();
