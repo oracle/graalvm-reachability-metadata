@@ -45,7 +45,7 @@ public class AbstractMapCodecTest {
         return document;
     }
 
-    public static class StringMap extends LinkedHashMap<String, String> {
+    public static class StringMap<K, V> extends LinkedHashMap<K, V> {
         private static final long serialVersionUID = 1L;
     }
 }
