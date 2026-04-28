@@ -159,6 +159,14 @@ public class Org_osgi_annotation_bundleTest {
     }
 
     @Test
+    void attributeAndDirectiveSupportTypeSafeComposedCapabilityAnnotations() {
+        MetricsExporter exporter = new AnnotatedMetricsExporter();
+
+        assertThat(exporter.export("latency", 7)).isEqualTo("latency:7:otlp");
+        assertThat(exporter.listener().name()).isEqualTo("export-listener");
+    }
+
+    @Test
     void classLevelAnnotationsCanBeUsedOnRegularApplicationTypes() {
         MetricsService component = new AnnotatedComponent();
 
@@ -190,6 +198,38 @@ public class Org_osgi_annotation_bundleTest {
 
     private interface MetricsListener {
         String name();
+    }
+
+    private interface MetricsExporter {
+        String export(String metric, long value);
+
+        MetricsListener listener();
+    }
+
+    @Capability(namespace = "osgi.service", name = "com.acme.telemetry.MetricsExporter")
+    @Requirement(namespace = "osgi.extender", name = "osgi.component", resolution = Resolution.OPTIONAL)
+    private @interface TelemetryExporterCapability {
+        @Attribute("service.ranking:Long")
+        int serviceRanking() default 250;
+
+        @Attribute("vendor")
+        String vendor() default "Acme";
+
+        @Directive("effective")
+        String effective() default "active";
+    }
+
+    @TelemetryExporterCapability(serviceRanking = 500, vendor = "Telemetry Labs")
+    private static final class AnnotatedMetricsExporter implements MetricsExporter {
+        @Override
+        public String export(String metric, long value) {
+            return metric + ":" + value + ":otlp";
+        }
+
+        @Override
+        public MetricsListener listener() {
+            return () -> "export-listener";
+        }
     }
 
     private static final class AnnotatedClause {
