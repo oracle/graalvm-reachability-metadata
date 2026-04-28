@@ -1,0 +1,219 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+OpenAI Codex v0.110.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4
+model: gpt-5.3-codex
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd193-c411-70c3-b279-c0e9e44e9484
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.projectlombok:lombok:1.18.20
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.18.20".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4/build/discovered-artifact-metadata/org.projectlombok-lombok-1.18.20.json
+- Set "coordinates" to "org.projectlombok:lombok:1.18.20".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+mcp startup: no servers
+codex
+I’ll verify authoritative URLs for `org.projectlombok:lombok:1.18.20` (preferring Maven-hosted artifacts when available), then update the target JSON with exact-version links and a two-sentence description. I’m starting by checking Maven Central and the Lombok tag structure.
+🌐 Searching the web...
+🌐 Searched: Maven Central org.projectlombok lombok 1.18.20 sources jar
+🌐 Searching the web...
+🌐 Searched: https://repo.maven.apache.org/maven2/org/projectlombok/lombok/1.18.20/
+🌐 Searching the web...
+🌐 Searched the web
+🌐 Searching the web...
+🌐 Searched the web
+codex
+I confirmed Maven Central has exact-version `sources` and `javadoc` artifacts for `1.18.20`; next I’ll pull the POM and tag info directly to lock down repository and test URLs with confidence.
+exec
+/usr/bin/zsh -lc "set -e
+curl -fsSL https://raw.githubusercontent.com/projectlombok/lombok/v1.18.20/README.md | sed -n '1,120p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4exec
+/usr/bin/zsh -lc "set -e
+curl -fsSL https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20.pom | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4exec
+/usr/bin/zsh -lc "set -e
+curl -fsSL https://api.github.com/repos/projectlombok/lombok/git/refs/tags/v1.18.20 | sed -n '1,120p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4 succeeded in 82ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+	<packaging>jar</packaging>
+	<version>1.18.20</version>
+	<name>Project Lombok</name>
+	<url>https://projectlombok.org</url>
+	<description>Spice up your java: Automatic Resource Management, automatic generation of getters, setters, equals, hashCode and toString, and more!</description>
+	<dependencies></dependencies>
+	<licenses>
+		<license>
+			<name>The MIT License</name>
+			<url>https://projectlombok.org/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:git://github.com/rzwitserloot/lombok.git</connection>
+ succeeded in 191ms:
+# Project Lombok
+
+Project Lombok is a java library that automatically plugs into your editor and build tools, spicing up your java.
+Never write another getter or equals method again, with one annotation your class has a fully featured builder, automate your logging variables, and much more.
+
+See [LICENSE] for the Project Lombok license.
+
+Looking for professional support of Project Lombok? Lombok is now part of a [tidelift subscription]!
+
+For a list of all authors, see the [AUTHORS] file. 
+
+For complete project information, see [projectlombok.org]
+
+You can review our security policy via [SECURITY.md]
+
+[LICENSE]: https://github.com/rzwitserloot/lombok/blob/master/LICENSE
+[AUTHORS]: https://github.com/rzwitserloot/lombok/blob/master/AUTHORS
+[SECURITY.md]: https://github.com/rzwitserloot/lombok/blob/master/SECURITY.md
+[projectlombok.org]: https://projectlombok.org/
+[tidelift subscription]: https://tidelift.com/subscription/pkg/maven-org-projectlombok-lombok?utm_source=maven-org-projectlombok-lombok&utm_medium=referral&campaign=website
+ succeeded in 199ms:
+{
+  "ref": "refs/tags/v1.18.20",
+  "node_id": "MDM6UmVmMjIxODYyOnJlZnMvdGFncy92MS4xOC4yMA==",
+  "url": "https://api.github.com/repos/projectlombok/lombok/git/refs/tags/v1.18.20",
+  "object": {
+    "sha": "dda76a724b26f1a48ab16dab25cc2dcec477b6ed",
+    "type": "commit",
+    "url": "https://api.github.com/repos/projectlombok/lombok/git/commits/dda76a724b26f1a48ab16dab25cc2dcec477b6ed"
+  }
+}
+exec
+/usr/bin/zsh -lc "set -e
+curl -fsSL https://api.github.com/repos/projectlombok/lombok/contents?ref=v1.18.20 | jq -r '.[].name' | sed -n '1,120p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4 succeeded in 51ms:
+zsh:2: no matches found: https://api.github.com/repos/projectlombok/lombok/contents?ref=v1.18.20
+exec
+/usr/bin/zsh -lc "set -e
+curl -fsSL 'https://api.github.com/repos/projectlombok/lombok/contents?ref=v1.18.20' | jq -r '.[].name' | sed -n '1,200p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4 succeeded in 207ms:
+.github
+.gitignore
+AUTHORS
+LICENSE
+README.md
+SECURITY.md
+build.xml
+buildScripts
+doc
+docker
+experimental
+sendSupporters
+src
+ssh.knownHosts
+test
+website
+winsrc
+codex
+I verified the `v1.18.20` tag exists and includes a `test` directory. I’ll now check Maven Central for test artifacts to decide whether `test-code-url` should be Maven-based or the tagged GitHub test path.
+exec
+/usr/bin/zsh -lc "set -e
+base='https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/'
+for f in lombok-1.18.20-sources.jar lombok-1.18.20-test-sources.jar lombok-1.18.20-tests.jar lombok-1.18.20-javadoc.jar; do
+  code="'$(curl -o /dev/null -s -w '"'%{http_code}' \""'${base}${f}")
+  echo "$f $code"
+done' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4 succeeded in 995ms:
+lombok-1.18.20-sources.jar 200
+lombok-1.18.20-test-sources.jar 404
+lombok-1.18.20-tests.jar 404
+lombok-1.18.20-javadoc.jar 200
+exec
+/usr/bin/zsh -lc "sed -n '1,220p' /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4/build/discovered-artifact-metadata/org.projectlombok-lombok-1.18.20.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4 succeeded in 51ms:
+{
+  "coordinates" : "org.projectlombok:lombok:1.18.20"
+}
+codex
+I have all required values with confidence, including Maven-hosted source and javadoc artifacts and a tag-pinned test path. Next I’m updating the JSON file with those fields and the two-sentence description.
+exec
+/usr/bin/zsh -lc "cat > /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4/build/discovered-artifact-metadata/org.projectlombok-lombok-1.18.20.json <<'EOF'
+{
+  \"coordinates\" : \"org.projectlombok:lombok:1.18.20\",
+  \"source-code-url\" : \"https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20-sources.jar\",
+  \"repository-url\" : \"https://github.com/projectlombok/lombok\",
+  \"test-code-url\" : \"https://github.com/projectlombok/lombok/tree/v1.18.20/test\",
+  \"documentation-url\" : \"https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20-javadoc.jar\",
+  \"description\" : \"Project Lombok is a Java library that reduces boilerplate by generating common code such as getters, setters, constructors, builders, and logging fields via annotations. It integrates with Java compilers and IDEs to apply these transformations during development and build time.\"
+}
+EOF" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4 succeeded in 51ms:
+
+exec
+/usr/bin/zsh -lc 'jq . /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4/build/discovered-artifact-metadata/org.projectlombok-lombok-1.18.20.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4 succeeded in 51ms:
+{
+  "coordinates": "org.projectlombok:lombok:1.18.20",
+  "source-code-url": "https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20-sources.jar",
+  "repository-url": "https://github.com/projectlombok/lombok",
+  "test-code-url": "https://github.com/projectlombok/lombok/tree/v1.18.20/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20-javadoc.jar",
+  "description": "Project Lombok is a Java library that reduces boilerplate by generating common code such as getters, setters, constructors, builders, and logging fields via annotations. It integrates with Java compilers and IDEs to apply these transformations during development and build time."
+}
+codex
+Updated [org.projectlombok-lombok-1.18.20.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4/build/discovered-artifact-metadata/org.projectlombok-lombok-1.18.20.json) with:
+
+- `coordinates`: `org.projectlombok:lombok:1.18.20`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20-sources.jar`
+- `repository-url`: `https://github.com/projectlombok/lombok`
+- `test-code-url`: `https://github.com/projectlombok/lombok/tree/v1.18.20/test`
+- `documentation-url`: `https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20-javadoc.jar`
+- `description`: exactly two sentences
+
+`lombok` is not Kotlin- or Scala-specific, so the `language` field was left absent.
+tokens used
+15,426
+Updated [org.projectlombok-lombok-1.18.20.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4/build/discovered-artifact-metadata/org.projectlombok-lombok-1.18.20.json) with:
+
+- `coordinates`: `org.projectlombok:lombok:1.18.20`
+- `source-code-url`: `https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20-sources.jar`
+- `repository-url`: `https://github.com/projectlombok/lombok`
+- `test-code-url`: `https://github.com/projectlombok/lombok/tree/v1.18.20/test`
+- `documentation-url`: `https://repo1.maven.org/maven2/org/projectlombok/lombok/1.18.20/lombok-1.18.20-javadoc.jar`
+- `description`: exactly two sentences
+
+`lombok` is not Kotlin- or Scala-specific, so the `language` field was left absent.
+Ran agent for org.projectlombok:lombok:1.18.20 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4/build/agent-artifact-discovery-logs/org.projectlombok-lombok-1.18.20.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/1559-595c12b4/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 46s
+9 actionable tasks: 4 executed, 5 from cache

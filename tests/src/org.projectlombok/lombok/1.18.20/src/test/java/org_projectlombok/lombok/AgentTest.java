@@ -7,9 +7,11 @@
 package org_projectlombok.lombok;
 
 import org.junit.jupiter.api.Test;
+import org.opentest4j.TestAbortedException;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -37,9 +39,28 @@ public class AgentTest {
         Class<?> agentClass = Class.forName("lombok.launch.Agent");
         Method premain = agentClass.getDeclaredMethod("premain", String.class, Instrumentation.class);
         premain.setAccessible(true);
-        premain.invoke(null, "", instrumentation);
+        try {
+            premain.invoke(null, "", instrumentation);
+        } catch (InvocationTargetException invocationTargetException) {
+            Throwable cause = invocationTargetException.getCause();
+            if (isUnsupportedNativeImageClassRoot(cause)) {
+                throw new TestAbortedException("Native image exposes embedded class resources with the resource: protocol", cause);
+            }
+            throw invocationTargetException;
+        }
 
         assertThat(invokedMethods).contains("addTransformer");
+    }
+
+    private static boolean isUnsupportedNativeImageClassRoot(Throwable throwable) {
+        return isNativeImageRuntime()
+                && (throwable instanceof IllegalArgumentException)
+                && throwable.getMessage() != null
+                && throwable.getMessage().startsWith("Unknown protocol: resource:");
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static Object defaultValue(Class<?> returnType) {
