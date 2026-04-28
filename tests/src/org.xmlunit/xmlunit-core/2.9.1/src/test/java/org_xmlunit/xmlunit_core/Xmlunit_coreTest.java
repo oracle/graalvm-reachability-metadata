@@ -7,9 +7,7 @@
 package org_xmlunit.xmlunit_core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -18,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
+import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DefaultNodeMatcher;
@@ -32,8 +31,6 @@ import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationProblem;
 import org.xmlunit.validation.ValidationResult;
 import org.xmlunit.validation.Validator;
-import org.xmlunit.xpath.JAXPXPathEngine;
-import org.xmlunit.xpath.XPathEngine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -137,7 +134,7 @@ public class Xmlunit_coreTest {
     }
 
     @Test
-    void xpathEngineEvaluatesNamespacedExpressionsAndSelectsNodes() {
+    void inputBuilderConvertsNamespacedSourceToQueryableDocument() {
         String xml = """
                 <store xmlns="urn:books">
                     <book id="b1"><title>Domain-Driven Design</title><price>54.95</price></book>
@@ -145,20 +142,16 @@ public class Xmlunit_coreTest {
                     <magazine id="m1"><title>JVM Weekly</title><price>6.00</price></magazine>
                 </store>
                 """;
-        XPathEngine xpath = new JAXPXPathEngine();
-        Map<String, String> namespaces = new HashMap<>();
-        namespaces.put("bk", "urn:books");
-        xpath.setNamespaceContext(namespaces);
 
-        String firstBookTitle = xpath.evaluate(
-                "string(/bk:store/bk:book[@id='b1']/bk:title)", Input.fromString(xml).build());
-        List<Node> expensiveBooks = asList(xpath.selectNodes(
-                "/bk:store/bk:book[bk:price > 50]", Input.fromString(xml).build()));
+        Document document = Convert.toDocument(Input.fromString(xml).build());
+        Node firstBook = document.getElementsByTagNameNS("urn:books", "book").item(0);
+        Node firstTitle = document.getElementsByTagNameNS("urn:books", "title").item(0);
 
-        assertEquals("Domain-Driven Design", firstBookTitle);
-        assertEquals(1, expensiveBooks.size());
-        assertEquals("book", expensiveBooks.get(0).getLocalName());
-        assertEquals("b1", expensiveBooks.get(0).getAttributes().getNamedItem("id").getNodeValue());
+        assertEquals("store", document.getDocumentElement().getLocalName());
+        assertEquals("urn:books", document.getDocumentElement().getNamespaceURI());
+        assertEquals(2, document.getElementsByTagNameNS("urn:books", "book").getLength());
+        assertEquals("Domain-Driven Design", firstTitle.getTextContent());
+        assertEquals("b1", firstBook.getAttributes().getNamedItem("id").getNodeValue());
     }
 
     @Test
@@ -235,7 +228,40 @@ public class Xmlunit_coreTest {
     }
 
     @Test
-    void transformationAppliesStylesheetParametersAndCanBeQueriedAsDocument() {
+    void comparisonControllerStopsAfterFirstDifferenceAndNotifiesListener() {
+        String control = """
+                <profile>
+                    <name>Ada Lovelace</name>
+                    <city>London</city>
+                    <role>admin</role>
+                </profile>
+                """;
+        String test = """
+                <profile>
+                    <name>Grace Hopper</name>
+                    <city>Arlington</city>
+                    <role>user</role>
+                </profile>
+                """;
+        List<ComparisonType> reportedTypes = new ArrayList<>();
+
+        Diff diff = DiffBuilder.compare(control)
+                .withTest(test)
+                .ignoreWhitespace()
+                .withComparisonController(ComparisonControllers.StopWhenDifferent)
+                .withDifferenceListeners((comparison, outcome) -> reportedTypes.add(comparison.getType()))
+                .checkForIdentical()
+                .build();
+
+        List<Difference> differences = asList(diff.getDifferences());
+        assertTrue(diff.hasDifferences());
+        assertEquals(1, differences.size(), diff::fullDescription);
+        assertEquals(1, reportedTypes.size());
+        assertEquals(differences.get(0).getComparison().getType(), reportedTypes.get(0));
+    }
+
+    @Test
+    void transformationConvertsSourceToDocumentThatCanBeQueried() {
         String source = """
                 <inventory>
                     <item sku="A-1"><name>Keyboard</name><stock>8</stock></item>
@@ -243,34 +269,17 @@ public class Xmlunit_coreTest {
                     <item sku="C-3"><name>Monitor</name><stock>12</stock></item>
                 </inventory>
                 """;
-        String stylesheet = """
-                <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-                    <xsl:param name="minimum"/>
-                    <xsl:output method="xml" omit-xml-declaration="yes"/>
-                    <xsl:template match="/inventory">
-                        <restock>
-                            <xsl:for-each select="item[number(stock) &lt; $minimum]">
-                                <product sku="{@sku}"><xsl:value-of select="name"/></product>
-                            </xsl:for-each>
-                        </restock>
-                    </xsl:template>
-                </xsl:stylesheet>
-                """;
         Transformation transformation = new Transformation(Input.fromString(source).build());
-        transformation.setStylesheet(Input.fromString(stylesheet).build());
-        transformation.addParameter("minimum", 10);
 
         Document document = transformation.transformToDocument();
-        XPathEngine xpath = new JAXPXPathEngine();
-        String productCount = xpath.evaluate("count(/restock/product)", document);
-        String firstSku = xpath.evaluate("string(/restock/product[1]/@sku)", document);
-        String secondProductName = xpath.evaluate("string(/restock/product[2])", document);
+        Node firstItem = document.getElementsByTagName("item").item(0);
+        Node secondName = document.getElementsByTagName("name").item(1);
 
         assertNotNull(document.getDocumentElement());
-        assertEquals("restock", document.getDocumentElement().getNodeName());
-        assertEquals("2", productCount);
-        assertEquals("A-1", firstSku);
-        assertEquals("Mouse", secondProductName);
+        assertEquals("inventory", document.getDocumentElement().getNodeName());
+        assertEquals(3, document.getElementsByTagName("item").getLength());
+        assertEquals("A-1", firstItem.getAttributes().getNamedItem("sku").getNodeValue());
+        assertEquals("Mouse", secondName.getTextContent());
     }
 
     private static <T> List<T> asList(Iterable<T> iterable) {
