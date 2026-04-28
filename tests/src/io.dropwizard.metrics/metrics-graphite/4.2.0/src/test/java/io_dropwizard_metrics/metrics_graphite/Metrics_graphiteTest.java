@@ -183,12 +183,12 @@ public class Metrics_graphiteTest {
                     SocketFactory.getDefault(), charset);
 
             graphite.connect();
-            graphite.send("accented.metric", "café", 314L);
+            graphite.send("accented.metric", "caf\u00e9", 314L);
             graphite.flush();
             graphite.close();
 
             assertThat(receivedLine.get(5L, TimeUnit.SECONDS))
-                    .containsExactly("accented.metric café 314\n".getBytes(charset));
+                    .containsExactly("accented.metric caf\u00e9 314\n".getBytes(charset));
             assertThat(graphite.getFailures()).isZero();
             assertThat(graphite.isConnected()).isFalse();
         }
@@ -255,11 +255,11 @@ public class Metrics_graphiteTest {
                     10);
 
             graphite.connect();
-            graphite.send("café.metric", "olé", 123L);
+            graphite.send("caf\u00e9.metric", "ol\u00e9", 123L);
             graphite.flush();
 
             assertThat(new String(receivedPayload.get(5L, TimeUnit.SECONDS), charset))
-                    .isEqualTo("(l(S'café.metric'\n(L123L\nS'olé'\ntta.");
+                    .isEqualTo("(l(S'caf\u00e9.metric'\n(L123L\nS'ol\u00e9'\ntta.");
             assertThat(graphite.getFailures()).isZero();
             graphite.close();
             assertThat(graphite.isConnected()).isFalse();
