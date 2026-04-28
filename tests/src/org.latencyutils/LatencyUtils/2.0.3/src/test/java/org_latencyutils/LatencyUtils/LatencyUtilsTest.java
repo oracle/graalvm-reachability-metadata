@@ -104,6 +104,45 @@ public class LatencyUtilsTest {
     }
 
     @Test
+    void latencyStatsUsesConfiguredDefaultPauseDetectorWhenNoneIsProvided() {
+        PauseDetector previousDefaultDetector = LatencyStats.getDefaultPauseDetector();
+        TestPauseDetector defaultDetector = new TestPauseDetector();
+        LatencyStats builderStats = null;
+        LatencyStats constructorStats = null;
+        try {
+            LatencyStats.setDefaultPauseDetector(defaultDetector);
+
+            builderStats = LatencyStats.Builder.create()
+                    .lowestTrackableLatency(HISTOGRAM_LOWEST_LATENCY)
+                    .highestTrackableLatency(HISTOGRAM_HIGHEST_LATENCY)
+                    .numberOfSignificantValueDigits(HISTOGRAM_SIGNIFICANT_DIGITS)
+                    .intervalEstimatorWindowLength(2)
+                    .intervalEstimatorTimeCap(TimeUnit.SECONDS.toNanos(10L))
+                    .build();
+            constructorStats = new LatencyStats(
+                    HISTOGRAM_LOWEST_LATENCY,
+                    HISTOGRAM_HIGHEST_LATENCY,
+                    HISTOGRAM_SIGNIFICANT_DIGITS,
+                    2,
+                    TimeUnit.SECONDS.toNanos(10L),
+                    null);
+
+            assertThat(LatencyStats.getDefaultPauseDetector()).isSameAs(defaultDetector);
+            assertThat(builderStats.getPauseDetector()).isSameAs(defaultDetector);
+            assertThat(constructorStats.getPauseDetector()).isSameAs(defaultDetector);
+        } finally {
+            if (builderStats != null) {
+                builderStats.stop();
+            }
+            if (constructorStats != null) {
+                constructorStats.stop();
+            }
+            LatencyStats.setDefaultPauseDetector(previousDefaultDetector);
+            defaultDetector.shutdown();
+        }
+    }
+
+    @Test
     void latencyStatsRecordsIntervalsCopiesHistogramsAndResetsIntervalCounts() {
         TestPauseDetector detector = new TestPauseDetector();
         LatencyStats stats = LatencyStats.Builder.create()
