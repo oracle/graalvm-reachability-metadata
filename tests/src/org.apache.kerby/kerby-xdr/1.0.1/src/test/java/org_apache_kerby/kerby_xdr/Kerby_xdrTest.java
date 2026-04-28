@@ -116,7 +116,7 @@ public class Kerby_xdrTest {
 
     @Test
     void utf8AndAsciiStringHelpersConvertCaseSplitAndByteArrays() throws Exception {
-        String multilingual = "Kerby π 🚀";
+        String multilingual = "Kerby \u03C0 \uD83D\uDE80";
         assertThat(Utf8.toString(Utf8.toBytes(multilingual))).isEqualTo(multilingual);
         assertThat(XdrString.fromUTF8ByteArray(XdrString.toUTF8ByteArray(multilingual))).isEqualTo(multilingual);
 
