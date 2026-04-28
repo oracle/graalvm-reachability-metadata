@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 public class I18NHelperTest {
     private static final String TEST_BUNDLE = "org_datanucleus.javax_jdo.I18NHelperTestMessages";
+    private static final String SYSTEM_LOADER_BUNDLE = "org_datanucleus.javax_jdo.I18NHelperSystemLoaderMessages";
 
     @Test
     void loadsNamedResourceBundleWithProvidedClassLoader() {
@@ -23,5 +24,13 @@ public class I18NHelperTest {
         assertThat(helper.msg("plain")).isEqualTo("Metadata resource bundle loaded");
         assertThat(helper.msg("withArgument", "native image"))
                 .isEqualTo("Metadata resource bundle loaded for native image");
+    }
+
+    @Test
+    void loadsNamedResourceBundleWithSystemClassLoaderFallback() {
+        I18NHelper helper = I18NHelper.getInstance(SYSTEM_LOADER_BUNDLE, null);
+
+        assertThat(helper.getResourceBundle().getBaseBundleName()).isEqualTo(SYSTEM_LOADER_BUNDLE);
+        assertThat(helper.msg("plain")).isEqualTo("System class loader resource bundle loaded");
     }
 }
