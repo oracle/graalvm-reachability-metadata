@@ -13,3 +13,14 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation("org.jline:jline-console:${libraryVersion}")
 }
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
