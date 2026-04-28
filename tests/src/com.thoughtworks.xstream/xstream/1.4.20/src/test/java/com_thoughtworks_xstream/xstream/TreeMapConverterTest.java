@@ -25,17 +25,38 @@ public class TreeMapConverterTest {
         original.put("bravo", "second");
         original.put("charlie", "third");
 
-        String xml = xstream.toXML(original);
-        Object restored = xstream.fromXML(xml);
+        TreeMap<String, String> restoredMap = roundTripTreeMap(xstream, original);
 
-        assertThat(restored).isInstanceOf(TreeMap.class);
-        @SuppressWarnings("unchecked")
-        TreeMap<String, String> restoredMap = (TreeMap<String, String>)restored;
         assertThat(restoredMap.comparator()).isInstanceOf(ReverseAlphabeticalComparator.class);
         assertThat(restoredMap.keySet()).containsExactly("charlie", "bravo", "alpha");
         assertThat(restoredMap).containsEntry("alpha", "first");
         assertThat(restoredMap).containsEntry("bravo", "second");
         assertThat(restoredMap).containsEntry("charlie", "third");
+    }
+
+    @Test
+    void restoresTreeMapWithNaturalOrdering() {
+        XStream xstream = new XStream();
+        TreeMap<String, String> original = new TreeMap<>();
+        original.put("bravo", "second");
+        original.put("alpha", "first");
+        original.put("charlie", "third");
+
+        TreeMap<String, String> restoredMap = roundTripTreeMap(xstream, original);
+
+        assertThat(restoredMap.comparator()).isNull();
+        assertThat(restoredMap.keySet()).containsExactly("alpha", "bravo", "charlie");
+        assertThat(restoredMap).containsEntry("alpha", "first");
+        assertThat(restoredMap).containsEntry("bravo", "second");
+        assertThat(restoredMap).containsEntry("charlie", "third");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static TreeMap<String, String> roundTripTreeMap(XStream xstream, TreeMap<String, String> original) {
+        Object restored = xstream.fromXML(xstream.toXML(original));
+
+        assertThat(restored).isInstanceOf(TreeMap.class);
+        return (TreeMap<String, String>)restored;
     }
 
     public static final class ReverseAlphabeticalComparator implements Comparator<String> {
