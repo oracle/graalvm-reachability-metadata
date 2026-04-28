@@ -14,15 +14,21 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OuterClassMapperTest {
+    private final String owner = "owner";
+
     @Test
     void mapsSyntheticOuterReferenceFieldToStableAlias() {
         OuterClassMapper mapper = new OuterClassMapper(
             new DefaultMapper(OuterClassMapperTest.class.getClassLoader()));
 
+        assertThat(new InnerDocument().owner()).isEqualTo(owner);
         assertThat(mapper.serializedMember(InnerDocument.class, "this$0")).isEqualTo("outer-class");
         assertThat(mapper.realMember(InnerDocument.class, "outer-class")).isEqualTo("this$0");
     }
 
     public final class InnerDocument {
+        String owner() {
+            return owner;
+        }
     }
 }
