@@ -1,0 +1,985 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd1ef-0903-7ff3-8102-a2277ffd55d9
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.plexus:plexus-interpolation:1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+- Set "coordinates" to "org.codehaus.plexus:plexus-interpolation:1.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project/tag, then patch the JSON in place with exact-version URLs where they can be supported.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json && sed -n '1,200p' build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+-rw-rw-r-- 1 vjovanov vjovanov 69 Apr 28 04:33 build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+{
+  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "plexus-interpolation|org.codehaus.plexus" metadata build/discovered-artifact-metadata -S' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json:2:  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0"
+
+web search: 
+web search: org.codehaus.plexus plexus-interpolation 1.0 maven sources test javadoc
+codex
+The local JSON currently only has coordinates. I’m checking the Maven Central directory first because the request prefers Maven-hosted sources/tests/docs when available.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/plexus/plexus-interpolation/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/plexus/plexus-interpolation/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="plexus-interpolation-1.0-javadoc.jar" title="plexus-interpolation-1.0-javadoc.jar">plexus-interpolation-1.0-javadoc.jar</a>              2008-06-13 22:18    172266      
+<a href="plexus-interpolation-1.0-javadoc.jar.md5" title="plexus-interpolation-1.0-javadoc.jar.md5">plexus-interpolation-1.0-javadoc.jar.md5</a>          2008-06-13 22:18        32      
+<a href="plexus-interpolation-1.0-javadoc.jar.sha1" title="plexus-interpolation-1.0-javadoc.jar.sha1">plexus-interpolation-1.0-javadoc.jar.sha1</a>         2008-06-13 22:18        40      
+<a href="plexus-interpolation-1.0-sources.jar" title="plexus-interpolation-1.0-sources.jar">plexus-interpolation-1.0-sources.jar</a>              2008-06-13 22:18     45093      
+<a href="plexus-interpolation-1.0-sources.jar.md5" title="plexus-interpolation-1.0-sources.jar.md5">plexus-interpolation-1.0-sources.jar.md5</a>          2008-06-13 22:18        32      
+<a href="plexus-interpolation-1.0-sources.jar.sha1" title="plexus-interpolation-1.0-sources.jar.sha1">plexus-interpolation-1.0-sources.jar.sha1</a>         2008-06-13 22:18        40      
+<a href="plexus-interpolation-1.0.jar" title="plexus-interpolation-1.0.jar">plexus-interpolation-1.0.jar</a>                      2008-06-13 22:18     34762      
+<a href="plexus-interpolation-1.0.jar.md5" title="plexus-interpolation-1.0.jar.md5">plexus-interpolation-1.0.jar.md5</a>                  2008-06-13 22:18        32      
+<a href="plexus-interpolation-1.0.jar.sha1" title="plexus-interpolation-1.0.jar.sha1">plexus-interpolation-1.0.jar.sha1</a>                 2008-06-13 22:18        40      
+<a href="plexus-interpolation-1.0.pom" title="plexus-interpolation-1.0.pom">plexus-interpolation-1.0.pom</a>                      2008-06-13 22:18      1057      
+<a href="plexus-interpolation-1.0.pom.md5" title="plexus-interpolation-1.0.pom.md5">plexus-interpolation-1.0.pom.md5</a>                  2008-06-13 22:18        32      
+<a href="plexus-interpolation-1.0.pom.sha1" title="plexus-interpolation-1.0.pom.sha1">plexus-interpolation-1.0.pom.sha1</a>                 2008-06-13 22:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0.pom' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus</artifactId>
+    <version>1.0.11</version>
+  </parent>
+  <artifactId>plexus-interpolation</artifactId>
+  <version>1.0</version>
+  <name>Plexus Interpolation API</name>
+  
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-components/tags/plexus-interpolation-1.0</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-components/tags/plexus-interpolation-1.0</developerConnection>
+    <url>http://svn.codehaus.org/plexus/plexus-components/tags/plexus-interpolation-1.0</url>
+  </scm>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
+web search: 
+web search: org.codehaus.plexus plexus-interpolation 1.0 maven sources test javadoc
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 https://github.com/codehaus-plexus/plexus-interpolation/tree/plexus-interpolation-1.0' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tags?per_page=100' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-interpolation' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 191ms:
+[
+  {
+    "name": "plexus-interpolation-1.29",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.29",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.29",
+    "commit": {
+      "sha": "08bde474a835fe95795d3099c11c1b9de2d80779",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/08bde474a835fe95795d3099c11c1b9de2d80779"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjk="
+  },
+  {
+    "name": "plexus-interpolation-1.28.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.28.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.28.0",
+    "commit": {
+      "sha": "ea01a2328eacaf4497815d9f8adf2893504316a8",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/ea01a2328eacaf4497815d9f8adf2893504316a8"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjguMA=="
+  },
+  {
+    "name": "plexus-interpolation-1.28",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.28",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.28",
+    "commit": {
+      "sha": "6c5b841d25dc35ed825a16d20138650acf23eae2",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/6c5b841d25dc35ed825a16d20138650acf23eae2"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjg="
+  },
+  {
+    "name": "plexus-interpolation-1.27.0",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.27.0",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.27.0",
+    "commit": {
+      "sha": "7179e6b8323545846fe541b5caa922bf3c1faa1c",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/7179e6b8323545846fe541b5caa922bf3c1faa1c"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjcuMA=="
+  },
+  {
+    "name": "plexus-interpolation-1.27",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.27",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.27",
+    "commit": {
+      "sha": "f44266e74556c30fddcae4b20ee477e7e64a5204",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/f44266e74556c30fddcae4b20ee477e7e64a5204"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjc="
+  },
+  {
+    "name": "plexus-interpolation-1.26",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.26",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.26",
+    "commit": {
+      "sha": "159e6971b0e2db261be1d01deb9149f27f8fb752",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/159e6971b0e2db261be1d01deb9149f27f8fb752"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjY="
+  },
+  {
+    "name": "plexus-interpolation-1.25",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.25",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.25",
+    "commit": {
+      "sha": "a0d6b071544c989dd7216f9482f393b79aceaa03",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/a0d6b071544c989dd7216f9482f393b79aceaa03"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjU="
+  },
+  {
+    "name": "plexus-interpolation-1.24",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.24",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.24",
+    "commit": {
+      "sha": "1e821f69b3b60a2698faad246c964e9e98ad6771",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/1e821f69b3b60a2698faad246c964e9e98ad6771"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjQ="
+  },
+  {
+    "name": "plexus-interpolation-1.23",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.23",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.23",
+    "commit": {
+      "sha": "c381dfe7da2de725f37b004e12403b249c1b7295",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/c381dfe7da2de725f37b004e12403b249c1b7295"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjM="
+  },
+  {
+    "name": "plexus-interpolation-1.22",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.22",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.22",
+    "commit": {
+      "sha": "49f6d7b561512d678da96cfc241f3a3ca5d1d455",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/49f6d7b561512d678da96cfc241f3a3ca5d1d455"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjI="
+  },
+  {
+    "name": "plexus-interpolation-1.21",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.21",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.21",
+    "commit": {
+      "sha": "7724d3b62d6baf411f84869d4cfacb2af5705674",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/7724d3b62d6baf411f84869d4cfacb2af5705674"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjE="
+  },
+  {
+    "name": "plexus-interpolation-1.20",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.20",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.20",
+    "commit": {
+      "sha": "11f0f0525fbadeb60d7e32e32b88ae861f5df53d",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/11f0f0525fbadeb60d7e32e32b88ae861f5df53d"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMjA="
+  },
+  {
+    "name": "plexus-interpolation-1.19",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.19",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.19",
+    "commit": {
+      "sha": "ea584979042c7405a42c74932f23bad193e6857a",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/ea584979042c7405a42c74932f23bad193e6857a"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTk="
+  },
+  {
+    "name": "plexus-interpolation-1.18",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.18",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.18",
+    "commit": {
+      "sha": "bf101d6e2048bed3d35e68d9792c9bfeb0359cbc",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/bf101d6e2048bed3d35e68d9792c9bfeb0359cbc"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTg="
+  },
+  {
+    "name": "plexus-interpolation-1.17",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.17",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.17",
+    "commit": {
+      "sha": "9a1f6e294d4429b55347de987d32918057f1779a",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/9a1f6e294d4429b55347de987d32918057f1779a"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTc="
+  },
+  {
+    "name": "plexus-interpolation-1.16",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.16",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.16",
+    "commit": {
+      "sha": "cf5e5e668a259832e3bb1b808707beb7a4cc1546",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/cf5e5e668a259832e3bb1b808707beb7a4cc1546"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTY="
+  },
+  {
+    "name": "plexus-interpolation-1.15",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.15",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.15",
+    "commit": {
+      "sha": "9690e65b595a19dca0560386c2dff81554ddb57f",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/9690e65b595a19dca0560386c2dff81554ddb57f"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTU="
+  },
+  {
+    "name": "plexus-interpolation-1.14",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.14",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.14",
+    "commit": {
+      "sha": "66838d74704c02c7618e1b1f24d3d366b4105815",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/66838d74704c02c7618e1b1f24d3d366b4105815"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTQ="
+  },
+  {
+    "name": "plexus-interpolation-1.13",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.13",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.13",
+    "commit": {
+      "sha": "bf3ed6410a2bf07d5cf2da61b190b85969b7b065",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/bf3ed6410a2bf07d5cf2da61b190b85969b7b065"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTM="
+  },
+  {
+    "name": "plexus-interpolation-1.12",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.12",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.12",
+    "commit": {
+      "sha": "50f9997b4915855d7bd98718186b364e6a1dccf4",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/50f9997b4915855d7bd98718186b364e6a1dccf4"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTI="
+  },
+  {
+    "name": "plexus-interpolation-1.11",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.11",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.11",
+    "commit": {
+      "sha": "4b76f303f2ece6d20079c3b2defa1c841a24b437",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/4b76f303f2ece6d20079c3b2defa1c841a24b437"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTE="
+  },
+  {
+    "name": "plexus-interpolation-1.10",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.10",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.10",
+    "commit": {
+      "sha": "03c7e25868dc82e8bc120c9e9913ea7ac2ef5d25",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/03c7e25868dc82e8bc120c9e9913ea7ac2ef5d25"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMTA="
+  },
+  {
+    "name": "plexus-interpolation-1.9",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.9",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.9",
+    "commit": {
+      "sha": "9e0c74dec8089d78817cfc4f4f2de7313dc9ae2b",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/9e0c74dec8089d78817cfc4f4f2de7313dc9ae2b"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuOQ=="
+  },
+  {
+    "name": "plexus-interpolation-1.8.1",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.8.1",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.8.1",
+    "commit": {
+      "sha": "7526f059b45aeb14fea042af4e05d172f6efdaab",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/7526f059b45aeb14fea042af4e05d172f6efdaab"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuOC4x"
+  },
+  {
+    "name": "plexus-interpolation-1.8",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.8",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.8",
+    "commit": {
+      "sha": "3dcb050c4108a4445479657e1431194cc4e77d87",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/3dcb050c4108a4445479657e1431194cc4e77d87"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuOA=="
+  },
+  {
+    "name": "plexus-interpolation-1.7",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.7",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.7",
+    "commit": {
+      "sha": "cc43780b560cdbfd20bfd5934dfc5fd27fb1d8f7",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/cc43780b560cdbfd20bfd5934dfc5fd27fb1d8f7"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuNw=="
+  },
+  {
+    "name": "plexus-interpolation-1.6",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.6",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.6",
+    "commit": {
+      "sha": "34f375bea7a703a91ba6b73f36ae71a820c1201a",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/34f375bea7a703a91ba6b73f36ae71a820c1201a"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuNg=="
+  },
+  {
+    "name": "plexus-interpolation-1.5",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.5",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.5",
+    "commit": {
+      "sha": "dc880f7e74fc2146075e46c3d4c97c7d212d8127",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/dc880f7e74fc2146075e46c3d4c97c7d212d8127"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuNQ=="
+  },
+  {
+    "name": "plexus-interpolation-1.4",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.4",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.4",
+    "commit": {
+      "sha": "e4564f717ca9aae69551a70d3bff1b907d7958b9",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/e4564f717ca9aae69551a70d3bff1b907d7958b9"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuNA=="
+  },
+  {
+    "name": "plexus-interpolation-1.3",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.3",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.3",
+    "commit": {
+      "sha": "dfd1966f74c4699566c5074b52eda637f7263ef1",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/dfd1966f74c4699566c5074b52eda637f7263ef1"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMw=="
+  },
+  {
+    "name": "plexus-interpolation-1.2",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.2",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.2",
+    "commit": {
+      "sha": "0236f9ff8e203df8d7904e26e8c96c475b48da1f",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/0236f9ff8e203df8d7904e26e8c96c475b48da1f"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMg=="
+  },
+  {
+    "name": "plexus-interpolation-1.1",
+    "zipball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/zipball/refs/tags/plexus-interpolation-1.1",
+    "tarball_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tarball/refs/tags/plexus-interpolation-1.1",
+    "commit": {
+      "sha": "559e1d731291f7aa5dad14792a0765bdffcfbd60",
+      "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits/559e1d731291f7aa5dad14792a0765bdffcfbd60"
+    },
+    "node_id": "MDM6UmVmMjk5MjM5NjE6cmVmcy90YWdzL3BsZXh1cy1pbnRlcnBvbGF0aW9uLTEuMQ=="
+  }
+]
+
+ succeeded in 195ms:
+{
+  "id": 29923961,
+  "node_id": "MDEwOlJlcG9zaXRvcnkyOTkyMzk2MQ==",
+  "name": "plexus-interpolation",
+  "full_name": "codehaus-plexus/plexus-interpolation",
+  "private": false,
+  "owner": {
+    "login": "codehaus-plexus",
+    "id": 10550350,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjEwNTUwMzUw",
+    "avatar_url": "https://avatars.githubusercontent.com/u/10550350?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/codehaus-plexus",
+    "html_url": "https://github.com/codehaus-plexus",
+    "followers_url": "https://api.github.com/users/codehaus-plexus/followers",
+    "following_url": "https://api.github.com/users/codehaus-plexus/following{/other_user}",
+    "gists_url": "https://api.github.com/users/codehaus-plexus/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/codehaus-plexus/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/codehaus-plexus/subscriptions",
+    "organizations_url": "https://api.github.com/users/codehaus-plexus/orgs",
+    "repos_url": "https://api.github.com/users/codehaus-plexus/repos",
+    "events_url": "https://api.github.com/users/codehaus-plexus/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/codehaus-plexus/received_events",
+    "type": "Organization",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "html_url": "https://github.com/codehaus-plexus/plexus-interpolation",
+  "description": null,
+  "fork": false,
+  "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation",
+  "forks_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/forks",
+  "keys_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/keys{/key_id}",
+  "collaborators_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/collaborators{/collaborator}",
+  "teams_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/teams",
+  "hooks_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/hooks",
+  "issue_events_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/issues/events{/number}",
+  "events_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/events",
+  "assignees_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/assignees{/user}",
+  "branches_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/branches{/branch}",
+  "tags_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tags",
+  "blobs_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/git/blobs{/sha}",
+  "git_tags_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/git/tags{/sha}",
+  "git_refs_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/git/refs{/sha}",
+  "trees_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/git/trees{/sha}",
+  "statuses_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/statuses/{sha}",
+  "languages_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/languages",
+  "stargazers_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/stargazers",
+  "contributors_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/contributors",
+  "subscribers_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/subscribers",
+  "subscription_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/subscription",
+  "commits_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/commits{/sha}",
+  "git_commits_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/git/commits{/sha}",
+  "comments_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/comments{/number}",
+  "issue_comment_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/issues/comments{/number}",
+  "contents_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/contents/{+path}",
+  "compare_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/compare/{base}...{head}",
+  "merges_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/merges",
+  "archive_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/{archive_format}{/ref}",
+  "downloads_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/downloads",
+  "issues_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/issues{/number}",
+  "pulls_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/pulls{/number}",
+  "milestones_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/milestones{/number}",
+  "notifications_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/notifications{?since,all,participating}",
+  "labels_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/labels{/name}",
+  "releases_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/releases{/id}",
+  "deployments_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/deployments",
+  "created_at": "2015-01-27T16:51:32Z",
+  "updated_at": "2026-03-22T22:15:25Z",
+  "pushed_at": "2026-03-22T22:15:21Z",
+  "git_url": "git://github.com/codehaus-plexus/plexus-interpolation.git",
+  "ssh_url": "git@github.com:codehaus-plexus/plexus-interpolation.git",
+  "clone_url": "https://github.com/codehaus-plexus/plexus-interpolation.git",
+  "svn_url": "https://github.com/codehaus-plexus/plexus-interpolation",
+  "homepage": "https://codehaus-plexus.github.io/plexus-interpolation/",
+  "size": 7374,
+  "stargazers_count": 6,
+  "watchers_count": 6,
+  "language": "Java",
+  "has_issues": true,
+  "has_projects": false,
+  "has_downloads": true,
+  "has_wiki": false,
+  "has_pages": true,
+  "has_discussions": true,
+  "forks_count": 11,
+  "mirror_url": null,
+  "archived": false,
+  "disabled": false,
+  "open_issues_count": 0,
+  "license": null,
+  "allow_forking": true,
+  "is_template": false,
+  "web_commit_signoff_required": false,
+  "has_pull_requests": true,
+  "pull_request_creation_policy": "all",
+  "topics": [
+    "maven"
+  ],
+  "visibility": "public",
+  "forks": 11,
+  "open_issues": 0,
+  "watchers": 6,
+  "default_branch": "master",
+  "temp_clone_token": null,
+  "custom_properties": {
+
+  },
+  "organization": {
+    "login": "codehaus-plexus",
+    "id": 10550350,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjEwNTUwMzUw",
+    "avatar_url": "https://avatars.githubusercontent.com/u/10550350?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/codehaus-plexus",
+    "html_url": "https://github.com/codehaus-plexus",
+    "followers_url": "https://api.github.com/users/codehaus-plexus/followers",
+    "following_url": "https://api.github.com/users/codehaus-plexus/following{/other_user}",
+    "gists_url": "https://api.github.com/users/codehaus-plexus/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/codehaus-plexus/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/codehaus-plexus/subscriptions",
+    "organizations_url": "https://api.github.com/users/codehaus-plexus/orgs",
+    "repos_url": "https://api.github.com/users/codehaus-plexus/repos",
+    "events_url": "https://api.github.com/users/codehaus-plexus/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/codehaus-plexus/received_events",
+    "type": "Organization",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "network_count": 11,
+  "subscribers_count": 6
+}
+
+ succeeded in 266ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 404 
+date: Tue, 28 Apr 2026 02:33:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=E%2BUKumc8IM1sGMaPe%2BHeo8QfUO4SJo%2B6eI2mUewmb2dnzsf0VxS3gCNsH%2F8eiZmzkdxrq1gvpv3BvQZwUkv424IsHZZdUckIENE6YrQxkDquUcpRmkBbXybMzIa%2BUWknef0IVeGb2ZOaDufWVki%2Fgh19LeawVdTfdoDDlmfb9ngcigM6EfLPvYcVSn1%2FuVlZngxBweyMGRZJU9NIV%2BeZVpMKCKleAnVwVs9QY0hv4pJ7BvO%2Fbnpjnq0%2F3UhLehpjQzjXY3G6%2BjlmqvH6%2FeJLUg%3D%3D--jDvV6%2FG0g%2FCY4LE9--yHaBX%2F9uqscWvBxFJkNScw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2076523414.1777343613; expires=Wed, 28 Apr 2027 02:33:33 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 02:33:33 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5108:296CA8:62B8BAD:4B5E0A3:69F01C7D
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/ | sed -n '1,200p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-javadoc.jar.sha1 && printf '\\n' && curl -fsSL https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar.sha1" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp" && curl -fsSLO https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar && jar tf plexus-interpolation-1.0-sources.jar | sed -n '"'1,200p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 257ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/plexus/plexus-interpolation/1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/plexus/plexus-interpolation/1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="plexus-interpolation-1.0-javadoc.jar" title="plexus-interpolation-1.0-javadoc.jar">plexus-interpolation-1.0-javadoc.jar</a>              2008-06-13 22:18    172266      
+<a href="plexus-interpolation-1.0-javadoc.jar.md5" title="plexus-interpolation-1.0-javadoc.jar.md5">plexus-interpolation-1.0-javadoc.jar.md5</a>          2008-06-13 22:18        32      
+<a href="plexus-interpolation-1.0-javadoc.jar.sha1" title="plexus-interpolation-1.0-javadoc.jar.sha1">plexus-interpolation-1.0-javadoc.jar.sha1</a>         2008-06-13 22:18        40      
+<a href="plexus-interpolation-1.0-sources.jar" title="plexus-interpolation-1.0-sources.jar">plexus-interpolation-1.0-sources.jar</a>              2008-06-13 22:18     45093      
+<a href="plexus-interpolation-1.0-sources.jar.md5" title="plexus-interpolation-1.0-sources.jar.md5">plexus-interpolation-1.0-sources.jar.md5</a>          2008-06-13 22:18        32      
+<a href="plexus-interpolation-1.0-sources.jar.sha1" title="plexus-interpolation-1.0-sources.jar.sha1">plexus-interpolation-1.0-sources.jar.sha1</a>         2008-06-13 22:18        40      
+<a href="plexus-interpolation-1.0.jar" title="plexus-interpolation-1.0.jar">plexus-interpolation-1.0.jar</a>                      2008-06-13 22:18     34762      
+<a href="plexus-interpolation-1.0.jar.md5" title="plexus-interpolation-1.0.jar.md5">plexus-interpolation-1.0.jar.md5</a>                  2008-06-13 22:18        32      
+<a href="plexus-interpolation-1.0.jar.sha1" title="plexus-interpolation-1.0.jar.sha1">plexus-interpolation-1.0.jar.sha1</a>                 2008-06-13 22:18        40      
+<a href="plexus-interpolation-1.0.pom" title="plexus-interpolation-1.0.pom">plexus-interpolation-1.0.pom</a>                      2008-06-13 22:18      1057      
+<a href="plexus-interpolation-1.0.pom.md5" title="plexus-interpolation-1.0.pom.md5">plexus-interpolation-1.0.pom.md5</a>                  2008-06-13 22:18        32      
+<a href="plexus-interpolation-1.0.pom.sha1" title="plexus-interpolation-1.0.pom.sha1">plexus-interpolation-1.0.pom.sha1</a>                 2008-06-13 22:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 394ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/codehaus/
+org/codehaus/plexus/
+org/codehaus/plexus/interpolation/
+org/codehaus/plexus/interpolation/os/
+org/codehaus/plexus/interpolation/reflection/
+org/codehaus/plexus/interpolation/util/
+org/codehaus/plexus/interpolation/AbstractFunctionValueSourceWrapper.java
+org/codehaus/plexus/interpolation/EnvarBasedValueSource.java
+org/codehaus/plexus/interpolation/FeedbackEnabledValueSource.java
+org/codehaus/plexus/interpolation/InterpolationException.java
+org/codehaus/plexus/interpolation/Interpolator.java
+org/codehaus/plexus/interpolation/InterpolatorFilterReader.java
+org/codehaus/plexus/interpolation/MapBasedValueSource.java
+org/codehaus/plexus/interpolation/ObjectBasedValueSource.java
+org/codehaus/plexus/interpolation/os/OperatingSystemUtils.java
+org/codehaus/plexus/interpolation/os/Os.java
+org/codehaus/plexus/interpolation/PrefixAwareRecursionInterceptor.java
+org/codehaus/plexus/interpolation/PrefixedObjectValueSource.java
+org/codehaus/plexus/interpolation/PrefixedPropertiesValueSource.java
+org/codehaus/plexus/interpolation/PrefixedValueSourceWrapper.java
+org/codehaus/plexus/interpolation/PropertiesBasedValueSource.java
+org/codehaus/plexus/interpolation/QueryEnabledValueSource.java
+org/codehaus/plexus/interpolation/RecursionInterceptor.java
+org/codehaus/plexus/interpolation/reflection/ClassMap.java
+org/codehaus/plexus/interpolation/reflection/MethodMap.java
+org/codehaus/plexus/interpolation/reflection/ReflectionValueExtractor.java
+org/codehaus/plexus/interpolation/RegexBasedInterpolator.java
+org/codehaus/plexus/interpolation/SimpleRecursionInterceptor.java
+org/codehaus/plexus/interpolation/util/StringUtils.java
+org/codehaus/plexus/interpolation/util/ValueSourceUtils.java
+org/codehaus/plexus/interpolation/ValueSource.java
+
+ succeeded in 657ms:
+09b427a32ade559791cbb9e6762a1e99550f1407
+c972b5fd549a71be2b606dcb24c13dd463763b61
+web search: 
+web search: "plexus-interpolation-1.0" "src/test"
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"documentation-url\"|\"test-code-url\"|\"repository-url\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/compiler/daemon/daemon-tests/test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-daemon-embeddable/2.3.20/kotlin-daemon-embeddable-2.3.20-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-script-runtime/2.3.20/kotlin-script-runtime-2.3.20-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v2.3.20/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:8:    "documentation-url" : "https://github.com/JetBrains/kotlin/releases/tag/v2.3.20",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.7.10/libraries/stdlib/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:6:    "repository-url" : "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v1.7.10/compiler/testData/codegen/box/reflection",
+metadata/org.jetbrains.kotlin/kotlin-reflect/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.7.10/kotlin-reflect-1.7.10-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.31/kotlin-stdlib-common-1.5.31-sources.jar",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:7:    "repository-url": "https://github.com/JetBrains/kotlin",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:8:    "test-code-url": "https://github.com/JetBrains/kotlin/tree/v1.5.31/libraries/stdlib/common/test",
+metadata/org.jetbrains.kotlin/kotlin-stdlib-common/index.json:9:    "documentation-url": "https://github.com/JetBrains/kotlin/blob/v1.5.31/libraries/stdlib/ReadMe.md",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+metadata/javax.activation/javax.activation-api/index.json:8:    "test-code-url": "N/A",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-module-kotlin",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-module-kotlin/tree/jackson-module-kotlin-2.17.2/src/test",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/2.17.2/jackson-module-kotlin-2.17.2-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+metadata/javax.activation/activation/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:6:    "repository-url" : "https://github.com/google/j2objc",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:7:    "repository-url": "https://github.com/mojohaus/animal-sniffer",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/2.0.8/oro-2.0.8-sources.jar",
+metadata/oro/oro/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/jakarta/oro/",
+metadata/oro/oro/index.json:7:    "test-code-url" : "N/A",
+metadata/oro/oro/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/jakarta/oro/tags/oro-2.0.8/docs/index.html",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:6:    "repository-url" : "https://svn.jboss.org/repos/jbossas/projects/interceptors/api",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-sources.jar",
+metadata/com.itextpdf/kernel/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/kernel/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/kernel/src/test",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/8.0.3/kernel-8.0.3-javadoc.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:10:    "repository-url": "https://github.com/eclipse-ee4j/mail",
+metadata/com.sun.mail/jakarta.mail/index.json:11:    "test-code-url": "https://github.com/eclipse-ee4j/mail/tree/2.0.1/mail/src/test",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-sources.jar",
+metadata/com.itextpdf/forms/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/forms/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/forms/src/test",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/8.0.3/forms-8.0.3-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:6:    "repository-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-sources.jar",
+metadata/com.itextpdf/layout/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/layout/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/layout/src/test",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/8.0.3/layout-8.0.3-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:6:    "repository-url" : "https://github.com/googleapis/google-auth-library-java",
+metadata/com.google.auth/google-auth-library-credentials/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-tests.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-sources.jar",
+metadata/com.itextpdf/svg/index.json:6:    "repository-url" : "https://github.com/itext/itext-java",
+metadata/com.itextpdf/svg/index.json:7:    "test-code-url" : "https://github.com/itext/itext-java/tree/8.0.3/svg/src/test",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/8.0.3/svg-8.0.3-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -name '*.json' | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0"
+}
+
+codex
+Maven Central has exact `1.0` source and javadoc JARs, but no test artifact in that directory. I’m checking whether an exact upstream tag exists for tests before deciding whether `test-code-url` has to be `N/A`.
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 https://svn.codehaus.org/plexus/plexus-components/tags/plexus-interpolation-1.0/src/test' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+exec
+/usr/bin/bash -lc 'curl -I -L --max-time 20 http://svn.codehaus.org/plexus/plexus-components/tags/plexus-interpolation-1.0/src/test' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: svn.codehaus.org
+
+ exited 6 in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0curl: (6) Could not resolve host: svn.codehaus.org
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=repo:codehaus-plexus/plexus-interpolation+RegexBasedInterpolatorTest'" in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/codehaus-plexus/plexus-interpolation/contents/src/test?ref=plexus-interpolation-1.1' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ exited 22 in 101ms:
+ succeeded in 152ms:
+[
+  {
+    "name": "java",
+    "path": "src/test/java",
+    "sha": "397a84d8acd66531c8f3a37a0818b9b8604c73f4",
+    "size": 0,
+    "url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/contents/src/test/java?ref=plexus-interpolation-1.1",
+    "html_url": "https://github.com/codehaus-plexus/plexus-interpolation/tree/plexus-interpolation-1.1/src/test/java",
+    "git_url": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/git/trees/397a84d8acd66531c8f3a37a0818b9b8604c73f4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/contents/src/test/java?ref=plexus-interpolation-1.1",
+      "git": "https://api.github.com/repos/codehaus-plexus/plexus-interpolation/git/trees/397a84d8acd66531c8f3a37a0818b9b8604c73f4",
+      "html": "https://github.com/codehaus-plexus/plexus-interpolation/tree/plexus-interpolation-1.1/src/test/java"
+    }
+  }
+]
+
+codex
+The only exact upstream SCM reference for `1.0` is the old Codehaus SVN tag from the POM, and that host no longer resolves. Since GitHub starts at later tags and Maven Central has no tests artifact for `1.0`, I’m going to mark the test suite URL as `N/A` and use Maven Central for sources and javadocs.
+apply patch
+patch: completed
+/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+diff --git a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+index 03283945b14b2828546284e36e85586de3a0f37d..0712393542704acabc0d7f0d2b31b326a350af0e
+--- a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
++++ b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0"
++  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-interpolation",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-javadoc.jar",
++  "description" : "Plexus Interpolation is a Java utility library for resolving and substituting expression placeholders in strings from pluggable value sources such as maps, properties, objects, and environment variables. It provides interpolator implementations, recursion handling, prefix-aware lookups, and reflection-based value extraction for tools that need Maven or Plexus-style configuration interpolation."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+index 03283945b14b2828546284e36e85586de3a0f37d..0712393542704acabc0d7f0d2b31b326a350af0e
+--- a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
++++ b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0"
++  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-interpolation",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-javadoc.jar",
++  "description" : "Plexus Interpolation is a Java utility library for resolving and substituting expression placeholders in strings from pluggable value sources such as maps, properties, objects, and environment variables. It provides interpolator implementations, recursion handling, prefix-aware lookups, and reflection-based value extraction for tools that need Maven or Plexus-style configuration interpolation."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+{
+  "coordinates": "org.codehaus.plexus:plexus-interpolation:1.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar",
+  "repository-url": "https://github.com/codehaus-plexus/plexus-interpolation",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-javadoc.jar",
+  "description": "Plexus Interpolation is a Java utility library for resolving and substituting expression placeholders in strings from pluggable value sources such as maps, properties, objects, and environment variables. It provides interpolator implementations, recursion handling, prefix-aware lookups, and reflection-based value extraction for tools that need Maven or Plexus-style configuration interpolation."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+index 03283945b14b2828546284e36e85586de3a0f37d..0712393542704acabc0d7f0d2b31b326a350af0e
+--- a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
++++ b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0"
++  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-interpolation",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-javadoc.jar",
++  "description" : "Plexus Interpolation is a Java utility library for resolving and substituting expression placeholders in strings from pluggable value sources such as maps, properties, objects, and environment variables. It provides interpolator implementations, recursion handling, prefix-aware lookups, and reflection-based value extraction for tools that need Maven or Plexus-style configuration interpolation."
+ }
+
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json' in /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+index 03283945b14b2828546284e36e85586de3a0f37d..0712393542704acabc0d7f0d2b31b326a350af0e
+--- a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
++++ b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0"
++  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-interpolation",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-javadoc.jar",
++  "description" : "Plexus Interpolation is a Java utility library for resolving and substituting expression placeholders in strings from pluggable value sources such as maps, properties, objects, and environment variables. It provides interpolator implementations, recursion handling, prefix-aware lookups, and reflection-based value extraction for tools that need Maven or Plexus-style configuration interpolation."
+ }
+
+web search: 
+web search: https://api.github.com/repos/codehaus-plexus/plexus-interpolation
+web search: 
+web search: repo1.maven.org maven2 org codehaus plexus plexus-interpolation 1.0 sources javadoc jar pom
+web search: 
+web search: https://mvnrepository.com/artifact/org.codehaus.plexus/plexus-interpolation/1.0
+web search: 
+web search: https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/
+web search: 
+web search: 
+web search: 
+web search: https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tags
+web search: 
+web search: https://api.github.com/repos/codehaus-plexus/plexus-interpolation/tags
+codex
+Updated [org.codehaus.plexus-plexus-interpolation-1.0.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json).
+
+I used Maven Central’s exact `1.0` source and javadoc artifacts; that directory does not list a tests artifact, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/)) The repository is the current `codehaus-plexus/plexus-interpolation` GitHub repo, and I left `language` absent because this is Java, not Kotlin or Scala. ([api.github.com](https://api.github.com/repos/codehaus-plexus/plexus-interpolation))
+
+Validated the JSON with `jq`.
+diff --git a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+index 03283945b14b2828546284e36e85586de3a0f37d..0712393542704acabc0d7f0d2b31b326a350af0e
+--- a/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
++++ b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0"
++  "coordinates" : "org.codehaus.plexus:plexus-interpolation:1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-sources.jar",
++  "repository-url" : "https://github.com/codehaus-plexus/plexus-interpolation",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/plexus-interpolation-1.0-javadoc.jar",
++  "description" : "Plexus Interpolation is a Java utility library for resolving and substituting expression placeholders in strings from pluggable value sources such as maps, properties, objects, and environment variables. It provides interpolator implementations, recursion handling, prefix-aware lookups, and reflection-based value extraction for tools that need Maven or Plexus-style configuration interpolation."
+ }
+
+2026-04-28T02:34:38.571637Z ERROR codex_core::session: failed to record rollout items: thread 019dd1ef-0903-7ff3-8102-a2277ffd55d9 not found
+tokens used
+102,141
+Updated [org.codehaus.plexus-plexus-interpolation-1.0.json](/home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b/build/discovered-artifact-metadata/org.codehaus.plexus-plexus-interpolation-1.0.json).
+
+I used Maven Central’s exact `1.0` source and javadoc artifacts; that directory does not list a tests artifact, so `test-code-url` is `N/A`. ([repo1.maven.org](https://repo1.maven.org/maven2/org/codehaus/plexus/plexus-interpolation/1.0/)) The repository is the current `codehaus-plexus/plexus-interpolation` GitHub repo, and I left `language` absent because this is Java, not Kotlin or Scala. ([api.github.com](https://api.github.com/repos/codehaus-plexus/plexus-interpolation))
+
+Validated the JSON with `jq`.
+Ran agent for org.codehaus.plexus:plexus-interpolation:1.0 (exit 0). Log: /home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b/build/agent-artifact-discovery-logs/org.codehaus.plexus-plexus-interpolation-1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge1/metadata-forge/local_repositories/forge_worktrees/2222-3ad3485b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 23s
+9 actionable tasks: 4 executed, 5 from cache
