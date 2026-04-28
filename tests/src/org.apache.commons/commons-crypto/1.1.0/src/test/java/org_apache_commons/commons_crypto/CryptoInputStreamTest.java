@@ -9,18 +9,22 @@ package org_apache_commons.commons_crypto;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Properties;
 
 import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.crypto.cipher.CryptoCipher;
+import org.apache.commons.crypto.cipher.CryptoCipherFactory;
 import org.apache.commons.crypto.stream.CryptoInputStream;
 import org.junit.jupiter.api.Test;
 
@@ -29,12 +33,44 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class CryptoInputStreamTest {
     @Test
+    void decryptsCiphertextAndClosesDirectBuffers() throws Exception {
+        byte[] plaintext = "commons-crypto-stream".getBytes(StandardCharsets.UTF_8);
+        SecretKeySpec key = new SecretKeySpec("0123456789abcdef".getBytes(StandardCharsets.UTF_8), "AES");
+        IvParameterSpec iv = new IvParameterSpec(new byte[16]);
+        byte[] ciphertext = encrypt(plaintext, key, iv);
+
+        try (CryptoInputStream inputStream = new CryptoInputStream(
+                "AES/CTR/NoPadding",
+                jceProperties(),
+                new ByteArrayInputStream(ciphertext),
+                key,
+                iv)) {
+            assertThat(inputStream.readAllBytes()).isEqualTo(plaintext);
+            assertThat(inputStream.read()).isEqualTo(-1);
+        }
+    }
+
+    @Test
     void closesDirectBuffersWhenUsingProtectedConstructor() throws Exception {
         TestCryptoInputStream inputStream = new TestCryptoInputStream();
 
         assertThat(inputStream.isOpen()).isTrue();
         assertThatCode(inputStream::close).doesNotThrowAnyException();
         assertThat(inputStream.isOpen()).isFalse();
+    }
+
+    private static byte[] encrypt(byte[] plaintext, SecretKeySpec key, IvParameterSpec iv) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        return cipher.doFinal(plaintext);
+    }
+
+    private static Properties jceProperties() {
+        Properties properties = new Properties();
+        properties.setProperty(
+                CryptoCipherFactory.CLASSES_KEY,
+                CryptoCipherFactory.CipherProvider.JCE.getClassName());
+        return properties;
     }
 
     private static final class TestCryptoInputStream extends CryptoInputStream {
