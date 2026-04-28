@@ -159,6 +159,51 @@ public class Aether_spiTest {
     }
 
     @Test
+    void defaultConstructedTransfersCanBePopulatedFluentlyBeforeDispatch() {
+        SimpleArtifact artifact = new SimpleArtifact("org.example", "incremental", "release", "jar", "");
+        SimpleMetadata metadata = new SimpleMetadata("org.example", "incremental", "metadata-release",
+                "maven-metadata.xml", Metadata.Nature.RELEASE);
+        File artifactFile = new File(tempDirectory, "incremental.jar");
+        File metadataFile = new File(tempDirectory, "maven-metadata.xml");
+        RemoteRepository repository = new RemoteRepository("central", "default", "https://repo.example.org/maven2");
+
+        ArtifactDownload artifactDownload = new ArtifactDownload()
+                .setArtifact(artifact)
+                .setFile(artifactFile)
+                .setRequestContext("runtime")
+                .setChecksumPolicy("warn")
+                .setRepositories(Collections.singletonList(repository));
+        MetadataDownload metadataDownload = new MetadataDownload()
+                .setMetadata(metadata)
+                .setFile(metadataFile)
+                .setRequestContext("metadata")
+                .setChecksumPolicy("ignore")
+                .setRepositories(Collections.singletonList(repository));
+        MetadataUpload metadataUpload = new MetadataUpload()
+                .setMetadata(metadata)
+                .setFile(metadataFile);
+
+        assertThat(artifactDownload.getState()).isEqualTo(State.NEW);
+        assertThat(artifactDownload.getArtifact()).isSameAs(artifact);
+        assertThat(artifactDownload.getFile()).isEqualTo(artifactFile);
+        assertThat(artifactDownload.getRequestContext()).isEqualTo("runtime");
+        assertThat(artifactDownload.getSupportedContexts()).containsExactly("runtime");
+        assertThat(artifactDownload.getChecksumPolicy()).isEqualTo("warn");
+        assertThat(artifactDownload.getRepositories()).containsExactly(repository);
+
+        assertThat(metadataDownload.getState()).isEqualTo(State.NEW);
+        assertThat(metadataDownload.getMetadata()).isSameAs(metadata);
+        assertThat(metadataDownload.getFile()).isEqualTo(metadataFile);
+        assertThat(metadataDownload.getRequestContext()).isEqualTo("metadata");
+        assertThat(metadataDownload.getChecksumPolicy()).isEqualTo("ignore");
+        assertThat(metadataDownload.getRepositories()).containsExactly(repository);
+
+        assertThat(metadataUpload.getState()).isEqualTo(State.NEW);
+        assertThat(metadataUpload.getMetadata()).isSameAs(metadata);
+        assertThat(metadataUpload.getFile()).isEqualTo(metadataFile);
+    }
+
+    @Test
     void repositoryConnectorFactoryCreatesConnectorThatCompletesQueuedTransfers() throws Exception {
         RemoteRepository repository = new RemoteRepository("target", "default", "https://repo.example.org/releases");
         RecordingRepositoryConnectorFactory factory = new RecordingRepositoryConnectorFactory();
