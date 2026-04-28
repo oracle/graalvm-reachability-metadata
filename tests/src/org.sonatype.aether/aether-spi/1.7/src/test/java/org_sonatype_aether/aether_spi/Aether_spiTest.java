@@ -29,11 +29,14 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.metadata.Metadata;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.spi.connector.ArtifactDownload;
+import org.sonatype.aether.spi.connector.ArtifactTransfer;
 import org.sonatype.aether.spi.connector.ArtifactUpload;
 import org.sonatype.aether.spi.connector.MetadataDownload;
+import org.sonatype.aether.spi.connector.MetadataTransfer;
 import org.sonatype.aether.spi.connector.MetadataUpload;
 import org.sonatype.aether.spi.connector.RepositoryConnector;
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
+import org.sonatype.aether.spi.connector.Transfer;
 import org.sonatype.aether.spi.connector.Transfer.State;
 import org.sonatype.aether.spi.io.FileProcessor;
 import org.sonatype.aether.spi.locator.Service;
@@ -199,6 +202,43 @@ public class Aether_spiTest {
         assertThat(metadataDownload.getRepositories()).containsExactly(repository);
 
         assertThat(metadataUpload.getState()).isEqualTo(State.NEW);
+        assertThat(metadataUpload.getMetadata()).isSameAs(metadata);
+        assertThat(metadataUpload.getFile()).isEqualTo(metadataFile);
+    }
+
+    @Test
+    void baseTransferTypesAllowPolymorphicFluentMutation() {
+        SimpleArtifact artifact = new SimpleArtifact("org.example", "polymorphic", "release", "jar", "");
+        File artifactFile = new File(tempDirectory, "polymorphic.jar");
+        SimpleMetadata metadata = new SimpleMetadata("org.example", "polymorphic", "release", "maven-metadata.xml",
+                Metadata.Nature.RELEASE);
+        File metadataFile = new File(tempDirectory, "polymorphic-metadata.xml");
+        ArtifactTransfer artifactDownload = new ArtifactDownload();
+        ArtifactTransfer artifactUpload = new ArtifactUpload();
+        MetadataTransfer metadataDownload = new MetadataDownload();
+        MetadataTransfer metadataUpload = new MetadataUpload();
+        List<Transfer> transfers = Arrays.asList(artifactDownload, artifactUpload, metadataDownload, metadataUpload);
+
+        for (Transfer transfer : transfers) {
+            assertThat(transfer.setState(State.ACTIVE)).isSameAs(transfer);
+            assertThat(transfer.getState()).isEqualTo(State.ACTIVE);
+        }
+
+        assertThat(artifactDownload.setArtifact(artifact)).isSameAs(artifactDownload);
+        assertThat(artifactDownload.setFile(artifactFile)).isSameAs(artifactDownload);
+        assertThat(artifactUpload.setArtifact(artifact)).isSameAs(artifactUpload);
+        assertThat(artifactUpload.setFile(artifactFile)).isSameAs(artifactUpload);
+        assertThat(metadataDownload.setMetadata(metadata)).isSameAs(metadataDownload);
+        assertThat(metadataDownload.setFile(metadataFile)).isSameAs(metadataDownload);
+        assertThat(metadataUpload.setMetadata(metadata)).isSameAs(metadataUpload);
+        assertThat(metadataUpload.setFile(metadataFile)).isSameAs(metadataUpload);
+
+        assertThat(artifactDownload.getArtifact()).isSameAs(artifact);
+        assertThat(artifactDownload.getFile()).isEqualTo(artifactFile);
+        assertThat(artifactUpload.getArtifact()).isSameAs(artifact);
+        assertThat(artifactUpload.getFile()).isEqualTo(artifactFile);
+        assertThat(metadataDownload.getMetadata()).isSameAs(metadata);
+        assertThat(metadataDownload.getFile()).isEqualTo(metadataFile);
         assertThat(metadataUpload.getMetadata()).isSameAs(metadata);
         assertThat(metadataUpload.getFile()).isEqualTo(metadataFile);
     }
