@@ -6,31 +6,23 @@
  */
 package org_thymeleaf.thymeleaf;
 
-import java.util.Locale;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.ExpressionContext;
-import org.thymeleaf.standard.expression.IStandardExpressionParser;
-import org.thymeleaf.standard.expression.StandardExpressions;
+import org.thymeleaf.context.Context;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BinaryOperationExpressionTest {
 
     @Test
-    void parsesAndExecutesAdditionBetweenVariableExpressions() {
+    void rendersAdditionBetweenVariableExpressions() {
         TemplateEngine templateEngine = new TemplateEngine();
-        ExpressionContext context = new ExpressionContext(
-                templateEngine.getConfiguration(),
-                Locale.US,
-                Map.of("left", 3, "right", 4));
-        IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(
-                templateEngine.getConfiguration());
+        Context context = new Context();
+        context.setVariable("left", 3);
+        context.setVariable("right", 4);
 
-        Object result = expressionParser.parseExpression(context, "${left} + ${right}").execute(context);
+        String output = templateEngine.process("<p th:text=\"${left} + ${right}\"></p>", context);
 
-        assertThat(result.toString()).isEqualTo("7");
+        assertThat(output).isEqualTo("<p>7</p>");
     }
 }
