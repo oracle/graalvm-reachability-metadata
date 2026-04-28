@@ -1,0 +1,1332 @@
+Starting a Gradle Daemon, 2 busy and 15 incompatible and 167 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd5e3-10f6-74e3-9143-4d73160b1e75
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.kerby:kerby-util:1.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+- Set "coordinates" to "org.apache.kerby:kerby-util:1.0.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll look at the existing metadata format first, then verify the Kerby 1.0.1 artifacts and tag URLs before writing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,160p' build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.kerby:kerby-util:1.0.1"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"' build/discovered-artifact-metadata -n | head -20" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+ succeeded in 0ms:
+/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+
+web search: 
+web search: Maven Central org.apache.kerby kerby-util 1.0.1 sources tests javadoc
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org/maven2/org/apache/kerby/kerby-util/1.0.1
+codex
+I found two similarly named Kerby artifacts (`kerby-util` and `kerb-util`), so I’m checking Maven Central directly for the exact requested coordinate and its classifiers rather than relying on search-result snippets.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/1.0.1/' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/kerby/kerby-util/1.0.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/kerby/kerby-util/1.0.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="kerby-util-1.0.1-javadoc.jar" title="kerby-util-1.0.1-javadoc.jar">kerby-util-1.0.1-javadoc.jar</a>                      2017-08-30 10:06    150528      
+<a href="kerby-util-1.0.1-javadoc.jar.asc" title="kerby-util-1.0.1-javadoc.jar.asc">kerby-util-1.0.1-javadoc.jar.asc</a>                  2017-08-30 10:06       455      
+<a href="kerby-util-1.0.1-javadoc.jar.md5" title="kerby-util-1.0.1-javadoc.jar.md5">kerby-util-1.0.1-javadoc.jar.md5</a>                  2017-08-30 10:06        32      
+<a href="kerby-util-1.0.1-javadoc.jar.sha1" title="kerby-util-1.0.1-javadoc.jar.sha1">kerby-util-1.0.1-javadoc.jar.sha1</a>                 2017-08-30 10:06        40      
+<a href="kerby-util-1.0.1-sources.jar" title="kerby-util-1.0.1-sources.jar">kerby-util-1.0.1-sources.jar</a>                      2017-08-30 10:06     45373      
+<a href="kerby-util-1.0.1-sources.jar.asc" title="kerby-util-1.0.1-sources.jar.asc">kerby-util-1.0.1-sources.jar.asc</a>                  2017-08-30 10:06       455      
+<a href="kerby-util-1.0.1-sources.jar.md5" title="kerby-util-1.0.1-sources.jar.md5">kerby-util-1.0.1-sources.jar.md5</a>                  2017-08-30 10:06        32      
+<a href="kerby-util-1.0.1-sources.jar.sha1" title="kerby-util-1.0.1-sources.jar.sha1">kerby-util-1.0.1-sources.jar.sha1</a>                 2017-08-30 10:06        40      
+<a href="kerby-util-1.0.1.jar" title="kerby-util-1.0.1.jar">kerby-util-1.0.1.jar</a>                              2017-08-30 10:06     40554      
+<a href="kerby-util-1.0.1.jar.asc" title="kerby-util-1.0.1.jar.asc">kerby-util-1.0.1.jar.asc</a>                          2017-08-30 10:06       455      
+<a href="kerby-util-1.0.1.jar.md5" title="kerby-util-1.0.1.jar.md5">kerby-util-1.0.1.jar.md5</a>                          2017-08-30 10:06        32      
+<a href="kerby-util-1.0.1.jar.sha1" title="kerby-util-1.0.1.jar.sha1">kerby-util-1.0.1.jar.sha1</a>                         2017-08-30 10:06        40      
+<a href="kerby-util-1.0.1.pom" title="kerby-util-1.0.1.pom">kerby-util-1.0.1.pom</a>                              2017-08-30 10:06      1152      
+<a href="kerby-util-1.0.1.pom.asc" title="kerby-util-1.0.1.pom.asc">kerby-util-1.0.1.pom.asc</a>                          2017-08-30 10:06       455      
+<a href="kerby-util-1.0.1.pom.md5" title="kerby-util-1.0.1.pom.md5">kerby-util-1.0.1.pom.md5</a>                          2017-08-30 10:06        32      
+<a href="kerby-util-1.0.1.pom.sha1" title="kerby-util-1.0.1.pom.sha1">kerby-util-1.0.1.pom.sha1</a>                         2017-08-30 10:06        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1.pom' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.kerby</groupId>
+    <artifactId>kerby-common</artifactId>
+    <version>1.0.1</version>
+  </parent>
+
+  <artifactId>kerby-util</artifactId>
+
+  <name>Kerby Util</name>
+  <description>Kerby common util, without any 3rd party dependency</description>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-test-sources.jar.sha1 || true' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 225ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/kerby/kerby-common/1.0.1/kerby-common-1.0.1.pom' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.kerby</groupId>
+    <artifactId>kerby-all</artifactId>
+    <version>1.0.1</version>
+  </parent>
+  
+  <artifactId>kerby-common</artifactId>
+  <name>Kerby-common Project</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>kerby-asn1</module>
+    <module>kerby-config</module>
+    <module>kerby-util</module>
+    <module>kerby-xdr</module>
+  </modules>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/kerby/kerby-all/1.0.1/kerby-all-1.0.1.pom || true' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>18</version>
+    <relativePath />
+  </parent>
+
+  <groupId>org.apache.kerby</groupId>
+  <artifactId>kerby-all</artifactId>
+  <version>1.0.1</version>
+  <packaging>pom</packaging>
+
+  <name>Apache Kerby Project</name>
+  <description>Apache Kerby project</description>
+  <url>http://directory.apache.org/kerby</url>
+  <inceptionYear>2014</inceptionYear>
+
+  <scm>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/directory-kerby.git</connection>
+    <url>https://github.com/apache/directory-kerby</url>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/directory-kerby.git</developerConnection>
+    <tag>kerby-all-1.0.1</tag>
+  </scm>
+
+  <distributionManagement>
+    <site>
+      <id>apache.directory.kerby</id>
+      <url>scpexe://people.apache.org/www/directory.apache.org/kerby/gen-docs/${project.version}/</url>
+    </site>
+  </distributionManagement>
+
+  <properties>
+    <apacheds.version>2.0.0-M24</apacheds.version>
+    <commons-io.version>2.5</commons-io.version>
+    <gson.version>2.6.2</gson.version>
+    <ldap.api.version>1.0.0</ldap.api.version>
+    <log4j.version>1.2.17</log4j.version>
+    <junit.version>4.12</junit.version>
+    <nimbus.jose.version>3.10</nimbus.jose.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <assertj.version>2.6.0</assertj.version>
+    <findbugs.version>3.0.4</findbugs.version>
+    <buildtools.dir>${basedir}/build-tools</buildtools.dir>
+    <skipTests>false</skipTests>
+    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+    <mockito.version>2.7.22</mockito.version>
+  </properties>
+
+  <prerequisites>
+    <maven>3.2.0</maven>
+  </prerequisites>
+
+  <modules>
+    <module>kerby-common</module>
+    <module>kerby-pkix</module>
+    <module>kerby-kerb</module>
+    <module>kerby-kdc</module>
+    <module>kerby-tool</module>
+    <module>kerby-kdc-test</module>
+    <module>kerby-backend</module>
+    <module>kerby-dist</module>
+    <module>benchmark</module>
+    <module>kerby-provider</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.1</version>
+          <configuration>
+            <source>1.7</source>
+            <target>1.7</target>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>0.12</version>
+          <configuration>
+            <excludeSubProjects>false</excludeSubProjects>
+            <excludes>
+              <!-- camellia files -->
+              <exclude>**/camellia-expect-vt.txt</exclude>
+              <!-- CCache files -->
+              <exclude>**/ccache.txt</exclude>
+              <!-- Keytab files -->
+              <exclude>**/keytab.txt</exclude>
+              <!-- MAVEN_DEFAULT_EXCLUDES -->
+              <exclude>**/target/**/*</exclude>
+              <exclude>**/cobertura.ser</exclude>
+              <exclude>**/DEPENDENCIES</exclude>
+              <!-- ECLIPSE_DEFAULT_EXCLUDES -->
+              <exclude>**/.classpath</exclude>
+              <exclude>**/.project</exclude>
+              <exclude>**/.settings/**/*</exclude>
+              <!-- ECLIPSE_LAUNCH_EXCLUDES -->
+              <exclude>**/*.launch</exclude>
+              <!-- IDEA_DEFAULT_EXCLUDES -->
+              <exclude>**/*.iml</exclude>
+              <exclude>**/*.ipr</exclude>
+              <exclude>**/*.iws</exclude>
+              <!-- MANIFEST_MF_EXCLUDES -->
+              <exclude>**/MANIFEST.MF</exclude>
+              <!-- LOG_FILES_EXCLUDES -->
+              <exclude>**/*.log</exclude>
+              <!-- 3RD_PARTY_EXCLUDES -->
+              <exclude>3rdparty/**/*</exclude>
+              <exclude>kerby-dist/**/*</exclude>
+              <!-- BMP_IMAGES_EXCLUDES -->
+              <exclude>**/*.bmp</exclude>
+              <!-- PMD files -->
+              <exclude>**/.pmd</exclude>
+              <!-- PMD Ruleset files -->
+              <exclude>**/.pmdruleset.xml</exclude>
+              <!-- Checkstyle files -->
+              <exclude>**/.checkstyle</exclude>
+              <!-- BIN files -->
+              <exclude>**/bin/**/*</exclude>
+              <!-- The IP clearance XML doc -->
+              <exclude>docs/kerby-ip-clearance.xml</exclude>
+              <!-- The resources files -->
+              <exclude>**/src/test/resources/**/*</exclude>
+              <exclude>**/licenses/**</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.20</version>
+          <configuration>
+            <skipTests>${skipTests}</skipTests>
+            <reuseForks>false</reuseForks>
+            <systemPropertyVariables>
+              <log4j.configuration>log4j.properties</log4j.configuration>
+            </systemPropertyVariables>
+            <failIfNoTests>false</failIfNoTests>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>test</phase>
+              <goals>
+                <goal>test</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>3.7</version>
+          <configuration>
+            <rulesets>
+              <ruleset>${buildtools.dir}/kerby-pmd-ruleset.xml</ruleset>
+            </rulesets>
+            <linkXRef>false</linkXRef>
+            <sourceEncoding>utf-8</sourceEncoding>
+            <failOnViolation>true</failOnViolation>
+            <verbose>true</verbose>
+            <includeTests>true</includeTests>
+            <targetJdk>1.7</targetJdk>
+          </configuration>
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+       </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>2.17</version>
+          <configuration>
+            <configLocation>${buildtools.dir}/kerby-checkstyle.xml</configLocation>
+            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            <encoding>UTF-8</encoding>
+            <failOnViolation>true</failOnViolation>
+          </configuration>
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0-SNAPSHOT</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.apache.maven.plugins
+                    </groupId>
+                    <artifactId>
+                      maven-pmd-plugin
+                    </artifactId>
+                    <versionRange>[3.4,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>
+                      org.apache.maven.plugins
+                    </groupId>
+                    <artifactId>
+                      maven-checkstyle-plugin
+                    </artifactId>
+                    <versionRange>[2.15,)</versionRange>
+                    <goals>
+                      <goal>check</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+                <useReleaseProfile>false</useReleaseProfile>
+                <preparationGoals>clean install</preparationGoals>
+                <goals>deploy</goals>
+                <arguments>-Papache-release</arguments>
+                <autoVersionSubmodules>true</autoVersionSubmodules>
+            </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.gaul</groupId>
+        <artifactId>modernizer-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <configuration>
+          <javaVersion>1.7</javaVersion>
+        </configuration>
+        <executions>
+          <execution>
+            <id>modernizer-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>modernizer</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>fastinstall</id>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <pmd.skip>true</pmd.skip>
+        <checkstyle.skip>true</checkstyle.skip>
+      </properties>
+    </profile>
+    <profile>
+      <id>nochecks</id>
+      <properties>
+        <pmd.skip>true</pmd.skip>
+        <checkstyle.skip>true</checkstyle.skip>
+      </properties>
+    </profile>
+    <profile>
+      <id>activate-checkstyle-supression</id>
+      <activation>
+        <file>
+          <exists>${basedir}/src/checkstyle/suppressions.xml</exists>
+        </file>
+      </activation>
+      <properties>
+        <checkstyle.suppressions.location>${basedir}/src/checkstyle/suppressions.xml</checkstyle.suppressions.location>
+      </properties>
+    </profile>
+
+    <!-- Override of the 'apache-release' profile, used to launch the Apache RAT plugin -->
+    <profile>
+      <id>apache-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.rat</groupId>
+            <artifactId>apache-rat-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>activate-buildtools-in-module</id>
+      <activation>
+        <file>
+          <exists>${basedir}/../build-tools/kerby-checkstyle.xml</exists>
+        </file>
+      </activation>
+      <properties>
+        <buildtools.dir>${basedir}/../build-tools</buildtools.dir>
+      </properties>
+    </profile>
+    <profile>
+      <id>activate-buildtools-in-submodule</id>
+      <activation>
+        <file>
+          <exists>${basedir}/../../build-tools/kerby-checkstyle.xml</exists>
+        </file>
+      </activation>
+      <properties>
+        <buildtools.dir>${basedir}/../../build-tools</buildtools.dir>
+      </properties>
+    </profile>
+
+  </profiles>
+
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Development Snapshot Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${findbugs.version}</version>
+        <configuration>
+          <xmlOutput>true</xmlOutput>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven-javadoc-plugin.version}</version>
+        <configuration>
+          <additionalparam>-Xdoclint:none</additionalparam>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${maven-jxr-plugin.version}</version>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/kerby/kerby-project/1.0.1/kerby-project-1.0.1.pom || true' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 237ms:
+curl: (22) The requested URL returned error: 404
+
+codex
+Maven Central has the source and Javadoc classifiers for `kerby-util:1.0.1`, but no test-sources classifier. I’m checking the release tag now so the test URL can point at the exact released test tree.
+exec
+/usr/bin/bash -lc "rg 'source-code-url|documentation-url|test-code-url|repository-url' -n . | head -50" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:242:                null, // source-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:243:                null, // repository-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:244:                null, // test-code-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/MetadataGenerationUtils.java:245:                null, // documentation-url
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:26:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:28:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:30:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:32:        @JsonProperty("documentation-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:16:        @JsonProperty("source-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:18:        @JsonProperty("repository-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:20:        @JsonProperty("test-code-url")
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:22:        @JsonProperty("documentation-url")
+./skills/review-library-bulk-update/SKILL.md:3:description: Review automated pull requests with the `library-bulk-update` label in graalvm-reachability-metadata. Use when asked to review or triage a PR that bumps tested versions for existing libraries, including approve vs close decisions, CI checks, diff-scope validation, and verification of `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` changes.
+./skills/review-library-bulk-update/SKILL.md:57:   - Review `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` with the same rules used by `PopulateArtifactURLs`.
+./skills/review-library-bulk-update/SKILL.md:67:- `repository-url` is the canonical repository root URL.
+./skills/review-library-bulk-update/SKILL.md:68:- `repository-url` must not include a versioned tree path such as `/tree/<tag>`.
+./skills/review-library-bulk-update/SKILL.md:69:- `source-code-url`, `test-code-url`, and `documentation-url` must point to the exact library version in the changed entry.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:96:    @Option(option = "overwrite-existing", description = "Overwrite source-code-url, repository-url, test-code-url, documentation-url, description, and language when those fields already contain values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:106:    @Option(option = "verify-artifact-sources", description = "Require source/test-source validation before selecting source-code-url or test-code-url values.")
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:304:                - source-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:305:                - repository-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:306:                - test-code-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:307:                - documentation-url: %s
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:352:                    - Set "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:353:                    - Set "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:354:                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:355:                    - Set "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:356:                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:365:                - Set missing "source-code-url" to the selected source URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:366:                - Set missing "repository-url" to the selected repository URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:367:                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:368:                - Set missing "test-code-url" to the selected test suite URL.
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:369:                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+./tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:169:                - Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+./tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle:194:    task.setDescription("Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.")
+./metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-9.4.40.v20210413/jetty-websocket/websocket-api/src/test",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:178:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:179:                .containsEntry("repository-url", "https://example.com/repository")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:180:                .containsEntry("test-code-url", "https://example.com/tests")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:181:                .containsEntry("documentation-url", "https://example.com/docs")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:224:                .containsEntry("source-code-url", "https://example.com/source")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:225:                .containsEntry("repository-url", "https://example.com/repository")
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/directory-kerby/git/ref/tags/kerby-all-1.0.1' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java?ref=kerby-all-1.0.1' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/main/java?ref=kerby-all-1.0.1' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 188ms:
+{
+  "ref": "refs/tags/kerby-all-1.0.1",
+  "node_id": "MDM6UmVmMzIzNzY4NzI6cmVmcy90YWdzL2tlcmJ5LWFsbC0xLjAuMQ==",
+  "url": "https://api.github.com/repos/apache/directory-kerby/git/refs/tags/kerby-all-1.0.1",
+  "object": {
+    "sha": "ace950e8bb1e1c447add9f27a544468c9cd43876",
+    "type": "tag",
+    "url": "https://api.github.com/repos/apache/directory-kerby/git/tags/ace950e8bb1e1c447add9f27a544468c9cd43876"
+  }
+}
+
+ succeeded in 190ms:
+[
+  {
+    "name": "org",
+    "path": "kerby-common/kerby-util/src/test/java/org",
+    "sha": "fd786d45e038673b49c38a67e0535e556f764ef5",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org?ref=kerby-all-1.0.1",
+    "html_url": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org",
+    "git_url": "https://api.github.com/repos/apache/directory-kerby/git/trees/fd786d45e038673b49c38a67e0535e556f764ef5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org?ref=kerby-all-1.0.1",
+      "git": "https://api.github.com/repos/apache/directory-kerby/git/trees/fd786d45e038673b49c38a67e0535e556f764ef5",
+      "html": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org"
+    }
+  }
+]
+
+ succeeded in 168ms:
+[
+  {
+    "name": "org",
+    "path": "kerby-common/kerby-util/src/main/java/org",
+    "sha": "ffc9b0628d11258df2f5e04229cbf11e80b83b03",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/main/java/org?ref=kerby-all-1.0.1",
+    "html_url": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/main/java/org",
+    "git_url": "https://api.github.com/repos/apache/directory-kerby/git/trees/ffc9b0628d11258df2f5e04229cbf11e80b83b03",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/main/java/org?ref=kerby-all-1.0.1",
+      "git": "https://api.github.com/repos/apache/directory-kerby/git/trees/ffc9b0628d11258df2f5e04229cbf11e80b83b03",
+      "html": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/main/java/org"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language
+) {}
+
+exec
+/usr/bin/bash -lc "sed -n '330,380p' tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+                testVersion
+        ).strip();
+    }
+
+    private static String sourceArtifactVerificationInstructions(boolean verifyArtifactSources, String version) {
+        if (!verifyArtifactSources) {
+            return "";
+        }
+        return """
+                Source Artifact Verification (required):
+                - Verify candidate source URLs for version "%s", including Maven and non-Maven candidates.
+                - If you use Maven source artifacts, confirm `-sources.jar` contains real source files (`.java`, `.kt`, `.scala`, `.groovy`), not only metadata/license files.
+                - If you use Maven test-source artifacts, confirm `-test-sources.jar` contains real test source files.
+                - For non-Maven source/test URLs (for example repository tree pages or downloadable archives), verify that the selected URL resolves to real source/test files for the exact version.
+                - If a candidate source/test URL fails this verification, do not use it. Prefer a verified repository tag URL instead.
+                """.formatted(version).strip();
+    }
+
+    private static String urlUpdateInstructions(boolean overwriteExisting, String version) {
+        if (overwriteExisting) {
+            return """
+                    - Overwrite existing URL values.
+                    - Set "source-code-url" to the selected source URL.
+                    - Set "repository-url" to the selected repository URL.
+                    - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                    - Set "test-code-url" to the selected test suite URL.
+                    - Set "documentation-url" to the selected project documentation URL for version "%s".
+                    - Set "description" to a concise explanation of the library in exactly two sentences.
+                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+                    """.formatted(version).strip();
+        }
+        return """
+                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+                - A field is missing only when absent, null, or blank.
+                - Do not modify fields that already contain a non-blank value.
+                - Set missing "source-code-url" to the selected source URL.
+                - Set missing "repository-url" to the selected repository URL.
+                - "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+                - Set missing "test-code-url" to the selected test suite URL.
+                - Set missing "documentation-url" to the selected project documentation URL for version "%s".
+                - Set missing "description" to a concise explanation of the library in exactly two sentences.
+                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+                """.formatted(version).strip();
+    }
+
+    private static String currentValue(String value) {
+        return hasText(value) ? value : "<missing>";
+    }
+
+    private static String currentLanguageValue(MetadataVersionsIndexEntry entry) {
+        if (entry.language() == null) {
+
+exec
+/usr/bin/bash -lc "rg '\"language\"' metadata build/discovered-artifact-metadata tests -n | head -50" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:279:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:284:                If the library is not language-specific, leave the "language" field absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:297:                - Set the "language" field only when the library is language-specific.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:358:                    - Set "language" to the structured language object when the library is language-specific; otherwise leave the field absent.
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:362:                - Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/PopulateArtifactURLs.java:371:                - Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/MetadataVersionsIndexEntry.java:36:        @JsonProperty("language")
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:154:                Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadata.java:159:                If the library is not language-specific, leave the "language" field absent.
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:26:        @JsonProperty("language")
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:183:                .containsEntry("language", Map.of("name", "kotlin", "version", "2.0"));
+tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/ScaffoldTaskTests.java:229:                .containsEntry("language", Map.of("name", "groovy", "version", "4.0"));
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomMultimapTest.java:36:        original.put("language", "java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomMultimapTest.java:44:        assertThat(restored.get("language")).containsExactly("java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomMultimapTest.java:45:        assertThat(restored.keySet()).containsExactly("team", "language");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomMultimapTest.java:52:        assertThat(restored.keySet()).containsExactly("team", "language", "database");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomListMultimapTest.java:36:        original.put("language", "java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomListMultimapTest.java:44:        assertThat(restored.get("language")).containsExactly("java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomListMultimapTest.java:45:        assertThat(restored.keySet()).containsExactly("team", "language");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomListMultimapTest.java:52:        assertThat(restored.keySet()).containsExactly("team", "language", "database");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/ImmutableListMultimapTest.java:28:                .put("language", "java")
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/ImmutableListMultimapTest.java:29:                .put("language", "kotlin")
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/ImmutableListMultimapTest.java:36:        assertThat(restored.get("language")).containsExactly("java", "kotlin");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/ImmutableListMultimapTest.java:38:        assertThat(restored.inverse().get("java")).containsExactly("language");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSortedSetMultimapTest.java:39:        original.put("language", "groovy");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSortedSetMultimapTest.java:40:        original.put("language", "java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSortedSetMultimapTest.java:50:        assertThat(restored.get("language")).containsExactly("java", "groovy");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSortedSetMultimapTest.java:51:        assertThat(restored.keySet()).containsExactly("team", "language");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSortedSetMultimapTest.java:60:        assertThat(restored.keySet()).containsExactly("team", "language", "database");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSetMultimapTest.java:37:        original.put("language", "java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSetMultimapTest.java:45:        assertThat(restored.get("language")).containsExactly("java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSetMultimapTest.java:46:        assertThat(restored.keySet()).containsExactly("team", "language");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/MultimapsCustomSetMultimapTest.java:54:        assertThat(restored.keySet()).containsExactly("team", "language", "database");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/SerializationTest.java:69:        original.put("language", "java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/SerializationTest.java:75:        assertThat(restored.get("language")).containsExactly("java");
+tests/src/org.immutables/value/2.8.2/src/test/java/org_immutables/value/SerializationTest.java:97:                .put("language", "java")
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/MultimapsCustomMultimapTest.java:36:        original.put("language", "java");
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/MultimapsCustomMultimapTest.java:44:        assertThat(restored.get("language")).containsExactly("java");
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/MultimapsCustomMultimapTest.java:45:        assertThat(restored.keySet()).containsExactly("team", "language");
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/MultimapsCustomMultimapTest.java:52:        assertThat(restored.keySet()).containsExactly("team", "language", "database");
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/MultimapsCustomListMultimapTest.java:36:        original.put("language", "java");
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/MultimapsCustomListMultimapTest.java:44:        assertThat(restored.get("language")).containsExactly("java");
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/MultimapsCustomListMultimapTest.java:45:        assertThat(restored.keySet()).containsExactly("team", "language");
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/MultimapsCustomListMultimapTest.java:52:        assertThat(restored.keySet()).containsExactly("team", "language", "database");
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/ImmutableListMultimapTest.java:28:                .put("language", "java")
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/ImmutableListMultimapTest.java:29:                .put("language", "kotlin")
+tests/src/org.immutables/value/2.8.6/src/test/java/org_immutables/value/ImmutableListMultimapTest.java:36:        assertThat(restored.get("language")).containsExactly("java", "kotlin");
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/kerby-util-1.0.1-sources.jar" https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar; jar tf "$tmp/kerby-util-1.0.1-sources.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/kerby/
+org/apache/kerby/util/
+META-INF/maven/
+META-INF/maven/org.apache.kerby/
+META-INF/maven/org.apache.kerby/kerby-util/
+META-INF/NOTICE
+org/apache/kerby/util/CryptoUtil.java
+META-INF/DEPENDENCIES
+org/apache/kerby/util/Base64InputStream.java
+org/apache/kerby/util/ByteArrayReadLine.java
+org/apache/kerby/util/NetworkUtil.java
+org/apache/kerby/util/PublicKeyDeriver.java
+org/apache/kerby/util/Hex.java
+org/apache/kerby/util/HexUtil.java
+org/apache/kerby/util/Base64.java
+META-INF/LICENSE
+org/apache/kerby/util/Base64OutputStream.java
+org/apache/kerby/util/IPAddressParser.java
+org/apache/kerby/util/IOUtil.java
+org/apache/kerby/util/Util.java
+META-INF/maven/org.apache.kerby/kerby-util/pom.xml
+org/apache/kerby/KOptionGroup.java
+org/apache/kerby/KOption.java
+org/apache/kerby/KOptionType.java
+org/apache/kerby/KOptions.java
+org/apache/kerby/util/ReadLine.java
+org/apache/kerby/util/Utf8.java
+org/apache/kerby/util/SysUtil.java
+org/apache/kerby/util/OSUtil.java
+org/apache/kerby/util/HostPort.java
+META-INF/maven/org.apache.kerby/kerby-util/pom.properties
+org/apache/kerby/KOptionInfo.java
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby?ref=kerby-all-1.0.1' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/kerby-util-1.0.1-javadoc.jar" https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar; jar tf "$tmp/kerby-util-1.0.1-javadoc.jar" | sed -n '"'1,80p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 107ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/kerby/
+org/apache/kerby/class-use/
+org/apache/kerby/util/
+org/apache/kerby/util/class-use/
+resources/
+constant-values.html
+index-all.html
+stylesheet.css
+overview-summary.html
+overview-tree.html
+org/apache/kerby/KOption.html
+org/apache/kerby/KOptionType.html
+org/apache/kerby/package-frame.html
+org/apache/kerby/class-use/KOption.html
+org/apache/kerby/class-use/KOptionType.html
+org/apache/kerby/class-use/KOptionInfo.html
+org/apache/kerby/class-use/KOptions.html
+org/apache/kerby/class-use/KOptionGroup.html
+org/apache/kerby/package-tree.html
+org/apache/kerby/package-summary.html
+org/apache/kerby/KOptionInfo.html
+org/apache/kerby/KOptions.html
+org/apache/kerby/KOptionGroup.html
+org/apache/kerby/package-use.html
+org/apache/kerby/util/Base64InputStream.html
+org/apache/kerby/util/HostPort.html
+org/apache/kerby/util/package-frame.html
+org/apache/kerby/util/Utf8.html
+org/apache/kerby/util/class-use/Base64InputStream.html
+org/apache/kerby/util/class-use/HostPort.html
+org/apache/kerby/util/class-use/Utf8.html
+org/apache/kerby/util/class-use/Hex.html
+org/apache/kerby/util/class-use/Util.html
+org/apache/kerby/util/class-use/NetworkUtil.html
+org/apache/kerby/util/class-use/Base64.html
+org/apache/kerby/util/class-use/SysUtil.html
+org/apache/kerby/util/class-use/ByteArrayReadLine.html
+org/apache/kerby/util/class-use/HexUtil.html
+org/apache/kerby/util/class-use/IPAddressParser.html
+org/apache/kerby/util/class-use/Base64OutputStream.html
+org/apache/kerby/util/class-use/CryptoUtil.html
+org/apache/kerby/util/class-use/IOUtil.html
+org/apache/kerby/util/class-use/PublicKeyDeriver.html
+org/apache/kerby/util/class-use/ReadLine.html
+org/apache/kerby/util/class-use/OSUtil.html
+org/apache/kerby/util/Hex.html
+org/apache/kerby/util/package-tree.html
+org/apache/kerby/util/Util.html
+org/apache/kerby/util/NetworkUtil.html
+org/apache/kerby/util/Base64.html
+org/apache/kerby/util/SysUtil.html
+org/apache/kerby/util/ByteArrayReadLine.html
+org/apache/kerby/util/HexUtil.html
+org/apache/kerby/util/package-summary.html
+org/apache/kerby/util/IPAddressParser.html
+org/apache/kerby/util/Base64OutputStream.html
+org/apache/kerby/util/CryptoUtil.html
+org/apache/kerby/util/IOUtil.html
+org/apache/kerby/util/PublicKeyDeriver.html
+org/apache/kerby/util/package-use.html
+org/apache/kerby/util/ReadLine.html
+org/apache/kerby/util/OSUtil.html
+allclasses-frame.html
+deprecated-list.html
+help-doc.html
+resources/titlebar_end.gif
+resources/titlebar.gif
+resources/background.gif
+resources/tab.gif
+index.html
+overview-frame.html
+package-list
+allclasses-noframe.html
+META-INF/NOTICE
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+
+ succeeded in 152ms:
+[
+  {
+    "name": "util",
+    "path": "kerby-common/kerby-util/src/test/java/org/apache/kerby/util",
+    "sha": "b982598a10ee633a8fe237a6d6f14c6d54d3c296",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby/util?ref=kerby-all-1.0.1",
+    "html_url": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org/apache/kerby/util",
+    "git_url": "https://api.github.com/repos/apache/directory-kerby/git/trees/b982598a10ee633a8fe237a6d6f14c6d54d3c296",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby/util?ref=kerby-all-1.0.1",
+      "git": "https://api.github.com/repos/apache/directory-kerby/git/trees/b982598a10ee633a8fe237a6d6f14c6d54d3c296",
+      "html": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org/apache/kerby/util"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar | sed -n '1,20p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 20:59:31 GMT
+content-type: application/java-archive
+content-length: 45373
+cf-ray: 9f38fdbffa2c03b1-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 854322
+etag: "5f9e97b25a38361a8f93564474a5f583"
+last-modified: Wed, 30 Aug 2017 10:06:59 GMT
+x-checksum-md5: 5f9e97b25a38361a8f93564474a5f583
+x-checksum-sha1: 5fe9a6721594a637eb62a479652aeda6dca269bb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar | sed -n '1,20p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 20:59:31 GMT
+content-type: application/java-archive
+content-length: 150528
+cf-ray: 9f38fdbfff8bbb0a-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 386561
+etag: "ce27f4d4148b129faabc52b25f4a8f80"
+last-modified: Wed, 30 Aug 2017 10:06:55 GMT
+x-checksum-md5: ce27f4d4148b129faabc52b25f4a8f80
+x-checksum-sha1: 4bdff32a1e792a712afa6d3dd0f247adcbe884ae
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby/util?ref=kerby-all-1.0.1' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-test-sources.jar | sed -n '1,20p' || true" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 170ms:
+[
+  {
+    "name": "Base64Test.java",
+    "path": "kerby-common/kerby-util/src/test/java/org/apache/kerby/util/Base64Test.java",
+    "sha": "1ae3d82500b75434fcbad13cdb9186d3ab26cb91",
+    "size": 3924,
+    "url": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/Base64Test.java?ref=kerby-all-1.0.1",
+    "html_url": "https://github.com/apache/directory-kerby/blob/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/Base64Test.java",
+    "git_url": "https://api.github.com/repos/apache/directory-kerby/git/blobs/1ae3d82500b75434fcbad13cdb9186d3ab26cb91",
+    "download_url": "https://raw.githubusercontent.com/apache/directory-kerby/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/Base64Test.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/Base64Test.java?ref=kerby-all-1.0.1",
+      "git": "https://api.github.com/repos/apache/directory-kerby/git/blobs/1ae3d82500b75434fcbad13cdb9186d3ab26cb91",
+      "html": "https://github.com/apache/directory-kerby/blob/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/Base64Test.java"
+    }
+  },
+  {
+    "name": "IPAddressParserTest.java",
+    "path": "kerby-common/kerby-util/src/test/java/org/apache/kerby/util/IPAddressParserTest.java",
+    "sha": "d196886c4c0eb730ca2128a507f9f66076b01fc5",
+    "size": 5571,
+    "url": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/IPAddressParserTest.java?ref=kerby-all-1.0.1",
+    "html_url": "https://github.com/apache/directory-kerby/blob/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/IPAddressParserTest.java",
+    "git_url": "https://api.github.com/repos/apache/directory-kerby/git/blobs/d196886c4c0eb730ca2128a507f9f66076b01fc5",
+    "download_url": "https://raw.githubusercontent.com/apache/directory-kerby/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/IPAddressParserTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/IPAddressParserTest.java?ref=kerby-all-1.0.1",
+      "git": "https://api.github.com/repos/apache/directory-kerby/git/blobs/d196886c4c0eb730ca2128a507f9f66076b01fc5",
+      "html": "https://github.com/apache/directory-kerby/blob/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org/apache/kerby/util/IPAddressParserTest.java"
+    }
+  }
+]
+
+ succeeded in 213ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 20:59:31 GMT
+content-type: text/html
+cf-ray: 9f38fdbfffc41a65-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+I have the selected values: Maven Central for sources and Javadoc, the GitHub release tag for tests, and the SCM repository root from the published POM. I’m updating the discovered metadata file now.
+apply patch
+patch: completed
+/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+diff --git a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+index 152adf2d400e91799209c85ac1b33d044437ffba..69f2a62d24c858f1ea9dff57c506ad312c9e8943
+--- a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.kerby:kerby-util:1.0.1"
++  "coordinates" : "org.apache.kerby:kerby-util:1.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar",
++  "repository-url" : "https://github.com/apache/directory-kerby",
++  "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar",
++  "description" : "Kerby Util provides dependency-free utility classes used by Apache Kerby, including Base64, hexadecimal, UTF-8, I/O, networking, and operating-system helpers. It also includes simple option-model classes shared across Kerby components."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+index 152adf2d400e91799209c85ac1b33d044437ffba..69f2a62d24c858f1ea9dff57c506ad312c9e8943
+--- a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.kerby:kerby-util:1.0.1"
++  "coordinates" : "org.apache.kerby:kerby-util:1.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar",
++  "repository-url" : "https://github.com/apache/directory-kerby",
++  "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar",
++  "description" : "Kerby Util provides dependency-free utility classes used by Apache Kerby, including Base64, hexadecimal, UTF-8, I/O, networking, and operating-system helpers. It also includes simple option-model classes shared across Kerby components."
+ }
+
+web search: 
+web search: https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org/apache/kerby/util?ref=kerby-all-1.0.1
+web search: 
+web search: repo.maven.apache.org org apache kerby kerby-util 1.0.1 sources javadoc
+web search: 
+web search: "kerby-util-1.0.1-sources.jar"
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/kerby/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/kerby/kerby-util/1.0.1/
+web search: 
+web search: 
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/kerby/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/kerby/kerby-all/
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/kerby/kerby-all/1.0.1/
+web search: 
+web search: 
+web search: 
+web search: Apache directory-kerby GitHub kerby-all-1.0.1 tag
+web search: 
+web search: 
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.kerby:kerby-util:1.0.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar",
+  "repository-url": "https://github.com/apache/directory-kerby",
+  "test-code-url": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar",
+  "description": "Kerby Util provides dependency-free utility classes used by Apache Kerby, including Base64, hexadecimal, UTF-8, I/O, networking, and operating-system helpers. It also includes simple option-model classes shared across Kerby components."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+index 152adf2d400e91799209c85ac1b33d044437ffba..69f2a62d24c858f1ea9dff57c506ad312c9e8943
+--- a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.kerby:kerby-util:1.0.1"
++  "coordinates" : "org.apache.kerby:kerby-util:1.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar",
++  "repository-url" : "https://github.com/apache/directory-kerby",
++  "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar",
++  "description" : "Kerby Util provides dependency-free utility classes used by Apache Kerby, including Base64, hexadecimal, UTF-8, I/O, networking, and operating-system helpers. It also includes simple option-model classes shared across Kerby components."
+ }
+
+exec
+/usr/bin/bash -lc 'git ls-files build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json --error-unmatch >/dev/null 2>&1; echo $?' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+1
+
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+index 152adf2d400e91799209c85ac1b33d044437ffba..69f2a62d24c858f1ea9dff57c506ad312c9e8943
+--- a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.kerby:kerby-util:1.0.1"
++  "coordinates" : "org.apache.kerby:kerby-util:1.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar",
++  "repository-url" : "https://github.com/apache/directory-kerby",
++  "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar",
++  "description" : "Kerby Util provides dependency-free utility classes used by Apache Kerby, including Base64, hexadecimal, UTF-8, I/O, networking, and operating-system helpers. It also includes simple option-model classes shared across Kerby components."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: "kerby-all-1.0.1.pom"
+web search: 
+web search: "kerby-util-1.0.1-sources.jar"
+web search: 
+web search: search.maven.org org.apache.kerby kerby-util 1.0.1
+web search: 
+web search: "Central Repository: org/apache/kerby/kerby-util/1.0.1"
+codex
+Updated [org.apache.kerby-kerby-util-1.0.1.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json) with the discovered URLs and two-sentence description.
+
+I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. Verified the JSON with `jq .`.
+diff --git a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+index 152adf2d400e91799209c85ac1b33d044437ffba..69f2a62d24c858f1ea9dff57c506ad312c9e8943
+--- a/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
++++ b/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.kerby:kerby-util:1.0.1"
++  "coordinates" : "org.apache.kerby:kerby-util:1.0.1",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar",
++  "repository-url" : "https://github.com/apache/directory-kerby",
++  "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar",
++  "description" : "Kerby Util provides dependency-free utility classes used by Apache Kerby, including Base64, hexadecimal, UTF-8, I/O, networking, and operating-system helpers. It also includes simple option-model classes shared across Kerby components."
+ }
+
+2026-04-28T21:00:47.618354Z ERROR codex_core::session: failed to record rollout items: thread 019dd5e3-10f6-74e3-9143-4d73160b1e75 not found
+tokens used
+120,664
+Updated [org.apache.kerby-kerby-util-1.0.1.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/build/discovered-artifact-metadata/org.apache.kerby-kerby-util-1.0.1.json) with the discovered URLs and two-sentence description.
+
+I left `language` absent because this is not Kotlin, Groovy, or Scala-specific. Verified the JSON with `jq .`.
+Ran agent for org.apache.kerby:kerby-util:1.0.1 (exit 0). Log: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/build/agent-artifact-discovery-logs/org.apache.kerby-kerby-util-1.0.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 12s
+9 actionable tasks: 4 executed, 5 from cache

@@ -1,0 +1,381 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd5e5-2a83-7d60-b703-b722b1318602
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.kerby:kerby-util:1.0.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.0.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/metadata/org.apache.kerby/kerby-util/index.json
+- Entry selector: "metadata-version" = "1.0.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.0.1".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar
+- repository-url: https://github.com/apache/directory-kerby
+- test-code-url: https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java
+- documentation-url: https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar
+- description: Kerby Util provides dependency-free utility classes used by Apache Kerby, including Base64, hexadecimal, UTF-8, I/O, networking, and operating-system helpers. It also includes simple option-model classes shared across Kerby components.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.0.1
+- Entry test-version: 1.0.1
+codex
+I’ll verify the Maven artifact and versioned upstream URLs first, then patch only the missing fields in the existing `index.json`.
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/
+codex
+Maven Central has versioned `sources.jar` and `javadoc.jar` for `1.0.1`; I’m checking whether Maven also publishes test sources before deciding whether the GitHub tag is the best test-suite URL.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.kerby/kerby-util/index.json" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.0.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar",
+    "repository-url" : "https://github.com/apache/directory-kerby",
+    "test-code-url" : "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar",
+    "description" : "Kerby Util provides dependency-free utility classes used by Apache Kerby, including Base64, hexadecimal, UTF-8, I/O, networking, and operating-system helpers. It also includes simple option-model classes shared across Kerby components.",
+    "tested-versions" : [
+      "1.0.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.kerby"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1.pom' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.kerby</groupId>
+    <artifactId>kerby-common</artifactId>
+    <version>1.0.1</version>
+  </parent>
+
+  <artifactId>kerby-util</artifactId>
+
+  <name>Kerby Util</name>
+  <description>Kerby common util, without any 3rd party dependency</description>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-test-sources.jar || true' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Tue, 28 Apr 2026 21:01:11 GMT
+content-type: text/html
+cf-ray: 9f3900312a569a60-ZRH
+cf-cache-status: HIT
+age: 99
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-tests.jar || true' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+HTTP/2 404 
+date: Tue, 28 Apr 2026 21:01:11 GMT
+content-type: text/html
+cf-ray: 9f3900313c31fbd6-ZRH
+cf-cache-status: HIT
+age: 2284
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1 kerby-util-1.0.1-sources.jar kerby-util-1.0.1-javadoc.jar
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/
+web search: 
+web search: 
+web search: 
+web search: central sonatype org.apache.kerby kerby-util 1.0.1
+codex
+The target JSON already contains non-blank values for all requested URL and description fields. I’m now confirming the remaining missing field, `language`, should stay absent because this artifact is plain Java rather than a Kotlin/Groovy/Scala-specific artifact.
+exec
+/usr/bin/bash -lc "jar tf ~/.m2/repository/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar 2>/dev/null | sed -n '1,120p' || true" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-sources.jar -o /tmp/kerby-util-1.0.1-sources.jar && jar tf /tmp/kerby-util-1.0.1-sources.jar | sed -n '1,160p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/apache/
+org/apache/kerby/
+org/apache/kerby/util/
+META-INF/maven/
+META-INF/maven/org.apache.kerby/
+META-INF/maven/org.apache.kerby/kerby-util/
+META-INF/NOTICE
+org/apache/kerby/util/CryptoUtil.java
+META-INF/DEPENDENCIES
+org/apache/kerby/util/Base64InputStream.java
+org/apache/kerby/util/ByteArrayReadLine.java
+org/apache/kerby/util/NetworkUtil.java
+org/apache/kerby/util/PublicKeyDeriver.java
+org/apache/kerby/util/Hex.java
+org/apache/kerby/util/HexUtil.java
+org/apache/kerby/util/Base64.java
+META-INF/LICENSE
+org/apache/kerby/util/Base64OutputStream.java
+org/apache/kerby/util/IPAddressParser.java
+org/apache/kerby/util/IOUtil.java
+org/apache/kerby/util/Util.java
+META-INF/maven/org.apache.kerby/kerby-util/pom.xml
+org/apache/kerby/KOptionGroup.java
+org/apache/kerby/KOption.java
+org/apache/kerby/KOptionType.java
+org/apache/kerby/KOptions.java
+org/apache/kerby/util/ReadLine.java
+org/apache/kerby/util/Utf8.java
+org/apache/kerby/util/SysUtil.java
+org/apache/kerby/util/OSUtil.java
+org/apache/kerby/util/HostPort.java
+META-INF/maven/org.apache.kerby/kerby-util/pom.properties
+org/apache/kerby/KOptionInfo.java
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/kerby-util-1.0.1-javadoc.jar -o /tmp/kerby-util-1.0.1-javadoc.jar && jar tf /tmp/kerby-util-1.0.1-javadoc.jar | sed -n '1,80p'" in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/kerby/
+org/apache/kerby/class-use/
+org/apache/kerby/util/
+org/apache/kerby/util/class-use/
+resources/
+constant-values.html
+index-all.html
+stylesheet.css
+overview-summary.html
+overview-tree.html
+org/apache/kerby/KOption.html
+org/apache/kerby/KOptionType.html
+org/apache/kerby/package-frame.html
+org/apache/kerby/class-use/KOption.html
+org/apache/kerby/class-use/KOptionType.html
+org/apache/kerby/class-use/KOptionInfo.html
+org/apache/kerby/class-use/KOptions.html
+org/apache/kerby/class-use/KOptionGroup.html
+org/apache/kerby/package-tree.html
+org/apache/kerby/package-summary.html
+org/apache/kerby/KOptionInfo.html
+org/apache/kerby/KOptions.html
+org/apache/kerby/KOptionGroup.html
+org/apache/kerby/package-use.html
+org/apache/kerby/util/Base64InputStream.html
+org/apache/kerby/util/HostPort.html
+org/apache/kerby/util/package-frame.html
+org/apache/kerby/util/Utf8.html
+org/apache/kerby/util/class-use/Base64InputStream.html
+org/apache/kerby/util/class-use/HostPort.html
+org/apache/kerby/util/class-use/Utf8.html
+org/apache/kerby/util/class-use/Hex.html
+org/apache/kerby/util/class-use/Util.html
+org/apache/kerby/util/class-use/NetworkUtil.html
+org/apache/kerby/util/class-use/Base64.html
+org/apache/kerby/util/class-use/SysUtil.html
+org/apache/kerby/util/class-use/ByteArrayReadLine.html
+org/apache/kerby/util/class-use/HexUtil.html
+org/apache/kerby/util/class-use/IPAddressParser.html
+org/apache/kerby/util/class-use/Base64OutputStream.html
+org/apache/kerby/util/class-use/CryptoUtil.html
+org/apache/kerby/util/class-use/IOUtil.html
+org/apache/kerby/util/class-use/PublicKeyDeriver.html
+org/apache/kerby/util/class-use/ReadLine.html
+org/apache/kerby/util/class-use/OSUtil.html
+org/apache/kerby/util/Hex.html
+org/apache/kerby/util/package-tree.html
+org/apache/kerby/util/Util.html
+org/apache/kerby/util/NetworkUtil.html
+org/apache/kerby/util/Base64.html
+org/apache/kerby/util/SysUtil.html
+org/apache/kerby/util/ByteArrayReadLine.html
+org/apache/kerby/util/HexUtil.html
+org/apache/kerby/util/package-summary.html
+org/apache/kerby/util/IPAddressParser.html
+org/apache/kerby/util/Base64OutputStream.html
+org/apache/kerby/util/CryptoUtil.html
+org/apache/kerby/util/IOUtil.html
+org/apache/kerby/util/PublicKeyDeriver.html
+org/apache/kerby/util/package-use.html
+org/apache/kerby/util/ReadLine.html
+org/apache/kerby/util/OSUtil.html
+allclasses-frame.html
+deprecated-list.html
+help-doc.html
+resources/titlebar_end.gif
+resources/titlebar.gif
+resources/background.gif
+resources/tab.gif
+index.html
+overview-frame.html
+package-list
+allclasses-noframe.html
+META-INF/NOTICE
+META-INF/DEPENDENCIES
+META-INF/LICENSE
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java?ref=kerby-all-1.0.1' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 328ms:
+[
+  {
+    "name": "org",
+    "path": "kerby-common/kerby-util/src/test/java/org",
+    "sha": "fd786d45e038673b49c38a67e0535e556f764ef5",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org?ref=kerby-all-1.0.1",
+    "html_url": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org",
+    "git_url": "https://api.github.com/repos/apache/directory-kerby/git/trees/fd786d45e038673b49c38a67e0535e556f764ef5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/directory-kerby/contents/kerby-common/kerby-util/src/test/java/org?ref=kerby-all-1.0.1",
+      "git": "https://api.github.com/repos/apache/directory-kerby/git/trees/fd786d45e038673b49c38a67e0535e556f764ef5",
+      "html": "https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java/org"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/apache/directory-kerby/tree/kerby-all-1.0.1/kerby-common/kerby-util/src/test/java
+web search: 
+web search: "kerby-util-1.0.1-sources.jar"
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: search.maven.org org.apache.kerby kerby-util 1.0.1
+web search: 
+web search: 
+web search: 
+web search: "Central Repository: org/apache/kerby/kerby-util/1.0.1"
+codex
+The artifact’s source archive contains only `.java` classes under `org/apache/kerby`, and the versioned GitHub test path exists for tag `kerby-all-1.0.1`. Since `language` only applies to Kotlin, Groovy, or Scala libraries here, I’m leaving it absent.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.kerby/kerby-util/index.json >/dev/null' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.kerby/kerby-util/index.json' in /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32
+ succeeded in 0ms:
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/
+web search: 
+web search: 
+codex
+No file changes were needed in [index.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/metadata/org.apache.kerby/kerby-util/index.json:1). The target entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description`; the Maven listing includes the exact `1.0.1` sources and javadoc jars, and the test URL points at the `kerby-all-1.0.1` tag. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/))
+
+I left `language` absent because `kerby-util` is not a Kotlin, Groovy, or Scala-specific library. Validation passed with `jq .`, and `git diff -- metadata/org.apache.kerby/kerby-util/index.json` is empty.
+2026-04-28T21:02:17.366735Z ERROR codex_core::session: failed to record rollout items: thread 019dd5e5-2a83-7d60-b703-b722b1318602 not found
+tokens used
+61,715
+No file changes were needed in [index.json](/home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/metadata/org.apache.kerby/kerby-util/index.json:1). The target entry already has non-blank `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description`; the Maven listing includes the exact `1.0.1` sources and javadoc jars, and the test URL points at the `kerby-all-1.0.1` tag. ([repo.maven.apache.org](https://repo.maven.apache.org/maven2/org/apache/kerby/kerby-util/1.0.1/))
+
+I left `language` absent because `kerby-util` is not a Kotlin, Groovy, or Scala-specific library. Validation passed with `jq .`, and `git diff -- metadata/org.apache.kerby/kerby-util/index.json` is empty.
+Ran agent for org.apache.kerby:kerby-util:1.0.1 (exit 0). Log: /home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/build/agent-url-discovery-logs/org.apache.kerby-kerby-util-1.0.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge3/metadata-forge/local_repositories/forge_worktrees/2999-be229b32/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 19s
+9 actionable tasks: 1 executed, 8 up-to-date

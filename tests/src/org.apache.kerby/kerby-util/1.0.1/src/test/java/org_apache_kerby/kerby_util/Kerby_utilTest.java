@@ -363,15 +363,26 @@ public class Kerby_utilTest {
     }
 
     @Test
-    void publicKeyDeriverRecreatesPublicKeyFromRsaPrivateKey() throws Exception {
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+    void publicKeyDeriverCreatesPublicKeysForSupportedPrivateKeyTypes() throws Exception {
+        KeyPair rsaKeyPair = generateKeyPair("RSA");
+
+        PublicKey derivedRsa = PublicKeyDeriver.derivePublicKey(rsaKeyPair.getPrivate());
+
+        assertThat(derivedRsa.getAlgorithm()).isEqualTo("RSA");
+        assertThat(derivedRsa.getEncoded()).containsExactly(rsaKeyPair.getPublic().getEncoded());
+
+        KeyPair dsaKeyPair = generateKeyPair("DSA");
+
+        PublicKey derivedDsa = PublicKeyDeriver.derivePublicKey(dsaKeyPair.getPrivate());
+
+        assertThat(derivedDsa.getAlgorithm()).isEqualTo("DSA");
+        assertThat(derivedDsa.getEncoded()).isNotEmpty();
+    }
+
+    private static KeyPair generateKeyPair(String algorithm) throws Exception {
+        KeyPairGenerator generator = KeyPairGenerator.getInstance(algorithm);
         generator.initialize(1024);
-        KeyPair keyPair = generator.generateKeyPair();
-
-        PublicKey derived = PublicKeyDeriver.derivePublicKey(keyPair.getPrivate());
-
-        assertThat(derived.getAlgorithm()).isEqualTo("RSA");
-        assertThat(derived.getEncoded()).containsExactly(keyPair.getPublic().getEncoded());
+        return generator.generateKeyPair();
     }
 
     private static KeyStore createInMemoryKeyStore() throws Exception {
