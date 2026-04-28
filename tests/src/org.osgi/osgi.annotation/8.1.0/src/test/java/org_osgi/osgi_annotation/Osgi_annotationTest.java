@@ -160,6 +160,19 @@ public class Osgi_annotationTest {
     }
 
     @Test
+    void reusableRequirementAnnotationsCanModelTypedServiceContracts() {
+        ServiceContractRequirement requirement = new FixedServiceContractRequirement(
+                ProviderApi.class,
+                "(component.name=inventory.provider)");
+        ReusableRequirementBundle bundle = new ReusableRequirementBundle("inventory");
+
+        assertThat(requirement.annotationType()).isSameAs(ServiceContractRequirement.class);
+        assertThat(requirement.serviceType()).isSameAs(ProviderApi.class);
+        assertThat(requirement.filter()).isEqualTo("(component.name=inventory.provider)");
+        assertThat(bundle.requiredServiceName()).isEqualTo("inventory.provider");
+    }
+
+    @Test
     void explicitContainerAnnotationsCanBeAppliedToBundleTypes() {
         ContainerAnnotatedBundle bundle = new ContainerAnnotatedBundle("inventory");
 
@@ -241,6 +254,28 @@ public class Osgi_annotationTest {
         String filter() default "";
     }
 
+    @Requirement(namespace = "osgi.service", cardinality = Requirement.Cardinality.MULTIPLE)
+    private @interface ServiceContractRequirement {
+        @Attribute("objectClass")
+        Class<?> serviceType();
+
+        @Directive("filter")
+        String filter() default "";
+    }
+
+    @ServiceContractRequirement(serviceType = ProviderApi.class, filter = "(component.name=inventory.provider)")
+    private static final class ReusableRequirementBundle {
+        private final String name;
+
+        ReusableRequirementBundle(String name) {
+            this.name = name;
+        }
+
+        String requiredServiceName() {
+            return name + ".provider";
+        }
+    }
+
     private static final class ComponentMetadataImplementation implements ComponentMetadata {
         @Override
         public String name() {
@@ -255,6 +290,31 @@ public class Osgi_annotationTest {
         @Override
         public Class<? extends Annotation> annotationType() {
             return ComponentMetadata.class;
+        }
+    }
+
+    private static final class FixedServiceContractRequirement implements ServiceContractRequirement {
+        private final Class<?> serviceType;
+        private final String filter;
+
+        FixedServiceContractRequirement(Class<?> serviceType, String filter) {
+            this.serviceType = serviceType;
+            this.filter = filter;
+        }
+
+        @Override
+        public Class<?> serviceType() {
+            return serviceType;
+        }
+
+        @Override
+        public String filter() {
+            return filter;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return ServiceContractRequirement.class;
         }
     }
 
