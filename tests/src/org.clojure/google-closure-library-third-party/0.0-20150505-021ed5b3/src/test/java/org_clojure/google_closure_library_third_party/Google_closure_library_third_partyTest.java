@@ -276,6 +276,35 @@ public class Google_closure_library_third_partyTest {
     }
 
     @Test
+    void htmlParserDefinesEntityDecodingAndElementContentRules() throws IOException {
+        String source = loadResource("goog/caja/string/html/htmlparser.js");
+        Map<String, String> entities = extractStringMapValues(source, "goog.string.html.HtmlParser.Entities");
+        Map<String, Integer> eFlags = extractEnumValues(source, "goog.string.html.HtmlParser.EFlags");
+        Map<String, Integer> elements = extractElementFlagValues(source, eFlags);
+
+        assertThat(entities)
+                .containsEntry("lt", "<")
+                .containsEntry("gt", ">")
+                .containsEntry("amp", "&")
+                .containsEntry("nbsp", "\u00a0")
+                .containsEntry("quot", "\"")
+                .containsEntry("apos", "'");
+
+        assertThat(eFlags).containsKeys("OPTIONAL_ENDTAG", "EMPTY", "CDATA", "RCDATA", "UNSAFE", "FOLDABLE");
+        assertThat(elements.get("br")).isEqualTo(combinedFlags(eFlags, "EMPTY"));
+        assertThat(elements.get("img")).isEqualTo(combinedFlags(eFlags, "EMPTY"));
+        assertThat(elements.get("param")).isEqualTo(combinedFlags(eFlags, "EMPTY", "UNSAFE"));
+        assertThat(elements.get("p")).isEqualTo(combinedFlags(eFlags, "OPTIONAL_ENDTAG"));
+        assertThat(elements.get("li")).isEqualTo(combinedFlags(eFlags, "OPTIONAL_ENDTAG"));
+        assertThat(elements.get("script")).isEqualTo(combinedFlags(eFlags, "UNSAFE", "CDATA"));
+        assertThat(elements.get("style")).isEqualTo(combinedFlags(eFlags, "UNSAFE", "CDATA"));
+        assertThat(elements.get("textarea")).isEqualTo(combinedFlags(eFlags, "RCDATA"));
+        assertThat(elements.get("title")).isEqualTo(combinedFlags(eFlags, "RCDATA", "UNSAFE"));
+        assertThat(elements.get("html")).isEqualTo(combinedFlags(eFlags, "OPTIONAL_ENDTAG", "UNSAFE", "FOLDABLE"));
+        assertThat(elements.get("span")).isZero();
+    }
+
+    @Test
     void htmlSanitizerAttributePoliciesSeparateSafeTokensUrisAndExecutableContent() throws IOException {
         String source = loadResource("goog/caja/string/html/htmlsanitizer.js");
         Map<String, Integer> attributeTypes = extractEnumValues(
@@ -339,6 +368,59 @@ public class Google_closure_library_third_partyTest {
         }
         assertThat(values).as("goog.string.html.HtmlSanitizer.Attributes").isNotEmpty();
         return values;
+    }
+
+    private static Map<String, String> extractStringMapValues(String source, String objectName) {
+        Matcher matcher = Pattern.compile("\\s*'([^']+)': '((?:\\\\'|[^'])*)',?")
+                .matcher(extractObjectLiteralBody(source, objectName));
+        Map<String, String> values = new LinkedHashMap<>();
+        while (matcher.find()) {
+            values.put(matcher.group(1), decodeJavaScriptString(matcher.group(2)));
+        }
+        assertThat(values).as(objectName).isNotEmpty();
+        return values;
+    }
+
+    private static String decodeJavaScriptString(String value) {
+        return value.replace("\\u00a0", "\u00a0")
+                .replace("\\'", "'")
+                .replace("\\\\", "\\");
+    }
+
+    private static Map<String, Integer> extractElementFlagValues(String source, Map<String, Integer> eFlags) {
+        String normalizedBody = extractObjectLiteralBody(source, "goog.string.html.HtmlParser.Elements")
+                .replaceAll("\\R\\s+", " ");
+        Matcher matcher = Pattern.compile("'([^']+)':\\s*([^,]+),?").matcher(normalizedBody);
+        Map<String, Integer> values = new LinkedHashMap<>();
+        while (matcher.find()) {
+            values.put(matcher.group(1), evaluateFlagExpression(matcher.group(2), eFlags));
+        }
+        assertThat(values).as("goog.string.html.HtmlParser.Elements").isNotEmpty();
+        return values;
+    }
+
+    private static int evaluateFlagExpression(String expression, Map<String, Integer> eFlags) {
+        if (expression.trim().equals("0")) {
+            return 0;
+        }
+        Matcher matcher = Pattern.compile("EFlags\\.([A-Z_]+)").matcher(expression);
+        int value = 0;
+        while (matcher.find()) {
+            String flagName = matcher.group(1);
+            assertThat(eFlags).containsKey(flagName);
+            value |= eFlags.get(flagName);
+        }
+        assertThat(value).as(expression).isNotZero();
+        return value;
+    }
+
+    private static int combinedFlags(Map<String, Integer> eFlags, String... flagNames) {
+        int value = 0;
+        for (String flagName : flagNames) {
+            assertThat(eFlags).containsKey(flagName);
+            value |= eFlags.get(flagName);
+        }
+        return value;
     }
 
     private static String extractObjectLiteralBody(String source, String objectName) {
