@@ -266,6 +266,21 @@ public class Websocket_apiTest {
     }
 
     @Test
+    void closeStatusTrimMaxReasonLengthLeavesValidReasonsUntouchedAndTrimsLongOnes() {
+        String maxReason = "x".repeat(CloseStatus.MAX_REASON_PHRASE);
+        String tooLongReason = maxReason + "tail";
+        String trimmedReason = CloseStatus.trimMaxReasonLength(tooLongReason);
+
+        assertThat(CloseStatus.trimMaxReasonLength(null)).isNull();
+        assertThat(CloseStatus.trimMaxReasonLength("jetty")).isEqualTo("jetty");
+        assertThat(CloseStatus.trimMaxReasonLength(maxReason)).isEqualTo(maxReason);
+        assertThat(trimmedReason).isEqualTo(maxReason).hasSize(CloseStatus.MAX_REASON_PHRASE);
+        assertThat(trimmedReason.getBytes(StandardCharsets.UTF_8))
+                .hasSize(CloseStatus.MAX_REASON_PHRASE)
+                .containsExactly(maxReason.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Test
     void websocketExceptionsPreserveContextForCloseAndUpgradeFailures() {
         RuntimeException cause = new RuntimeException("boom");
         URI requestUri = URI.create("ws://localhost/socket");
