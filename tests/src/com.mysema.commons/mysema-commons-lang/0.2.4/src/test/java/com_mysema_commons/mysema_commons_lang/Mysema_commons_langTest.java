@@ -204,7 +204,7 @@ public class Mysema_commons_langTest {
 
     @Test
     void urlEncoderEncodesParametersUsingRequestedCharset() {
-        assertThat(URLEncoder.encodeParam("a b+c/d?ä", "UTF-8"))
+        assertThat(URLEncoder.encodeParam("a b+c/d?\u00E4", "UTF-8"))
                 .isEqualTo("a+b%2Bc%2Fd%3F%C3%A4");
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> URLEncoder.encodeParam("value", "not-a-real-charset"))
@@ -213,7 +213,7 @@ public class Mysema_commons_langTest {
 
     @Test
     void urlEncoderKeepsUrlDelimitersButEscapesUnsafeAsciiAndUnicode() {
-        assertThat(URLEncoder.encodeURL("https://example.com/a path?q=hello world&x=1+2#ä€"))
+        assertThat(URLEncoder.encodeURL("https://example.com/a path?q=hello world&x=1+2#\u00E4\u20AC"))
                 .isEqualTo("https%3a//example.com/a+path?q=hello+world&x=1%2b2%23%c3%a4%e2%82%ac");
         assertThat(URLEncoder.encodeURL("AZaz09-_.!~*\\()/&=?"))
                 .isEqualTo("AZaz09-_.!~*\\()/&=?");
