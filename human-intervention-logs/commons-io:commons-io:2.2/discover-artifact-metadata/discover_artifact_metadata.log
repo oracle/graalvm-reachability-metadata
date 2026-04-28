@@ -1,0 +1,603 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd12d-cf02-78b2-811d-4ecc550670ff
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: commons-io:commons-io:2.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+- Set "coordinates" to "commons-io:commons-io:2.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven/repository sources first, then update the JSON in place with version-specific links where they’re defensible.
+exec
+/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/commons-io-commons-io-2.2.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+{
+  "coordinates" : "commons-io:commons-io:2.2"
+}
+
+exec
+/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'commons-io-commons-io-2\\.2\\.json"'$'"'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+
+web search: 
+web search: Maven Central commons-io commons-io 2.2 sources jar test-sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/commons-io/commons-io/2.2/
+web search: 
+web search: 
+codex
+Maven Central exposes `sources`, `test-sources`, `tests`, and `javadoc` artifacts for `2.2`, so I’m using those for the version-specific source/test/docs fields as requested. Next I’m checking the published POM/SCM data to avoid guessing the repository root.
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2.pom | sed -n '1,220p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-parent</artifactId>
+    <version>24</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>commons-io</groupId>
+  <artifactId>commons-io</artifactId>
+  <version>2.2</version>
+  <name>Commons IO</name>
+
+  <inceptionYear>2002</inceptionYear>
+  <description>
+The Commons IO library contains utility classes, stream implementations, file filters, 
+file comparators, endian transformation classes, and much more.
+  </description>
+
+  <url>http://commons.apache.org/io/</url>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.apache.org/jira/browse/IO</url>
+  </issueManagement>
+
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <name>Apache Commons IO Site</name>
+      <url>${commons.deployment.protocol}://people.apache.org/www/commons.apache.org/${commons.componentid}</url>
+    </site>
+  </distributionManagement>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/io/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/io/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/commons/proper/io/trunk</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Scott Sanders</name>
+      <id>sanders</id>
+      <email>sanders@apache.org</email>
+      <organization></organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>dIon Gillard</name>
+      <id>dion</id>
+      <email>dion@apache.org</email>
+      <organization></organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Nicola Ken Barozzi</name>
+      <id>nicolaken</id>
+      <email>nicolaken@apache.org</email>
+      <organization></organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Henri Yandell</name>
+      <id>bayard</id>
+      <email>bayard@apache.org</email>
+      <organization></organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Stephen Colebourne</name>
+      <id>scolebourne</id>
+      <organization></organization>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+    <developer>
+      <name>Jeremias Maerki</name>
+      <id>jeremias</id>
+      <email>jeremias@apache.org</email>
+      <organization />
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <name>Matthew Hawthorne</name>
+      <id>matth</id>
+      <email>matth@apache.org</email>
+      <organization />
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Martin Cooper</name>
+      <id>martinc</id>
+      <email>martinc@apache.org</email>
+      <organization />
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Rob Oxspring</name>
+      <id>roxspring</id>
+      <email>roxspring@apache.org</email>
+      <organization />
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Jochen Wiedmann</name>
+      <id>jochen</id>
+      <email>jochen.wiedmann@gmail.com</email>
+    </developer>
+    <developer>
+      <name>Niall Pemberton</name>
+      <id>niallp</id>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Jukka Zitting</name>
+      <id>jukka</id>
+      <roles>
+        <role>Java Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Gary Gregory</name>
+      <id>ggregory</id>
+      <email>ggregory@apache.org</email>
+      <url>http://www.garygregory.com</url>
+      <timezone>-5</timezone>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Rahul Akolkar</name>
+    </contributor>
+    <contributor>
+      <name>Jason Anderson</name>
+    </contributor>
+    <contributor>
+      <name>Nathan Beyer</name>
+    </contributor>
+    <contributor>
+      <name>Emmanuel Bourg</name>
+    </contributor>
+    <contributor>
+      <name>Chris Eldredge</name>
+    </contributor>
+    <contributor>
+      <name>Magnus Grimsell</name>
+    </contributor>
+    <contributor>
+      <name>Jim Harrington</name>
+    </contributor>
+    <contributor>
+      <name>Thomas Ledoux</name>
+    </contributor>
+    <contributor>
+      <name>Andy Lehane</name>
+    </contributor>
+    <contributor>
+      <name>Marcelo Liberato</name>
+    </contributor>
+    <contributor>
+      <name>Alban Peignier</name>
+      <email>alban.peignier at free.fr</email>
+    </contributor>
+    <contributor>
+      <name>Ian Springer</name>
+    </contributor>
+    <contributor>
+      <name>Masato Tezuka</name>
+    </contributor>
+    <contributor>
+      <name>James Urie</name>
+    </contributor>
+    <contributor>
+      <name>Frank W. Zammetti</name>
+    </contributor>
+  </contributors>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2.pom | rg -n '<url>|<scm>|connection|developerConnection|tag|description|name'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+28:  <name>Commons IO</name>
+31:  <description>
+34:  </description>
+36:  <url>http://commons.apache.org/io/</url>
+40:    <url>http://issues.apache.org/jira/browse/IO</url>
+46:      <name>Apache Commons IO Site</name>
+47:      <url>${commons.deployment.protocol}://people.apache.org/www/commons.apache.org/${commons.componentid}</url>
+51:  <scm>
+52:    <connection>scm:svn:http://svn.apache.org/repos/asf/commons/proper/io/trunk</connection>
+53:    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/commons/proper/io/trunk</developerConnection>
+54:    <url>http://svn.apache.org/viewvc/commons/proper/io/trunk</url>
+59:      <name>Scott Sanders</name>
+68:      <name>dIon Gillard</name>
+77:      <name>Nicola Ken Barozzi</name>
+86:      <name>Henri Yandell</name>
+95:      <name>Stephen Colebourne</name>
+104:      <name>Jeremias Maerki</name>
+114:      <name>Matthew Hawthorne</name>
+123:      <name>Martin Cooper</name>
+132:      <name>Rob Oxspring</name>
+141:      <name>Jochen Wiedmann</name>
+146:      <name>Niall Pemberton</name>
+153:      <name>Jukka Zitting</name>
+160:      <name>Gary Gregory</name>
+163:      <url>http://www.garygregory.com</url>
+170:      <name>Rahul Akolkar</name>
+173:      <name>Jason Anderson</name>
+176:      <name>Nathan Beyer</name>
+179:      <name>Emmanuel Bourg</name>
+182:      <name>Chris Eldredge</name>
+185:      <name>Magnus Grimsell</name>
+188:      <name>Jim Harrington</name>
+191:      <name>Thomas Ledoux</name>
+194:      <name>Andy Lehane</name>
+197:      <name>Marcelo Liberato</name>
+200:      <name>Alban Peignier</name>
+204:      <name>Ian Springer</name>
+207:      <name>Masato Tezuka</name>
+210:      <name>James Urie</name>
+213:      <name>Frank W. Zammetti</name>
+
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar | sed -n '1,12p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 23:02:43 GMT
+content-type: application/java-archive
+content-length: 242243
+cf-ray: 9f3174d90af45165-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 1627537
+etag: "d85dfc6a3db8f14926ce712209eaf561"
+last-modified: Mon, 26 Mar 2012 15:14:41 GMT
+x-checksum-md5: d85dfc6a3db8f14926ce712209eaf561
+x-checksum-sha1: 8d6b98f21262995489a8418fff8da992d7e25c1e
+
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar | sed -n '1,12p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 23:02:43 GMT
+content-type: application/java-archive
+content-length: 713641
+cf-ray: 9f3174d91815d814-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 888868
+etag: "6513dab97b6a792cf91276a50d781724"
+last-modified: Mon, 26 Mar 2012 15:14:52 GMT
+x-checksum-md5: 6513dab97b6a792cf91276a50d781724
+x-checksum-sha1: 92da9b7269652c310afc2a2458e72e5a1aa4a54a
+
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar | sed -n '1,12p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+exec
+/bin/bash -lc "curl -fsSI https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-tests.jar | sed -n '1,12p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 246ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 23:02:43 GMT
+content-type: application/java-archive
+content-length: 289147
+cf-ray: 9f3174d91e09bbed-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "3ce05dfcb1273ca53aac00b4a85ffb71"
+last-modified: Mon, 26 Mar 2012 15:14:48 GMT
+x-checksum-md5: 3ce05dfcb1273ca53aac00b4a85ffb71
+x-checksum-sha1: 5cd5761119a90a49831f0139648ffdf1f1aa1f5e
+server: cloudflare
+
+ succeeded in 408ms:
+HTTP/2 200 
+date: Mon, 27 Apr 2026 23:02:43 GMT
+content-type: application/java-archive
+content-length: 195930
+cf-ray: 9f3174d91910e297-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "3fa39232f333689145d2749262ce2140"
+last-modified: Mon, 26 Mar 2012 15:14:44 GMT
+x-checksum-md5: 3fa39232f333689145d2749262ce2140
+x-checksum-sha1: b12a746dd490a930f07878602edb8e57a5390026
+server: cloudflare
+
+exec
+/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -80" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+exec
+/bin/bash -lc "rg -n 'commons-io|apache.commons.io|commons.apache.org/io|commons/proper/io' . --glob '*.json' --glob '"'!build/discovered-artifact-metadata/commons-io-commons-io-2.2.json'"'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+./metadata/commons-io/commons-io/2.11.0/reachability-metadata.json:5:        "typeReached" : "org.apache.commons.io.input.ClassLoaderObjectInputStream"
+./metadata/commons-io/commons-io/2.11.0/reachability-metadata.json:12:        "typeReached" : "org.apache.commons.io.serialization.ValidatingObjectInputStream"
+./metadata/commons-io/commons-io/2.11.0/reachability-metadata.json:19:        "typeReached" : "org.apache.commons.io.input.BufferedFileChannelInputStream"
+./metadata/commons-io/commons-io/2.11.0/reachability-metadata.json:38:        "typeReached" : "org.apache.commons.io.input.BufferedFileChannelInputStream"
+./metadata/commons-io/commons-io/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-sources.jar",
+./metadata/commons-io/commons-io/index.json:6:    "repository-url" : "https://github.com/apache/commons-io",
+./metadata/commons-io/commons-io/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-test-sources.jar",
+./metadata/commons-io/commons-io/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-javadoc.jar",
+./metadata/commons-io/commons-io/index.json:21:      "org.apache.commons.io"
+./tests/src/commons-io/commons-io/2.11.0/user-code-filter.json:7:      "includeClasses": "org.apache.commons.io.**"
+./tests/src/commons-io/commons-io/2.11.0/src/test/resources/META-INF/native-image/reachability-metadata.json:5:        "typeReached" : "org.apache.commons.io.input.ClassLoaderObjectInputStream"
+./tests/src/commons-io/commons-io/2.11.0/src/test/resources/META-INF/native-image/reachability-metadata.json:11:        "typeReached" : "org.apache.commons.io.input.ClassLoaderObjectInputStream"
+./tests/src/commons-io/commons-io/2.11.0/src/test/resources/META-INF/native-image/reachability-metadata.json:17:        "typeReached" : "org.apache.commons.io.input.ClassLoaderObjectInputStream"
+./tests/src/commons-io/commons-io/2.11.0/src/test/resources/META-INF/native-image/reachability-metadata.json:23:        "typeReached" : "org.apache.commons.io.input.ClassLoaderObjectInputStream"
+./tests/src/commons-io/commons-io/2.11.0/src/test/resources/META-INF/native-image/reachability-metadata.json:33:        "typeReached" : "org.apache.commons.io.input.ClassLoaderObjectInputStream"
+./tests/src/commons-io/commons-io/2.11.0/src/test/resources/META-INF/native-image/reachability-metadata.json:45:        "typeReached" : "org.apache.commons.io.IOUtils"
+./tests/src/commons-io/commons-io/2.11.0/src/test/resources/META-INF/native-image/reachability-metadata.json:47:      "glob" : "commons-io/test-resource.txt"
+./tests/src/commons-io/commons-io/2.11.0/src/test/resources/META-INF/native-image/reachability-metadata.json:53:        "typeReached" : "org.apache.commons.io.input.ClassLoaderObjectInputStream"
+
+codex
+There is already metadata for a newer `commons-io` version in the repo, and its field conventions match Maven Central artifact URLs plus the Apache GitHub repository root. I’ll mirror that convention for `2.2` while keeping the exact-version URLs on Maven Central.
+exec
+/bin/bash -lc "sed -n '1,80p' metadata/commons-io/commons-io/index.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.11.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-sources.jar",
+    "repository-url" : "https://github.com/apache/commons-io",
+    "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-test-sources.jar",
+    "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0-javadoc.jar",
+    "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, paths, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, monitors, and convenience methods for common I/O operations such as copying, reading, writing, and deleting.",
+    "tested-versions" : [
+      "2.11.0",
+      "2.12.0",
+      "2.13.0",
+      "2.14.0",
+      "2.15.0",
+      "2.15.1",
+      "2.16.0",
+      "2.16.1"
+    ],
+    "allowed-packages" : [
+      "org.apache.commons.io"
+    ]
+  }
+]
+
+exec
+/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar.sha1 && printf '\\n'; curl -fsSL https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar.sha1 && printf '\\n'; curl -fsSL https://repo.maven.apache.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar.sha1 && printf '\\n'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 655ms:
+b12a746dd490a930f07878602edb8e57a5390026
+92da9b7269652c310afc2a2458e72e5a1aa4a54a
+
+codex
+I’m going to update only the requested discovered metadata file, using the existing repo’s Commons IO description style and omitting `language` because this is not a Kotlin or Scala-specific artifact.
+apply patch
+patch: completed
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+diff --git a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+index 4853639f6d7247d595a1845d7865bb8d46ebdcaf..5c0117ce900dbf795506347b73e0da4d5c9dd054
+--- a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
++++ b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-io:commons-io:2.2"
++  "coordinates" : "commons-io:commons-io:2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-io",
++  "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar",
++  "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, endian utilities, and convenience methods for common I/O operations such as copying, reading, writing, and deleting."
+ }
+
+diff --git a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+index 4853639f6d7247d595a1845d7865bb8d46ebdcaf..5c0117ce900dbf795506347b73e0da4d5c9dd054
+--- a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
++++ b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-io:commons-io:2.2"
++  "coordinates" : "commons-io:commons-io:2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-io",
++  "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar",
++  "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, endian utilities, and convenience methods for common I/O operations such as copying, reading, writing, and deleting."
+ }
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/commons-io-commons-io-2.2.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+exec
+/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/commons-io-commons-io-2.2.json >/tmp/commons-io-2.2-jsoncheck && sed -n '1,120p' /tmp/commons-io-2.2-jsoncheck" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+{
+    "coordinates": "commons-io:commons-io:2.2",
+    "source-code-url": "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar",
+    "repository-url": "https://github.com/apache/commons-io",
+    "test-code-url": "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar",
+    "documentation-url": "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar",
+    "description": "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, endian utilities, and convenience methods for common I/O operations such as copying, reading, writing, and deleting."
+}
+
+diff --git a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+index 4853639f6d7247d595a1845d7865bb8d46ebdcaf..5c0117ce900dbf795506347b73e0da4d5c9dd054
+--- a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
++++ b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-io:commons-io:2.2"
++  "coordinates" : "commons-io:commons-io:2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-io",
++  "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar",
++  "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, endian utilities, and convenience methods for common I/O operations such as copying, reading, writing, and deleting."
+ }
+
+exec
+/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/commons-io-commons-io-2.2.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+{
+  "coordinates" : "commons-io:commons-io:2.2",
+  "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar",
+  "repository-url" : "https://github.com/apache/commons-io",
+  "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar",
+  "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar",
+  "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, endian utilities, and convenience methods for common I/O operations such as copying, reading, writing, and deleting."
+}
+
+exec
+/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/commons-io-commons-io-2.2.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+index 4853639f6d7247d595a1845d7865bb8d46ebdcaf..5c0117ce900dbf795506347b73e0da4d5c9dd054
+--- a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
++++ b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-io:commons-io:2.2"
++  "coordinates" : "commons-io:commons-io:2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-io",
++  "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar",
++  "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, endian utilities, and convenience methods for common I/O operations such as copying, reading, writing, and deleting."
+ }
+
+web search: 
+web search: https://repo1.maven.org/maven2/commons-io/commons-io/2.2/
+codex
+Updated [commons-io-commons-io-2.2.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json:1).
+
+I used Maven Central’s exact `2.2` source, test-source, and javadoc artifacts, and the Apache Commons IO GitHub repository root. ([repo1.maven.org](https://repo1.maven.org/maven2/commons-io/commons-io/2.2/)) The artifact is not Kotlin- or Scala-specific, so I left `language` absent.
+
+Validation: `python -m json.tool` passed.
+diff --git a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+index 4853639f6d7247d595a1845d7865bb8d46ebdcaf..5c0117ce900dbf795506347b73e0da4d5c9dd054
+--- a/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
++++ b/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "commons-io:commons-io:2.2"
++  "coordinates" : "commons-io:commons-io:2.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-sources.jar",
++  "repository-url" : "https://github.com/apache/commons-io",
++  "test-code-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-test-sources.jar",
++  "documentation-url" : "https://repo1.maven.org/maven2/commons-io/commons-io/2.2/commons-io-2.2-javadoc.jar",
++  "description" : "Apache Commons IO provides utility classes and stream implementations that simplify working with files, directories, readers, writers, and byte or character streams in Java. It also includes file filters, comparators, endian utilities, and convenience methods for common I/O operations such as copying, reading, writing, and deleting."
+ }
+
+2026-04-27T23:03:15.128852Z ERROR codex_core::session: failed to record rollout items: thread 019dd12d-cf02-78b2-811d-4ecc550670ff not found
+tokens used
+49,412
+Updated [commons-io-commons-io-2.2.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280/build/discovered-artifact-metadata/commons-io-commons-io-2.2.json:1).
+
+I used Maven Central’s exact `2.2` source, test-source, and javadoc artifacts, and the Apache Commons IO GitHub repository root. ([repo1.maven.org](https://repo1.maven.org/maven2/commons-io/commons-io/2.2/)) The artifact is not Kotlin- or Scala-specific, so I left `language` absent.
+
+Validation: `python -m json.tool` passed.
+Ran agent for commons-io:commons-io:2.2 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280/build/agent-artifact-discovery-logs/commons-io-commons-io-2.2.log
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2228-75880280/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 7s
+9 actionable tasks: 4 executed, 5 from cache
