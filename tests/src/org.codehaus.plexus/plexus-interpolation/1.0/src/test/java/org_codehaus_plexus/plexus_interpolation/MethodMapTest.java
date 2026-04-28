@@ -20,7 +20,7 @@ public class MethodMapTest {
         Method booleanMethod = MethodMapPrimitiveTarget.class.getMethod("accept", boolean.class);
         methodMap.add(booleanMethod);
 
-        Method method = methodMap.find("accept", new Object[] { Boolean.TRUE });
+        Method method = methodMap.find("accept", new Object[] {Boolean.TRUE });
 
         assertThat(method).isEqualTo(booleanMethod);
     }
