@@ -65,7 +65,7 @@ public class FormattersAnonymous12Test {
 
     @Test
     void extendedExceptionFormattingFallsBackToBootstrapLookupWhenLibraryLoaderRejectsFrameClass() throws Throwable {
-        String className = String.class.getName();
+        String className = "java.util.HexFormat";
         BootstrapFallbackClassLoader bootstrapFallbackClassLoader = new BootstrapFallbackClassLoader(className);
         BootstrapFormattingAction[] formattingAction = new BootstrapFormattingAction[1];
 
