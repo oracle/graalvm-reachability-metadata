@@ -135,6 +135,22 @@ public class Jakarta_injectTest {
         assertThat(greeter.greet("metadata")).isEqualTo("Good day, metadata");
     }
 
+    @Test
+    void singletonScopedProviderSharesOneLazyInstanceAcrossConsumers() {
+        AtomicInteger createdInstances = new AtomicInteger();
+        Provider<SharedCounter> counterProvider = new SharedCounterProvider(createdInstances);
+        CounterConsumer firstConsumer = new CounterConsumer(counterProvider);
+        CounterConsumer secondConsumer = new CounterConsumer(counterProvider);
+
+        assertThat(createdInstances).hasValue(0);
+        assertThat(firstConsumer.increment()).isEqualTo(1);
+        assertThat(secondConsumer.increment()).isEqualTo(2);
+        assertThat(firstConsumer.increment()).isEqualTo(3);
+        assertThat(firstConsumer.counter()).isSameAs(secondConsumer.counter());
+        assertThat(firstConsumer.counter().instanceNumber()).isEqualTo(1);
+        assertThat(createdInstances).hasValue(1);
+    }
+
     private static Named named(String value) {
         return new Named() {
             @Override
@@ -295,6 +311,60 @@ public class Jakarta_injectTest {
 
         private String greet(String audience) {
             return greetingProvider.get().get() + ", " + audience;
+        }
+    }
+
+    @Singleton
+    private static final class SharedCounter {
+        private final int instanceNumber;
+        private int value;
+
+        private SharedCounter(int instanceNumber) {
+            this.instanceNumber = instanceNumber;
+        }
+
+        private int incrementAndGet() {
+            value++;
+            return value;
+        }
+
+        private int instanceNumber() {
+            return instanceNumber;
+        }
+    }
+
+    private static final class SharedCounterProvider implements Provider<SharedCounter> {
+        private final AtomicInteger createdInstances;
+        private SharedCounter counter;
+
+        @Inject
+        private SharedCounterProvider(AtomicInteger createdInstances) {
+            this.createdInstances = createdInstances;
+        }
+
+        @Override
+        public SharedCounter get() {
+            if (counter == null) {
+                counter = new SharedCounter(createdInstances.incrementAndGet());
+            }
+            return counter;
+        }
+    }
+
+    private static final class CounterConsumer {
+        private final Provider<SharedCounter> counterProvider;
+
+        @Inject
+        private CounterConsumer(Provider<SharedCounter> counterProvider) {
+            this.counterProvider = counterProvider;
+        }
+
+        private int increment() {
+            return counterProvider.get().incrementAndGet();
+        }
+
+        private SharedCounter counter() {
+            return counterProvider.get();
         }
     }
 }
