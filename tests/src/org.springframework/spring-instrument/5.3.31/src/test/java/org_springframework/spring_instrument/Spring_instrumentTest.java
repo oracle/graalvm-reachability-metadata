@@ -13,6 +13,11 @@ import java.lang.instrument.UnmodifiableClassException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 
 import org.junit.jupiter.api.Test;
@@ -51,6 +56,36 @@ public class Spring_instrumentTest {
         InstrumentationSavingAgent.premain("clear", null);
 
         assertThat(InstrumentationSavingAgent.getInstrumentation()).isNull();
+    }
+
+    @Test
+    void savedInstrumentationIsVisibleToOtherThreads() throws Exception {
+        Instrumentation instrumentation = new TestInstrumentation("shared");
+        CountDownLatch readerStarted = new CountDownLatch(1);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        try {
+            Future<Instrumentation> visibleInstrumentation = executorService.submit(() -> {
+                readerStarted.countDown();
+                long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+                Instrumentation currentInstrumentation;
+                do {
+                    currentInstrumentation = InstrumentationSavingAgent.getInstrumentation();
+                    if (currentInstrumentation == instrumentation) {
+                        return currentInstrumentation;
+                    }
+                    Thread.yield();
+                } while (System.nanoTime() < deadline);
+                return currentInstrumentation;
+            });
+
+            assertThat(readerStarted.await(5, TimeUnit.SECONDS)).isTrue();
+            InstrumentationSavingAgent.agentmain("publish to reader", instrumentation);
+
+            assertThat(visibleInstrumentation.get(5, TimeUnit.SECONDS)).isSameAs(instrumentation);
+        } finally {
+            InstrumentationSavingAgent.premain("clear", null);
+            executorService.shutdownNow();
+        }
     }
 
     private static final class TestInstrumentation implements Instrumentation {
