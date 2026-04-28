@@ -11,6 +11,16 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
+    components {
+        withModule("com.fasterxml.jackson.core:jackson-annotations") {
+            allVariants {
+                withDependencies {
+                    removeAll { it.group == "com.fasterxml.jackson" && it.name == "jackson-bom" }
+                }
+            }
+        }
+    }
+
     testImplementation "tools.jackson.core:jackson-databind:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
