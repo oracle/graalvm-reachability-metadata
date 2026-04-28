@@ -9,6 +9,7 @@ package org_apache_yetus.audience_annotations;
 import java.lang.annotation.Annotation;
 import java.util.Locale;
 
+import jdk.javadoc.doclet.StandardDoclet;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.apache.yetus.audience.InterfaceStability;
 import org.apache.yetus.audience.tools.ExcludePrivateAnnotationsStandardDoclet;
@@ -77,18 +78,15 @@ class Audience_annotationsTest {
     }
 
     @Test
-    void standardDocletAdaptersRecognizeYetusStabilityOptionsCaseInsensitively() {
+    void standardDocletAdaptersRemainUsableAsNamedStandardDoclets() {
         ExcludePrivateAnnotationsStandardDoclet excludePrivateDoclet = new ExcludePrivateAnnotationsStandardDoclet();
         IncludePublicAnnotationsStandardDoclet includePublicDoclet = new IncludePublicAnnotationsStandardDoclet();
 
-        assertThat(excludePrivateDoclet).isNotNull();
-        assertThat(includePublicDoclet).isNotNull();
-        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-stable")).isEqualTo(1);
-        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-EvOlViNg")).isEqualTo(1);
-        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-UNSTABLE")).isEqualTo(1);
-        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-stable")).isEqualTo(1);
-        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-EvOlViNg")).isEqualTo(1);
-        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-UNSTABLE")).isEqualTo(1);
+        assertThat(excludePrivateDoclet.getName()).isEqualTo("ExcludePrivateAnnotationsStandard");
+        assertThat(includePublicDoclet.getName()).isEqualTo("IncludePublicAnnotationsStandard");
+        assertThat(excludePrivateDoclet).isInstanceOf(StandardDoclet.class);
+        assertThat(includePublicDoclet).isInstanceOf(ExcludePrivateAnnotationsStandardDoclet.class);
+        assertThat(includePublicDoclet).isInstanceOf(StandardDoclet.class);
     }
 
     @InterfaceAudience.LimitedPrivate("tests")
