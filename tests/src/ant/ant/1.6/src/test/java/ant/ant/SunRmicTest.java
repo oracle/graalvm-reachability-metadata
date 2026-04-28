@@ -8,19 +8,26 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.rmi.Remote;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Rmic;
 import org.apache.tools.ant.taskdefs.rmic.SunRmic;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import sun.rmi.rmic.Main;
 
 public class SunRmicTest {
+    @BeforeEach
+    void resetSunRmic() throws ReflectiveOperationException {
+        Main.reset();
+        resetLegacyClassLiteralCache();
+    }
+
     @Test
     void executesSunRmicAdapterWithOutputStreamConstructor(@TempDir Path baseDirectory) {
-        Main.reset();
         SunRmic adapter = new SunRmic();
         adapter.setRmic(newRmic(baseDirectory));
 
@@ -31,6 +38,18 @@ public class SunRmicTest {
         assertThat(Main.getLastArguments())
                 .containsSubsequence("-d", baseDirectory.toFile().getAbsolutePath())
                 .contains("-classpath", ExampleRemoteService.class.getName());
+    }
+
+    private static void resetLegacyClassLiteralCache() throws ReflectiveOperationException {
+        clearClassLiteralCache("class$java$io$OutputStream");
+        clearClassLiteralCache("class$java$lang$String");
+        clearClassLiteralCache("array$Ljava$lang$String");
+    }
+
+    private static void clearClassLiteralCache(String fieldName) throws ReflectiveOperationException {
+        Field field = SunRmic.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(null, null);
     }
 
     private static Rmic newRmic(Path baseDirectory) {
