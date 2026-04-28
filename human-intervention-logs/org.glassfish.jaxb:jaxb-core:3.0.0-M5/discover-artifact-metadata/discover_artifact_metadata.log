@@ -1,0 +1,1446 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd323-3469-7361-b3d4-11666cafbfa7
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.jaxb:jaxb-core:3.0.0-M5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.0.0-M5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+- Set "coordinates" to "org.glassfish.jaxb:jaxb-core:3.0.0-M5".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the exact 3.0.0-M5 artifact metadata from Maven and upstream tags, then update the JSON in place.
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json && sed -n '1,200p' build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+-rw-rw-r-- 1 vjovanov vjovanov 62 Apr 28 10:09 build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+{
+  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5"
+}
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.glassfish\\.jaxb.*jaxb-core|jaxb-core\" build/discovered-artifact-metadata metadata test || true" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+rg: test: No such file or directory (os error 2)
+build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json:2:  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5"
+
+web search: 
+web search: Maven Central org.glassfish.jaxb jaxb-core 3.0.0-M5 sources jar tests jar javadoc jar
+codex
+The artifact exists on Maven Central, and I’m checking the actual repository directory now so I can prefer Maven-hosted sources or tests when those classifiers are published.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5.pom' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sun.xml.bind.mvn</groupId>
+        <artifactId>jaxb-parent</artifactId>
+        <version>3.0.0-M5</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.glassfish.jaxb</groupId>
+    <artifactId>jaxb-core</artifactId>
+
+    <packaging>jar</packaging>
+    <name>JAXB Core</name>
+    <description>JAXB Core module. Contains sources required by XJC, JXC and Runtime modules.</description>
+
+    <properties>
+        <findbugs.exclude>${project.basedir}/exclude-core.xml</findbugs.exclude>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>txw2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-mr-resource</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${mrjar.sourceDirectory}</directory>
+                                    <targetPath>META-INF/versions</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile-mr</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${mrjar.sourceDirectory}/${upper.java.level}</compileSourceRoot>
+                            </compileSourceRoots>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/versions/${upper.java.level}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Implementation-Vendor>${vendor.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                        <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                        <Multi-Release>true</Multi-Release>
+                        <Export-Package>
+                            !META-INF.*,
+                            *
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/glassfish/jaxb/jaxb-core/3.0.0-M5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/glassfish/jaxb/jaxb-core/3.0.0-M5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jaxb-core-3.0.0-M5-javadoc.jar" title="jaxb-core-3.0.0-M5-javadoc.jar">jaxb-core-3.0.0-M5-javadoc.jar</a>                    2020-08-28 11:48    949197      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc" title="jaxb-core-3.0.0-M5-javadoc.jar.asc">jaxb-core-3.0.0-M5-javadoc.jar.asc</a>                2020-08-28 11:48       833      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc.md5" title="jaxb-core-3.0.0-M5-javadoc.jar.asc.md5">jaxb-core-3.0.0-M5-javadoc.jar.asc.md5</a>            2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha1" title="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha1">jaxb-core-3.0.0-M5-javadoc.jar.asc.sha1</a>           2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha256" title="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha256">jaxb-core-3.0.0-M5-javadoc.jar.asc.sha256</a>         2020-08-28 11:48        64      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha512" title="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha512">jaxb-core-3.0.0-M5-javadoc.jar.asc.sha512</a>         2020-08-28 11:48       128      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.md5" title="jaxb-core-3.0.0-M5-javadoc.jar.md5">jaxb-core-3.0.0-M5-javadoc.jar.md5</a>                2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.sha1" title="jaxb-core-3.0.0-M5-javadoc.jar.sha1">jaxb-core-3.0.0-M5-javadoc.jar.sha1</a>               2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5-sources.jar" title="jaxb-core-3.0.0-M5-sources.jar">jaxb-core-3.0.0-M5-sources.jar</a>                    2020-08-28 11:48    134063      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc" title="jaxb-core-3.0.0-M5-sources.jar.asc">jaxb-core-3.0.0-M5-sources.jar.asc</a>                2020-08-28 11:48       833      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc.md5" title="jaxb-core-3.0.0-M5-sources.jar.asc.md5">jaxb-core-3.0.0-M5-sources.jar.asc.md5</a>            2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc.sha1" title="jaxb-core-3.0.0-M5-sources.jar.asc.sha1">jaxb-core-3.0.0-M5-sources.jar.asc.sha1</a>           2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc.sha256" title="jaxb-core-3.0.0-M5-sources.jar.asc.sha256">jaxb-core-3.0.0-M5-sources.jar.asc.sha256</a>         2020-08-28 11:48        64      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc.sha512" title="jaxb-core-3.0.0-M5-sources.jar.asc.sha512">jaxb-core-3.0.0-M5-sources.jar.asc.sha512</a>         2020-08-28 11:48       128      
+<a href="jaxb-core-3.0.0-M5-sources.jar.md5" title="jaxb-core-3.0.0-M5-sources.jar.md5">jaxb-core-3.0.0-M5-sources.jar.md5</a>                2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5-sources.jar.sha1" title="jaxb-core-3.0.0-M5-sources.jar.sha1">jaxb-core-3.0.0-M5-sources.jar.sha1</a>               2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5.jar" title="jaxb-core-3.0.0-M5.jar">jaxb-core-3.0.0-M5.jar</a>                            2020-08-28 11:48    139708      
+<a href="jaxb-core-3.0.0-M5.jar.asc" title="jaxb-core-3.0.0-M5.jar.asc">jaxb-core-3.0.0-M5.jar.asc</a>                        2020-08-28 11:48       833      
+<a href="jaxb-core-3.0.0-M5.jar.asc.md5" title="jaxb-core-3.0.0-M5.jar.asc.md5">jaxb-core-3.0.0-M5.jar.asc.md5</a>                    2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5.jar.asc.sha1" title="jaxb-core-3.0.0-M5.jar.asc.sha1">jaxb-core-3.0.0-M5.jar.asc.sha1</a>                   2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5.jar.asc.sha256" title="jaxb-core-3.0.0-M5.jar.asc.sha256">jaxb-core-3.0.0-M5.jar.asc.sha256</a>                 2020-08-28 11:48        64      
+<a href="jaxb-core-3.0.0-M5.jar.asc.sha512" title="jaxb-core-3.0.0-M5.jar.asc.sha512">jaxb-core-3.0.0-M5.jar.asc.sha512</a>                 2020-08-28 11:48       128      
+<a href="jaxb-core-3.0.0-M5.jar.md5" title="jaxb-core-3.0.0-M5.jar.md5">jaxb-core-3.0.0-M5.jar.md5</a>                        2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5.jar.sha1" title="jaxb-core-3.0.0-M5.jar.sha1">jaxb-core-3.0.0-M5.jar.sha1</a>                       2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5.pom" title="jaxb-core-3.0.0-M5.pom">jaxb-core-3.0.0-M5.pom</a>                            2020-08-28 11:48      5773      
+<a href="jaxb-core-3.0.0-M5.pom.asc" title="jaxb-core-3.0.0-M5.pom.asc">jaxb-core-3.0.0-M5.pom.asc</a>                        2020-08-28 11:48       833      
+<a href="jaxb-core-3.0.0-M5.pom.asc.md5" title="jaxb-core-3.0.0-M5.pom.asc.md5">jaxb-core-3.0.0-M5.pom.asc.md5</a>                    2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5.pom.asc.sha1" title="jaxb-core-3.0.0-M5.pom.asc.sha1">jaxb-core-3.0.0-M5.pom.asc.sha1</a>                   2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5.pom.asc.sha256" title="jaxb-core-3.0.0-M5.pom.asc.sha256">jaxb-core-3.0.0-M5.pom.asc.sha256</a>                 2020-08-28 11:48        64      
+<a href="jaxb-core-3.0.0-M5.pom.asc.sha512" title="jaxb-core-3.0.0-M5.pom.asc.sha512">jaxb-core-3.0.0-M5.pom.asc.sha512</a>                 2020-08-28 11:48       128      
+<a href="jaxb-core-3.0.0-M5.pom.md5" title="jaxb-core-3.0.0-M5.pom.md5">jaxb-core-3.0.0-M5.pom.md5</a>                        2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5.pom.sha1" title="jaxb-core-3.0.0-M5.pom.sha1">jaxb-core-3.0.0-M5.pom.sha1</a>                       2020-08-28 11:48        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: Maven Central org.glassfish.jaxb jaxb-core 3.0.0-M5 sources jar javadoc jar
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/jaxb-ri.git '*3.0.0-M5*'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tags?per_page=100 | rg -n '3\\.0\\.0-M5|name|zipball' -C 1" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 198ms:
+2-  {
+3:    "name": "4.0.8-RI",
+4:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.8-RI",
+5-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.8-RI",
+--
+12-  {
+13:    "name": "4.0.7-RI",
+14:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.7-RI",
+15-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.7-RI",
+--
+22-  {
+23:    "name": "4.0.6-RI",
+24:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.6-RI",
+25-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.6-RI",
+--
+32-  {
+33:    "name": "4.0.5-RI",
+34:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.5-RI",
+35-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.5-RI",
+--
+42-  {
+43:    "name": "4.0.4-RI",
+44:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.4-RI",
+45-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.4-RI",
+--
+52-  {
+53:    "name": "4.0.3-RI",
+54:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.3-RI",
+55-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.3-RI",
+--
+62-  {
+63:    "name": "4.0.2-RI",
+64:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.2-RI",
+65-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.2-RI",
+--
+72-  {
+73:    "name": "4.0.1-RI",
+74:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.1-RI",
+75-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.1-RI",
+--
+82-  {
+83:    "name": "4.0.0-RI",
+84:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.0-RI",
+85-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.0-RI",
+--
+92-  {
+93:    "name": "4.0.0-M4-RI",
+94:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.0-M4-RI",
+95-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.0-M4-RI",
+--
+102-  {
+103:    "name": "4.0.0-M3-RI",
+104:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.0-M3-RI",
+105-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.0-M3-RI",
+--
+112-  {
+113:    "name": "4.0.0-M2-RI",
+114:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.0-M2-RI",
+115-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.0-M2-RI",
+--
+122-  {
+123:    "name": "4.0.0-M1-RI",
+124:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/4.0.0-M1-RI",
+125-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/4.0.0-M1-RI",
+--
+132-  {
+133:    "name": "3.1.0-M1-RI",
+134:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.1.0-M1-RI",
+135-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.1.0-M1-RI",
+--
+142-  {
+143:    "name": "3.0.2-b01-RI",
+144:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.2-b01-RI",
+145-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.2-b01-RI",
+--
+152-  {
+153:    "name": "3.0.2-RI",
+154:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.2-RI",
+155-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.2-RI",
+--
+162-  {
+163:    "name": "3.0.1-b02-RI",
+164:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.1-b02-RI",
+165-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.1-b02-RI",
+--
+172-  {
+173:    "name": "3.0.1-b01-RI",
+174:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.1-b01-RI",
+175-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.1-b01-RI",
+--
+182-  {
+183:    "name": "3.0.1-RI",
+184:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.1-RI",
+185-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.1-RI",
+--
+192-  {
+193:    "name": "3.0.0-RI",
+194:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.0-RI",
+195-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.0-RI",
+--
+202-  {
+203:    "name": "3.0.0-M5-RI",
+204:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.0-M5-RI",
+205:    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.0-M5-RI",
+206-    "commit": {
+--
+212-  {
+213:    "name": "3.0.0-M4-RI",
+214:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.0-M4-RI",
+215-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.0-M4-RI",
+--
+222-  {
+223:    "name": "3.0.0-M3-RI",
+224:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.0-M3-RI",
+225-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.0-M3-RI",
+--
+232-  {
+233:    "name": "3.0.0-M2-RI",
+234:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.0-M2-RI",
+235-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.0-M2-RI",
+--
+242-  {
+243:    "name": "3.0.0-M1-RI",
+244:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/3.0.0-M1-RI",
+245-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/3.0.0-M1-RI",
+--
+252-  {
+253:    "name": "2.3.9-RI",
+254:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.9-RI",
+255-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.9-RI",
+--
+262-  {
+263:    "name": "2.3.8-RI",
+264:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.8-RI",
+265-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.8-RI",
+--
+272-  {
+273:    "name": "2.3.7-RI",
+274:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.7-RI",
+275-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.7-RI",
+--
+282-  {
+283:    "name": "2.3.6-RI",
+284:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.6-RI",
+285-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.6-RI",
+--
+292-  {
+293:    "name": "2.3.5-RI",
+294:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.5-RI",
+295-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.5-RI",
+--
+302-  {
+303:    "name": "2.3.4-RI",
+304:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.4-RI",
+305-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.4-RI",
+--
+312-  {
+313:    "name": "2.3.3-b02-RI",
+314:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.3-b02-RI",
+315-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.3-b02-RI",
+--
+322-  {
+323:    "name": "2.3.3-b01-RI",
+324:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.3-b01-RI",
+325-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.3-b01-RI",
+--
+332-  {
+333:    "name": "2.3.3-RI",
+334:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.3-RI",
+335-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.3-RI",
+--
+342-  {
+343:    "name": "2.3.2-XSOM",
+344:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.2-XSOM",
+345-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.2-XSOM",
+--
+352-  {
+353:    "name": "2.3.2-RI",
+354:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.2-RI",
+355-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.2-RI",
+--
+362-  {
+363:    "name": "2.3.2-External",
+364:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.2-External",
+365-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.2-External",
+--
+372-  {
+373:    "name": "2.3.2-CodeModel",
+374:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.2-CodeModel",
+375-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.2-CodeModel",
+--
+382-  {
+383:    "name": "2.3.2-2-CodeModel",
+384:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.2-2-CodeModel",
+385-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.2-2-CodeModel",
+--
+392-  {
+393:    "name": "2.3.2-1-CodeModel",
+394:    "zipball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/zipball/refs/tags/2.3.2-1-CodeModel",
+395-    "tarball_url": "https://api.github.com/repos/eclipse-ee4j/jaxb-ri/tarball/refs/tags/2.3.2-1-CodeModel",
+
+ succeeded in 319ms:
+f9715d27a314c7a701021bc9a0ac2b170f315538	refs/tags/3.0.0-M5-RI
+783d5660abb11120e0f829bc83145ba12a0d4eb2	refs/tags/3.0.0-M5-RI^{}
+
+web search: 
+web search: repo1.maven.org maven2 org glassfish jaxb jaxb-core 3.0.0-M5 javadoc sources
+web search: 
+web search: https://central.sonatype.com/artifact/org.glassfish.jaxb/jaxb-core/3.0.0-M5
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI
+web search: 
+web search: 
+codex
+Maven Central publishes source and javadoc JARs for this exact version, but no test classifier in the artifact directory. I found the matching upstream tag as `3.0.0-M5-RI`, so I’m using the tagged GitHub test directory for the test suite URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/sun/xml/bind/mvn/jaxb-parent/3.0.0-M5/jaxb-parent-3.0.0-M5.pom' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-bom-ext</artifactId>
+        <version>3.0.0-M5</version>
+        <relativePath>boms/bom-ext/pom.xml</relativePath>
+    </parent>
+
+    <groupId>com.sun.xml.bind.mvn</groupId>
+    <artifactId>jaxb-parent</artifactId>
+    <version>3.0.0-M5</version>
+    <packaging>pom</packaging>
+    <name>Jakarta XML Binding Implementation</name>
+    <description>
+        Open source Implementation of Jakarta XML Binding (formerly JSR-222)
+    </description>
+
+    <url>https://eclipse-ee4j.github.io/jaxb-ri</url>
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-ri</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse-ee4j/jaxb-ri.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jaxb-ri.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Eclipse Distribution License - v 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Roman Grigoriadi</name>
+            <email>roman.grigoriadi@oracle.com</email>
+            <organization>Oracle Corporation</organization>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaxb-ri/issues</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>Jakarta XML Binding Implementation mailing list</name>
+            <post>jaxb-impl-dev@eclipse.org</post>
+            <subscribe>https://accounts.eclipse.org/mailing-list/jaxb-impl-dev</subscribe>
+            <unsubscribe>https://accounts.eclipse.org/mailing-list/jaxb-impl-dev</unsubscribe>
+            <archive>https://accounts.eclipse.org/mailing-list/jaxb-impl-dev</archive>
+        </mailingList>
+    </mailingLists>
+
+    <properties>
+        <copyright.exclude>tools/config/copyright-exclude</copyright.exclude>
+        <copyright.ignoreyear>false</copyright.ignoreyear>
+        <copyright.scmonly>true</copyright.scmonly>
+        <copyright.template>tools/config/copyright.txt</copyright.template>
+        <copyright.update>false</copyright.update>
+        <spotbugs.exclude/>
+        <spotbugs.skip>false</spotbugs.skip>
+        <spotbugs.threshold>High</spotbugs.threshold>
+        <spotbugs.version>4.0.4</spotbugs.version>
+
+        <junit.version>4.13</junit.version>
+
+        <module.path>${project.build.directory}/mods</module.path>
+        <!-- This will work ONLY if mvn is run from root folder. In case of runing from submodules - fail :( -->
+        <skipOsgiTests>true</skipOsgiTests>
+        <felix.junit4osgi>1.0.0</felix.junit4osgi>
+        <felix.osgi.core>6.0.0</felix.osgi.core>
+        <jmockit.version>1.34</jmockit.version>
+        <resolver.version>20050927</resolver.version>
+        <compiler.version>2.4.0</compiler.version>
+        <mrjar.sourceDirectory>${project.basedir}/src/main/java-mr</mrjar.sourceDirectory>
+        <base.java.level>8</base.java.level>
+        <upper.java.level>9</upper.java.level>
+        <root.dir>${session.executionRootDirectory}/..</root.dir>
+        <oss.disallow.snapshots>true</oss.disallow.snapshots>
+        <vendor.name>Eclipse Foundation</vendor.name>
+        <vendor.id>org.eclipse</vendor.id>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Test -->
+            <dependency>
+                <groupId>org.jmockit</groupId>
+                <artifactId>jmockit</artifactId>
+                <version>${jmockit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <!-- JDK dependencies -->
+            <dependency>
+                <!-- required by com.sun.tools.xjc.Options on JDK < 9
+               (com.sun.org.apache.xml.internal.resolver.CatalogManager
+                com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver) -->
+                <groupId>com.sun.org.apache.xml.internal</groupId>
+                <artifactId>resolver</artifactId>
+                <version>${resolver.version}</version>
+            </dependency>
+
+            <!-- CQ #20807 -->
+            <!-- contains com.sun.source.tree and com.sun.source.util JDK provided packages required by jxc (ApNavigator) -->
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>compiler</artifactId>
+                <version>${compiler.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <configuration>
+                        <escapeString>\</escapeString>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>5.1.1</version>
+                    <configuration>
+                        <niceManifest>true</niceManifest>
+                        <instructions>
+                            <_noextraheaders>true</_noextraheaders>
+                        </instructions>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultEntries>false</addDefaultEntries>
+                            </manifest>
+                        </archive>
+                        <excludes>
+                            <exclude>META-INF/jpms.args</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <release>${upper.java.level}</release>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Specification-Title>Jakarta XML Binding</Specification-Title>
+                                <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
+                                <Implementation-Title>Jakarta XML Binding Implementation</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Vendor>${vendor.name}</Implementation-Vendor>
+                                <Implementation-Vendor-Id>${vendor.id}</Implementation-Vendor-Id>
+                                <Git-Revision>${buildNumber}</Git-Revision>
+                                <Git-Url>${project.scm.connection}</Git-Url>
+                                <Build-Id>${project.version}</Build-Id>
+                                <Build-Version>JAXB RI ${project.version}</Build-Version>
+                                <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <configuration>
+                        <archive>
+                            <manifestEntries>
+                                <Specification-Title>Jakarta XML Binding</Specification-Title>
+                                <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
+                                <Implementation-Title>Jakarta XML Binding Implementation</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Vendor>${vendor.name}</Implementation-Vendor>
+                                <Implementation-Vendor-Id>${vendor.id}</Implementation-Vendor-Id>
+                                <Git-Revision>${buildNumber}</Git-Revision>
+                                <Git-Url>${project.scm.connection}</Git-Url>
+                                <Build-Id>${project.version}</Build-Id>
+                                <Build-Version>JAXB RI ${project.version}</Build-Version>
+                                <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultEntries>false</addDefaultEntries>
+                            </manifest>
+                        </archive>
+                        <release>11</release>
+                        <notimestamp>true</notimestamp>
+                        <aggregate>false</aggregate>
+                        <dependencySourceExcludes>
+                            <dependencySourceExclude>com.sun.xml.bind:*</dependencySourceExclude>
+                            <dependencySourceExclude>com.sun.tools.xjc:*</dependencySourceExclude>
+                            <dependencySourceExclude>com.sun.tools.jxc:*</dependencySourceExclude>
+                        </dependencySourceExcludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.glassfish.copyright</groupId>
+                    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <templateFile>${copyright.template}</templateFile>
+                        <excludeFile>${copyright.exclude}</excludeFile>
+                        <!-- skip files not under SCM-->
+                        <scmOnly>${copyright.scmonly}</scmOnly>
+                        <!-- for use with repair -->
+                        <update>${copyright.update}</update>
+                        <!-- check that year is correct -->
+                        <ignoreYear>${copyright.ignoreyear}</ignoreYear>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs.version}</version>
+                    <configuration>
+                        <skip>${spotbugs.skip}</skip>
+                        <threshold>${spotbugs.threshold}</threshold>
+                        <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                        <excludeFilterFile>
+                            ${spotbugs.exclude}
+                        </excludeFilterFile>
+                        <fork>true</fork>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <version>1.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.4</version>
+                    <configuration>
+                        <locale>en-US</locale>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>1.10.7</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-junit</artifactId>
+                            <version>1.10.7</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jaxb.version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <propertyPrefix>jaxb</propertyPrefix>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>jaxb-api.version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <propertyPrefix>jaxb-api</propertyPrefix>
+                            <versionString>${jaxb-api.version}</versionString>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-legal-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${root.dir}</directory>
+                                    <targetPath>META-INF</targetPath>
+                                    <includes>
+                                        <include>LICENSE.md</include>
+                                        <include>NOTICE.md</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <requireJavaVersion>
+                            <version>[11,)</version>
+                        </requireJavaVersion>
+                        <requireMavenVersion>
+                            <version>[3.6.0,)</version>
+                        </requireMavenVersion>
+                        <DependencyConvergence/>
+                    </rules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-buildnumber</id>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                            <shortRevisionLength>7</shortRevisionLength>
+                            <revisionOnScmFailure>unknown</revisionOnScmFailure>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <compilerArguments>
+                                <Xlint:all />
+                            <!--<XDignore.symbol.file/>-->
+                            </compilerArguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>base-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>${base.java.level}</release>
+                            <excludes>
+                                <exclude>module-info.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addDefaultEntries>false</addDefaultEntries>
+                                </manifest>
+                                <manifestEntries>
+                                    <Specification-Title>Jakarta XML Binding</Specification-Title>
+                                    <Specification-Version>${jaxb-api.majorVersion}.${jaxb-api.minorVersion}</Specification-Version>
+                                    <Implementation-Title>Jakarta XML Binding Implementation</Implementation-Title>
+                                    <Implementation-Version>${project.version}</Implementation-Version>
+                                    <Implementation-Vendor>${vendor.name}</Implementation-Vendor>
+                                    <Implementation-Vendor-Id>${vendor.id}</Implementation-Vendor-Id>
+                                    <Git-Revision>${buildNumber}</Git-Revision>
+                                    <Git-Url>${project.scm.connection}</Git-Url>
+                                    <Build-Id>${project.version}</Build-Id>
+                                    <Build-Version>JAXB RI ${project.version}</Build-Version>
+                                    <Major-Version>${jaxb.majorVersion}.${jaxb.minorVersion}.${jaxb.incrementalVersion}</Major-Version>
+                                </manifestEntries>
+                            </archive>
+                            <excludes>
+                                <exclude>META-INF/jpms.args</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <addDefaultEntries>false</addDefaultEntries>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <modules>
+        <module>boms/bom</module>
+        <module>boms/bom-ext</module>
+        <module>external</module>
+        <module>xsom</module>
+        <module>txw</module>
+        <module>codemodel</module>
+        <module>core</module>
+        <module>runtime</module>
+        <module>xjc</module>
+        <module>jxc</module>
+        <module>bundles</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>default-profile</id>
+            <activation>
+                <property>
+                    <name>!dev</name>
+                </property>
+            </activation>
+            <!--            <properties>
+                <skipOsgiTests>false</skipOsgiTests>
+            </properties>-->
+            <modules>
+                <module>docs</module>
+                <module>tools/osgi_tests</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>oss-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-no-snapshots</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireReleaseDeps>
+                                            <message>No SNAPSHOT dependency allowed!</message>
+                                        </requireReleaseDeps>
+                                        <requireReleaseVersion>
+                                            <message>release version no SNAPSHOT Allowed!</message>
+                                        </requireReleaseVersion>
+                                    </rules>
+                                    <fail>${oss.disallow.snapshots}</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dev-impl</id>
+            <activation>
+                <property>
+                    <name>dev</name>
+                </property>
+            </activation>
+        </profile>
+        <profile>
+            <id>coverage</id>
+            <activation>
+                <property>
+                    <name>jacoco-build</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.jacoco</groupId>
+                            <artifactId>jacoco-maven-plugin</artifactId>
+                            <version>0.8.5</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>default-report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <!-- configuration should be removed once this bug https://github.com/jacoco/jacoco/issues/407 is fixed -->
+                                <configuration>
+                                    <excludes>
+                                        <exclude>com/sun/istack/logging/StackHelper.class</exclude>
+                                        <exclude>com/sun/tools/jxc/SchemaGenerator.class</exclude>
+                                        <exclude>com/sun/tools/jxc/SchemaGenerator$JavacOptions.class</exclude>
+                                        <exclude>com/sun/tools/jxc/SchemaGenerator$Runner.class</exclude>
+                                        <exclude>com/sun/tools/jxc/SchemaGenTask.class</exclude>
+                                        <exclude>com/sun/tools/xjc/CatalogUtil.class</exclude>
+                                        <exclude>com/sun/tools/xjc/XJC2Task.class</exclude>
+                                        <exclude>com/sun/xml/bind/v2/runtime/reflect/opt/*.class</exclude>
+                                    </excludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/eclipse-ee4j/jaxb-ri/3.0.0-M5-RI/jaxb-ri/core/pom.xml' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/jaxb-ri/contents/jaxb-ri/core/src/test?ref=3.0.0-M5-RI | rg -n '\"name\"|\"html_url\"'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-test-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-tests.jar' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 214ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sun.xml.bind.mvn</groupId>
+        <artifactId>jaxb-parent</artifactId>
+        <version>3.0.0-M5</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.glassfish.jaxb</groupId>
+    <artifactId>jaxb-core</artifactId>
+
+    <packaging>jar</packaging>
+    <name>JAXB Core</name>
+    <description>JAXB Core module. Contains sources required by XJC, JXC and Runtime modules.</description>
+
+    <properties>
+        <findbugs.exclude>${project.basedir}/exclude-core.xml</findbugs.exclude>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>txw2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-mr-resource</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${mrjar.sourceDirectory}</directory>
+                                    <targetPath>META-INF/versions</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile-mr</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${mrjar.sourceDirectory}/${upper.java.level}</compileSourceRoot>
+                            </compileSourceRoots>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/versions/${upper.java.level}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Implementation-Vendor>${vendor.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                        <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                        <Multi-Release>true</Multi-Release>
+                        <Export-Package>
+                            !META-INF.*,
+                            *
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+ succeeded in 220ms:
+3:    "name": "java",
+8:    "html_url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java",
+
+ exited 22 in 675ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 08:10:33 GMT
+content-type: application/java-archive
+content-length: 949197
+cf-ray: 9f349757dd382ff1-ZRH
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "66bceaf0513c3016be60072a63d4fdf5"
+last-modified: Fri, 28 Aug 2020 11:48:50 GMT
+x-checksum-md5: 66bceaf0513c3016be60072a63d4fdf5
+x-checksum-sha1: bb439455eaee5ffe1e0dae62c72224c607f98a37
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Tue, 28 Apr 2026 08:10:34 GMT
+content-type: text/html
+cf-ray: 9f34975a7a42039d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java
+web search: 
+web search: repo.maven.apache.org maven2 org glassfish jaxb jaxb-core 3.0.0-M5 jaxb-core-3.0.0-M5-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.glassfish.jaxb/jaxb-core/3.0.0-M5
+web search: 
+web search: https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-core/3.0.0-M5
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/
+codex
+I have the final values now: Maven Central source and javadoc JARs, GitHub repository, and the tagged `jaxb-ri/core/src/test/java` tests. I’m updating only the requested JSON file and leaving `language` absent because this is a Java/Jakarta XML Binding component, not a Kotlin or Scala-specific library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+index 40ebd89ddcdc78e69c346822c7724544ada00722..6459ebd7cb345dbcf26f91660113db1be5934c5c
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5"
++  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar",
++  "description" : "JAXB Core provides shared implementation classes required by the JAXB XJC, JXC, and runtime modules. It supports Jakarta XML Binding operations that map between XML content and Java object representations."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+index 40ebd89ddcdc78e69c346822c7724544ada00722..6459ebd7cb345dbcf26f91660113db1be5934c5c
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5"
++  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar",
++  "description" : "JAXB Core provides shared implementation classes required by the JAXB XJC, JXC, and runtime modules. It supports Jakarta XML Binding operations that map between XML content and Java object representations."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+{
+  "coordinates": "org.glassfish.jaxb:jaxb-core:3.0.0-M5",
+  "source-code-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar",
+  "repository-url": "https://github.com/eclipse-ee4j/jaxb-ri",
+  "test-code-url": "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar",
+  "description": "JAXB Core provides shared implementation classes required by the JAXB XJC, JXC, and runtime modules. It supports Jakarta XML Binding operations that map between XML content and Java object representations."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+index 40ebd89ddcdc78e69c346822c7724544ada00722..6459ebd7cb345dbcf26f91660113db1be5934c5c
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5"
++  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar",
++  "description" : "JAXB Core provides shared implementation classes required by the JAXB XJC, JXC, and runtime modules. It supports Jakarta XML Binding operations that map between XML content and Java object representations."
+ }
+
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java
+web search: 
+web search: https://central.sonatype.com/artifact/org.glassfish.jaxb/jaxb-core/3.0.0-M5
+web search: 
+web search: "jaxb-core-3.0.0-M5-sources.jar"
+codex
+Updated [org.glassfish.jaxb-jaxb-core-3.0.0-M5.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json) with the repository, Maven source/javadoc artifacts, tagged test suite URL, and two-sentence description.
+
+I left `language` absent because this is not a Kotlin or Scala-specific library. Verified the JSON with `jq`; Maven Central confirms the exact artifact metadata, and the GitHub tag confirms the exact tagged test path. ([central.sonatype.com](https://central.sonatype.com/artifact/org.glassfish.jaxb/jaxb-core/3.0.0-M5))
+diff --git a/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json b/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+index 40ebd89ddcdc78e69c346822c7724544ada00722..6459ebd7cb345dbcf26f91660113db1be5934c5c
+--- a/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
++++ b/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5"
++  "coordinates" : "org.glassfish.jaxb:jaxb-core:3.0.0-M5",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar",
++  "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
++  "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar",
++  "description" : "JAXB Core provides shared implementation classes required by the JAXB XJC, JXC, and runtime modules. It supports Jakarta XML Binding operations that map between XML content and Java object representations."
+ }
+
+2026-04-28T08:11:18.063950Z ERROR codex_core::session: failed to record rollout items: thread 019dd323-3469-7361-b3d4-11666cafbfa7 not found
+tokens used
+93,697
+Updated [org.glassfish.jaxb-jaxb-core-3.0.0-M5.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/build/discovered-artifact-metadata/org.glassfish.jaxb-jaxb-core-3.0.0-M5.json) with the repository, Maven source/javadoc artifacts, tagged test suite URL, and two-sentence description.
+
+I left `language` absent because this is not a Kotlin or Scala-specific library. Verified the JSON with `jq`; Maven Central confirms the exact artifact metadata, and the GitHub tag confirms the exact tagged test path. ([central.sonatype.com](https://central.sonatype.com/artifact/org.glassfish.jaxb/jaxb-core/3.0.0-M5))
+Ran agent for org.glassfish.jaxb:jaxb-core:3.0.0-M5 (exit 0). Log: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/build/agent-artifact-discovery-logs/org.glassfish.jaxb-jaxb-core-3.0.0-M5.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 26s
+9 actionable tasks: 4 executed, 5 from cache

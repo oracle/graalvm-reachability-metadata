@@ -1,0 +1,490 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd324-a9b6-72a1-88c3-ad7e3df6d89e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.glassfish.jaxb:jaxb-core:3.0.0-M5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "3.0.0-M5".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/metadata/org.glassfish.jaxb/jaxb-core/index.json
+- Entry selector: "metadata-version" = "3.0.0-M5"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "3.0.0-M5".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar
+- repository-url: https://github.com/eclipse-ee4j/jaxb-ri
+- test-code-url: https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java
+- documentation-url: https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar
+- description: JAXB Core provides shared implementation classes required by the JAXB XJC, JXC, and runtime modules. It supports Jakarta XML Binding operations that map between XML content and Java object representations.
+- language: <missing>
+
+Context:
+- Coordinate version: 3.0.0-M5
+- Entry test-version: 3.0.0-M5
+codex
+I’ll inspect the existing metadata entry first so I only fill fields that are actually missing, then I’ll verify the versioned URLs before editing.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"3\\.0\\.0-M5\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.glassfish.jaxb/jaxb-core/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+4:    "metadata-version" : "3.0.0-M5",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar",
+6:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
+7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar",
+9:    "description" : "JAXB Core provides shared implementation classes required by the JAXB XJC, JXC, and runtime modules. It supports Jakarta XML Binding operations that map between XML content and Java object representations.",
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.glassfish.jaxb/jaxb-core/index.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+?? metadata/org.glassfish.jaxb/jaxb-core/index.json
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/
+web search: 
+web search: 
+codex
+The target entry already has non-blank values for the URL and description fields. I’m checking whether `language` should be added; for this artifact the applicable Kotlin/Scala language marker does not apply, so I expect no JSON edit unless the file contradicts that.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.glassfish.jaxb/jaxb-core/index.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.0-M5",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar",
+    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-ri",
+    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-javadoc.jar",
+    "description" : "JAXB Core provides shared implementation classes required by the JAXB XJC, JXC, and runtime modules. It supports Jakarta XML Binding operations that map between XML content and Java object representations.",
+    "tested-versions" : [
+      "3.0.0-M5"
+    ],
+    "allowed-packages" : [
+      "org.glassfish.jaxb.core"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5.pom | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sun.xml.bind.mvn</groupId>
+        <artifactId>jaxb-parent</artifactId>
+        <version>3.0.0-M5</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.glassfish.jaxb</groupId>
+    <artifactId>jaxb-core</artifactId>
+
+    <packaging>jar</packaging>
+    <name>JAXB Core</name>
+    <description>JAXB Core module. Contains sources required by XJC, JXC and Runtime modules.</description>
+
+    <properties>
+        <findbugs.exclude>${project.basedir}/exclude-core.xml</findbugs.exclude>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>txw2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-mr-resource</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${mrjar.sourceDirectory}</directory>
+                                    <targetPath>META-INF/versions</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile-mr</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${mrjar.sourceDirectory}/${upper.java.level}</compileSourceRoot>
+                            </compileSourceRoots>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/versions/${upper.java.level}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Implementation-Vendor>${vendor.name}</Implementation-Vendor>
+                        <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                        <Implementation-Build-Id>${project.version} - ${buildNumber}</Implementation-Build-Id>
+                        <Multi-Release>true</Multi-Release>
+                        <Export-Package>
+                            !META-INF.*,
+                            *
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL -o /tmp/jaxb-core-3.0.0-M5-sources.jar https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/jaxb-core-3.0.0-M5-sources.jar && jar tf /tmp/jaxb-core-3.0.0-M5-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+META-INF/MANIFEST.MF
+META-INF/
+org/
+org/glassfish/
+org/glassfish/jaxb/
+org/glassfish/jaxb/core/
+org/glassfish/jaxb/core/annotation/
+org/glassfish/jaxb/core/api/
+org/glassfish/jaxb/core/api/impl/
+org/glassfish/jaxb/core/marshaller/
+org/glassfish/jaxb/core/unmarshaller/
+org/glassfish/jaxb/core/util/
+org/glassfish/jaxb/core/v2/
+org/glassfish/jaxb/core/v2/model/
+org/glassfish/jaxb/core/v2/model/annotation/
+org/glassfish/jaxb/core/v2/model/core/
+org/glassfish/jaxb/core/v2/model/impl/
+org/glassfish/jaxb/core/v2/model/nav/
+org/glassfish/jaxb/core/v2/model/util/
+org/glassfish/jaxb/core/v2/runtime/
+org/glassfish/jaxb/core/v2/runtime/unmarshaller/
+org/glassfish/jaxb/core/v2/schemagen/
+org/glassfish/jaxb/core/v2/schemagen/episode/
+org/glassfish/jaxb/core/v2/util/
+META-INF/versions/
+META-INF/versions/9/
+META-INF/versions/9/org/
+META-INF/versions/9/org/glassfish/
+META-INF/versions/9/org/glassfish/jaxb/
+META-INF/versions/9/org/glassfish/jaxb/core/
+META-INF/maven/
+META-INF/maven/org.glassfish.jaxb/
+META-INF/maven/org.glassfish.jaxb/jaxb-core/
+module-info.java
+org/glassfish/jaxb/core/Locatable.java
+org/glassfish/jaxb/core/StackHelper.java
+org/glassfish/jaxb/core/Utils.java
+org/glassfish/jaxb/core/WhiteSpaceProcessor.java
+org/glassfish/jaxb/core/annotation/OverrideAnnotationOf.java
+org/glassfish/jaxb/core/annotation/XmlIsSet.java
+org/glassfish/jaxb/core/annotation/XmlLocation.java
+org/glassfish/jaxb/core/api/ErrorListener.java
+org/glassfish/jaxb/core/api/impl/NameConverter.java
+org/glassfish/jaxb/core/api/impl/NameUtil.java
+org/glassfish/jaxb/core/marshaller/CharacterEscapeHandler.java
+org/glassfish/jaxb/core/marshaller/DataWriter.java
+org/glassfish/jaxb/core/marshaller/DumbEscapeHandler.java
+org/glassfish/jaxb/core/marshaller/Messages.java
+org/glassfish/jaxb/core/marshaller/MinimumEscapeHandler.java
+org/glassfish/jaxb/core/marshaller/NoEscapeHandler.java
+org/glassfish/jaxb/core/marshaller/SAX2DOMEx.java
+org/glassfish/jaxb/core/marshaller/XMLWriter.java
+org/glassfish/jaxb/core/unmarshaller/DOMScanner.java
+org/glassfish/jaxb/core/unmarshaller/InfosetScanner.java
+org/glassfish/jaxb/core/util/SecureLoader.java
+org/glassfish/jaxb/core/util/Which.java
+org/glassfish/jaxb/core/v2/ClassFactory.java
+org/glassfish/jaxb/core/v2/Messages.java
+org/glassfish/jaxb/core/v2/TODO.java
+org/glassfish/jaxb/core/v2/WellKnownNamespace.java
+org/glassfish/jaxb/core/v2/model/annotation/AnnotationReader.java
+org/glassfish/jaxb/core/v2/model/annotation/AnnotationSource.java
+org/glassfish/jaxb/core/v2/model/annotation/Locatable.java
+org/glassfish/jaxb/core/v2/model/core/Adapter.java
+org/glassfish/jaxb/core/v2/model/core/ArrayInfo.java
+org/glassfish/jaxb/core/v2/model/core/AttributePropertyInfo.java
+org/glassfish/jaxb/core/v2/model/core/BuiltinLeafInfo.java
+org/glassfish/jaxb/core/v2/model/core/ClassInfo.java
+org/glassfish/jaxb/core/v2/model/core/Element.java
+org/glassfish/jaxb/core/v2/model/core/ElementInfo.java
+org/glassfish/jaxb/core/v2/model/core/ElementPropertyInfo.java
+org/glassfish/jaxb/core/v2/model/core/EnumConstant.java
+org/glassfish/jaxb/core/v2/model/core/EnumLeafInfo.java
+org/glassfish/jaxb/core/v2/model/core/ErrorHandler.java
+org/glassfish/jaxb/core/v2/model/core/ID.java
+org/glassfish/jaxb/core/v2/model/core/LeafInfo.java
+org/glassfish/jaxb/core/v2/model/core/MapPropertyInfo.java
+org/glassfish/jaxb/core/v2/model/core/MaybeElement.java
+org/glassfish/jaxb/core/v2/model/core/NonElement.java
+org/glassfish/jaxb/core/v2/model/core/NonElementRef.java
+org/glassfish/jaxb/core/v2/model/core/PropertyInfo.java
+org/glassfish/jaxb/core/v2/model/core/PropertyKind.java
+org/glassfish/jaxb/core/v2/model/core/Ref.java
+org/glassfish/jaxb/core/v2/model/core/ReferencePropertyInfo.java
+org/glassfish/jaxb/core/v2/model/core/RegistryInfo.java
+org/glassfish/jaxb/core/v2/model/core/TypeInfo.java
+org/glassfish/jaxb/core/v2/model/core/TypeInfoSet.java
+org/glassfish/jaxb/core/v2/model/core/TypeRef.java
+org/glassfish/jaxb/core/v2/model/core/ValuePropertyInfo.java
+org/glassfish/jaxb/core/v2/model/core/WildcardMode.java
+org/glassfish/jaxb/core/v2/model/core/WildcardTypeInfo.java
+org/glassfish/jaxb/core/v2/model/core/package-info.java
+org/glassfish/jaxb/core/v2/model/impl/ModelBuilderI.java
+org/glassfish/jaxb/core/v2/model/nav/GenericArrayTypeImpl.java
+org/glassfish/jaxb/core/v2/model/nav/Navigator.java
+org/glassfish/jaxb/core/v2/model/nav/ParameterizedTypeImpl.java
+org/glassfish/jaxb/core/v2/model/nav/ReflectionNavigator.java
+org/glassfish/jaxb/core/v2/model/nav/SecureLoader.java
+org/glassfish/jaxb/core/v2/model/nav/TypeVisitor.java
+org/glassfish/jaxb/core/v2/model/nav/WildcardTypeImpl.java
+org/glassfish/jaxb/core/v2/model/nav/package-info.java
+org/glassfish/jaxb/core/v2/model/util/ArrayInfoUtil.java
+org/glassfish/jaxb/core/v2/runtime/IllegalAnnotationException.java
+org/glassfish/jaxb/core/v2/runtime/Location.java
+org/glassfish/jaxb/core/v2/runtime/RuntimeUtil.java
+org/glassfish/jaxb/core/v2/runtime/SwaRefAdapterMarker.java
+org/glassfish/jaxb/core/v2/runtime/unmarshaller/LocatorEx.java
+org/glassfish/jaxb/core/v2/schemagen/episode/Bindings.java
+org/glassfish/jaxb/core/v2/schemagen/episode/Klass.java
+org/glassfish/jaxb/core/v2/schemagen/episode/Package.java
+org/glassfish/jaxb/core/v2/schemagen/episode/SchemaBindings.java
+org/glassfish/jaxb/core/v2/schemagen/episode/package-info.java
+org/glassfish/jaxb/core/v2/util/EditDistance.java
+org/glassfish/jaxb/core/v2/util/FlattenIterator.java
+org/glassfish/jaxb/core/v2/util/XmlFactory.java
+org/glassfish/jaxb/core/marshaller/Messages.properties
+org/glassfish/jaxb/core/marshaller/Messages_de.properties
+org/glassfish/jaxb/core/marshaller/Messages_es.properties
+org/glassfish/jaxb/core/marshaller/Messages_fr.properties
+org/glassfish/jaxb/core/marshaller/Messages_it.properties
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/
+web search: 
+web search: 
+web search: 
+web search: org.glassfish.jaxb jaxb-core 3.0.0-M5 Maven JAXB Core module Contains sources required by XJC JXC Runtime modules
+codex
+I confirmed Maven Central publishes both the exact `3.0.0-M5` sources and javadoc jars, and the GitHub test path is on the matching `3.0.0-M5-RI` tag. Since `language` should stay absent, the repository file already matches the requested state.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.glassfish.jaxb/jaxb-core/index.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.glassfish.jaxb/jaxb-core/index.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.glassfish.jaxb/jaxb-core/index.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+?? metadata/org.glassfish.jaxb/jaxb-core/index.json
+
+web search: 
+web search: Maven Central org.glassfish.jaxb jaxb-core 3.0.0-M5 sources javadoc
+web search: 
+web search: github eclipse-ee4j jaxb-ri 3.0.0-M5-RI jaxb-ri core src test java
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java
+web search: 
+web search: https://central.sonatype.com/artifact/org.glassfish.jaxb/jaxb-core/3.0.0-M5
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/ | rg 'test|sources|javadoc|\\.jar'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea
+ succeeded in 0ms:
+<a href="jaxb-core-3.0.0-M5-javadoc.jar" title="jaxb-core-3.0.0-M5-javadoc.jar">jaxb-core-3.0.0-M5-javadoc.jar</a>                    2020-08-28 11:48    949197      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc" title="jaxb-core-3.0.0-M5-javadoc.jar.asc">jaxb-core-3.0.0-M5-javadoc.jar.asc</a>                2020-08-28 11:48       833      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc.md5" title="jaxb-core-3.0.0-M5-javadoc.jar.asc.md5">jaxb-core-3.0.0-M5-javadoc.jar.asc.md5</a>            2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha1" title="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha1">jaxb-core-3.0.0-M5-javadoc.jar.asc.sha1</a>           2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha256" title="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha256">jaxb-core-3.0.0-M5-javadoc.jar.asc.sha256</a>         2020-08-28 11:48        64      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha512" title="jaxb-core-3.0.0-M5-javadoc.jar.asc.sha512">jaxb-core-3.0.0-M5-javadoc.jar.asc.sha512</a>         2020-08-28 11:48       128      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.md5" title="jaxb-core-3.0.0-M5-javadoc.jar.md5">jaxb-core-3.0.0-M5-javadoc.jar.md5</a>                2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5-javadoc.jar.sha1" title="jaxb-core-3.0.0-M5-javadoc.jar.sha1">jaxb-core-3.0.0-M5-javadoc.jar.sha1</a>               2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5-sources.jar" title="jaxb-core-3.0.0-M5-sources.jar">jaxb-core-3.0.0-M5-sources.jar</a>                    2020-08-28 11:48    134063      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc" title="jaxb-core-3.0.0-M5-sources.jar.asc">jaxb-core-3.0.0-M5-sources.jar.asc</a>                2020-08-28 11:48       833      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc.md5" title="jaxb-core-3.0.0-M5-sources.jar.asc.md5">jaxb-core-3.0.0-M5-sources.jar.asc.md5</a>            2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc.sha1" title="jaxb-core-3.0.0-M5-sources.jar.asc.sha1">jaxb-core-3.0.0-M5-sources.jar.asc.sha1</a>           2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc.sha256" title="jaxb-core-3.0.0-M5-sources.jar.asc.sha256">jaxb-core-3.0.0-M5-sources.jar.asc.sha256</a>         2020-08-28 11:48        64      
+<a href="jaxb-core-3.0.0-M5-sources.jar.asc.sha512" title="jaxb-core-3.0.0-M5-sources.jar.asc.sha512">jaxb-core-3.0.0-M5-sources.jar.asc.sha512</a>         2020-08-28 11:48       128      
+<a href="jaxb-core-3.0.0-M5-sources.jar.md5" title="jaxb-core-3.0.0-M5-sources.jar.md5">jaxb-core-3.0.0-M5-sources.jar.md5</a>                2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5-sources.jar.sha1" title="jaxb-core-3.0.0-M5-sources.jar.sha1">jaxb-core-3.0.0-M5-sources.jar.sha1</a>               2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5.jar" title="jaxb-core-3.0.0-M5.jar">jaxb-core-3.0.0-M5.jar</a>                            2020-08-28 11:48    139708      
+<a href="jaxb-core-3.0.0-M5.jar.asc" title="jaxb-core-3.0.0-M5.jar.asc">jaxb-core-3.0.0-M5.jar.asc</a>                        2020-08-28 11:48       833      
+<a href="jaxb-core-3.0.0-M5.jar.asc.md5" title="jaxb-core-3.0.0-M5.jar.asc.md5">jaxb-core-3.0.0-M5.jar.asc.md5</a>                    2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5.jar.asc.sha1" title="jaxb-core-3.0.0-M5.jar.asc.sha1">jaxb-core-3.0.0-M5.jar.asc.sha1</a>                   2020-08-28 11:48        40      
+<a href="jaxb-core-3.0.0-M5.jar.asc.sha256" title="jaxb-core-3.0.0-M5.jar.asc.sha256">jaxb-core-3.0.0-M5.jar.asc.sha256</a>                 2020-08-28 11:48        64      
+<a href="jaxb-core-3.0.0-M5.jar.asc.sha512" title="jaxb-core-3.0.0-M5.jar.asc.sha512">jaxb-core-3.0.0-M5.jar.asc.sha512</a>                 2020-08-28 11:48       128      
+<a href="jaxb-core-3.0.0-M5.jar.md5" title="jaxb-core-3.0.0-M5.jar.md5">jaxb-core-3.0.0-M5.jar.md5</a>                        2020-08-28 11:48        32      
+<a href="jaxb-core-3.0.0-M5.jar.sha1" title="jaxb-core-3.0.0-M5.jar.sha1">jaxb-core-3.0.0-M5.jar.sha1</a>                       2020-08-28 11:48        40      
+
+web search: 
+web search: repo1 maven org glassfish jaxb jaxb-core 3.0.0-M5 javadoc sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/
+web search: 
+web search: https://github.com/eclipse-ee4j/jaxb-ri/tree/3.0.0-M5-RI/jaxb-ri/core/src/test/java
+codex
+Done. No file edit was needed: all requested URL and description fields were already non-blank, and `language` should remain absent because `jaxb-core` is not a Kotlin or Scala-specific library. Maven Central has the exact `3.0.0-M5` sources and javadoc jars, and the GitHub test URL points at the matching `3.0.0-M5-RI` tag. ([repo1.maven.org](https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/))
+
+Validated JSON with:
+
+```bash
+jq empty metadata/org.glassfish.jaxb/jaxb-core/index.json
+```
+
+One note: the file is currently untracked in git (`?? metadata/org.glassfish.jaxb/jaxb-core/index.json`), which was already true before my inspection.
+2026-04-28T08:12:39.957086Z ERROR codex_core::session: failed to record rollout items: thread 019dd324-a9b6-72a1-88c3-ad7e3df6d89e not found
+tokens used
+61,879
+Done. No file edit was needed: all requested URL and description fields were already non-blank, and `language` should remain absent because `jaxb-core` is not a Kotlin or Scala-specific library. Maven Central has the exact `3.0.0-M5` sources and javadoc jars, and the GitHub test URL points at the matching `3.0.0-M5-RI` tag. ([repo1.maven.org](https://repo1.maven.org/maven2/org/glassfish/jaxb/jaxb-core/3.0.0-M5/))
+
+Validated JSON with:
+
+```bash
+jq empty metadata/org.glassfish.jaxb/jaxb-core/index.json
+```
+
+One note: the file is currently untracked in git (`?? metadata/org.glassfish.jaxb/jaxb-core/index.json`), which was already true before my inspection.
+Ran agent for org.glassfish.jaxb:jaxb-core:3.0.0-M5 (exit 0). Log: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/build/agent-url-discovery-logs/org.glassfish.jaxb-jaxb-core-3.0.0-M5.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/1517-9e973fea/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 12s
+9 actionable tasks: 1 executed, 8 up-to-date
