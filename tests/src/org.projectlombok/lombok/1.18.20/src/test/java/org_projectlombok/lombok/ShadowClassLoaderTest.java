@@ -36,6 +36,15 @@ public class ShadowClassLoaderTest {
     }
 
     @Test
+    void loadsClassesFromPrependedParentsBeforeFallingBackToTheRegularParent() throws Exception {
+        ClassLoader shadowLoader = newShadowClassLoader();
+        Method prependParent = declaredMethod(shadowLoader.getClass(), "prependParent", ClassLoader.class);
+        prependParent.invoke(shadowLoader, ClassLoader.getPlatformClassLoader());
+
+        assertThat(shadowLoader.loadClass("java.lang.Integer")).isSameAs(Integer.class);
+    }
+
+    @Test
     void fallsBackToTheAlreadyDefinedClassWhenTheSameBytesAreDefinedTwice() throws Exception {
         ClassLoader shadowLoader = newShadowClassLoader();
         Method urlToDefineClass = declaredMethod(shadowLoader.getClass(), "urlToDefineClass", String.class, URL.class, boolean.class);
