@@ -1,0 +1,916 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd416-e2b9-70f3-ae08-9ef0c4057a5a
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.yetus:audience-annotations:0.14.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.14.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/metadata/org.apache.yetus/audience-annotations/index.json
+- Entry selector: "metadata-version" = "0.14.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "0.14.0".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 0.14.0
+- Entry test-version: 0.14.0
+codex
+I’ll verify the exact 0.14.0 source, tests, and docs locations before editing the metadata entry, since the versioned URL requirement is strict here.
+web search: 
+web search: org.apache.yetus audience-annotations 0.14.0 source jar Maven Central
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/yetus/audience-annotations/0.14.0/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: repo.maven.apache.org org/apache/yetus/audience-annotations/0.14.0 audience-annotations-0.14.0.pom
+web search: 
+web search: site:github.com/apache/yetus/tree 0.14.0 audience-annotations
+web search: 
+web search: site:github.com/apache/yetus/releases/tag 0.14.0 Yetus
+codex
+Maven Central has the 0.14.0 sources and javadoc artifacts, but no test artifact in that listing, so I’m checking the Apache Yetus release tag for the test-suite path and canonical repository root.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.yetus/audience-annotations/index.json" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.14.0",
+    "tested-versions" : [
+      "0.14.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.yetus"
+    ]
+  },
+  {
+    "metadata-version" : "0.12.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+    "repository-url" : "https://github.com/apache/yetus",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+    "tested-versions" : [
+      "0.12.0",
+      "0.13.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.yetus"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/yetus.git 'refs/tags/rel/0.14.0*'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 306ms:
+ede5e9a81e634e4f50ead9ca34c49115f7f6d75d	refs/tags/rel/0.14.0
+17798f8d3c5bcf85691e77aae3eb64657d66f082	refs/tags/rel/0.14.0^{}
+
+web search: 
+web search: https://github.com/apache/yetus/tree/rel/0.14.0
+web search: 
+web search: https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component
+web search: 
+web search: https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations
+web search: 
+web search: https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src
+web search: 
+web search: 
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/yetus/audience-annotations/0.14.0/
+codex
+The existing 0.12.0 entry already uses Maven Central artifacts for sources and Javadocs, so I’m keeping that style for 0.14.0 and only using the release tag where Maven does not expose a dedicated test artifact.
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"https://github.com/apache/yetus|audience-annotations|repo.maven.apache.org/maven2/org/apache/yetus' metadata/org.apache.yetus metadata | head -80" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/yetus/audience-annotations/0.14.0/ | sed -n '1,120p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/yetus/audience-annotations/0.14.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/yetus/audience-annotations/0.14.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="audience-annotations-0.14.0-javadoc.jar" title="audience-annotations-0.14.0-javadoc.jar">audience-annotations-0.14.0-javadoc.jar</a>           2022-05-07 06:00    453638      
+<a href="audience-annotations-0.14.0-javadoc.jar.asc" title="audience-annotations-0.14.0-javadoc.jar.asc">audience-annotations-0.14.0-javadoc.jar.asc</a>       2022-05-07 06:00       833      
+<a href="audience-annotations-0.14.0-javadoc.jar.md5" title="audience-annotations-0.14.0-javadoc.jar.md5">audience-annotations-0.14.0-javadoc.jar.md5</a>       2022-05-07 06:00        32      
+<a href="audience-annotations-0.14.0-javadoc.jar.sha1" title="audience-annotations-0.14.0-javadoc.jar.sha1">audience-annotations-0.14.0-javadoc.jar.sha1</a>      2022-05-07 06:00        40      
+<a href="audience-annotations-0.14.0-sources.jar" title="audience-annotations-0.14.0-sources.jar">audience-annotations-0.14.0-sources.jar</a>           2022-05-07 06:00     16324      
+<a href="audience-annotations-0.14.0-sources.jar.asc" title="audience-annotations-0.14.0-sources.jar.asc">audience-annotations-0.14.0-sources.jar.asc</a>       2022-05-07 06:00       833      
+<a href="audience-annotations-0.14.0-sources.jar.md5" title="audience-annotations-0.14.0-sources.jar.md5">audience-annotations-0.14.0-sources.jar.md5</a>       2022-05-07 06:00        32      
+<a href="audience-annotations-0.14.0-sources.jar.sha1" title="audience-annotations-0.14.0-sources.jar.sha1">audience-annotations-0.14.0-sources.jar.sha1</a>      2022-05-07 06:00        40      
+<a href="audience-annotations-0.14.0.jar" title="audience-annotations-0.14.0.jar">audience-annotations-0.14.0.jar</a>                   2022-05-07 06:00     18347      
+<a href="audience-annotations-0.14.0.jar.asc" title="audience-annotations-0.14.0.jar.asc">audience-annotations-0.14.0.jar.asc</a>               2022-05-07 06:00       833      
+<a href="audience-annotations-0.14.0.jar.md5" title="audience-annotations-0.14.0.jar.md5">audience-annotations-0.14.0.jar.md5</a>               2022-05-07 06:00        32      
+<a href="audience-annotations-0.14.0.jar.sha1" title="audience-annotations-0.14.0.jar.sha1">audience-annotations-0.14.0.jar.sha1</a>              2022-05-07 06:00        40      
+<a href="audience-annotations-0.14.0.pom" title="audience-annotations-0.14.0.pom">audience-annotations-0.14.0.pom</a>                   2022-05-07 06:00      3255      
+<a href="audience-annotations-0.14.0.pom.asc" title="audience-annotations-0.14.0.pom.asc">audience-annotations-0.14.0.pom.asc</a>               2022-05-07 06:00       833      
+<a href="audience-annotations-0.14.0.pom.md5" title="audience-annotations-0.14.0.pom.md5">audience-annotations-0.14.0.pom.md5</a>               2022-05-07 06:00        32      
+<a href="audience-annotations-0.14.0.pom.sha1" title="audience-annotations-0.14.0.pom.sha1">audience-annotations-0.14.0.pom.sha1</a>              2022-05-07 06:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/yetus/rel/0.14.0/audience-annotations-component/audience-annotations/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 231ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="https://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://maven.apache.org/POM/4.0.0
+                      https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.yetus</groupId>
+    <artifactId>yetus-project</artifactId>
+    <version>${revision}</version>
+    <relativePath>../..</relativePath>
+  </parent>
+  <artifactId>audience-annotations</artifactId>
+  <description>Annotations for defining API boundaries and tools for managing javadocs</description>
+  <name>Apache Yetus - Audience Annotations</name>
+  <packaging>jar</packaging>
+
+  <profiles>
+    <profile>
+      <id>jdk1.8</id>
+      <activation>
+        <jdk>(,1.8]</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <!-- Version and location set in project pom -->
+          <groupId>jdk.tools</groupId>
+          <artifactId>jdk.tools</artifactId>
+          <scope>system</scope>
+          <!-- Mark as optional so that it isn't taken transitively -->
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+  <dependencies>
+    <dependency>
+      <artifactId>junit-jupiter</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>dist</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>apache-yetus-${project.version}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              <attach>false</attach>
+              <descriptors>
+                <descriptor>src/main/assemblies/${project.artifactId}.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>' -C 2" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+35-    <license>
+36-      <name>Apache License, Version 2.0</name>
+37:      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+38-      <distribution>repo</distribution>
+39-    </license>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src/test?ref=rel/0.14.0' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src?ref=rel/0.14.0' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 178ms:
+[
+  {
+    "name": "main",
+    "path": "audience-annotations-component/audience-annotations/src/main",
+    "sha": "c506bb5ac6b4705ca9b6916d55a193e98d6c8f7a",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src/main?ref=rel/0.14.0",
+    "html_url": "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/main",
+    "git_url": "https://api.github.com/repos/apache/yetus/git/trees/c506bb5ac6b4705ca9b6916d55a193e98d6c8f7a",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src/main?ref=rel/0.14.0",
+      "git": "https://api.github.com/repos/apache/yetus/git/trees/c506bb5ac6b4705ca9b6916d55a193e98d6c8f7a",
+      "html": "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "audience-annotations-component/audience-annotations/src/test",
+    "sha": "b54919acbe64b38f9b14721e6e03e98b2eb96c08",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src/test?ref=rel/0.14.0",
+    "html_url": "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
+    "git_url": "https://api.github.com/repos/apache/yetus/git/trees/b54919acbe64b38f9b14721e6e03e98b2eb96c08",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src/test?ref=rel/0.14.0",
+      "git": "https://api.github.com/repos/apache/yetus/git/trees/b54919acbe64b38f9b14721e6e03e98b2eb96c08",
+      "html": "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test"
+    }
+  }
+]
+
+ succeeded in 209ms:
+[
+  {
+    "name": "java",
+    "path": "audience-annotations-component/audience-annotations/src/test/java",
+    "sha": "1cf6462a70d20156bfc032a90b04c6c5e22d132f",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src/test/java?ref=rel/0.14.0",
+    "html_url": "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/yetus/git/trees/1cf6462a70d20156bfc032a90b04c6c5e22d132f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src/test/java?ref=rel/0.14.0",
+      "git": "https://api.github.com/repos/apache/yetus/git/trees/1cf6462a70d20156bfc032a90b04c6c5e22d132f",
+      "html": "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test/java"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/yetus/yetus-project/0.14.0/ | sed -n '1,160p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/yetus/yetus-project/0.14.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/yetus/yetus-project/0.14.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="yetus-project-0.14.0-source-release.tar.gz" title="yetus-project-0.14.0-source-release.tar.gz">yetus-project-0.14.0-source-release.tar.gz</a>        2022-05-07 05:59   1100377      
+<a href="yetus-project-0.14.0-source-release.tar.gz.asc" title="yetus-project-0.14.0-source-release.tar.gz.asc">yetus-project-0.14.0-source-release.tar.gz.as...</a>  2022-05-07 05:59       833      
+<a href="yetus-project-0.14.0-source-release.tar.gz.md5" title="yetus-project-0.14.0-source-release.tar.gz.md5">yetus-project-0.14.0-source-release.tar.gz.md...</a>  2022-05-07 05:59        32      
+<a href="yetus-project-0.14.0-source-release.tar.gz.sha1" title="yetus-project-0.14.0-source-release.tar.gz.sha1">yetus-project-0.14.0-source-release.tar.gz.sh...</a>  2022-05-07 05:59        40      
+<a href="yetus-project-0.14.0-source-release.tar.gz.sha512" title="yetus-project-0.14.0-source-release.tar.gz.sha512">yetus-project-0.14.0-source-release.tar.gz.sh...</a>  2022-05-07 05:59       128      
+<a href="yetus-project-0.14.0-source-release.tar.gz.sha512.md5" title="yetus-project-0.14.0-source-release.tar.gz.sha512.md5">yetus-project-0.14.0-source-release.tar.gz.sh...</a>  2022-05-07 05:59        32      
+<a href="yetus-project-0.14.0-source-release.tar.gz.sha512.sha1" title="yetus-project-0.14.0-source-release.tar.gz.sha512.sha1">yetus-project-0.14.0-source-release.tar.gz.sh...</a>  2022-05-07 05:59        40      
+<a href="yetus-project-0.14.0.pom" title="yetus-project-0.14.0.pom">yetus-project-0.14.0.pom</a>                          2022-05-07 05:59     12171      
+<a href="yetus-project-0.14.0.pom.asc" title="yetus-project-0.14.0.pom.asc">yetus-project-0.14.0.pom.asc</a>                      2022-05-07 05:59       833      
+<a href="yetus-project-0.14.0.pom.md5" title="yetus-project-0.14.0.pom.md5">yetus-project-0.14.0.pom.md5</a>                      2022-05-07 05:59        32      
+<a href="yetus-project-0.14.0.pom.sha1" title="yetus-project-0.14.0.pom.sha1">yetus-project-0.14.0.pom.sha1</a>                     2022-05-07 05:59        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/yetus/yetus-project/0.14.0/yetus-project-0.14.0.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>' -C 2" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+32-  <name>Apache Yetus Project</name>
+33-  <description>Project-wide definitions for Apache Yetus</description>
+34:  <url>https://yetus.apache.org</url>
+35-  <inceptionYear>2015</inceptionYear>
+36-  <licenses>
+37-    <license>
+38-      <name>Apache License, Version 2.0</name>
+39:      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+40-      <distribution>repo</distribution>
+41-    </license>
+--
+60-    <module>yetus-dist</module>
+61-  </modules>
+62:  <scm>
+63:    <connection>scm:git:https://github.com/apache/yetus.git</connection>
+64:    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/yetus.git</developerConnection>
+65:    <url>https://github.com/apache/yetus.git</url>
+66-  </scm>
+67-  <issueManagement>
+68-    <system>JIRA</system>
+69:    <url>https://issues.apache.org/jira/browse/YETUS</url>
+70-  </issueManagement>
+71-  <distributionManagement>
+--
+73-      <id>Apache Yetus</id>
+74-      <name>site</name>
+75:      <url>https://yetus.apache.org/</url>
+76-    </site>
+77-  </distributionManagement>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/yetus/contents/audience-annotations-component/audience-annotations/src/test/java?ref=rel/0.14.0 | rg 'html_url|path|name'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 219ms:
+    "name": "org",
+    "path": "audience-annotations-component/audience-annotations/src/test/java/org",
+    "html_url": "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test/java/org",
+
+codex
+I’m going to update only the missing fields on the 0.14.0 object. I’m leaving `language` absent because this is a Java artifact, not a Kotlin or Scala variant covered by the metadata language field.
+apply patch
+patch: completed
+/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/metadata/org.apache.yetus/audience-annotations/index.json
+diff --git a/metadata/org.apache.yetus/audience-annotations/index.json b/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7d67fcb185b0ee109f17add611940bc..dd59434a8c4e361adbf824e7c656e95242539c63
+--- a/metadata/org.apache.yetus/audience-annotations/index.json
++++ b/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+diff --git a/metadata/org.apache.yetus/audience-annotations/index.json b/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7d67fcb185b0ee109f17add611940bc..dd59434a8c4e361adbf824e7c656e95242539c63
+--- a/metadata/org.apache.yetus/audience-annotations/index.json
++++ b/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-javadoc.jar",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+web search: 
+web search: Maven Central org.apache.yetus audience-annotations 0.14.0 sources javadoc
+web search: 
+web search: https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test
+web search: 
+web search: site:yetus.apache.org/documentation/0.14.0 audience-annotations Apache Yetus
+web search: 
+web search: https://yetus.apache.org/documentation/0.14.0/
+web search: 
+web search: https://yetus.apache.org/documentation/0.14.0/interface-classification
+codex
+I found a versioned Yetus user-doc page specifically for interface classification, so I’m using that as the documentation URL instead of the generic Javadoc artifact. The Maven source artifact remains the better source-code URL, and the test URL remains the 0.14.0 tag path because there is no dedicated tests artifact for `audience-annotations` in its Maven listing.
+apply patch
+patch: completed
+/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/metadata/org.apache.yetus/audience-annotations/index.json
+diff --git a/metadata/org.apache.yetus/audience-annotations/index.json b/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7d67fcb185b0ee109f17add611940bc..eeaa5e143b4255dae0530041abb9c84652b11ba2
+--- a/metadata/org.apache.yetus/audience-annotations/index.json
++++ b/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://yetus.apache.org/documentation/0.14.0/interface-classification/",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+diff --git a/metadata/org.apache.yetus/audience-annotations/index.json b/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7d67fcb185b0ee109f17add611940bc..eeaa5e143b4255dae0530041abb9c84652b11ba2
+--- a/metadata/org.apache.yetus/audience-annotations/index.json
++++ b/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://yetus.apache.org/documentation/0.14.0/interface-classification/",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.yetus/audience-annotations/index.json >/dev/null' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.yetus/audience-annotations/index.json' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.yetus/audience-annotations/index.json w/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7..eeaa5e143b 100644
+--- i/metadata/org.apache.yetus/audience-annotations/index.json
++++ w/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://yetus.apache.org/documentation/0.14.0/interface-classification/",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+exec
+/usr/bin/bash -lc "curl -fsI https://yetus.apache.org/documentation/0.14.0/interface-classification/ | sed -n '1,12p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+HTTP/2 200 
+server: Apache
+last-modified: Tue, 17 May 2022 01:07:36 GMT
+etag: "487c-5df2ac42d7924"
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Tue, 28 Apr 2026 12:38:08 GMT
+x-served-by: cache-hel1410025-HEL, cache-fra-eddf8230152-FRA
+
+diff --git a/metadata/org.apache.yetus/audience-annotations/index.json b/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7d67fcb185b0ee109f17add611940bc..eeaa5e143b4255dae0530041abb9c84652b11ba2
+--- a/metadata/org.apache.yetus/audience-annotations/index.json
++++ b/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://yetus.apache.org/documentation/0.14.0/interface-classification/",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+codex
+The JSON parses cleanly and the diff is limited to the first 0.14.0 entry. I’m running the repository’s metadata validation for this coordinate now.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.yetus:audience-annotations:0.14.0 --stacktrace' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar | sed -n '1,8p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+exec
+/usr/bin/bash -lc "curl -fsI https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test | sed -n '1,10p'" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 278ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 12:38:14 GMT
+content-type: application/java-archive
+content-length: 16324
+cf-ray: 9f361f717e93c115-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 103442
+
+ succeeded in 483ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 12:38:14 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c687e60a9892438349ecf9bdc86a8b2f"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+
+diff --git a/metadata/org.apache.yetus/audience-annotations/index.json b/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7d67fcb185b0ee109f17add611940bc..eeaa5e143b4255dae0530041abb9c84652b11ba2
+--- a/metadata/org.apache.yetus/audience-annotations/index.json
++++ b/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://yetus.apache.org/documentation/0.14.0/interface-classification/",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+ exited 1 in 1345ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.apache.yetus:audience-annotations:0.14.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/metadata/org.apache.yetus/audience-annotations/0.14.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.yetus:audience-annotations:0.14.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/metadata/org.apache.yetus/audience-annotations/0.14.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.yetus:audience-annotations:0.14.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/metadata/org.apache.yetus/audience-annotations/0.14.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+`checkMetadataFiles` fails because this coordinate has no `metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json`, which is outside the requested index-field update. The edited JSON itself is valid, and the selected source, test, and documentation URLs return HTTP 200.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"0.14.0\")' metadata/org.apache.yetus/audience-annotations/index.json" in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "0.14.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
+  "repository-url": "https://github.com/apache/yetus",
+  "test-code-url": "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
+  "documentation-url": "https://yetus.apache.org/documentation/0.14.0/interface-classification/",
+  "description": "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+  "tested-versions": [
+    "0.14.0"
+  ],
+  "allowed-packages": [
+    "org.apache.yetus"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820
+ succeeded in 0ms:
+ M metadata/org.apache.yetus/audience-annotations/index.json
+
+diff --git a/metadata/org.apache.yetus/audience-annotations/index.json b/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7d67fcb185b0ee109f17add611940bc..eeaa5e143b4255dae0530041abb9c84652b11ba2
+--- a/metadata/org.apache.yetus/audience-annotations/index.json
++++ b/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://yetus.apache.org/documentation/0.14.0/interface-classification/",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+web search: 
+web search: repo.maven.apache.org maven2 org apache yetus audience-annotations 0.14.0 sources javadoc
+web search: 
+web search: https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org maven2 org apache yetus yetus-project 0.14.0 pom scm github
+web search: 
+web search: https://yetus.apache.org/documentation/0.14.0/interface-classification/
+codex
+Updated [index.json](/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/metadata/org.apache.yetus/audience-annotations/index.json:1) for `metadata-version` `0.14.0`.
+
+Filled the missing `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description`. I left `language` absent because this is not a Kotlin or Scala-specific library. Maven Central provides the 0.14.0 sources artifact, the test URL points to the `rel/0.14.0` GitHub test directory, and the docs URL points to the versioned Yetus interface-classification docs. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/yetus/audience-annotations/0.14.0/?utm_source=openai))
+
+Verification:
+- `jq` JSON parse: passed.
+- URL HEAD checks for source, tests, and docs: HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.yetus:audience-annotations:0.14.0 --stacktrace`: failed because `metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json` is missing, which is outside this requested index update.
+diff --git a/metadata/org.apache.yetus/audience-annotations/index.json b/metadata/org.apache.yetus/audience-annotations/index.json
+index 8cb70ba2f7d67fcb185b0ee109f17add611940bc..eeaa5e143b4255dae0530041abb9c84652b11ba2
+--- a/metadata/org.apache.yetus/audience-annotations/index.json
++++ b/metadata/org.apache.yetus/audience-annotations/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "0.14.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.14.0/audience-annotations-0.14.0-sources.jar",
++    "repository-url" : "https://github.com/apache/yetus",
++    "test-code-url" : "https://github.com/apache/yetus/tree/rel/0.14.0/audience-annotations-component/audience-annotations/src/test",
++    "documentation-url" : "https://yetus.apache.org/documentation/0.14.0/interface-classification/",
++    "description" : "Apache Yetus Audience Annotations provides Java annotations for marking intended API audience boundaries such as public, limited-private, and private. It also includes doclet support for generating Javadocs filtered to the intended audience.",
+     "tested-versions" : [
+       "0.14.0"
+     ],
+
+2026-04-28T12:38:47.941438Z ERROR codex_core::session: failed to record rollout items: thread 019dd416-e2b9-70f3-ae08-9ef0c4057a5a not found
+tokens used
+118,264
+Updated [index.json](/home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/metadata/org.apache.yetus/audience-annotations/index.json:1) for `metadata-version` `0.14.0`.
+
+Filled the missing `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description`. I left `language` absent because this is not a Kotlin or Scala-specific library. Maven Central provides the 0.14.0 sources artifact, the test URL points to the `rel/0.14.0` GitHub test directory, and the docs URL points to the versioned Yetus interface-classification docs. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/yetus/audience-annotations/0.14.0/?utm_source=openai))
+
+Verification:
+- `jq` JSON parse: passed.
+- URL HEAD checks for source, tests, and docs: HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.yetus:audience-annotations:0.14.0 --stacktrace`: failed because `metadata/org.apache.yetus/audience-annotations/0.14.0/reachability-metadata.json` is missing, which is outside this requested index update.
+Ran agent for org.apache.yetus:audience-annotations:0.14.0 (exit 0). Log: /home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/build/agent-url-discovery-logs/org.apache.yetus-audience-annotations-0.14.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/metadata-forge/local_repositories/forge_worktrees/1811-ae00f820/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 46s
+9 actionable tasks: 1 executed, 8 up-to-date
