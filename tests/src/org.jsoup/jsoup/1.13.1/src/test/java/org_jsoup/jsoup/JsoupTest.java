@@ -19,6 +19,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Entities;
 import org.jsoup.nodes.FormElement;
 import org.jsoup.nodes.Node;
 import org.jsoup.parser.Parser;
@@ -49,7 +50,7 @@ public class JsoupTest {
                 </html>
                 """;
 
-        Document document = Jsoup.parse(html, "https://example.test/news/index.html");
+        Document document = Jsoup.parse(html, "file:/news/index.html");
         Element article = requireFirst(document, "article.post.featured[data-id=42]");
         Element lead = requireFirst(article, "p.lead");
         Element docsLink = requireFirst(article, "p + p a[href]");
@@ -61,8 +62,8 @@ public class JsoupTest {
         assertThat(article.dataset()).containsEntry("id", "42");
         assertThat(lead.ownText()).isEqualTo("Jsoup parses markup.");
         assertThat(lead.text()).isEqualTo("Jsoup parses real-world markup.");
-        assertThat(docsLink.absUrl("href")).isEqualTo("https://example.test/docs/start.html?x=1#top");
-        assertThat(requireFirst(document, "nav a").absUrl("href")).isEqualTo("https://example.test/about");
+        assertThat(docsLink.absUrl("href")).isEqualTo("file:/docs/start.html?x=1#top");
+        assertThat(requireFirst(document, "nav a").absUrl("href")).isEqualTo("file:/about");
     }
 
     @Test
@@ -224,6 +225,31 @@ public class JsoupTest {
         assertThat(valuesByKey).containsEntry("notes", List.of("Use public APIs"));
         assertThat(valuesByKey).doesNotContainKey("ignored");
         assertThat(valuesByKey).doesNotContainKey("submit");
+    }
+
+    @Test
+    public void controlsOutputEscapingCharsetAndSyntax() {
+        Document document = Jsoup.parseBodyFragment("<p title='snowman ☃ & copy ©'>5 < 7 & π</p><br>");
+        Document.OutputSettings outputSettings = new Document.OutputSettings()
+                .charset("US-ASCII")
+                .escapeMode(Entities.EscapeMode.xhtml)
+                .syntax(Document.OutputSettings.Syntax.xml)
+                .prettyPrint(false);
+        document.outputSettings(outputSettings);
+
+        String escapedText = Entities.escape("© π ☃ & <", document.outputSettings());
+        Document.OutputSettings clonedSettings = document.outputSettings().clone()
+                .charset("UTF-8")
+                .escapeMode(Entities.EscapeMode.extended);
+
+        assertThat(document.body().html())
+                .isEqualTo("<p title=\"snowman &#x2603; &amp; copy &#xa9;\">5 &lt; 7 &amp; &#x3c0;</p><br />");
+        assertThat(escapedText).isEqualTo("&#xa9; &#x3c0; &#x2603; &amp; &lt;");
+        assertThat(document.outputSettings().charset().name()).isEqualTo("US-ASCII");
+        assertThat(document.outputSettings().escapeMode()).isEqualTo(Entities.EscapeMode.xhtml);
+        assertThat(document.outputSettings().syntax()).isEqualTo(Document.OutputSettings.Syntax.xml);
+        assertThat(clonedSettings.charset().name()).isEqualTo("UTF-8");
+        assertThat(clonedSettings.escapeMode()).isEqualTo(Entities.EscapeMode.extended);
     }
 
     @Test
