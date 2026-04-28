@@ -104,6 +104,36 @@ public class LatencyUtilsTest {
     }
 
     @Test
+    void timeCappedEstimatorAccountsForReportedPausesInsideItsWindow() throws InterruptedException {
+        TestPauseDetector detector = new TestPauseDetector();
+        TimeCappedMovingAverageIntervalEstimator estimator = new TimeCappedMovingAverageIntervalEstimator(
+                4,
+                100L,
+                detector);
+        try {
+            estimator.recordInterval(0L);
+            estimator.recordInterval(10L);
+            estimator.recordInterval(20L);
+            estimator.recordInterval(30L);
+            assertThat(estimator.getEstimatedInterval(30L)).isEqualTo(10L);
+
+            CountDownLatch pauseHandled = new CountDownLatch(1);
+            detector.addListener((pauseLengthNsec, pauseEndTimeNsec) -> pauseHandled.countDown());
+            detector.firePause(100L, 125L);
+
+            assertThat(pauseHandled.await(2L, TimeUnit.SECONDS)).isTrue();
+            assertThat(estimator.getEstimatedInterval(130L)).isEqualTo(10L);
+            assertThat(estimator.toString())
+                    .contains("Time cap: 200")
+                    .contains("totalPauseTimeInWindow = 100")
+                    .contains("averageInterval = 10");
+        } finally {
+            estimator.stop();
+            detector.shutdown();
+        }
+    }
+
+    @Test
     void latencyStatsUsesConfiguredDefaultPauseDetectorWhenNoneIsProvided() {
         PauseDetector previousDefaultDetector = LatencyStats.getDefaultPauseDetector();
         TestPauseDetector defaultDetector = new TestPauseDetector();
