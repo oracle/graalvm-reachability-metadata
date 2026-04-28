@@ -21,14 +21,14 @@ public class JavaMethodConverterTest {
         XStream xstream = configuredXStream();
         Object restored = xstream.fromXML("""
                 <method>
-                  <class>invocation-target</class>
+                  <class>%s</class>
                   <name>combine</name>
                   <parameter-types>
                     <class>java.lang.String</class>
                     <class>int</class>
                   </parameter-types>
                 </method>
-                """);
+                """.formatted(InvocationTarget.class.getName()));
 
         assertThat(restored).isInstanceOf(Method.class);
         Method method = (Method)restored;
@@ -42,13 +42,13 @@ public class JavaMethodConverterTest {
         XStream xstream = configuredXStream();
         Object restored = xstream.fromXML("""
                 <constructor>
-                  <class>invocation-target</class>
+                  <class>%s</class>
                   <parameter-types>
                     <class>java.lang.String</class>
                     <class>int</class>
                   </parameter-types>
                 </constructor>
-                """);
+                """.formatted(InvocationTarget.class.getName()));
 
         assertThat(restored).isInstanceOf(Constructor.class);
         Constructor<?> constructor = (Constructor<?>)restored;
@@ -65,7 +65,6 @@ public class JavaMethodConverterTest {
             Method.class,
             String.class
         });
-        xstream.alias("invocation-target", InvocationTarget.class);
         return xstream;
     }
 
