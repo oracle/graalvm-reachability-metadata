@@ -29,6 +29,8 @@ import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RawLocalFileSystem;
 import org.apache.hadoop.fs.RemoteIterator;
+import org.apache.hadoop.fs.permission.FsAction;
+import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.IntWritable;
@@ -222,6 +224,30 @@ public class Hadoop_apacheTest {
                 Map.entry("alpha", 11),
                 Map.entry("beta", 22),
                 Map.entry("gamma", 33));
+    }
+
+    @Test
+    void fsPermissionParsesSymbolicModesAndAppliesUmask() {
+        FsPermission directoryPermission = FsPermission.valueOf("drwxr-x---");
+        FsPermission requestedFilePermission = new FsPermission(
+                FsAction.ALL,
+                FsAction.READ_WRITE,
+                FsAction.READ_EXECUTE);
+        FsPermission umask = new FsPermission("027");
+
+        FsPermission maskedFilePermission = requestedFilePermission.applyUMask(umask);
+        FsAction combinedAction = FsAction.READ.or(FsAction.WRITE);
+
+        assertThat(directoryPermission.getUserAction()).isEqualTo(FsAction.ALL);
+        assertThat(directoryPermission.getGroupAction()).isEqualTo(FsAction.READ_EXECUTE);
+        assertThat(directoryPermission.getOtherAction()).isEqualTo(FsAction.NONE);
+        assertThat(directoryPermission.toString()).isEqualTo("rwxr-x---");
+        assertThat(directoryPermission.getStickyBit()).isFalse();
+        assertThat(maskedFilePermission.toString()).isEqualTo("rwxr-----");
+        assertThat(maskedFilePermission.toShort()).isEqualTo((short) 0740);
+        assertThat(combinedAction).isEqualTo(FsAction.READ_WRITE);
+        assertThat(FsAction.ALL.implies(combinedAction)).isTrue();
+        assertThat(FsAction.EXECUTE.implies(FsAction.READ)).isFalse();
     }
 
     private static RawLocalFileSystem newRawLocalFileSystem(Configuration conf) throws Exception {
