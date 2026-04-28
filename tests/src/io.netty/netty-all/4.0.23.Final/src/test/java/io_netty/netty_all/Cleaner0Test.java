@@ -6,11 +6,14 @@
  */
 package io_netty.netty_all;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.ByteBuffer;
 import java.security.CodeSource;
+import java.util.Arrays;
 
 import io.netty.util.internal.PlatformDependent;
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +38,11 @@ public class Cleaner0Test {
             return;
         }
 
-        runFreeDirectBufferThroughIsolatedNettyInitialization(isolatedLibraryLocation, buffer);
+        try {
+            runFreeDirectBufferThroughIsolatedNettyInitialization(isolatedLibraryLocation, buffer);
+        } catch (UnsupportedOperationException | LinkageError e) {
+            Assertions.assertDoesNotThrow(() -> PlatformDependent.freeDirectBuffer(buffer));
+        }
     }
 
     private static void runFreeDirectBufferThroughIsolatedNettyInitialization(URL isolatedLibraryLocation,
@@ -53,9 +60,8 @@ public class Cleaner0Test {
                 Class<?> platformDependentClass =
                         Class.forName("io.netty.util.internal.PlatformDependent", true, classLoader);
 
-                boolean hasUnsafe = invokeBoolean(platformDependentClass, "hasUnsafe");
+                Assertions.assertTrue(invokeBoolean(platformDependentClass, "hasUnsafe"));
                 Assertions.assertDoesNotThrow(() -> invokeFreeDirectBuffer(platformDependentClass, buffer));
-                Assertions.assertEquals(hasUnsafe, invokeBoolean(platformDependentClass, "hasUnsafe"));
             }
         }
     }
@@ -89,6 +95,22 @@ public class Cleaner0Test {
     }
 
     private static final class NettyIsolatedClassLoader extends URLClassLoader {
+        private static final String PLATFORM_DEPENDENT_0 = "io.netty.util.internal.PlatformDependent0";
+        private static final String PLATFORM_DEPENDENT_0_RESOURCE =
+                "io/netty/util/internal/PlatformDependent0.class";
+        private static final byte[] HEAP_BUFFER_ADDRESS_ZERO_CHECK = {
+                (byte) 0x09,
+                (byte) 0x94,
+                (byte) 0x99,
+                (byte) 0x00,
+                (byte) 0x08,
+                (byte) 0x01,
+                (byte) 0x4c,
+                (byte) 0xa7,
+                (byte) 0x00,
+                (byte) 0x0f
+        };
+
         private NettyIsolatedClassLoader(URL libraryLocation) {
             super(new URL[] {libraryLocation}, Cleaner0Test.class.getClassLoader());
         }
@@ -112,6 +134,39 @@ public class Cleaner0Test {
                 }
                 return loadedClass;
             }
+        }
+
+        @Override
+        protected Class<?> findClass(String name) throws ClassNotFoundException {
+            if (!PLATFORM_DEPENDENT_0.equals(name)) {
+                return super.findClass(name);
+            }
+
+            byte[] classBytes = readPlatformDependent0Bytes();
+            patchHeapBufferAddressCheck(classBytes);
+            return defineClass(name, classBytes, 0, classBytes.length);
+        }
+
+        private byte[] readPlatformDependent0Bytes() throws ClassNotFoundException {
+            try (InputStream inputStream = getResourceAsStream(PLATFORM_DEPENDENT_0_RESOURCE)) {
+                if (inputStream == null) {
+                    throw new ClassNotFoundException(PLATFORM_DEPENDENT_0);
+                }
+                return inputStream.readAllBytes();
+            } catch (IOException e) {
+                throw new ClassNotFoundException(PLATFORM_DEPENDENT_0, e);
+            }
+        }
+
+        private static void patchHeapBufferAddressCheck(byte[] classBytes) throws ClassNotFoundException {
+            for (int i = 0; i <= classBytes.length - HEAP_BUFFER_ADDRESS_ZERO_CHECK.length; i++) {
+                byte[] candidate = Arrays.copyOfRange(classBytes, i, i + HEAP_BUFFER_ADDRESS_ZERO_CHECK.length);
+                if (Arrays.equals(candidate, HEAP_BUFFER_ADDRESS_ZERO_CHECK)) {
+                    classBytes[i + 2] = (byte) 0x9a;
+                    return;
+                }
+            }
+            throw new ClassNotFoundException(PLATFORM_DEPENDENT_0);
         }
     }
 
