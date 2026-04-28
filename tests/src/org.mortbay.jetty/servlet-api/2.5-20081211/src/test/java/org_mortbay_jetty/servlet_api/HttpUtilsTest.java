@@ -19,28 +19,28 @@ import javax.servlet.http.HttpUtils;
 
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unchecked"})
 public class HttpUtilsTest {
     @Test
     void parseQueryStringDecodesNamesAndCollectsRepeatedParameters() {
-        final Hashtable<?, ?> parameters = HttpUtils.parseQueryString(
+        final Hashtable<String, String[]> parameters = HttpUtils.parseQueryString(
                 "name=Jetty+Servlet&name=API&encoded=%2Froot%2Bleaf&empty=");
 
         assertThat(parameters).containsOnlyKeys("name", "encoded", "empty");
-        assertThat((String[]) parameters.get("name")).containsExactly("Jetty Servlet", "API");
-        assertThat((String[]) parameters.get("encoded")).containsExactly("/root+leaf");
-        assertThat((String[]) parameters.get("empty")).containsExactly("");
+        assertThat(parameters.get("name")).containsExactly("Jetty Servlet", "API");
+        assertThat(parameters.get("encoded")).containsExactly("/root+leaf");
+        assertThat(parameters.get("empty")).containsExactly("");
     }
 
     @Test
     void parsePostDataReadsTheExpectedNumberOfBytes() {
         final byte[] formData = "mode=compact&mode=expanded".getBytes(StandardCharsets.ISO_8859_1);
 
-        final Hashtable<?, ?> parameters = HttpUtils.parsePostData(
+        final Hashtable<String, String[]> parameters = HttpUtils.parsePostData(
                 formData.length,
                 new ByteArrayServletInputStream(formData));
 
-        assertThat((String[]) parameters.get("mode")).containsExactly("compact", "expanded");
+        assertThat(parameters.get("mode")).containsExactly("compact", "expanded");
     }
 
     @Test
