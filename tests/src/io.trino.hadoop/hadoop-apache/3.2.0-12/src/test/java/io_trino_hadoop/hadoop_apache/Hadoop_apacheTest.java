@@ -11,12 +11,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import org.apache.hadoop.conf.Configuration;
@@ -44,14 +51,39 @@ import org.apache.hadoop.io.compress.CompressionCodecFactory;
 import org.apache.hadoop.io.compress.CompressionInputStream;
 import org.apache.hadoop.io.compress.CompressionOutputStream;
 import org.apache.hadoop.io.compress.DefaultCodec;
+import io.trino.hadoop.SocksSocketFactory;
+import io.trino.hadoop.$internal.htrace.shaded.commons.logging.Log;
+import io.trino.hadoop.$internal.htrace.shaded.commons.logging.LogFactory;
+import io.trino.hadoop.$internal.htrace.shaded.commons.logging.impl.NoOpLog;
 import org.apache.hadoop.io.compress.GzipCodec;
+import org.apache.hadoop.io.serializer.Deserializer;
+import org.apache.hadoop.io.serializer.Serialization;
+import org.apache.hadoop.io.serializer.Serializer;
+import org.apache.hadoop.io.serializer.WritableSerialization;
 import org.apache.hadoop.util.LineReader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-public class Hadoop_apacheTest {
+public class Hadoop_apacheTest implements Serialization<Writable> {
     @TempDir
     java.nio.file.Path tempDir;
+
+    private final WritableSerialization writableSerialization = new WritableSerialization();
+
+    @Override
+    public boolean accept(Class<?> c) {
+        return writableSerialization.accept(c);
+    }
+
+    @Override
+    public Serializer<Writable> getSerializer(Class<Writable> c) {
+        return writableSerialization.getSerializer(c);
+    }
+
+    @Override
+    public Deserializer<Writable> getDeserializer(Class<Writable> c) {
+        return writableSerialization.getDeserializer(c);
+    }
 
     @Test
     void configurationLoadsXmlResourcesAndTypedValues() throws Exception {
@@ -63,7 +95,7 @@ public class Hadoop_apacheTest {
                   </property>
                   <property>
                     <name>trino.test.names</name>
-                    <value>alpha, beta ,gamma</value>
+                    <value>alpha, beta&#32;,gamma</value>
                   </property>
                   <property>
                     <name>trino.test.endpoint</name>
@@ -72,7 +104,7 @@ public class Hadoop_apacheTest {
                 </configuration>
                 """;
         Configuration conf = new Configuration(false);
-        conf.addResource(new ByteArrayInputStream(xml.getBytes(UTF_8)), "inline-test-configuration");
+        conf.addResource(new ByteArrayInputStream(xml.getBytes(UTF_8)), "inline-test-configuration", false);
         conf.setBoolean("trino.test.enabled", true);
         conf.setTimeDuration("trino.test.timeout", 2, TimeUnit.MINUTES);
         conf.setPattern("trino.test.pattern", Pattern.compile("hadoop-[0-9]+"));
@@ -96,6 +128,8 @@ public class Hadoop_apacheTest {
     void localFileSystemSupportsDataStreamsStatusGlobsAndRecursiveListing() throws Exception {
         Configuration conf = new Configuration();
         conf.setBoolean("fs.file.impl.disable.cache", true);
+        System.setProperty(LogFactory.FACTORY_PROPERTY, TestHtraceLogFactory.class.getName());
+        assertThat(new TestHtraceLogFactory().getInstance("test").isDebugEnabled()).isFalse();
         Path root = new Path(tempDir.toUri());
         byte[] payload = "line-one\nline-two\nline-three".getBytes(UTF_8);
 
@@ -179,8 +213,9 @@ public class Hadoop_apacheTest {
 
     @Test
     void sequenceFilePersistsMetadataAndBlockCompressedWritableRecords() throws Exception {
-        Configuration conf = new Configuration();
+        Configuration conf = new NativeFriendlyConfiguration();
         conf.setBoolean("fs.file.impl.disable.cache", true);
+        conf.setClass("io.serializations", Hadoop_apacheTest.class, Serialization.class);
         Path file = new Path(tempDir.resolve("records.seq").toUri());
         SequenceFile.Metadata metadata = new SequenceFile.Metadata();
         metadata.set(new Text("purpose"), new Text("native-image integration"));
@@ -227,6 +262,36 @@ public class Hadoop_apacheTest {
     }
 
     @Test
+    void socksSocketFactoryConnectsThroughConfiguredSocks4aProxy() throws Exception {
+        try (ServerSocket proxyServer = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            try {
+                Future<SocksRequest> proxyRequest = executor.submit(() -> acceptSocks4aRequest(proxyServer));
+                Configuration conf = new Configuration(false);
+                conf.set(
+                        "hadoop.socks.server",
+                        proxyServer.getInetAddress().getHostAddress() + ":" + proxyServer.getLocalPort());
+                SocksSocketFactory factory = new SocksSocketFactory();
+                factory.setConf(conf);
+
+                try (Socket socket = factory.createSocket()) {
+                    assertThat(factory.getConf()).isSameAs(conf);
+                    assertThat(socket.isConnected()).isFalse();
+
+                    socket.connect(InetSocketAddress.createUnresolved("analytics-worker.example", 9083), 5_000);
+
+                    assertThat(socket.isConnected()).isTrue();
+                }
+
+                assertThat(proxyRequest.get(5, TimeUnit.SECONDS))
+                        .isEqualTo(new SocksRequest("analytics-worker.example", 9083));
+            } finally {
+                executor.shutdownNow();
+            }
+        }
+    }
+
+    @Test
     void fsPermissionParsesSymbolicModesAndAppliesUmask() {
         FsPermission directoryPermission = FsPermission.valueOf("drwxr-x---");
         FsPermission requestedFilePermission = new FsPermission(
@@ -256,10 +321,92 @@ public class Hadoop_apacheTest {
         return fs;
     }
 
+    private static SocksRequest acceptSocks4aRequest(ServerSocket proxyServer) throws Exception {
+        try (Socket client = proxyServer.accept()) {
+            DataInputStream input = new DataInputStream(client.getInputStream());
+            assertThat(input.readUnsignedByte()).isEqualTo(4);
+            assertThat(input.readUnsignedByte()).isEqualTo(1);
+            int destinationPort = input.readUnsignedShort();
+            assertThat(input.readUnsignedByte()).isZero();
+            assertThat(input.readUnsignedByte()).isZero();
+            assertThat(input.readUnsignedByte()).isZero();
+            assertThat(input.readUnsignedByte()).isEqualTo(1);
+            assertThat(readNullTerminatedString(input)).isEmpty();
+            String destinationHost = readNullTerminatedString(input);
+
+            client.getOutputStream().write(new byte[] {0, 90, 0, 0, 0, 0, 0, 0});
+            client.getOutputStream().flush();
+            return new SocksRequest(destinationHost, destinationPort);
+        }
+    }
+
+    private static String readNullTerminatedString(DataInputStream input) throws Exception {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int next;
+        while ((next = input.readUnsignedByte()) != 0) {
+            buffer.write(next);
+        }
+        return buffer.toString(UTF_8);
+    }
+
+    public static class TestHtraceLogFactory extends LogFactory {
+        private final Log log = new NoOpLog();
+
+        @Override
+        public Object getAttribute(String name) {
+            return null;
+        }
+
+        @Override
+        public String[] getAttributeNames() {
+            return new String[0];
+        }
+
+        @Override
+        public Log getInstance(Class clazz) {
+            return log;
+        }
+
+        @Override
+        public Log getInstance(String name) {
+            return log;
+        }
+
+        @Override
+        public void release() {
+        }
+
+        @Override
+        public void removeAttribute(String name) {
+        }
+
+        @Override
+        public void setAttribute(String name, Object value) {
+        }
+    }
+
+    private static class NativeFriendlyConfiguration extends Configuration {
+        NativeFriendlyConfiguration() {
+            super();
+        }
+
+        @Override
+        public Class<?> getClassByName(String name) throws ClassNotFoundException {
+            if (Hadoop_apacheTest.class.getName().equals(name)) {
+                return Hadoop_apacheTest.class;
+            }
+            return super.getClassByName(name);
+        }
+    }
+
+    private record SocksRequest(String host, int port) {}
+
     @Test
     void textWritableCollectionsComparatorsAndLineReaderHandleUtf8Data() throws Exception {
+        String beta = "\u03B2";
+        String textValue = "alpha-" + beta + "eta";
         Text text = new Text("alpha");
-        byte[] suffix = "-βeta".getBytes(UTF_8);
+        byte[] suffix = ("-" + beta + "eta").getBytes(UTF_8);
         text.append(suffix, 0, suffix.length);
         Text later = new Text("omega");
         BytesWritable bytes = new BytesWritable(text.copyBytes());
@@ -269,10 +416,10 @@ public class Hadoop_apacheTest {
         map.put(new Text("count"), new IntWritable(text.getLength()));
         ArrayWritable array = new ArrayWritable(Text.class, new Writable[] {new Text("first"), new Text("second")});
 
-        assertThat(text.toString()).isEqualTo("alpha-βeta");
-        assertThat(Text.decode(bytes.copyBytes())).isEqualTo("alpha-βeta");
-        assertThat(text.find("βeta")).isGreaterThan(0);
-        assertThat(text.charAt(6)).isEqualTo('β');
+        assertThat(text.toString()).isEqualTo(textValue);
+        assertThat(Text.decode(bytes.copyBytes())).isEqualTo(textValue);
+        assertThat(text.find(beta + "eta")).isGreaterThan(0);
+        assertThat(text.charAt(6)).isEqualTo(beta.codePointAt(0));
         assertThat(map).hasSize(3);
         assertThat(((IntWritable) map.get(new Text("count"))).get()).isEqualTo(text.getLength());
         assertThat(array.toStrings()).containsExactly("first", "second");
@@ -280,11 +427,11 @@ public class Hadoop_apacheTest {
                 text.getBytes(), 0, text.getLength(), later.getBytes(), 0, later.getLength()))
                 .isLessThan(0);
 
-        byte[] lines = "alpha-βeta|second line|third line".getBytes(UTF_8);
+        byte[] lines = (textValue + "|second line|third line").getBytes(UTF_8);
         try (LineReader reader = new LineReader(new ByteArrayInputStream(lines), "|".getBytes(UTF_8))) {
             Text line = new Text();
             assertThat(reader.readLine(line)).isGreaterThan(0);
-            assertThat(line.toString()).isEqualTo("alpha-βeta");
+            assertThat(line.toString()).isEqualTo(textValue);
             assertThat(reader.readLine(line)).isGreaterThan(0);
             assertThat(line.toString()).isEqualTo("second line");
             assertThat(reader.readLine(line)).isGreaterThan(0);
