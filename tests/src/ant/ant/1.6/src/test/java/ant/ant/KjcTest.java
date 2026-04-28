@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import at.dms.kjc.Main;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,16 +17,14 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Javac;
-import org.apache.tools.ant.taskdefs.compilers.Kjc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class KjcTest {
     @BeforeEach
-    void resetKjcCompiler() throws ReflectiveOperationException {
+    void resetKjcCompiler() {
         Main.reset();
-        clearClassLiteralCache();
     }
 
     @Test
@@ -55,12 +52,6 @@ public class KjcTest {
         assertThat(arguments.get(arguments.indexOf("-classpath") + 1))
             .contains(destinationDirectory.toFile().getAbsolutePath())
             .contains(sourceDirectory.toFile().getAbsolutePath());
-    }
-
-    private static void clearClassLiteralCache() throws ReflectiveOperationException {
-        Field field = Kjc.class.getDeclaredField("array$Ljava$lang$String");
-        field.setAccessible(true);
-        field.set(null, null);
     }
 
     private static Javac newKopiJavacTask(Path sourceDirectory, Path destinationDirectory) {
