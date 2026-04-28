@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.extensions.Extension;
 import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
+import io.swagger.v3.oas.annotations.extensions.Extensions;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -36,7 +37,9 @@ import io.swagger.v3.oas.annotations.links.LinkParameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.DependentRequired;
+import io.swagger.v3.oas.annotations.media.DependentRequiredMap;
 import io.swagger.v3.oas.annotations.media.DependentSchema;
+import io.swagger.v3.oas.annotations.media.DependentSchemas;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -52,9 +55,11 @@ import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.security.SecuritySchemes;
 import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.servers.Servers;
 import io.swagger.v3.oas.annotations.servers.ServerVariable;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
@@ -121,6 +126,38 @@ public class Swagger_annotationsTest {
         assertThat(webhooks.value()[0].name()).isEqualTo("petStatusChanged");
         assertThat(webhooks.value()[0].operation().method()).isEqualTo("POST");
         assertThat(webhooks.value()[0].operation().responses()[0].responseCode()).isEqualTo("204");
+    }
+
+    @Test
+    void readsStandaloneRepeatableAnnotationsAndOpenApi31DependentMaps() {
+        Servers servers = annotation(RepeatableApiMetadata.class, Servers.class);
+        SecurityRequirements requirements = annotation(RepeatableApiMetadata.class, SecurityRequirements.class);
+        Extensions extensions = annotation(RepeatableApiMetadata.class, Extensions.class);
+        DependentRequiredMap dependentRequiredMap = annotation(RepeatableApiMetadata.class, DependentRequiredMap.class);
+        DependentSchemas dependentSchemas = annotation(RepeatableApiMetadata.class, DependentSchemas.class);
+
+        assertThat(servers.value()).extracting(Server::url)
+                .containsExactly("https://primary.example.test", "https://{tenant}.example.test");
+        assertThat(servers.value()[1].variables()[0].name()).isEqualTo("tenant");
+        assertThat(servers.value()[1].variables()[0].defaultValue()).isEqualTo("demo");
+
+        assertThat(requirements.value()).extracting(SecurityRequirement::name).containsExactly("oauth", "api-key");
+        assertThat(requirements.value()[0].scopes()).containsExactly("catalog:read", "catalog:write");
+        assertThat(requirements.value()[1].scopes()).isEmpty();
+
+        assertThat(extensions.value()).extracting(Extension::name).containsExactly("x-catalog", "x-owner");
+        assertThat(extensions.value()[0].properties()[0].name()).isEqualTo("enabled");
+        assertThat(extensions.value()[0].properties()[0].parseValue()).isTrue();
+        assertThat(extensions.value()[1].properties()[0].value()).isEqualTo("metadata-team");
+
+        assertThat(dependentRequiredMap.value()).extracting(DependentRequired::name)
+                .containsExactly("shipping", "billing");
+        assertThat(dependentRequiredMap.value()[0].value()).containsExactly("street", "postalCode");
+        assertThat(dependentRequiredMap.value()[1].value()).containsExactly("accountId");
+
+        assertThat(dependentSchemas.value()).extracting(DependentSchema::name).containsExactly("shipping", "billing");
+        assertThat(dependentSchemas.value()[0].schema().implementation()).isEqualTo(Address.class);
+        assertThat(dependentSchemas.value()[1].schema().implementation()).isEqualTo(BillingProfile.class);
     }
 
     @Test
@@ -332,6 +369,29 @@ public class Swagger_annotationsTest {
             }
         }
         throw new AssertionError("Missing annotation " + annotationType.getName());
+    }
+
+    @Server(url = "https://primary.example.test", description = "Primary API endpoint")
+    @Server(
+            url = "https://{tenant}.example.test",
+            description = "Tenant API endpoint",
+            variables = @ServerVariable(
+                    name = "tenant",
+                    allowableValues = {"demo", "production"},
+                    defaultValue = "demo"))
+    @SecurityRequirement(name = "oauth", scopes = {"catalog:read", "catalog:write"})
+    @SecurityRequirement(name = "api-key")
+    @Extension(
+            name = "x-catalog",
+            properties = @ExtensionProperty(name = "enabled", value = "true", parseValue = true))
+    @Extension(
+            name = "x-owner",
+            properties = @ExtensionProperty(name = "team", value = "metadata-team"))
+    @DependentRequired(name = "shipping", value = {"street", "postalCode"})
+    @DependentRequired(name = "billing", value = "accountId")
+    @DependentSchema(name = "shipping", schema = @Schema(implementation = Address.class))
+    @DependentSchema(name = "billing", schema = @Schema(implementation = BillingProfile.class))
+    private static final class RepeatableApiMetadata {
     }
 
     @OpenAPIDefinition(
@@ -664,6 +724,12 @@ public class Swagger_annotationsTest {
     }
 
     private static final class Owner {
+    }
+
+    private static final class Address {
+    }
+
+    private static final class BillingProfile {
     }
 
     private static final class Label {
