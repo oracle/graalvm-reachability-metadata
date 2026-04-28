@@ -22,7 +22,7 @@ public class Opentelemetry_semconvTest {
 
     @Test
     void resourceAttributesExposeTypedKeysAndWorkWithAttributesBuilders() {
-        assertThat(ResourceAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.13.0");
+        assertThat(ResourceAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.16.0");
 
         assertAttributeKey(ResourceAttributes.SERVICE_NAME, "service.name", AttributeType.STRING);
         assertAttributeKey(ResourceAttributes.CLOUD_PROVIDER, "cloud.provider", AttributeType.STRING);
@@ -81,7 +81,7 @@ public class Opentelemetry_semconvTest {
 
     @Test
     void traceAttributesExposeTypedKeysAndSupportTypedAttributePayloads() {
-        assertThat(SemanticAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.13.0");
+        assertThat(SemanticAttributes.SCHEMA_URL).isEqualTo("https://opentelemetry.io/schemas/1.16.0");
         assertThat(SemanticAttributes.EXCEPTION_EVENT_NAME).isEqualTo("exception");
 
         assertAttributeKey(SemanticAttributes.DB_SYSTEM, "db.system", AttributeType.STRING);
@@ -562,10 +562,8 @@ public class Opentelemetry_semconvTest {
                 SemanticAttributes.NetTransportValues.IP_UDP,
                 SemanticAttributes.NetTransportValues.PIPE,
                 SemanticAttributes.NetTransportValues.INPROC,
-                SemanticAttributes.NetTransportValues.OTHER,
-                SemanticAttributes.NetTransportValues.IP,
-                SemanticAttributes.NetTransportValues.UNIX
-        )).containsExactly("ip_tcp", "ip_udp", "pipe", "inproc", "other", "ip", "unix");
+                SemanticAttributes.NetTransportValues.OTHER
+        )).containsExactly("ip_tcp", "ip_udp", "pipe", "inproc", "other");
 
         assertThat(List.of(
                 SemanticAttributes.NetSockFamilyValues.INET,
