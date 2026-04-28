@@ -6,25 +6,34 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
-import com.fasterxml.jackson.jr.ob.JSON;
+import java.util.LinkedHashMap;
+
+import com.fasterxml.jackson.jr.ob.impl.BeanConstructors;
+import com.fasterxml.jackson.jr.ob.impl.BeanPropertyIntrospector;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BeanConstructorsDynamicAccessTest {
-    private static final JSON JSON_WITH_FORCE_ACCESS = JSON.std.with(JSON.Feature.FORCE_REFLECTION_ACCESS);
-
     @Test
-    void createsBeansThroughNonPublicNoArgsConstructors() throws Exception {
-        HiddenNoArgsBean bean = JSON_WITH_FORCE_ACCESS.beanFrom(HiddenNoArgsBean.class, "{}");
+    void invokesNoArgsConstructorThroughBeanConstructorsCreate() throws Exception {
+        InspectableBeanConstructors constructors = new InspectableBeanConstructors(HiddenNoArgsBean.class);
+        BeanPropertyIntrospector.addNonRecordConstructors(HiddenNoArgsBean.class, constructors);
+        constructors.forceAccess();
 
-        assertThat(bean.getMarker()).isEqualTo("created");
+        HiddenNoArgsBean bean = (HiddenNoArgsBean) constructors.createBean();
+
+        assertThat(bean.marker()).isEqualTo("created");
     }
 
     @Test
-    void createsRecordsThroughTheirCanonicalConstructors() throws Exception {
-        HiddenRecordBean record = JSON_WITH_FORCE_ACCESS.beanFrom(HiddenRecordBean.class,
-                "{\"name\":\"Ada\",\"count\":7}");
+    void invokesCanonicalRecordConstructorThroughBeanConstructorsCreateRecord() throws Exception {
+        InspectableBeanConstructors constructors = new InspectableBeanConstructors(HiddenRecordBean.class);
+        constructors.addRecordConstructor(BeanPropertyIntrospector.derivePropertiesFromRecordConstructor(
+                HiddenRecordBean.class, new LinkedHashMap<String, String>(), name -> name));
+        constructors.forceAccess();
+
+        HiddenRecordBean record = (HiddenRecordBean) constructors.createRecordBean("Ada", 7);
 
         assertThat(record.name()).isEqualTo("Ada");
         assertThat(record.count()).isEqualTo(7);
@@ -37,11 +46,25 @@ public class BeanConstructorsDynamicAccessTest {
             marker = "created";
         }
 
-        public String getMarker() {
+        public String marker() {
             return marker;
         }
     }
 
     record HiddenRecordBean(String name, int count) {
+    }
+
+    public static final class InspectableBeanConstructors extends BeanConstructors {
+        public InspectableBeanConstructors(Class<?> valueType) {
+            super(valueType);
+        }
+
+        public Object createBean() throws Exception {
+            return create();
+        }
+
+        public Object createRecordBean(Object... components) throws Exception {
+            return createRecord(components);
+        }
     }
 }
