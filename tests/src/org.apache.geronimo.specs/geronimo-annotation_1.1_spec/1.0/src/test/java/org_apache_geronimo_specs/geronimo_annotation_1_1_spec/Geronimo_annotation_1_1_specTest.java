@@ -182,6 +182,27 @@ public class Geronimo_annotation_1_1_specTest {
     }
 
     @Test
+    void managedBeanAndTypedResourceDefaultsRemainUnresolvedInAnnotationMetadata()
+            throws NoSuchFieldException, NoSuchMethodException {
+        ManagedBean managedBean = DefaultManagedResourceComponent.class.getAnnotation(ManagedBean.class);
+        Resource typedFieldResource = annotationOnField(DefaultManagedResourceComponent.class, "typedExecutor",
+                Resource.class);
+        Resource typedMethodResource = annotationOnMethod(DefaultManagedResourceComponent.class,
+                "typedExecutorFactory", Resource.class);
+
+        assertThat(managedBean).isNotNull();
+        assertThat(managedBean.value()).isEmpty();
+
+        assertThat(typedFieldResource).isNotNull();
+        assertThat(typedFieldResource.name()).isEmpty();
+        assertThat(typedFieldResource.type()).isEqualTo(Object.class);
+
+        assertThat(typedMethodResource).isNotNull();
+        assertThat(typedMethodResource.name()).isEmpty();
+        assertThat(typedMethodResource.type()).isEqualTo(Object.class);
+    }
+
+    @Test
     void generatedAnnotationIsSourceRetainedAndDescribesSupportedTargets()
             throws NoSuchFieldException, NoSuchMethodException {
         assertSourceRetention(Generated.class);
@@ -240,6 +261,17 @@ public class Geronimo_annotation_1_1_specTest {
                 mappedName = "mapped/executor", description = "task executor for background work",
                 lookup = "java:comp/env/executor")
         private Executor configuredExecutor() {
+            return Runnable::run;
+        }
+    }
+
+    @ManagedBean
+    private static final class DefaultManagedResourceComponent {
+        @Resource
+        private Executor typedExecutor;
+
+        @Resource
+        private Executor typedExecutorFactory() {
             return Runnable::run;
         }
     }
