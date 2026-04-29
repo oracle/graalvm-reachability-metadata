@@ -11,7 +11,10 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "tools.jackson.core:jackson-databind:$libraryVersion"
+    testImplementation("tools.jackson.core:jackson-databind:$libraryVersion") {
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+    }
+    testImplementation 'com.fasterxml.jackson.core:jackson-annotations:2.20'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
