@@ -7,8 +7,12 @@
 package com_esotericsoftware.kryo_shaded;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.esotericsoftware.kryo.util.UnsafeUtil;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +27,25 @@ public class UnsafeUtilTest {
         assertThat(UnsafeUtil.floatArrayBaseOffset).isGreaterThan(0L);
         assertThat(UnsafeUtil.longArrayBaseOffset).isGreaterThan(0L);
         assertThat(UnsafeUtil.doubleArrayBaseOffset).isGreaterThan(0L);
+    }
+
+    @Test
+    void invokesConfiguredDirectBufferConstructor() throws ReflectiveOperationException {
+        VarHandle constructorHandle = MethodHandles.privateLookupIn(UnsafeUtil.class, MethodHandles.lookup())
+                .findStaticVarHandle(UnsafeUtil.class, "directByteBufferConstr", Constructor.class);
+        Constructor<?> originalConstructor = (Constructor<?>) constructorHandle.get();
+        Constructor<UnsafeUtilConstructorStandIn> standInConstructor =
+                UnsafeUtilConstructorStandIn.class.getDeclaredConstructor(long.class, int.class, Object.class);
+        standInConstructor.setAccessible(true);
+        constructorHandle.set(standInConstructor);
+        try {
+            assertThatThrownBy(() -> UnsafeUtil.getDirectBufferAt(1L, 2))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("Cannot allocate ByteBuffer at a given address")
+                    .hasCauseInstanceOf(ClassCastException.class);
+        } finally {
+            constructorHandle.set(originalConstructor);
+        }
     }
 
     @Test
@@ -49,5 +72,10 @@ public class UnsafeUtilTest {
         } finally {
             UnsafeUtil.unsafe().freeMemory(address);
         }
+    }
+}
+
+class UnsafeUtilConstructorStandIn {
+    UnsafeUtilConstructorStandIn(long address, int size, Object attachment) {
     }
 }
