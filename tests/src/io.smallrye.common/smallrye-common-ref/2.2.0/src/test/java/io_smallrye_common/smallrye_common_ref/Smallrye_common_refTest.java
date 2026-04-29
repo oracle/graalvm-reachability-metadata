@@ -292,6 +292,36 @@ public class Smallrye_common_refTest {
     }
 
     @Test
+    void nullTypeFactoryCreatesAttachmentOnlyReferencesAndIgnoresCleanupHooks() {
+        Object ignoredReferent = new Object();
+        ReferenceQueue<Object> ignoredQueue = new ReferenceQueue<>();
+        AtomicReference<Reference<Object, String>> reapedReference = new AtomicReference<>();
+        Reaper<Object, String> ignoredReaper = reapedReference::set;
+
+        Reference<Object, String> withoutHook = References.create(
+                Reference.Type.NULL,
+                ignoredReferent,
+                "without-hook");
+        Reference<Object, String> withQueue = References.create(
+                Reference.Type.NULL,
+                ignoredReferent,
+                "with-queue",
+                ignoredQueue);
+        Reference<Object, String> withReaper = References.create(
+                Reference.Type.NULL,
+                ignoredReferent,
+                "with-reaper",
+                ignoredReaper);
+
+        assertAttachmentOnlyReference(withoutHook, "without-hook");
+        assertAttachmentOnlyReference(withQueue, "with-queue");
+        assertAttachmentOnlyReference(withReaper, "with-reaper");
+        assertThat(withQueue).isNotInstanceOf(java.lang.ref.Reference.class);
+        assertThat(ignoredQueue.poll()).isNull();
+        assertThat(reapedReference.get()).isNull();
+    }
+
+    @Test
     void referenceTypeMembershipHelpersRecognizeFullSetsAndCandidates() {
         assertThat(Reference.Type.isFull(EnumSet.allOf(Reference.Type.class))).isTrue();
         assertThat(Reference.Type.isFull(EnumSet.of(Reference.Type.STRONG, Reference.Type.WEAK))).isFalse();
@@ -307,6 +337,12 @@ public class Smallrye_common_refTest {
         assertThat(Reference.Type.WEAK.in(Reference.Type.STRONG, Reference.Type.SOFT, Reference.Type.WEAK,
                 Reference.Type.NULL)).isTrue();
         assertThat(Reference.Type.WEAK.in((Reference.Type[]) null)).isFalse();
+    }
+
+    private static void assertAttachmentOnlyReference(Reference<Object, String> reference, String attachment) {
+        assertThat(reference.get()).isNull();
+        assertThat(reference.getAttachment()).isEqualTo(attachment);
+        assertThat(reference.getType()).isEqualTo(Reference.Type.STRONG);
     }
 
     private static void assertQueued(ReferenceQueue<Object> queue, java.lang.ref.Reference<?> expected)
