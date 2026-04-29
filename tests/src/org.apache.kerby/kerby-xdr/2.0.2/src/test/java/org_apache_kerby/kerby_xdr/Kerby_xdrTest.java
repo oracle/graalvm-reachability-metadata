@@ -24,6 +24,7 @@ import org.apache.kerby.xdr.type.XdrBoolean;
 import org.apache.kerby.xdr.type.XdrBytes;
 import org.apache.kerby.xdr.type.XdrEnumerated;
 import org.apache.kerby.xdr.type.XdrInteger;
+import org.apache.kerby.xdr.type.XdrLong;
 import org.apache.kerby.xdr.type.XdrSimple;
 import org.apache.kerby.xdr.type.XdrString;
 import org.apache.kerby.xdr.type.XdrStructType;
@@ -37,7 +38,7 @@ import org.junit.jupiter.api.Test;
 
 public class Kerby_xdrTest {
     @Test
-    void integerBooleanAndUnsignedValuesRoundTripAsBigEndianXdrWords() throws Exception {
+    void integerBooleanUnsignedAndLongValuesRoundTripAsBigEndianXdrWords() throws Exception {
         XdrInteger negativeInteger = new XdrInteger(-12_345_678);
         assertThat(negativeInteger.getDataType()).isEqualTo(XdrDataType.INTEGER);
         assertThat(negativeInteger.encodingLength()).isEqualTo(Integer.BYTES);
@@ -65,6 +66,15 @@ public class Kerby_xdrTest {
 
         assertThatIOException().isThrownBy(() -> new XdrUnsignedInteger(-1L).encode())
                 .withMessageContaining("Invalid unsigned integer");
+
+        XdrLong signedLong = new XdrLong(-9_223_372_036_854_775_000L);
+        assertThat(signedLong.getDataType()).isEqualTo(XdrDataType.LONG);
+        assertThat(signedLong.encodingLength()).isEqualTo(Long.BYTES);
+        assertThat(signedLong.encode()).isEqualTo(ByteBuffer.allocate(Long.BYTES).putLong(-9_223_372_036_854_775_000L).array());
+
+        XdrLong decodedLong = new XdrLong();
+        decodedLong.decode(signedLong.encode());
+        assertThat(decodedLong.getValue()).isEqualTo(-9_223_372_036_854_775_000L);
     }
 
     @Test
@@ -196,6 +206,7 @@ public class Kerby_xdrTest {
         assertThat(XdrSimple.isSimple(XdrDataType.STRING)).isTrue();
         assertThat(XdrSimple.isSimple(XdrDataType.ENUM)).isTrue();
         assertThat(XdrSimple.isSimple(XdrDataType.UNSIGNED_INTEGER)).isTrue();
+        assertThat(XdrSimple.isSimple(XdrDataType.LONG)).isTrue();
         assertThat(XdrSimple.isSimple(XdrDataType.STRUCT)).isFalse();
         assertThat(XdrSimple.isSimple(XdrDataType.UNION)).isFalse();
     }
@@ -212,7 +223,8 @@ public class Kerby_xdrTest {
                 XdrDataType.OPAQUE,
                 XdrDataType.UNSIGNED_INTEGER,
                 XdrDataType.STRUCT,
-                XdrDataType.UNION);
+                XdrDataType.UNION,
+                XdrDataType.LONG);
 
         assertThat(XdrDataType.UNKNOWN.getValue()).isEqualTo(-1);
         assertThat(XdrDataType.BOOLEAN.getValue()).isEqualTo(1);
@@ -224,6 +236,7 @@ public class Kerby_xdrTest {
         assertThat(XdrDataType.UNSIGNED_INTEGER.getValue()).isEqualTo(7);
         assertThat(XdrDataType.STRUCT.getValue()).isEqualTo(8);
         assertThat(XdrDataType.UNION.getValue()).isEqualTo(9);
+        assertThat(XdrDataType.LONG.getValue()).isEqualTo(10);
     }
 
     @Test
