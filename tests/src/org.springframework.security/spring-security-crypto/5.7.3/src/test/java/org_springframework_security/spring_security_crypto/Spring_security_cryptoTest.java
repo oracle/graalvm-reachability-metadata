@@ -177,6 +177,24 @@ public class Spring_security_cryptoTest {
     }
 
     @Test
+    void queryableTextEncryptorProducesStableCiphertextForLookupValues() {
+        TextEncryptor firstEncryptor = Encryptors.queryableText("lookup-password", SALT);
+        TextEncryptor secondEncryptor = Encryptors.queryableText("lookup-password", SALT);
+        String lookupValue = "customer-12345";
+
+        String firstCiphertext = firstEncryptor.encrypt(lookupValue);
+        String repeatedCiphertext = firstEncryptor.encrypt(lookupValue);
+        String secondEncryptorCiphertext = secondEncryptor.encrypt(lookupValue);
+        String differentCiphertext = firstEncryptor.encrypt("customer-67890");
+
+        assertThat(firstCiphertext).isNotEqualTo(lookupValue).matches("[0-9a-f]+");
+        assertThat(repeatedCiphertext).isEqualTo(firstCiphertext);
+        assertThat(secondEncryptorCiphertext).isEqualTo(firstCiphertext);
+        assertThat(differentCiphertext).isNotEqualTo(firstCiphertext);
+        assertThat(secondEncryptor.decrypt(firstCiphertext)).isEqualTo(lookupValue);
+    }
+
+    @Test
     void bytesEncryptorsRoundTripBinaryPayloadsWithCbcAndGcm() {
         BytesEncryptor standard = Encryptors.standard("bytes-password", SALT);
         BytesEncryptor stronger = Encryptors.stronger("bytes-password", SALT);
