@@ -34,10 +34,10 @@ public class FieldDataTest {
         assertThat(fieldData.safeValue(holder)).isEqualTo("99");
     }
 
-    private static class PublicFieldHolder {
+    public static class PublicFieldHolder {
         public final int value;
 
-        PublicFieldHolder(int value) {
+        public PublicFieldHolder(int value) {
             this.value = value;
         }
     }
