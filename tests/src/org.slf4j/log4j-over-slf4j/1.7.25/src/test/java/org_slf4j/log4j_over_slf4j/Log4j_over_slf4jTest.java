@@ -95,6 +95,26 @@ public class Log4j_over_slf4jTest {
     }
 
     @Test
+    void logManagerFactoryLookupDoesNotPopulateTheSharedLoggerCache() {
+        String loggerName = uniqueLoggerName("log-manager-factory");
+        AtomicInteger factoryInvocations = new AtomicInteger();
+        CountingLoggerFactory factory = new CountingLoggerFactory(factoryInvocations);
+
+        Logger first = LogManager.getLogger(loggerName, factory);
+        Logger second = LogManager.getLogger(loggerName, factory);
+        Logger cached = LogManager.getLogger(loggerName);
+
+        assertThat(first).isInstanceOf(CountingLogger.class);
+        assertThat(second).isInstanceOf(CountingLogger.class);
+        assertThat(first).isNotSameAs(second);
+        assertThat(first.getName()).isEqualTo(loggerName);
+        assertThat(second.getName()).isEqualTo(loggerName);
+        assertThat(factoryInvocations).hasValue(2);
+        assertThat(cached).isNotInstanceOf(CountingLogger.class);
+        assertThat(LogManager.getLogger(loggerName)).isSameAs(cached);
+    }
+
+    @Test
     void loggingMethodsDelegateMessagesLevelsAndThrowablesToSlf4jBinding() {
         String loggerName = uniqueLoggerName("delegation");
         RecordingHandler handler = new RecordingHandler();
