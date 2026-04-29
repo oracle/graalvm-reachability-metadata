@@ -1,0 +1,505 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd867-acfe-7561-b5df-94fba56f5cf0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.wildfly.common:wildfly-common:1.5.0.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.5.0.Final".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd/metadata/org.wildfly.common/wildfly-common/index.json
+- Entry selector: "metadata-version" = "1.5.0.Final"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.5.0.Final".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-sources.jar
+- repository-url: https://github.com/wildfly/wildfly-common
+- test-code-url: https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-source-release.zip
+- documentation-url: https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-javadoc.jar
+- description: WildFly Common provides shared Java utility APIs used by WildFly components, including assertions, references, contexts, selectors, codecs, iterators, and platform helpers. It packages these general-purpose support classes as a reusable library for server-side Java applications and WildFly-related modules.
+- language: <missing>
+
+Context:
+- Coordinate version: 1.5.0.Final
+- Entry test-version: 1.5.0.Final
+codex
+I’ll verify the exact-version artifact URLs first, then update only fields that are actually missing in the index entry. After that I’ll validate the JSON shape so the edit is clean.
+web search: 
+web search: https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/
+web search: 
+web search: 
+codex
+Maven Central lists the exact `1.5.0.Final` sources jar, source-release zip, and javadoc jar, so those are usable exact-version URLs. I’m checking the local JSON now to see which fields are still blank before making any edit.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.wildfly.common/wildfly-common/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.0.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-sources.jar",
+    "repository-url" : "https://github.com/wildfly/wildfly-common",
+    "test-code-url" : "https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-source-release.zip",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-javadoc.jar",
+    "description" : "WildFly Common provides shared Java utility APIs used by WildFly components, including assertions, references, contexts, selectors, codecs, iterators, and platform helpers. It packages these general-purpose support classes as a reusable library for server-side Java applications and WildFly-related modules.",
+    "tested-versions" : [
+      "1.5.0.Final"
+    ],
+    "allowed-packages" : [
+      "org.wildfly.common"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 0ms:
+?? metadata/org.wildfly.common/
+?? tests/src/org.wildfly.common/
+
+web search: 
+web search: repo1.maven.org maven2 org wildfly common wildfly-common 1.5.0.Final sources jar javadoc source-release zip
+web search: 
+web search: 
+web search: 
+web search: 
+codex
+The target entry already has non-blank values for every URL field and the two-sentence description. The only absent field is `language`, and this artifact is a general Java utility library rather than Kotlin, Groovy, or Scala-specific, so that field should stay absent.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.wildfly.common/wildfly-common/index.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final.pom | sed -n '/<scm>/,/<\\/scm>/p; /<description>/,/<\\/description>/p; /<url>/p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 0ms:
+            <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-sources.jar && curl -fsI https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-source-release.zip && curl -fsI https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-javadoc.jar' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 112ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 08:43:16 GMT
+content-type: application/java-archive
+content-length: 1051327
+cf-ray: 9f3d04a4988b3d61-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 87
+etag: "6cf79e38576bc57f71b1b0f6c54f979f"
+last-modified: Wed, 27 Feb 2019 21:03:28 GMT
+x-checksum-md5: 6cf79e38576bc57f71b1b0f6c54f979f
+x-checksum-sha1: d189743e62ecbc3f074f706127ecc8a91c70aff0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ JBoss, Home of Professional Open Source.
+  ~ Copyright 2014 Red Hat, Inc., and individual contributors
+  ~ as indicated by the @author tags.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.wildfly.common</groupId>
+    <artifactId>wildfly-common</artifactId>
+    <version>1.5.0.Final</version>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent-mr-jar</artifactId>
+        <version>32</version>
+    </parent>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <version.org.jboss.logging.jboss-logging>3.3.1.Final</version.org.jboss.logging.jboss-logging>
+        <version.org.jboss.logging.jboss-logging-tools>2.1.0.Final</version.org.jboss.logging.jboss-logging-tools>
+
+        <jdk.min.version>11</jdk.min.version>
+        <javadoc.additional.params>--release=8</javadoc.additional.params>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>1.0.0-rc9</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.substratevm</groupId>
+            <artifactId>svm</artifactId>
+            <version>1.0.0-rc9</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <version>${version.org.jboss.logging.jboss-logging-tools}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-processor</artifactId>
+            <version>${version.org.jboss.logging.jboss-logging-tools}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <version>${version.org.jboss.logging.jboss-logging}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <!-- This dependency is just for javadoc -->
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>target/generated-resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                    <detectLinks>false</detectLinks>
+                    <doctitle><![CDATA[WildFly Common ]]>${project.version}</doctitle>
+                    <header><![CDATA[WildFly Common ]]>${project.version}</header>
+                    <footer><![CDATA[WildFly Common ]]>${project.version}</footer>
+                    <bottom><![CDATA[<i>Copyright &#169; 2018 JBoss, a division of Red Hat, Inc.</i>]]></bottom>
+                    <links>
+                        <link>http://java.sun.com/javase/8/docs/api/</link>
+                    </links>
+                    <doclint>none</doclint>
+                    <additionalDependencies>
+                        <additionalDependency>
+                            <groupId>org.jboss</groupId>
+                            <artifactId>jdk-misc</artifactId>
+                            <version>${version.jdk-misc}</version>
+                        </additionalDependency>
+                    </additionalDependencies>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
+                        <Export-Package>
+                            !*._private,
+                            org.wildfly.common*;version=${project.version};-noimport:=true
+                        </Export-Package>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>manifest</id>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-java8-tests</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireProperty>
+                                    <property>java8.home</property>
+                                    <message>The "java8.home" property must be set on deploy to run tests under Java 8</message>
+                                </requireProperty>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-source-release.zip -o /tmp/wildfly-common-1.5.0.Final-source-release.zip && unzip -l /tmp/wildfly-common-1.5.0.Final-source-release.zip | sed -n '1,120p'" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 0ms:
+Archive:  /tmp/wildfly-common-1.5.0.Final-source-release.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2019-02-27 15:00   wildfly-common-1.5.0.Final/
+        0  2017-11-20 11:23   wildfly-common-1.5.0.Final/src/
+        0  2017-11-20 11:23   wildfly-common-1.5.0.Final/src/test/
+        0  2017-11-20 11:23   wildfly-common-1.5.0.Final/src/test/java/
+        0  2017-11-20 11:23   wildfly-common-1.5.0.Final/src/test/java/org/
+        0  2017-11-20 11:23   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/net/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/os/
+        0  2017-11-20 11:23   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/context/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/codec/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/expression/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/archive/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/rpc/
+        0  2017-12-06 15:45   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/iteration/
+        0  2017-12-06 14:45   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/bytes/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/string/
+        0  2018-05-02 11:15   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/math/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/
+        0  2018-03-16 09:38   wildfly-common-1.5.0.Final/src/main/java/
+        0  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/
+        0  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/
+        0  2018-12-12 13:06   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/net/
+        0  2018-01-23 17:16   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/reflect/
+        0  2018-12-07 16:28   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/lock/
+        0  2018-05-02 11:15   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/_private/
+        0  2018-05-15 11:51   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/function/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/cpu/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/annotation/
+        0  2018-12-03 15:08   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/os/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/selector/
+        0  2018-11-12 23:46   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/context/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/ref/
+        0  2019-02-26 10:17   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/array/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/codec/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/expression/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/archive/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/rpc/
+        0  2019-02-26 10:17   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/bytes/
+        0  2018-11-13 22:26   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/flags/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/string/
+        0  2018-05-02 11:15   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/math/
+        0  2019-02-26 10:42   wildfly-common-1.5.0.Final/src/main/java9/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java9/org/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java9/org/wildfly/
+        0  2018-12-07 15:32   wildfly-common-1.5.0.Final/src/main/java9/org/wildfly/common/
+        0  2018-12-07 16:35   wildfly-common-1.5.0.Final/src/main/java9/org/wildfly/common/lock/
+        0  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java9/org/wildfly/common/cpu/
+        0  2018-12-03 15:08   wildfly-common-1.5.0.Final/src/main/java9/org/wildfly/common/os/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java11/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java11/org/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java11/org/wildfly/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java11/org/wildfly/common/
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java11/org/wildfly/common/archive/
+    11358  2017-11-15 18:14   wildfly-common-1.5.0.Final/LICENSE
+    18562  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/expression/ExpressionTestCase.java
+    43785  2018-12-12 12:21   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/net/Inet.java
+     1668  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/function/ExceptionToIntBiFunction.java
+     2313  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/function/ExceptionObjIntConsumer.java
+     1822  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/function/ExceptionBiConsumer.java
+     3942  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/cpu/CacheType.java
+     1909  2018-11-20 08:45   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/os/Substitutions.java
+     1011  2017-11-20 11:23   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/context/package-info.java
+     2999  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/codec/Base64Alphabet.java
+     5472  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/expression/ResolveContext.java
+      502  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/archive/Index.java
+      887  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/rpc/package-info.java
+     1306  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/ByteIteratorInputStream.java
+     2321  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/CharArrayIterator.java
+     2750  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/Base16EncodingCodePointIterator.java
+     8791  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/Base64EncodingIterator.java
+     2158  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/LittleEndianBase32EncodingIterator.java
+      808  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/bytes/package-info.java
+    16290  2018-11-13 22:26   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/flags/Flags.java
+     3719  2018-09-24 10:43   wildfly-common-1.5.0.Final/src/main/java9/org/wildfly/common/os/GetProcessInfoAction.java
+    10669  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/net/CidrAddressTest.java
+    11591  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/net/CidrAddressTable.java
+       83  2018-12-07 16:28   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/lock/package-info.java
+     5689  2018-12-07 16:25   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/lock/SpinLock.java
+      848  2017-11-20 11:23   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/function/package-info.java
+     1758  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/function/ExceptionUnaryOperator.java
+     1860  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/function/ExceptionToIntFunction.java
+     1306  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/annotation/Nullable.java
+     3592  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/selector/SelectorPermission.java
+    12780  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/context/ContextPermission.java
+     1831  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/ref/CleanerReference.java
+     2888  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/ref/SoftReference.java
+     1770  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/codec/Alphabet.java
+     2903  2019-02-11 10:18   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/Substitutions.java
+     1576  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/archive/ByteBufferInputStream.java
+     4448  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/ByteArrayIterator.java
+     3011  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/BigEndianBase32DecodingByteIterator.java
+    18011  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/iteration/CodePointIterator.java
+     4825  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/string/CompositeCharSequence.java
+     1661  2018-12-07 15:33   wildfly-common-1.5.0.Final/src/main/java9/org/wildfly/common/lock/JDKSpecific.java
+     1012  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java9/org/wildfly/common/cpu/ProcessorInfo.java
+     1175  2019-02-27 14:57   wildfly-common-1.5.0.Final/src/main/java11/org/wildfly/common/archive/JDKSpecific.java
+        0  2019-02-27 14:57   wildfly-common-1.5.0.Final/build-include-jdk-misc
+     6536  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/net/InetTest.java
+     8201  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/test/java/org/wildfly/common/codec/HexTest.java
+     1680  2018-12-12 13:06   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/net/URIs.java
+     1692  2018-12-07 16:24   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/lock/Locks.java
+     1035  2018-12-07 15:25   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/lock/ExtendedReentrantLock.java
+     1517  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/function/ExceptionRunnable.java
+     4216  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/cpu/ProcessorInfo.java
+     1837  2018-09-24 10:43   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/os/Process.java
+    10035  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/selector/Selector.java
+    16886  2018-10-26 10:27   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/context/Contextual.java
+     1000  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/ref/package-info.java
+     1123  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/ref/Reaper.java
+     1394  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/ref/Log.java
+     2878  2017-11-15 18:14   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/ref/WeakReference.java
+     4750  2019-02-26 10:17   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/array/ArrayIterator.java
+     2084  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/codec/DecodeException.java
+     1862  2018-02-23 14:13   wildfly-common-1.5.0.Final/src/main/java/org/wildfly/common/expression/CompositeNode.java
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.wildfly.common/wildfly-common/index.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"1.5.0.Final\")' metadata/org.wildfly.common/wildfly-common/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.5.0.Final",
+  "source-code-url": "https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-sources.jar",
+  "repository-url": "https://github.com/wildfly/wildfly-common",
+  "test-code-url": "https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-source-release.zip",
+  "documentation-url": "https://repo1.maven.org/maven2/org/wildfly/common/wildfly-common/1.5.0.Final/wildfly-common-1.5.0.Final-javadoc.jar",
+  "description": "WildFly Common provides shared Java utility APIs used by WildFly components, including assertions, references, contexts, selectors, codecs, iterators, and platform helpers. It packages these general-purpose support classes as a reusable library for server-side Java applications and WildFly-related modules.",
+  "tested-versions": [
+    "1.5.0.Final"
+  ],
+  "allowed-packages": [
+    "org.wildfly.common"
+  ]
+}
+
+web search: 
+web search: org.wildfly.common wildfly-common 1.5.0.Final Maven Central
+web search: 
+web search: https://central.sonatype.com/artifact/org.wildfly.common/wildfly-common
+web search: 
+web search: 
+web search: 
+web search: site:central.sonatype.com/artifact/org.wildfly.common/wildfly-common/1.5.0.Final wildfly-common 1.5.0.Final
+codex
+I checked [index.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd/metadata/org.wildfly.common/wildfly-common/index.json) and left it unchanged. All requested URL and description fields were already non-blank for `1.5.0.Final`; `language` is still absent because this is a Java library, not Kotlin/Groovy/Scala-specific.
+
+Verified the Maven artifacts exist, the source-release zip includes `src/test/java`, and `jq empty` passes. Maven Central also confirms the artifact and canonical GitHub source-control root. ([central.sonatype.com](https://central.sonatype.com/artifact/org.wildfly.common/wildfly-common))
+2026-04-29T08:43:45.681775Z ERROR codex_core::session: failed to record rollout items: thread 019dd867-acfe-7561-b5df-94fba56f5cf0 not found
+tokens used
+49,888
+I checked [index.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd/metadata/org.wildfly.common/wildfly-common/index.json) and left it unchanged. All requested URL and description fields were already non-blank for `1.5.0.Final`; `language` is still absent because this is a Java library, not Kotlin/Groovy/Scala-specific.
+
+Verified the Maven artifacts exist, the source-release zip includes `src/test/java`, and `jq empty` passes. Maven Central also confirms the artifact and canonical GitHub source-control root. ([central.sonatype.com](https://central.sonatype.com/artifact/org.wildfly.common/wildfly-common))
+Ran agent for org.wildfly.common:wildfly-common:1.5.0.Final (exit 0). Log: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd/build/agent-url-discovery-logs/org.wildfly.common-wildfly-common-1.5.0.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/1558-68814bfd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m
+9 actionable tasks: 1 executed, 8 up-to-date

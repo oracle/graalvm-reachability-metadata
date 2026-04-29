@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -207,6 +208,14 @@ public class Wildfly_commonTest {
                 .endsWith((byte) 192, (byte) 168, (byte) 1, (byte) 42);
         assertThat(URIs.getUserFromURI(new java.net.URI("http://alice:secret@example.test/path")))
                 .isEqualTo("alice");
+        assertThat(Inet.getAllAddressesByNameAndType("127.0.0.1", Inet4Address.class))
+                .singleElement()
+                .extracting(java.net.InetAddress::getHostAddress)
+                .isEqualTo("127.0.0.1");
+        assertThat(Inet.getAllAddressesByNameAndType("::1", Inet6Address.class))
+                .singleElement()
+                .extracting(java.net.InetAddress::getAddress)
+                .isEqualTo(Inet.parseInet6AddressOrFail("::1").getAddress());
 
         CidrAddress office = CidrAddress.create(host, 24);
         CidrAddress officeHost = CidrAddress.create(new byte[] {(byte) 192, (byte) 168, 1, 42}, 32);
