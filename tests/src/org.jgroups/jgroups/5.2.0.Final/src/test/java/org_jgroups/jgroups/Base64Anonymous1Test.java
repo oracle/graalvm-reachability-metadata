@@ -32,10 +32,11 @@ public class Base64Anonymous1Test {
     void decodeToObjectPropagatesClassNotFoundWhenCustomLoaderCannotResolveSerializedClass() throws Exception {
         SerializableMessage message = new SerializableMessage("missing-loader-event", 23);
         String encodedObject = Base64.encodeObject(message);
-        ClassLoader classLoader = new FailingClassLoader(SerializableMessage.class.getName());
+        FailingClassLoader classLoader = new FailingClassLoader(SerializableMessage.class.getName());
 
         assertThatExceptionOfType(ClassNotFoundException.class)
                 .isThrownBy(() -> Base64.decodeToObject(encodedObject, Base64.NO_OPTIONS, classLoader));
+        assertThat(classLoader.attemptedExpectedClass()).isTrue();
     }
 
     public static final class SerializableMessage implements Serializable {
@@ -92,6 +93,7 @@ public class Base64Anonymous1Test {
     private static final class FailingClassLoader extends ClassLoader {
         private final String expectedClassName;
         private final String expectedInternalClassName;
+        private boolean attemptedExpectedClass;
 
         private FailingClassLoader(String expectedClassName) {
             super(Base64Anonymous1Test.class.getClassLoader());
@@ -102,9 +104,14 @@ public class Base64Anonymous1Test {
         @Override
         protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             if(expectedClassName.equals(name) || expectedInternalClassName.equals(name)) {
+                attemptedExpectedClass = true;
                 throw new ClassNotFoundException(name);
             }
             return super.loadClass(name, resolve);
+        }
+
+        private boolean attemptedExpectedClass() {
+            return attemptedExpectedClass;
         }
     }
 }
