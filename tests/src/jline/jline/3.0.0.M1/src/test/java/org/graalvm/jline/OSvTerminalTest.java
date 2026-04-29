@@ -6,32 +6,35 @@
  */
 package org.graalvm.jline;
 
-import com.cloudius.util.Stty;
-import jline.OSvTerminal;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.terminal.Size;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OSvTerminalTest {
 
-    @BeforeEach
-    void setUp() {
-        Stty.clear();
-    }
-
     @Test
-    void initAndRestoreInvokeTheLoadedSttyMethods() throws Exception {
-        OSvTerminal terminal = new OSvTerminal();
+    void terminalMaintainsConfiguredSizeAndEchoState() throws Exception {
+        try (Terminal terminal = TerminalBuilder.builder()
+                .name("sized-terminal")
+                .type("ansi")
+                .streams(new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream())
+                .size(new Size(40, 10))
+                .build()) {
+            terminal.setSize(new Size(100, 30));
 
-        assertThat(terminal.sttyClass).isEqualTo(Stty.class);
-        assertThat(terminal.stty).isInstanceOf(Stty.class);
-        assertThat(terminal.isAnsiSupported()).isTrue();
+            assertThat(terminal.getSize().getColumns()).isEqualTo(100);
+            assertThat(terminal.getSize().getRows()).isEqualTo(30);
 
-        terminal.init();
-        terminal.restore();
+            boolean previousEcho = terminal.echo();
+            terminal.echo(!previousEcho);
 
-        assertThat(Stty.jlineModeCalls).isEqualTo(1);
-        assertThat(Stty.resetCalls).isEqualTo(1);
+            assertThat(terminal.echo()).isEqualTo(!previousEcho);
+        }
     }
 }

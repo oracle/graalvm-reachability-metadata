@@ -6,55 +6,56 @@
  */
 package org.graalvm.jline;
 
-import jline.UnsupportedTerminal;
-import jline.console.ConsoleReader;
-import jline.console.completer.CandidateListCompletionHandler;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.reader.Candidate;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.ParsedLine;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CandidateListCompletionHandlerMessagesTest {
 
-    private Locale originalLocale;
-
-    @BeforeEach
-    void setUp() {
-        originalLocale = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
-    }
-
-    @AfterEach
-    void tearDown() {
-        Locale.setDefault(originalLocale);
-    }
-
     @Test
-    void printCandidatesLoadsTheMessagesBundleWhenPromptingForConfirmation() throws Exception {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+    void completerProducesMultipleCandidatesForTheParsedCurrentWord() throws Exception {
+        MultipleCandidateCompleter completer = new MultipleCandidateCompleter();
+        List<Candidate> candidates = new ArrayList<Candidate>();
 
-        try (ConsoleReader reader = new ConsoleReader(
-                "candidate-list-completion-handler",
-                new ByteArrayInputStream("y".getBytes(StandardCharsets.UTF_8)),
-                output,
-                new UnsupportedTerminal())) {
-            reader.setAutoprintThreshold(1);
+        try (Terminal terminal = TerminalBuilder.builder()
+                .name("candidate-list-terminal")
+                .type("ansi")
+                .streams(new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream())
+                .build()) {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .appName("metadata-candidate-list")
+                    .completer(completer)
+                    .variable(LineReader.DISABLE_HISTORY, Boolean.TRUE)
+                    .build();
+            ParsedLine line = reader.getParser().parse("a", 1);
 
-            CandidateListCompletionHandler.printCandidates(reader, Arrays.<CharSequence>asList("alpha", "beta"));
-            reader.flush();
+            completer.complete(reader, line, candidates);
+
+            assertThat(line.word()).isEqualTo("a");
+            assertThat(candidates).extracting(Candidate::value).containsExactly("alpha", "alphabet", "alpine");
         }
+    }
 
-        String consoleOutput = output.toString(StandardCharsets.UTF_8.name());
-        assertThat(consoleOutput)
-                .contains("Display all 2 possibilities? (y or n)")
-                .contains("alpha")
-                .contains("beta");
+    public static final class MultipleCandidateCompleter implements Completer {
+
+        @Override
+        public void complete(final LineReader reader, final ParsedLine line, final List<Candidate> candidates) {
+            candidates.add(new Candidate("alpha"));
+            candidates.add(new Candidate("alphabet"));
+            candidates.add(new Candidate("alpine"));
+        }
     }
 }

@@ -6,158 +6,55 @@
  */
 package org.graalvm.jline;
 
-import jline.AnsiWindowsTerminal;
-import jline.OSvTerminal;
-import jline.Terminal;
-import jline.TerminalFactory;
-import jline.TerminalSupport;
-import jline.UnixTerminal;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.InfoCmp;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TerminalFactoryTest {
 
-    private String originalTerminalType;
-    private ClassLoader originalContextClassLoader;
+    @Test
+    void terminalBuilderCreatesStreamBackedTerminalWithConfiguredNameAndType() throws Exception {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-    @BeforeEach
-    void setUp() {
-        originalTerminalType = System.getProperty(TerminalFactory.JLINE_TERMINAL);
-        originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        NonPublicStringConstructorTerminal.noArgConstructorCalls = 0;
-        TerminalFactory.reset();
-        restoreDefaultFlavors();
-    }
+        try (Terminal terminal = TerminalBuilder.builder()
+                .name("metadata-terminal")
+                .type("ansi")
+                .streams(new ByteArrayInputStream(new byte[0]), output)
+                .build()) {
+            assertThat(terminal.getName()).isEqualTo("metadata-terminal");
+            assertThat(terminal.getType()).isEqualTo("ansi");
+            assertThat(terminal.getStringCapability(InfoCmp.Capability.cursor_up)).isNotNull();
 
-    @AfterEach
-    void tearDown() {
-        if (originalTerminalType == null) {
-            System.clearProperty(TerminalFactory.JLINE_TERMINAL);
-        } else {
-            System.setProperty(TerminalFactory.JLINE_TERMINAL, originalTerminalType);
+            terminal.writer().print("hello terminal");
+            terminal.flush();
         }
-        Thread.currentThread().setContextClassLoader(originalContextClassLoader);
-        TerminalFactory.reset();
-        restoreDefaultFlavors();
+
+        assertThat(output.toString(StandardCharsets.UTF_8.name())).contains("hello terminal");
     }
 
     @Test
-    void createLoadsConfiguredTerminalThroughTheContextClassLoader() {
-        TrackingClassLoader trackingClassLoader = new TrackingClassLoader(TerminalFactoryTest.class.getClassLoader());
-        Thread.currentThread().setContextClassLoader(trackingClassLoader);
-        TerminalFactory.configure(ClassLoaderTerminal.class.getName());
+    void terminalRaisesRegisteredSignalHandlers() throws Exception {
+        AtomicReference<Terminal.Signal> handledSignal = new AtomicReference<Terminal.Signal>();
 
-        Terminal terminal = TerminalFactory.create();
+        try (Terminal terminal = TerminalBuilder.builder()
+                .name("signal-terminal")
+                .type("ansi")
+                .streams(new ByteArrayInputStream(new byte[0]), new ByteArrayOutputStream())
+                .build()) {
+            Terminal.SignalHandler previousHandler = terminal.handle(Terminal.Signal.INT, handledSignal::set);
 
-        assertThat(trackingClassLoader.loadedClassNames).contains(ClassLoaderTerminal.class.getName());
-        assertThat(terminal).isInstanceOf(ClassLoaderTerminal.class);
-        assertThat(((ClassLoaderTerminal) terminal).initialized).isTrue();
-    }
+            terminal.raise(Terminal.Signal.INT);
 
-    @Test
-    void getFlavorUsesTheTtyDeviceConstructorWhenATtyDeviceIsProvided() throws Exception {
-        TerminalFactory.registerFlavor(TerminalFactory.Flavor.UNIX, TtyDeviceTerminal.class);
-
-        Terminal terminal = TerminalFactory.getFlavor(TerminalFactory.Flavor.UNIX, "/dev/tty-test");
-
-        assertThat(terminal).isInstanceOf(TtyDeviceTerminal.class);
-        assertThat(((TtyDeviceTerminal) terminal).ttyDevice).isEqualTo("/dev/tty-test");
-    }
-
-    @Test
-    void getFlavorUsesTheNoArgConstructorWhenNoTtyDeviceIsProvided() throws Exception {
-        TerminalFactory.registerFlavor(TerminalFactory.Flavor.OSV, NoArgTerminal.class);
-
-        Terminal terminal = TerminalFactory.getFlavor(TerminalFactory.Flavor.OSV);
-
-        assertThat(terminal).isInstanceOf(NoArgTerminal.class);
-        assertThat(((NoArgTerminal) terminal).constructed).isTrue();
-    }
-
-    @Test
-    void getFlavorDoesNotFallBackToTheNoArgConstructorWhenTheTtyDeviceConstructorIsNotPublic() {
-        TerminalFactory.registerFlavor(TerminalFactory.Flavor.WINDOWS, NonPublicStringConstructorTerminal.class);
-
-        // `Class#getConstructor` throws when the public `String` constructor is absent,
-        // so this path never falls back to the no-arg constructor.
-        assertThatThrownBy(() -> TerminalFactory.getFlavor(TerminalFactory.Flavor.WINDOWS, "/dev/tty-test"))
-                .isInstanceOf(NoSuchMethodException.class);
-        assertThat(NonPublicStringConstructorTerminal.noArgConstructorCalls).isZero();
-    }
-
-    private static void restoreDefaultFlavors() {
-        TerminalFactory.registerFlavor(TerminalFactory.Flavor.WINDOWS, AnsiWindowsTerminal.class);
-        TerminalFactory.registerFlavor(TerminalFactory.Flavor.UNIX, UnixTerminal.class);
-        TerminalFactory.registerFlavor(TerminalFactory.Flavor.OSV, OSvTerminal.class);
-    }
-
-    public static final class TrackingClassLoader extends ClassLoader {
-
-        private final List<String> loadedClassNames = new ArrayList<String>();
-
-        public TrackingClassLoader(final ClassLoader parent) {
-            super(parent);
-        }
-
-        @Override
-        public Class<?> loadClass(final String name) throws ClassNotFoundException {
-            loadedClassNames.add(name);
-            return super.loadClass(name);
-        }
-    }
-
-    public static final class ClassLoaderTerminal extends TerminalSupport {
-
-        private boolean initialized;
-
-        public ClassLoaderTerminal() {
-            super(true);
-        }
-
-        @Override
-        public void init() {
-            initialized = true;
-        }
-    }
-
-    public static final class TtyDeviceTerminal extends TerminalSupport {
-
-        private final String ttyDevice;
-
-        public TtyDeviceTerminal(final String ttyDevice) {
-            super(true);
-            this.ttyDevice = ttyDevice;
-        }
-    }
-
-    public static final class NoArgTerminal extends TerminalSupport {
-
-        private final boolean constructed;
-
-        public NoArgTerminal() {
-            super(true);
-            constructed = true;
-        }
-    }
-
-    public static final class NonPublicStringConstructorTerminal extends TerminalSupport {
-
-        private static int noArgConstructorCalls;
-
-        public NonPublicStringConstructorTerminal() {
-            super(true);
-            noArgConstructorCalls++;
-        }
-
-        private NonPublicStringConstructorTerminal(final String ttyDevice) {
-            super(true);
+            assertThat(previousHandler).isSameAs(Terminal.SignalHandler.SIG_DFL);
+            assertThat(handledSignal).hasValue(Terminal.Signal.INT);
         }
     }
 }

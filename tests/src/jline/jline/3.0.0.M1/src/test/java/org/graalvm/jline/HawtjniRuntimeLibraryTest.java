@@ -6,47 +6,45 @@
  */
 package org.graalvm.jline;
 
-import org.fusesource.hawtjni.runtime.Library;
+import org.jline.reader.History;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.impl.history.history.MemoryHistory;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 import org.junit.jupiter.api.Test;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class HawtjniRuntimeLibraryTest {
 
-    private static final String LIBRARY_NAME = "graalvmjlinemissingnative";
-
     @Test
-    void loadChecksClassLoaderResourcesWhenNativeLibraryLookupFails() {
-        TrackingResourceClassLoader classLoader = new TrackingResourceClassLoader(HawtjniRuntimeLibraryTest.class.getClassLoader());
-        Library library = new Library(LIBRARY_NAME, "integration-test", classLoader);
+    void lineReaderBuilderUsesTheConfiguredHistoryImplementation() throws Exception {
+        MemoryHistory history = new MemoryHistory();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-        assertThatThrownBy(library::load)
-                .isInstanceOf(UnsatisfiedLinkError.class)
-                .hasMessageContaining("Could not load library. Reasons:");
+        try (Terminal terminal = TerminalBuilder.builder()
+                .name("history-terminal")
+                .type("ansi")
+                .streams(new ByteArrayInputStream("first line\nsecond line\n".getBytes(StandardCharsets.UTF_8)), output)
+                .build()) {
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(terminal)
+                    .appName("metadata-history")
+                    .history(history)
+                    .build();
 
-        assertThat(classLoader.requestedResources).containsExactly(
-                library.getPlatformSpecifcResourcePath(),
-                library.getOperatingSystemSpecifcResourcePath(),
-                library.getResorucePath());
-    }
+            assertThat(reader.readLine("history> ")).isEqualTo("first line");
+            assertThat(reader.readLine("history> ")).isEqualTo("second line");
 
-    public static final class TrackingResourceClassLoader extends ClassLoader {
-
-        private final List<String> requestedResources = new ArrayList<String>();
-
-        public TrackingResourceClassLoader(final ClassLoader parent) {
-            super(parent);
+            assertThat(reader.getHistory()).isSameAs(history);
+            assertThat(history).extracting(History.Entry::value).containsExactly("first line", "second line");
         }
 
-        @Override
-        public URL getResource(final String name) {
-            requestedResources.add(name);
-            return null;
-        }
+        assertThat(output.toString(StandardCharsets.UTF_8.name())).contains("history> ");
     }
 }
