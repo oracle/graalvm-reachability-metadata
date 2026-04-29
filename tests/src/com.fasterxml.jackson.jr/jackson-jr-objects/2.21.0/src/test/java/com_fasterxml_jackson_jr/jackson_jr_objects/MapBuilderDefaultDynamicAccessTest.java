@@ -50,6 +50,22 @@ public class MapBuilderDefaultDynamicAccessTest {
     }
 
     @Test
+    void readsTypedMapSubclassThroughDefaultMapBuilder() throws Exception {
+        ConstructorTrackingMap counts = JSON.std.beanFrom(ConstructorTrackingMap.class, "{\"alpha\":1,\"beta\":2}");
+
+        assertThat(counts).containsEntry("alpha", 1).containsEntry("beta", 2);
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
+    void readsTypedEmptyMapSubclassThroughDefaultMapBuilder() throws Exception {
+        ConstructorTrackingMap counts = JSON.std.beanFrom(ConstructorTrackingMap.class, "{}");
+
+        assertThat(counts).isEmpty();
+        assertThat(ConstructorTrackingMap.CONSTRUCTOR_CALLS).hasValue(1);
+    }
+
+    @Test
     void createsEmptyMapWithConfiguredMapImplementation() throws Exception {
         Map<String, Object> counts = configuredMapBuilder().emptyMap();
 
