@@ -22,6 +22,7 @@ public class SimpleLoggerConfigurationAnonymous1Test {
 
     private static final String CONFIGURATION_FILE = "simplelogger.properties";
     private static final String TRACE_CONFIGURATION = SimpleLogger.DEFAULT_LOG_LEVEL_KEY + "=trace\n";
+    private static final String INFO_CONFIGURATION = SimpleLogger.DEFAULT_LOG_LEVEL_KEY + "=info\n";
 
     @Test
     void loadsConfigurationUsingContextAndSystemClassLoaders() throws Exception {
@@ -31,18 +32,20 @@ public class SimpleLoggerConfigurationAnonymous1Test {
             System.clearProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY);
 
             resetSimpleLoggerInitialization();
-            Thread.currentThread().setContextClassLoader(new PropertiesClassLoader(originalContextClassLoader));
-            Logger configuredLogger = new SimpleLoggerFactory().getLogger("simple.logger.configuration.context");
-            assertThat(configuredLogger.isTraceEnabled()).isTrue();
-
-            resetSimpleLoggerInitialization();
             Thread.currentThread().setContextClassLoader(null);
             Logger defaultLogger = new SimpleLoggerFactory().getLogger("simple.logger.configuration.system");
             assertThat(defaultLogger.isInfoEnabled()).isTrue();
+            assertThat(defaultLogger.isTraceEnabled()).isFalse();
+
+            resetSimpleLoggerInitialization();
+            Thread.currentThread()
+                    .setContextClassLoader(new PropertiesClassLoader(originalContextClassLoader, TRACE_CONFIGURATION));
+            Logger configuredLogger = new SimpleLoggerFactory().getLogger("simple.logger.configuration.context");
+            assertThat(configuredLogger.isTraceEnabled()).isTrue();
         } finally {
+            restoreSimpleLoggerConfiguration(originalContextClassLoader, originalDefaultLevel);
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
             restoreSystemProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, originalDefaultLevel);
-            resetSimpleLoggerInitialization();
         }
     }
 
@@ -50,10 +53,15 @@ public class SimpleLoggerConfigurationAnonymous1Test {
         Field initialized = SimpleLogger.class.getDeclaredField("INITIALIZED");
         initialized.setAccessible(true);
         initialized.setBoolean(null, false);
+    }
 
-        Field configParams = SimpleLogger.class.getDeclaredField("CONFIG_PARAMS");
-        configParams.setAccessible(true);
-        configParams.set(null, null);
+    private static void restoreSimpleLoggerConfiguration(
+            ClassLoader classLoader,
+            String defaultLevel) throws Exception {
+        restoreSystemProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, defaultLevel);
+        Thread.currentThread().setContextClassLoader(new PropertiesClassLoader(classLoader, INFO_CONFIGURATION));
+        resetSimpleLoggerInitialization();
+        new SimpleLoggerFactory().getLogger("simple.logger.configuration.restore");
     }
 
     private static void restoreSystemProperty(String key, String value) {
@@ -65,14 +73,17 @@ public class SimpleLoggerConfigurationAnonymous1Test {
     }
 
     private static final class PropertiesClassLoader extends ClassLoader {
-        PropertiesClassLoader(ClassLoader parent) {
+        private final String configuration;
+
+        PropertiesClassLoader(ClassLoader parent, String configuration) {
             super(parent);
+            this.configuration = configuration;
         }
 
         @Override
         public InputStream getResourceAsStream(String name) {
             if (CONFIGURATION_FILE.equals(name)) {
-                return new ByteArrayInputStream(TRACE_CONFIGURATION.getBytes(StandardCharsets.UTF_8));
+                return new ByteArrayInputStream(configuration.getBytes(StandardCharsets.UTF_8));
             }
             return super.getResourceAsStream(name);
         }
