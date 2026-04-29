@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 public class DataUtilTest {
     @Test
     void growAnyArrayByPreservesObjectArrayElements() {
-        String[] original = new String[] { "root", "child" };
+        String[] original = new String[] {"root", "child"};
 
         Object grown = DataUtil.growAnyArrayBy(original, 2);
 
@@ -26,7 +26,7 @@ public class DataUtilTest {
 
     @Test
     void growAnyArrayByPreservesPrimitiveArrayElements() {
-        int[] original = new int[] { 3, 5, 8 };
+        int[] original = new int[] {3, 5, 8};
 
         Object grown = DataUtil.growAnyArrayBy(original, 1);
 
