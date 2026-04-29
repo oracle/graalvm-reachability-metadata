@@ -202,6 +202,62 @@ final class Test_interfaceTest {
   }
 
   @Test
+  def modernTasksCanReturnFollowUpTasksForIncrementalExecution(): Unit = {
+    val fingerprint = ModernSubclassFingerprint(
+      module = false,
+      superclass = "example.ParentSuite",
+      requiresNoArgConstructor = true
+    )
+    val parentDefinition = new TaskDef(
+      "example.ParentSuite",
+      fingerprint,
+      true,
+      Array[Selector](new SuiteSelector())
+    )
+    val childDefinition = new TaskDef(
+      "example.ParentSuite.child",
+      fingerprint,
+      false,
+      Array[Selector](new NestedSuiteSelector("child-suite"))
+    )
+    val childFailure = new AssertionError("child failed")
+    val childTask = new FollowUpModernTask(
+      childDefinition,
+      Status.Failure,
+      new OptionalThrowable(childFailure),
+      Array.empty[Task]
+    )
+    val parentTask = new FollowUpModernTask(
+      parentDefinition,
+      Status.Success,
+      new OptionalThrowable(),
+      Array[Task](childTask)
+    )
+    val eventHandler = new RecordingModernEventHandler()
+    val logger = new RecordingLogger(ansi = false)
+
+    val followUpTasks = parentTask.execute(eventHandler, Array[Logger](logger))
+    val finalTasks = followUpTasks(0).execute(eventHandler, Array[Logger](logger))
+
+    assertThat(followUpTasks).containsExactly(childTask)
+    assertThat(followUpTasks(0).taskDef()).isSameAs(childDefinition)
+    assertThat(finalTasks).isEmpty()
+
+    assertThat(eventHandler.events).hasSize(2)
+    assertThat(eventHandler.events.get(0).fullyQualifiedName()).isEqualTo("example.ParentSuite")
+    assertThat(eventHandler.events.get(0).status()).isEqualTo(Status.Success)
+    assertThat(eventHandler.events.get(0).throwable().isEmpty()).isTrue()
+    assertThat(eventHandler.events.get(1).fullyQualifiedName()).isEqualTo("example.ParentSuite.child")
+    assertThat(eventHandler.events.get(1).status()).isEqualTo(Status.Failure)
+    assertThat(eventHandler.events.get(1).selector()).isEqualTo(new NestedSuiteSelector("child-suite"))
+    assertThat(eventHandler.events.get(1).throwable().get()).isSameAs(childFailure)
+    assertThat(logger.messages).containsExactly(
+      "info:executing example.ParentSuite",
+      "info:executing example.ParentSuite.child"
+    )
+  }
+
+  @Test
   def legacyFrameworkRunner2BridgesTestFingerprintRunToGeneralFingerprintRun(): Unit = {
     val fingerprint = LegacyTestFingerprint(module = false, superclass = "legacy.BaseSuite")
     val logger = new RecordingLegacyLogger(ansi = false)
@@ -306,6 +362,30 @@ final class Test_interfaceTest {
       loggers.foreach(_.warn(s"completed ${definition.fullyQualifiedName()}"))
       markExecuted()
       Array.empty[Task]
+    }
+
+    override def taskDef(): TaskDef = definition
+  }
+
+  private final class FollowUpModernTask(
+    definition: TaskDef,
+    result: Status,
+    failure: OptionalThrowable,
+    followUpTasks: Array[Task]
+  ) extends Task {
+    override def tags(): Array[String] = Array.empty[String]
+
+    override def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
+      loggers.foreach(_.info(s"executing ${definition.fullyQualifiedName()}"))
+      eventHandler.handle(ModernEvent(
+        name = definition.fullyQualifiedName(),
+        testFingerprint = definition.fingerprint(),
+        testSelector = definition.selectors().head,
+        testStatus = result,
+        testThrowable = failure,
+        testDuration = 7L
+      ))
+      followUpTasks
     }
 
     override def taskDef(): TaskDef = definition
