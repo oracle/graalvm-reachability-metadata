@@ -19,6 +19,8 @@ import java.sql.SQLXML;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.dom.DOMResult;
@@ -43,16 +45,20 @@ public class JDBCSQLXMLTest {
     @Test
     public void createsSourceImplementationsThroughSqlXmlApi() throws Exception {
         try (Connection connection = openConnection()) {
-            StreamSource streamSource = newReadableSqlXml(connection).getSource(StreamSource.class);
+            ExtendingStreamSource streamSource = newReadableSqlXml(connection).getSource(ExtendingStreamSource.class);
+            assertEquals(ExtendingStreamSource.class, streamSource.getClass());
             assertTrue(readAll(streamSource.getReader()).contains("<child attribute=\"value\">text</child>"));
 
-            DOMSource domSource = newReadableSqlXml(connection).getSource(DOMSource.class);
+            ExtendingDOMSource domSource = newReadableSqlXml(connection).getSource(ExtendingDOMSource.class);
+            assertEquals(ExtendingDOMSource.class, domSource.getClass());
             assertEquals("root", documentFrom(domSource.getNode()).getDocumentElement().getNodeName());
 
-            SAXSource saxSource = newReadableSqlXml(connection).getSource(SAXSource.class);
+            ExtendingSAXSource saxSource = newReadableSqlXml(connection).getSource(ExtendingSAXSource.class);
+            assertEquals(ExtendingSAXSource.class, saxSource.getClass());
             assertTrue(readAll(saxSource.getInputSource().getCharacterStream()).contains("<root>"));
 
-            StAXSource staxSource = newReadableSqlXml(connection).getSource(StAXSource.class);
+            ExtendingStAXSource staxSource = newReadableSqlXml(connection).getSource(ExtendingStAXSource.class);
+            assertEquals(ExtendingStAXSource.class, staxSource.getClass());
             assertEquals("root", firstStartElementName(staxSource));
         }
     }
@@ -60,19 +66,23 @@ public class JDBCSQLXMLTest {
     @Test
     public void createsResultImplementationsThroughSqlXmlApi() throws Exception {
         try (Connection connection = openConnection()) {
-            StreamResult streamResult = newWritableSqlXml(connection).setResult(StreamResult.class);
+            ExtendingStreamResult streamResult = newWritableSqlXml(connection).setResult(ExtendingStreamResult.class);
+            assertEquals(ExtendingStreamResult.class, streamResult.getClass());
             assertNotNull(streamResult.getOutputStream());
             streamResult.getOutputStream().close();
 
-            DOMResult domResult = newWritableSqlXml(connection).setResult(DOMResult.class);
+            ExtendingDOMResult domResult = newWritableSqlXml(connection).setResult(ExtendingDOMResult.class);
+            assertEquals(ExtendingDOMResult.class, domResult.getClass());
             domResult.setNode(newDocumentWithRoot());
             assertEquals("root", documentFrom(domResult.getNode()).getDocumentElement().getNodeName());
 
-            SAXResult saxResult = newWritableSqlXml(connection).setResult(SAXResult.class);
+            ExtendingSAXResult saxResult = newWritableSqlXml(connection).setResult(ExtendingSAXResult.class);
+            assertEquals(ExtendingSAXResult.class, saxResult.getClass());
             writeSaxDocument(saxResult.getHandler());
             assertNotNull(saxResult.getHandler());
 
             ExtendingStAXResult staxResult = newWritableSqlXml(connection).setResult(ExtendingStAXResult.class);
+            assertEquals(ExtendingStAXResult.class, staxResult.getClass());
             writeStaxDocument(staxResult.getXMLStreamWriter());
             assertNotNull(staxResult.getXMLStreamWriter());
         }
@@ -146,6 +156,42 @@ public class JDBCSQLXMLTest {
         writer.writeEndElement();
         writer.writeEndDocument();
         writer.close();
+    }
+
+    public static final class ExtendingStreamSource extends StreamSource {
+        public ExtendingStreamSource() {
+        }
+    }
+
+    public static final class ExtendingDOMSource extends DOMSource {
+        public ExtendingDOMSource() {
+        }
+    }
+
+    public static final class ExtendingSAXSource extends SAXSource {
+        public ExtendingSAXSource() {
+        }
+    }
+
+    public static final class ExtendingStAXSource extends StAXSource {
+        public ExtendingStAXSource(XMLEventReader reader) throws XMLStreamException {
+            super(reader);
+        }
+    }
+
+    public static final class ExtendingStreamResult extends StreamResult {
+        public ExtendingStreamResult() {
+        }
+    }
+
+    public static final class ExtendingDOMResult extends DOMResult {
+        public ExtendingDOMResult() {
+        }
+    }
+
+    public static final class ExtendingSAXResult extends SAXResult {
+        public ExtendingSAXResult() {
+        }
     }
 
     public static final class ExtendingStAXResult extends StAXResult {
