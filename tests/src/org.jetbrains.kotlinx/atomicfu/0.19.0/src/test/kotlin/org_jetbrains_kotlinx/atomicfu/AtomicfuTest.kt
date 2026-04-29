@@ -14,6 +14,7 @@ import kotlinx.atomicfu.TraceFormat
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.atomicArrayOfNulls
 import kotlinx.atomicfu.getAndUpdate
+import kotlinx.atomicfu.loop
 import kotlinx.atomicfu.update
 import kotlinx.atomicfu.updateAndGet
 import kotlinx.atomicfu.locks.reentrantLock
@@ -178,6 +179,29 @@ public class AtomicfuTest {
         assertThat(refs[1].getAndSet("second")).isNull()
         refs[2].update { value -> value ?: "third" }
         assertThat((0 until refs.size).map { refs[it].value }).containsExactly("first", "second", "third")
+    }
+
+    @Test
+    fun loopExtensionRetriesWithFreshValuesUntilCallerReturns(): Unit {
+        val state = atomic(1)
+        val observed = mutableListOf<Int>()
+
+        fun claimEvenValue(): Int {
+            state.loop { value ->
+                observed.add(value)
+                if (value % 2 != 0) {
+                    state.incrementAndGet()
+                    return@loop
+                }
+                if (state.compareAndSet(value, value + 10)) {
+                    return value
+                }
+            }
+        }
+
+        assertThat(claimEvenValue()).isEqualTo(2)
+        assertThat(state.value).isEqualTo(12)
+        assertThat(observed).containsExactly(1, 2)
     }
 
     @Test
