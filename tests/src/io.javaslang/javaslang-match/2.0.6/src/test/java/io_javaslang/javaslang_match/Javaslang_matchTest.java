@@ -12,6 +12,7 @@ import javaslang.Tuple1;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
 import javaslang.Tuple4;
+import javaslang.Tuple5;
 import javaslang.control.Option;
 import javaslang.match.annotation.Patterns;
 import javaslang.match.annotation.Unapply;
@@ -130,6 +131,26 @@ public class Javaslang_matchTest {
         assertThat(perimeter).isEqualTo(14);
     }
 
+    @Test
+    void generatedFiveArityPatternSupportsHigherArityExtractor() {
+        Event event = new Event("orders", "created", 12, true, "eu-central");
+
+        String summary = Match(event).of(
+                Case(Javaslang_matchTestPatterns.event($("billing"), $(), $(), $(), $()),
+                        (topic, type, sequence, replayed, region) -> "wrong topic"),
+                Case(Javaslang_matchTestPatterns.event(
+                                $("orders"),
+                                $("created"),
+                                $((Integer sequence) -> sequence > 10),
+                                $(true),
+                                $("eu-central")),
+                        (topic, type, sequence, replayed, region) -> topic + ":" + type + "#" + sequence + "@"
+                                + region + ":" + replayed),
+                Case($(), ignored -> "unmatched"));
+
+        assertThat(summary).isEqualTo("orders:created#12@eu-central:true");
+    }
+
     @Unapply
     static Tuple2<String, Integer> person(Person person) {
         return Tuple.of(person.name(), person.age());
@@ -158,6 +179,11 @@ public class Javaslang_matchTest {
     @Unapply
     static Tuple4<Integer, Integer, Integer, Integer> rectangle(Rectangle rectangle) {
         return Tuple.of(rectangle.left(), rectangle.top(), rectangle.right(), rectangle.bottom());
+    }
+
+    @Unapply
+    static Tuple5<String, String, Integer, Boolean, String> event(Event event) {
+        return Tuple.of(event.topic(), event.type(), event.sequence(), event.replayed(), event.region());
     }
 
     static final class Person {
@@ -241,6 +267,42 @@ public class Javaslang_matchTest {
 
         T value() {
             return value;
+        }
+    }
+
+    static final class Event {
+        private final String topic;
+        private final String type;
+        private final int sequence;
+        private final boolean replayed;
+        private final String region;
+
+        Event(String topic, String type, int sequence, boolean replayed, String region) {
+            this.topic = Objects.requireNonNull(topic, "topic");
+            this.type = Objects.requireNonNull(type, "type");
+            this.sequence = sequence;
+            this.replayed = replayed;
+            this.region = Objects.requireNonNull(region, "region");
+        }
+
+        String topic() {
+            return topic;
+        }
+
+        String type() {
+            return type;
+        }
+
+        int sequence() {
+            return sequence;
+        }
+
+        boolean replayed() {
+            return replayed;
+        }
+
+        String region() {
+            return region;
         }
     }
 
