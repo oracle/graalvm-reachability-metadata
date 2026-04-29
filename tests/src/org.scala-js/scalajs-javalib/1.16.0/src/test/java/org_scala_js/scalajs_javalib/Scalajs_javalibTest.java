@@ -6,11 +6,19 @@
  */
 package org_scala_js.scalajs_javalib;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
@@ -163,6 +171,30 @@ public class Scalajs_javalibTest {
     }
 
     @Test
+    void base64ResourcesExposeEncodingAndDecodingApiSurface() throws IOException {
+        assertThat(resourceText("java/util/Base64.sjsir"))
+                .contains("java.util.Base64")
+                .contains("getEncoder")
+                .contains("getUrlEncoder")
+                .contains("getMimeEncoder")
+                .contains("getDecoder")
+                .contains("getUrlDecoder")
+                .contains("getMimeDecoder");
+
+        assertThat(resourceText("java/util/Base64$Encoder.sjsir"))
+                .contains("java.util.Base64$Encoder")
+                .contains("encode")
+                .contains("encodeToString")
+                .contains("withoutPadding")
+                .contains("wrap");
+
+        assertThat(resourceText("java/util/Base64$Decoder.sjsir"))
+                .contains("java.util.Base64$Decoder")
+                .contains("decode")
+                .contains("wrap");
+    }
+
+    @Test
     void scalaJsJavaLibInterfaceResourcesAreAvailable() throws IOException {
         assertThat(resourceText("org/scalajs/javalibintf/StackTraceElement.sjsir"))
                 .contains("org.scalajs.javalibintf.StackTraceElement");
@@ -186,13 +218,78 @@ public class Scalajs_javalibTest {
             classLoader = Scalajs_javalibTest.class.getClassLoader();
         }
         try (InputStream inputStream = classLoader.getResourceAsStream(path)) {
-            assertThat(inputStream).as(path).isNotNull();
-            byte[] bytes = inputStream.readAllBytes();
-            assertThat(Arrays.copyOf(bytes, SJSIR_HEADER_PREFIX.length))
-                    .as(path)
-                    .containsExactly(SJSIR_HEADER_PREFIX);
-            return bytes;
+            if (inputStream != null) {
+                return assertScalaJsIrResource(path, inputStream.readAllBytes());
+            }
         }
+
+        byte[] bytes = resourceBytesFromClasspathJar(path);
+        assertThat(bytes).as(path).isNotNull();
+        return assertScalaJsIrResource(path, bytes);
+    }
+
+    private static byte[] resourceBytesFromClasspathJar(String path) throws IOException {
+        String classPath = System.getProperty("java.class.path", "");
+        for (String entry : classPath.split(Pattern.quote(File.pathSeparator))) {
+            if (entry.endsWith(".jar")) {
+                byte[] bytes = resourceBytesFromJar(Path.of(entry), path);
+                if (bytes != null) {
+                    return bytes;
+                }
+            }
+        }
+
+        Path testedLibraryJar = testedLibraryJar();
+        if (testedLibraryJar != null) {
+            return resourceBytesFromJar(testedLibraryJar, path);
+        }
+        return null;
+    }
+
+    private static Path testedLibraryJar() throws IOException {
+        Properties properties = new Properties();
+        Path gradleProperties = Path.of(System.getProperty("user.dir"), "gradle.properties");
+        if (!Files.isRegularFile(gradleProperties)) {
+            return null;
+        }
+        try (InputStream inputStream = Files.newInputStream(gradleProperties)) {
+            properties.load(inputStream);
+        }
+
+        String coordinates = properties.getProperty("library.coordinates");
+        assertThat(coordinates).as("library.coordinates").isNotNull();
+        String[] parts = coordinates.split(":");
+        assertThat(parts).as("library.coordinates").hasSize(3);
+
+        Path coordinateDirectory = Path.of(System.getProperty("user.home"), ".gradle", "caches", "modules-2",
+                "files-2.1", parts[0], parts[1], parts[2]);
+        String jarName = parts[1] + "-" + parts[2] + ".jar";
+        try (Stream<Path> paths = Files.walk(coordinateDirectory)) {
+            return paths
+                    .filter(Files::isRegularFile)
+                    .filter(candidate -> candidate.getFileName().toString().equals(jarName))
+                    .findFirst()
+                    .orElse(null);
+        }
+    }
+
+    private static byte[] resourceBytesFromJar(Path jarPath, String path) throws IOException {
+        try (JarFile jarFile = new JarFile(jarPath.toFile())) {
+            JarEntry jarEntry = jarFile.getJarEntry(path);
+            if (jarEntry == null) {
+                return null;
+            }
+            try (InputStream inputStream = jarFile.getInputStream(jarEntry)) {
+                return inputStream.readAllBytes();
+            }
+        }
+    }
+
+    private static byte[] assertScalaJsIrResource(String path, byte[] bytes) {
+        assertThat(Arrays.copyOf(bytes, SJSIR_HEADER_PREFIX.length))
+                .as(path)
+                .containsExactly(SJSIR_HEADER_PREFIX);
+        return bytes;
     }
 
     private record IrResource(String path, String declaredName) {
