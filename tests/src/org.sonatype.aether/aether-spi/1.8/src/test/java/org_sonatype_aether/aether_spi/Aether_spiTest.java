@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -298,6 +299,11 @@ public class Aether_spiTest {
 
         processor.write(target, "replacement");
         assertThat(new String(Files.readAllBytes(target.toPath()), StandardCharsets.UTF_8)).isEqualTo("replacement");
+
+        File moved = new File(tempDirectory, "moved/replacement.txt");
+        processor.move(target, moved);
+        assertThat(target).doesNotExist();
+        assertThat(new String(Files.readAllBytes(moved.toPath()), StandardCharsets.UTF_8)).isEqualTo("replacement");
     }
 
     @Test
@@ -552,6 +558,12 @@ public class Aether_spiTest {
                 listener.progressed(ByteBuffer.wrap(bytes));
             }
             return bytes.length;
+        }
+
+        @Override
+        public void move(File source, File target) throws IOException {
+            mkdirs(target.getParentFile());
+            Files.move(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
