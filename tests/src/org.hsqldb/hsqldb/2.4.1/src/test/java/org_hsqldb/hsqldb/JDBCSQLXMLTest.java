@@ -97,7 +97,11 @@ public class JDBCSQLXMLTest {
         assertNotNull(reader);
         StringWriter writer = new StringWriter();
         try (Reader openReader = reader) {
-            openReader.transferTo(writer);
+            char[] buffer = new char[256];
+            int count;
+            while ((count = openReader.read(buffer)) != -1) {
+                writer.write(buffer, 0, count);
+            }
         }
         return writer.toString();
     }
