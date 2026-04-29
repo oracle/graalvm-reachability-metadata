@@ -66,7 +66,12 @@ from git_scripts.make_pr_ni_run_fix import main as run_make_pr_ni_run_fix
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.metrics_writer import read_pending_metrics
-from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, get_repo_root, resolve_repo_roots
+from utility_scripts.repo_path_resolver import (
+    add_in_metadata_repo_argument,
+    get_forge_subdir_name,
+    get_repo_root,
+    resolve_repo_roots,
+)
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
 from utility_scripts.task_logs import (
@@ -2562,15 +2567,14 @@ def create_issue_workspace(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
         issue_number: int,
-        in_metadata_repo: bool = False,
+        in_metadata_repo: bool = True,
 ) -> tuple[str, str]:
     """Create isolated worktrees for reachability-metadata and metrics storage."""
+    _ = canonical_metrics_repo_path
+    _ = in_metadata_repo
     repo_root = get_repo_root()
     worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
-    metrics_root = os.path.join(repo_root, "local_repositories", SCRATCH_METRICS_DIRNAME)
     os.makedirs(worktrees_root, exist_ok=True)
-    if not in_metadata_repo:
-        os.makedirs(metrics_root, exist_ok=True)
 
     run_id = build_issue_run_id(issue_number)
     worktree_path = os.path.join(worktrees_root, run_id)
@@ -2582,23 +2586,7 @@ def create_issue_workspace(
         f"Failed to create worktree for issue #{issue_number}",
     )
 
-    if in_metadata_repo:
-        return worktree_path, os.path.join(worktree_path, "metadata-forge")
-
-    metrics_worktree_path = os.path.join(metrics_root, run_id)
-
-    try:
-        create_detached_worktree(
-            canonical_metrics_repo_path,
-            metrics_worktree_path,
-            DEFAULT_WORKTREE_BASE_REF,
-            f"Failed to create metrics worktree for issue #{issue_number}",
-        )
-    except Exception:
-        remove_worktree(base_reachability_metadata_path, worktree_path)
-        raise
-
-    return worktree_path, metrics_worktree_path
+    return worktree_path, os.path.join(worktree_path, get_forge_subdir_name())
 
 
 def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_path: str) -> None:
@@ -2655,9 +2643,10 @@ def claim_issue_for_processing(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
         authenticated_user: str,
-        in_metadata_repo: bool = False,
+        in_metadata_repo: bool = True,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace."""
+    in_metadata_repo = True
     print(format_issue_processing_message(issue))
 
     claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
@@ -3539,7 +3528,7 @@ def process_issues_with_label(
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str,
         parallelism: int,
-        in_metadata_repo: bool = False,
+        in_metadata_repo: bool = True,
         environment_already_validated: bool = False,
 ) -> int:
     """
@@ -3548,6 +3537,7 @@ def process_issues_with_label(
     The scan advances through the issue list using `offset`, but the returned count
     reflects only issues that were successfully claimed for processing.
     """
+    in_metadata_repo = True
     if not environment_already_validated:
         validate_issue_processing_environment()
 
@@ -3665,9 +3655,10 @@ def process_work_queues(
         work_strategy_name_override: str | None = None,
         keep_tests_without_dynamic_access_override: bool = False,
         parallelism_default: int = DEFAULT_PARALLELISM,
-        in_metadata_repo: bool = False,
+        in_metadata_repo: bool = True,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
+    in_metadata_repo = True
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override)
     review_queue_configs = get_review_queue_configs_from_environment()
     validate_work_queue_strategies(queue_configs)
@@ -3770,7 +3761,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--reachability-metadata-path",
         help=(
             "Path to the graalvm-reachability-metadata repository. "
-            "If omitted, local_repositories/graalvm-reachability-metadata is used."
+            "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
     add_in_metadata_repo_argument(parser)
@@ -3835,9 +3826,10 @@ def process_single_issue(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str,
-        in_metadata_repo: bool = False,
+        in_metadata_repo: bool = True,
 ) -> bool:
     """Fetch, claim, and process a single issue by number."""
+    in_metadata_repo = True
     validate_issue_processing_environment()
 
     issue, label = get_issue_by_number(issue_number)

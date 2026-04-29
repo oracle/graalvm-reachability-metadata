@@ -8,7 +8,6 @@ import subprocess
 import sys
 
 REACHABILITY_REPO_CLONE_URL = "git@github.com:oracle/graalvm-reachability-metadata.git"
-METADATA_FORGE_SUBDIR = "metadata-forge"
 IN_METADATA_REPO_FLAG = "--in-metadata-repo"
 
 
@@ -16,15 +15,20 @@ def get_repo_root():
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def get_forge_subdir_name() -> str:
+    """Return the Forge directory name inside the reachability metadata repo."""
+    return os.path.basename(get_repo_root())
+
+
 def add_in_metadata_repo_argument(parser) -> None:
-    """Add the shared flag for running from a metadata repo checkout."""
+    """Add a deprecated compatibility flag for older commands."""
     parser.add_argument(
         IN_METADATA_REPO_FLAG,
         action="store_true",
+        default=True,
         help=(
-            "Run from a graalvm-reachability-metadata checkout that contains this project "
-            "under metadata-forge/. Defaults the target repo to the parent checkout and "
-            "stores metrics under metadata-forge/."
+            "Deprecated no-op. Forge now always runs from a graalvm-reachability-metadata "
+            "checkout and stores metrics under its in-repo forge directory."
         ),
     )
 
@@ -137,7 +141,7 @@ def _looks_like_reachability_metadata_repo(repo_root: str) -> bool:
     """Return True when the path has the expected reachability-metadata repo shape."""
     return (
         _is_git_checkout(repo_root)
-        and os.path.isdir(os.path.join(repo_root, METADATA_FORGE_SUBDIR))
+        and os.path.isdir(os.path.join(repo_root, get_forge_subdir_name()))
         and os.path.isdir(os.path.join(repo_root, "metadata"))
         and os.path.isdir(os.path.join(repo_root, "tests"))
     )
@@ -151,7 +155,7 @@ def resolve_parent_reachability_repo() -> str:
         return parent_repo
 
     print(
-        "ERROR: --in-metadata-repo requires metadata-forge to be inside a "
+        "ERROR: Forge must be inside a "
         "graalvm-reachability-metadata checkout.",
         file=sys.stderr,
     )
@@ -159,11 +163,11 @@ def resolve_parent_reachability_repo() -> str:
 
 
 def resolve_in_repo_metrics_root(reachability_root: str) -> str:
-    """Return the metadata-forge directory inside a reachability-metadata checkout."""
-    metrics_root = os.path.join(reachability_root, METADATA_FORGE_SUBDIR)
+    """Return the Forge directory inside a reachability-metadata checkout."""
+    metrics_root = os.path.join(reachability_root, get_forge_subdir_name())
     if not os.path.isdir(metrics_root):
         print(
-            f"ERROR: Expected metadata-forge directory in reachability checkout: {metrics_root}",
+            f"ERROR: Expected Forge directory in reachability checkout: {metrics_root}",
             file=sys.stderr,
         )
         raise SystemExit(1)
@@ -188,32 +192,20 @@ def resolve_repo_roots(
         in_metadata_repo: bool = False,
 ):
     """Resolve root paths for the target reachability repository and metrics storage."""
-
-    repo_root = get_repo_root()
-    local_repositories_root = os.path.join(repo_root, "local_repositories")
-
-    reachability_default = os.path.join(local_repositories_root, "graalvm-reachability-metadata")
-    metrics_default = os.path.join(local_repositories_root, "metadata-forge-metrics")
+    _ = in_metadata_repo
 
     # graalvm-reachability-metadata repo root
     print("[Resolving graalvm-reachability-metadata root path...]")
     if explicit_reachability_path:
         resolved_reachability_root = explicit_reachability_path
-    elif in_metadata_repo:
-        resolved_reachability_root = resolve_parent_reachability_repo()
     else:
-        resolved_reachability_root = ensure_local_reachability_repo(reachability_default)
+        resolved_reachability_root = resolve_parent_reachability_repo()
 
     # metrics root
-    print("[Resolving metadata-forge metrics root path...]")
+    print("[Resolving Forge metrics root path...]")
     if explicit_metrics_repo_path:
-        if in_metadata_repo:
-            resolved_metrics_root = ensure_in_repo_metrics_root(explicit_metrics_repo_path)
-        else:
-            resolved_metrics_root = ensure_local_metrics_repo(explicit_metrics_repo_path)
-    elif in_metadata_repo:
-        resolved_metrics_root = resolve_in_repo_metrics_root(resolved_reachability_root)
+        resolved_metrics_root = ensure_in_repo_metrics_root(explicit_metrics_repo_path)
     else:
-        resolved_metrics_root = ensure_local_metrics_repo(metrics_default)
+        resolved_metrics_root = resolve_in_repo_metrics_root(resolved_reachability_root)
 
     return resolved_reachability_root, resolved_metrics_root

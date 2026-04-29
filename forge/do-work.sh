@@ -15,7 +15,7 @@ NI_RUN_WORK_LIMIT="${FORGE_NI_RUN_WORK_LIMIT:-1}"
 WORK_LIMIT="${FORGE_WORK_LIMIT:-1}"
 RANDOM_WORK_OFFSET="${FORGE_RANDOM_WORK_OFFSET:-1}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
-IN_METADATA_REPO="${FORGE_IN_METADATA_REPO:-0}"
+IN_METADATA_REPO="${FORGE_IN_METADATA_REPO:-1}"
 
 LOCAL_REPOSITORIES_DIR="$SCRIPT_DIR/local_repositories"
 REACHABILITY_REPO_DIR="$LOCAL_REPOSITORIES_DIR/graalvm-reachability-metadata"
@@ -66,8 +66,7 @@ Options:
       library-new-request, fixes-javac-fail, fixes-java-run-fail, and
       fixes-native-image-run-fail PRs each cycle.
   --in-metadata-repo
-      Run metadata-forge from inside a graalvm-reachability-metadata checkout.
-      This forwards --in-metadata-repo to forge_metadata.py.
+      Deprecated compatibility no-op; in-repo mode is always used.
 
 Environment:
   DO_WORK_SLEEP_SECONDS
@@ -86,8 +85,8 @@ Environment:
       Review only PRs with this label. If unset, each generated PR label is
       reviewed every cycle.
   FORGE_IN_METADATA_REPO
-      Set to 1 to run in merged graalvm-reachability-metadata/metadata-forge
-      layout.
+      Deprecated compatibility switch. Defaults to 1 because Forge now always
+      runs inside the reachability metadata repo.
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
   FORGE_NI_RUN_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.

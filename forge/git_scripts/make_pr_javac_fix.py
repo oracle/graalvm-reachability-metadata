@@ -42,7 +42,7 @@ FIX_JAVAC_METRICS_FILE = "fix_javac_fail.json"
 def resolve_repo_paths(
         explicit_repo_path: str | None,
         explicit_metrics_repo_path: str | None,
-        in_metadata_repo: bool = False,
+        in_metadata_repo: bool = True,
 ):
     """Resolve repo and metrics paths using provided values or local defaults."""
     return resolve_repo_roots(
@@ -287,8 +287,7 @@ def build_parser():
         "--reachability-metadata-path",
         help=(
             "Path to the reachability-metadata repository to operate on. "
-            "If omitted, the existing checkout under 'local_repositories/graalvm-reachability-metadata' "
-            "will be used if it exists. This script will not clone repositories."
+            "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
     parser.add_argument(
@@ -296,8 +295,7 @@ def build_parser():
         dest="metrics_repo_path",
         help=(
             "Path to the metrics repository root. "
-            "If omitted, a local git repository under 'local_repositories/metadata-forge-metrics' "
-            "will be used."
+            "If omitted, the forge directory in the selected worktree is used."
         ),
     )
     add_in_metadata_repo_argument(parser)

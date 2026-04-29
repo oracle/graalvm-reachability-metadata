@@ -109,14 +109,14 @@ def build_parser(config: JavaFailWorkflowConfig):
         "--reachability-metadata-path",
         help=(
             "Path to the graalvm-reachability-metadata repository. "
-            "If omitted, local_repositories/graalvm-reachability-metadata is used (cloned if missing)."
+            "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
     parser.add_argument(
         "--metrics-repo-path",
         help=(
             "Path where workflow metrics are written."
-            "If omitted, local_repositories/metadata-forge-metrics is used (cloned if missing)."
+            "If omitted, the forge directory in the selected worktree is used."
         ),
     )
     add_in_metadata_repo_argument(parser)
@@ -166,7 +166,7 @@ def parse_flags(config: JavaFailWorkflowConfig, argv_list):
     )
 
 
-def resolve_repo_paths(explicit_repo_path, explicit_metrics_repo_path, in_metadata_repo: bool = False):
+def resolve_repo_paths(explicit_repo_path, explicit_metrics_repo_path, in_metadata_repo: bool = True):
     """Resolve repository paths for code and metrics outputs."""
     resolved_reachability_repo, resolved_metrics_repo = resolve_repo_roots(
         explicit_repo_path,

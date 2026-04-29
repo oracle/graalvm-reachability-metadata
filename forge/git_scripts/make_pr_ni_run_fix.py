@@ -30,7 +30,7 @@ BASE_BRANCH = 'master'
 REVIEWERS = get_configured_reviewers()
 
 
-def resolve_repo_path(explicit_repo_path: str | None, in_metadata_repo: bool = False) -> str:
+def resolve_repo_path(explicit_repo_path: str | None, in_metadata_repo: bool = True) -> str:
     """Resolve repo path using provided value or local default."""
     repo_path, _ = resolve_repo_roots(
         explicit_repo_path,
@@ -168,8 +168,7 @@ def build_parser():
         "--reachability-metadata-path",
         help=(
             "Path to the reachability-metadata repository to operate on. "
-            "If omitted, the existing checkout under 'local_repositories/graalvm-reachability-metadata' "
-            "will be used if it exists. This script will not clone repositories."
+            "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
     add_in_metadata_repo_argument(parser)

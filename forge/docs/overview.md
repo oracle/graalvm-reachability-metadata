@@ -30,8 +30,8 @@ supporting tests for the reachability repo.
 | Term | Definition |
 | --- | --- |
 | **Reachability metadata** | JSON describing reflection, JNI, resource, serialization, and proxy access for a library, consumed by GraalVM `native-image`. |
-| **Reachability repo** | Local clone or worktree of `oracle/graalvm-reachability-metadata`. The build and metadata-generation Gradle tasks run inside it. With `--in-metadata-repo`, the parent checkout of `metadata-forge/` is used by default. |
-| **Metrics root** | Directory that stores per-run results validated against [schemas/](../schemas/). Standalone mode defaults to `local_repositories/metadata-forge-metrics`; `--in-metadata-repo` defaults to the run worktree's `metadata-forge/` directory. |
+| **Reachability repo** | Local checkout or worktree of `oracle/graalvm-reachability-metadata`. The build and metadata-generation Gradle tasks run inside it. The parent checkout of `forge/` is used by default. |
+| **Metrics root** | Directory that stores per-run results validated against [schemas/](../schemas/). By default, this is the run worktree's `forge/` directory. |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
 | **Agent** | LLM-driven code editor (Aider, Codex, or Pi) registered through [ai_workflows/agents/](../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, `clear_context`. |
 | **Workflow strategy** | A registered control loop in [ai_workflows/workflow_strategies/](../ai_workflows/workflow_strategies/) (e.g. `basic_iterative`, `dynamic_access_iterative`). |
@@ -43,7 +43,7 @@ supporting tests for the reachability repo.
 ## 4. Component Layout
 
 ```text
-metadata-forge/
+forge/
 ├─ ai_workflows/          # Workflow entry points and pluggable agents/strategies
 │  ├─ agents/             # Agent implementations (aider, codex, pi)
 │  └─ workflow_strategies/# Strategy implementations (basic_iterative, dynamic_access_iterative, ...)
@@ -120,9 +120,10 @@ sequenceDiagram
 - `--coordinates <group:artifact:version>` — required.
 - `--reachability-metadata-path` — overrides default reachability-repo clone.
 - `--metrics-repo-path` — overrides default metrics-repo clone.
-- `--in-metadata-repo` — run from `graalvm-reachability-metadata/metadata-forge`;
-  defaults the target repository to the parent checkout and stores successful
-  run metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json`.
+- `--in-metadata-repo` — deprecated compatibility no-op. Forge always runs
+  from `graalvm-reachability-metadata/forge`, defaults the target repository
+  to the parent checkout, and stores successful run metrics under
+  `stats/<group>/<artifact>/<version>/execution-metrics.json`.
 - `--strategy-name <name>` — selects an entry from `predefined_strategies.json`.
 - `--docs-path` — additional read-only files for agent context.
 - `-v` / `--verbose` — verbose agent output.
@@ -156,8 +157,8 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 
 - **Per-run metrics record** appended to
   `<metrics_repo>/{script_run_metrics,benchmark_run_metrics}/<workflow>.json`,
-  schema-validated. With `--in-metadata-repo`, successful run metrics are
-  written under `stats/<group>/<artifact>/<version>/execution-metrics.json`.
+  schema-validated. Successful run metrics are written under
+  `stats/<group>/<artifact>/<version>/execution-metrics.json`.
 - **Generated tests + metadata + index.json** committed on the feature branch
   `ai/add-lib-support-<group>-<artifact>-<version>` in the reachability repo.
 - **Pull request** (only when invoked through `complete_pipelines/` or

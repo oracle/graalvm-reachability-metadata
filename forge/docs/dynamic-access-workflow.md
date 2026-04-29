@@ -19,7 +19,7 @@ class until coverage is reached or the per-class budget is exhausted.
 | Input | Source | Required |
 | --- | --- | --- |
 | Maven coordinate | `--coordinates group:artifact:version` | yes |
-| Reachability repo path | `--reachability-metadata-path` (default: clone, or parent checkout with `--in-metadata-repo`) | yes |
+| Reachability repo path | `--reachability-metadata-path` (default: parent checkout of `forge/`) | yes |
 | Strategy name | `--strategy-name <dynamic_access_*>` | yes |
 | Source-context types | strategy parameter `source-context-types` | yes |
 | Per-class iteration cap | strategy parameter `max-iterations` | yes |
@@ -38,7 +38,7 @@ class until coverage is reached or the per-class budget is exhausted.
 - A final **metadata commit** produced by the standard `_finalize_successful_iteration`
   / `generateMetadata` step (in benchmark mode, only `generateMetadata` runs).
 - A schema-validated metrics record under `<metrics_repo>/.../add_new_library_support.json`;
-  with `--in-metadata-repo`, `<metrics_repo>` is the run worktree's `metadata-forge/` directory.
+  by default, `<metrics_repo>` is the run worktree's `forge/` directory.
 
 ## 4. Preconditions and Setup
 

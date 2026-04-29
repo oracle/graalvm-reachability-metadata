@@ -12,9 +12,9 @@ Repo layout:
 - complete_pipelines/ — End-to-end wrappers that run an AI workflow and then open a PR.
 - utility_scripts/ — Helper scripts for technical and operational tasks.
 
-### Merged repository mode
+### Repository mode
 
-When `metadata-forge` is located inside `graalvm-reachability-metadata/metadata-forge`, pass `--in-metadata-repo`. The flag makes the parent checkout the default reachability repository and writes successful run metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; in this mode the run's pending metrics root is the same worktree's `metadata-forge/` directory.
+Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory. The old `--in-metadata-repo` flag is accepted as a no-op for compatibility.
 
 ### Prerequisites
 
@@ -23,7 +23,7 @@ When `metadata-forge` is located inside `graalvm-reachability-metadata/metadata-
   - Either export GRAALVM_HOME and JAVA_HOME, or pass explicit paths to scripts.
   - JAVA_HOME should point to a GraalVM distribution; if omitted, the scripts fall back to GRAALVM_HOME or the current environment.
 - Python 3 and the tooling required by the agent strategy you plan to run.
-- Set `PYTHONPATH` so cross-package imports work (run from the `metadata-forge/` directory):
+- Set `PYTHONPATH` so cross-package imports work (run from the `forge/` directory):
   ```bash
   export PYTHONPATH=$PWD
   ```
@@ -58,8 +58,8 @@ python3 ai_workflows/fix_javac_fail.py \
 Where:
 - `--coordinates`: group:artifact:oldVersion (e.g., org.postgresql:postgresql:42.7.3)
 - `--new-version`: target library version which needs a fix (e.g., 42.7.4)
-- `--reachability-metadata-path`: optional path to your local clone of graalvm-reachability-metadata. If omitted, `local_repositories/graalvm-reachability-metadata` is used, cloned from `github.com/oracle/graalvm-reachability-metadata` if missing.
-- `--metrics-repo-path`: optional path to the metrics repository root. If omitted, a local git repository under `local_repositories/metadata-forge-metrics` is used.
+- `--reachability-metadata-path`: optional path to a graalvm-reachability-metadata worktree. If omitted, the parent checkout is used.
+- `--metrics-repo-path`: optional path to the metrics root. If omitted, the `forge/` directory in the selected worktree is used.
 - `--docs-path`: optional directory with read-only docs for agent context (e.g., extracted Javadoc).
 
 Example:
@@ -78,7 +78,7 @@ Options:
 
 Notes:
 - Runs Gradle tasks inside the reachability-metadata repo (`./gradlew ...`).
-- On success, writes metrics into `<metrics_repo_path>/script_run_metrics/fix_javac_fail.json`, or into `stats/<group>/<artifact>/<version>/execution-metrics.json` when `--in-metadata-repo` is used.
+- On success, writes metrics into `stats/<group>/<artifact>/<version>/execution-metrics.json`.
 
 ### Add support for a new library
 
@@ -104,8 +104,8 @@ python ai_workflows/add_new_library_support.py \
 
 Where:
 - `--coordinates`: group:artifact:version (e.g., org.example:lib:1.2.3)
-- `--reachability-metadata-path`: optional path to your local clone of graalvm-reachability-metadata. If omitted, `local_repositories/graalvm-reachability-metadata` is used, cloned from `github.com/oracle/graalvm-reachability-metadata` if missing.
-- `--metrics-repo-path`: optional path to the metrics repository root. If omitted, a local git repository under `local_repositories/metadata-forge-metrics` is used.
+- `--reachability-metadata-path`: optional path to a graalvm-reachability-metadata worktree. If omitted, the parent checkout is used.
+- `--metrics-repo-path`: optional path to the metrics root. If omitted, the `forge/` directory in the selected worktree is used.
 - `--docs-path`: optional directory with read-only docs for agent context (e.g., extracted Javadoc).
 
 Example:
@@ -241,8 +241,8 @@ python3 benchmarks/benchmark_runner.py \
 
 Where:
 - `--benchmark-name`: selects the benchmark configuration from `benchmarks/benchmark_suite.json`.
-- `--reachability-metadata-path`: optional path to your local clone of `graalvm-reachability-metadata`. If omitted, `local_repositories/graalvm-reachability-metadata` is used, cloned from `github.com/oracle/graalvm-reachability-metadata` if missing.
-- `--metrics-repo-path`: optional path to the metrics repository root. If omitted, a local git repository under `local_repositories/metadata-forge-metrics` is used.
+- `--reachability-metadata-path`: optional path to a `graalvm-reachability-metadata` worktree. If omitted, the parent checkout is used.
+- `--metrics-repo-path`: optional path to the metrics root. If omitted, the `forge/` directory in the selected worktree is used.
 - `-v`, `--verbose`: enable verbose output and pass `-v` through to the underlying workflow.
 
 ### Utilities

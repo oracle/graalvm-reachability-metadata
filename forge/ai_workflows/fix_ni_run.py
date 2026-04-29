@@ -40,8 +40,7 @@ def build_parser():
         "--reachability-metadata-path",
         help=(
             "Path to the graalvm-reachability-metadata repository. "
-            "If omitted, local_repositories/graalvm-reachability-metadata is used, "
-            "cloned from github.com/oracle/graalvm-reachability-metadata if missing."
+            "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
     add_in_metadata_repo_argument(parser)

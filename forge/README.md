@@ -4,9 +4,9 @@ Metadata Forge automates reachability-metadata maintenance for community
 libraries: generating new library support, fixing version-bump failures,
 reviewing generated PRs, and recording run metrics.
 
-This directory lives inside the `graalvm-reachability-metadata` checkout. When
-running in merged-repository mode, the reachability repository is the parent
-directory (`..`) and Forge metrics are stored under this directory.
+This directory lives inside the `graalvm-reachability-metadata` checkout. The
+reachability repository is the parent directory (`..`) and Forge metrics are
+stored under this directory.
 
 ## Primary Entry Point
 
@@ -26,12 +26,12 @@ Common options:
 - `--java-run-limit N`: process up to `N` JVM runtime failure tasks per cycle.
 - `--ni-run-limit N`: process up to `N` Native Image runtime failure tasks per cycle.
 - `--review-limit N`: process up to `N` PR review tasks per label per cycle.
-- `--in-metadata-repo`: run with the parent checkout as the reachability repo.
+- `--in-metadata-repo`: deprecated compatibility no-op; in-repo mode is always used.
 
 Examples:
 
 ```console
-./do-work.sh --in-metadata-repo --new-limit 1 --javac-limit 1
+./do-work.sh --new-limit 1 --javac-limit 1
 DO_WORK_SLEEP_SECONDS=60 ./do-work.sh --branch master
 FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 ```
@@ -65,10 +65,10 @@ directly when debugging a single task or reproducing a failure.
 
 ```console
 python3 forge_metadata.py --help
-python3 ai_workflows/add_new_library_support.py --coordinates <group:artifact:version> --in-metadata-repo
-python3 ai_workflows/fix_javac_fail.py --coordinates <group:artifact:oldVersion> --new-version <newVersion> --in-metadata-repo
-python3 ai_workflows/fix_java_run_fail.py --coordinates <group:artifact:oldVersion> --new-version <newVersion> --in-metadata-repo
-python3 ai_workflows/fix_ni_run.py --coordinates <group:artifact:oldVersion> --new-version <newVersion> --in-metadata-repo
+python3 ai_workflows/add_new_library_support.py --coordinates <group:artifact:version>
+python3 ai_workflows/fix_javac_fail.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
+python3 ai_workflows/fix_java_run_fail.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
+python3 ai_workflows/fix_ni_run.py --coordinates <group:artifact:oldVersion> --new-version <newVersion>
 ```
 
 Strategies are declared in `strategies/predefined_strategies.json`. Prompt text

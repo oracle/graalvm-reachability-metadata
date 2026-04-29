@@ -95,16 +95,14 @@ def build_parser():
         "--reachability-metadata-path",
         help=(
             "Path to the graalvm-reachability-metadata repository to operate on. "
-            "If omitted, local_repositories/graalvm-reachability-metadata is used, "
-            "cloned from github.com/oracle/graalvm-reachability-metadata if missing."
+            "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
     parser.add_argument(
         "--metrics-repo-path",
         help=(
             "Path where workflow metrics will be written (results.json). "
-            "If omitted, a local git repository under 'local_repositories/metadata-forge-metrics' "
-            "will be used."
+            "If omitted, the forge directory in the selected worktree is used."
         ),
     )
     add_in_metadata_repo_argument(parser)
@@ -183,7 +181,7 @@ def resolve_repo_paths(
         explicit_repo_path: str | None,
         explicit_metrics_repo_path: str | None,
         benchmark_mode: bool,
-        in_metadata_repo: bool = False,
+        in_metadata_repo: bool = True,
 ):
     """Resolve paths for reachability-metadata and metrics-metadata-forge repositories."""
 

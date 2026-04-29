@@ -484,7 +484,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "/tmp/reachability",
             "/tmp/metrics",
             "automation-user",
-            in_metadata_repo=False,
+            in_metadata_repo=True,
         )
         get_open_blocking_issue_numbers.assert_not_called()
         get_issue_assignees.assert_not_called()
@@ -548,7 +548,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             False,
             "automation-user",
             forge_metadata.DEFAULT_PARALLELISM,
-            in_metadata_repo=False,
+            in_metadata_repo=True,
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()
@@ -590,7 +590,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             False,
             "automation-user",
             forge_metadata.DEFAULT_PARALLELISM,
-            in_metadata_repo=False,
+            in_metadata_repo=True,
             environment_already_validated=True,
         )
         process_reviews.assert_not_called()

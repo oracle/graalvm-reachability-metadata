@@ -48,10 +48,10 @@ def _commit_file(repo_root: str, relative_path: str, content: str, message: str)
 
 
 class GitWorktreeRegressionTests(unittest.TestCase):
-    def test_in_metadata_repo_defaults_to_parent_repo_and_metadata_forge_metrics(self) -> None:
+    def test_defaults_to_parent_repo_and_in_repo_forge_metrics(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             reachability_repo = os.path.join(temp_dir, "graalvm-reachability-metadata")
-            forge_root = os.path.join(reachability_repo, "metadata-forge")
+            forge_root = os.path.join(reachability_repo, "forge")
             os.makedirs(os.path.join(reachability_repo, "metadata"))
             os.makedirs(os.path.join(reachability_repo, "tests"))
             os.makedirs(forge_root)
@@ -61,7 +61,6 @@ class GitWorktreeRegressionTests(unittest.TestCase):
                 reachability_root, metrics_root = resolve_repo_roots(
                     None,
                     None,
-                    in_metadata_repo=True,
                 )
 
             self.assertEqual(reachability_root, reachability_repo)
@@ -69,16 +68,15 @@ class GitWorktreeRegressionTests(unittest.TestCase):
             self.assertTrue(os.path.isdir(os.path.join(forge_root, "script_run_metrics")))
             self.assertTrue(os.path.isdir(os.path.join(forge_root, "benchmark_run_metrics")))
 
-    def test_in_metadata_repo_explicit_reachability_path_uses_worktree_metadata_forge_metrics(self) -> None:
+    def test_explicit_reachability_path_uses_worktree_forge_metrics(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             worktree_path = os.path.join(temp_dir, "run-worktree")
-            forge_root = os.path.join(worktree_path, "metadata-forge")
+            forge_root = os.path.join(worktree_path, "forge")
             os.makedirs(forge_root)
 
             reachability_root, metrics_root = resolve_repo_roots(
                 worktree_path,
                 None,
-                in_metadata_repo=True,
             )
 
             self.assertEqual(reachability_root, worktree_path)

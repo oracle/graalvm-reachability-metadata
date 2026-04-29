@@ -62,14 +62,14 @@ def build_parser():
         "--reachability-metadata-path",
         help=(
             "Path to the graalvm-reachability-metadata repository. "
-            "If omitted, local_repositories/graalvm-reachability-metadata is used."
+            "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
     parser.add_argument(
         "--metrics-repo-path",
         help=(
             "Path where workflow metrics are written. "
-            "If omitted, local_repositories/metadata-forge-metrics is used."
+            "If omitted, the forge directory in the selected worktree is used."
         ),
     )
     add_in_metadata_repo_argument(parser)

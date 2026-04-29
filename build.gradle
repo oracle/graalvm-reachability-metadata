@@ -95,7 +95,7 @@ spotless {
     }
     format('python') {
         target('**/*.py')
-        targetExclude(*noHeaderDirs)
+        targetExclude(*noHeaderDirs, '**/.venv/**', 'forge/local_repositories/**')
         // Ensure header appears after shebang if present, else at the very top.
         def pyHeader = file("$rootDir/gradle/header.sh").text
         replaceRegex('insert-license-after-shebang',

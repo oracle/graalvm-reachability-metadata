@@ -184,7 +184,7 @@ Successful `fails-java-run` issues finalize with `git_scripts/make_pr_java_run_f
 - creates branch `ai/<gh-login>/fix-java-run-<group>-<artifact>-<newVersion>`
 - includes generation stats, stats comparison, and a diff between old and new tests
 - uses the `fixes-java-run-fail` PR label
-- reads pending metrics and commits them to `script_run_metrics/fix_java_run_fail.json`, or to `stats/<group>/<artifact>/<version>/execution-metrics.json` when `--in-metadata-repo` is used
+- reads pending metrics and commits successful run metrics to `stats/<group>/<artifact>/<version>/execution-metrics.json`
 
 ### Metrics
 

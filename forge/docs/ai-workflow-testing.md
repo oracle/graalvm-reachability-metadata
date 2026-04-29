@@ -92,7 +92,7 @@ Required checks:
 
 Review the run metrics file at:
 
-- `<metrics_repo_path>/script_run_metrics/add_new_library_support.json`, or `stats/<group>/<artifact>/<version>/execution-metrics.json` when `--in-metadata-repo` is used
+- `<metrics_repo_path>/script_run_metrics/add_new_library_support.json`, with successful run metrics committed to `stats/<group>/<artifact>/<version>/execution-metrics.json`
 - `<metrics_repo_path>/benchmark_run_metrics/add_new_library_support.json` when running benchmark mode
 
 Inspect at least these fields:

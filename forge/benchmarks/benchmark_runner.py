@@ -47,16 +47,14 @@ def parse_args(argv):
         "--reachability-metadata-path",
         help=(
             "Path to the graalvm-reachability-metadata repository to operate on. "
-            "If omitted, local_repositories/graalvm-reachability-metadata is used, "
-            "cloned from github.com/oracle/graalvm-reachability-metadata if missing."
+            "If omitted, the parent checkout of this Forge directory is used."
         ),
     )
     parser.add_argument(
         "--metrics-repo-path",
         help=(
             "Path where workflow metrics will be written (results.json). "
-            "If omitted, a local git repository under 'local_repositories/metadata-forge-metrics' "
-            "will be used."
+            "If omitted, the forge directory in the selected worktree is used."
         ),
     )
     add_in_metadata_repo_argument(parser)

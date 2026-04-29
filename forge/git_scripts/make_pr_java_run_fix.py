@@ -39,7 +39,7 @@ FIX_JAVA_RUN_METRICS_FILE = "fix_java_run_fail.json"
 def resolve_repo_paths(
         explicit_repo_path: str | None,
         explicit_metrics_repo_path: str | None,
-        in_metadata_repo: bool = False,
+        in_metadata_repo: bool = True,
 ):
     """Resolve repo and metrics paths using provided values or local defaults."""
     return resolve_repo_roots(
