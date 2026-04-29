@@ -8,7 +8,7 @@ package org_slf4j.slf4j_ext;
 
 import org.junit.jupiter.api.Test;
 
-class Slf4j_extTest {
+public class Slf4j_extTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
