@@ -20,6 +20,10 @@ import org.modelmapper.internal.bytebuddy.dynamic.scaffold.subclass.ConstructorS
 
 public class ClassInjectorInnerUsingReflectionInnerDispatcherInnerUsingUnsafeInjectionTest {
 
+    static {
+        System.setProperty("org.modelmapper.internal.bytebuddy.safe", "false");
+    }
+
     @Test
     void injectsGeneratedTypeAndDefinesItsPackageThroughUnsafeReflectionDispatcher() {
         ClassLoader targetClassLoader = new IsolatedClassLoader(getClass().getClassLoader());
@@ -28,14 +32,12 @@ public class ClassInjectorInnerUsingReflectionInnerDispatcherInnerUsingUnsafeInj
 
         Class<?> loadedType = loadInjectedType(typeName, targetClassLoader);
 
-        if (loadedType != null) {
-            assertThat(loadedType.getName()).isEqualTo(typeName);
-            assertThat(loadedType.getClassLoader()).isSameAs(targetClassLoader);
-            assertThat(targetClassLoader.getDefinedPackage("org_modelmapper.modelmapper.generated"))
-                .isNotNull()
-                .extracting(Package::getSpecificationTitle)
-                .isEqualTo(DefinedPackageStrategy.SPECIFICATION_TITLE);
-        }
+        assertThat(loadedType.getName()).isEqualTo(typeName);
+        assertThat(loadedType.getClassLoader()).isSameAs(targetClassLoader);
+        assertThat(targetClassLoader.getDefinedPackage("org_modelmapper.modelmapper.generated"))
+            .isNotNull()
+            .extracting(Package::getSpecificationTitle)
+            .isEqualTo(DefinedPackageStrategy.SPECIFICATION_TITLE);
     }
 
     @Test
@@ -45,24 +47,17 @@ public class ClassInjectorInnerUsingReflectionInnerDispatcherInnerUsingUnsafeInj
 
         Class<?> loadedType = loadInjectedType(typeName, targetClassLoader);
 
-        if (loadedType != null) {
-            assertThat(loadedType.getName()).isEqualTo(typeName);
-            assertThat(loadedType.getPackage().getName())
-                .isEqualTo("org_modelmapper.modelmapper.race");
-            assertThat(loadedType.getPackage().getSpecificationTitle())
-                .isEqualTo(DefinedPackageStrategy.SPECIFICATION_TITLE);
-        }
+        assertThat(loadedType.getName()).isEqualTo(typeName);
+        assertThat(loadedType.getPackage().getName())
+            .isEqualTo("org_modelmapper.modelmapper.race");
+        assertThat(loadedType.getPackage().getSpecificationTitle())
+            .isEqualTo(DefinedPackageStrategy.SPECIFICATION_TITLE);
     }
 
     private static Class<?> loadInjectedType(String typeName, ClassLoader targetClassLoader) {
-        try {
-            return makeUnloadedType(typeName)
-                .load(targetClassLoader, injectionStrategy())
-                .getLoaded();
-        } catch (UnsupportedOperationException e) {
-            assertThat(e).hasMessageContaining("Cannot get defined package using reflection");
-            return null;
-        }
+        return makeUnloadedType(typeName)
+            .load(targetClassLoader, injectionStrategy())
+            .getLoaded();
     }
 
     private static DynamicType.Unloaded<?> makeUnloadedType(String typeName) {
