@@ -36,35 +36,66 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
     private static final String SERVICES_FILE = "META-INF/services/" + ValidationProvider.class.getName();
 
     @Test
-    void defaultResolverDiscoversProviderFromContextClassLoaderAndFallsBackToCallerClassLoader() throws Exception {
-        TestValidationProvider.reset();
+    void defaultResolverLoadsProviderWithContextClassLoader() throws Exception {
         Path providerDefinition = writeProviderDefinition();
-        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader parentClassLoader = originalContextClassLoader;
-        if (parentClassLoader == null) {
-            parentClassLoader = getClass().getClassLoader();
-        }
         ClassLoader providerClassLoader = new ProviderDefinitionClassLoader(
-                parentClassLoader,
+                parentClassLoader(),
                 providerDefinition.toUri().toURL()
         );
 
         try {
+            TestValidationConfiguration configuration = configureWith(providerClassLoader);
+
+            assertDiscoveredProvider(configuration);
+        }
+        finally {
+            Files.deleteIfExists(providerDefinition);
+        }
+    }
+
+    @Test
+    void defaultResolverDiscoversProviderFromContextClassLoaderAndFallsBackToCallerClassLoader() throws Exception {
+        Path providerDefinition = writeProviderDefinition();
+        ClassLoader providerClassLoader = new FailingProviderDefinitionClassLoader(
+                parentClassLoader(),
+                providerDefinition.toUri().toURL()
+        );
+
+        try {
+            TestValidationConfiguration configuration = configureWith(providerClassLoader);
+
+            assertDiscoveredProvider(configuration);
+        }
+        finally {
+            Files.deleteIfExists(providerDefinition);
+        }
+    }
+
+    private ClassLoader parentClassLoader() {
+        ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
+        if (parentClassLoader == null) {
+            return getClass().getClassLoader();
+        }
+        return parentClassLoader;
+    }
+
+    private static TestValidationConfiguration configureWith(ClassLoader providerClassLoader) {
+        TestValidationProvider.reset();
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
             Thread.currentThread().setContextClassLoader(providerClassLoader);
-
-            TestValidationConfiguration configuration = (TestValidationConfiguration) Validation
-                    .byDefaultProvider()
-                    .configure();
-
-            assertThat(TestValidationProvider.instantiationCount).isEqualTo(1);
-            assertThat(TestValidationProvider.lastInstance).isNotNull();
-            assertThat(configuration.provider()).isSameAs(TestValidationProvider.lastInstance);
-            assertThat(configuration.bootstrapState()).isNotNull();
+            return (TestValidationConfiguration) Validation.byDefaultProvider().configure();
         }
         finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
-            Files.deleteIfExists(providerDefinition);
         }
+    }
+
+    private static void assertDiscoveredProvider(TestValidationConfiguration configuration) {
+        assertThat(TestValidationProvider.instantiationCount).isEqualTo(1);
+        assertThat(TestValidationProvider.lastInstance).isNotNull();
+        assertThat(configuration.provider()).isSameAs(TestValidationProvider.lastInstance);
+        assertThat(configuration.bootstrapState()).isNotNull();
     }
 
     private static Path writeProviderDefinition() throws IOException {
@@ -77,7 +108,7 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
         return providerDefinition;
     }
 
-    private static final class ProviderDefinitionClassLoader extends ClassLoader {
+    private static class ProviderDefinitionClassLoader extends ClassLoader {
 
         private final URL providerDefinition;
 
@@ -92,6 +123,13 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
                 return Collections.enumeration(Collections.singleton(providerDefinition));
             }
             return super.getResources(name);
+        }
+    }
+
+    private static final class FailingProviderDefinitionClassLoader extends ProviderDefinitionClassLoader {
+
+        private FailingProviderDefinitionClassLoader(ClassLoader parent, URL providerDefinition) {
+            super(parent, providerDefinition);
         }
 
         @Override
