@@ -298,6 +298,39 @@ public class AtomicfuTest {
         assertThat(log).containsExactlyInAnyOrder(0, 1, 2, 3, 4)
     }
 
+    @Test
+    fun reentrantLockTryLockReportsContentionAndRelease(): Unit {
+        val lock = reentrantLock()
+        val workerAcquired = JdkAtomicReference<Boolean?>()
+        val workerDone = CountDownLatch(1)
+
+        lock.lock()
+        try {
+            assertThat(lock.tryLock()).isTrue()
+            lock.unlock()
+
+            Thread {
+                val acquired = lock.tryLock()
+                workerAcquired.set(acquired)
+                if (acquired) {
+                    lock.unlock()
+                }
+                workerDone.countDown()
+            }.apply {
+                name = "atomicfu-try-lock-worker"
+                start()
+            }
+
+            assertThat(workerDone.await(10, TimeUnit.SECONDS)).isTrue()
+            assertThat(workerAcquired.get()).isFalse()
+        } finally {
+            lock.unlock()
+        }
+
+        assertThat(lock.tryLock()).isTrue()
+        lock.unlock()
+    }
+
     private fun runConcurrently(workerCount: Int, action: (Int) -> Unit): Unit {
         val start = CountDownLatch(1)
         val done = CountDownLatch(workerCount)
