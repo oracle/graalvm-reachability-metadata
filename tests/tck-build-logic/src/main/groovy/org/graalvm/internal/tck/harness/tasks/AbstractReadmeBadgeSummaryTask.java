@@ -64,11 +64,6 @@ public abstract class AbstractReadmeBadgeSummaryTask extends DefaultTask {
     }
 
     @Internal
-    protected Path getExecutionMetricsRoot() {
-        return getOutputRoot().resolve("latest").resolve("execution-metrics");
-    }
-
-    @Internal
     protected Path getCoverageMarkdownFile() {
         return getOutputRoot().resolve("COVERAGE.md");
     }

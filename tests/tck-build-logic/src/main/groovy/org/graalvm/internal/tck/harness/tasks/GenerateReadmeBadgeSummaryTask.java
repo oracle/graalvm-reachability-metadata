@@ -9,9 +9,6 @@ package org.graalvm.internal.tck.harness.tasks;
 import org.gradle.api.tasks.TaskAction;
 import org.graalvm.internal.tck.stats.ReadmeBadgeSummarySupport;
 
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-
 /**
  * Generates the JSON payload consumed by the README shields.io badges.
  */
@@ -20,18 +17,11 @@ public abstract class GenerateReadmeBadgeSummaryTask extends AbstractReadmeBadge
 
     @TaskAction
     public void generate() {
-        LocalDate snapshotDate = LocalDate.now(ZoneOffset.UTC);
-        ReadmeBadgeSummarySupport.ExecutionMetricsIndex executionMetricsIndex = ReadmeBadgeSummarySupport.buildExecutionMetricsIndex(
-                getStatsRoot(),
-                getMetadataRoot(),
-                snapshotDate
-        );
         ReadmeBadgeSummarySupport.ReadmeBadgeSummary summary = ReadmeBadgeSummarySupport.buildSummary(
-                getMetadataRoot(),
-                executionMetricsIndex
+                getStatsRoot(),
+                getMetadataRoot()
         );
         ReadmeBadgeSummarySupport.writeSummary(getLatestBadgesFile(), summary);
-        ReadmeBadgeSummarySupport.writeExecutionMetrics(getExecutionMetricsRoot(), executionMetricsIndex);
 
         ReadmeBadgeSummarySupport.ReadmeMetricsHistory history = ReadmeBadgeSummarySupport.loadHistory(getHistoryFile());
         ReadmeBadgeSummarySupport.ReadmeMetricsHistory updatedHistory = ReadmeBadgeSummarySupport.withSnapshot(history, summary);
@@ -45,8 +35,9 @@ public abstract class GenerateReadmeBadgeSummaryTask extends AbstractReadmeBadge
         );
         ReadmeBadgeSummarySupport.writeCoverageMarkdown(
                 getCoverageMarkdownFile(),
-                summary,
-                executionMetricsIndex
+                getStatsRoot(),
+                getMetadataRoot(),
+                summary
         );
         getLogger().quiet("Updated README metrics artifacts under {}.", getOutputRoot());
     }

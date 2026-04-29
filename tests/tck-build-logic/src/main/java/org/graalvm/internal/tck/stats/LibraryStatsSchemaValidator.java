@@ -158,6 +158,10 @@ public final class LibraryStatsSchemaValidator {
             return null;
         }
 
+        if (isExecutionMetricsFile(relative)) {
+            return null;
+        }
+
         if (relative.getNameCount() == 4 && "stats.json".equals(relative.getName(3).toString())) {
             return new StatsLocation(
                     relative.getName(0).toString(),
@@ -167,12 +171,18 @@ public final class LibraryStatsSchemaValidator {
         }
 
         failures.add("Unexpected JSON file under stats root: " + file
-                + " (expected stats/<groupId>/<artifactId>/<metadataVersion>/stats.json or stats/schemas/*.json)");
+                + " (expected stats/<groupId>/<artifactId>/<metadataVersion>/stats.json, "
+                + "stats/<groupId>/<artifactId>/execution-metrics.json, or stats/schemas/*.json)");
         return null;
     }
 
     private static boolean isSchemaFile(Path relativePath) {
         return relativePath.getNameCount() >= 2 && "schemas".equals(relativePath.getName(0).toString());
+    }
+
+    private static boolean isExecutionMetricsFile(Path relativePath) {
+        return relativePath.getNameCount() == 3
+                && "execution-metrics.json".equals(relativePath.getName(2).toString());
     }
 
     private static Map<StatsLocation, Path> collectExpectedStatsFiles(Path metadataRoot, Path statsRoot) {

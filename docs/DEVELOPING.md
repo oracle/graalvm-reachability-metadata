@@ -136,6 +136,7 @@ Each stage of the testing can be run with `-Pcoordinates=[group:artifact:version
 ./gradlew listLibraryJars -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew generateDynamicAccessReport -Pcoordinates=[group:artifact:version|k/n|all]
 ./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]
+./gradlew generateExecutionMetrics
 ./gradlew validateLibraryStats
 ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
 ```
@@ -172,12 +173,13 @@ Schema:
 
 ```console
 ./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]
+./gradlew generateExecutionMetrics
 ./gradlew validateLibraryStats
 ```
 
 - `generateLibraryStats`: recomputes selected coordinates and updates matching exploded stats files under `stats/`.
+- `generateExecutionMetrics`: derives per-artifact execution metrics under `stats/<groupId>/<artifactId>/execution-metrics.json`.
 - `validateLibraryStats`: validates mirrored committed stats files, schema compliance, and normalized sorting without recomputing metrics.
-- `generateReadmeBadgeSummary`: derives repository-wide badges, split execution metrics in `latest/execution-metrics/<groupId>/<artifactId>/metrics.json`, coverage Markdown, and metrics history from the committed stats files.
 
 For new-library issue triage, the repository also exposes:
 
@@ -282,6 +284,7 @@ These tasks support the scheduled workflow that checks newer upstream library ve
   JSON top-level fields: `coordinate`, `hasDynamicAccess`, `totals`, `classes`
 - Coverage (single lib): `./gradlew jacocoTestReport -Pcoordinates=[group:artifact:version|k/n|all]`
 - Generate library stats: `./gradlew generateLibraryStats -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`
+- Generate execution metrics: `./gradlew generateExecutionMetrics`
 - Validate library stats: `./gradlew validateLibraryStats`
 - List available coordinates: `./gradlew listCoordinates -Pcoordinates=[group:artifact:version|group:artifact|k/n|all] [-PstrictCoordinates=true]`
 - Generate dependency graph: `./gradlew generateDependencyGraph -Pcoordinates=[group:artifact:version|group:artifact|k/n|all]`

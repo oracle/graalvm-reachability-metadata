@@ -39,6 +39,7 @@ import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
+import org.graalvm.internal.tck.harness.tasks.GenerateExecutionMetricsTask
 import org.graalvm.internal.tck.harness.tasks.GenerateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.ValidateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.AnalyzeExternalLibraryDynamicAccessTask
@@ -220,8 +221,13 @@ tasks.register("generateLibraryStats", GenerateLibraryStatsTask.class) { task ->
     task.setGroup(METADATA_GROUP)
 }
 
+tasks.register("generateExecutionMetrics", GenerateExecutionMetricsTask.class) { task ->
+    task.setDescription("Generates execution metrics under stats/<group>/<artifact>/execution-metrics.json")
+    task.setGroup(METADATA_GROUP)
+}
+
 tasks.register("generateReadmeBadgeSummary", GenerateReadmeBadgeSummaryTask.class) { task ->
-    task.setDescription("Generates current README metrics data, split execution metrics, coverage Markdown, and updates README metrics history")
+    task.setDescription("Generates current README metrics data, coverage Markdown, and updates README metrics history")
     task.setGroup(METADATA_GROUP)
 }
 
