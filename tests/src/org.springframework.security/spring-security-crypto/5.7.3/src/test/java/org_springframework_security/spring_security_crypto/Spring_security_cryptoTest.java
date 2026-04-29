@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.springframework.security.crypto.codec.Utf8;
 import org.springframework.security.crypto.encrypt.BytesEncryptor;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
 import org.springframework.security.crypto.keygen.BytesKeyGenerator;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.keygen.StringKeyGenerator;
@@ -132,6 +134,15 @@ public class Spring_security_cryptoTest {
         StringKeyGenerator stringGenerator = KeyGenerators.string();
 
         assertThat(stringGenerator.generateKey()).matches("[0-9a-f]{16}");
+    }
+
+    @Test
+    void base64StringKeyGeneratorProducesUrlSafeKeysWithoutPadding() {
+        Base64StringKeyGenerator generator = new Base64StringKeyGenerator(Base64.getUrlEncoder().withoutPadding(), 32);
+
+        String key = generator.generateKey();
+
+        assertThat(key).hasSize(43).matches("[A-Za-z0-9_-]+");
     }
 
     @Test
