@@ -19,6 +19,10 @@ public final class SchemaUtilCoverageSupport {
     public static Object structFieldsDefaultEntry() {
         return SchemaUtil.getMapDefaultEntry(Struct.class, "fields");
     }
+
+    public static Object mapDefaultEntry(Class<?> clazz, String name) {
+        return SchemaUtil.getMapDefaultEntry(clazz, name);
+    }
 }
 
 final class UnknownFieldSetSchema extends UnknownFieldSchema<Object, Object> {
