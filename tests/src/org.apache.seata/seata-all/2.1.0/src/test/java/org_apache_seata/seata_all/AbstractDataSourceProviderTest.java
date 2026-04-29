@@ -7,6 +7,7 @@
 package org_apache_seata.seata_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,32 +15,56 @@ import java.nio.file.Path;
 import javax.sql.DataSource;
 
 import org.apache.seata.core.store.db.AbstractDataSourceProvider;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class AbstractDataSourceProviderTest {
-    @TempDir
-    Path classPathRoot;
+    private static final String DRIVER_CLASS_NAME = TestDataSourceProvider.class.getName();
 
-    @Test
-    void scansJdbcDirectoryForMysqlDriverCandidatesWhenProviderClassInitializes() throws Exception {
+    @TempDir
+    static Path classPathRoot;
+
+    private static String originalClassPath;
+    private static String originalConfigType;
+    private static String originalConfigFileName;
+    private static String originalDriverClassName;
+
+    @BeforeAll
+    static void configureSeataAndJdbcDriverPath() throws Exception {
         Path jdbcDirectory = Files.createDirectories(classPathRoot.resolve("jdbc"));
         Files.createDirectories(jdbcDirectory.resolve("mysql-connector-java-test"));
-        String originalClassPath = System.getProperty("java.class.path");
-        String originalConfigType = System.getProperty("config.type");
-        String originalConfigFileName = System.getProperty("config.file.name");
+        originalClassPath = System.getProperty("java.class.path");
+        originalConfigType = System.getProperty("config.type");
+        originalConfigFileName = System.getProperty("config.file.name");
+        originalDriverClassName = System.getProperty("store.db.driverClassName");
         System.setProperty("java.class.path", classPathRoot.toString());
         System.setProperty("config.type", "file");
         System.setProperty("config.file.name", "file.conf");
-        try {
-            TestDataSourceProvider provider = new TestDataSourceProvider();
+        System.setProperty("store.db.driverClassName", DRIVER_CLASS_NAME);
+    }
 
-            assertThat(provider.provide()).isNull();
-        } finally {
-            restoreProperty("java.class.path", originalClassPath);
-            restoreProperty("config.type", originalConfigType);
-            restoreProperty("config.file.name", originalConfigFileName);
-        }
+    @AfterAll
+    static void restoreSystemProperties() {
+        restoreProperty("java.class.path", originalClassPath);
+        restoreProperty("config.type", originalConfigType);
+        restoreProperty("config.file.name", originalConfigFileName);
+        restoreProperty("store.db.driverClassName", originalDriverClassName);
+    }
+
+    @Test
+    void scansJdbcDirectoryForMysqlDriverCandidatesWhenProviderClassInitializes() {
+        TestDataSourceProvider provider = new TestDataSourceProvider();
+
+        assertThat(provider.provide()).isNull();
+    }
+
+    @Test
+    void validatesConfiguredDriverWithContextClassLoader() {
+        TestDataSourceProvider provider = new TestDataSourceProvider();
+
+        assertThatNoException().isThrownBy(provider::validate);
     }
 
     private static void restoreProperty(String name, String originalValue) {
