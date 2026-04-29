@@ -9,16 +9,18 @@ package org_yaml.snakeyaml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
 
 public class ConstructorConstructScalarTest {
 
     @Test
     void constructsRootBeanWhenRootTypeIsProvidedAsClassName() throws ClassNotFoundException {
-        Yaml yaml = new Yaml(new Constructor(RootBean.class.getName()));
+        Yaml yaml = new Yaml(new Constructor(RootBean.class.getName(), new LoaderOptions()));
 
         RootBean bean = yaml.load(
                 """
@@ -61,7 +63,8 @@ public class ConstructorConstructScalarTest {
 
         Thread.currentThread().setContextClassLoader(rejectingLoader);
         try {
-            FallbackTaggedBean bean = new Yaml().load(
+            Yaml yaml = new Yaml(new Constructor(trustedLoaderOptions(FallbackTaggedBean.class)));
+            FallbackTaggedBean bean = yaml.load(
                     """
                     !!%s
                     name: tagged
@@ -98,6 +101,13 @@ public class ConstructorConstructScalarTest {
 
         assertThat(actual).isInstanceOf(TimestampWrapper.class);
         assertThat(actual.getTime()).isEqualTo(expected.getTime());
+    }
+
+    private static LoaderOptions trustedLoaderOptions(Class<?> trustedType) {
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setTagInspector(
+                new TrustedPrefixesTagInspector(List.of(trustedType.getName())));
+        return loaderOptions;
     }
 
     public static final class RootBean {
