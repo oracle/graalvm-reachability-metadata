@@ -105,6 +105,31 @@ public class Jboss_logging_annotationsTest {
         assertThat(new RepeatedArgumentBundleImpl().sameValueTwice("metadata")).isEqualTo("metadata mirrors metadata");
     }
 
+    @Test
+    void supportsGroupingDisjointMessageIdRanges() {
+        ValidIdRanges ranges = new TestValidIdRanges(
+                new TestValidIdRange(1000, 1099),
+                new TestValidIdRange(2000, 2099));
+
+        assertThat(ranges.annotationType()).isSameAs(ValidIdRanges.class);
+        assertThat(ranges.value()).hasSize(2);
+        assertThat(ranges.value()[0].annotationType()).isSameAs(ValidIdRange.class);
+        assertThat(ranges.value()[0].min()).isEqualTo(1000);
+        assertThat(ranges.value()[0].max()).isEqualTo(1099);
+        assertThat(messageIdAllowedBy(ranges, 1001)).isTrue();
+        assertThat(messageIdAllowedBy(ranges, 1500)).isFalse();
+        assertThat(messageIdAllowedBy(ranges, 2099)).isTrue();
+    }
+
+    private static boolean messageIdAllowedBy(ValidIdRanges ranges, int messageId) {
+        for (ValidIdRange range : ranges.value()) {
+            if (messageId >= range.min() && messageId <= range.max()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @MessageBundle(projectCode = "BND", length = 4, rootLocale = "en")
     @ValidIdRanges({
             @ValidIdRange(min = 1000, max = 1099),
@@ -207,6 +232,49 @@ public class Jboss_logging_annotationsTest {
         @Override
         public Class<? extends Annotation> annotationType() {
             return Transform.class;
+        }
+    }
+
+    private static final class TestValidIdRange implements ValidIdRange {
+        private final int min;
+        private final int max;
+
+        private TestValidIdRange(int min, int max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        @Override
+        public int min() {
+            return min;
+        }
+
+        @Override
+        public int max() {
+            return max;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return ValidIdRange.class;
+        }
+    }
+
+    private static final class TestValidIdRanges implements ValidIdRanges {
+        private final ValidIdRange[] value;
+
+        private TestValidIdRanges(ValidIdRange... value) {
+            this.value = value;
+        }
+
+        @Override
+        public ValidIdRange[] value() {
+            return value;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return ValidIdRanges.class;
         }
     }
 
