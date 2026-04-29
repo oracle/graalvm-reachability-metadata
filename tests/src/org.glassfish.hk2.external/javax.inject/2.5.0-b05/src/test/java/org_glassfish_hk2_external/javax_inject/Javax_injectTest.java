@@ -161,6 +161,23 @@ public class Javax_injectTest {
         assertThat(createdInstances).hasValue(1);
     }
 
+    @Test
+    void qualifierMembersCanCarryBindingAttributesForProviderSelection() {
+        Map<String, Provider<NotificationChannel>> channels = Map.of(
+                ChannelBinding.key(channel("email", 1)), () -> message -> "email-normal:" + message,
+                ChannelBinding.key(channel("email", 10)), () -> message -> "email-urgent:" + message,
+                ChannelBinding.key(channel("sms", 5)), () -> message -> "sms-priority:" + message);
+        NotificationRouter router = new NotificationRouter(channels);
+
+        assertThat(router.deliver(channel("email", 1), "build complete")).isEqualTo("email-normal:build complete");
+        assertThat(router.deliver(channel("email", 10), "incident open")).isEqualTo("email-urgent:incident open");
+        assertThat(router.deliver(channel("sms", 5), "deploy ready")).isEqualTo("sms-priority:deploy ready");
+        assertThatThrownBy(() -> router.deliver(channel("email", 5), "missing"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("email")
+                .hasMessageContaining("5");
+    }
+
     private static Named named(String value) {
         return new Named() {
             @Override
@@ -175,6 +192,25 @@ public class Javax_injectTest {
         };
     }
 
+    private static Channel channel(String value, int priority) {
+        return new Channel() {
+            @Override
+            public String value() {
+                return value;
+            }
+
+            @Override
+            public int priority() {
+                return priority;
+            }
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Channel.class;
+            }
+        };
+    }
+
     @Qualifier
     @Retention(RetentionPolicy.RUNTIME)
     @Target({FIELD, PARAMETER, METHOD, TYPE})
@@ -185,6 +221,15 @@ public class Javax_injectTest {
     @Retention(RetentionPolicy.RUNTIME)
     @Target({FIELD, PARAMETER, METHOD, TYPE})
     private @interface Local {
+    }
+
+    @Qualifier
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({FIELD, PARAMETER, METHOD, TYPE})
+    private @interface Channel {
+        String value();
+
+        int priority();
     }
 
     @Scope
@@ -279,6 +324,33 @@ public class Javax_injectTest {
                 throw new IllegalArgumentException("Unknown formatter binding: " + bindingName.value());
             }
             return formatter.get().format(value);
+        }
+    }
+
+    private interface NotificationChannel {
+        String send(String message);
+    }
+
+    private static final class ChannelBinding {
+        private static String key(Channel channel) {
+            return channel.value() + ":" + channel.priority();
+        }
+    }
+
+    private static final class NotificationRouter {
+        private final Map<String, Provider<NotificationChannel>> channels;
+
+        @Inject
+        private NotificationRouter(Map<String, Provider<NotificationChannel>> channels) {
+            this.channels = channels;
+        }
+
+        private String deliver(Channel channel, String message) {
+            Provider<NotificationChannel> provider = channels.get(ChannelBinding.key(channel));
+            if (provider == null) {
+                throw new IllegalArgumentException("Unknown notification channel: " + ChannelBinding.key(channel));
+            }
+            return provider.get().send(message);
         }
     }
 
