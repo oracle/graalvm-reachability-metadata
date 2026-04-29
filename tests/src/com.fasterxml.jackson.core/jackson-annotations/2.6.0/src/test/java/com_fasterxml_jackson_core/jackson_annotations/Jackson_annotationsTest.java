@@ -42,7 +42,8 @@ class Jackson_annotationsTest {
                 "yyyy-MM-dd",
                 JsonFormat.Shape.STRING,
                 "fr",
-                "UTC"
+                "UTC",
+                JsonFormat.Features.empty()
         );
 
         assertThat(explicitValue.getPattern()).isEqualTo("yyyy-MM-dd");
@@ -54,7 +55,8 @@ class Jackson_annotationsTest {
                 "pattern",
                 JsonFormat.Shape.OBJECT,
                 JsonFormat.DEFAULT_LOCALE,
-                JsonFormat.DEFAULT_TIMEZONE
+                JsonFormat.DEFAULT_TIMEZONE,
+                JsonFormat.Features.empty()
         );
 
         assertThat(defaultMarkerValue.getLocale()).isNull();
@@ -64,7 +66,8 @@ class Jackson_annotationsTest {
                 "pattern",
                 JsonFormat.Shape.ARRAY,
                 "",
-                ""
+                "",
+                JsonFormat.Features.empty()
         );
 
         assertThat(emptyMarkerValue.getLocale()).isNull();
@@ -187,15 +190,18 @@ class Jackson_annotationsTest {
                 JsonTypeInfo.As.PROPERTY,
                 JsonTypeInfo.As.WRAPPER_OBJECT,
                 JsonTypeInfo.As.WRAPPER_ARRAY,
-                JsonTypeInfo.As.EXTERNAL_PROPERTY
+                JsonTypeInfo.As.EXTERNAL_PROPERTY,
+                JsonTypeInfo.As.EXISTING_PROPERTY
         );
         assertThat(JsonTypeInfo.As.valueOf("WRAPPER_ARRAY")).isEqualTo(JsonTypeInfo.As.WRAPPER_ARRAY);
 
         assertThat(JsonInclude.Include.values()).containsExactly(
                 JsonInclude.Include.ALWAYS,
                 JsonInclude.Include.NON_NULL,
+                JsonInclude.Include.NON_ABSENT,
+                JsonInclude.Include.NON_EMPTY,
                 JsonInclude.Include.NON_DEFAULT,
-                JsonInclude.Include.NON_EMPTY
+                JsonInclude.Include.USE_DEFAULTS
         );
         assertThat(JsonInclude.Include.valueOf("NON_EMPTY")).isEqualTo(JsonInclude.Include.NON_EMPTY);
     }
@@ -368,6 +374,16 @@ class Jackson_annotationsTest {
             }
 
             @Override
+            public JsonFormat.Feature[] with() {
+                return new JsonFormat.Feature[0];
+            }
+
+            @Override
+            public JsonFormat.Feature[] without() {
+                return new JsonFormat.Feature[0];
+            }
+
+            @Override
             public Class<? extends Annotation> annotationType() {
                 return JsonFormat.class;
             }
@@ -420,6 +436,16 @@ class Jackson_annotationsTest {
             @Override
             public boolean ignoreUnknown() {
                 return ignoreUnknown;
+            }
+
+            @Override
+            public boolean allowGetters() {
+                return false;
+            }
+
+            @Override
+            public boolean allowSetters() {
+                return false;
             }
 
             @Override
