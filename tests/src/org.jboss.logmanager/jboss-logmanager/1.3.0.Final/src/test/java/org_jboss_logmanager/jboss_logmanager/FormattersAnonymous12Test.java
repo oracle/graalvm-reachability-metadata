@@ -13,11 +13,16 @@ import org.jboss.logmanager.formatters.PatternFormatter;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class FormattersAnonymous12Test {
 
     @Test
     void extendedExceptionFormattingUsesThreadContextClassLoaderForBootstrapFrameClass() {
+        assumeFalse(
+                isNativeImageRuntime(),
+                "Native image returns bare bootstrap class resource paths that jboss-logmanager 1.3.0.Final misparses"
+        );
         String className = String.class.getName();
 
         String formatted = formatWithTccl(FormattersAnonymous12Test.class.getClassLoader(), newFailure(className));
@@ -67,6 +72,10 @@ public class FormattersAnonymous12Test {
                 new StackTraceElement(className, "invoke", "GeneratedFrame.java", 17)
         });
         return failure;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class BlockingClassLoader extends ClassLoader {
