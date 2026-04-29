@@ -61,7 +61,7 @@ public class ConfiguratorTest {
 
         Configurator.resolveAndInvokePropertyMethods(protocol, properties, StackType.IPv4);
 
-        assertThat(protocol.getLevel()).isEqualToIgnoringCase("trace");
+        assertThat(protocol.getLevel()).isEqualToIgnoringCase("FINER");
         assertThat(properties).isEmpty();
     }
 
