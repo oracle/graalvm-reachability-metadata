@@ -1,0 +1,315 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd8bf-80da-7152-8d43-288db49c0ef8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.james:apache-mime4j-dom:0.8.13
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.8.13".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e/metadata/org.apache.james/apache-mime4j-dom/index.json
+- Entry selector: "metadata-version" = "0.8.13"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "0.8.13".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/apache-mime4j-dom-0.8.13-sources.jar
+- repository-url: https://github.com/apache/james-mime4j
+- test-code-url: https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-project/0.8.13/apache-mime4j-project-0.8.13-source-release.zip
+- documentation-url: https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site
+- description: Apache Mime4j DOM provides a Java document object model for parsing, constructing, and manipulating MIME email messages. It builds on the Mime4j parser to represent messages, headers, body parts, and multipart structures while tolerating real-world malformed messages.
+- language: <missing>
+
+Context:
+- Coordinate version: 0.8.13
+- Entry test-version: 0.8.13
+codex
+I’ll verify the versioned artifacts/docs first, then I’ll inspect the existing `index.json` and only patch fields that are actually missing.
+web search: 
+web search: org.apache.james apache-mime4j-dom 0.8.13 Maven sources jar
+codex
+The public metadata points to Maven Central for the exact source artifact and Apache’s tagged project tree for the versioned site content. I’m checking the local entry now to see whether any nonblank fields should be left untouched.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.james/apache-mime4j-dom/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.8.13",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/apache-mime4j-dom-0.8.13-sources.jar",
+    "repository-url" : "https://github.com/apache/james-mime4j",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-project/0.8.13/apache-mime4j-project-0.8.13-source-release.zip",
+    "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site",
+    "description" : "Apache Mime4j DOM provides a Java document object model for parsing, constructing, and manipulating MIME email messages. It builds on the Mime4j parser to represent messages, headers, body parts, and multipart structures while tolerating real-world malformed messages.",
+    "tested-versions" : [
+      "0.8.13"
+    ],
+    "allowed-packages" : [
+      "org.apache.james.mime4j"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+?? metadata/org.apache.james/
+?? tests/src/org.apache.james/
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"0\\.8\\.13\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.apache.james/apache-mime4j-dom/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+4:    "metadata-version" : "0.8.13",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/apache-mime4j-dom-0.8.13-sources.jar",
+6:    "repository-url" : "https://github.com/apache/james-mime4j",
+7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-project/0.8.13/apache-mime4j-project-0.8.13-source-release.zip",
+8:    "documentation-url" : "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site",
+9:    "description" : "Apache Mime4j DOM provides a Java document object model for parsing, constructing, and manipulating MIME email messages. It builds on the Mime4j parser to represent messages, headers, body parts, and multipart structures while tolerating real-world malformed messages.",
+
+web search: 
+web search: 
+web search: 
+web search: Maven Central org.apache.james apache-mime4j-dom 0.8.13 sources jar
+web search: 
+web search: https://james.apache.org/download
+codex
+The target entry already has nonblank values for the five URL/description fields. The remaining question is `language`: Mime4j is a Java Maven library, not one of this repository’s Kotlin/Groovy/Scala language-specific cases, so leaving `language` absent appears to be the correct update behavior.
+exec
+/usr/bin/bash -lc "rg -n '\"language\"\\s*:' metadata | head -40" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+metadata/org.jetbrains.kotlin/kotlin-test/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/org.jetbrains.kotlinx/atomicfu-jvm/index.json:10:    "language" : {
+metadata/org.scala-sbt/test-interface/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/apache-mime4j-dom-0.8.13-sources.jar' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Wed, 29 Apr 2026 10:19:16 GMT
+content-type: application/java-archive
+content-length: 300862
+cf-ray: 9f3d91457cf3576e-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 934813
+etag: "fd88233bd670662251eae71f8139dc3f"
+last-modified: Fri, 18 Jul 2025 06:18:03 GMT
+x-checksum-md5: fd88233bd670662251eae71f8139dc3f
+x-checksum-sha1: d7b5296f725b1245e32490e42a50dd29622dd1b5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  293k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-project/0.8.13/apache-mime4j-project-0.8.13-source-release.zip' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Wed, 29 Apr 2026 10:19:16 GMT
+content-type: application/zip
+content-length: 1556265
+cf-ray: 9f3d9145bb9424c2-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 100
+etag: "79bc90d4327d8e96b1c1f3ac4443593a"
+last-modified: Fri, 18 Jul 2025 06:17:41 GMT
+x-checksum-md5: 79bc90d4327d8e96b1c1f3ac4443593a
+x-checksum-sha1: da879f5e6343340564195eadcd68beef669d6126
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0 1519k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 407ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/2 200 
+date: Wed, 29 Apr 2026 10:19:17 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"e680e98188dfe3437b70c2bb63286891"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=wNdOWI2qpaqwy5Fnsx0jV4if%2FiG%2FeeMIvJ633Lh%2F4HDUQX%2BEljxTHb%2FwJEmMAfXrnwOuqlRN85kFw3W8U3SZWqKrS7VJvb4vIr%2Fkdg406rjVlwbARSOeVfjxQrySi6XQzKk2oRSQpef66iQYF%2F9HVJVAT%2FRk%2FjqjVry8KGwwaH6AlEJMCLsr5rGy7VuZW19ubR%2F9Fba1a781MTFdf%2FC%2FnE1mHIp0MoKL9vcHF9K050dYXcYeyUXp%2Fm3zoO1Td7z%2BRbnyW%2BXNNKGfI%2BTM3YlNDA%3D%3D--jV6LK3Ym2pt0sk9y--1hkVMdtqM0BXIGttQeEhdw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.278042269.1777457956; expires=Thu, 29 Apr 2027 10:19:16 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 10:19:16 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5122:27F14C:25A0A6:1D65C7:69F1DB24
+
+
+web search: 
+web search: site:mvnrepository.com/artifact/org.apache.james/apache-mime4j-dom/0.8.13 apache-mime4j-dom 0.8.13
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.james/apache-mime4j-dom/0.8.13
+web search: 
+web search: 'Mirror of Apache James Mime4j' in https://github.com/apache/james-mime4j
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/
+codex
+I’m not applying a patch because the only absent target field is `language`, and the requested schema only calls for adding that field for Kotlin, Groovy, or Scala libraries. I’ll still validate JSON and confirm there’s no local diff from this turn.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.apache.james/apache-mime4j-dom/index.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.james/apache-mime4j-dom/index.json' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+web search: 
+web search: apache-mime4j-dom 0.8.13 Maven Central
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/
+exec
+/usr/bin/bash -lc "jq -r '.[] | select(.\"metadata-version\" == \"0.8.13\") | {source:\"source-code-url\", repo:\"repository-url\", test:\"test-code-url\", docs:\"documentation-url\", description, language}' metadata/org.apache.james/apache-mime4j-dom/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+{
+  "source": "source-code-url",
+  "repo": "repository-url",
+  "test": "test-code-url",
+  "docs": "documentation-url",
+  "description": "Apache Mime4j DOM provides a Java document object model for parsing, constructing, and manipulating MIME email messages. It builds on the Mime4j parser to represent messages, headers, body parts, and multipart structures while tolerating real-world malformed messages.",
+  "language": null
+}
+
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -sSfL https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-project/0.8.13/apache-mime4j-project-0.8.13-source-release.zip -o "$tmp/source.zip"; unzip -l "$tmp/source.zip" | rg '"'/src/test/' | head -20; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 204ms:
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/apache/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/apache/james/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/apache/james/mime4j/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/apache/james/mime4j/codec/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/apache/james/mime4j/io/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/apache/james/mime4j/parser/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/apache/james/mime4j/stream/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/java/org/apache/james/mime4j/util/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/resources/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/resources/mimetools-testmsgs/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/core/src/test/resources/testmsgs/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/dom/src/test/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/dom/src/test/java/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/dom/src/test/java/org/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/dom/src/test/java/org/apache/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/dom/src/test/java/org/apache/james/
+        0  2025-06-09 20:48   apache-mime4j-project-0.8.13/dom/src/test/java/org/apache/james/mime4j/
+
+web search: 
+web search: https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/
+exec
+/usr/bin/bash -lc "jq -r '.[] | select(.\"metadata-version\" == \"0.8.13\") | {\"source-code-url\", \"repository-url\", \"test-code-url\", \"documentation-url\", description, language}' metadata/org.apache.james/apache-mime4j-dom/index.json" in /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e
+ succeeded in 0ms:
+{
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-dom/0.8.13/apache-mime4j-dom-0.8.13-sources.jar",
+  "repository-url": "https://github.com/apache/james-mime4j",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/james/apache-mime4j-project/0.8.13/apache-mime4j-project-0.8.13-source-release.zip",
+  "documentation-url": "https://github.com/apache/james-mime4j/tree/apache-mime4j-project-0.8.13/src/site",
+  "description": "Apache Mime4j DOM provides a Java document object model for parsing, constructing, and manipulating MIME email messages. It builds on the Mime4j parser to represent messages, headers, body parts, and multipart structures while tolerating real-world malformed messages.",
+  "language": null
+}
+
+codex
+I inspected [index.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e/metadata/org.apache.james/apache-mime4j-dom/index.json:1). No patch was needed: all requested URL and description fields are already nonblank, and `language` should remain absent because this is not a Kotlin, Groovy, or Scala library.
+
+The selected exact-version URLs remain the Maven source JAR, Maven source-release ZIP for tests, canonical GitHub repository root, and tagged `src/site` documentation tree. Maven Central exposes the exact `0.8.13` source artifacts, and the tagged GitHub tree exists for `apache-mime4j-project-0.8.13/src/site`. citeturn5fetch0turn4search1
+
+Validation done:
+- `jq empty metadata/org.apache.james/apache-mime4j-dom/index.json`
+- `curl -I -L --fail` for source, test ZIP, and docs URLs
+- Confirmed the source-release ZIP contains `dom/src/test/`
+- `git diff -- metadata/org.apache.james/apache-mime4j-dom/index.json` is empty
+2026-04-29T10:20:09.996791Z ERROR codex_core::session: failed to record rollout items: thread 019dd8bf-80da-7152-8d43-288db49c0ef8 not found
+tokens used
+81,944
+I inspected [index.json](/home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e/metadata/org.apache.james/apache-mime4j-dom/index.json:1). No patch was needed: all requested URL and description fields are already nonblank, and `language` should remain absent because this is not a Kotlin, Groovy, or Scala library.
+
+The selected exact-version URLs remain the Maven source JAR, Maven source-release ZIP for tests, canonical GitHub repository root, and tagged `src/site` documentation tree. Maven Central exposes the exact `0.8.13` source artifacts, and the tagged GitHub tree exists for `apache-mime4j-project-0.8.13/src/site`. citeturn5fetch0turn4search1
+
+Validation done:
+- `jq empty metadata/org.apache.james/apache-mime4j-dom/index.json`
+- `curl -I -L --fail` for source, test ZIP, and docs URLs
+- Confirmed the source-release ZIP contains `dom/src/test/`
+- `git diff -- metadata/org.apache.james/apache-mime4j-dom/index.json` is empty
+Ran agent for org.apache.james:apache-mime4j-dom:0.8.13 (exit 0). Log: /home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e/build/agent-url-discovery-logs/org.apache.james-apache-mime4j-dom-0.8.13.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/metadata-forge/local_repositories/forge_worktrees/3292-d84df60e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 28s
+9 actionable tasks: 1 executed, 8 up-to-date
