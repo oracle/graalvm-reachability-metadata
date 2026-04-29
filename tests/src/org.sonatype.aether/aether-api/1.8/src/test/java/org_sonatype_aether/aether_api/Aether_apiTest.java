@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -191,12 +192,12 @@ public class Aether_apiTest {
         assertThat(result.getRequest()).isSameAs(request);
         assertThat(result.getFile()).isEqualTo(cachedFile);
         assertThat(result.isAvailable()).isTrue();
-        assertThat(result.toString()).isEqualTo(cachedFile + "(available)");
+        assertThat(result.toString()).isEqualTo(cachedFile + " (available)");
 
         result.setAvailable(false);
 
         assertThat(result.isAvailable()).isFalse();
-        assertThat(result.toString()).isEqualTo(cachedFile + "(unavailable)");
+        assertThat(result.toString()).isEqualTo(cachedFile + " (unavailable)");
 
         LocalArtifactRegistration registration = new LocalArtifactRegistration(cachedArtifact, repository,
                 List.of("compile", "runtime"));
@@ -307,7 +308,9 @@ public class Aether_apiTest {
         assertThat(collectRequest.getRepositories()).containsExactly(repository);
         assertThat(collectRequest.getRequestContext()).isEqualTo("plugin");
         assertThat(collectResult.getRequest()).isSameAs(collectRequest);
+        dependencyNode.setData("classifier", "tests");
         assertThat(collectResult.getRoot()).isSameAs(dependencyNode);
+        assertThat(collectResult.getRoot().getData()).containsEntry("classifier", "tests");
         assertThat(collectResult.getExceptions()).singleElement().isInstanceOf(IllegalStateException.class);
 
         assertThat(descriptorResult.getRequest()).isSameAs(descriptorRequest);
@@ -768,6 +771,7 @@ public class Aether_apiTest {
         private String premanagedScope = "";
         private List<RemoteRepository> repositories = new ArrayList<>();
         private String requestContext = "";
+        private final Map<Object, Object> data = new LinkedHashMap<>();
 
         private TestDependencyNode(Dependency dependency) {
             this.dependency = dependency;
@@ -851,6 +855,21 @@ public class Aether_apiTest {
         @Override
         public void setRequestContext(String context) {
             this.requestContext = context == null ? "" : context;
+        }
+
+        @Override
+        public Map<Object, Object> getData() {
+            return Map.copyOf(data);
+        }
+
+        @Override
+        public void setData(Object key, Object value) {
+            Objects.requireNonNull(key, "key");
+            if (value == null) {
+                data.remove(key);
+            } else {
+                data.put(key, value);
+            }
         }
 
         @Override
