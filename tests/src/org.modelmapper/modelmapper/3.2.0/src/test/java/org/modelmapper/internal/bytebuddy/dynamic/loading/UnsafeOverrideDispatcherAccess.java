@@ -12,6 +12,7 @@ import java.security.Permission;
 import java.security.ProtectionDomain;
 
 import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher;
+import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher.Direct;
 import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher.Initializable;
 import org.modelmapper.internal.bytebuddy.dynamic.loading.ClassInjector.UsingReflection.Dispatcher.UsingUnsafeOverride;
 
@@ -29,8 +30,19 @@ public final class UnsafeOverrideDispatcherAccess {
         return new Operations(initializable.initialize());
     }
 
+    public static Operations createDirect() throws Exception {
+        Initializable initializable = DirectAccess.makeDispatcher();
+        if (!initializable.isAvailable()) {
+            throw new IllegalStateException("Direct reflection dispatcher is unavailable");
+        }
+        return new Operations(initializeWithSecurityManager(initializable));
+    }
+
     public static void exerciseSecurityManagerPermissionCheck() throws Exception {
-        Initializable initializable = UnsafeOverrideAccess.makeDispatcher();
+        initializeWithSecurityManager(UnsafeOverrideAccess.makeDispatcher());
+    }
+
+    private static Dispatcher initializeWithSecurityManager(Initializable initializable) throws Exception {
         Field system = ClassInjector.UsingReflection.class.getDeclaredField("SYSTEM");
         Unsafe unsafe = unsafe();
         Object fieldBase = unsafe.staticFieldBase(system);
@@ -38,7 +50,7 @@ public final class UnsafeOverrideDispatcherAccess {
         Object original = unsafe.getObject(fieldBase, fieldOffset);
         try {
             unsafe.putObject(fieldBase, fieldOffset, new PermissionCheckingSystem());
-            initializable.initialize();
+            return initializable.initialize();
         } finally {
             unsafe.putObject(
                 fieldBase,
@@ -163,6 +175,16 @@ public final class UnsafeOverrideDispatcherAccess {
 
     private abstract static class UnsafeOverrideAccess extends UsingUnsafeOverride {
         UnsafeOverrideAccess() {
+            super(null, null, null, null, null);
+        }
+
+        static Initializable makeDispatcher() throws Exception {
+            return make();
+        }
+    }
+
+    private abstract static class DirectAccess extends Direct {
+        DirectAccess() {
             super(null, null, null, null, null);
         }
 
