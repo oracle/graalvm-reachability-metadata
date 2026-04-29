@@ -34,17 +34,17 @@ public class PropertyConfiguratorTest {
             String configuration = """
                     loggers=%1$s
                     logger.%1$s.level=INFO
-                    logger.%1$s.filter=coverageFilter
                     logger.%1$s.handlers=coverageHandler
                     logger.%1$s.useParentHandlers=false
                     handler.coverageHandler=%2$s
                     handler.coverageHandler.level=INFO
                     handler.coverageHandler.encoding=UTF-8
                     handler.coverageHandler.errorManager=coverageErrorManager
-                    handler.coverageHandler.filter=coverageFilter
+                    handler.coverageHandler.filter=filter coverageFilter
                     handler.coverageHandler.formatter=coverageFormatter
                     handler.coverageHandler.properties=label
                     handler.coverageHandler.label=primary
+                    filters=coverageFilter
                     filter.coverageFilter=%3$s
                     filter.coverageFilter.properties=enabled
                     filter.coverageFilter.enabled=true
@@ -68,13 +68,12 @@ public class PropertyConfiguratorTest {
 
             assertThat(logger.getUseParentHandlers()).isFalse();
             assertThat(logger.getLevel()).isEqualTo(Level.INFO);
-            assertThat(logger.getFilter()).isInstanceOfSatisfying(TrackingFilter.class,
-                    filter -> assertThat(filter.isEnabled()).isTrue());
             assertThat(logger.getHandlers()).singleElement().isInstanceOfSatisfying(TrackingHandler.class, handler -> {
                 assertThat(handler.getLevel()).isEqualTo(Level.INFO);
                 assertThat(handler.getEncoding()).isEqualTo("UTF-8");
                 assertThat(handler.getLabel()).isEqualTo("primary");
-                assertThat(handler.getFilter()).isSameAs(logger.getFilter());
+                assertThat(handler.getFilter()).isInstanceOfSatisfying(TrackingFilter.class,
+                        filter -> assertThat(filter.isEnabled()).isTrue());
                 assertThat(handler.getFormatter()).isInstanceOfSatisfying(TrackingFormatter.class,
                         formatter -> assertThat(formatter.getPrefix()).isEqualTo("formatted:"));
                 assertThat(handler.getConfiguredErrorManager()).isInstanceOfSatisfying(TrackingErrorManager.class,
