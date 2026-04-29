@@ -81,6 +81,8 @@ public class ProxyUtilTest {
     }
 
     public static class ProceedingProxyInvocationHandler implements ProxyInvocationHandler {
+        private int order;
+
         @Override
         public Set<String> getMethodsToProxy() {
             return Collections.emptySet();
@@ -89,6 +91,16 @@ public class ProxyUtilTest {
         @Override
         public Object invoke(InvocationWrapper invocation) throws Throwable {
             return invocation.proceed();
+        }
+
+        @Override
+        public void setOrder(int order) {
+            this.order = order;
+        }
+
+        @Override
+        public int getOrder() {
+            return order;
         }
 
         @Override
