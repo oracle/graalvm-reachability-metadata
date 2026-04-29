@@ -12,9 +12,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import com.arjuna.ats.arjuna.common.arjPropertyManager;
 import com.arjuna.ats.arjuna.coordinator.TwoPhaseOutcome;
 import com.arjuna.ats.arjuna.state.InputObjectState;
 import com.arjuna.ats.arjuna.state.OutputObjectState;
+import com.arjuna.ats.internal.arjuna.utils.UuidProcessId;
 import com.arjuna.ats.internal.jta.resources.arjunacore.XAOnePhaseResource;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +26,7 @@ public class XAOnePhaseResourceTest {
     @Test
     void packAndUnpackSerializableXaResource() throws Exception {
         SerializableXaResource.COMMIT_CALLS.set(0);
+        arjPropertyManager.getCoreEnvironmentBean().setProcessImplementation(new UuidProcessId());
 
         XAOnePhaseResource resource = new XAOnePhaseResource(
             new SerializableXaResource("pack-unpack"),
