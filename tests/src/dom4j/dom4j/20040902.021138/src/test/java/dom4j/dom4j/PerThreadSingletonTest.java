@@ -8,57 +8,25 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.dom4j.dtd.AttributeDecl;
-import org.dom4j.dtd.ElementDecl;
-import org.dom4j.util.PerThreadSingleton;
+import org.dom4j.DocumentFactory;
+import org.dom4j.Element;
+import org.dom4j.util.IndexedDocumentFactory;
+import org.dom4j.util.IndexedElement;
 import org.junit.jupiter.api.Test;
 
 public class PerThreadSingletonTest {
     @Test
-    void createsAndCachesInstanceLoadedByContextClassLoader() {
-        PerThreadSingleton singleton = new PerThreadSingleton();
-        singleton.setSingletonClassName(ElementDecl.class.getName());
+    void indexedDocumentFactorySingletonCreatesIndexedElements() {
+        DocumentFactory firstFactory = IndexedDocumentFactory.getInstance();
+        DocumentFactory secondFactory = IndexedDocumentFactory.getInstance();
 
-        Object first = singleton.instance();
-        Object second = singleton.instance();
+        Element root = firstFactory.createElement("root");
+        root.addAttribute("id", "sample");
+        root.addElement("child").addAttribute("name", "first");
 
-        assertThat(first).isInstanceOf(ElementDecl.class);
-        assertThat(second).isSameAs(first);
-    }
-
-    @Test
-    void fallsBackToClassForNameWhenContextClassLoaderCannotLoadClass() {
-        String className = AttributeDecl.class.getName();
-        Thread thread = Thread.currentThread();
-        ClassLoader originalClassLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(new RejectingContextClassLoader(originalClassLoader, className));
-
-        try {
-            PerThreadSingleton singleton = new PerThreadSingleton();
-            singleton.setSingletonClassName(className);
-
-            Object instance = singleton.instance();
-
-            assertThat(instance).isInstanceOf(AttributeDecl.class);
-        } finally {
-            thread.setContextClassLoader(originalClassLoader);
-        }
-    }
-}
-
-final class RejectingContextClassLoader extends ClassLoader {
-    private final String rejectedClassName;
-
-    RejectingContextClassLoader(ClassLoader parent, String rejectedClassName) {
-        super(parent);
-        this.rejectedClassName = rejectedClassName;
-    }
-
-    @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
-        if (rejectedClassName.equals(name)) {
-            throw new ClassNotFoundException(name);
-        }
-        return super.loadClass(name);
+        assertThat(secondFactory).isSameAs(firstFactory);
+        assertThat(root).isInstanceOf(IndexedElement.class);
+        assertThat(root.attribute(0).getValue()).isEqualTo("sample");
+        assertThat(root.element("child").attribute(0).getValue()).isEqualTo("first");
     }
 }

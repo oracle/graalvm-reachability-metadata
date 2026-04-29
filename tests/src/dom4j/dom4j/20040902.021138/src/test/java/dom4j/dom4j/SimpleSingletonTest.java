@@ -8,57 +8,43 @@ package dom4j.dom4j;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.dom4j.dtd.AttributeDecl;
-import org.dom4j.dtd.ElementDecl;
-import org.dom4j.util.SimpleSingleton;
+import org.dom4j.Attribute;
+import org.dom4j.DocumentFactory;
+import org.dom4j.Element;
+import org.dom4j.QName;
+import org.dom4j.util.NonLazyDocumentFactory;
+import org.dom4j.util.NonLazyElement;
+import org.dom4j.util.UserDataAttribute;
+import org.dom4j.util.UserDataDocumentFactory;
+import org.dom4j.util.UserDataElement;
 import org.junit.jupiter.api.Test;
 
 public class SimpleSingletonTest {
     @Test
-    void createsAndReusesSingletonInstanceLoadedByContextClassLoader() {
-        SimpleSingleton singleton = new SimpleSingleton();
-        singleton.setSingletonClassName(ElementDecl.class.getName());
+    void nonLazyDocumentFactorySingletonCreatesNonLazyElements() {
+        DocumentFactory firstFactory = NonLazyDocumentFactory.getInstance();
+        DocumentFactory secondFactory = NonLazyDocumentFactory.getInstance();
 
-        Object first = singleton.instance();
-        Object second = singleton.instance();
+        Element root = firstFactory.createElement("root");
+        root.addElement("child").addText("value");
 
-        assertThat(first).isInstanceOf(ElementDecl.class);
-        assertThat(second).isSameAs(first);
+        assertThat(secondFactory).isSameAs(firstFactory);
+        assertThat(root).isInstanceOf(NonLazyElement.class);
+        assertThat(root.element("child").getText()).isEqualTo("value");
     }
 
     @Test
-    void fallsBackToClassForNameWhenContextClassLoaderCannotLoadClass() {
-        String className = AttributeDecl.class.getName();
-        Thread thread = Thread.currentThread();
-        ClassLoader originalClassLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(new RejectingContextClassLoader(originalClassLoader, className));
+    void userDataDocumentFactoryCreatesUserDataNodes() {
+        DocumentFactory factory = UserDataDocumentFactory.getInstance();
+        Element element = factory.createElement("entry");
+        Attribute attribute = factory.createAttribute(element, QName.get("id"), "42");
 
-        try {
-            SimpleSingleton singleton = new SimpleSingleton();
-            singleton.setSingletonClassName(className);
+        ((UserDataElement) element).setData("element-data");
+        ((UserDataAttribute) attribute).setData("attribute-data");
 
-            Object instance = singleton.instance();
-
-            assertThat(instance).isInstanceOf(AttributeDecl.class);
-        } finally {
-            thread.setContextClassLoader(originalClassLoader);
-        }
-    }
-
-    private static final class RejectingContextClassLoader extends ClassLoader {
-        private final String rejectedClassName;
-
-        private RejectingContextClassLoader(ClassLoader parent, String rejectedClassName) {
-            super(parent);
-            this.rejectedClassName = rejectedClassName;
-        }
-
-        @Override
-        public Class<?> loadClass(String name) throws ClassNotFoundException {
-            if (rejectedClassName.equals(name)) {
-                throw new ClassNotFoundException(name);
-            }
-            return super.loadClass(name);
-        }
+        assertThat(element).isInstanceOf(UserDataElement.class);
+        assertThat(attribute).isInstanceOf(UserDataAttribute.class);
+        assertThat(((UserDataElement) element).getData()).isEqualTo("element-data");
+        assertThat(((UserDataAttribute) attribute).getData()).isEqualTo("attribute-data");
     }
 }

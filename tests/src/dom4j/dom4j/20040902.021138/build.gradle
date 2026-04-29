@@ -8,10 +8,26 @@ plugins {
     id "org.graalvm.internal.tck"
 }
 
+repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                url = uri("https://repo.maven.apache.org/maven2")
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeModule("dom4j", "dom4j")
+        }
+    }
+}
+
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "dom4j:dom4j:$libraryVersion"
+    testImplementation "dom4j:dom4j:$libraryVersion@jar"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
