@@ -1,0 +1,327 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd66e-c4ed-7651-a463-ddfe72421e13
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.mongodb:bson:4.11.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "4.11.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+- Set "coordinates" to "org.mongodb:bson:4.11.1".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and upstream tags, then update the JSON in place with the exact-version URLs and language decision.
+exec
+/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json && sed -n '1,160p' build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+ succeeded in 0ms:
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+-rw-rw-r-- 1 jovan jovan 48 Apr 29 01:31 build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+{
+  "coordinates" : "org.mongodb:bson:4.11.1"
+}
+
+exec
+/bin/bash -lc "rg -n 'org\\.mongodb:bson|mongodb.*bson|source-code-url.*mongodb' -S metadata build/discovered-artifact-metadata || true" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json:2:  "coordinates" : "org.mongodb:bson:4.11.1"
+metadata/library-and-framework-list.json:1770:    "artifact": "org.mongodb:bson",
+metadata/library-and-framework-list.json:1771:    "description": "MongoDB's Java implementation of the BSON specification",
+metadata/library-and-framework-list.json:1776:          "https://github.com/mongodb/mongo-java-driver/tree/main/bson/src/main/resources/META-INF/native-image"
+
+web search: 
+web search: Maven Central org.mongodb bson 4.11.1 sources jar test jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/
+codex
+Maven Central has the 4.11.1 sources and javadoc artifacts, but no obvious test artifact in the directory listing. I’m checking the upstream tag naming now so the test URL can point at the exact release rather than a moving branch.
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/mongodb/mongo-java-driver.git '*4.11.1*'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1.pom | sed -n '1,180p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+exec
+/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/ | rg 'test|sources|javadoc|\\.jar'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+ succeeded in 0ms:
+<a href="bson-4.11.1-javadoc.jar" title="bson-4.11.1-javadoc.jar">bson-4.11.1-javadoc.jar</a>                           2023-11-08 17:38   1181157      
+<a href="bson-4.11.1-javadoc.jar.asc" title="bson-4.11.1-javadoc.jar.asc">bson-4.11.1-javadoc.jar.asc</a>                       2023-11-08 17:38       821      
+<a href="bson-4.11.1-javadoc.jar.asc.md5" title="bson-4.11.1-javadoc.jar.asc.md5">bson-4.11.1-javadoc.jar.asc.md5</a>                   2023-11-08 17:38        32      
+<a href="bson-4.11.1-javadoc.jar.asc.sha1" title="bson-4.11.1-javadoc.jar.asc.sha1">bson-4.11.1-javadoc.jar.asc.sha1</a>                  2023-11-08 17:38        40      
+<a href="bson-4.11.1-javadoc.jar.md5" title="bson-4.11.1-javadoc.jar.md5">bson-4.11.1-javadoc.jar.md5</a>                       2023-11-08 17:38        32      
+<a href="bson-4.11.1-javadoc.jar.sha1" title="bson-4.11.1-javadoc.jar.sha1">bson-4.11.1-javadoc.jar.sha1</a>                      2023-11-08 17:38        40      
+<a href="bson-4.11.1-sources.jar" title="bson-4.11.1-sources.jar">bson-4.11.1-sources.jar</a>                           2023-11-08 17:38    403542      
+<a href="bson-4.11.1-sources.jar.asc" title="bson-4.11.1-sources.jar.asc">bson-4.11.1-sources.jar.asc</a>                       2023-11-08 17:38       821      
+<a href="bson-4.11.1-sources.jar.asc.md5" title="bson-4.11.1-sources.jar.asc.md5">bson-4.11.1-sources.jar.asc.md5</a>                   2023-11-08 17:38        32      
+<a href="bson-4.11.1-sources.jar.asc.sha1" title="bson-4.11.1-sources.jar.asc.sha1">bson-4.11.1-sources.jar.asc.sha1</a>                  2023-11-08 17:38        40      
+<a href="bson-4.11.1-sources.jar.md5" title="bson-4.11.1-sources.jar.md5">bson-4.11.1-sources.jar.md5</a>                       2023-11-08 17:38        32      
+<a href="bson-4.11.1-sources.jar.sha1" title="bson-4.11.1-sources.jar.sha1">bson-4.11.1-sources.jar.sha1</a>                      2023-11-08 17:38        40      
+<a href="bson-4.11.1.jar" title="bson-4.11.1.jar">bson-4.11.1.jar</a>                                   2023-11-08 17:38    511358      
+<a href="bson-4.11.1.jar.asc" title="bson-4.11.1.jar.asc">bson-4.11.1.jar.asc</a>                               2023-11-08 17:38       821      
+<a href="bson-4.11.1.jar.asc.md5" title="bson-4.11.1.jar.asc.md5">bson-4.11.1.jar.asc.md5</a>                           2023-11-08 17:38        32      
+<a href="bson-4.11.1.jar.asc.sha1" title="bson-4.11.1.jar.asc.sha1">bson-4.11.1.jar.asc.sha1</a>                          2023-11-08 17:38        40      
+<a href="bson-4.11.1.jar.md5" title="bson-4.11.1.jar.md5">bson-4.11.1.jar.md5</a>                               2023-11-08 17:38        32      
+<a href="bson-4.11.1.jar.sha1" title="bson-4.11.1.jar.sha1">bson-4.11.1.jar.sha1</a>                              2023-11-08 17:38        40      
+
+ succeeded in 143ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.mongodb</groupId>
+  <artifactId>bson</artifactId>
+  <version>4.11.1</version>
+  <name>BSON</name>
+  <description>The BSON library</description>
+  <url>https://bsonspec.org</url>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Various</name>
+      <organization>MongoDB</organization>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:https://github.com/mongodb/mongo-java-driver.git</connection>
+    <developerConnection>scm:git@github.com:mongodb/mongo-java-driver.git</developerConnection>
+    <url>https://github.com/mongodb/mongo-java-driver</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.6</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 454ms:
+4b233603d1e9c8c9e6e8f7ff2add07c67e042d8f	refs/tags/r4.11.1
+f7715c1c80ac32f133695208081fbe7ea9ff79a2	refs/tags/r4.11.1^{}
+
+codex
+The upstream release tag is `r4.11.1`. I’m going to use Maven Central for the exact sources and javadoc artifacts, and the tagged GitHub test directory because Maven Central does not publish a test JAR for this artifact.
+exec
+/bin/bash -lc "curl -fsSI https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test | sed -n '1,20p' && curl -fsSI https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar | sed -n '1,20p' && curl -fsSI https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar | sed -n '1,20p'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+ succeeded in 878ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 23:31:42 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"832793d615381dcef4449fd33e489f59"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kIA09nqbsHR6kYovFcArrfy7BFH0hPt%2FAqwZvIXzN75VEBhGj3WzWQl1x0k0aZzKzRGWGGwwLA2ubz%2FzKAtU%2BXl4lH9G%2FUby%2B3zQ7HpqbjEDwFaw3vzbaXeCIzfFDRUXJwdm7LSAU6E2mnVOjPc9KSCN3oJ%2FxWDVZyeuXS6OAFRmvjmAhgtJf%2Bu9awOrA94ApjKYzeOocW3qJlfl1ygnwqBCCgoe9%2FeOgKvFLafqaeJp6tNh%2BDx1H5bZ7miHgcZDDrxwRpoFZtizwur15QNjRg%3D%3D--rui494QRR1mD2jk8--XM67dtAJIFTnEaqvWweCog%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.3762813.1777419101; expires=Wed, 28 Apr 2027 23:31:41 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Wed, 28 Apr 2027 23:31:41 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: AA40:1ABF9C:4138447:3129B45:69F1435D
+
+HTTP/2 200 
+date: Tue, 28 Apr 2026 23:31:42 GMT
+content-type: application/java-archive
+content-length: 403542
+cf-ray: 9f39dcad4bb51b8b-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 883500
+etag: "c1e9a51a2f392205c83afbf694d4d24a"
+last-modified: Wed, 08 Nov 2023 17:38:01 GMT
+x-checksum-md5: c1e9a51a2f392205c83afbf694d4d24a
+x-checksum-sha1: bba1ddb2ca61a8c6f1e018efb3422f86d1cff131
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Tue, 28 Apr 2026 23:31:42 GMT
+content-type: application/java-archive
+content-length: 1181157
+cf-ray: 9f39dcadff78b311-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 58889
+etag: "c101c0872fa2e632bacbff15fcf87f9e"
+last-modified: Wed, 08 Nov 2023 17:38:01 GMT
+x-checksum-md5: c101c0872fa2e632bacbff15fcf87f9e
+x-checksum-sha1: 5562fddd94ce6e78b65e1121b95e837c97ebc2b5
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+apply patch
+patch: completed
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+diff --git a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+index 860a33933877a7981eea29b70cac2016cdcd00f5..f43eed4c4246f5333c93872139c751a9012b081c
+--- a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
++++ b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:bson:4.11.1"
++  "coordinates" : "org.mongodb:bson:4.11.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar",
++  "description" : "The BSON library provides Java types, codecs, and utilities for reading, writing, and representing BSON documents used by MongoDB. It supports serialization and deserialization between BSON, JSON-like document structures, and Java values for MongoDB drivers and applications."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+index 860a33933877a7981eea29b70cac2016cdcd00f5..f43eed4c4246f5333c93872139c751a9012b081c
+--- a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
++++ b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:bson:4.11.1"
++  "coordinates" : "org.mongodb:bson:4.11.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar",
++  "description" : "The BSON library provides Java types, codecs, and utilities for reading, writing, and representing BSON documents used by MongoDB. It supports serialization and deserialization between BSON, JSON-like document structures, and Java values for MongoDB drivers and applications."
+ }
+
+codex
+The JSON is updated. I’ll do a quick parse check and inspect the final content so I can catch formatting or field mistakes before wrapping up.
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+ succeeded in 0ms:
+exec
+/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json >/tmp/org.mongodb-bson-4.11.1.json.checked && sed -n '1,120p' build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.mongodb:bson:4.11.1",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar",
+  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
+  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar",
+  "description" : "The BSON library provides Java types, codecs, and utilities for reading, writing, and representing BSON documents used by MongoDB. It supports serialization and deserialization between BSON, JSON-like document structures, and Java values for MongoDB drivers and applications."
+}
+
+diff --git a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+index 860a33933877a7981eea29b70cac2016cdcd00f5..f43eed4c4246f5333c93872139c751a9012b081c
+--- a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
++++ b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:bson:4.11.1"
++  "coordinates" : "org.mongodb:bson:4.11.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar",
++  "description" : "The BSON library provides Java types, codecs, and utilities for reading, writing, and representing BSON documents used by MongoDB. It supports serialization and deserialization between BSON, JSON-like document structures, and Java values for MongoDB drivers and applications."
+ }
+
+exec
+/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+index 860a33933877a7981eea29b70cac2016cdcd00f5..f43eed4c4246f5333c93872139c751a9012b081c
+--- a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
++++ b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:bson:4.11.1"
++  "coordinates" : "org.mongodb:bson:4.11.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar",
++  "description" : "The BSON library provides Java types, codecs, and utilities for reading, writing, and representing BSON documents used by MongoDB. It supports serialization and deserialization between BSON, JSON-like document structures, and Java values for MongoDB drivers and applications."
+ }
+
+codex
+Updated [org.mongodb-bson-4.11.1.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json) with:
+
+- Maven Central sources JAR
+- GitHub repository URL
+- Exact `r4.11.1` tagged test suite URL
+- Maven Central javadoc JAR
+- Two-sentence description
+
+No `language` field was added because `org.mongodb:bson` is not a Kotlin or Scala language-specific artifact. I also verified the JSON parses successfully.
+diff --git a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+index 860a33933877a7981eea29b70cac2016cdcd00f5..f43eed4c4246f5333c93872139c751a9012b081c
+--- a/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
++++ b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.mongodb:bson:4.11.1"
++  "coordinates" : "org.mongodb:bson:4.11.1",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-sources.jar",
++  "repository-url" : "https://github.com/mongodb/mongo-java-driver",
++  "test-code-url" : "https://github.com/mongodb/mongo-java-driver/tree/r4.11.1/bson/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/mongodb/bson/4.11.1/bson-4.11.1-javadoc.jar",
++  "description" : "The BSON library provides Java types, codecs, and utilities for reading, writing, and representing BSON documents used by MongoDB. It supports serialization and deserialization between BSON, JSON-like document structures, and Java values for MongoDB drivers and applications."
+ }
+
+2026-04-28T23:31:59.213468Z ERROR codex_core::session: failed to record rollout items: thread 019dd66e-c4ed-7651-a463-ddfe72421e13 not found
+tokens used
+25,049
+Updated [org.mongodb-bson-4.11.1.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b/build/discovered-artifact-metadata/org.mongodb-bson-4.11.1.json) with:
+
+- Maven Central sources JAR
+- GitHub repository URL
+- Exact `r4.11.1` tagged test suite URL
+- Maven Central javadoc JAR
+- Two-sentence description
+
+No `language` field was added because `org.mongodb:bson` is not a Kotlin or Scala language-specific artifact. I also verified the JSON parses successfully.
+Ran agent for org.mongodb:bson:4.11.1 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b/build/agent-artifact-discovery-logs/org.mongodb-bson-4.11.1.log
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2717-dac4c17b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 48s
+9 actionable tasks: 4 executed, 5 from cache
