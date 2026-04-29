@@ -9,19 +9,13 @@ package org_modelmapper.modelmapper;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
-import org.modelmapper.internal.asm.ClassVisitor;
 import org.modelmapper.internal.asm.Opcodes;
+import org.modelmapper.internal.asm.tree.ClassNode;
 
 public class ConstantsTest {
     @Test
-    void experimentalApiChecksCallerBytecodeResource() {
-        assertThatThrownBy(ConstantsExperimentalClassVisitor::new)
+    void experimentalApiChecksAsmTreeClassBytecodeResource() {
+        assertThatThrownBy(() -> new ClassNode(Opcodes.ASM10_EXPERIMENTAL))
             .isInstanceOf(IllegalStateException.class);
-    }
-}
-
-final class ConstantsExperimentalClassVisitor extends ClassVisitor {
-    ConstantsExperimentalClassVisitor() {
-        super(Opcodes.ASM10_EXPERIMENTAL);
     }
 }
