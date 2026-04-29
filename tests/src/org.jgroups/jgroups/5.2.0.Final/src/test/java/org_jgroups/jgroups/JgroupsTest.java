@@ -8,7 +8,7 @@ package org_jgroups.jgroups;
 
 import org.junit.jupiter.api.Test;
 
-class JgroupsTest {
+public class JgroupsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
