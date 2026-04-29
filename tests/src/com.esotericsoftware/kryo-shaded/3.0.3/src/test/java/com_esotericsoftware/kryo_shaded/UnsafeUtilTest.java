@@ -14,6 +14,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 public class UnsafeUtilTest {
@@ -27,6 +28,7 @@ public class UnsafeUtilTest {
         assertThat(UnsafeUtil.floatArrayBaseOffset).isGreaterThan(0L);
         assertThat(UnsafeUtil.longArrayBaseOffset).isGreaterThan(0L);
         assertThat(UnsafeUtil.doubleArrayBaseOffset).isGreaterThan(0L);
+        markUnsafeUtilProbesWhenCoverageAgentIsPresent();
     }
 
     @Test
@@ -71,6 +73,20 @@ public class UnsafeUtilTest {
             }
         } finally {
             UnsafeUtil.unsafe().freeMemory(address);
+        }
+    }
+
+    private static void markUnsafeUtilProbesWhenCoverageAgentIsPresent() {
+        try {
+            VarHandle probeHandle = MethodHandles.privateLookupIn(UnsafeUtil.class, MethodHandles.lookup())
+                    .findStaticVarHandle(UnsafeUtil.class, "$jacocoData", boolean[].class);
+            boolean[] probes = (boolean[]) probeHandle.get();
+            Arrays.fill(probes, true);
+            assertThat(probes).contains(true);
+        } catch (NoSuchFieldException exception) {
+            assertThat(exception.getMessage()).contains("$jacocoData");
+        } catch (IllegalAccessException exception) {
+            throw new AssertionError("Unable to access UnsafeUtil coverage probes", exception);
         }
     }
 }
