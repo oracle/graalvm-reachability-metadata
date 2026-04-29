@@ -1,0 +1,444 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd6bb-98fa-7d01-a8c5-4e6555c4eb87
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.javaslang:javaslang-match:2.0.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.0.6".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b/metadata/io.javaslang/javaslang-match/index.json
+- Entry selector: "metadata-version" = "2.0.6"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "2.0.6".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6-sources.jar
+- repository-url: https://github.com/vavr-io/vavr
+- test-code-url: https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchTest.java
+- documentation-url: https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6-javadoc.jar
+- description: Javaslang Match provides annotations and an annotation processor that generate structural pattern-matching support for Javaslang/Vavr types. It lets Java projects define @Unapply extractors and @Patterns classes so match expressions can deconstruct values more ergonomically.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.6
+- Entry test-version: 2.0.6
+codex
+I’ll inspect the target entry first, then verify the versioned Maven/GitHub URLs before deciding whether any field is actually missing.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"2\\.0\\.6\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/io.javaslang/javaslang-match/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+4:    "metadata-version" : "2.0.6",
+5:    "source-code-url" : "https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6-sources.jar",
+6:    "repository-url" : "https://github.com/vavr-io/vavr",
+7:    "test-code-url" : "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchTest.java",
+8:    "documentation-url" : "https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6-javadoc.jar",
+9:    "description" : "Javaslang Match provides annotations and an annotation processor that generate structural pattern-matching support for Javaslang/Vavr types. It lets Java projects define @Unapply extractors and @Patterns classes so match expressions can deconstruct values more ergonomically.",
+
+exec
+/usr/bin/bash -lc 'pwd && ls metadata/io.javaslang/javaslang-match' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+2.0.6
+index.json
+
+web search: 
+web search: https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/
+web search: 
+web search: 
+codex
+The target entry already has non-blank values for all requested URL and description fields; only `language` is absent. I’m checking the artifact metadata and tag contents now, because `language` should only be added for Kotlin/Groovy/Scala-specific libraries.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <prerequisites>
+        <maven>3.0.4</maven>
+    </prerequisites>
+    <parent>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang-parent</artifactId>
+        <version>2.0.6</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>javaslang-match</artifactId>
+    <packaging>jar</packaging>
+    <name>Javaslang Match</name>
+    <description>Annotation and processor for structural pattern matching.</description>
+    <url>http://javaslang.io</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Disable annotation processing for this module. -->
+                    <compilerArgument>-proc:none</compilerArgument>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6-sources.jar && curl -fsI https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6-javadoc.jar' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 00:55:31 GMT
+content-type: application/java-archive
+content-length: 13360
+cf-ray: 9f3a57739bb46d88-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 161258
+etag: "ba62f387451c816425723384acedbf42"
+last-modified: Tue, 04 Apr 2017 07:55:03 GMT
+x-checksum-md5: ba62f387451c816425723384acedbf42
+x-checksum-sha1: 07c74bd56f2537728022fde3e12060f006afbb79
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 29 Apr 2026 00:55:31 GMT
+content-type: application/java-archive
+content-length: 74202
+cf-ray: 9f3a5773ebcac126-ZRH
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 143033
+etag: "f634dd82cc844343e0868d9d720dc950"
+last-modified: Tue, 04 Apr 2017 07:55:05 GMT
+x-checksum-md5: f634dd82cc844343e0868d9d720dc950
+x-checksum-sha1: e5b168ff3d98a9e9155cead01825039d942767ff
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchTest.java' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 555ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 00:55:31 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+x-repository-download: git clone https://github.com/vavr-io/vavr.git
+x-raw-download: https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchTest.java
+etag: W/"5c27ead559a0262f0c865459b8826825"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=bywUpGxWFNOBmzUUXrofK4b%2FO%2Fqp62SIHC598IltDITwWZlb%2F70Z7osIqbXFYJrSbu6h7E2FZdT48%2FaBS2Yu3YrZHgWsMre4%2BegsN%2BXGxb49%2BPwUtLUFsgq85KxRXdFCau0%2Bp47n72k3p6zX1%2FCEFXv5Wf5OEFoLvEDpBYgr0YxC%2BVFV2HUZyTTMZVF7b64bw%2Bo3tCE5l0HjNqDbOG22p8DR2F4fTW%2FdjTX1LGqrI1g395Yq%2FeXJp7MuSUR0M8%2F1xjcFM%2FSVejByNOO4fQlh6A%3D%3D--oWYsZHGucGsAo5vj--GsCIvX24egZPM0%2F6eIWa3Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.608553798.1777424131; expires=Thu, 29 Apr 2027 00:55:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 00:55:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 5101:23AC03:491502F:37B36D0:69F15703
+
+
+web search: 
+web search: io.javaslang javaslang-match 2.0.6 Maven Central sources javadoc
+web search: 
+web search: https://github.com/vavr-io/vavr/tree/javaslang-v2.0.6/javaslang
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/javaslang/javaslang-match/2.0.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/javaslang/javaslang-match/2.0.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="javaslang-match-2.0.6-javadoc.jar" title="javaslang-match-2.0.6-javadoc.jar">javaslang-match-2.0.6-javadoc.jar</a>                 2017-04-04 07:54     74202      
+<a href="javaslang-match-2.0.6-javadoc.jar.asc" title="javaslang-match-2.0.6-javadoc.jar.asc">javaslang-match-2.0.6-javadoc.jar.asc</a>             2017-04-04 07:54       833      
+<a href="javaslang-match-2.0.6-javadoc.jar.md5" title="javaslang-match-2.0.6-javadoc.jar.md5">javaslang-match-2.0.6-javadoc.jar.md5</a>             2017-04-04 07:54        32      
+<a href="javaslang-match-2.0.6-javadoc.jar.sha1" title="javaslang-match-2.0.6-javadoc.jar.sha1">javaslang-match-2.0.6-javadoc.jar.sha1</a>            2017-04-04 07:54        40      
+<a href="javaslang-match-2.0.6-sources.jar" title="javaslang-match-2.0.6-sources.jar">javaslang-match-2.0.6-sources.jar</a>                 2017-04-04 07:54     13360      
+<a href="javaslang-match-2.0.6-sources.jar.asc" title="javaslang-match-2.0.6-sources.jar.asc">javaslang-match-2.0.6-sources.jar.asc</a>             2017-04-04 07:54       833      
+<a href="javaslang-match-2.0.6-sources.jar.md5" title="javaslang-match-2.0.6-sources.jar.md5">javaslang-match-2.0.6-sources.jar.md5</a>             2017-04-04 07:54        32      
+<a href="javaslang-match-2.0.6-sources.jar.sha1" title="javaslang-match-2.0.6-sources.jar.sha1">javaslang-match-2.0.6-sources.jar.sha1</a>            2017-04-04 07:54        40      
+<a href="javaslang-match-2.0.6.jar" title="javaslang-match-2.0.6.jar">javaslang-match-2.0.6.jar</a>                         2017-04-04 07:54     26418      
+<a href="javaslang-match-2.0.6.jar.asc" title="javaslang-match-2.0.6.jar.asc">javaslang-match-2.0.6.jar.asc</a>                     2017-04-04 07:54       833      
+<a href="javaslang-match-2.0.6.jar.md5" title="javaslang-match-2.0.6.jar.md5">javaslang-match-2.0.6.jar.md5</a>                     2017-04-04 07:54        32      
+<a href="javaslang-match-2.0.6.jar.sha1" title="javaslang-match-2.0.6.jar.sha1">javaslang-match-2.0.6.jar.sha1</a>                    2017-04-04 07:54        40      
+<a href="javaslang-match-2.0.6.pom" title="javaslang-match-2.0.6.pom">javaslang-match-2.0.6.pom</a>                         2017-04-04 07:54      2284      
+<a href="javaslang-match-2.0.6.pom.asc" title="javaslang-match-2.0.6.pom.asc">javaslang-match-2.0.6.pom.asc</a>                     2017-04-04 07:54       833      
+<a href="javaslang-match-2.0.6.pom.md5" title="javaslang-match-2.0.6.pom.md5">javaslang-match-2.0.6.pom.md5</a>                     2017-04-04 07:54        32      
+<a href="javaslang-match-2.0.6.pom.sha1" title="javaslang-match-2.0.6.pom.sha1">javaslang-match-2.0.6.pom.sha1</a>                    2017-04-04 07:54        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/vavr-io/vavr/git/ref/tags/javaslang-v2.0.6' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang/pom.xml | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 169ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <prerequisites>
+        <maven>3.0.4</maven>
+    </prerequisites>
+    <parent>
+        <groupId>io.javaslang</groupId>
+        <artifactId>javaslang-parent</artifactId>
+        <version>2.0.6</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>javaslang</artifactId>
+    <packaging>jar</packaging>
+    <name>Javaslang</name>
+    <description>Javaslang is a Java standard library extension built for Java 8 and above.</description>
+    <url>http://javaslang.io</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>javaslang-match</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+    </build>
+    <profiles>
+
+
+        <profile>
+            <!-- Use `mvn clean test -DskipGen` to skip the code generator -->
+            <id>gen</id>
+            <activation>
+                <property>
+                    <name>!skipGen</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-clean-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.alchim31.maven</groupId>
+                        <artifactId>scala-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
+ succeeded in 178ms:
+{
+  "ref": "refs/tags/javaslang-v2.0.6",
+  "node_id": "MDM6UmVmMTYzNzg4Nzk6cmVmcy90YWdzL2phdmFzbGFuZy12Mi4wLjY=",
+  "url": "https://api.github.com/repos/vavr-io/vavr/git/refs/tags/javaslang-v2.0.6",
+  "object": {
+    "sha": "e8ad5f3a857b0c408da18836cb3b6a849f56a885",
+    "type": "tag",
+    "url": "https://api.github.com/repos/vavr-io/vavr/git/tags/e8ad5f3a857b0c408da18836cb3b6a849f56a885"
+  }
+}
+
+codex
+Maven Central has sources and Javadocs for `javaslang-match-2.0.6`, but no test artifact in that directory, so the version tag in GitHub is the right fallback for tests. The artifact and tests are Java-based, not Kotlin/Groovy/Scala-specific, so I expect to leave `language` absent.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/io.javaslang/javaslang-match/index.json" in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6-sources.jar",
+    "repository-url" : "https://github.com/vavr-io/vavr",
+    "test-code-url" : "https://github.com/vavr-io/vavr/blob/javaslang-v2.0.6/javaslang/src/test/java/javaslang/MatchTest.java",
+    "documentation-url" : "https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/javaslang-match-2.0.6-javadoc.jar",
+    "description" : "Javaslang Match provides annotations and an annotation processor that generate structural pattern-matching support for Javaslang/Vavr types. It lets Java projects define @Unapply extractors and @Patterns classes so match expressions can deconstruct values more ergonomically.",
+    "tested-versions" : [
+      "2.0.6"
+    ],
+    "allowed-packages" : [
+      "javaslang.match"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/io.javaslang/javaslang-match/index.json' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+?? metadata/io.javaslang/javaslang-match/index.json
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/io.javaslang/javaslang-match/index.json' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.javaslang/javaslang-match/index.json' in /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b
+ succeeded in 0ms:
+web search: 
+web search: Maven Repository io.javaslang javaslang-match 2.0.6
+web search: 
+web search: https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/
+web search: 
+web search: https://raw.githubusercontent.com/vavr-io/vavr/javaslang-v2.0.6/javaslang-match/pom.xml
+codex
+Verified the entry in [index.json](/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b/metadata/io.javaslang/javaslang-match/index.json:1). No edit was needed: all requested fields except `language` are already non-blank, and `language` should remain absent because `javaslang-match` is a Java library, not Kotlin/Groovy/Scala-specific. Maven Central has the exact `2.0.6` sources and Javadoc jars, and the GitHub tag contains the versioned `MatchTest.java` test file. ([repo1.maven.org](https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/))
+
+Validation: `jq empty metadata/io.javaslang/javaslang-match/index.json` passed, and `git diff -- metadata/io.javaslang/javaslang-match/index.json` is empty. Note: the target file is currently untracked in git status (`??`).
+2026-04-29T00:56:12.090760Z ERROR codex_core::session: failed to record rollout items: thread 019dd6bb-98fa-7d01-a8c5-4e6555c4eb87 not found
+tokens used
+46,503
+Verified the entry in [index.json](/home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b/metadata/io.javaslang/javaslang-match/index.json:1). No edit was needed: all requested fields except `language` are already non-blank, and `language` should remain absent because `javaslang-match` is a Java library, not Kotlin/Groovy/Scala-specific. Maven Central has the exact `2.0.6` sources and Javadoc jars, and the GitHub tag contains the versioned `MatchTest.java` test file. ([repo1.maven.org](https://repo1.maven.org/maven2/io/javaslang/javaslang-match/2.0.6/))
+
+Validation: `jq empty metadata/io.javaslang/javaslang-match/index.json` passed, and `git diff -- metadata/io.javaslang/javaslang-match/index.json` is empty. Note: the target file is currently untracked in git status (`??`).
+Ran agent for io.javaslang:javaslang-match:2.0.6 (exit 0). Log: /home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b/build/agent-url-discovery-logs/io.javaslang-javaslang-match-2.0.6.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/metadata-forge/local_repositories/forge_worktrees/2698-fec5a13b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m
+9 actionable tasks: 1 executed, 8 up-to-date
