@@ -55,7 +55,7 @@ public class Spring_security_cryptoTest {
 
     @Test
     void bcryptStaticApiGeneratesSaltHashesStringsAndHashesBytes() {
-        SecureRandom random = new SecureRandom(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+        SecureRandom random = new SecureRandom(new byte[] {1, 2, 3, 4, 5, 6, 7, 8 });
         String salt = BCrypt.gensalt("$2a", 4, random);
 
         String stringHash = BCrypt.hashpw(PASSWORD, salt);
@@ -151,12 +151,12 @@ public class Spring_security_cryptoTest {
         byte[] utf8 = Utf8.encode(text);
 
         assertThat(Utf8.decode(utf8)).isEqualTo(text);
-        assertThat(Hex.encode(new byte[] { 0x00, 0x0f, (byte) 0xff }))
+        assertThat(Hex.encode(new byte[] {0x00, 0x0f, (byte) 0xff }))
                 .containsExactly('0', '0', '0', 'f', 'f', 'f');
         assertThat(Hex.decode("000fff")).containsExactly(0x00, 0x0f, (byte) 0xff);
-        assertThat(EncodingUtils.concatenate(new byte[] { 1, 2 }, new byte[] { 3 }, new byte[] { 4, 5 }))
+        assertThat(EncodingUtils.concatenate(new byte[] {1, 2 }, new byte[] {3 }, new byte[] {4, 5 }))
                 .containsExactly(1, 2, 3, 4, 5);
-        assertThat(EncodingUtils.subArray(new byte[] { 10, 20, 30, 40, 50 }, 1, 4)).containsExactly(20, 30, 40);
+        assertThat(EncodingUtils.subArray(new byte[] {10, 20, 30, 40, 50 }, 1, 4)).containsExactly(20, 30, 40);
         assertThatThrownBy(() -> Hex.decode("abc")).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -198,7 +198,7 @@ public class Spring_security_cryptoTest {
     void bytesEncryptorsRoundTripBinaryPayloadsWithCbcAndGcm() {
         BytesEncryptor standard = Encryptors.standard("bytes-password", SALT);
         BytesEncryptor stronger = Encryptors.stronger("bytes-password", SALT);
-        byte[] payload = new byte[] { 0, 1, 2, 3, 4, 5, 127, (byte) 128, (byte) 255 };
+        byte[] payload = new byte[] {0, 1, 2, 3, 4, 5, 127, (byte) 128, (byte) 255 };
 
         byte[] standardCiphertext = standard.encrypt(payload);
         byte[] strongerCiphertext = stronger.encrypt(payload);
