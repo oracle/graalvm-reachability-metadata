@@ -12,24 +12,24 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import jersey.repackaged.com.google.common.collect.ArrayListMultimap;
+import jersey.repackaged.com.google.common.collect.HashMultimap;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SerializationTest {
     @Test
-    void arrayListMultimapRoundTripPreservesDistinctKeysAndOrderedValues() throws Exception {
-        ArrayListMultimap<String, String> original = ArrayListMultimap.create();
+    void hashMultimapRoundTripPreservesDistinctKeysAndValues() throws Exception {
+        HashMultimap<String, String> original = HashMultimap.create();
         original.put("language", "java");
         original.put("language", "native-image");
         original.put("runtime", "graalvm");
 
-        ArrayListMultimap<String, String> restored = roundTrip(original, ArrayListMultimap.class);
+        HashMultimap<String, String> restored = roundTrip(original, HashMultimap.class);
 
         assertThat(restored).isEqualTo(original);
         assertThat(restored.keySet()).containsExactlyInAnyOrder("language", "runtime");
-        assertThat(restored.get("language")).containsExactly("java", "native-image");
+        assertThat(restored.get("language")).containsExactlyInAnyOrder("java", "native-image");
         assertThat(restored.get("runtime")).containsExactly("graalvm");
     }
 
