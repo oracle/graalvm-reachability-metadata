@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
@@ -19,14 +20,14 @@ import org.junit.jupiter.api.Test;
 
 public class ConcurrentReaderHashMapTest {
     @Test
-    void serializesUriCacheEntries() throws Exception {
+    void serializesUriCacheEntries() throws IOException, ClassNotFoundException {
         ExposedNamespaceCache namespaceCache = new ExposedNamespaceCache();
-        Map uriCache = namespaceCache.getExposedURICache("urn:dom4j-cache-test");
+        Map<String, String> uriCache = namespaceCache.getExposedURICache("urn:dom4j-serialization-test");
         uriCache.clear();
         uriCache.put("first-prefix", "first-uri");
         uriCache.put("second-prefix", "second-uri");
 
-        Map restored = roundTrip(uriCache);
+        Map<String, String> restored = roundTrip(uriCache);
 
         assertThat(restored).isNotSameAs(uriCache);
         assertThat(restored).containsEntry("first-prefix", "first-uri");
@@ -34,20 +35,38 @@ public class ConcurrentReaderHashMapTest {
         assertThat(restored).hasSize(2);
     }
 
-    private static Map roundTrip(Map cache) throws Exception {
+    @Test
+    void uriCacheTracksMutableEntries() {
+        ExposedNamespaceCache namespaceCache = new ExposedNamespaceCache();
+        Map<String, String> uriCache = namespaceCache.getExposedURICache("urn:dom4j-cache-test");
+        uriCache.clear();
+
+        uriCache.put("first-prefix", "first-uri");
+        uriCache.put("second-prefix", "second-uri");
+        Object removed = uriCache.remove("first-prefix");
+
+        assertThat(removed).isEqualTo("first-uri");
+        assertThat(uriCache).containsEntry("second-prefix", "second-uri");
+        assertThat(uriCache).doesNotContainKey("first-prefix");
+        assertThat(uriCache).hasSize(1);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, String> roundTrip(Map<String, String> cache) throws IOException, ClassNotFoundException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ObjectOutputStream out = new ObjectOutputStream(bytes)) {
             out.writeObject(cache);
         }
 
         try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
-            return (Map) in.readObject();
+            return (Map<String, String>) in.readObject();
         }
     }
 
     private static class ExposedNamespaceCache extends NamespaceCache {
-        Map getExposedURICache(String uri) {
-            return getURICache(uri);
+        @SuppressWarnings("unchecked")
+        Map<String, String> getExposedURICache(String uri) {
+            return (Map<String, String>) getURICache(uri);
         }
     }
 }
