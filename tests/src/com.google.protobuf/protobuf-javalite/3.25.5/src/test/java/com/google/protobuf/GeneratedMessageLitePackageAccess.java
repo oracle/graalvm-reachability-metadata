@@ -9,7 +9,7 @@ package com.google.protobuf;
 import java.lang.reflect.Method;
 
 public final class GeneratedMessageLitePackageAccess {
-    private GeneratedMessageLitePackageAccess() {}
+    private GeneratedMessageLitePackageAccess() { }
 
     public static Object readValueWithGeneratedMessageLiteHelpers(StringValue message) {
         Method getValue = GeneratedMessageLite.getMethodOrDie(StringValue.class, "getValue");
