@@ -9,7 +9,8 @@ package org_apache_tomcat.tomcat_annotations_api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.annotation.Generated;
-import jakarta.annotation.ManagedBean;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
@@ -35,12 +36,12 @@ class Tomcat_annotations_apiTest {
 
     @Test
     void defaultAnnotationsExposeExpectedDefaults() throws Exception {
-        ManagedBean managedBean = DefaultManagedBean.class.
-                getAnnotation(ManagedBean.class);
-        Resource resource = field(DefaultManagedBean.class, "defaultResource").
+        Nonnull nonnull = DefaultAnnotatedComponent.class.
+                getAnnotation(Nonnull.class);
+        Resource resource = field(DefaultAnnotatedComponent.class, "defaultResource").
                 getAnnotation(Resource.class);
 
-        assertThat(managedBean.value()).isEmpty();
+        assertThat(nonnull).isNotNull();
         assertThat(resource.name()).isEmpty();
         assertThat(resource.type()).isEqualTo(Object.class);
         assertThat(resource.authenticationType()).isEqualTo(Resource.AuthenticationType.CONTAINER);
@@ -48,16 +49,16 @@ class Tomcat_annotations_apiTest {
         assertThat(resource.description()).isEmpty();
         assertThat(resource.mappedName()).isEmpty();
         assertThat(resource.lookup()).isEmpty();
-        assertThat(method(DefaultManagedBean.class, "init").
+        assertThat(method(DefaultAnnotatedComponent.class, "init").
                 isAnnotationPresent(PostConstruct.class)).isTrue();
-        assertThat(method(DefaultManagedBean.class, "destroy").
+        assertThat(method(DefaultAnnotatedComponent.class, "destroy").
                 isAnnotationPresent(PreDestroy.class)).isTrue();
     }
 
     @Test
     void securityAndResourceAnnotationsRetainConfiguredValues() throws Exception {
-        ManagedBean managedBean = FullyAnnotatedComponent.class.
-                getAnnotation(ManagedBean.class);
+        Nullable nullable = FullyAnnotatedComponent.class.
+                getAnnotation(Nullable.class);
         Priority priority = FullyAnnotatedComponent.class.
                 getAnnotation(Priority.class);
         DeclareRoles declareRoles = FullyAnnotatedComponent.class.
@@ -72,7 +73,7 @@ class Tomcat_annotations_apiTest {
         Resource methodResource = loadConfig.
                 getAnnotation(Resource.class);
 
-        assertThat(managedBean.value()).isEqualTo("inventoryBean");
+        assertThat(nullable).isNotNull();
         assertThat(priority.value()).isEqualTo(10);
         assertThat(declareRoles.value()).containsExactly("admin", "auditor");
         assertThat(runAs.value()).isEqualTo("system");
@@ -160,7 +161,9 @@ class Tomcat_annotations_apiTest {
 
     @Test
     void annotationTypesExposeRetentionPolicies() {
-        assertThat(ManagedBean.class.
+        assertThat(Nonnull.class.
+                getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(Nullable.class.
                 getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(PostConstruct.class.
                 getAnnotation(Retention.class).value()).isEqualTo(RetentionPolicy.RUNTIME);
@@ -207,6 +210,10 @@ class Tomcat_annotations_apiTest {
         assertThat(DataSourceDefinition.class.
                 getAnnotation(Target.class).value())
                 .containsExactly(ElementType.TYPE);
+        assertThat(Nonnull.class.
+                getAnnotation(Target.class)).isNull();
+        assertThat(Nullable.class.
+                getAnnotation(Target.class)).isNull();
 
         assertThat(Resources.class.
                 isAnnotationPresent(Documented.class)).isTrue();
@@ -224,6 +231,10 @@ class Tomcat_annotations_apiTest {
                 isAnnotationPresent(Documented.class)).isTrue();
         assertThat(PreDestroy.class.
                 isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(Nonnull.class.
+                isAnnotationPresent(Documented.class)).isTrue();
+        assertThat(Nullable.class.
+                isAnnotationPresent(Documented.class)).isTrue();
     }
 
     private static Field field(Class<?> type, String name) throws NoSuchFieldException {
@@ -234,8 +245,8 @@ class Tomcat_annotations_apiTest {
         return type.getDeclaredMethod(name);
     }
 
-    @ManagedBean
-    private static final class DefaultManagedBean {
+    @Nonnull
+    private static final class DefaultAnnotatedComponent {
 
         @Resource
         private Object defaultResource;
@@ -249,7 +260,7 @@ class Tomcat_annotations_apiTest {
         }
     }
 
-    @ManagedBean("inventoryBean")
+    @Nullable
     @Priority(10)
     @DeclareRoles({"admin", "auditor"})
     @RunAs("system")
