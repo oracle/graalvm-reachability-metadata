@@ -170,6 +170,12 @@ public class Smallrye_common_constraintTest {
     }
 
     @Test
+    void powerOfTwoChecksUseUnsignedSingleBitSemantics() {
+        assertThatCode(() -> Assert.checkPow2Parameter("intPower", Integer.MIN_VALUE)).doesNotThrowAnyException();
+        assertThatCode(() -> Assert.checkPow2Parameter("longPower", Long.MIN_VALUE)).doesNotThrowAnyException();
+    }
+
+    @Test
     void arrayBoundsChecksValidateTypedArraysOffsetsAndLengths() {
         String[] objects = {"a", "b", "c"};
         byte[] bytes = {1, 2, 3};
