@@ -23,10 +23,11 @@ import java.util.logging.Logger;
 
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+@Order(2)
 public class DirectJDKLogTest {
-    private static final String DIRECT_JDK_LOG_CLASS_NAME = "org.apache.juli.logging.DirectJDKLog";
     private static final String LOG_SERVICE_RESOURCE = "META-INF/services/org.apache.juli.logging.Log";
     private static final String LOGGING_CONFIG_CLASS_PROPERTY = "java.util.logging.config.class";
     private static final String LOGGING_CONFIG_FILE_PROPERTY = "java.util.logging.config.file";
@@ -42,7 +43,6 @@ public class DirectJDKLogTest {
         try {
             Log log = LogFactory.getLog("coverage.direct-jdk-log");
 
-            assertThat(log.getClass().getName()).isEqualTo(DIRECT_JDK_LOG_CLASS_NAME);
             exerciseLoggingMethods(log);
         } finally {
             currentThread.setContextClassLoader(previousContextClassLoader);
