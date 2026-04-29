@@ -14,22 +14,37 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.dom.DOMDocument;
 import org.dom4j.io.DOMWriter;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
+@TestMethodOrder(OrderAnnotation.class)
 public class DOMWriterTest {
     @Test
-    void resolvesAndInstantiatesDomDocuments() throws Exception {
+    @Order(1)
+    void resolvesDefaultDomDocumentClassThroughPublicAccessor() throws Exception {
         DOMWriter defaultWriter = new DOMWriter();
 
         Class<?> defaultDocumentClass = defaultWriter.getDomDocumentClass();
 
+        assertThat(defaultDocumentClass).isNotNull();
         assertThat(org.w3c.dom.Document.class.isAssignableFrom(defaultDocumentClass))
                 .isTrue();
+    }
 
+    @Test
+    @Order(2)
+    void resolvesNamedDomDocumentClass() throws Exception {
         DOMWriter namedWriter = new DOMWriter();
         namedWriter.setDomDocumentClassName(DOMDocument.class.getName());
-        assertThat(namedWriter.getDomDocumentClass()).isEqualTo(DOMDocument.class);
 
+        assertThat(namedWriter.getDomDocumentClass()).isEqualTo(DOMDocument.class);
+    }
+
+    @Test
+    @Order(3)
+    void instantiatesConfiguredAndFallbackDomDocuments() throws Exception {
         org.w3c.dom.Document configuredDocument = new DOMWriter(RecordingDomDocument.class)
                 .write(sampleDocument());
         assertDomDocument(configuredDocument, RecordingDomDocument.class);
