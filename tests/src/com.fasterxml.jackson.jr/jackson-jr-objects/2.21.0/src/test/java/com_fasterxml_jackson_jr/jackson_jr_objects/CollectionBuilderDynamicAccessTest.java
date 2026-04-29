@@ -82,6 +82,27 @@ public class CollectionBuilderDynamicAccessTest {
     }
 
     @Test
+    void usesInheritedTypedArrayHelpersWhenJsonApiHasCustomBuilder() throws Exception {
+        RecordingCollectionBuilder builder = new RecordingCollectionBuilder();
+        JSON json = JSON.builder()
+                .collectionBuilder(builder)
+                .build();
+        Class<String> elementType = runtimeStringType();
+
+        String[] emptyValues = json.arrayOfFrom(elementType, "[]");
+        String[] singletonValues = json.arrayOfFrom(elementType, "[\"solo\"]");
+        String[] multipleValues = json.arrayOfFrom(elementType, "[\"left\",\"right\"]");
+
+        assertThat(emptyValues).isEmpty();
+        assertThat(emptyValues).isInstanceOf(String[].class);
+        assertThat(singletonValues).containsExactly("solo");
+        assertThat(singletonValues).isInstanceOf(String[].class);
+        assertThat(multipleValues).containsExactly("left", "right");
+        assertThat(multipleValues).isInstanceOf(String[].class);
+        assertThat(builder.startedCollections).isEqualTo(1);
+    }
+
+    @Test
     void readsEmptyTypedArraysThroughJsonApi() throws Exception {
         Class<String> elementType = runtimeStringType();
 
@@ -126,6 +147,7 @@ public class CollectionBuilderDynamicAccessTest {
 
     private static final class RecordingCollectionBuilder extends CollectionBuilder {
         private Collection<Object> values;
+        private int startedCollections;
 
         private RecordingCollectionBuilder() {
             this(0, null);
@@ -147,6 +169,7 @@ public class CollectionBuilderDynamicAccessTest {
 
         @Override
         public CollectionBuilder start() {
+            startedCollections++;
             values = new ArrayList<>();
             return this;
         }
