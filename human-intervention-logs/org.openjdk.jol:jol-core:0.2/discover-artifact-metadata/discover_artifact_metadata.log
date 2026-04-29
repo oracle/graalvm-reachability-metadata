@@ -1,0 +1,652 @@
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019dd6c3-bd81-7462-957e-86a5eada26ba
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.openjdk.jol:jol-core:0.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "0.2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+- Set "coordinates" to "org.openjdk.jol:jol-core:0.2".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the exact 0.2 artifact metadata and upstream tag before editing the JSON, with Maven artifacts preferred where available.
+exec
+/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json && sed -n '1,200p' build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 0ms:
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+-rw-rw-r-- 1 jovan jovan 53 Apr 29 03:04 build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+{
+  "coordinates" : "org.openjdk.jol:jol-core:0.2"
+}
+
+exec
+/bin/bash -lc 'rg -n "org.openjdk.jol|jol-core" build/discovered-artifact-metadata metadata tests || true' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json:2:  "coordinates" : "org.openjdk.jol:jol-core:0.2"
+
+web search: 
+web search: Maven Central org.openjdk.jol jol-core 0.2 pom scm url
+web search: 
+web search: https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/
+web search: 
+web search: 
+codex
+Maven Central has the 0.2 sources and javadoc artifacts, so I’m checking those first. I’m also checking the upstream SCM tag to avoid guessing the test-suite URL.
+exec
+/bin/bash -lc "rg -n '\"source-code-url\".*repo1.maven.org|\"documentation-url\".*javadoc|\"test-code-url\".*github.com|\"language\"' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 0ms:
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-sources.jar",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-javadoc.jar",
+metadata/net.jcip/jcip-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0-sources.jar",
+metadata/net.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://javadoc.io/doc/net.jcip/jcip-annotations/1.0/index.html",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3-javadoc.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-sources.jar",
+metadata/javax.interceptor/javax.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/3.1.2/caffeine-3.1.2-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "source-code-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:34:    "documentation-url": "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/2.9.3/caffeine-2.9.3-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-1.2.17/tests",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17-javadoc.jar",
+metadata/tools.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/tools/jackson/core/jackson-core/3.0.0-rc2/jackson-core-3.0.0-rc2-sources.jar",
+metadata/tools.jackson.core/jackson-core/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-core/tree/jackson-core-3.0.0-rc2/src/test",
+metadata/tools.jackson.core/jackson-core/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/tools/jackson/core/jackson-core/3.0.0-rc2/jackson-core-3.0.0-rc2-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/4.10/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:7:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v23.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.23.0/protobuf-java-util-3.23.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:24:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.22.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.22.0/protobuf-java-util-3.22.0-javadoc.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:46:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-sources.jar",
+metadata/com.google.protobuf/protobuf-java-util/index.json:48:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.21.12/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:49:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java-util/3.21.12/protobuf-java-util-3.21.12-javadoc.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:11:    "test-code-url": "https://github.com/hibernate/hibernate-validator/tree/7.0.4.Final/engine/src/test",
+metadata/com.sun.activation/jakarta.activation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/2.0.0/jakarta.activation-2.0.0-javadoc.jar",
+metadata/io.netty/netty-transport-classes-epoll/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-classes-epoll/4.1.99.Final/netty-transport-classes-epoll-4.1.99.Final-javadoc.jar",
+metadata/com.mysql/mysql-connector-j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-sources.jar",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/8.0.31/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.31/mysql-connector-j-8.0.31-javadoc.jar",
+metadata/org.jooq/jooq/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.20.0/jooq-3.20.0-javadoc.jar",
+metadata/org.jooq/jooq/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.18.2/jooq-3.18.2-javadoc.jar",
+metadata/org.jooq/jooq/index.json:115:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jooq/jooq/3.17.7/jooq-3.17.7-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+metadata/org.ow2.asm/asm-analysis/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.7.1/asm-analysis-9.7.1-javadoc.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-sources.jar",
+metadata/org.scalatest/scalatest-compatible/index.json:7:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-3.2.19/jvm/scalatest-test/src/test",
+metadata/org.scalatest/scalatest-compatible/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/scalatest/scalatest-compatible/3.2.19/scalatest-compatible-3.2.19-javadoc.jar",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/hibernate/reactive/hibernate-reactive-core/2.0.0.Final/hibernate-reactive-core-2.0.0.Final-sources.jar",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:10:    "test-code-url": "https://github.com/hibernate/hibernate-reactive/tree/2.0.0/hibernate-reactive-core/src/test",
+metadata/org.hibernate.reactive/hibernate-reactive-core/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/hibernate/reactive/hibernate-reactive-core/2.0.0.Final/hibernate-reactive-core-2.0.0.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.79.Final/netty-common-4.1.79.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.80.Final/netty-common-4.1.80.Final-javadoc.jar",
+metadata/io.netty/netty-common/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-common/4.1.115.Final/netty-common-4.1.115.Final-javadoc.jar",
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.51.0/netty/src/test",
+metadata/io.grpc/grpc-netty/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-javadoc.jar",
+metadata/net.java.dev.jna/jna/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.8.0/jna-5.8.0-sources.jar",
+metadata/net.java.dev.jna/jna/index.json:10:    "test-code-url": "https://github.com/java-native-access/jna/tree/5.8.0/test",
+metadata/net.java.dev.jna/jna/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.8.0/jna-5.8.0-javadoc.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-sources.jar",
+metadata/javax.persistence/javax.persistence-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-javadoc.jar",
+metadata/io.grpc/grpc-context/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-sources.jar",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.27.2/context/src/test",
+metadata/io.grpc/grpc-context/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-javadoc.jar",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-logger-api/2.22.2/surefire-logger-api-2.22.2-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.10/httpcore-4.4.10-javadoc.jar",
+metadata/org.apache.httpcomponents/httpcore/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.9/httpcore-4.4.9-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0-sources.jar",
+metadata/org.lz4/lz4-java/index.json:8:    "test-code-url": "https://github.com/lz4/lz4-java/tree/1.8.0/src/test",
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2.pom' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+exec
+/bin/bash -lc "git ls-remote --tags https://github.com/openjdk/jol.git | rg \"refs/tags/(0\\.2|jol|v0\\.2|jdk)\"" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 114ms:
+<!--
+Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+
+This code is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 2 only, as
+published by the Free Software Foundation.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the LICENSE file that accompanied this code.
+
+This code is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+version 2 for more details (a copy is included in the LICENSE file that
+accompanied this code).
+
+You should have received a copy of the GNU General Public License version
+2 along with this work; if not, write to the Free Software Foundation,
+Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+or visit www.oracle.com if you need additional information or have any
+questions.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.openjdk.jol</groupId>
+        <artifactId>jol-parent</artifactId>
+        <version>0.2</version>
+    </parent>
+
+    <artifactId>jol-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Java Object Layout: Core</name>
+    <url>http://maven.apache.org</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <compilerVersion>1.6</compilerVersion>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <quiet>true</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.10.b1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <header>file:///${project.basedir}/../src/license/gpl_cpe/header.txt</header>
+                            <skipExistingHeaders>true</skipExistingHeaders>
+                            <strictCheck>true</strictCheck>
+                            <basedir>src/main/</basedir>
+                            <mapping>
+                                <java>PHP</java>
+                            </mapping>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>
+
+ succeeded in 427ms:
+cb17e21360df9443ed3a31125372693fd285ef0c	refs/tags/0.2
+8fde2cec71eff55f11558d1963ce5b00455d3539	refs/tags/0.2^{}
+
+exec
+/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-parent/0.2/jol-parent-0.2.pom' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 0ms:
+<!--
+Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+
+This code is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 2 only, as
+published by the Free Software Foundation.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the LICENSE file that accompanied this code.
+
+This code is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+version 2 for more details (a copy is included in the LICENSE file that
+accompanied this code).
+
+You should have received a copy of the GNU General Public License version
+2 along with this work; if not, write to the Free Software Foundation,
+Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+or visit www.oracle.com if you need additional information or have any
+questions.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.openjdk.jol</groupId>
+    <artifactId>jol-parent</artifactId>
+    <version>0.2</version>
+    <packaging>pom</packaging>
+
+    <name>Java Object Layout: Parent</name>
+
+    <description>
+        JOL is the set of tools for examining field and object layouts in JVM.
+    </description>
+
+    <url>
+        http://openjdk.java.net/projects/code-tools/jol/
+    </url>
+
+    <scm>
+        <url>http://hg.openjdk.java.net/code-tools/jol/</url>
+        <connection>scm:hg:http://hg.openjdk.java.net/code-tools/jol/</connection>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPL), version 2, with the Classpath exception</name>
+            <url>http://openjdk.java.net/legal/gplv2+ce.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>shade</id>
+            <name>Aleksey Shipilev</name>
+            <organization>Oracle</organization>
+            <email>aleksey.shipilev@oracle.com</email>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>jol-core</module>
+        <module>jol-cli</module>
+        <module>jol-samples</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>
+
+exec
+/bin/bash -lc 'git ls-remote https://github.com/openjdk/jol.git refs/tags/0.2 refs/heads/master refs/heads/main' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+exec
+/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-tests.jar' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 364ms:
+db2cc744485031c8149991a004ab02f2ea9b24dd	refs/heads/master
+cb17e21360df9443ed3a31125372693fd285ef0c	refs/tags/0.2
+
+ exited 22 in 794ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:04:27 GMT
+content-type: application/java-archive
+content-length: 46283
+cf-ray: 9f3a6488789d1b8b-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "ab670251aabc0ca0a2cce565a84c6e39"
+last-modified: Thu, 06 Nov 2014 21:27:34 GMT
+x-checksum-md5: ab670251aabc0ca0a2cce565a84c6e39
+x-checksum-sha1: 6d6bfe389347c39bdcdc6a5f2de90db20fe0e0d8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:04:27 GMT
+content-type: application/java-archive
+content-length: 154437
+cf-ray: 9f3a648a0c8b3267-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "c8d9bcc69e931c3ae66fb8adc3c76a0e"
+last-modified: Thu, 06 Nov 2014 21:27:42 GMT
+x-checksum-md5: c8d9bcc69e931c3ae66fb8adc3c76a0e
+x-checksum-sha1: 3c4619ecb57864e2a48773a87fe2f4f3f2c6e242
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Wed, 29 Apr 2026 01:04:27 GMT
+content-type: text/html
+cf-ray: 9f3a648bb8cff969-BEG
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/bin/bash -lc 'curl -I -fsSL https://github.com/openjdk/jol/tree/0.2 && curl -I -fsSL https://github.com/openjdk/jol/tree/0.2/jol-core/src/main' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+exec
+/bin/bash -lc 'curl -I -fsSL https://github.com/openjdk/jol/tree/0.2/jol-core/src/test' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/openjdk/jol/git/trees/0.2?recursive=1 | rg '\"path\"' | rg 'jol-core|src/test|README|doc|javadoc'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 324ms:
+      "path": "README",
+      "path": "jol-core",
+      "path": "jol-core/pom.xml",
+      "path": "jol-core/src",
+      "path": "jol-core/src/main",
+      "path": "jol-core/src/main/java",
+      "path": "jol-core/src/main/java/org",
+      "path": "jol-core/src/main/java/org/openjdk",
+      "path": "jol-core/src/main/java/org/openjdk/jol",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/CurrentDataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/DataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/X86_32_DataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/X86_64_COOPS_DataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/datamodel/X86_64_DataModel.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/heap",
+      "path": "jol-core/src/main/java/org/openjdk/jol/heap/HeapDumpReader.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/ClassData.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/ClassLayout.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/FieldData.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/FieldLayout.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/GraphLayout.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/GraphPathRecord.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/GraphVisitor.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/info/GraphWalker.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters/CurrentLayouter.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters/HotSpotLayouter.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters/Layouter.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/layouters/RawLayouter.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/util",
+      "path": "jol-core/src/main/java/org/openjdk/jol/util/MathUtil.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/util/Multiset.java",
+      "path": "jol-core/src/main/java/org/openjdk/jol/util/VMSupport.java",
+      "path": "jol-core/src/main/resources",
+      "path": "jol-core/src/main/resources/LICENSE",
+
+ exited 22 in 545ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Wed, 29 Apr 2026 01:04:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=w6ZUs1VDjucslXr%2BgSbv9N%2BBvta8w1r1nU374WjJ3mdcgpi0KmLdX68ofOye3YyfupMrQ3z8oepusbbEBueA1XRy8R3eeH7O2yAbpVTJmuVqrRTRjNjOXLrgbQYeXzDoKhvN9FwQTX1o0%2BRsf87DG6yr3tVP59tBUhOIxEB%2FOs4bU1ZykArHbHYNn3oLic9nR79to%2B4CQOrl%2Ft%2Bp47BsJeEAhADbKKaJ01yYVog90t%2FDLHyLCGmLR%2FDnRU1%2FIlGEYjXCEKbTV8fOaeeD6Mc5UA%3D%3D--ANQuPY2l724jGTT9--DZblPd0H%2FjyAs%2Bq1%2BiXQUQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.700667142.1777424675; expires=Thu, 29 Apr 2027 01:04:35 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 01:04:35 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9E74:3F0AB4:4B3520F:3959018:69F15922
+
+
+ succeeded in 1583ms:
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:04:35 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"7fd55e0601ce34abc8f6812d5d5e41ab"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=Pw3pw0OH%2BS3F7LVefir0U6SG23gZ15GSvGBnadePs7r5FLroX6wpjIld%2FBONreJeHzRcREU3exYfdpMpSFAFveUPFdpIoyt%2F74VDk3GGC0B8zLErHoz8aEPJGLbehmIUC60VZykBBIwvzIhq1RFuLS07wDijkJ9V0YYqFyKrfvzhdByx5LSPtKaZ1G%2BO837ox4V1%2B0gt4%2BUieX8%2F1KaZjsIne0KsYJiwhISZH8mlOfUujCZrkOtEAtpTTBZW0P0OtycUbG6GDeevoCk83usShQ%3D%3D--r%2Fkh18AtD3JFtUKx--ha39jxrYchJ3lTYR9fAYnQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1916544733.1777424675; expires=Thu, 29 Apr 2027 01:04:35 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 01:04:35 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9E72:B452F:4932183:37DC3E5:69F15922
+
+HTTP/2 200 
+date: Wed, 29 Apr 2026 01:04:36 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"c0c7ddc9a1e0b401fd83b90688acf61a"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=kjapAgg3ewVHcygw0C4H2uNZYjo%2FT%2FCSx6XOIBm4vpyHR9blbQf9aTW%2Fvlg%2FtUPxyeTNhvA7QPNV0jNuj62BU8HwmfbCVqOpug4bx%2B30oQfaOeREYmITvQfo07Nzmn08gP3VgZ3hOp%2Bsdj9QTz5qiwCnZ10SPIot1Frjz3WTMUfvwh5yE9DJ8kJjfwxO1Or%2FCw9ogVdzMjdiXNxokYR%2FLaM2dktTCPCqTpx06CKBA%2Fz%2BSTzeXkmZni2jFiVPD95urRpdSZ5wjC8KIsyGpisa9A%3D%3D--0qpPtNsGrOVpfuHX--WRM5zZUzMrv00ITHHTlPcg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.172487407.1777424676; expires=Thu, 29 Apr 2027 01:04:36 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Thu, 29 Apr 2027 01:04:36 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 9E8C:8515C:49BECFA:3830EBB:69F15923
+
+
+exec
+/bin/bash -lc "curl -fsSL https://api.github.com/repos/openjdk/jol/git/trees/0.2?recursive=1 | rg -i 'test|jtreg|src/test|testng|junit'" in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 107ms:
+      "path": "jol-cli/src/main/java/org/openjdk/jol/MainObjectEstimates.java",
+
+codex
+There is no `tests.jar` on Maven Central for `jol-core:0.2`, and the upstream `0.2` tag does not contain a test directory, so I’ll set `test-code-url` to `N/A`. The sources and javadocs do exist as Maven artifacts for the exact version.
+apply patch
+patch: completed
+/home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..0efba6fcbb2be87d5061f0c235ff0d243956f653
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "Java Object Layout (JOL) is a set of tools for examining object and field layouts in the JVM. jol-core provides the core APIs for inspecting class layouts, object graphs, heap dumps, and VM data-model details."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..0efba6fcbb2be87d5061f0c235ff0d243956f653
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "Java Object Layout (JOL) is a set of tools for examining object and field layouts in the JVM. jol-core provides the core APIs for inspecting class layouts, object graphs, heap dumps, and VM data-model details."
+ }
+
+exec
+/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 0ms:
+{
+  "coordinates": "org.openjdk.jol:jol-core:0.2",
+  "source-code-url": "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
+  "repository-url": "https://github.com/openjdk/jol",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
+  "description": "Java Object Layout (JOL) is a set of tools for examining object and field layouts in the JVM. jol-core provides the core APIs for inspecting class layouts, object graphs, heap dumps, and VM data-model details."
+}
+
+exec
+/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..0efba6fcbb2be87d5061f0c235ff0d243956f653
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "Java Object Layout (JOL) is a set of tools for examining object and field layouts in the JVM. jol-core provides the core APIs for inspecting class layouts, object graphs, heap dumps, and VM data-model details."
+ }
+
+exec
+/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json' in /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..0efba6fcbb2be87d5061f0c235ff0d243956f653
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "Java Object Layout (JOL) is a set of tools for examining object and field layouts in the JVM. jol-core provides the core APIs for inspecting class layouts, object graphs, heap dumps, and VM data-model details."
+ }
+
+web search: 
+web search: 
+web search: 
+web search: repo1.maven.org org/openjdk/jol/jol-core/0.2 jol-core-0.2-sources.jar jol-core-0.2-javadoc.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/
+web search: 
+web search: https://github.com/openjdk/jol
+web search: 
+web search: https://github.com/openjdk/jol/tree/0.2
+codex
+Updated [org.openjdk.jol-jol-core-0.2.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json) with the exact `0.2` Maven sources and javadoc artifacts, the OpenJDK JOL repository, `test-code-url: "N/A"`, and no `language` field. Maven Central lists the `0.2` sources and javadoc jars, and the upstream `0.2` tree shows JOL’s Java project layout without a test directory for this version. ([repo1.maven.org](https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/))
+
+Validated the file with `jq`; JSON is valid.
+diff --git a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+index 9a46817575992e693ba6c09dd6a718e654f692e4..0efba6fcbb2be87d5061f0c235ff0d243956f653
+--- a/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
++++ b/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.openjdk.jol:jol-core:0.2"
++  "coordinates" : "org.openjdk.jol:jol-core:0.2",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-sources.jar",
++  "repository-url" : "https://github.com/openjdk/jol",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/jol-core-0.2-javadoc.jar",
++  "description" : "Java Object Layout (JOL) is a set of tools for examining object and field layouts in the JVM. jol-core provides the core APIs for inspecting class layouts, object graphs, heap dumps, and VM data-model details."
+ }
+
+2026-04-29T01:05:19.834242Z ERROR codex_core::session: failed to record rollout items: thread 019dd6c3-bd81-7462-957e-86a5eada26ba not found
+tokens used
+64,674
+Updated [org.openjdk.jol-jol-core-0.2.json](/home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339/build/discovered-artifact-metadata/org.openjdk.jol-jol-core-0.2.json) with the exact `0.2` Maven sources and javadoc artifacts, the OpenJDK JOL repository, `test-code-url: "N/A"`, and no `language` field. Maven Central lists the `0.2` sources and javadoc jars, and the upstream `0.2` tree shows JOL’s Java project layout without a test directory for this version. ([repo1.maven.org](https://repo1.maven.org/maven2/org/openjdk/jol/jol-core/0.2/))
+
+Validated the file with `jq`; JSON is valid.
+Ran agent for org.openjdk.jol:jol-core:0.2 (exit 0). Log: /home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339/build/agent-artifact-discovery-logs/org.openjdk.jol-jol-core-0.2.log
+
+[Incubating] Problems report is available at: file:///home/jovan/metadata-forge/local_repositories/forge_worktrees/2697-95e5b339/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 20s
+9 actionable tasks: 4 executed, 5 from cache
