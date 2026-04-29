@@ -1,0 +1,1959 @@
+Starting a Gradle Daemon, 1 incompatible and 1 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd67f-97ea-7ff3-81b8-b730907efd9b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.seata:seata-all:2.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "2.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+- Set "coordinates" to "org.apache.seata:seata-all:2.1.0".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream tag, then patch only the requested JSON file. First I’m checking the current file shape so the update matches the repository’s formatting.
+exec
+/usr/bin/zsh -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.seata:seata-all:2.1.0"
+}
+
+exec
+/usr/bin/zsh -lc pwd in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+
+web search: 
+web search: Maven Central org.apache.seata seata-all 2.1.0 sources jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/
+web search: 
+web search: 
+web search: 
+web search: 
+web search: 
+web search: site:github.com/apache/incubator-seata/tree/v2.1.0 seata
+codex
+The Maven directory confirms a `2.1.0` sources JAR and Javadoc JAR, but no test JAR in that artifact directory. I’m checking nearby discovered metadata now so the chosen URL style matches how this repo records Maven-vs-GitHub sources.
+exec
+/usr/bin/zsh -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"' build/discovered-artifact-metadata | head -40" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc 'find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+
+exec
+/usr/bin/zsh -lc "rg -n '\"source-code-url\".*repo1.maven.org|\"source-code-url\".*github.com|\"test-code-url\".*github.com|\"documentation-url\"' metadata tests buildSrc -g '*.json' | head -80" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+rg: buildSrc: No such file or directory (os error 2)
+metadata/com.vaadin.external.google/android-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1-javadoc.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/2.0.0.Final/jboss-servlet-api_4.0_spec-2.0.0.Final-javadoc.jar",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/cloud/tools/jib-build-plan/0.4.0/jib-build-plan-0.4.0-sources.jar",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v0.4.0-build-plan/jib-build-plan/src/test",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:9:    "documentation-url": "https://javadoc.io/doc/com.google.cloud.tools/jib-build-plan/0.4.0",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.17.0/jackson-jr-objects-2.17.0-sources.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.17.0/jr-objects/src/test",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.17.0/jackson-jr-objects-2.17.0-javadoc.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:38:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-sources.jar",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:40:    "test-code-url" : "https://github.com/FasterXML/jackson-jr/tree/jackson-jr-parent-2.13.4/jr-objects/src/test",
+metadata/com.fasterxml.jackson.jr/jackson-jr-objects/index.json:41:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jr/jackson-jr-objects/2.13.4/jackson-jr-objects-2.13.4-javadoc.jar",
+metadata/mysql/mysql-connector-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29-sources.jar",
+metadata/mysql/mysql-connector-java/index.json:10:    "test-code-url": "https://github.com/mysql/mysql-connector-j/tree/8.0.29/src/test",
+metadata/mysql/mysql-connector-java/index.json:11:    "documentation-url": "https://github.com/mysql/mysql-connector-j/blob/8.0.29/README.md",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/1.5.0/jackrabbit-jcr-commons-1.5.0-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/1.5.0/jackrabbit-jcr-commons/README.txt",
+metadata/io.grpc/grpc-netty/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-sources.jar",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.51.0/netty/src/test",
+metadata/io.grpc/grpc-netty/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-netty/1.51.0/grpc-netty-1.51.0-javadoc.jar",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/4.10/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/4.10/antlr4-runtime-4.10-javadoc.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.mqttv5.client/1.2.5/org.eclipse.paho.mqttv5.client-1.2.5-sources.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.mqttv5.client.test/src/test",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv5.md",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/xml-apis/xml-apis/index.json:8:    "documentation-url" : "https://svn.apache.org/repos/asf/xerces/xml-commons/tags/xml-commons-1_0_b2/README.html",
+metadata/software.amazon.awssdk/s3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-sources.jar",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+metadata/software.amazon.awssdk/s3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/software/amazon/awssdk/s3/2.25.3/s3-2.25.3-javadoc.jar",
+metadata/io.grpc/grpc-context/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-sources.jar",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.27.2/context/src/test",
+metadata/io.grpc/grpc-context/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-context/1.27.2/grpc-context-1.27.2-javadoc.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5-sources.jar",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.client.mqttv3.test",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:11:    "documentation-url": "https://github.com/eclipse-paho/paho.mqtt.java/blob/v1.2.5/MQTTv3.md",
+metadata/io.grpc/grpc-core/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/1.69.0/grpc-core-1.69.0-sources.jar",
+metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.69.0/core/src/test",
+metadata/io.grpc/grpc-core/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-core/1.69.0/grpc-core-1.69.0-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/jaxb-stax-ex/tree/1.8.2/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:21:    "test-code-url" : "https://github.com/javaee/metro-stax-ex/tree/1.8/stax-ex/src/test",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:10:    "test-code-url": "https://github.com/mockito/mockito/tree/v5.0.0/src/test",
+metadata/org.mockito/mockito-core/index.json:11:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mockito/mockito-core/5.0.0/mockito-core-5.0.0-javadoc.jar",
+metadata/org.mockito/mockito-core/index.json:50:    "source-code-url": "https://repo1.maven.org/maven2/org/mockito/mockito-core/4.8.1/mockito-core-4.8.1-sources.jar",
+metadata/org.mockito/mockito-core/index.json:52:    "test-code-url": "https://github.com/mockito/mockito/tree/v4.8.1/src/test",
+metadata/org.mockito/mockito-core/index.json:53:    "documentation-url": "https://github.com/mockito/mockito/blob/v4.8.1/README.md",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf-spring6/3.1.0.RELEASE/thymeleaf-spring6-3.1.0.RELEASE-sources.jar",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/tests/thymeleaf-tests-spring6",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:8:    "documentation-url" : "https://www.thymeleaf.org/apidocs/thymeleaf-spring6/3.1.0.RELEASE/",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+metadata/io.projectreactor/reactor-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/reactor-core/3.5.1/reactor-core-3.5.1-docs.zip",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.0.6/mariadb-java-client-3.0.6-javadoc.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:40:    "source-code-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-sources.jar",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:43:    "documentation-url" : "https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.5.2/mariadb-java-client-3.5.2-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0-javadoc.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf/3.1.0.RELEASE/thymeleaf-3.1.0.RELEASE-sources.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:10:    "test-code-url": "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/lib/thymeleaf/src/test",
+metadata/org.thymeleaf/thymeleaf/index.json:11:    "documentation-url": "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/README.txt",
+metadata/org.thymeleaf/thymeleaf/index.json:25:    "source-code-url": "https://repo1.maven.org/maven2/org/thymeleaf/thymeleaf/3.1.0.M2/thymeleaf-3.1.0.M2-sources.jar",
+metadata/org.thymeleaf/thymeleaf/index.json:27:    "test-code-url": "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.M2/lib/thymeleaf/src/test",
+metadata/org.thymeleaf/thymeleaf/index.json:28:    "documentation-url": "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.M2/README.txt",
+metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v19.2/src/test",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v2.7.18/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/2.7.18/spring-boot-configuration-processor-2.7.18-javadoc.jar",
+
+exec
+/usr/bin/zsh -lc "rg -n '\"language\"' metadata tests buildSrc -g '*.json' | head -40" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+rg: buildSrc: No such file or directory (os error 2)
+metadata/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/index.json:10:    "language" : {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:56:      "language": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:186:        "language": {
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0.pom | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/ | sed -n '1,200p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/apache/incubator-seata.git 'refs/tags/*2.1.0*'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 346ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/seata/seata-all/2.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/seata/seata-all/2.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="seata-all-2.1.0-javadoc.jar" title="seata-all-2.1.0-javadoc.jar">seata-all-2.1.0-javadoc.jar</a>                       2024-08-04 18:00    869863      
+<a href="seata-all-2.1.0-javadoc.jar.asc" title="seata-all-2.1.0-javadoc.jar.asc">seata-all-2.1.0-javadoc.jar.asc</a>                   2024-08-04 18:00       833      
+<a href="seata-all-2.1.0-javadoc.jar.md5" title="seata-all-2.1.0-javadoc.jar.md5">seata-all-2.1.0-javadoc.jar.md5</a>                   2024-08-04 18:00        32      
+<a href="seata-all-2.1.0-javadoc.jar.sha1" title="seata-all-2.1.0-javadoc.jar.sha1">seata-all-2.1.0-javadoc.jar.sha1</a>                  2024-08-04 18:00        40      
+<a href="seata-all-2.1.0-sources.jar" title="seata-all-2.1.0-sources.jar">seata-all-2.1.0-sources.jar</a>                       2024-08-04 18:00   1554529      
+<a href="seata-all-2.1.0-sources.jar.asc" title="seata-all-2.1.0-sources.jar.asc">seata-all-2.1.0-sources.jar.asc</a>                   2024-08-04 18:00       833      
+<a href="seata-all-2.1.0-sources.jar.md5" title="seata-all-2.1.0-sources.jar.md5">seata-all-2.1.0-sources.jar.md5</a>                   2024-08-04 18:00        32      
+<a href="seata-all-2.1.0-sources.jar.sha1" title="seata-all-2.1.0-sources.jar.sha1">seata-all-2.1.0-sources.jar.sha1</a>                  2024-08-04 18:00        40      
+<a href="seata-all-2.1.0.jar" title="seata-all-2.1.0.jar">seata-all-2.1.0.jar</a>                               2024-08-04 18:00   5438866      
+<a href="seata-all-2.1.0.jar.asc" title="seata-all-2.1.0.jar.asc">seata-all-2.1.0.jar.asc</a>                           2024-08-04 18:00       833      
+<a href="seata-all-2.1.0.jar.md5" title="seata-all-2.1.0.jar.md5">seata-all-2.1.0.jar.md5</a>                           2024-08-04 18:00        32      
+<a href="seata-all-2.1.0.jar.sha1" title="seata-all-2.1.0.jar.sha1">seata-all-2.1.0.jar.sha1</a>                          2024-08-04 18:00        40      
+<a href="seata-all-2.1.0.pom" title="seata-all-2.1.0.pom">seata-all-2.1.0.pom</a>                               2024-08-04 18:00     21652      
+<a href="seata-all-2.1.0.pom.asc" title="seata-all-2.1.0.pom.asc">seata-all-2.1.0.pom.asc</a>                           2024-08-04 18:00       833      
+<a href="seata-all-2.1.0.pom.md5" title="seata-all-2.1.0.pom.md5">seata-all-2.1.0.pom.md5</a>                           2024-08-04 18:00        32      
+<a href="seata-all-2.1.0.pom.sha1" title="seata-all-2.1.0.pom.sha1">seata-all-2.1.0.pom.sha1</a>                          2024-08-04 18:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 410ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.apache.seata</groupId>
+	<artifactId>seata-all</artifactId>
+	<version>2.1.0</version>
+	<name>Seata All-in-one 2.1.0</name>
+	<description>Seata is an easy-to-use, high-performance, java based, open source distributed transaction solution.</description>
+	<url>https://seata.apache.org</url>
+	<organization>
+		<name>Apache</name>
+		<url>https://github.com/apache</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>Seata</id>
+			<name>Seata</name>
+			<email>dev@seata.apache.org</email>
+			<url>https://seata.apache.org</url>
+		</developer>
+	</developers>
+	<mailingLists>
+		<mailingList>
+			<name>Apache Announce List</name>
+			<subscribe>announce-subscribe@apache.org</subscribe>
+			<unsubscribe>announce-unsubscribe@apache.org</unsubscribe>
+			<post>announce@apache.org</post>
+			<archive>https://mail-archives.apache.org/mod_mbox/www-announce/</archive>
+		</mailingList>
+	</mailingLists>
+	<scm>
+		<connection>scm:git@github.com:apache/incubator-seata.git</connection>
+		<developerConnection>scm:git@github.com:apache/incubator-seata.git</developerConnection>
+		<url>git@github.com:apache/incubator-seata.git</url>
+	</scm>
+	<issueManagement>
+		<system>github</system>
+		<url>https://github.com/apache/incubator-seata/issues</url>
+	</issueManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.seata</groupId>
+			<artifactId>seata-sqlparser-antlr</artifactId>
+			<version>2.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.seata</groupId>
+			<artifactId>seata-serializer-protobuf</artifactId>
+			<version>2.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.3.27</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>5.3.27</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>5.3.27</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>5.3.27</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>5.3.26</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.94.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4</artifactId>
+			<version>4.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.83</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.2.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe</groupId>
+			<artifactId>config</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.36</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.3.14</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.dubbo.extensions</groupId>
+			<artifactId>dubbo-filter-seata</artifactId>
+			<version>1.0.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.seata</groupId>
+					<artifactId>seata-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.16.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.6.10</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jboss.netty</groupId>
+					<artifactId>netty</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.edas</groupId>
+			<artifactId>edas-sdk</artifactId>
+			<version>1.8.3</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.alibaba.hsf</groupId>
+					<artifactId>LightApi</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-io</groupId>
+					<artifactId>commons-io</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>aopalliance</groupId>
+			<artifactId>aopalliance</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.101tec</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.11</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.netty</groupId>
+					<artifactId>netty</artifactId>
+				</exclusion>
+				<exclusion>
+
+ succeeded in 515ms:
+c2c6ad4815b0633cee957dc0ac36857cc3ae602b	refs/tags/v2.1.0
+
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/apache/incubator-seata/git/trees/v2.1.0?recursive=1' | rg '\"path\": \".*(seata-all|src/test|README|docs|site|all/pom.xml|pom.xml)' | head -200" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/apache/incubator-seata/contents?ref=v2.1.0' | rg '\"name\"|\"path\"|\"html_url\"' | head -120" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 421ms:
+    "name": ".asf.yaml",
+    "path": ".asf.yaml",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/.asf.yaml",
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/.gitattributes",
+    "name": ".github",
+    "path": ".github",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/.github",
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/.gitignore",
+    "name": ".licenserc.yaml",
+    "path": ".licenserc.yaml",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/.licenserc.yaml",
+    "name": ".mvn",
+    "path": ".mvn",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/.mvn",
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/.travis.yml",
+    "name": "CHANGELOG.md",
+    "path": "CHANGELOG.md",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/CHANGELOG.md",
+    "name": "CODE_OF_CONDUCT.md",
+    "path": "CODE_OF_CONDUCT.md",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/CODE_OF_CONDUCT.md",
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/CONTRIBUTING.md",
+    "name": "CONTRIBUTING_CN.md",
+    "path": "CONTRIBUTING_CN.md",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/CONTRIBUTING_CN.md",
+    "name": "DISCLAIMER",
+    "path": "DISCLAIMER",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/DISCLAIMER",
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/LICENSE",
+    "name": "NOTICE",
+    "path": "NOTICE",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/NOTICE",
+    "name": "README.md",
+    "path": "README.md",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/README.md",
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/SECURITY.md",
+    "name": "all",
+    "path": "all",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/all",
+    "name": "bom",
+    "path": "bom",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/bom",
+    "name": "build",
+    "path": "build",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/build",
+    "name": "changeVersion.sh",
+    "path": "changeVersion.sh",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/changeVersion.sh",
+    "name": "changes",
+    "path": "changes",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/changes",
+    "name": "codecov.yml",
+    "path": "codecov.yml",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/codecov.yml",
+    "name": "common",
+    "path": "common",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/common",
+    "name": "compatible",
+    "path": "compatible",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/compatible",
+    "name": "compressor",
+    "path": "compressor",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/compressor",
+    "name": "config",
+    "path": "config",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/config",
+    "name": "console",
+    "path": "console",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/console",
+    "name": "core",
+    "path": "core",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/core",
+    "name": "dependencies",
+    "path": "dependencies",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/dependencies",
+    "name": "discovery",
+    "path": "discovery",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/discovery",
+    "name": "distribution",
+    "path": "distribution",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/distribution",
+    "name": "ext",
+    "path": "ext",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/ext",
+    "name": "integration-tx-api",
+    "path": "integration-tx-api",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/integration-tx-api",
+    "name": "integration",
+    "path": "integration",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/integration",
+    "name": "metrics",
+    "path": "metrics",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/metrics",
+    "name": "mvnw",
+    "path": "mvnw",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/mvnw",
+    "name": "mvnw.cmd",
+    "path": "mvnw.cmd",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/mvnw.cmd",
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/pom.xml",
+    "name": "rm-datasource",
+    "path": "rm-datasource",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/rm-datasource",
+    "name": "rm",
+    "path": "rm",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/rm",
+
+ succeeded in 742ms:
+      "path": "README.md",
+      "path": "all/pom.xml",
+      "path": "bom/pom.xml",
+      "path": "build/pom.xml",
+      "path": "common/pom.xml",
+      "path": "common/src/test",
+      "path": "common/src/test/java",
+      "path": "common/src/test/java/org",
+      "path": "common/src/test/java/org/apache",
+      "path": "common/src/test/java/org/apache/seata",
+      "path": "common/src/test/java/org/apache/seata/common",
+      "path": "common/src/test/java/org/apache/seata/common/BranchDO.java",
+      "path": "common/src/test/java/org/apache/seata/common/XIDTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception",
+      "path": "common/src/test/java/org/apache/seata/common/exception/AuthenticationFailedExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/DataAccessExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/EurekaRegistryExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/FrameworkExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/JsonParseExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/Message.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/NotSupportYetExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/RedisExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/RepeatRegistrationExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/ResourceBundleUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/RetryableExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/ShouldNeverHappenExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/SkipCallbackWrapperExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/exception/StoreExceptionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/holder",
+      "path": "common/src/test/java/org/apache/seata/common/holder/ObjectHolderTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/io",
+      "path": "common/src/test/java/org/apache/seata/common/io/FileLoaderTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader",
+      "path": "common/src/test/java/org/apache/seata/common/loader/ChineseHello.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/EnglishHello.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/EnhancedServiceLoaderTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/ExtensionDefinitionTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/FrenchHello.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/Hello.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/Hello1.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/Hello2.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/JapaneseHello.java",
+      "path": "common/src/test/java/org/apache/seata/common/loader/LatinHello.java",
+      "path": "common/src/test/java/org/apache/seata/common/metadata",
+      "path": "common/src/test/java/org/apache/seata/common/metadata/ClusterRoleTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/metadata/MetadataTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/metadata/NodeTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/rpc",
+      "path": "common/src/test/java/org/apache/seata/common/rpc/RpcStatusTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/thread",
+      "path": "common/src/test/java/org/apache/seata/common/thread/NamedThreadFactoryTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/thread/PositiveAtomicCounterTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/thread/RejectedPoliciesTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util",
+      "path": "common/src/test/java/org/apache/seata/common/util/ArrayUtilsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/BeanUtilsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/BlobUtilsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/BufferUtilsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/CollectionUtilsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/CompressUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/ConfigToolsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/CycleDependencyHandlerTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/DateUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/DurationUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/HttpClientUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/IOUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/IdWorkerTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/LambdaUtilsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/LowerCaseLinkHashMapTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/MapUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/NetAddressValidatorUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/NetUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/NumberUtilsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/PageUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/ReflectionUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/SizeUtilTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/StringFormatUtilsTest.java",
+      "path": "common/src/test/java/org/apache/seata/common/util/StringUtilsTest.java",
+      "path": "common/src/test/resources",
+      "path": "common/src/test/resources/META-INF",
+      "path": "common/src/test/resources/META-INF/seata",
+      "path": "common/src/test/resources/META-INF/seata/frenchhello",
+      "path": "common/src/test/resources/META-INF/seata/frenchhello/org.apache.seata.common.loader.Hello",
+      "path": "common/src/test/resources/META-INF/seata/org.apache.seata.common.loader.Hello",
+      "path": "common/src/test/resources/META-INF/seata/org.apache.seata.common.loader.Hello1",
+      "path": "common/src/test/resources/META-INF/seata/org.apache.seata.common.loader.Hello2",
+      "path": "common/src/test/resources/META-INF/services",
+      "path": "common/src/test/resources/META-INF/services/org.apache.seata.common.loader.Hello",
+      "path": "common/src/test/resources/error",
+      "path": "common/src/test/resources/error/ErrorCode_en.properties",
+      "path": "common/src/test/resources/io",
+      "path": "common/src/test/resources/io/TestFile.txt",
+      "path": "compatible/pom.xml",
+      "path": "compatible/src/test",
+      "path": "compatible/src/test/java",
+      "path": "compatible/src/test/java/io",
+      "path": "compatible/src/test/java/io/seata",
+      "path": "compatible/src/test/java/io/seata/common",
+      "path": "compatible/src/test/java/io/seata/common/LockAndCallback.java",
+      "path": "compatible/src/test/java/io/seata/integration",
+      "path": "compatible/src/test/java/io/seata/integration/tx",
+      "path": "compatible/src/test/java/io/seata/integration/tx/api",
+      "path": "compatible/src/test/java/io/seata/integration/tx/api/interceptor",
+      "path": "compatible/src/test/java/io/seata/integration/tx/api/interceptor/parser",
+      "path": "compatible/src/test/java/io/seata/integration/tx/api/interceptor/parser/Business.java",
+      "path": "compatible/src/test/java/io/seata/integration/tx/api/interceptor/parser/BusinessImpl.java",
+      "path": "compatible/src/test/java/io/seata/integration/tx/api/interceptor/parser/GlobalTransactionalInterceptorParserTest.java",
+      "path": "compatible/src/test/java/io/seata/rm",
+      "path": "compatible/src/test/java/io/seata/rm/datasource",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/DataSourceProxyTest.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockBlob.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockClob.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockConnection.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockDataSource.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockDatabaseMetaData.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockDriver.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockExecuteHandlerImpl.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockParameterMetaData.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockPreparedStatement.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockResultSet.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/mock/MockResultSetMetaData.java",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/xa",
+      "path": "compatible/src/test/java/io/seata/rm/datasource/xa/DataSourceProxyXATest.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/BranchSessionMock.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/NestTccAction.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/NestTccActionImpl.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/NormalTccAction.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/NormalTccActionImpl.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/Param.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/TccAction.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/TccActionImpl.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/TccParam.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/interceptor",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/interceptor/ProxyUtilsTccTest.java",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/interceptor/parser",
+      "path": "compatible/src/test/java/io/seata/rm/tcc/interceptor/parser/TccActionInterceptorParserTest.java",
+      "path": "compatible/src/test/java/io/seata/saga",
+      "path": "compatible/src/test/java/io/seata/saga/SagaCostPrint.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine",
+      "path": "compatible/src/test/java/io/seata/saga/engine/StateMachineTests.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine/db",
+      "path": "compatible/src/test/java/io/seata/saga/engine/db/mockserver",
+      "path": "compatible/src/test/java/io/seata/saga/engine/db/mockserver/StateMachineAsyncDBMockServerTests.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine/db/mockserver/StateMachineDBMockServerTests.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine/mock",
+      "path": "compatible/src/test/java/io/seata/saga/engine/mock/DemoException.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine/mock/DemoService.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine/mock/MockGlobalTransaction.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine/mock/MockSagaTransactionTemplate.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine/mock/MockStateHandlerInterceptor.java",
+      "path": "compatible/src/test/java/io/seata/saga/engine/mock/MockStateRouterInterceptor.java",
+      "path": "compatible/src/test/java/io/seata/spi",
+      "path": "compatible/src/test/java/io/seata/spi/SPITest.java",
+      "path": "compatible/src/test/java/io/seata/tm",
+      "path": "compatible/src/test/java/io/seata/tm/api",
+      "path": "compatible/src/test/java/io/seata/tm/api/DefaultFailureHandlerImplTest.java",
+      "path": "compatible/src/test/java/io/seata/tm/api/transaction",
+      "path": "compatible/src/test/java/io/seata/tm/api/transaction/MyRuntimeException.java",
+      "path": "compatible/src/test/resources",
+      "path": "compatible/src/test/resources/file.conf",
+      "path": "compatible/src/test/resources/registry.conf",
+      "path": "compatible/src/test/resources/saga",
+      "path": "compatible/src/test/resources/saga/spring",
+      "path": "compatible/src/test/resources/saga/spring/statemachine_engine_db_mockserver_test.xml",
+      "path": "compatible/src/test/resources/saga/spring/statemachine_engine_db_test.xml",
+      "path": "compatible/src/test/resources/saga/spring/statemachine_engine_test.xml",
+      "path": "compatible/src/test/resources/saga/sql",
+      "path": "compatible/src/test/resources/saga/sql/db2_init.sql",
+      "path": "compatible/src/test/resources/saga/sql/h2_init.sql",
+      "path": "compatible/src/test/resources/saga/sql/mysql_init.sql",
+      "path": "compatible/src/test/resources/saga/sql/oracle_init.sql",
+      "path": "compatible/src/test/resources/saga/statelang",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_param_assignment.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_async_state.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_catches.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_choice.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_choice_and_end.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_choice_no_default.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_compensation.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_compensation_and_sub_machine.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_compensation_for_recovery.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_complex_params.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_complex_params_jackson.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_loop.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_persist_update_mode.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_recover_strategy.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_retry.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_script.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_status_matches.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statelang_with_userdef_sub_machine_compensation.json",
+      "path": "compatible/src/test/resources/saga/statelang/simple_statemachine_with_layout.json",
+      "path": "compressor/pom.xml",
+      "path": "compressor/seata-compressor-all/pom.xml",
+      "path": "compressor/seata-compressor-bzip2/pom.xml",
+      "path": "compressor/seata-compressor-bzip2/src/test",
+      "path": "compressor/seata-compressor-bzip2/src/test/java",
+      "path": "compressor/seata-compressor-bzip2/src/test/java/org",
+curl: (23) Failure writing output to destination
+
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/apache/incubator-seata/v2.1.0/all/pom.xml | sed -n '1,220p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/apache/incubator-seata/git/trees/v2.1.0?recursive=1' | rg '\"path\": \"all/|\"path\": \".*seata-all.*|\"path\": \"README.md\"|\"path\": \"docs/' | head -240" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/apache/incubator-seata/v2.1.0/README.md | sed -n '1,140p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 305ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.apache.seata</groupId>
+        <artifactId>seata-build</artifactId>
+        <version>${revision}</version>
+        <relativePath>../build/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>seata-all</artifactId>
+    <name>Seata All-in-one ${project.version}</name>
+    <description>Seata is an easy-to-use, high-performance, java based, open source distributed transaction solution.</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.seata</groupId>
+                <artifactId>seata-dependencies</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- seata projects -->
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-config-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-config-custom</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-config-apollo</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-config-nacos</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-config-zk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-config-consul</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-config-etcd3</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-config-spring-cloud</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-custom</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-consul</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-eureka</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-nacos</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-redis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-sofa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-raft</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-zk</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-discovery-etcd3</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-brpc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-http</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-http-jakarta</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-dubbo-alibaba</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-sofa-rpc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-motan</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-rm</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-rm-datasource</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>seata-compressor-all</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-rocketmq</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-sqlparser-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-sqlparser-antlr</artifactId>
+            <version>${project.version}</version>
+            <!-- Slimming down for 'seata-all.jar' -->
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-sqlparser-druid</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.seata</groupId>
+            <artifactId>seata-spring</artifactId>
+            <version>${project.version}</version>
+
+ succeeded in 376ms:
+<div style="align: center">
+<img src="https://img.alicdn.com/imgextra/i1/O1CN011z0JfQ2723QgDiWuH_!!6000000007738-2-tps-1497-401.png"  height="100" width="426"/>
+</div>
+
+# Seata: Simple Extensible Autonomous Transaction Architecture
+
+[![Build Status](https://github.com/apache/incubator-seata/workflows/build/badge.svg?branch=develop)](https://github.com/apache/incubator-seata/actions)
+[![codecov](https://codecov.io/gh/apache/incubator-seata/branch/develop/graph/badge.svg)](https://codecov.io/gh/apache/incubator-seata)
+[![license](https://img.shields.io/github/license/apache/incubator-seata.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![maven](https://img.shields.io/maven-central/v/io.apache/incubator-seata-parent?versionSuffix=2.0.0)](https://search.maven.org/search?q=io.seata)
+
+## What is Seata?
+
+A **distributed transaction solution** with high performance and ease of use for **microservices** architecture.
+### Distributed Transaction Problem in Microservices
+
+Let's imagine a traditional monolithic application. Its business is built up with 3 modules. They use a single local data source.
+
+Naturally, data consistency will be guaranteed by the local transaction.
+
+![Monolithic App](https://img.alicdn.com/imgextra/i3/O1CN01FTtjyG1H4vvVh1sNY_!!6000000000705-0-tps-1106-678.jpg) 
+
+Things have changed in a microservices architecture. The 3 modules mentioned above are designed to be 3 services on top of 3 different data sources ([Pattern: Database per service](http://microservices.io/patterns/data/database-per-service.html)). Data consistency within every single service is naturally guaranteed by the local transaction. 
+
+**But how about the whole business logic scope?**
+
+![Microservices Problem](https://img.alicdn.com/imgextra/i1/O1CN01DXkc3o1te9mnJcHOr_!!6000000005926-0-tps-1268-804.jpg) 
+
+### How Seata do?
+
+Seata is just a solution to the problem mentioned above. 
+
+![Seata solution](https://img.alicdn.com/imgextra/i1/O1CN01FheliH1k5VHIRob3p_!!6000000004632-0-tps-1534-908.jpg)
+
+Firstly, how to define a **Distributed Transaction**?
+
+We say, a **Distributed Transaction** is a **Global Transaction** which is made up with a batch of **Branch Transaction**, and normally **Branch Transaction** is just **Local Transaction**.
+
+![Global & Branch](https://cdn.nlark.com/lark/0/2018/png/18862/1545015454979-a18e16f6-ed41-44f1-9c7a-bd82c4d5ff99.png) 
+
+There are three roles in Seata Framework: 
+
+- **Transaction Coordinator(TC):** Maintain status of global and branch transactions, drive the global commit or rollback.
+- **Transaction Manager(TM):** Define the scope of global transaction: begin a global transaction, commit or rollback a global transaction.
+- **Resource Manager(RM):** Manage resources that branch transactions working on, talk to TC for registering branch transactions and reporting status of branch transactions, and drive the branch transaction commit or rollback.
+
+![Model](https://cdn.nlark.com/lark/0/2018/png/18862/1545013915286-4a90f0df-5fda-41e1-91e0-2aa3d331c035.png) 
+
+A typical lifecycle of Seata managed distributed transaction:
+
+1. TM asks TC to begin a new global transaction. TC generates an XID representing the global transaction.
+2. XID is propagated through microservices' invoke chain.
+3. RM registers local transaction as a branch of the corresponding global transaction of XID to TC. 
+4. TM asks TC for committing or rollbacking the corresponding global transaction of XID.
+5. TC drives all branch transactions under the corresponding global transaction of XID to finish branch committing or rollbacking.
+
+![Typical Process](https://cdn.nlark.com/lark/0/2018/png/18862/1545296917881-26fabeb9-71fa-4f3e-8a7a-fc317d3389f4.png) 
+
+For more details about principle and design, please go to [Seata wiki page](https://github.com/apache/incubator-seata/wiki). 
+
+### History
+
+##### Alibaba
+
+- **TXC**: Taobao Transaction Constructor. Alibaba middleware team started this project since 2014 to meet the distributed transaction problems caused by application architecture change from monolithic to microservices.
+- **GTS**: Global Transaction Service. TXC as an Aliyun middleware product with new name GTS was published since 2016.
+- **Fescar**: we started the open source project Fescar based on TXC/GTS since 2019 to work closely with the community in the future.
+
+
+##### Ant Financial
+
+- **XTS**: Extended Transaction Service. Ant Financial middleware team developed the distributed transaction middleware since 2007, which is widely used in Ant Financial and solves the problems of data consistency across databases and services.
+
+- **DTX**: Distributed Transaction Extended. Since 2013, XTS has been published on the Ant Financial Cloud, with the name of DTX .
+
+
+##### Seata Community
+
+- **Seata** :Simple Extensible Autonomous Transaction Architecture. Ant Financial joins Fescar, which make it to be a more neutral and open community for distributed transaction, and Fescar be renamed to Seata.
+
+
+
+## Maven dependency
+
+Depending on the scenario, choose one of the two dependencies: `io.seata:seata-all` or `io.seata:seata-spring-boot-starter`.
+```xml
+<properties>
+  <seata.version>2.0.0</seata.version>
+</properties>
+
+<dependencies>
+<!--dependencies for non-SpringBoot application framework-->
+  <dependency>
+    <groupId>io.seata</groupId>
+    <artifactId>seata-all</artifactId>
+    <version>${seata.version}</version>
+  </dependency>
+
+<!--If your project base on `Spring Boot`, you can directly use the following dependencies-->
+<!--Notice: `seata-spring-boot-starter` has already included `seata-all` dependency-->
+  <dependency>
+    <groupId>io.seata</groupId>
+    <artifactId>seata-spring-boot-starter</artifactId>
+    <version>${seata.version}</version>
+  </dependency>
+</dependencies>
+```
+
+## Quick Start
+
+[Quick Start](https://seata.apache.org/zh-cn/docs/ops/deploy-guide-beginner)
+
+## Documentation
+
+
+You can view the full documentation from Seata Official Website: [Seata Website page](https://seata.apache.org/zh-cn/docs/overview/what-is-seata).
+
+## Reporting bugs
+
+Please follow the [template](./.github/ISSUE_TEMPLATE/BUG_REPORT.md) for reporting any issues.
+
+## Security
+
+Please do not use our public issue tracker but refer to our [security policy](./SECURITY.md)
+
+## Contributing
+
+Contributors are welcomed to join the Seata project. Please check [CONTRIBUTING](./CONTRIBUTING.md) and[CONTRIBUTING-CN](./CONTRIBUTING_CN.md)about how to contribute to this project.
+
+
+## Contact
+
+* Mailing list: 
+  * dev@seata.apache.org , for dev/user discussion. [subscribe](mailto:dev-subscribe@seata.apache.org), [unsubscribe](mailto:dev-unsubscribe@seata.apache.org), [archive](https://lists.apache.org/list.html?dev@seata.apache.org)
+* Online chat: 
+
+<img src="https://img.alicdn.com/imgextra/i2/O1CN01nQG77T1VNcpPDOMVi_!!6000000002641-0-tps-1566-424.jpg"  height="200" width="630">
+
+
+## Seata ecosystem
+
+ succeeded in 792ms:
+      "path": "README.md",
+      "path": "all/pom.xml",
+
+exec
+/usr/bin/zsh -lc "rg -n '\"test-code-url\"\\s*:\\s*\"N/A\"|\"test-code-url\"\\s*:' metadata -g '*.json' | head -80" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+metadata/mysql/mysql-connector-java/index.json:10:    "test-code-url": "https://github.com/mysql/mysql-connector-j/tree/8.0.29/src/test",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/1.5.0/jackrabbit-jcr-commons/src/test/java",
+metadata/org.hdrhistogram/HdrHistogram/index.json:15:    "test-code-url": "https://github.com/HdrHistogram/HdrHistogram/tree/HdrHistogram-2.1.12/src/test",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.paho/org.eclipse.paho.mqttv5.client/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.mqttv5.client.test/src/test",
+metadata/org.antlr/antlr4-runtime/index.json:7:    "test-code-url" : "https://github.com/antlr/antlr4/tree/4.10/runtime-testsuite/test/org/antlr/v4/test/runtime/java",
+metadata/io.grpc/grpc-netty/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.51.0/netty/src/test",
+metadata/org.eclipse.paho/org.eclipse.paho.client.mqttv3/index.json:10:    "test-code-url": "https://github.com/eclipse-paho/paho.mqtt.java/tree/v1.2.5/org.eclipse.paho.client.mqttv3.test",
+metadata/org.jboss.classfilewriter/jboss-classfilewriter/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/classfilewriter/jboss-classfilewriter/1.2.4.Final/jboss-classfilewriter-1.2.4.Final-source-release.zip",
+metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+metadata/io.grpc/grpc-context/index.json:7:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.27.2/context/src/test",
+metadata/org.eclipse.jetty.alpn/alpn-api/index.json:8:    "test-code-url": "N/A",
+metadata/xmlpull/xmlpull/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mockito/mockito-core/index.json:10:    "test-code-url": "https://github.com/mockito/mockito/tree/v5.0.0/src/test",
+metadata/org.mockito/mockito-core/index.json:52:    "test-code-url": "https://github.com/mockito/mockito/tree/v4.8.1/src/test",
+metadata/com.graphql-java/graphql-java/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java/tree/v19.2/src/test",
+metadata/org.fusesource.hawtbuf/hawtbuf/index.json:8:    "test-code-url": "https://repo1.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.11/hawtbuf-1.11-tests.jar",
+metadata/io.grpc/grpc-core/index.json:8:    "test-code-url" : "https://github.com/grpc/grpc-java/tree/v1.69.0/core/src/test",
+metadata/aopalliance/aopalliance/index.json:7:    "test-code-url" : "N/A",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:6:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.0.6/src/test",
+metadata/org.mariadb.jdbc/mariadb-java-client/index.json:42:    "test-code-url" : "https://github.com/mariadb-corporation/mariadb-connector-j/tree/3.5.2/src/test",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:10:    "test-code-url": "https://github.com/graphql-java/graphql-java-extended-validation/tree/v19.1/src/test",
+metadata/io.projectreactor/reactor-core/index.json:7:    "test-code-url" : "https://github.com/reactor/reactor-core/tree/v3.5.1/reactor-core/src/test/java",
+metadata/com.google.protobuf/protobuf-java-util/index.json:7:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v23.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:24:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.22.0/java/util/src/test",
+metadata/com.google.protobuf/protobuf-java-util/index.json:48:    "test-code-url" : "https://github.com/protocolbuffers/protobuf/tree/v3.21.12/java/util/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:7:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.1.GA/src/test",
+metadata/org.jboss.logmanager/jboss-logmanager/index.json:21:    "test-code-url" : "https://github.com/jboss-logging/jboss-logmanager/tree/1.2.0.GA/src/test",
+metadata/com.ecwid.consul/consul-api/index.json:13:    "test-code-url": "https://github.com/Ecwid/consul-api/tree/v1.4.5/src/test",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/tests/thymeleaf-tests-springsecurity6",
+metadata/org.sonatype.aether/aether-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/info.picocli/picocli/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/info/picocli/picocli/4.7.6/picocli-4.7.6-test-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:7:    "test-code-url" : "https://github.com/graphql-java/java-dataloader/tree/v3.2.0/src/test",
+metadata/javax.interceptor/javax.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.vaadin.external.google/android-json/index.json:7:    "test-code-url" : "N/A",
+metadata/org.thymeleaf/thymeleaf-spring6/index.json:7:    "test-code-url" : "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/tests/thymeleaf-tests-spring6",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:7:    "test-code-url" : "https://github.com/graphql-java/graphql-java-extended-scalars/tree/19.0/src/test",
+metadata/org.sonatype.aether/aether-util/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-util/src/test/java",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/com.atomikos/transactions-api/index.json:7:    "test-code-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development/file/6.0.0/public/transactions-api/src/test",
+metadata/org.liquibase/liquibase-core/index.json:14:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v4.17.0/liquibase-core/src/test",
+metadata/org.liquibase/liquibase-core/index.json:31:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v4.20.0/liquibase-core/src/test",
+metadata/org.liquibase/liquibase-core/index.json:48:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v4.23.0/liquibase-standard/src/test",
+metadata/org.liquibase/liquibase-core/index.json:66:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v4.25.0/liquibase-standard/src/test",
+metadata/org.liquibase/liquibase-core/index.json:89:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v4.27.0/liquibase-standard/src/test",
+metadata/org.liquibase/liquibase-core/index.json:105:    "test-code-url": "https://github.com/liquibase/liquibase/tree/v5.0.1/liquibase-standard/src/test",
+metadata/com.google.auto.value/auto-value-annotations/index.json:7:    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.10/value/src/test/java",
+metadata/com.google.auto.value/auto-value-annotations/index.json:21:    "test-code-url" : "https://github.com/google/auto/tree/auto-value-1.9/value/src/test/java",
+metadata/org.sonatype.aether/aether-api/index.json:7:    "test-code-url" : "https://github.com/sonatype/sonatype-aether/tree/aether-1.7/aether-api/src/test/java",
+metadata/org.apache.zookeeper/zookeeper/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/3.8.1/zookeeper-3.8.1-tests.jar",
+metadata/org.objenesis/objenesis/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/objenesis/objenesis-tck/3.2/objenesis-tck-3.2-sources.jar",
+metadata/com.atomikos/transactions/index.json:7:    "test-code-url" : "https://atomikos.repositoryhosting.com/hg/atomikos/development/file/6.0.0/public/transactions/src/test",
+metadata/com.google.cloud.tools/jib-build-plan/index.json:8:    "test-code-url": "https://github.com/GoogleContainerTools/jib/tree/v0.4.0-build-plan/jib-build-plan/src/test",
+metadata/com.mysql/mysql-connector-j/index.json:7:    "test-code-url" : "https://github.com/mysql/mysql-connector-j/tree/8.0.31/src/test",
+metadata/org.apache.zookeeper/zookeeper-jute/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper-jute/3.8.1/zookeeper-jute-3.8.1-tests.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:7:    "test-code-url" : "N/A",
+metadata/org.thymeleaf/thymeleaf/index.json:10:    "test-code-url": "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.RELEASE/lib/thymeleaf/src/test",
+metadata/org.thymeleaf/thymeleaf/index.json:27:    "test-code-url": "https://github.com/thymeleaf/thymeleaf/tree/thymeleaf-3.1.0.M2/lib/thymeleaf/src/test",
+metadata/com.microsoft.sqlserver/mssql-jdbc/index.json:10:    "test-code-url": "https://github.com/microsoft/mssql-jdbc/tree/v12.2.0/src/test",
+metadata/org.checkerframework/checker-compat-qual/index.json:7:    "test-code-url" : "https://github.com/typetools/checker-framework/tree/checker-framework-2.5.5/checker/tests/nullness-extra/compat",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:8:    "test-code-url": "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/3.0.0/jakarta.xml.bind-api-test-3.0.0-sources.jar",
+metadata/org.apache.ant/ant-antlr/index.json:7:    "test-code-url" : "https://github.com/apache/ant/blob/rel/1.10.15/src/tests/junit/org/apache/tools/ant/taskdefs/optional/ANTLRTest.java",
+metadata/software.amazon.awssdk/s3/index.json:7:    "test-code-url" : "https://github.com/aws/aws-sdk-java-v2/tree/2.25.3/services/s3/src/test",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/org.freemarker/freemarker/index.json:11:    "test-code-url": "https://github.com/apache/freemarker/tree/v2.3.31/src/test",
+metadata/at.yawk.lz4/lz4-java/index.json:7:    "test-code-url" : "https://github.com/yawkat/lz4-java/tree/v1.10.4/src/test",
+metadata/org.apache.openejb/javaee-api/index.json:7:    "test-code-url": "N/A",
+metadata/org.checkerframework/checker-qual/index.json:6:    "test-code-url" : "N/A",
+metadata/org.checkerframework/checker-qual/index.json:21:    "test-code-url" : "N/A",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:8:    "test-code-url": "N/A",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:14:    "test-code-url": "N/A",
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:59:      "test-code-url": {
+metadata/schemas/metadata-library-index-schema-v2.0.1.json:183:        "test-code-url": "https://github.com/example/project/tree/main/tests/src/org.example/library/0.0.1",
+metadata/io.undertow/undertow-parser-generator/index.json:7:    "test-code-url" : "N/A",
+metadata/org.apache.maven.surefire/surefire-logger-api/index.json:7:    "test-code-url" : "N/A",
+metadata/javax.annotation/jsr250-api/index.json:8:    "test-code-url": "N/A",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:7:    "test-code-url" : "https://bitbucket.org/snakeyaml/snakeyaml-engine/src/snakeyaml-engine-3.0.1/src/test/java/",
+metadata/javax.persistence/javax.persistence-api/index.json:8:    "test-code-url": "N/A",
+metadata/io.undertow/undertow-core/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.3.0.Final/undertow-core-2.3.0.Final-tests.jar",
+metadata/io.undertow/undertow-core/index.json:45:    "test-code-url" : "https://repo1.maven.org/maven2/io/undertow/undertow-core/2.2.19.Final/undertow-core-2.2.19.Final-tests.jar",
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar -o /tmp/seata-all-2.1.0-sources.jar && jar tf /tmp/seata-all-2.1.0-sources.jar | head -80' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar -o /tmp/seata-all-2.1.0-sources.jar && jar tf /tmp/seata-all-2.1.0-sources.jar | rg 'Test|src/test|org/apache/seata' | head -80" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 984ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/NOTICE
+META-INF/LICENSE
+META-INF/DEPENDENCIES
+org/
+org/apache/
+org/apache/seata/
+org/apache/seata/common/
+org/apache/seata/common/DefaultValues.java
+org/apache/seata/common/LockStrategyMode.java
+org/apache/seata/common/XID.java
+org/apache/seata/common/exception/
+org/apache/seata/common/exception/AbstractRemoteResourceBundle.java
+org/apache/seata/common/exception/AuthenticationFailedException.java
+org/apache/seata/common/exception/DataAccessException.java
+org/apache/seata/common/exception/EurekaRegistryException.java
+org/apache/seata/common/exception/FrameworkErrorCode.java
+org/apache/seata/common/exception/FrameworkException.java
+org/apache/seata/common/exception/JsonParseException.java
+org/apache/seata/common/exception/NotSupportYetException.java
+org/apache/seata/common/exception/RedisException.java
+org/apache/seata/common/exception/RepeatRegistrationException.java
+org/apache/seata/common/exception/ResourceBundleUtil.java
+org/apache/seata/common/exception/RetryableException.java
+org/apache/seata/common/exception/SeataRuntimeException.java
+org/apache/seata/common/exception/ShouldNeverHappenException.java
+org/apache/seata/common/exception/SkipCallbackWrapperException.java
+org/apache/seata/common/exception/StoreException.java
+org/apache/seata/common/exception/ErrorCode.java
+org/apache/seata/common/executor/
+org/apache/seata/common/executor/Callback.java
+org/apache/seata/common/executor/Initialize.java
+org/apache/seata/common/holder/
+org/apache/seata/common/holder/ObjectHolder.java
+org/apache/seata/common/io/
+org/apache/seata/common/io/FileLoader.java
+org/apache/seata/common/loader/
+org/apache/seata/common/loader/EnhancedServiceLoader.java
+org/apache/seata/common/loader/EnhancedServiceNotFoundException.java
+org/apache/seata/common/loader/ExtensionDefinition.java
+org/apache/seata/common/loader/LoadLevel.java
+org/apache/seata/common/loader/Scope.java
+org/apache/seata/common/metadata/
+org/apache/seata/common/metadata/ClusterRole.java
+org/apache/seata/common/metadata/Metadata.java
+org/apache/seata/common/metadata/MetadataResponse.java
+org/apache/seata/common/metadata/Node.java
+org/apache/seata/common/rpc/
+org/apache/seata/common/rpc/RpcStatus.java
+org/apache/seata/common/store/
+org/apache/seata/common/store/StoreMode.java
+org/apache/seata/common/thread/
+org/apache/seata/common/thread/NamedThreadFactory.java
+org/apache/seata/common/thread/PositiveAtomicCounter.java
+org/apache/seata/common/thread/RejectedPolicies.java
+org/apache/seata/common/util/
+org/apache/seata/common/util/ArrayUtils.java
+org/apache/seata/common/util/BeanUtils.java
+org/apache/seata/common/util/BlobUtils.java
+org/apache/seata/common/util/BufferUtils.java
+org/apache/seata/common/util/CompressUtil.java
+org/apache/seata/common/util/ConfigTools.java
+org/apache/seata/common/util/CycleDependencyHandler.java
+org/apache/seata/common/util/DateUtil.java
+org/apache/seata/common/util/DurationUtil.java
+org/apache/seata/common/util/HttpClientUtil.java
+org/apache/seata/common/util/IOUtil.java
+org/apache/seata/common/util/IdWorker.java
+org/apache/seata/common/util/LambdaUtils.java
+org/apache/seata/common/util/LowerCaseLinkHashMap.java
+org/apache/seata/common/util/MapUtil.java
+org/apache/seata/common/util/NetAddressValidatorUtil.java
+org/apache/seata/common/util/NetUtil.java
+org/apache/seata/common/util/NumberUtils.java
+org/apache/seata/common/util/PageUtil.java
+org/apache/seata/common/util/ReflectionUtil.java
+org/apache/seata/common/util/SizeUtil.java
+org/apache/seata/common/util/StringFormatUtils.java
+org/apache/seata/common/util/StringUtils.java
+
+ succeeded in 1022ms:
+org/apache/seata/
+org/apache/seata/common/
+org/apache/seata/common/DefaultValues.java
+org/apache/seata/common/LockStrategyMode.java
+org/apache/seata/common/XID.java
+org/apache/seata/common/exception/
+org/apache/seata/common/exception/AbstractRemoteResourceBundle.java
+org/apache/seata/common/exception/AuthenticationFailedException.java
+org/apache/seata/common/exception/DataAccessException.java
+org/apache/seata/common/exception/EurekaRegistryException.java
+org/apache/seata/common/exception/FrameworkErrorCode.java
+org/apache/seata/common/exception/FrameworkException.java
+org/apache/seata/common/exception/JsonParseException.java
+org/apache/seata/common/exception/NotSupportYetException.java
+org/apache/seata/common/exception/RedisException.java
+org/apache/seata/common/exception/RepeatRegistrationException.java
+org/apache/seata/common/exception/ResourceBundleUtil.java
+org/apache/seata/common/exception/RetryableException.java
+org/apache/seata/common/exception/SeataRuntimeException.java
+org/apache/seata/common/exception/ShouldNeverHappenException.java
+org/apache/seata/common/exception/SkipCallbackWrapperException.java
+org/apache/seata/common/exception/StoreException.java
+org/apache/seata/common/exception/ErrorCode.java
+org/apache/seata/common/executor/
+org/apache/seata/common/executor/Callback.java
+org/apache/seata/common/executor/Initialize.java
+org/apache/seata/common/holder/
+org/apache/seata/common/holder/ObjectHolder.java
+org/apache/seata/common/io/
+org/apache/seata/common/io/FileLoader.java
+org/apache/seata/common/loader/
+org/apache/seata/common/loader/EnhancedServiceLoader.java
+org/apache/seata/common/loader/EnhancedServiceNotFoundException.java
+org/apache/seata/common/loader/ExtensionDefinition.java
+org/apache/seata/common/loader/LoadLevel.java
+org/apache/seata/common/loader/Scope.java
+org/apache/seata/common/metadata/
+org/apache/seata/common/metadata/ClusterRole.java
+org/apache/seata/common/metadata/Metadata.java
+org/apache/seata/common/metadata/MetadataResponse.java
+org/apache/seata/common/metadata/Node.java
+org/apache/seata/common/rpc/
+org/apache/seata/common/rpc/RpcStatus.java
+org/apache/seata/common/store/
+org/apache/seata/common/store/StoreMode.java
+org/apache/seata/common/thread/
+org/apache/seata/common/thread/NamedThreadFactory.java
+org/apache/seata/common/thread/PositiveAtomicCounter.java
+org/apache/seata/common/thread/RejectedPolicies.java
+org/apache/seata/common/util/
+org/apache/seata/common/util/ArrayUtils.java
+org/apache/seata/common/util/BeanUtils.java
+org/apache/seata/common/util/BlobUtils.java
+org/apache/seata/common/util/BufferUtils.java
+org/apache/seata/common/util/CompressUtil.java
+org/apache/seata/common/util/ConfigTools.java
+org/apache/seata/common/util/CycleDependencyHandler.java
+org/apache/seata/common/util/DateUtil.java
+org/apache/seata/common/util/DurationUtil.java
+org/apache/seata/common/util/HttpClientUtil.java
+org/apache/seata/common/util/IOUtil.java
+org/apache/seata/common/util/IdWorker.java
+org/apache/seata/common/util/LambdaUtils.java
+org/apache/seata/common/util/LowerCaseLinkHashMap.java
+org/apache/seata/common/util/MapUtil.java
+org/apache/seata/common/util/NetAddressValidatorUtil.java
+org/apache/seata/common/util/NetUtil.java
+org/apache/seata/common/util/NumberUtils.java
+org/apache/seata/common/util/PageUtil.java
+org/apache/seata/common/util/ReflectionUtil.java
+org/apache/seata/common/util/SizeUtil.java
+org/apache/seata/common/util/StringFormatUtils.java
+org/apache/seata/common/util/StringUtils.java
+org/apache/seata/common/util/CollectionUtils.java
+org/apache/seata/common/ConfigurationKeys.java
+org/apache/seata/common/Constants.java
+org/apache/seata/config/
+org/apache/seata/config/AbstractConfiguration.java
+org/apache/seata/config/CachedConfigurationChangeListener.java
+org/apache/seata/config/ConfigChangeListener.java
+
+web search: 
+web search: repo.maven.apache.org org apache seata seata 2.1.0 source release tests
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/
+web search: 
+web search: https://raw.githubusercontent.com/apache/incubator-seata/v2.1.0/all/pom.xml
+codex
+The upstream `all` module is an assembly-style Maven module: its POM declares `seata-all` and pulls in many Seata modules, and the tagged tree does not contain an `all/src/test` directory. I’m checking whether the repo has a dedicated Maven test artifact or a single upstream test path that can be tied to `seata-all` with confidence.
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/ | rg 'test|source-release|tests'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/apache/incubator-seata/v2.1.0/pom.xml | rg -n '<module>|all|compatible' -C 2" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/apache/incubator-seata/git/trees/v2.1.0?recursive=1' | rg '\"path\": \".*(seata-all|all/src/test|src/test.*All|All.*Test|SeataAll|seataAll|all-in-one)' | head -200" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ exited 1 in 137ms:
+ succeeded in 395ms:
+35-
+36-    <modules>
+37:        <module>build</module>
+38:        <module>all</module>
+39:        <module>bom</module>
+40:        <module>common</module>
+41:        <module>config</module>
+42:        <module>console</module>
+43:        <module>core</module>
+44:        <module>compatible</module>
+45:        <module>dependencies</module>
+46:        <module>discovery</module>
+47:        <module>distribution</module>
+48:        <module>integration/rpc-core</module>
+49:        <module>integration/dubbo</module>
+50:        <module>integration/dubbo-alibaba</module>
+51:        <module>integration/sofa-rpc</module>
+52:        <module>integration/motan</module>
+53:        <module>integration/grpc</module>
+54:        <module>integration/http</module>
+55:        <module>integration/http-jakarta</module>
+56:        <module>integration/hsf</module>
+57:        <module>integration/brpc</module>
+58:        <module>rm</module>
+59:        <module>rm-datasource</module>
+60:        <module>rocketmq</module>
+61:        <module>spring</module>
+62:        <module>tcc</module>
+63:        <module>test</module>
+64:        <module>test-mock-server</module>
+65:        <module>tm</module>
+66:        <module>metrics</module>
+67:        <module>serializer</module>
+68:        <module>seata-spring-boot-starter</module>
+69:        <module>seata-spring-autoconfigure</module>
+70:        <module>compressor</module>
+71:        <module>saga</module>
+72:        <module>sqlparser</module>
+73:        <module>server</module>
+74:        <module>ext/apm-seata-skywalking-plugin</module>
+75:        <module>integration-tx-api</module>
+76:        <!--<module>seata-plugin</module>-->
+77-    </modules>
+78-
+
+ succeeded in 1240ms:
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/apache/incubator-seata/contents/test?ref=v2.1.0' | rg '\"name\"|\"path\"|\"html_url\"'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL https://raw.githubusercontent.com/apache/incubator-seata/v2.1.0/test/pom.xml | sed -n '1,200p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsSL 'https://api.github.com/repos/apache/incubator-seata/git/trees/v2.1.0?recursive=1' | rg '\"path\": \"test/src/test|\"path\": \"test/pom.xml|\"path\": \"test-mock-server/src/test|\"path\": \"all/pom.xml' | head -160" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 335ms:
+    "name": "pom.xml",
+    "path": "test/pom.xml",
+    "html_url": "https://github.com/apache/incubator-seata/blob/v2.1.0/test/pom.xml",
+    "name": "src",
+    "path": "test/src",
+    "html_url": "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src",
+
+ succeeded in 402ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.apache.seata</groupId>
+        <artifactId>seata-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>seata-test</artifactId>
+    <packaging>jar</packaging>
+    <name>seata-test ${project.version}</name>
+    <description>test for Seata built with Maven</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-tm</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+<!-- The actual spring-related dependencies that take effect are from the seata-dependencies module, not the seata-server module-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-server</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.seata</groupId>
+                    <artifactId>seata-spring-autoconfigure-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-rm-datasource</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-saga-spring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-mock-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-spring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-serializer-seata</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-sqlparser-druid</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>seata-rocketmq</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+</project>
+ succeeded in 630ms:
+      "path": "all/pom.xml",
+      "path": "test/pom.xml",
+      "path": "test/src/test",
+      "path": "test/src/test/java",
+      "path": "test/src/test/java/AppTest.java",
+      "path": "test/src/test/java/LocalTransactionWithGlobalLockDataSourceBasicTest.java",
+      "path": "test/src/test/java/org",
+      "path": "test/src/test/java/org/apache",
+      "path": "test/src/test/java/org/apache/seata",
+      "path": "test/src/test/java/org/apache/seata/at",
+      "path": "test/src/test/java/org/apache/seata/at/ATModeSupportDataBaseDataTypeTest.java",
+      "path": "test/src/test/java/org/apache/seata/at/DruidDataSourceUtils.java",
+      "path": "test/src/test/java/org/apache/seata/at/mysql",
+      "path": "test/src/test/java/org/apache/seata/at/mysql/MysqlUpdateJoinTest.java",
+      "path": "test/src/test/java/org/apache/seata/at/oracle",
+      "path": "test/src/test/java/org/apache/seata/at/oracle/OracleSqlConstant.java",
+      "path": "test/src/test/java/org/apache/seata/at/oracle/SupportOracleDataTypeTest.java",
+      "path": "test/src/test/java/org/apache/seata/at/oracle/bfile.txt",
+      "path": "test/src/test/java/org/apache/seata/at/oracle/bfileUpdate.txt",
+      "path": "test/src/test/java/org/apache/seata/at/oracle/support_orderle_dataType.sql",
+      "path": "test/src/test/java/org/apache/seata/common",
+      "path": "test/src/test/java/org/apache/seata/common/ApplicationKeeper.java",
+      "path": "test/src/test/java/org/apache/seata/common/ConfigurationTestHelper.java",
+      "path": "test/src/test/java/org/apache/seata/common/LockAndCallback.java",
+      "path": "test/src/test/java/org/apache/seata/common/SagaCostPrint.java",
+      "path": "test/src/test/java/org/apache/seata/common/loader",
+      "path": "test/src/test/java/org/apache/seata/common/loader/EnhancedServiceLoaderTest.java",
+      "path": "test/src/test/java/org/apache/seata/common/loader/LoaderTestImpl1.java",
+      "path": "test/src/test/java/org/apache/seata/common/loader/LoaderTestImpl2.java",
+      "path": "test/src/test/java/org/apache/seata/common/loader/LoaderTestSPI.java",
+      "path": "test/src/test/java/org/apache/seata/core",
+      "path": "test/src/test/java/org/apache/seata/core/rpc",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/ChannelManagerTestHelper.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/TmNettyClientTest.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/mockserver",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/mockserver/Action1.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/mockserver/Action1Impl.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/mockserver/MockServerTest.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/mockserver/ProtocolTestConstants.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/mockserver/RmClientTest.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/mockserver/TmClientTest.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/v1",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/v1/ClientChannelHandler.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/v1/HeadMapSerializerTest.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/v1/ProtocolV1Client.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/v1/ProtocolV1SerializerTest.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/v1/ProtocolV1Server.java",
+      "path": "test/src/test/java/org/apache/seata/core/rpc/netty/v1/ServerChannelHandler.java",
+      "path": "test/src/test/java/org/apache/seata/integration",
+      "path": "test/src/test/java/org/apache/seata/integration/rocketmq",
+      "path": "test/src/test/java/org/apache/seata/integration/rocketmq/SeataMQProducerSendTest.java",
+      "path": "test/src/test/java/org/apache/seata/saga",
+      "path": "test/src/test/java/org/apache/seata/saga/engine",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/StateMachineAsyncTests.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/StateMachineTests.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/db",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/db/AbstractServerTest.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/db/StateMachineDBTests.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/db/mockserver",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/db/mockserver/StateMachineAsyncDBMockServerTests.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/db/mockserver/StateMachineDBMockServerTests.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/mock",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/mock/DemoException.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/mock/DemoService.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/mock/MockGlobalTransaction.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/mock/MockSagaTransactionTemplate.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/mock/MockStateHandlerInterceptor.java",
+      "path": "test/src/test/java/org/apache/seata/saga/engine/mock/MockStateRouterInterceptor.java",
+      "path": "test/src/test/java/org/apache/seata/xa",
+      "path": "test/src/test/java/org/apache/seata/xa/XAModeTest2.java",
+      "path": "test/src/test/resources",
+      "path": "test/src/test/resources/META-INF",
+      "path": "test/src/test/resources/META-INF/services",
+      "path": "test/src/test/resources/META-INF/services/org.apache.seata.common.loader.LoaderTestSPI",
+      "path": "test/src/test/resources/META-INF/services/org.apache.seata.saga.engine.pcext.StateHandlerInterceptor",
+      "path": "test/src/test/resources/META-INF/services/org.apache.seata.saga.engine.pcext.StateRouterInterceptor",
+      "path": "test/src/test/resources/README.md",
+      "path": "test/src/test/resources/basic-test-context.xml",
+      "path": "test/src/test/resources/biz.sql",
+      "path": "test/src/test/resources/file.conf",
+      "path": "test/src/test/resources/logback.xml",
+      "path": "test/src/test/resources/registry.conf",
+      "path": "test/src/test/resources/saga",
+      "path": "test/src/test/resources/saga/spring",
+      "path": "test/src/test/resources/saga/spring/statemachine_engine_db_mockserver_test.xml",
+      "path": "test/src/test/resources/saga/spring/statemachine_engine_db_test.xml",
+      "path": "test/src/test/resources/saga/spring/statemachine_engine_test.xml",
+      "path": "test/src/test/resources/saga/sql",
+      "path": "test/src/test/resources/saga/sql/db2_init.sql",
+      "path": "test/src/test/resources/saga/sql/h2_init.sql",
+      "path": "test/src/test/resources/saga/sql/mysql_init.sql",
+      "path": "test/src/test/resources/saga/sql/oracle_init.sql",
+      "path": "test/src/test/resources/saga/statelang",
+      "path": "test/src/test/resources/saga/statelang/designer_simple_statelang_with_script.json",
+      "path": "test/src/test/resources/saga/statelang/designer_statelang_with_compensation_and_sub_machine.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_param_assignment.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_async_state.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_catches.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_choice.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_choice_and_end.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_choice_no_default.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_compensation.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_compensation_and_sub_machine.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_compensation_for_recovery.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_complex_params.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_complex_params_jackson.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_loop.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_persist_update_mode.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_recover_strategy.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_retry.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_script.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_status_matches.json",
+      "path": "test/src/test/resources/saga/statelang/simple_statelang_with_userdef_sub_machine_compensation.json",
+
+web search: 
+web search: site:seata.apache.org/docs Seata 2.1.0 documentation seata-all
+web search: 
+web search: https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test
+web search: 
+web search: 
+codex
+I found a tagged upstream test module at `test/src/test`; there is no `seata-all` Maven tests artifact and no `all/src/test`, so I’m using the tagged Seata test suite path rather than marking the test URL unknown. I’m patching the requested JSON now with Maven Central source/Javadoc URLs and the upstream tagged GitHub URLs.
+apply patch
+patch: completed
+/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+index bdc383fb2e7152a19be7f0d10d3d7fa1ffe2624f..b3e18f2d7e930b0e5ea8099fed12630e2f6aae23
+--- a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.seata:seata-all:2.1.0"
++  "coordinates" : "org.apache.seata:seata-all:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/incubator-seata",
++  "test-code-url" : "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar",
++  "description" : "Seata is a Java-based distributed transaction framework for coordinating global transactions across microservices and databases. The seata-all artifact provides an all-in-one Seata library package that brings together core transaction, resource-manager, transaction-manager, integration, configuration, discovery, serialization, and transport components."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+index bdc383fb2e7152a19be7f0d10d3d7fa1ffe2624f..b3e18f2d7e930b0e5ea8099fed12630e2f6aae23
+--- a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.seata:seata-all:2.1.0"
++  "coordinates" : "org.apache.seata:seata-all:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/incubator-seata",
++  "test-code-url" : "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar",
++  "description" : "Seata is a Java-based distributed transaction framework for coordinating global transactions across microservices and databases. The seata-all artifact provides an all-in-one Seata library package that brings together core transaction, resource-manager, transaction-manager, integration, configuration, discovery, serialization, and transport components."
+ }
+
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+{
+  "coordinates": "org.apache.seata:seata-all:2.1.0",
+  "source-code-url": "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar",
+  "repository-url": "https://github.com/apache/incubator-seata",
+  "test-code-url": "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar",
+  "description": "Seata is a Java-based distributed transaction framework for coordinating global transactions across microservices and databases. The seata-all artifact provides an all-in-one Seata library package that brings together core transaction, resource-manager, transaction-manager, integration, configuration, discovery, serialization, and transport components."
+}
+
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+index bdc383fb2e7152a19be7f0d10d3d7fa1ffe2624f..b3e18f2d7e930b0e5ea8099fed12630e2f6aae23
+--- a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.seata:seata-all:2.1.0"
++  "coordinates" : "org.apache.seata:seata-all:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/incubator-seata",
++  "test-code-url" : "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar",
++  "description" : "Seata is a Java-based distributed transaction framework for coordinating global transactions across microservices and databases. The seata-all artifact provides an all-in-one Seata library package that brings together core transaction, resource-manager, transaction-manager, integration, configuration, discovery, serialization, and transport components."
+ }
+
+exec
+/usr/bin/zsh -lc 'nl -ba build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 0ms:
+     1	{
+     2	  "coordinates" : "org.apache.seata:seata-all:2.1.0",
+     3	  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar",
+     4	  "repository-url" : "https://github.com/apache/incubator-seata",
+     5	  "test-code-url" : "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test",
+     6	  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar",
+     7	  "description" : "Seata is a Java-based distributed transaction framework for coordinating global transactions across microservices and databases. The seata-all artifact provides an all-in-one Seata library package that brings together core transaction, resource-manager, transaction-manager, integration, configuration, discovery, serialization, and transport components."
+     8	}
+
+exec
+/usr/bin/zsh -lc 'git status --short -- build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json' in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+diff --git a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+index bdc383fb2e7152a19be7f0d10d3d7fa1ffe2624f..b3e18f2d7e930b0e5ea8099fed12630e2f6aae23
+--- a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.seata:seata-all:2.1.0"
++  "coordinates" : "org.apache.seata:seata-all:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/incubator-seata",
++  "test-code-url" : "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar",
++  "description" : "Seata is a Java-based distributed transaction framework for coordinating global transactions across microservices and databases. The seata-all artifact provides an all-in-one Seata library package that brings together core transaction, resource-manager, transaction-manager, integration, configuration, discovery, serialization, and transport components."
+ }
+
+ succeeded in 140ms:
+exec
+/usr/bin/zsh -lc "curl -fsI https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar | sed -n '1,8p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsI https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar | sed -n '1,8p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+exec
+/usr/bin/zsh -lc "curl -fsI https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test | sed -n '1,8p'" in /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f
+ succeeded in 127ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 23:51:54 GMT
+content-type: application/java-archive
+content-length: 1554529
+cf-ray: 9f39fa476c26aeaa-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 71
+
+ succeeded in 446ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 23:51:55 GMT
+content-type: application/java-archive
+content-length: 869863
+cf-ray: 9f39fa476907b01e-BEG
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "cd1f2ee0f81a4bfea9b035796ae863b6"
+
+diff --git a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+index bdc383fb2e7152a19be7f0d10d3d7fa1ffe2624f..b3e18f2d7e930b0e5ea8099fed12630e2f6aae23
+--- a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.seata:seata-all:2.1.0"
++  "coordinates" : "org.apache.seata:seata-all:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/incubator-seata",
++  "test-code-url" : "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar",
++  "description" : "Seata is a Java-based distributed transaction framework for coordinating global transactions across microservices and databases. The seata-all artifact provides an all-in-one Seata library package that brings together core transaction, resource-manager, transaction-manager, integration, configuration, discovery, serialization, and transport components."
+ }
+
+ succeeded in 708ms:
+HTTP/2 200 
+date: Tue, 28 Apr 2026 23:51:55 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"b0c9400c1c7032bd23fbd5fbf128a50c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+
+web search: 
+web search: repo1.maven.org maven2 org apache seata seata-all 2.1.0 sources javadoc
+web search: 
+web search: https://github.com/apache/incubator-seata
+web search: 
+web search: '<artifactId>seata-all</artifactId>' in https://github.com/apache/incubator-seata/blob/v2.1.0/all/pom.xml
+web search: 
+web search: https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test
+codex
+Updated [org.apache.seata-seata-all-2.1.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json:1).
+
+I used Maven Central for the exact `2.1.0` sources and Javadoc artifacts, and the tagged upstream GitHub tree for the repository and test suite path. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/?utm_source=openai)) I left `language` absent because this is not one of the Kotlin/Groovy/Scala language-specific artifacts requested by the schema.
+
+Validation: `jq . build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json` passed.
+diff --git a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+index bdc383fb2e7152a19be7f0d10d3d7fa1ffe2624f..b3e18f2d7e930b0e5ea8099fed12630e2f6aae23
+--- a/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
++++ b/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.apache.seata:seata-all:2.1.0"
++  "coordinates" : "org.apache.seata:seata-all:2.1.0",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-sources.jar",
++  "repository-url" : "https://github.com/apache/incubator-seata",
++  "test-code-url" : "https://github.com/apache/incubator-seata/tree/v2.1.0/test/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/seata-all-2.1.0-javadoc.jar",
++  "description" : "Seata is a Java-based distributed transaction framework for coordinating global transactions across microservices and databases. The seata-all artifact provides an all-in-one Seata library package that brings together core transaction, resource-manager, transaction-manager, integration, configuration, discovery, serialization, and transport components."
+ }
+
+2026-04-28T23:52:16.309256Z ERROR codex_core::session: failed to record rollout items: thread 019dd67f-97ea-7ff3-81b8-b730907efd9b not found
+tokens used
+137,847
+Updated [org.apache.seata-seata-all-2.1.0.json](/home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f/build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json:1).
+
+I used Maven Central for the exact `2.1.0` sources and Javadoc artifacts, and the tagged upstream GitHub tree for the repository and test suite path. ([repo1.maven.org](https://repo1.maven.org/maven2/org/apache/seata/seata-all/2.1.0/?utm_source=openai)) I left `language` absent because this is not one of the Kotlin/Groovy/Scala language-specific artifacts requested by the schema.
+
+Validation: `jq . build/discovered-artifact-metadata/org.apache.seata-seata-all-2.1.0.json` passed.
+Ran agent for org.apache.seata:seata-all:2.1.0 (exit 0). Log: /home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f/build/agent-artifact-discovery-logs/org.apache.seata-seata-all-2.1.0.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/metadata-forge/local_repositories/forge_worktrees/542-81a4110f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 48s
+9 actionable tasks: 4 executed, 5 from cache
