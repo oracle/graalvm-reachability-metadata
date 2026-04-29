@@ -314,6 +314,28 @@ public class Money_apiTest {
     }
 
     @Test
+    void exchangeRateProviderConvenienceMethodsResolveCurrenciesAndReverseRates() {
+        ExchangeRateProvider provider = MonetaryConversions.getExchangeRateProvider("test-fx");
+
+        ExchangeRate usdToEur = provider.getExchangeRate("USD", "EUR");
+        assertThat(usdToEur.getBaseCurrency()).isEqualTo(USD);
+        assertThat(usdToEur.getCurrency()).isEqualTo(EUR);
+        assertThat(usdToEur.getFactor().numberValue(BigDecimal.class)).isEqualByComparingTo("0.90");
+        assertThat(provider.isAvailable(USD, EUR)).isTrue();
+        assertThat(provider.isAvailable(ConversionQueryBuilder.of()
+                .setProviderNames("other-fx")
+                .build())).isFalse();
+
+        ExchangeRate eurToUsd = provider.getReversed(usdToEur);
+        assertThat(eurToUsd.getBaseCurrency()).isEqualTo(EUR);
+        assertThat(eurToUsd.getCurrency()).isEqualTo(USD);
+        assertThat(eurToUsd.getFactor().numberValue(BigDecimal.class)).isEqualByComparingTo("1.11");
+
+        CurrencyConversion jpyConversion = provider.getCurrencyConversion("JPY");
+        assertThat(jpyConversion.getCurrency()).isEqualTo(JPY);
+    }
+
+    @Test
     void staticFacadesUseInstalledCurrencyRoundingFormatAndConversionServices() {
         assertThat(Monetary.getCurrencyProviderNames()).containsExactly("test-currency");
         assertThat(Monetary.getDefaultCurrencyProviderChain()).containsExactly("test-currency");
