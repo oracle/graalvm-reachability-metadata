@@ -98,6 +98,26 @@ public class TagsoupTest {
     }
 
     @Test
+    void parserTreatsCdataElementsAsRawText() throws Exception {
+        Parser parser = new Parser();
+        RecordingHandler handler = new RecordingHandler();
+        parser.setContentHandler(handler);
+
+        parser.parse(inputSource("""
+                <html><body>
+                <script>if (a < b && c > d) { document.write(\"<em>&copy;</em>\"); }</script>
+                <p>after script</p>
+                </body></html>
+                """));
+
+        assertThat(parser.getFeature(Parser.CDATAElementsFeature)).isTrue();
+        assertThat(handler.startNames()).containsSequence("html", "body", "script", "p");
+        assertThat(handler.startNames()).doesNotContain("em");
+        assertThat(handler.fullText()).contains("if (a < b && c > d) { document.write(\"<em>&copy;</em>\"); }");
+        assertThat(handler.fullText()).contains("after script");
+    }
+
+    @Test
     void parserRejectsUnknownFeaturesAndInvalidPropertyTypes() {
         Parser parser = new Parser();
 
