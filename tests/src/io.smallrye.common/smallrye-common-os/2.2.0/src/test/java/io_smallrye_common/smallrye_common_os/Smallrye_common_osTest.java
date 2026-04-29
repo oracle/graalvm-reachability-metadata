@@ -6,11 +6,102 @@
  */
 package io_smallrye_common.smallrye_common_os;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.lang.ProcessBuilder.Redirect;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.Test;
 
-class Smallrye_common_osTest {
+import io.smallrye.common.os.OS;
+import io.smallrye.common.os.Process;
+import io.smallrye.common.os.ProcessInfo;
+import io.smallrye.common.os.ProcessRedirect;
+
+public class Smallrye_common_osTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void currentOsMatchesTheRunningJvmOsName() {
+        OS currentOs = OS.current();
+
+        assertThat(currentOs).isEqualTo(expectedCurrentOs());
+        assertThat(currentOs.isCurrent()).isTrue();
+        assertThat(Arrays.stream(OS.values()).filter(OS::isCurrent))
+                .containsExactly(currentOs);
+    }
+
+    @Test
+    void osEnumExposesStablePublicConstants() {
+        assertThat(OS.values())
+                .containsExactly(OS.AIX, OS.LINUX, OS.MAC, OS.SOLARIS, OS.WINDOWS, OS.OTHER);
+        assertThat(OS.valueOf("LINUX")).isSameAs(OS.LINUX);
+        assertThat(OS.valueOf("WINDOWS")).isSameAs(OS.WINDOWS);
+        assertThat(OS.valueOf("MAC")).isSameAs(OS.MAC);
+    }
+
+    @Test
+    void currentProcessInfoIsConsistentWithProcessConvenienceMethodsAndJdkProcessHandle() {
+        ProcessInfo currentProcess = Process.getCurrentProcess();
+
+        assertThat(currentProcess.getId()).isEqualTo(ProcessHandle.current().pid());
+        assertThat(Process.getProcessId()).isEqualTo(currentProcess.getId());
+        assertThat(Process.getProcessName()).isEqualTo(currentProcess.getCommand());
+        assertThat(currentProcess.getCommand()).isNotBlank();
+    }
+
+    @Test
+    void allProcessesContainsTheCurrentProcessAndValidProcessIds() {
+        List<ProcessInfo> processes = Process.getAllProcesses();
+        long currentProcessId = Process.getProcessId();
+
+        assertThat(processes).isNotEmpty();
+        assertThat(processes)
+                .extracting(ProcessInfo::getId)
+                .allSatisfy(processId -> assertThat(processId).isPositive())
+                .contains(currentProcessId);
+
+        Set<Long> processIds = processes.stream()
+                .map(ProcessInfo::getId)
+                .collect(Collectors.toSet());
+        assertThat(processIds).hasSameSizeAs(processes);
+    }
+
+    @Test
+    void processInfoConstructorStoresIdAndCommandUnchanged() {
+        ProcessInfo processInfo = new ProcessInfo(1234L, "command with arguments");
+
+        assertThat(processInfo.getId()).isEqualTo(1234L);
+        assertThat(processInfo.getCommand()).isEqualTo("command with arguments");
+    }
+
+    @Test
+    void discardRedirectReturnsTheJdkDiscardRedirect() {
+        Redirect discardRedirect = ProcessRedirect.discard();
+
+        assertThat(discardRedirect).isSameAs(Redirect.DISCARD);
+        assertThat(discardRedirect.type()).isEqualTo(Redirect.Type.WRITE);
+    }
+
+    private static OS expectedCurrentOs() {
+        String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ENGLISH);
+        if (osName.contains("linux")) {
+            return OS.LINUX;
+        }
+        if (osName.contains("windows")) {
+            return OS.WINDOWS;
+        }
+        if (osName.contains("mac") || osName.contains("darwin")) {
+            return OS.MAC;
+        }
+        if (osName.contains("sunos") || osName.contains("solaris")) {
+            return OS.SOLARIS;
+        }
+        if (osName.contains("aix")) {
+            return OS.AIX;
+        }
+        return OS.OTHER;
     }
 }
