@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -94,6 +95,26 @@ public class Smallrye_common_osTest {
 
         assertThat(discardRedirect).isSameAs(Redirect.DISCARD);
         assertThat(discardRedirect.type()).isEqualTo(Redirect.Type.WRITE);
+    }
+
+    @Test
+    void discardRedirectCanBeUsedToRunProcessWithoutCapturingOutput() throws Exception {
+        ProcessBuilder processBuilder = commandThatWritesToStandardOutput()
+                .redirectOutput(ProcessRedirect.discard())
+                .redirectError(ProcessRedirect.discard());
+
+        java.lang.Process process = processBuilder.start();
+
+        assertThat(process.waitFor(10, TimeUnit.SECONDS)).isTrue();
+        assertThat(process.exitValue()).isZero();
+        assertThat(process.getInputStream().read()).isEqualTo(-1);
+    }
+
+    private static ProcessBuilder commandThatWritesToStandardOutput() {
+        if (OS.current() == OS.WINDOWS) {
+            return new ProcessBuilder("cmd", "/c", "echo discarded-output");
+        }
+        return new ProcessBuilder("sh", "-c", "printf discarded-output");
     }
 
     private static OS expectedCurrentOs() {
