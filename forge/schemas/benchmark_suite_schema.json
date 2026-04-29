@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Benchmark Suite Schema",
+  "description": "Strict JSON Schema (Draft 2020-12) for defining a Benchmark Suite in Metadata Forge.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "name",
+      "description",
+      "libraries",
+      "strategy"
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Human-readable benchmark suite name."
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Description of the benchmark suite."
+      },
+      "libraries": {
+        "type": "array",
+        "minItems": 1,
+        "description": "List of library coordinates included in this suite.",
+        "items": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$",
+          "description": "Dependency coordinate in the form group:artifact:version."
+        }
+      },
+      "strategy": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Reference to a strategy name defined elsewhere."
+      }
+    }
+  },
+  "examples": [
+    [
+      {
+        "name": "core-libs-baseline",
+        "description": "Benchmark suite for core libraries using baseline strategy.",
+        "libraries": [
+          "org.example:lib-a:1.2.3",
+          "com.acme:lib-b:0.9.1"
+        ],
+        "strategy": "baseline-iterative"
+      }
+    ]
+  ]
+}

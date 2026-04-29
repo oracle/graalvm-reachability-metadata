@@ -1,0 +1,537 @@
+"""
+Usage:
+  python3 ai_workflows/add_new_library_support.py \
+    --coordinates group:artifact:version \
+    [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
+    [--metrics-repo-path /path/to/metrics-storage] \
+    [--docs-path /path/to/docs] \
+    [--strategy-name "basic_iterative"] \
+    [--benchmark-mode] \
+    [-v]
+"""
+
+import subprocess
+import argparse
+import json
+import os
+import sys
+
+import ai_workflows.agents  # noqa: F401 - triggers agent registration
+import ai_workflows.workflow_strategies  # noqa: F401 — triggers strategy registration
+from ai_workflows.agents import Agent
+from ai_workflows.workflow_strategies.workflow_strategy import (
+    RUN_STATUS_FAILURE,
+    RUN_STATUS_SUCCESS,
+    SUCCESS_WITH_INTERVENTION_STATUS,
+)
+from ai_workflows.workflow_strategies.workflow_strategy import WorkflowStrategy
+from utility_scripts import metrics_writer
+from utility_scripts.repo_path_resolver import add_in_metadata_repo_argument, resolve_repo_roots
+from utility_scripts.schema_validator import validate_run_metrics, validate_benchmark_run_metrics
+from utility_scripts.source_context import (
+    discover_artifact_metadata,
+    normalize_source_context_types,
+    populate_artifact_urls,
+    prepare_source_contexts,
+    resolve_test_source_layout,
+)
+from utility_scripts.stage_logger import log_stage
+from utility_scripts.test_quality_checks import cleanup_scaffold_placeholder_tests, format_placeholder_occurrence
+from utility_scripts.metrics_writer import create_failure_run_metrics_output
+from utility_scripts.strategy_loader import require_strategy_by_name
+from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
+
+DEFAULT_MODEL_NAME = "oca/gpt-5.4"
+
+
+class ScaffoldError(RuntimeError):
+    """Raised when the Gradle scaffold task fails unexpectedly."""
+
+
+def get_repo_root():
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def list_all_files(directory_path):
+    """Recursively list all file paths in the given directory."""
+    files = []
+    if not directory_path or not os.path.isdir(directory_path):
+        return files
+
+    for root_dir, _, file_names in os.walk(directory_path):
+        for file_name in file_names:
+            files.append(os.path.join(root_dir, file_name))
+    return files
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(
+        prog="add_new_library_support.py",
+        description=(
+            "Iteratively generate and validate unit tests for a given library using the configured agent.\n\n"
+        ),
+        epilog=(
+            "Example:\n"
+            "  python3 ai_workflows/add_new_library_support.py \\\n"
+            "  --coordinates com.example:lib:1.2.3 \\\n"
+            "  --reachability-metadata-path /path/to/reachability-metadata \\\n"
+            "  --metrics-repo-path /path/to/metrics-storage \\\n"
+            "  --docs-path /optional/path/to/docs\n\n"
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    # Core workflow configuration
+    parser.add_argument(
+        "--coordinates",
+        required=True,
+        help="Maven coordinates Group:Artifact:Version for the target library",
+    )
+    parser.add_argument(
+        "--reachability-metadata-path",
+        help=(
+            "Path to the graalvm-reachability-metadata repository to operate on. "
+            "If omitted, local_repositories/graalvm-reachability-metadata is used, "
+            "cloned from github.com/oracle/graalvm-reachability-metadata if missing."
+        ),
+    )
+    parser.add_argument(
+        "--metrics-repo-path",
+        help=(
+            "Path where workflow metrics will be written (results.json). "
+            "If omitted, a local git repository under 'local_repositories/metadata-forge-metrics' "
+            "will be used."
+        ),
+    )
+    add_in_metadata_repo_argument(parser)
+    parser.add_argument(
+        "--docs-path",
+        default=None,
+        help="Optional path with additional read-only docs/sources for agent context",
+    )
+
+    parser.add_argument(
+        "--benchmark-mode",
+        action="store_true",
+        help=(
+            "When set, metrics will be written under 'benchmark_run_metrics' instead of 'script_run_metrics'"
+        ),
+    )
+
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="enable verbose mode for the configured agent"
+    )
+
+    parser.add_argument(
+        "--strategy-name",
+        dest="strategy_name",
+        metavar="NAME",
+        default="basic_iterative_pi_gpt-5.4",
+        help="select strategy by name from strategies/predefined_strategies.json",
+    )
+    parser.add_argument(
+        "--keep-tests-without-dynamic-access",
+        action="store_true",
+        help=(
+            "When using dynamic-access strategies, keep generated tests even when they do not improve "
+            "dynamic-access coverage."
+        ),
+    )
+    return parser
+
+
+def parse_flags(argv_list):
+    """Parse CLI flags and return the core configuration tuple."""
+    parser = build_parser()
+    flags = parser.parse_args(argv_list)
+
+    library_coordinates = flags.coordinates
+    docs_path = flags.docs_path
+
+    try:
+        group, artifact, library_version = library_coordinates.split(":")
+    except ValueError:
+        print(
+            f"ERROR: Invalid coordinates format: {library_coordinates}. Expected Group:Artifact:Version",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    return (
+        library_coordinates,
+        group,
+        artifact,
+        library_version,
+        docs_path,
+        flags.strategy_name,
+        flags.verbose,
+        flags.reachability_metadata_path,
+        flags.metrics_repo_path,
+        flags.benchmark_mode,
+        flags.keep_tests_without_dynamic_access,
+        flags.in_metadata_repo,
+    )
+
+
+def resolve_repo_paths(
+        explicit_repo_path: str | None,
+        explicit_metrics_repo_path: str | None,
+        benchmark_mode: bool,
+        in_metadata_repo: bool = False,
+):
+    """Resolve paths for reachability-metadata and metrics-metadata-forge repositories."""
+
+    res_reachability_repo, res_metrics_repo = resolve_repo_roots(
+        explicit_repo_path,
+        explicit_metrics_repo_path,
+        in_metadata_repo=in_metadata_repo,
+    )
+
+    subdir_name = "benchmark_run_metrics" if benchmark_mode else "script_run_metrics"
+    resolved_metrics_repo = os.path.join(res_metrics_repo, subdir_name)
+    os.makedirs(resolved_metrics_repo, exist_ok=True)
+    return res_reachability_repo, resolved_metrics_repo, res_metrics_repo
+
+
+def create_feature_branch_for_library(group, artifact, library_version):
+    """
+    Reset the feature branch for the given coordinates to the current detached HEAD.
+    Branch name is in the following format:
+    ai/add-lib-support-<group>-<artifact>-<version>
+    """
+
+    new_branch = f"ai/add-lib-support-{group}-{artifact}-{library_version}"
+    subprocess.run(
+        ["git", "switch", "-C", new_branch],
+        check=True,
+    )
+
+
+def _metadata_already_exists(scaffold_proc: subprocess.CompletedProcess) -> bool:
+    """Return True when Gradle reports that metadata for the library already exists."""
+    output = "\n".join(
+        value for value in (scaffold_proc.stdout, scaffold_proc.stderr) if value
+    )
+    return "already exists" in output and "Use --force to overwrite existing metadata" in output
+
+
+def run_scaffold(library: str) -> bool:
+    log_stage("scaffold", f"Running scaffold for {library}")
+    # Run scaffold for the given coordinates
+    scaffold_proc = subprocess.run(
+        f"./gradlew scaffold --coordinates={library} --rerun-tasks",
+        shell=True,
+        capture_output=True,
+        text=True
+    )
+    if scaffold_proc.returncode == 0:
+        return True
+    if _metadata_already_exists(scaffold_proc):
+        return False
+    raise ScaffoldError(scaffold_proc.stderr or scaffold_proc.stdout or "Gradle scaffold task failed")
+
+
+def init_agent(
+        strategy,
+        working_dir,
+        editable_files,
+        read_only_files,
+        library=None,
+        task_type="session",
+        verbose=False,
+        model_name=DEFAULT_MODEL_NAME,
+):
+    """Initialize the configured agent implementation."""
+    strategy_agent = strategy.get("agent")
+    if not strategy_agent:
+        print("ERROR: Strategy is missing required field: agent", file=sys.stderr)
+        sys.exit(1)
+
+    log_stage("init-agent", f"Initializing {strategy_agent} agent")
+    agent_class = Agent.get_class(strategy_agent)
+    return agent_class(
+        model_name=model_name,
+        editable_files=editable_files,
+        read_only_files=read_only_files,
+        working_dir=working_dir,
+        provider=strategy.get("provider"),
+        library=library,
+        task_type=task_type,
+        verbose=verbose,
+        mcps=strategy.get("mcps", []),
+    )
+
+
+def write_add_new_library_support_metrics(run_metrics, metrics_json, is_benchmark_mode, package, artifact,
+                                          library_version, metrics_repo_root=None):
+    """Write or update add_new_library_support metrics depending on the execution mode."""
+
+    # When running in benchmark mode, update the last benchmark record instead of appending to script_run_metrics.
+    if is_benchmark_mode:
+        if not os.path.isfile(metrics_json):
+            print(f"ERROR: Benchmark metrics file not found: {metrics_json}")
+            sys.exit(1)
+
+        with open(metrics_json, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        benchmark_obj = data[-1]
+        metrics_array = benchmark_obj.get("metrics")
+        library_id = f"{package}:{artifact}:{library_version}"
+
+        updated = False
+        for item in metrics_array:
+            if item.get("library") == library_id:
+                metrics_block = run_metrics.get("metrics")
+                item["status"] = run_metrics.get("status")
+                item["input_tokens_used"] = metrics_block.get("input_tokens_used")
+                if "cached_input_tokens_used" in metrics_block:
+                    item["cached_input_tokens_used"] = metrics_block.get("cached_input_tokens_used")
+                if run_metrics.get("starting_commit") is not None:
+                    item["starting_commit"] = run_metrics.get("starting_commit")
+                if run_metrics.get("ending_commit") is not None:
+                    item["ending_commit"] = run_metrics.get("ending_commit")
+                item["output_tokens_used"] = metrics_block.get("output_tokens_used")
+                item["iterations"] = metrics_block.get("iterations")
+                item["cost_usd"] = metrics_block.get("cost_usd")
+                item["generated_loc"] = metrics_block.get("generated_loc")
+                item["tested_library_loc"] = metrics_block.get("tested_library_loc")
+                item["code_coverage_percent"] = metrics_block.get("code_coverage_percent")
+                item["metadata_entries"] = metrics_block.get("metadata_entries")
+                updated = True
+                break
+
+        if not updated:
+            print(f"ERROR: No benchmark metrics entry found for library {library_id}.")
+            sys.exit(1)
+
+        with open(metrics_json, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+    else:
+        metrics_writer.append_run_metrics(run_metrics, metrics_json)
+        if metrics_repo_root:
+            metrics_writer.write_pending_metrics(metrics_repo_root, run_metrics)
+
+    log_stage("schema-validation", "Validating schema")
+    validate_run_metrics(metrics_json) if not is_benchmark_mode else validate_benchmark_run_metrics(metrics_json)
+    log_stage("schema-validation", "Schema validated")
+
+
+
+def main(argv=None):
+    (
+        library,
+        package,
+        artifact,
+        library_version,
+        docs_path,
+        strategy_name,
+        is_verbose,
+        explicit_repo_path,
+        explicit_metrics_repo_path,
+        is_benchmark_mode,
+        keep_tests_without_dynamic_access,
+        in_metadata_repo,
+    ) = parse_flags(argv if argv is not None else sys.argv[1:])
+
+    strategy = require_strategy_by_name(strategy_name)
+
+    # Resolve repository locations (possibly cloning)
+    reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
+        explicit_repo_path,
+        explicit_metrics_repo_path,
+        is_benchmark_mode,
+        in_metadata_repo=in_metadata_repo,
+    )
+    resolve_graalvm_java_home()
+
+    log_stage("setup", f"Selected strategy: {strategy_name}")
+    model_name = strategy.get("model") or DEFAULT_MODEL_NAME
+    workflow_name = strategy.get("workflow")
+    if not workflow_name:
+        print("ERROR: Strategy is missing required field: workflow", file=sys.stderr)
+        sys.exit(1)
+    StrategyClass = WorkflowStrategy.get_class(workflow_name)
+
+    validate_repo_paths(reachability_repo_path, metrics_repo_dir)
+
+    os.chdir(reachability_repo_path)
+    create_feature_branch_for_library(package, artifact, library_version)
+    try:
+        discover_artifact_metadata(reachability_repo_path, library)
+        run_scaffold(library)
+    except ScaffoldError as exc:
+        print(f"ERROR: Gradle 'scaffold' task failed for coordinates: {library}", file=sys.stderr)
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+    populate_artifact_urls(reachability_repo_path, library)
+    source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
+    prepared_source_context = prepare_source_contexts(
+        repo_root=get_repo_root(),
+        reachability_repo_path=reachability_repo_path,
+        coordinate=library,
+        source_context_types=source_context_types,
+    )
+    module_dir = os.path.join(reachability_repo_path, "tests", "src", package, artifact, library_version)
+    test_source_layout = resolve_test_source_layout(reachability_repo_path, library, module_dir)
+
+    strategy_obj = StrategyClass(
+        strategy_obj=strategy,
+        library=library,
+        reachability_repo_path=reachability_repo_path,
+        source_context_overview=prepared_source_context.to_prompt_overview(),
+        source_context_available=prepared_source_context.is_available,
+        source_context_files=prepared_source_context.read_only_files,
+        keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
+        test_language=test_source_layout.language,
+        test_language_display_name=test_source_layout.display_language,
+        test_source_dir_name=test_source_layout.source_dir_name,
+    )
+
+    # Add generated files to git and commit; record commit hash (do not use it)
+    directory_path = module_dir
+    index_json_path = os.path.join(reachability_repo_path, "metadata", package, artifact, "index.json")
+    subprocess.run(["git", "add", directory_path, index_json_path], check=False)
+    subprocess.run(["git", "commit", "-m", f"Scaffold {library}"], check=False, capture_output=True, text=True)
+    checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    log_stage("scaffold", f"Committed scaffold at {checkpoint_commit_hash}")
+
+    editable_files = list_all_files(test_source_layout.source_root)
+    build_gradle_file = os.path.join(
+        reachability_repo_path,
+        "tests",
+        "src",
+        package,
+        artifact,
+        library_version,
+        "build.gradle",
+    )
+
+    editable_files = editable_files + [build_gradle_file]
+    read_only_files = list_all_files(docs_path) if docs_path else []
+    read_only_files.extend(prepared_source_context.read_only_files)
+    agent = init_agent(
+        strategy=strategy,
+        working_dir=reachability_repo_path,
+        editable_files=editable_files,
+        read_only_files=read_only_files,
+        library=library,
+        task_type="add-new-library-support",
+        verbose=is_verbose,
+        model_name=model_name,
+    )
+
+    workflow_status, global_iterations, unittest_number = strategy_obj.run(
+        agent=agent,
+        checkpoint_commit_hash=checkpoint_commit_hash,
+    )
+
+    scaffold_placeholder_quality_gate_failed = False
+    if workflow_status == RUN_STATUS_SUCCESS:
+        placeholder_cleanup = cleanup_scaffold_placeholder_tests(
+            test_source_layout.source_root,
+            reachability_repo_path,
+            checkpoint_commit_hash,
+        )
+        for removed_file in placeholder_cleanup.removed_files:
+            log_stage(
+                "scaffold-cleanup",
+                f"Removed scaffold placeholder test {os.path.relpath(removed_file, reachability_repo_path)}",
+            )
+        if placeholder_cleanup.remaining_placeholders:
+            for occurrence in placeholder_cleanup.remaining_placeholders:
+                print(
+                    "ERROR: Scaffold placeholder test remains in generated sources: "
+                    f"{format_placeholder_occurrence(occurrence, reachability_repo_path)}",
+                    file=sys.stderr,
+                )
+            scaffold_placeholder_quality_gate_failed = True
+            workflow_status = RUN_STATUS_FAILURE
+
+    if workflow_status == RUN_STATUS_SUCCESS:
+        if is_benchmark_mode:
+            log_stage("generate-metadata", f"Benchmark mode: running generateMetadata only for {library}")
+            if not strategy_obj._run_gradle_command([
+                "./gradlew",
+                "generateMetadata",
+                f"-Pcoordinates={library}",
+                "--agentAllowedPackages=fromJar",
+            ]):
+                workflow_status = RUN_STATUS_FAILURE
+            elif not strategy_obj._commit_library_iteration():
+                workflow_status = RUN_STATUS_FAILURE
+        else:
+            finalize_status, _ = strategy_obj._finalize_successful_iteration()
+            workflow_status = finalize_status
+
+    ending_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    if workflow_status == RUN_STATUS_SUCCESS:
+        log_stage("status", "Test generation successful")
+    elif workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
+        log_stage("status", "Test generation produced PR-eligible post-generation intervention output")
+    else:
+        log_stage("status", "Test generation failed")
+
+    if scaffold_placeholder_quality_gate_failed:
+        log_stage("status", "Generated tests failed scaffold placeholder quality gate")
+        run_metrics = create_failure_run_metrics_output(
+            package=package,
+            artifact=artifact,
+            library_version=library_version,
+            agent=agent,
+            model_name=model_name,
+            global_iterations=global_iterations,
+            strategy_name=strategy_name,
+            starting_commit=checkpoint_commit_hash,
+            ending_commit=ending_commit_hash,
+        )
+    elif unittest_number == 0 and workflow_status != SUCCESS_WITH_INTERVENTION_STATUS:
+        log_stage("status", "No valid unit test generated")
+        run_metrics = create_failure_run_metrics_output(
+            package=package,
+            artifact=artifact,
+            library_version=library_version,
+            agent=agent,
+            model_name=model_name,
+            global_iterations=global_iterations,
+            strategy_name=strategy_name,
+            starting_commit=checkpoint_commit_hash,
+            ending_commit=ending_commit_hash,
+        )
+    else:
+        run_metrics = metrics_writer.create_run_metrics_output_json(
+            repo_path=reachability_repo_path,
+            package=package,
+            artifact=artifact,
+            library_version=library_version,
+            agent=agent,
+            model_name=model_name,
+            global_iterations=global_iterations,
+            tests_root=test_source_layout.source_root,
+            strategy_name=strategy_name,
+            status=workflow_status,
+            starting_commit=checkpoint_commit_hash,
+            ending_commit=ending_commit_hash,
+            post_generation_intervention=strategy_obj.post_generation_intervention,
+        )
+
+    metrics_json = os.path.join(metrics_repo_dir, "add_new_library_support.json")
+    write_add_new_library_support_metrics(
+        run_metrics=run_metrics,
+        metrics_json=metrics_json,
+        is_benchmark_mode=is_benchmark_mode,
+        package=package,
+        artifact=artifact,
+        library_version=library_version,
+        metrics_repo_root=metrics_repo_root,
+    )
+    return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} else 1
+
+
+if __name__ == "__main__":
+    if any(a in ("-h", "--help") for a in sys.argv[1:]):
+        build_parser().print_help()
+        sys.exit(0)
+    sys.exit(main())

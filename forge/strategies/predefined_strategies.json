@@ -1,0 +1,474 @@
+[
+  {
+    "name": "basic_iterative_pi_gpt-5.4",
+    "description": "Same configuration as basic_iterative, but uses gpt-5.4 instead.",
+    "agent": "pi",
+    "workflow": "basic_iterative",
+    "model": "oca/gpt-5.4",
+    "prompts": {
+      "initial": "prompt_templates/initial/basic_initial.md",
+      "after-successful-iteration": "prompt_templates/after-successful-iteration/basic_after_success.md",
+      "after-failed-iteration": "prompt_templates/after-failed-iteration/basic_after_fail.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-failed-generations": 2,
+      "max-successful-generations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "codex_iterative_codex_gpt-5.4",
+    "description": "Iterative add-new-library workflow for the Codex agent.",
+    "agent": "codex",
+    "workflow": "basic_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "initial": "prompt_templates/initial/basic_initial.md",
+      "after-successful-iteration": "prompt_templates/after-successful-iteration/codex_after_success.md",
+      "after-failed-iteration": "prompt_templates/after-failed-iteration/basic_after_fail.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-failed-generations": 2,
+      "max-successful-generations": 3
+    },
+    "mcps": []
+  },
+  {
+    "name": "javac_iterative_sources_pi_gpt-5.4",
+    "description": "Strategy for fix_javac_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the error into the initial prompt, then iteratively repairs.",
+    "agent": "pi",
+    "workflow": "javac_iterative",
+    "model": "oca/gpt-5.4",
+    "prompts": {
+      "initial": "prompt_templates/fix-javac/initial-with-sources.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_codex_gpt-5.4",
+    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_codex_codex-5.3",
+    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "codex-5.3",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_pi_gpt-5.4",
+    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+    "agent": "pi",
+    "workflow": "dynamic_access_iterative",
+    "model": "oca/gpt-5.4",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+    "agent": "pi",
+    "workflow": "dynamic_access_iterative",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_pi_codex-5.3",
+    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
+    "agent": "pi",
+    "workflow": "dynamic_access_iterative",
+    "provider": "openrouter",
+    "model": "oca/codex-5.3",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_test_sources_codex_gpt-5.4",
+    "description": "Dynamic-access-guided Codex workflow using downloaded upstream test sources as read-only context.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "test"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_test_sources_codex_codex-5.3",
+    "description": "Same configuration as dynamic_access_test_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "codex-5.3",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "test"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_documentation_sources_codex_gpt-5.4",
+    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "documentation"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_documentation_sources_codex_codex-5.3",
+    "description": "Same configuration as dynamic_access_documentation_sources_codex_gpt-5.4, but uses codex-5.3 instead.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "codex-5.3",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "documentation"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_with_tests_codex_gpt-5.4",
+    "description": "Dynamic-access-guided Codex workflow using main sources plus upstream test sources.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main",
+        "test"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_with_tests_codex_codex-5.3",
+    "description": "Same configuration as dynamic_access_main_sources_with_tests_codex_gpt-5.4, but uses codex-5.3 instead.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "codex-5.3",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main",
+        "test"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_with_documentation_codex_gpt-5.4",
+    "description": "Dynamic-access-guided Codex workflow using main sources plus documentation artifacts.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main",
+        "documentation"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_with_documentation_codex_codex-5.3",
+    "description": "Same configuration as dynamic_access_main_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "codex-5.3",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main",
+        "documentation"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_with_tests_and_documentation_codex_gpt-5.4",
+    "description": "Dynamic-access-guided Codex workflow using main sources, upstream test sources, and documentation artifacts.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main",
+        "test",
+        "documentation"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_main_sources_with_tests_and_documentation_codex_codex-5.3",
+    "description": "Same configuration as dynamic_access_main_sources_with_tests_and_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "codex-5.3",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "main",
+        "test",
+        "documentation"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_test_sources_with_documentation_codex_gpt-5.4",
+    "description": "Dynamic-access-guided Codex workflow using upstream test sources plus documentation artifacts.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "gpt-5.4",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "test",
+        "documentation"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_test_sources_with_documentation_codex_codex-5.3",
+    "description": "Same configuration as dynamic_access_test_sources_with_documentation_codex_gpt-5.4, but uses codex-5.3 instead.",
+    "agent": "codex",
+    "workflow": "dynamic_access_iterative",
+    "model": "codex-5.3",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 3,
+      "source-context-types": [
+        "test",
+        "documentation"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "javac_iterative_with_coverage_sources_pi_gpt-5.4",
+    "description": "Composite strategy: runs javac_iterative to fix compilation, then improves dynamic-access coverage.",
+    "agent": "pi",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "javac_iterative",
+    "model": "oca/gpt-5.4",
+    "prompts": {
+      "initial": "prompt_templates/fix-javac/initial-with-sources.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-iterations": 2,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+    "agent": "pi",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "javac_iterative",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "initial": "prompt_templates/fix-javac/initial-with-sources.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-iterations": 2,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "optimistic_dynamic_access_iterative_pi_gpt-5.4",
+    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
+    "agent": "pi",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "optimistic_dynamic_access",
+    "model": "oca/gpt-5.4",
+    "prompts": {
+      "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-iterations": 2,
+      "max-optimistic-iterations": 3,
+      "max-test-iterations": 3,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "java_run_iterative_sources_pi_gpt-5.4",
+    "description": "Strategy for fix_java_run_fail.py with downloaded main library sources as read-only context. Runs gradle test first, feeds the runtime error into the initial prompt, then iteratively repairs.",
+    "agent": "pi",
+    "workflow": "java_run_iterative",
+    "model": "oca/gpt-5.4",
+    "prompts": {
+      "initial": "prompt_templates/fix-java-run/initial-with-sources.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  },
+  {
+    "name": "java_run_iterative_with_coverage_sources_pi_gpt-5.5",
+    "description": "Composite strategy: runs java_run_iterative to fix runtime failures, then improves dynamic-access coverage.",
+    "agent": "pi",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "java_run_iterative",
+    "model": "oca/gpt-5.5",
+    "prompts": {
+      "initial": "prompt_templates/fix-java-run/initial-with-sources.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-iterations": 2,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": []
+  }
+]

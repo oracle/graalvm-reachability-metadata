@@ -1,0 +1,28 @@
+[project]
+name = "metadata-forge"
+version = "0.1.0"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = [
+    "pylint",
+    "jsonschema",
+]
+
+[project.scripts]
+forge-metadata = "forge_metadata:main"
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["forge_metadata", "unassign_issues"]
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+include = [
+    "ai_workflows*",
+    "git_scripts*",
+    "pylint_plugins*",
+    "utility_scripts*",
+]

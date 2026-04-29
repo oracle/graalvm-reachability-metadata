@@ -1,0 +1,387 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Run Metrics Output Schema",
+  "description": "Strict JSON Schema (Draft 2020-12) for run metrics outputs produced by Metadata Forge benchmarking.",
+  "$defs": {
+    "dynamicAccessEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coveredCalls",
+        "totalCalls",
+        "coverageRatio"
+      ],
+      "properties": {
+        "coveredCalls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalCalls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "coverageRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "libraryCoverageEntry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "covered",
+            "total",
+            "ratio"
+          ],
+          "properties": {
+            "covered": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        {
+          "type": "string",
+          "const": "N/A"
+        }
+      ]
+    },
+    "statsSnapshot": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dynamicAccess": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coveredCalls",
+            "totalCalls",
+            "coverageRatio",
+            "breakdown"
+          ],
+          "properties": {
+            "coveredCalls": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "totalCalls": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coverageRatio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "breakdown": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/dynamicAccessEntry"
+              }
+            }
+          }
+        },
+        "libraryCoverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "instruction": {
+              "$ref": "#/$defs/libraryCoverageEntry"
+            },
+            "line": {
+              "$ref": "#/$defs/libraryCoverageEntry"
+            },
+            "method": {
+              "$ref": "#/$defs/libraryCoverageEntry"
+            }
+          }
+        }
+      }
+    }
+  },
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "timestamp",
+      "library",
+      "strategy_name",
+      "status",
+      "metrics",
+      "artifacts"
+    ],
+    "properties": {
+      "timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "description": "ISO-8601 timestamp marking when the evaluation completed."
+      },
+      "library": {
+        "type": "string",
+        "pattern": "^[^:]+:[^:]+:[^:]+$",
+        "description": "Dependency coordinate in the form group:artifact:version."
+      },
+      "starting_commit": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Git commit hash at the start of the generation workflow."
+      },
+      "ending_commit": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Git commit hash at the end of the generation workflow."
+      },
+      "previous_library": {
+        "type": "string",
+        "pattern": "^[^:]+:[^:]+:[^:]+$",
+        "description": "Previous dependency coordinate for version-upgrade workflows."
+      },
+      "strategy_name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Name of the strategy used to generate tests/metadata."
+      },
+      "agent": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Configured agent implementation used for the run."
+      },
+      "model": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Configured model used for the run."
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "success",
+          "failure",
+          "success_with_intervention"
+        ],
+        "description": "Overall outcome of the run."
+      },
+      "post_generation_intervention": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stage",
+          "intervention_file",
+          "analysis_markdown"
+        ],
+        "properties": {
+          "stage": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workflow stage where the post-generation failure happened."
+          },
+          "intervention_file": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Relative path to the intervention markdown written by the Pi workflow."
+          },
+          "analysis_markdown": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Markdown explanation generated for the post-generation failure."
+          }
+        }
+      },
+      "stats": {
+        "$ref": "#/$defs/statsSnapshot",
+        "description": "Coverage snapshot copied from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json` for the generated library version."
+      },
+      "previous_library_stats": {
+        "$ref": "#/$defs/statsSnapshot",
+        "description": "Coverage snapshot copied from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json` for the previous library version when applicable."
+      },
+      "metrics": {
+        "type": "object",
+        "description": "Collected run metrics.",
+        "additionalProperties": false,
+        "required": [
+          "input_tokens_used",
+          "output_tokens_used",
+          "iterations",
+          "cost_usd",
+          "tested_library_loc",
+          "code_coverage_percent",
+          "metadata_entries"
+        ],
+        "properties": {
+          "input_tokens_used": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total LLM input tokens consumed."
+          },
+          "cached_input_tokens_used": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Subset of input tokens served from cache when reported by the agent."
+          },
+          "output_tokens_used": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total LLM output tokens consumed."
+          },
+          "iterations": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of iterations performed by the strategy."
+          },
+          "cost_usd": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Estimated cost in USD."
+          },
+          "generated_loc": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Lines of code generated by the agent."
+          },
+          "tested_library_loc": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Lines of code covered within the target library."
+          },
+          "code_coverage_percent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Code coverage percentage (0–100)."
+          },
+          "metadata_entries": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of metadata entries produced."
+          },
+          "previous_library_metadata_entries": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Metadata entry count for the previous library version."
+          },
+          "previous_library_coverage_percent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Code coverage percent for the previous library version."
+          }
+        }
+      },
+      "artifacts": {
+        "type": "object",
+        "description": "Paths to generated output artifacts.",
+        "additionalProperties": false,
+        "required": [
+          "test_file",
+          "metadata_file"
+        ],
+        "properties": {
+          "test_file": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Path to the generated test file."
+          },
+          "metadata_file": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Path to the generated metadata file."
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    [
+      {
+        "timestamp": "2026-01-14T20:56:52Z",
+        "library": "org.example:demo-lib:1.0.0",
+        "starting_commit": "6d9a591c",
+        "ending_commit": "7f2c13aa",
+        "strategy_name": "baseline-iterative",
+        "agent": "pi",
+        "model": "oca/gpt-5.4",
+        "status": "success",
+        "stats": {
+          "version": "1.0.0",
+          "dynamicAccess": {
+            "coveredCalls": 9,
+            "totalCalls": 12,
+            "coverageRatio": 0.75,
+            "breakdown": {
+              "reflection": {
+                "coveredCalls": 4,
+                "totalCalls": 5,
+                "coverageRatio": 0.8
+              },
+              "serialization": {
+                "coveredCalls": 5,
+                "totalCalls": 7,
+                "coverageRatio": 0.7143
+              }
+            }
+          },
+          "libraryCoverage": {
+            "instruction": {
+              "covered": 1500,
+              "missed": 2500,
+              "total": 4000,
+              "ratio": 0.375
+            },
+            "line": {
+              "covered": 900,
+              "missed": 1500,
+              "total": 2400,
+              "ratio": 0.375
+            },
+            "method": {
+              "covered": 120,
+              "missed": 180,
+              "total": 300,
+              "ratio": 0.4
+            }
+          }
+        },
+        "metrics": {
+          "input_tokens_used": 12000,
+          "cached_input_tokens_used": 6000,
+          "output_tokens_used": 3432,
+          "iterations": 3,
+          "cost_usd": 0.068,
+          "generated_loc": 420,
+          "tested_library_loc": 1500,
+          "code_coverage_percent": 37.5,
+          "metadata_entries": 87
+        },
+        "artifacts": {
+          "test_file": "out/tests/DemoLibTest.java",
+          "metadata_file": "out/metadata/reachability-metadata.json"
+        }
+      }
+    ]
+  ]
+}

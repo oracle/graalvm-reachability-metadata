@@ -1,0 +1,50 @@
+import subprocess
+import sys
+
+from utility_scripts.task_logs import build_task_log_path, display_log_path
+
+CODEX_MODEL_NAME = "oca/gpt-5.4"
+CODEX_TIMEOUT_SECONDS = 1200
+
+
+def run_codex_metadata_fix(reachability_metadata_path: str, coordinates: str) -> tuple[int, str, bool]:
+    """Run Codex to update metadata entries for the target library.
+
+    Requires the ``fix-missing-reachability-metadata`` skill. The skill definition lives at:
+    https://github.com/oracle/graalvm-reachability-metadata/blob/master/skills/fix-missing-reachability-metadata/SKILL.md
+    """
+    prompt = f"Fix the metadata entries for {coordinates}"
+    cmd = [
+        "codex", "exec",
+        "--dangerously-bypass-approvals-and-sandbox",
+        "--json",
+        "-c", 'reasoning.effort="high"',
+        "-m", CODEX_MODEL_NAME,
+        prompt,
+    ]
+    log_path = build_task_log_path("metadata-fix", coordinates, "codex.log")
+    log_path_display = display_log_path(log_path)
+    print(f"[Codex running... Output: {log_path_display}]")
+    try:
+        with open(log_path, "w", encoding="utf-8") as log_file:
+            result = subprocess.run(
+                cmd,
+                cwd=reachability_metadata_path,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                timeout=CODEX_TIMEOUT_SECONDS,
+                check=False,
+            )
+    except subprocess.TimeoutExpired:
+        print(
+            f"ERROR: Codex metadata fix timed out after {CODEX_TIMEOUT_SECONDS} seconds for {coordinates}.",
+            file=sys.stderr,
+        )
+        return (1, log_path, True)
+
+    if result.returncode != 0:
+        print(
+            f"ERROR: Codex metadata fix failed for {coordinates} with exit code {result.returncode}.",
+            file=sys.stderr,
+        )
+    return (result.returncode, log_path, False)

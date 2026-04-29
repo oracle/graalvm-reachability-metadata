@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Strategy Configuration Schema",
+  "description": "Strict JSON Schema (Draft 2020-12) for strategy configurations used in Metadata Forge benchmarking and evaluation.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "name",
+      "description",
+      "agent",
+      "workflow",
+      "model",
+      "prompts"
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Human-readable strategy name. May include a version suffix (e.g., 'Basic Iterative v1.0') to distinguish minor workflow updates or logic refinements while preserving the base strategy identity."
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Description of the strategy workflow and behavior."
+      },
+      "agent": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Name of the agent."
+      },
+      "workflow": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Workflow strategy implementation name."
+      },
+      "primary-workflow": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Primary workflow to run first in composite strategies (e.g., increase_dynamic_access_coverage)."
+      },
+      "model": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Model identifier to run for this strategy."
+      },
+      "provider": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional LLM provider identifier for agent backends that support provider selection."
+      },
+      "prompts": {
+        "type": "object",
+        "description": "Prompt templates used by the workflow.",
+        "minProperties": 1,
+        "patternProperties": {
+          "^[a-z][a-z0-9-]*$": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "parameters": {
+        "type": "object",
+        "description": "Optional tunable parameters for the strategy.",
+        "patternProperties": {
+          "^[a-z][a-z0-9-]*$": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "mcps": {
+        "type": "array",
+        "description": "List of MCP configuration identifiers to enable for this strategy.",
+        "items": {
+          "type": "string"
+        },
+        "default": []
+      }
+    }
+  },
+  "examples": [
+    [
+      {
+        "name": "baseline-iterative",
+        "description": "Baseline Codex-driven iterative workflow.",
+        "agent": "codex",
+        "workflow": "basic_iterative",
+        "model": "gpt-5.4",
+        "prompts": {
+          "initial": "prompts/strategy/baseline/initial.md",
+          "after-successful-iteration": "prompts/strategy/baseline/after_success.md",
+          "after-failed-iteration": "prompts/strategy/baseline/after_fail.md"
+        },
+        "parameters": {
+          "max-test-iterations": 5,
+          "max-failed-generations": 1,
+          "max-successful-generations": 2
+        },
+        "mcps": [
+          "filesystem",
+          "search",
+          "git"
+        ]
+      }
+    ]
+  ]
+}
