@@ -1,0 +1,715 @@
+Starting a Gradle Daemon, 5 busy and 16 incompatible and 153 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dd6af-24c2-72d3-b4b1-15661026012b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.javamoney.moneta:moneta-core:1.3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.3".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+- Set "coordinates" to "org.javamoney.moneta:moneta-core:1.3".
+- Set "source-code-url", "repository-url", "test-code-url", and "documentation-url" to the discovered values.
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata from Maven Central and the project tag before editing the JSON, then I’ll keep the URL choices aligned with the repository’s existing metadata style.
+exec
+/usr/bin/bash -lc "rg -n \"javadoc.io|sources.jar|test-sources|source-code-url|documentation-url\" build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | head -20 && test -f build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json && sed -n '1,200p' build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+ succeeded in 0ms:
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+{
+  "coordinates" : "org.javamoney.moneta:moneta-core:1.3"
+}
+
+ succeeded in 0ms:
+metadata/org.apache.yetus/audience-annotations/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-sources.jar",
+metadata/org.apache.yetus/audience-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/yetus/audience-annotations/0.12.0/audience-annotations-0.12.0-javadoc.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/9.4.40.v20210413/websocket-api-9.4.40.v20210413-javadoc.jar",
+metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar",
+metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-javadoc.jar",
+metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/1.1/activation-1.1-sources.jar",
+metadata/javax.activation/activation/index.json:8:    "documentation-url" : "https://www.oracle.com/docs/tech/java/jaf-1.pdf",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:6:    "source-code-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-sources.jar",
+metadata/org.jvnet/animal-sniffer-annotation/index.json:9:    "documentation-url": "https://repo.maven.apache.org/maven2/org/jvnet/animal-sniffer-annotation/1.0/animal-sniffer-annotation-1.0-javadoc.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-spi/2.0.0.CR1/jboss-interceptor-spi-2.0.0.CR1-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-spi/index.json:8:    "documentation-url" : "N/A",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/interceptor/jboss-interceptor-api/1.1/jboss-interceptor-api-1.1-sources.jar",
+metadata/org.jboss.interceptor/jboss-interceptor-api/index.json:8:    "documentation-url" : "N/A",
+metadata/com.sun.mail/jakarta.mail/index.json:9:    "source-code-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-sources.jar",
+metadata/com.sun.mail/jakarta.mail/index.json:12:    "documentation-url": "https://repo1.maven.org/maven2/com/sun/mail/jakarta.mail/2.0.1/jakarta.mail-2.0.1-javadoc.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-sources.jar",
+metadata/org.snakeyaml/snakeyaml-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/snakeyaml/snakeyaml-engine/3.0.1/snakeyaml-engine-3.0.1-javadoc.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-sources.jar",
+metadata/com.google.auth/google-auth-library-credentials/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/auth/google-auth-library-credentials/1.10.0/google-auth-library-credentials-1.10.0-javadoc.jar",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/com.graphql-java/java-dataloader/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-sources.jar",
+metadata/com.graphql-java/java-dataloader/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/3.2.0/java-dataloader-3.2.0-javadoc.jar",
+metadata/com.google.guava/failureaccess/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-sources.jar",
+metadata/com.google.guava/failureaccess/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-sources.jar",
+metadata/org.postgresql/postgresql/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3-javadoc.jar",
+metadata/org.postgresql/postgresql/index.json:29:    "source-code-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-sources.jar",
+metadata/org.postgresql/postgresql/index.json:32:    "documentation-url": "https://repo1.maven.org/maven2/org/postgresql/postgresql/42.3.4/postgresql-42.3.4-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-javadoc.jar",
+metadata/com.graphql-java/graphql-java/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-sources.jar",
+metadata/com.graphql-java/graphql-java/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java/19.2/graphql-java-19.2-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-scalars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/19.0/graphql-java-extended-scalars-19.0-javadoc.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-sources.jar",
+metadata/javax.servlet/javax.servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8.2/stax-ex-1.8.2-javadoc.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-sources.jar",
+metadata/org.jvnet.staxex/stax-ex/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/jvnet/staxex/stax-ex/1.8/stax-ex-1.8-javadoc.jar",
+metadata/com.google.android/annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-sources.jar",
+metadata/com.google.android/annotations/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/com/google/android/annotations/4.1.1.4/annotations-4.1.1.4-javadoc.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-sources.jar",
+metadata/com.graphql-java/graphql-java-extended-validation/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-validation/19.1/graphql-java-extended-validation-19.1-javadoc.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-gson/0.12.0/jjwt-gson-0.12.0-sources.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:8:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-gson/0.11.5/jjwt-gson-0.11.5-sources.jar",
+metadata/io.jsonwebtoken/jjwt-gson/index.json:28:    "documentation-url" : "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/org.rocksdb/rocksdbjni/index.json:8:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/10.4.2/rocksdbjni-10.4.2-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:11:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/10.4.2/rocksdbjni-10.4.2-javadoc.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.1.2/rocksdbjni-7.1.2-javadoc.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-sources.jar",
+metadata/org.rocksdb/rocksdbjni/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/rocksdb/rocksdbjni/7.9.2/rocksdbjni-7.9.2-javadoc.jar",
+metadata/org.eclipse.aether/aether-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-sources.jar",
+metadata/org.eclipse.aether/aether-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-util/1.0.2.v20150114/aether-util-1.0.2.v20150114-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-sources.jar",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/1.0.3/compress-lzf-1.0.3-javadoc.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/3.1.0.RELEASE/thymeleaf-extras-springsecurity6-3.1.0.RELEASE-sources.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:8:    "documentation-url" : "https://github.com/thymeleaf/thymeleaf/blob/thymeleaf-3.1.0.RELEASE/lib/thymeleaf-extras-springsecurity6/README.markdown",
+metadata/org.eclipse.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-sources.jar",
+metadata/org.eclipse.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/aether/aether-api/1.0.2.v20150114/aether-api-1.0.2.v20150114-javadoc.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-jackson/0.12.0/jjwt-jackson-0.12.0-sources.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:11:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.12.0/README.md",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/io/jsonwebtoken/jjwt-jackson/0.11.5/jjwt-jackson-0.11.5-sources.jar",
+metadata/io.jsonwebtoken/jjwt-jackson/index.json:31:    "documentation-url": "https://github.com/jwtk/jjwt/blob/0.11.5/README.md",
+metadata/org.ehcache/ehcache/index.json:11:    "source-code-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-sources.jar",
+metadata/org.ehcache/ehcache/index.json:14:    "documentation-url": "https://repo.maven.apache.org/maven2/org/ehcache/ehcache/3.10.8/ehcache-3.10.8-jakarta-javadoc.jar",
+metadata/org.hamcrest/hamcrest-library/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3-sources.jar",
+metadata/org.hamcrest/hamcrest-library/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3-javadoc.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams-tck/1.0.3/reactive-streams-tck-1.0.3-sources.jar",
+metadata/org.reactivestreams/reactive-streams/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3-javadoc.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:9:    "source-code-url": "https://repo.maven.apache.org/maven2/org/hibernate/validator/hibernate-validator/7.0.4.Final/hibernate-validator-7.0.4.Final-sources.jar",
+metadata/org.hibernate.validator/hibernate-validator/index.json:12:    "documentation-url": "https://github.com/hibernate/hibernate-validator/tree/7.0.4.Final/documentation",
+metadata/org.jctools/jctools-core/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/jctools/jctools-core/2.1.2/jctools-core-2.1.2-sources.jar",
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/
+web search: 
+web search: 
+web search: 
+web search: org.javamoney.moneta moneta-core 1.3 GitHub tag
+codex
+Maven Central has the `1.3` sources and javadocs for `moneta-core`, so those are the best candidates for source and documentation. I’m checking whether a published test-sources artifact exists; if it does not, I’ll use the exact GitHub tag path for tests.
+exec
+/usr/bin/bash -lc "curl -Lsf https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/ | sed -n '1,120p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/javamoney/moneta/moneta-core/1.3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/javamoney/moneta/moneta-core/1.3</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="moneta-core-1.3-javadoc.jar" title="moneta-core-1.3-javadoc.jar">moneta-core-1.3-javadoc.jar</a>                       2018-07-14 16:45    893350      
+<a href="moneta-core-1.3-javadoc.jar.asc" title="moneta-core-1.3-javadoc.jar.asc">moneta-core-1.3-javadoc.jar.asc</a>                   2018-07-14 16:45       484      
+<a href="moneta-core-1.3-javadoc.jar.md5" title="moneta-core-1.3-javadoc.jar.md5">moneta-core-1.3-javadoc.jar.md5</a>                   2018-07-14 16:45        32      
+<a href="moneta-core-1.3-javadoc.jar.sha1" title="moneta-core-1.3-javadoc.jar.sha1">moneta-core-1.3-javadoc.jar.sha1</a>                  2018-07-14 16:45        40      
+<a href="moneta-core-1.3-sources.jar" title="moneta-core-1.3-sources.jar">moneta-core-1.3-sources.jar</a>                       2018-07-14 16:45    201866      
+<a href="moneta-core-1.3-sources.jar.asc" title="moneta-core-1.3-sources.jar.asc">moneta-core-1.3-sources.jar.asc</a>                   2018-07-14 16:45       484      
+<a href="moneta-core-1.3-sources.jar.md5" title="moneta-core-1.3-sources.jar.md5">moneta-core-1.3-sources.jar.md5</a>                   2018-07-14 16:45        32      
+<a href="moneta-core-1.3-sources.jar.sha1" title="moneta-core-1.3-sources.jar.sha1">moneta-core-1.3-sources.jar.sha1</a>                  2018-07-14 16:45        40      
+<a href="moneta-core-1.3.jar" title="moneta-core-1.3.jar">moneta-core-1.3.jar</a>                               2018-07-14 16:45    250065      
+<a href="moneta-core-1.3.jar.asc" title="moneta-core-1.3.jar.asc">moneta-core-1.3.jar.asc</a>                           2018-07-14 16:45       484      
+<a href="moneta-core-1.3.jar.md5" title="moneta-core-1.3.jar.md5">moneta-core-1.3.jar.md5</a>                           2018-07-14 16:45        32      
+<a href="moneta-core-1.3.jar.sha1" title="moneta-core-1.3.jar.sha1">moneta-core-1.3.jar.sha1</a>                          2018-07-14 16:45        40      
+<a href="moneta-core-1.3.pom" title="moneta-core-1.3.pom">moneta-core-1.3.pom</a>                               2018-07-14 16:45     18338      
+<a href="moneta-core-1.3.pom.asc" title="moneta-core-1.3.pom.asc">moneta-core-1.3.pom.asc</a>                           2018-07-14 16:45       484      
+<a href="moneta-core-1.3.pom.md5" title="moneta-core-1.3.pom.md5">moneta-core-1.3.pom.md5</a>                           2018-07-14 16:45        32      
+<a href="moneta-core-1.3.pom.sha1" title="moneta-core-1.3.pom.sha1">moneta-core-1.3.pom.sha1</a>                          2018-07-14 16:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -Lsf https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3.pom | sed -n '1,220p'" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/JavaMoney/jsr354-ri.git | rg '1\\.3|moneta' | head -80" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+ succeeded in 188ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); you 
+	may not use this file except in compliance with the License. You may obtain 
+	a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+	required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.javamoney</groupId>
+		<artifactId>moneta-parent</artifactId>
+		<version>1.3</version>
+	</parent>
+	<groupId>org.javamoney.moneta</groupId>
+	<artifactId>moneta-core</artifactId>
+	<packaging>jar</packaging>
+	<name>Moneta Core</name>
+	<url>http://javamoney.org</url>
+	<inceptionYear>2012</inceptionYear>
+	<description>The engine of moneta, this projects has implementations of MonetayAmount, CurrencyUnit, loaders, formatters and core parts of the SPI.</description>
+    
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/JavaMoney/jsr354-ri</url>
+	</ciManagement>
+
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
+
+	<scm>
+		<connection>scm:git:https://github.com/JavaMoney/jsr354-ri.git</connection>
+		<tag>master</tag>
+		<developerConnection>scm:git:https://github.com/JavaMoney/jsr354-ri.git</developerConnection>
+		<url>https://github.com/JavaMoney/jsr354-ri</url>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>bintray-release</id>
+			<name>oss-jfrog-artifactory-release</name>
+			<url>https://oss.jfrog.org/artifactory/oss-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>bintray-snapshot</id>
+			<name>oss-jfrog-artifactory-snapshot</name>
+			<url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>bintray-release</id>
+			<name>libs-release</name>
+			<url>http://oss.jfrog.org/artifactory/libs-release</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>bintray-snapshot</id>
+			<name>libs-snapshot</name>
+			<url>http://oss.jfrog.org/artifactory/libs-snapshot</url>
+		</repository>
+	</repositories>
+
+	<profiles>
+		<profile>
+			<id>travis</id>
+			<activation>
+				<property>
+					<name>env.TRAVIS</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.eluder.coveralls</groupId>
+						<artifactId>coveralls-maven-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<!-- Usage: mvn clean deploy -Dgpg.passphrase=yourpassphrase ; Or sign 
+							already deployed artifact: mvn gpg:sign-and-deploy-file -DpomFile=target/myapp-1.0.pom 
+							-Dfile=target/myapp-1.0.jar -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ 
+							-DrepositoryId=sonatype-nexus-staging -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<configuration>
+							<defaultKeyring>false</defaultKeyring>
+							<keyname>11A1E4D6</keyname>
+						</configuration>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<!-- phase>verify</phase -->
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>documentation</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctor-maven-plugin</artifactId>
+						<version>1.5.2</version>
+						<dependencies>
+							<dependency>
+								<groupId>org.asciidoctor</groupId>
+								<artifactId>asciidoctorj-pdf</artifactId>
+								<version>1.5.0-alpha.6</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<sourceDirectory>src/main/asciidoc</sourceDirectory>
+							<baseDir>${project.basedir}</baseDir>
+							<imagesDir>src/main/asciidoc/images/</imagesDir>
+							<embedAssets>true</embedAssets>
+							<!-- eruby>erubis</eruby -->
+						</configuration>
+						<executions>
+							<execution>
+								<id>output-html</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>process-asciidoc</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>target/docs</outputDirectory>
+									<sourceHighlighter>coderay</sourceHighlighter>
+									<backend>html</backend>
+								</configuration>
+							</execution>
+							<execution>
+								<id>output-pdf</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>process-asciidoc</goal>
+								</goals>
+
+ succeeded in 278ms:
+b5903ced588feeac321ca22463c1867c6b462c76	refs/tags/1.3
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-tests.jar \\
+  https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test; do printf '%s ' \""'$url"; curl -LIs "$url" | sed -n '"'1p' | tr -d '\\r'; done" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+exec
+/usr/bin/bash -lc "curl -Lsf https://api.github.com/repos/JavaMoney/jsr354-ri/git/trees/1.3?recursive=1 | rg '\"path\": \"(moneta-core/src/test|moneta-core/src/main|README|.*\\.adoc)\"|\"path\": \"moneta-core/src' | head -120" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+ succeeded in 328ms:
+      "path": "moneta-convert/moneta-convert-base/src/main/asciidoc/userguide.adoc",
+      "path": "moneta-convert/moneta-convert-ecb/src/main/asciidoc/userguide.adoc",
+      "path": "moneta-convert/moneta-convert-imf/src/main/asciidoc/userguide.adoc",
+      "path": "moneta-core/src",
+      "path": "moneta-core/src/etc",
+      "path": "moneta-core/src/etc/header.txt",
+      "path": "moneta-core/src/main",
+      "path": "moneta-core/src/main/asciidoc",
+      "path": "moneta-core/src/main/asciidoc/images",
+      "path": "moneta-core/src/main/asciidoc/images/highlighter.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons",
+      "path": "moneta-core/src/main/asciidoc/images/icons/README",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/1.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/10.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/11.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/12.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/13.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/14.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/15.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/2.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/3.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/4.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/5.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/6.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/7.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/8.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/callouts/9.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/caution.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/example.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/home.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/important.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/next.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/note.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/prev.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/tip.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/up.png",
+      "path": "moneta-core/src/main/asciidoc/images/icons/warning.png",
+      "path": "moneta-core/src/main/asciidoc/images/smallnew.png",
+      "path": "moneta-core/src/main/asciidoc/images/tiger.png",
+      "path": "moneta-core/src/main/asciidoc/userguide.adoc",
+      "path": "moneta-core/src/main/java",
+      "path": "moneta-core/src/main/java/org",
+      "path": "moneta-core/src/main/java/org/javamoney",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/BuildableCurrencyUnit.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/CurrencyUnitBuilder.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/DefaultExchangeRate.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/DefaultMonetaryContextFactory.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/ExchangeRateBuilder.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/ExchangeRateType.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/FastMoney.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/MonetaryRoundedFactory.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/MonetaryRoundedFactoryBuilder.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/Money.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/NumberVerifier.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/OSGIServiceHelper.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/PrecisionContextRoundedOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/PrecisionScaleRoundedOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/RoundedMoney.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/RoundedMoneyMonetaryOperatorFactory.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/ScaleRoundedOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/ToStringMonetaryAmountFormat.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/AmountFormatParams.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/CurrencyStyle.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/DefaultMonetaryAmountFormatSymbols.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/MonetaryAmountDecimalFormat.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/MonetaryAmountDecimalFormatBuilder.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/MonetaryAmountFormatSymbols.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/MonetaryAmountNumericInformation.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/MonetaryAmountSymbols.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/format/package-info.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/ConvertMinorPartQuery.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/DefaultMonetaryRoundedFactory.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/DefaultMonetarySummaryStatistics.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/ExchangeCurrencyOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/ExtractorMajorPartOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/ExtractorMajorPartQuery.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/ExtractorMinorPartOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/ExtractorMinorPartQuery.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/FastMoneyProducer.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/GroupMonetarySummaryStatistics.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetaryAmountProducer.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetaryFunctions.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetaryOperators.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetaryQueries.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetaryRoundedFactory.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetaryRoundedFactoryBuilder.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetarySummaryMap.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetarySummaryStatistics.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MonetaryUtil.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/MoneyProducer.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/PercentOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/PermilOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/PrecisionContextRoundedOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/PrecisionScaleRoundedOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/ReciprocalOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/RoudingMonetaryAmountOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/RoundedMoneyProducer.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/ScaleRoundedOperator.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/function/package-info.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/ConfigurableCurrencyUnitProvider.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/DefaultCashRounding.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/DefaultMonetaryAmountsSingletonQuerySpi.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/DefaultMonetaryAmountsSingletonSpi.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/DefaultMonetaryCurrenciesSingletonSpi.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/DefaultRounding.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/DefaultRoundingProvider.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/FastMoneyAmountBuilder.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/FastMoneyAmountFactory.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/FastMoneyAmountFactoryProvider.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/JDKCurrencyAdapter.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/JDKCurrencyProvider.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/MoneyAmountBuilder.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/MoneyAmountFactory.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/MoneyAmountFactoryProvider.java",
+      "path": "moneta-core/src/main/java/org/javamoney/moneta/internal/OSGIActivator.java",
+
+ succeeded in 1525ms:
+HTTP/2 200 
+https://repo.maven.apache.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-test-sources.jar HTTP/2 404 
+https://repo.maven.apache.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-tests.jar HTTP/2 404 
+https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test HTTP/2 200 
+
+web search: 
+web search: https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test
+web search: 
+web search: repo.maven.apache.org maven2 org javamoney moneta moneta-core 1.3 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/
+web search: 
+web search: 
+codex
+There is no `test-sources` or `tests` classifier published for `moneta-core:1.3`, and the tagged repository does contain `moneta-core/src/test`. I’m going to use Maven Central for sources and javadocs, GitHub tag `1.3` for tests, and omit `language` because this is a Java/JVM library rather than Kotlin, Groovy, or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+diff --git a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+index 4b40b17f32b56feba7cc052eba72d88cd7743a3f..38d14b82b6fe0c60e1dc3f247eccb4ba9bd765d3
+--- a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
++++ b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javamoney.moneta:moneta-core:1.3"
++  "coordinates" : "org.javamoney.moneta:moneta-core:1.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-sources.jar",
++  "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
++  "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-javadoc.jar",
++  "description" : "Moneta Core is the reference implementation of the JavaMoney JSR 354 API for representing and calculating with monetary amounts and currencies. It provides core implementations for monetary amounts, currency units, loaders, formatters, rounding, and SPI support."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+index 4b40b17f32b56feba7cc052eba72d88cd7743a3f..38d14b82b6fe0c60e1dc3f247eccb4ba9bd765d3
+--- a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
++++ b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javamoney.moneta:moneta-core:1.3"
++  "coordinates" : "org.javamoney.moneta:moneta-core:1.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-sources.jar",
++  "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
++  "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-javadoc.jar",
++  "description" : "Moneta Core is the reference implementation of the JavaMoney JSR 354 API for representing and calculating with monetary amounts and currencies. It provides core implementations for monetary amounts, currency units, loaders, formatters, rounding, and SPI support."
+ }
+
+exec
+/usr/bin/bash -lc "jq . build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json" in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+ succeeded in 0ms:
+{
+  "coordinates" : "org.javamoney.moneta:moneta-core:1.3",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-sources.jar",
+  "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
+  "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-javadoc.jar",
+  "description" : "Moneta Core is the reference implementation of the JavaMoney JSR 354 API for representing and calculating with monetary amounts and currencies. It provides core implementations for monetary amounts, currency units, loaders, formatters, rounding, and SPI support."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+index 4b40b17f32b56feba7cc052eba72d88cd7743a3f..38d14b82b6fe0c60e1dc3f247eccb4ba9bd765d3
+--- a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
++++ b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javamoney.moneta:moneta-core:1.3"
++  "coordinates" : "org.javamoney.moneta:moneta-core:1.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-sources.jar",
++  "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
++  "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-javadoc.jar",
++  "description" : "Moneta Core is the reference implementation of the JavaMoney JSR 354 API for representing and calculating with monetary amounts and currencies. It provides core implementations for monetary amounts, currency units, loaders, formatters, rounding, and SPI support."
+ }
+
+codex
+The JSON parses successfully after the edit. I’m checking repository visibility now because this target sits under `build/`, which may be ignored by Git even though the requested file has been updated on disk.
+exec
+/usr/bin/bash -lc 'git status --short -- build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json && git check-ignore -v build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json || true' in /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324
+ succeeded in 0ms:
+.gitignore:33:**/build	build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+
+diff --git a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+index 4b40b17f32b56feba7cc052eba72d88cd7743a3f..38d14b82b6fe0c60e1dc3f247eccb4ba9bd765d3
+--- a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
++++ b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javamoney.moneta:moneta-core:1.3"
++  "coordinates" : "org.javamoney.moneta:moneta-core:1.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-sources.jar",
++  "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
++  "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-javadoc.jar",
++  "description" : "Moneta Core is the reference implementation of the JavaMoney JSR 354 API for representing and calculating with monetary amounts and currencies. It provides core implementations for monetary amounts, currency units, loaders, formatters, rounding, and SPI support."
+ }
+
+web search: 
+web search: Maven Central org.javamoney.moneta moneta-core 1.3 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/
+web search: 
+web search: https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test
+codex
+Updated [org.javamoney.moneta-moneta-core-1.3.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json) with the discovered metadata.
+
+I used Maven Central for the `1.3` source and javadoc jars, and the exact GitHub `1.3` tag for the test suite because no Maven test-sources/tests artifact exists. ([repo1.maven.org](https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/)) I omitted `language` because the project is Java, not Kotlin/Groovy/Scala-specific. ([github.com](https://github.com/JavaMoney/jsr354-ri))
+
+Validation: `jq` parsed the JSON successfully. Note: this file is under `build/`, which is ignored by `.gitignore`, but it has been updated on disk as requested.
+diff --git a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+index 4b40b17f32b56feba7cc052eba72d88cd7743a3f..38d14b82b6fe0c60e1dc3f247eccb4ba9bd765d3
+--- a/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
++++ b/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.javamoney.moneta:moneta-core:1.3"
++  "coordinates" : "org.javamoney.moneta:moneta-core:1.3",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-sources.jar",
++  "repository-url" : "https://github.com/JavaMoney/jsr354-ri",
++  "test-code-url" : "https://github.com/JavaMoney/jsr354-ri/tree/1.3/moneta-core/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/moneta-core-1.3-javadoc.jar",
++  "description" : "Moneta Core is the reference implementation of the JavaMoney JSR 354 API for representing and calculating with monetary amounts and currencies. It provides core implementations for monetary amounts, currency units, loaders, formatters, rounding, and SPI support."
+ }
+
+2026-04-29T00:42:48.335160Z ERROR codex_core::session: failed to record rollout items: thread 019dd6af-24c2-72d3-b4b1-15661026012b not found
+tokens used
+66,066
+Updated [org.javamoney.moneta-moneta-core-1.3.json](/home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324/build/discovered-artifact-metadata/org.javamoney.moneta-moneta-core-1.3.json) with the discovered metadata.
+
+I used Maven Central for the `1.3` source and javadoc jars, and the exact GitHub `1.3` tag for the test suite because no Maven test-sources/tests artifact exists. ([repo1.maven.org](https://repo1.maven.org/maven2/org/javamoney/moneta/moneta-core/1.3/)) I omitted `language` because the project is Java, not Kotlin/Groovy/Scala-specific. ([github.com](https://github.com/JavaMoney/jsr354-ri))
+
+Validation: `jq` parsed the JSON successfully. Note: this file is under `build/`, which is ignored by `.gitignore`, but it has been updated on disk as requested.
+Ran agent for org.javamoney.moneta:moneta-core:1.3 (exit 0). Log: /home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324/build/agent-artifact-discovery-logs/org.javamoney.moneta-moneta-core-1.3.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge5/metadata-forge/local_repositories/forge_worktrees/2748-a1aa7324/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 23s
+9 actionable tasks: 7 executed, 2 from cache
