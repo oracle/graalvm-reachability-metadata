@@ -9,11 +9,16 @@ package org_aspectj.aspectjweaver;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.aspectj.util.LangUtil;
+import org.aspectj.util.Reflection;
 import org.aspectj.weaver.loadtime.ClassLoaderWeavingAdaptor;
 import org.aspectj.weaver.loadtime.IWeavingContext;
 import org.aspectj.weaver.loadtime.definition.Definition;
@@ -26,16 +31,52 @@ public class ClassLoaderWeavingAdaptorTest {
 
     @Test
     void initializesWithConcreteAspectAndLintResource() {
+        ClassLoaderWeavingAdaptor adaptor = initializeAdaptorWithConcreteAspect();
+
+        assertThat(adaptor.getNamespace()).contains(GENERATED_ASPECT_NAME);
+    }
+
+    @Test
+    void initializesWithLegacyUnsafeDefineClassPath() throws ReflectiveOperationException {
+        VarHandle vmVersion = vmVersionHandle();
+        VarHandle defineClassMethod = defineClassMethodHandle();
+        double originalVmVersion = (double) vmVersion.get();
+        Method originalDefineClassMethod = (Method) defineClassMethod.get();
+        try {
+            Method fallbackDefineClassMethod = Reflection.getMatchingMethod(
+                    ClassLoader.class, "getSystemClassLoader", new Object[0]);
+            assertThat(fallbackDefineClassMethod).isNotNull();
+            vmVersion.set(1.8d);
+            defineClassMethod.set(fallbackDefineClassMethod);
+
+            ClassLoaderWeavingAdaptor adaptor = initializeAdaptorWithConcreteAspect();
+
+            assertThat(adaptor.getNamespace()).contains(GENERATED_ASPECT_NAME);
+        } finally {
+            vmVersion.set(originalVmVersion);
+            defineClassMethod.set(originalDefineClassMethod);
+        }
+    }
+
+    private static ClassLoaderWeavingAdaptor initializeAdaptorWithConcreteAspect() {
         Definition definition = new Definition();
         definition.appendWeaverOptions("-Xlintfile:" + LINT_RESOURCE);
         definition.getConcreteAspects().add(concreteAspect());
 
         ClassLoader loader = new TestClassLoader(ClassLoaderWeavingAdaptorTest.class.getClassLoader());
         ClassLoaderWeavingAdaptor adaptor = new ClassLoaderWeavingAdaptor();
-
         adaptor.initialize(loader, new StaticDefinitionsWeavingContext(loader, List.of(definition)));
+        return adaptor;
+    }
 
-        assertThat(adaptor.getNamespace()).contains(GENERATED_ASPECT_NAME);
+    private static VarHandle vmVersionHandle() throws ReflectiveOperationException {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(LangUtil.class, MethodHandles.lookup());
+        return lookup.findStaticVarHandle(LangUtil.class, "vmVersion", double.class);
+    }
+
+    private static VarHandle defineClassMethodHandle() throws ReflectiveOperationException {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(ClassLoaderWeavingAdaptor.class, MethodHandles.lookup());
+        return lookup.findStaticVarHandle(ClassLoaderWeavingAdaptor.class, "defineClassMethod", Method.class);
     }
 
     private static Definition.ConcreteAspect concreteAspect() {
