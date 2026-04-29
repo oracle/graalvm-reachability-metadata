@@ -189,6 +189,20 @@ public class Opentelemetry_sdk_commonTest {
     }
 
     @Test
+    void defaultResourceProvidesRequiredSdkIdentityAttributes() {
+        Resource defaultResource = Resource.getDefault();
+
+        assertThat(defaultResource.getAttribute(AttributeKey.stringKey("service.name")))
+                .startsWith("unknown_service");
+        assertThat(defaultResource.getAttribute(AttributeKey.stringKey("telemetry.sdk.name")))
+                .isEqualTo("opentelemetry");
+        assertThat(defaultResource.getAttribute(AttributeKey.stringKey("telemetry.sdk.language")))
+                .isEqualTo("java");
+        assertThat(defaultResource.getAttribute(AttributeKey.stringKey("telemetry.sdk.version")))
+                .isNotBlank();
+    }
+
+    @Test
     void resourceBuilderStoresPrimitiveScalarAndArrayAttributes() {
         Resource resource = Resource.builder()
                 .put("service.name", "payments")
