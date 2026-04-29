@@ -250,6 +250,28 @@ public class Smallrye_common_functionTest {
     }
 
     @Test
+    void objectLongConsumersComposeWhilePreservingLongValues() throws TestException {
+        List<String> events = new ArrayList<>();
+        long firstLargeValue = 4_294_967_296L;
+        long secondLargeValue = firstLargeValue + 1L;
+        ExceptionObjLongConsumer<String, TestException> record = (label, value) -> events.add(
+                label + ":record:" + value);
+        ExceptionObjLongConsumer<String, TestException> verifyLargeValue = (label, value) -> {
+            assertThat(value).isGreaterThan(Integer.MAX_VALUE);
+            events.add(label + ":verified:" + (value - 1L));
+        };
+
+        record.andThen(verifyLargeValue).accept("first", firstLargeValue);
+        verifyLargeValue.compose(record).accept("second", secondLargeValue);
+
+        assertThat(events).containsExactly(
+                "first:record:4294967296",
+                "first:verified:4294967295",
+                "second:record:4294967297",
+                "second:verified:4294967296");
+    }
+
+    @Test
     void unaryAndBinaryOperatorsKeepOperatorTypes() throws TestException {
         ExceptionUnaryOperator<String, TestException> upper = String::toUpperCase;
         ExceptionUnaryOperator<String, TestException> bracket = value -> "[" + value + "]";
