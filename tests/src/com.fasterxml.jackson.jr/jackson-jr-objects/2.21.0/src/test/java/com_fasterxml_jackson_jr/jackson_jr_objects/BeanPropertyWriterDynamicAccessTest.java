@@ -35,15 +35,15 @@ public class BeanPropertyWriterDynamicAccessTest {
         assertThat(bean.getterCalls).isEqualTo(1);
     }
 
-    public static final class FieldBackedWriterBean {
+    static final class FieldBackedWriterBean {
         public int id = 3;
     }
 
-    public static final class GetterBackedWriterBean {
+    static final class GetterBackedWriterBean {
         private int getterCalls;
         private final String name;
 
-        public GetterBackedWriterBean(String name) {
+        GetterBackedWriterBean(String name) {
             this.name = name;
         }
 
