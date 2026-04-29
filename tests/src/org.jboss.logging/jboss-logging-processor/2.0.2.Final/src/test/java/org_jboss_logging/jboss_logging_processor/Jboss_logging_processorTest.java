@@ -8,6 +8,9 @@ package org_jboss_logging.jboss_logging_processor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import javax.lang.model.SourceVersion;
 
@@ -26,12 +29,15 @@ import org.jboss.logging.annotations.Transform;
 import org.jboss.logging.annotations.ValidIdRange;
 import org.jboss.logging.annotations.ValidIdRanges;
 import org.jboss.logging.processor.apt.LoggingToolsProcessor;
+import org.jboss.logging.processor.model.MessageInterface;
+import org.jboss.logging.processor.model.MessageMethod;
 import org.jboss.logging.processor.model.MessageObject;
 import org.jboss.logging.processor.util.Objects;
 import org.jboss.logging.processor.util.Strings;
 import org.jboss.logging.processor.util.VersionComparator;
 import org.jboss.logging.processor.validation.FormatValidator;
 import org.jboss.logging.processor.validation.FormatValidatorFactory;
+import org.jboss.logging.processor.validation.IdLengthValidator;
 import org.jboss.logging.processor.validation.StringFormatValidator;
 import org.jboss.logging.processor.validation.ValidationMessage;
 import org.jboss.logging.processor.validation.ValidationMessageFactory;
@@ -191,6 +197,123 @@ public class Jboss_logging_processorTest {
         assertThat(VersionComparator.compareVersion("3.0", "2.99")).isGreaterThan(0);
     }
 
+    @Test
+    void idLengthValidatorEnforcesPaddingRulesPerProjectCode() {
+        IdLengthValidator validator = new IdLengthValidator();
+        MessageInterface firstInterface = new TestMessageInterface("org.example.Messages", "EX", 4);
+        MessageInterface matchingInterface = new TestMessageInterface("org.example.MoreMessages", "EX", 4);
+        MessageInterface conflictingInterface = new TestMessageInterface("org.example.ConflictingMessages", "EX", 5);
+        MessageInterface tooShortInterface = new TestMessageInterface("org.example.ShortMessages", "SHORT", 2);
+
+        assertThat(validator.validate(firstInterface)).isEmpty();
+        assertThat(validator.validate(matchingInterface)).isEmpty();
+
+        Collection<ValidationMessage> conflictingMessages = validator.validate(conflictingInterface);
+        Collection<ValidationMessage> tooShortMessages = validator.validate(tooShortInterface);
+
+        assertThat(conflictingMessages)
+                .singleElement()
+                .satisfies(message -> {
+                    assertThat(message.type()).isEqualTo(ValidationMessage.Type.ERROR);
+                    assertThat(message.getMessage()).contains("A length of 4 was already used for project code 'EX'");
+                });
+        assertThat(tooShortMessages)
+                .singleElement()
+                .satisfies(message -> {
+                    assertThat(message.type()).isEqualTo(ValidationMessage.Type.ERROR);
+                    assertThat(message.getMessage()).contains("must be between 3 and 8");
+                });
+    }
+
     private record TestMessageObject(String name, Object reference) implements MessageObject {
+    }
+
+    private record TestMessageInterface(String name, String projectCode, int getIdLength) implements MessageInterface {
+        @Override
+        public Object reference() {
+            return name;
+        }
+
+        @Override
+        public boolean extendsLoggerInterface() {
+            return false;
+        }
+
+        @Override
+        public Set<MessageInterface> extendedInterfaces() {
+            return Set.of();
+        }
+
+        @Override
+        public Collection<MessageMethod> methods() {
+            return List.of();
+        }
+
+        @Override
+        public String packageName() {
+            int lastDot = name.lastIndexOf('.');
+            return lastDot < 0 ? "" : name.substring(0, lastDot);
+        }
+
+        @Override
+        public String simpleName() {
+            int lastDot = name.lastIndexOf('.');
+            return lastDot < 0 ? name : name.substring(lastDot + 1);
+        }
+
+        @Override
+        public String loggingFQCN() {
+            return name;
+        }
+
+        @Override
+        public AnnotatedType getAnnotatedType() {
+            return AnnotatedType.MESSAGE_BUNDLE;
+        }
+
+        @Override
+        public List<ValidIdRange> validIdRanges() {
+            return List.of();
+        }
+
+        @Override
+        public boolean isAnnotatedWith(Class<? extends Annotation> annotation) {
+            return false;
+        }
+
+        @Override
+        public <A extends Annotation> A getAnnotation(Class<A> annotation) {
+            return null;
+        }
+
+        @Override
+        public String type() {
+            return name;
+        }
+
+        @Override
+        public boolean isAssignableFrom(Class<?> type) {
+            return false;
+        }
+
+        @Override
+        public boolean isSubtypeOf(Class<?> type) {
+            return false;
+        }
+
+        @Override
+        public boolean isSameAs(Class<?> type) {
+            return false;
+        }
+
+        @Override
+        public String getComment() {
+            return "";
+        }
+
+        @Override
+        public int compareTo(MessageInterface other) {
+            return name.compareTo(other.name());
+        }
     }
 }
