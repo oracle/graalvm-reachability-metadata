@@ -8,22 +8,17 @@ package org_modelmapper.modelmapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Field;
 import java.util.Vector;
 
 import org.junit.jupiter.api.Test;
-import org.modelmapper.internal.bytebuddy.dynamic.ClassFileLocator.ForInstrumentation.ClassLoadingDelegate.ForDelegatingClassLoader.Dispatcher;
-import org.modelmapper.internal.bytebuddy.dynamic.ClassFileLocator.ForInstrumentation.ClassLoadingDelegate.ForDelegatingClassLoader.Dispatcher.Resolved;
+import org.modelmapper.internal.bytebuddy.dynamic.ClassFileLocatorForInstrumentationDelegatingDispatcherAccess;
 
 public class ClassFileLocatorInnerForInstrumentationInnerClassLoadingDelegateInnerForDelegatingClassLoaderInnerDispatcherInnerResolvedTest {
     @Test
     void extractsLoadedClassesFromConfiguredField() throws Exception {
         RecordingClassLoader classLoader = new RecordingClassLoader(getClass().getClassLoader());
         classLoader.classes.add(SampleType.class);
-        Field classesField = RecordingClassLoader.class.getField("classes");
-        Dispatcher dispatcher = new Resolved(classesField).initialize();
-
-        Vector<Class<?>> extractedClasses = dispatcher.extract(classLoader);
+        Vector<Class<?>> extractedClasses = ClassFileLocatorForInstrumentationDelegatingDispatcherAccess.extractClasses(classLoader);
 
         assertThat(extractedClasses).containsExactly(SampleType.class);
     }
