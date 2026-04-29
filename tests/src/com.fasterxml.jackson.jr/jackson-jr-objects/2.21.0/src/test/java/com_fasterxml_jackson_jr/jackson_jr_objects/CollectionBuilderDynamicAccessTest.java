@@ -6,6 +6,9 @@
  */
 package com_fasterxml_jackson_jr.jackson_jr_objects;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.api.CollectionBuilder;
 import org.junit.jupiter.api.Test;
@@ -18,9 +21,10 @@ public class CollectionBuilderDynamicAccessTest {
         CollectionBuilder builder = CollectionBuilder.defaultImpl();
         Class<ArrayElement> elementType = runtimeArrayElementType();
 
-        Object[] values = builder.emptyArray(elementType);
+        ArrayElement[] values = builder.emptyArray(elementType);
 
         assertThat(values).isEmpty();
+        assertThat(values).isInstanceOf(ArrayElement[].class);
         assertThat(values.getClass().getComponentType()).isSameAs(elementType);
     }
 
@@ -29,10 +33,11 @@ public class CollectionBuilderDynamicAccessTest {
         CollectionBuilder builder = CollectionBuilder.defaultImpl();
         Class<ArrayElement> elementType = runtimeArrayElementType();
 
-        Object[] values = builder.singletonArray(elementType, new ArrayElement("solo"));
+        ArrayElement[] values = builder.singletonArray(elementType, new ArrayElement("solo"));
 
         assertThat(values).singleElement().isInstanceOf(ArrayElement.class);
-        assertThat(((ArrayElement) values[0]).name).isEqualTo("solo");
+        assertThat(values[0].name).isEqualTo("solo");
+        assertThat(values).isInstanceOf(ArrayElement[].class);
         assertThat(values.getClass().getComponentType()).isSameAs(elementType);
     }
 
@@ -41,15 +46,39 @@ public class CollectionBuilderDynamicAccessTest {
         CollectionBuilder builder = CollectionBuilder.defaultImpl();
         Class<ArrayElement> elementType = runtimeArrayElementType();
 
-        Object[] values = builder.start()
+        ArrayElement[] values = builder.start()
                 .add(new ArrayElement("left"))
                 .add(new ArrayElement("right"))
                 .buildArray(elementType);
 
         assertThat(values).hasSize(2);
-        assertThat(((ArrayElement) values[0]).name).isEqualTo("left");
-        assertThat(((ArrayElement) values[1]).name).isEqualTo("right");
+        assertThat(values[0].name).isEqualTo("left");
+        assertThat(values[1].name).isEqualTo("right");
+        assertThat(values).isInstanceOf(ArrayElement[].class);
         assertThat(values.getClass().getComponentType()).isSameAs(elementType);
+    }
+
+    @Test
+    void inheritedTypedArrayHelpersSupportCustomBuilders() throws Exception {
+        CollectionBuilder builder = new RecordingCollectionBuilder();
+        Class<ArrayElement> elementType = runtimeArrayElementType();
+        ArrayElement solo = new ArrayElement("solo");
+
+        ArrayElement[] emptyValues = builder.emptyArray(elementType);
+        ArrayElement[] singletonValues = builder.singletonArray(elementType, solo);
+        ArrayElement[] multipleValues = builder.start()
+                .add(new ArrayElement("left"))
+                .add(new ArrayElement("right"))
+                .buildArray(elementType);
+
+        assertThat(emptyValues).isEmpty();
+        assertThat(emptyValues).isInstanceOf(ArrayElement[].class);
+        assertThat(singletonValues).containsExactly(solo);
+        assertThat(singletonValues).isInstanceOf(ArrayElement[].class);
+        assertThat(multipleValues).hasSize(2);
+        assertThat(multipleValues[0].name).isEqualTo("left");
+        assertThat(multipleValues[1].name).isEqualTo("right");
+        assertThat(multipleValues).isInstanceOf(ArrayElement[].class);
     }
 
     @Test
@@ -93,6 +122,47 @@ public class CollectionBuilderDynamicAccessTest {
     @SuppressWarnings("unchecked")
     private static Class<String> runtimeStringType() throws Exception {
         return (Class<String>) JSON.std.beanFrom(Class.class, '"' + String.class.getName() + '"');
+    }
+
+    private static final class RecordingCollectionBuilder extends CollectionBuilder {
+        private Collection<Object> values;
+
+        private RecordingCollectionBuilder() {
+            this(0, null);
+        }
+
+        private RecordingCollectionBuilder(int features, Class<?> collectionType) {
+            super(features, collectionType);
+        }
+
+        @Override
+        public CollectionBuilder newBuilder(int features) {
+            return new RecordingCollectionBuilder(features, _collectionType);
+        }
+
+        @Override
+        public CollectionBuilder newBuilder(Class<?> collectionType) {
+            return new RecordingCollectionBuilder(_features, collectionType);
+        }
+
+        @Override
+        public CollectionBuilder start() {
+            values = new ArrayList<>();
+            return this;
+        }
+
+        @Override
+        public CollectionBuilder add(Object value) {
+            values.add(value);
+            return this;
+        }
+
+        @Override
+        public Collection<Object> buildCollection() {
+            Collection<Object> result = values;
+            values = null;
+            return result;
+        }
     }
 
     public static final class ArrayElement {
