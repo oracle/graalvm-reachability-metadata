@@ -7,8 +7,10 @@
 package org_apache_yetus.audience_annotations;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Locale;
 
+import jdk.javadoc.doclet.Doclet;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.apache.yetus.audience.InterfaceStability;
 import org.apache.yetus.audience.tools.ExcludePrivateAnnotationsStandardDoclet;
@@ -81,14 +83,28 @@ class Audience_annotationsTest {
         ExcludePrivateAnnotationsStandardDoclet excludePrivateDoclet = new ExcludePrivateAnnotationsStandardDoclet();
         IncludePublicAnnotationsStandardDoclet includePublicDoclet = new IncludePublicAnnotationsStandardDoclet();
 
-        assertThat(excludePrivateDoclet).isNotNull();
-        assertThat(includePublicDoclet).isNotNull();
-        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-stable")).isEqualTo(1);
-        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-EvOlViNg")).isEqualTo(1);
-        assertThat(ExcludePrivateAnnotationsStandardDoclet.optionLength("-UNSTABLE")).isEqualTo(1);
-        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-stable")).isEqualTo(1);
-        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-EvOlViNg")).isEqualTo(1);
-        assertThat(IncludePublicAnnotationsStandardDoclet.optionLength("-UNSTABLE")).isEqualTo(1);
+        assertThat(excludePrivateDoclet.getName()).isEqualTo("ExcludePrivateAnnotationsStandard");
+        assertThat(includePublicDoclet.getName()).isEqualTo("IncludePublicAnnotationsStandard");
+        assertThat(optionArgumentCount("-stable")).isZero();
+        assertThat(optionArgumentCount("-EvOlViNg")).isZero();
+        assertThat(optionArgumentCount("-UNSTABLE")).isZero();
+    }
+
+    private static int optionArgumentCount(String optionName) {
+        return Arrays.stream(stabilityOptions())
+                .map(Doclet.Option.class::cast)
+                .filter(option -> option.getNames().stream().anyMatch(name -> name.equalsIgnoreCase(optionName)))
+                .findFirst()
+                .map(Doclet.Option::getArgumentCount)
+                .orElseThrow();
+    }
+
+    private static Object[] stabilityOptions() {
+        try {
+            return Class.forName("org.apache.yetus.audience.tools.StabilityOption").getEnumConstants();
+        } catch (ClassNotFoundException exception) {
+            throw new IllegalStateException("Yetus stability options are not available", exception);
+        }
     }
 
     @InterfaceAudience.LimitedPrivate("tests")
