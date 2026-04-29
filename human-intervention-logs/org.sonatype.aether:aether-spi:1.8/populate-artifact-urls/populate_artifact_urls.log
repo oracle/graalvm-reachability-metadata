@@ -1,0 +1,1212 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.125.0 (research preview)
+--------
+workdir: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019dda63-f812-7b22-bb2c-06ac7adaff07
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sonatype.aether:aether-spi:1.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must be for the EXACT version "1.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/metadata/org.sonatype.aether/aether-spi/index.json
+- Entry selector: "metadata-version" = "1.8"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL.
+- Set missing "documentation-url" to the selected project documentation URL for version "1.8".
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.8
+- Entry test-version: 1.8
+codex
+I’ll verify the existing metadata entry first, then trace the 1.8 artifact back to its canonical sources and any versioned docs/tests so the URLs are defensible before editing.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.sonatype.aether/aether-spi/index.json" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.8",
+    "tested-versions" : [
+      "1.8"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether.spi"
+    ]
+  },
+  {
+    "metadata-version" : "1.7",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+    "tested-versions" : [
+      "1.7"
+    ],
+    "allowed-packages" : [
+      "org.sonatype.aether.spi"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n \"org\\.sonatype\\.aether|aether-spi|source-code-url|documentation-url\" metadata/org.sonatype.aether -S" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+metadata/org.sonatype.aether/aether-util/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-sources.jar",
+metadata/org.sonatype.aether/aether-util/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-util/1.7/aether-util-1.7-javadoc.jar",
+metadata/org.sonatype.aether/aether-util/index.json:14:      "org.sonatype.aether.util"
+metadata/org.sonatype.aether/aether-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-sources.jar",
+metadata/org.sonatype.aether/aether-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/aether/aether-api/1.7/aether-api-1.7-javadoc.jar",
+metadata/org.sonatype.aether/aether-api/index.json:14:      "org.sonatype.aether"
+metadata/org.sonatype.aether/aether-spi/index.json:9:      "org.sonatype.aether.spi"
+metadata/org.sonatype.aether/aether-spi/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+metadata/org.sonatype.aether/aether-spi/index.json:23:      "org.sonatype.aether.spi"
+
+web search: 
+web search: org.sonatype.aether aether-spi 1.8 Maven Central sources javadoc
+codex
+The local file has a complete 1.7 entry that uses Maven Central source and javadoc jars and marks tests as unavailable. I’m checking the 1.8 artifact directory and the release repository now, because Maven Central may also have a source release zip that is a better version-pinned test URL than GitHub.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/aether/aether-spi/1.8</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/aether/aether-spi/1.8</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="aether-spi-1.8-javadoc.jar" title="aether-spi-1.8-javadoc.jar">aether-spi-1.8-javadoc.jar</a>                        2010-11-18 20:56    120623      
+<a href="aether-spi-1.8-javadoc.jar.asc" title="aether-spi-1.8-javadoc.jar.asc">aether-spi-1.8-javadoc.jar.asc</a>                    2010-11-18 20:56       194      
+<a href="aether-spi-1.8-javadoc.jar.asc.md5" title="aether-spi-1.8-javadoc.jar.asc.md5">aether-spi-1.8-javadoc.jar.asc.md5</a>                2010-11-18 20:56        32      
+<a href="aether-spi-1.8-javadoc.jar.asc.sha1" title="aether-spi-1.8-javadoc.jar.asc.sha1">aether-spi-1.8-javadoc.jar.asc.sha1</a>               2010-11-18 20:56        40      
+<a href="aether-spi-1.8-javadoc.jar.md5" title="aether-spi-1.8-javadoc.jar.md5">aether-spi-1.8-javadoc.jar.md5</a>                    2010-11-18 20:56        32      
+<a href="aether-spi-1.8-javadoc.jar.sha1" title="aether-spi-1.8-javadoc.jar.sha1">aether-spi-1.8-javadoc.jar.sha1</a>                   2010-11-18 20:56        40      
+<a href="aether-spi-1.8-sources.jar" title="aether-spi-1.8-sources.jar">aether-spi-1.8-sources.jar</a>                        2010-11-18 20:56     16011      
+<a href="aether-spi-1.8-sources.jar.asc" title="aether-spi-1.8-sources.jar.asc">aether-spi-1.8-sources.jar.asc</a>                    2010-11-18 20:56       194      
+<a href="aether-spi-1.8-sources.jar.asc.md5" title="aether-spi-1.8-sources.jar.asc.md5">aether-spi-1.8-sources.jar.asc.md5</a>                2010-11-18 20:56        32      
+<a href="aether-spi-1.8-sources.jar.asc.sha1" title="aether-spi-1.8-sources.jar.asc.sha1">aether-spi-1.8-sources.jar.asc.sha1</a>               2010-11-18 20:56        40      
+<a href="aether-spi-1.8-sources.jar.md5" title="aether-spi-1.8-sources.jar.md5">aether-spi-1.8-sources.jar.md5</a>                    2010-11-18 20:56        32      
+<a href="aether-spi-1.8-sources.jar.sha1" title="aether-spi-1.8-sources.jar.sha1">aether-spi-1.8-sources.jar.sha1</a>                   2010-11-18 20:56        40      
+<a href="aether-spi-1.8.jar" title="aether-spi-1.8.jar">aether-spi-1.8.jar</a>                                2010-11-18 20:56     14438      
+<a href="aether-spi-1.8.jar.asc" title="aether-spi-1.8.jar.asc">aether-spi-1.8.jar.asc</a>                            2010-11-18 20:56       194      
+<a href="aether-spi-1.8.jar.asc.md5" title="aether-spi-1.8.jar.asc.md5">aether-spi-1.8.jar.asc.md5</a>                        2010-11-18 20:56        32      
+<a href="aether-spi-1.8.jar.asc.sha1" title="aether-spi-1.8.jar.asc.sha1">aether-spi-1.8.jar.asc.sha1</a>                       2010-11-18 20:56        40      
+<a href="aether-spi-1.8.jar.md5" title="aether-spi-1.8.jar.md5">aether-spi-1.8.jar.md5</a>                            2010-11-18 20:56        32      
+<a href="aether-spi-1.8.jar.sha1" title="aether-spi-1.8.jar.sha1">aether-spi-1.8.jar.sha1</a>                           2010-11-18 20:56        40      
+<a href="aether-spi-1.8.pom" title="aether-spi-1.8.pom">aether-spi-1.8.pom</a>                                2010-11-18 20:56      1298      
+<a href="aether-spi-1.8.pom.asc" title="aether-spi-1.8.pom.asc">aether-spi-1.8.pom.asc</a>                            2010-11-18 20:56       194      
+<a href="aether-spi-1.8.pom.asc.md5" title="aether-spi-1.8.pom.asc.md5">aether-spi-1.8.pom.asc.md5</a>                        2010-11-18 20:56        32      
+<a href="aether-spi-1.8.pom.asc.sha1" title="aether-spi-1.8.pom.asc.sha1">aether-spi-1.8.pom.asc.sha1</a>                       2010-11-18 20:56        40      
+<a href="aether-spi-1.8.pom.md5" title="aether-spi-1.8.pom.md5">aether-spi-1.8.pom.md5</a>                            2010-11-18 20:56        32      
+<a href="aether-spi-1.8.pom.sha1" title="aether-spi-1.8.pom.sha1">aether-spi-1.8.pom.sha1</a>                           2010-11-18 20:56        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/sonatype/sonatype-aether.git | rg 'refs/tags/.*(1\\.8|v_1_8|1\\.8\\.0|aether-1\\.8)'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether/1.8/' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 290ms:
+52629b29b3920dd2d76b0b8c95a2834a94a0106a	refs/tags/aether-1.8
+af9a0611350ecf4aa835c97f5c97411811db62fe	refs/tags/aether-1.8^{}
+1b7a5bf7f3e9e181fde132e7ff319dde8ad23e3c	refs/tags/aether-1.8.1
+0688bc7895319a8547ab93ff21c2db4ae9e942ce	refs/tags/aether-1.8.1^{}
+
+ exited 22 in 308ms:
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: 
+web search: 
+web search: org.sonatype.aether aether-spi 1.8 Maven Central sources javadoc
+web search: 
+web search: https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-spi
+web search: 
+web search: repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8.pom' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2010 Sonatype, Inc.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.aether</groupId>
+    <artifactId>aether-parent</artifactId>
+    <version>1.8</version>
+  </parent>
+
+  <artifactId>aether-spi</artifactId>
+
+  <name>Aether :: SPI</name>
+  <description>
+    The service provider interface for repository system implementations and repository connectors.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-api</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/sonatype/aether/aether/1.8/' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/sonatype/sonatype-aether/aether-1.8/aether-spi/pom.xml' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src?ref=aether-1.8' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ exited 22 in 222ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 176ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2010 Sonatype, Inc.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.aether</groupId>
+    <artifactId>aether-parent</artifactId>
+    <version>1.8</version>
+  </parent>
+
+  <artifactId>aether-spi</artifactId>
+
+  <name>Aether :: SPI</name>
+  <description>
+    The service provider interface for repository system implementations and repository connectors.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-api</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+ succeeded in 163ms:
+[
+  {
+    "name": "main",
+    "path": "aether-spi/src/main",
+    "sha": "0be00300c6c4e4aba635ca0cae4534757c8a205f",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src/main?ref=aether-1.8",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-spi/src/main",
+    "git_url": "https://api.github.com/repos/sonatype/sonatype-aether/git/trees/0be00300c6c4e4aba635ca0cae4534757c8a205f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src/main?ref=aether-1.8",
+      "git": "https://api.github.com/repos/sonatype/sonatype-aether/git/trees/0be00300c6c4e4aba635ca0cae4534757c8a205f",
+      "html": "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-spi/src/main"
+    }
+  }
+]
+
+codex
+The 1.8 module on GitHub only has `src/main`, so there is no module test tree to point at. I’m checking the parent POM for canonical SCM/project metadata before patching the entry.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-parent/1.8/aether-parent-1.8.pom' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2010 Sonatype, Inc.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.forge</groupId>
+    <artifactId>forge-parent</artifactId>
+    <version>6</version>
+  </parent>
+
+  <groupId>org.sonatype.aether</groupId>
+  <artifactId>aether-parent</artifactId>
+  <version>1.8</version>
+  <packaging>pom</packaging>
+
+  <name>Aether</name>
+  <description>
+    The parent and aggregator for the repository system.
+  </description>
+  <url>http://aether.sonatype.org/</url>
+  <inceptionYear>2010</inceptionYear>
+
+  <organization>
+    <name>Sonatype, Inc.</name>
+    <url>http://www.sonatype.com/</url>
+  </organization>
+
+  <mailingLists>
+    <mailingList>
+      <name>Aether Developers List</name>
+      <subscribe>aether-dev-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-dev-unsubscribe@sonatype.org</unsubscribe>
+      <post>aether-dev@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Aether Users List</name>
+      <subscribe>aether-user-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-user-unsubscribe@sonatype.org</unsubscribe>
+      <post>aether-user@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Aether Commits List</name>
+      <subscribe>aether-scm-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-scm-unsubscribe@sonatype.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/sonatype-aether.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/sonatype-aether.git</developerConnection>
+    <url>http://github.com/sonatype/sonatype-aether</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.sonatype.org/browse/AETHER</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Hudson</system>
+    <url>https://grid.sonatype.org/ci/job/Aether/</url>
+  </ciManagement>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License, Version 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>aether-api</module>
+    <module>aether-spi</module>
+    <module>aether-util</module>
+    <module>aether-impl</module>
+    <module>aether-test-util</module>
+    <module>aether-connector-file</module>
+    <module>aether-connector-wagon</module>
+    <module>aether-connector-asynchttpclient</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-spi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-connector-file</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-connector-wagon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-connector-asynchttpclient</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-test-util</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8.1</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>1.5.5</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.5.5</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <links>
+              <link>http://java.sun.com/javase/6/docs/api/</link>
+            </links>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.6</version>
+          <configuration>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java15</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+          <executions>
+            <execution>
+              <id>check-java-1.5-compat</id>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>1.5.5</version>
+          <executions>
+            <execution>
+              <id>generate-components-xml</id>
+              <goals>
+                <goal>generate-metadata</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>demo</id>
+      <modules>
+        <module>aether-demo</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.apache.resources</groupId>
+                <artifactId>apache-source-release-assembly-descriptor</artifactId>
+                <version>1.0.2</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>attach-source-release-distro</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                  <descriptorRefs>
+                    <descriptorRef>source-release</descriptorRef>
+                  </descriptorRefs>
+                  <tarLongFileFormat>gnu</tarLongFileFormat>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi?ref=aether-1.8' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/sonatype/sonatype-aether/aether-1.8/pom.xml' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 162ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (c) 2010 Sonatype, Inc.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.forge</groupId>
+    <artifactId>forge-parent</artifactId>
+    <version>6</version>
+  </parent>
+
+  <groupId>org.sonatype.aether</groupId>
+  <artifactId>aether-parent</artifactId>
+  <version>1.8</version>
+  <packaging>pom</packaging>
+
+  <name>Aether</name>
+  <description>
+    The parent and aggregator for the repository system.
+  </description>
+  <url>http://aether.sonatype.org/</url>
+  <inceptionYear>2010</inceptionYear>
+
+  <organization>
+    <name>Sonatype, Inc.</name>
+    <url>http://www.sonatype.com/</url>
+  </organization>
+
+  <mailingLists>
+    <mailingList>
+      <name>Aether Developers List</name>
+      <subscribe>aether-dev-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-dev-unsubscribe@sonatype.org</unsubscribe>
+      <post>aether-dev@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Aether Users List</name>
+      <subscribe>aether-user-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-user-unsubscribe@sonatype.org</unsubscribe>
+      <post>aether-user@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Aether Commits List</name>
+      <subscribe>aether-scm-subscribe@sonatype.org</subscribe>
+      <unsubscribe>aether-scm-unsubscribe@sonatype.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/sonatype-aether.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/sonatype-aether.git</developerConnection>
+    <url>http://github.com/sonatype/sonatype-aether</url>
+  </scm>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.sonatype.org/browse/AETHER</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Hudson</system>
+    <url>https://grid.sonatype.org/ci/job/Aether/</url>
+  </ciManagement>
+
+  <licenses>
+    <license>
+      <name>Eclipse Public License, Version 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>aether-api</module>
+    <module>aether-spi</module>
+    <module>aether-util</module>
+    <module>aether-impl</module>
+    <module>aether-test-util</module>
+    <module>aether-connector-file</module>
+    <module>aether-connector-wagon</module>
+    <module>aether-connector-asynchttpclient</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-spi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-connector-file</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-connector-wagon</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-connector-asynchttpclient</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-test-util</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8.1</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>1.5.5</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.5.5</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <links>
+              <link>http://java.sun.com/javase/6/docs/api/</link>
+            </links>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.6</version>
+          <configuration>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java15</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+          <executions>
+            <execution>
+              <id>check-java-1.5-compat</id>
+              <phase>process-classes</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>1.5.5</version>
+          <executions>
+            <execution>
+              <id>generate-components-xml</id>
+              <goals>
+                <goal>generate-metadata</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>demo</id>
+      <modules>
+        <module>aether-demo</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.apache.resources</groupId>
+                <artifactId>apache-source-release-assembly-descriptor</artifactId>
+                <version>1.0.2</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>attach-source-release-distro</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                  <descriptorRefs>
+                    <descriptorRef>source-release</descriptorRef>
+                  </descriptorRefs>
+                  <tarLongFileFormat>gnu</tarLongFileFormat>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+ succeeded in 166ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "aether-spi/pom.xml",
+    "sha": "1389fa01f323de991e4a6d94c17dbc72b5eae44a",
+    "size": 1256,
+    "url": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/pom.xml?ref=aether-1.8",
+    "html_url": "https://github.com/sonatype/sonatype-aether/blob/aether-1.8/aether-spi/pom.xml",
+    "git_url": "https://api.github.com/repos/sonatype/sonatype-aether/git/blobs/1389fa01f323de991e4a6d94c17dbc72b5eae44a",
+    "download_url": "https://raw.githubusercontent.com/sonatype/sonatype-aether/aether-1.8/aether-spi/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/pom.xml?ref=aether-1.8",
+      "git": "https://api.github.com/repos/sonatype/sonatype-aether/git/blobs/1389fa01f323de991e4a6d94c17dbc72b5eae44a",
+      "html": "https://github.com/sonatype/sonatype-aether/blob/aether-1.8/aether-spi/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "aether-spi/src",
+    "sha": "8a6ad43416a98d3eafb93ed9a1ab714aa91ea318",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src?ref=aether-1.8",
+    "html_url": "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-spi/src",
+    "git_url": "https://api.github.com/repos/sonatype/sonatype-aether/git/trees/8a6ad43416a98d3eafb93ed9a1ab714aa91ea318",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sonatype-aether/contents/aether-spi/src?ref=aether-1.8",
+      "git": "https://api.github.com/repos/sonatype/sonatype-aether/git/trees/8a6ad43416a98d3eafb93ed9a1ab714aa91ea318",
+      "html": "https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-spi/src"
+    }
+  }
+]
+
+web search: 
+web search: https://github.com/sonatype/sonatype-aether/tree/aether-1.8/aether-spi
+web search: 
+web search: repo.maven.apache.org org sonatype aether aether-spi 1.8 javadoc sources jar
+codex
+I found Maven Central has versioned sources and javadoc jars for 1.8, and the Sonatype Aether tag is `aether-1.8`. I’m going to fill the missing fields for the 1.8 entry only, leaving `language` absent because this is not a Kotlin/Groovy/Scala-specific library.
+apply patch
+patch: completed
+/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/metadata/org.sonatype.aether/aether-spi/index.json
+diff --git a/metadata/org.sonatype.aether/aether-spi/index.json b/metadata/org.sonatype.aether/aether-spi/index.json
+index d73cd4de381c99059bd9c3aa2160480275defcce..2f6829696381bcbacc16d1136796fe2107ad8e45
+--- a/metadata/org.sonatype.aether/aether-spi/index.json
++++ b/metadata/org.sonatype.aether/aether-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
++    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+diff --git a/metadata/org.sonatype.aether/aether-spi/index.json b/metadata/org.sonatype.aether/aether-spi/index.json
+index d73cd4de381c99059bd9c3aa2160480275defcce..2f6829696381bcbacc16d1136796fe2107ad8e45
+--- a/metadata/org.sonatype.aether/aether-spi/index.json
++++ b/metadata/org.sonatype.aether/aether-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
++    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+codex
+The metadata edit is in place. I’ll do a quick JSON parse and inspect the diff to make sure only the requested entry changed.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.sonatype.aether/aether-spi/index.json >/dev/null' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.sonatype.aether/aether-spi/index.json' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+diff --git i/metadata/org.sonatype.aether/aether-spi/index.json w/metadata/org.sonatype.aether/aether-spi/index.json
+index d73cd4de38..2f68296963 100644
+--- i/metadata/org.sonatype.aether/aether-spi/index.json
++++ w/metadata/org.sonatype.aether/aether-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
++    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+diff --git a/metadata/org.sonatype.aether/aether-spi/index.json b/metadata/org.sonatype.aether/aether-spi/index.json
+index d73cd4de381c99059bd9c3aa2160480275defcce..2f6829696381bcbacc16d1136796fe2107ad8e45
+--- a/metadata/org.sonatype.aether/aether-spi/index.json
++++ b/metadata/org.sonatype.aether/aether-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
++    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+codex
+The JSON parses cleanly and the diff is limited to the missing 1.8 fields. I’m running the repository metadata validator for this coordinate as the final check.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.sonatype.aether:aether-spi:1.8' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+diff --git a/metadata/org.sonatype.aether/aether-spi/index.json b/metadata/org.sonatype.aether/aether-spi/index.json
+index d73cd4de381c99059bd9c3aa2160480275defcce..2f6829696381bcbacc16d1136796fe2107ad8e45
+--- a/metadata/org.sonatype.aether/aether-spi/index.json
++++ b/metadata/org.sonatype.aether/aether-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
++    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+ exited 1 in 543ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.sonatype.aether:aether-spi:1.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/metadata/org.sonatype.aether/aether-spi/1.8/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.sonatype.aether:aether-spi:1.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/metadata/org.sonatype.aether/aether-spi/1.8/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 528ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: 
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/ aether-spi-1.8-sources.jar aether-spi-1.8-javadoc.jar
+web search: 
+web search: Maven Repository org.sonatype.aether aether-spi 1.8
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.sonatype.aether/aether-spi/index.json | sed -n '1,32p'" in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.8",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
+     6	    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+     7	    "test-code-url" : "N/A",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
+     9	    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+    10	    "tested-versions" : [
+    11	      "1.8"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.sonatype.aether.spi"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.7",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-sources.jar",
+    20	    "repository-url" : "https://github.com/sonatype/sonatype-aether",
+    21	    "test-code-url" : "N/A",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.7/aether-spi-1.7-javadoc.jar",
+    23	    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+    24	    "tested-versions" : [
+    25	      "1.7"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "org.sonatype.aether.spi"
+    29	    ]
+    30	  }
+    31	]
+
+diff --git a/metadata/org.sonatype.aether/aether-spi/index.json b/metadata/org.sonatype.aether/aether-spi/index.json
+index d73cd4de381c99059bd9c3aa2160480275defcce..2f6829696381bcbacc16d1136796fe2107ad8e45
+--- a/metadata/org.sonatype.aether/aether-spi/index.json
++++ b/metadata/org.sonatype.aether/aether-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
++    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+web search: 
+web search: Maven Central org.sonatype.aether aether-spi 1.8 sources jar javadoc jar repository GitHub sonatype-aether
+web search: 
+web search: github sonatype sonatype-aether aether-1.8 aether-spi src main no test
+exec
+/usr/bin/bash -lc 'find metadata/org.sonatype.aether/aether-spi -maxdepth 2 -type f -print | sort' in /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de
+ succeeded in 0ms:
+metadata/org.sonatype.aether/aether-spi/1.7/reachability-metadata.json
+metadata/org.sonatype.aether/aether-spi/index.json
+
+diff --git a/metadata/org.sonatype.aether/aether-spi/index.json b/metadata/org.sonatype.aether/aether-spi/index.json
+index d73cd4de381c99059bd9c3aa2160480275defcce..2f6829696381bcbacc16d1136796fe2107ad8e45
+--- a/metadata/org.sonatype.aether/aether-spi/index.json
++++ b/metadata/org.sonatype.aether/aether-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
++    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+web search: 
+web search: repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/
+web search: 
+web search: github sonatype sonatype-aether aether-1.8 aether-spi src
+codex
+Updated [index.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/metadata/org.sonatype.aether/aether-spi/index.json:5) for `metadata-version` `1.8`.
+
+I filled the Maven-hosted `1.8` sources and javadoc URLs, the canonical Sonatype Aether repository root, `test-code-url: "N/A"`, and the two-sentence description. Maven-hosted `aether-spi-1.8-sources.jar` and `aether-spi-1.8-javadoc.jar` are published for this version, and the project homepage points to `sonatype/sonatype-aether`. ([jarcasting.com](https://jarcasting.com/artifacts/org.sonatype.aether/aether-spi/1.8/?utm_source=openai))
+
+Validation:
+- `jq` JSON parse passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.aether:aether-spi:1.8` failed because `metadata/org.sonatype.aether/aether-spi/1.8/reachability-metadata.json` is missing.
+diff --git a/metadata/org.sonatype.aether/aether-spi/index.json b/metadata/org.sonatype.aether/aether-spi/index.json
+index d73cd4de381c99059bd9c3aa2160480275defcce..2f6829696381bcbacc16d1136796fe2107ad8e45
+--- a/metadata/org.sonatype.aether/aether-spi/index.json
++++ b/metadata/org.sonatype.aether/aether-spi/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sonatype-aether",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/aether/aether-spi/1.8/aether-spi-1.8-javadoc.jar",
++    "description" : "Aether SPI defines service provider interfaces for repository system implementations and repository connectors. It lets implementations plug repository services and connector behavior into the Aether repository system behind its public API.",
+     "tested-versions" : [
+       "1.8"
+     ],
+
+2026-04-29T17:59:59.102466Z ERROR codex_core::session: failed to record rollout items: thread 019dda63-f812-7b22-bb2c-06ac7adaff07 not found
+tokens used
+123,667
+Updated [index.json](/home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/metadata/org.sonatype.aether/aether-spi/index.json:5) for `metadata-version` `1.8`.
+
+I filled the Maven-hosted `1.8` sources and javadoc URLs, the canonical Sonatype Aether repository root, `test-code-url: "N/A"`, and the two-sentence description. Maven-hosted `aether-spi-1.8-sources.jar` and `aether-spi-1.8-javadoc.jar` are published for this version, and the project homepage points to `sonatype/sonatype-aether`. ([jarcasting.com](https://jarcasting.com/artifacts/org.sonatype.aether/aether-spi/1.8/?utm_source=openai))
+
+Validation:
+- `jq` JSON parse passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.aether:aether-spi:1.8` failed because `metadata/org.sonatype.aether/aether-spi/1.8/reachability-metadata.json` is missing.
+Ran agent for org.sonatype.aether:aether-spi:1.8 (exit 0). Log: /home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/build/agent-url-discovery-logs/org.sonatype.aether-aether-spi-1.8.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/graalvm-reachability-metadata/master/forge/local_repositories/forge_worktrees/3363-4969b7de/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 1s
+9 actionable tasks: 1 executed, 8 up-to-date
