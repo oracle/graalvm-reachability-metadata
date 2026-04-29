@@ -59,14 +59,21 @@ public class PackageDefinitionStrategyInnerManifestReadingTest {
     }
 
     @Test
-    void returnsTrivialDefinitionWhenManifestResourceIsMissing() {
+    void returnsEmptyPackageDefinitionWhenManifestResourceIsMissing() {
         ManifestResourceClassLoader classLoader = new ManifestResourceClassLoader(null);
 
         PackageDefinitionStrategy.Definition definition = new PackageDefinitionStrategy.ManifestReading()
             .define(classLoader, PACKAGE_NAME, TYPE_NAME);
 
         assertThat(classLoader.getRequestedResource()).isEqualTo(JarFile.MANIFEST_NAME);
-        assertThat(definition.isDefined()).isFalse();
+        assertThat(definition.isDefined()).isTrue();
+        assertThat(definition.getSpecificationTitle()).isNull();
+        assertThat(definition.getSpecificationVersion()).isNull();
+        assertThat(definition.getSpecificationVendor()).isNull();
+        assertThat(definition.getImplementationTitle()).isNull();
+        assertThat(definition.getImplementationVersion()).isNull();
+        assertThat(definition.getImplementationVendor()).isNull();
+        assertThat(definition.getSealBase()).isNull();
     }
 
     private static final class ManifestResourceClassLoader extends ClassLoader {
