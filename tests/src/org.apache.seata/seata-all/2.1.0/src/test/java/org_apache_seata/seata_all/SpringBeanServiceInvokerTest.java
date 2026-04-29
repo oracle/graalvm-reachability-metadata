@@ -33,6 +33,26 @@ public class SpringBeanServiceInvokerTest {
     }
 
     @Test
+    void resolvesConfiguredParameterTypeWithContextClassLoaderFallback() throws Throwable {
+        InvocationService service = new InvocationService();
+        SpringBeanServiceInvoker invoker = invokerWithService(service);
+        ServiceTaskStateImpl state = serviceTaskState("invocationService", "echo");
+        String contextOnlyParameterType = "org.example.seata.ContextOnlyParameter";
+        state.setParameterTypes(List.of(contextOnlyParameterType));
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(aliasingClassLoader(contextOnlyParameterType, String.class));
+
+        try {
+            Object result = invoker.invoke(state, "spring");
+
+            assertThat(result).isEqualTo("echo:spring");
+            assertThat(service.getEchoCount()).isEqualTo(1);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
     void reportsUnknownConfiguredParameterTypeAfterTryingContextClassLoader() {
         SpringBeanServiceInvoker invoker = invokerWithService(new InvocationService());
         ServiceTaskStateImpl state = serviceTaskState("invocationService", "echo");
@@ -59,21 +79,21 @@ public class SpringBeanServiceInvokerTest {
     }
 
     @Test
-    void checksContextClassLoaderWhenConfiguredRetryExceptionClassIsUnknown() {
+    void resolvesConfiguredRetryExceptionWithContextClassLoaderFallback() throws Throwable {
         InvocationService service = new InvocationService();
         SpringBeanServiceInvoker invoker = invokerWithService(service);
-        ServiceTaskStateImpl state = serviceTaskState("invocationService", "alwaysFailForUnknownRetryException");
-        state.setRetry(List.of(retryFor("org.example.seata.UnknownRetryException")));
+        ServiceTaskStateImpl state = serviceTaskState("invocationService", "failOnceForSystemException");
+        String contextOnlyExceptionType = "org.example.seata.ContextOnlyRetryException";
+        state.setRetry(List.of(retryFor(contextOnlyExceptionType)));
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(SpringBeanServiceInvokerTest.class.getClassLoader());
+        Thread.currentThread()
+                .setContextClassLoader(aliasingClassLoader(contextOnlyExceptionType, IllegalStateException.class));
 
         try {
-            IllegalArgumentException exception = assertThrows(
-                    IllegalArgumentException.class,
-                    () -> invoker.invoke(state));
+            Object result = invoker.invoke(state);
 
-            assertThat(exception.getMessage()).isEqualTo("unknown retry exception");
-            assertThat(service.getUnknownRetryExceptionAttempts()).isEqualTo(1);
+            assertThat(result).isEqualTo("retried-system");
+            assertThat(service.getSystemExceptionAttempts()).isEqualTo(2);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
@@ -105,10 +125,21 @@ public class SpringBeanServiceInvokerTest {
         return retry;
     }
 
+    private static ClassLoader aliasingClassLoader(String aliasedName, Class<?> targetClass) {
+        return new ClassLoader(SpringBeanServiceInvokerTest.class.getClassLoader()) {
+            @Override
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                if (aliasedName.equals(name)) {
+                    return targetClass;
+                }
+                return super.loadClass(name);
+            }
+        };
+    }
+
     public static class InvocationService {
         private int echoCount;
         private int systemExceptionAttempts;
-        private int unknownRetryExceptionAttempts;
 
         public String echo(String value) {
             echoCount++;
@@ -123,21 +154,12 @@ public class SpringBeanServiceInvokerTest {
             return "retried-system";
         }
 
-        public String alwaysFailForUnknownRetryException() {
-            unknownRetryExceptionAttempts++;
-            throw new IllegalArgumentException("unknown retry exception");
-        }
-
         public int getEchoCount() {
             return echoCount;
         }
 
         public int getSystemExceptionAttempts() {
             return systemExceptionAttempts;
-        }
-
-        public int getUnknownRetryExceptionAttempts() {
-            return unknownRetryExceptionAttempts;
         }
     }
 }
