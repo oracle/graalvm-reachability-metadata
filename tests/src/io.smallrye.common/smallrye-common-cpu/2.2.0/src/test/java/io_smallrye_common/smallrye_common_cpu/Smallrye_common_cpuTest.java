@@ -127,6 +127,27 @@ public class Smallrye_common_cpuTest {
     }
 
     @Test
+    void cacheLevelLookupReturnsStableSnapshotEntries() {
+        int levelEntryCount = CacheInfo.getLevelEntryCount();
+        CacheLevelInfo[] firstSnapshot = new CacheLevelInfo[levelEntryCount];
+
+        for (int index = 0; index < levelEntryCount; index++) {
+            firstSnapshot[index] = CacheInfo.getCacheLevelInfo(index);
+        }
+
+        assertThat(CacheInfo.getLevelEntryCount()).isEqualTo(levelEntryCount);
+        for (int index = 0; index < levelEntryCount; index++) {
+            CacheLevelInfo cacheLevelInfo = CacheInfo.getCacheLevelInfo(index);
+
+            assertThat(cacheLevelInfo).isSameAs(firstSnapshot[index]);
+            assertThat(cacheLevelInfo.getCacheLevel()).isEqualTo(firstSnapshot[index].getCacheLevel());
+            assertThat(cacheLevelInfo.getCacheType()).isSameAs(firstSnapshot[index].getCacheType());
+            assertThat(cacheLevelInfo.getCacheLevelSizeKB()).isEqualTo(firstSnapshot[index].getCacheLevelSizeKB());
+            assertThat(cacheLevelInfo.getCacheLineSize()).isEqualTo(firstSnapshot[index].getCacheLineSize());
+        }
+    }
+
+    @Test
     void mainPrintsDetectedCacheInformationWithoutChangingCacheState() {
         int levelEntryCountBeforeMain = CacheInfo.getLevelEntryCount();
         PrintStream originalOut = System.out;
