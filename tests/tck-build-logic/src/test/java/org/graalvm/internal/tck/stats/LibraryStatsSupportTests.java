@@ -332,6 +332,22 @@ class LibraryStatsSupportTests {
                 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
                 <report name="demo">
                   <package name="com/example">
+                    <class name="com/example/Foo" sourcefilename="Foo.java">
+                      <method name="load" desc="()V" line="10">
+                        <counter type="METHOD" missed="0" covered="1"/>
+                      </method>
+                      <method name="noLine" desc="()V">
+                        <counter type="METHOD" missed="0" covered="1"/>
+                      </method>
+                    </class>
+                    <class name="com/example/Bar" sourcefilename="Bar.java">
+                      <method name="load" desc="()V" line="20">
+                        <counter type="METHOD" missed="1" covered="0"/>
+                      </method>
+                      <method name="lookup" desc="()V" line="21">
+                        <counter type="METHOD" missed="0" covered="1"/>
+                      </method>
+                    </class>
                     <sourcefile name="Foo.java">
                       <line nr="10" mi="0" ci="3" mb="0" cb="0"/>
                     </sourcefile>
@@ -358,7 +374,7 @@ class LibraryStatsSupportTests {
         assertThat(report.coordinate()).isEqualTo("com.example:demo:1.0.0");
         assertThat(report.hasDynamicAccess()).isTrue();
         assertThat(report.totals().totalCalls()).isEqualTo(4);
-        assertThat(report.totals().coveredCalls()).isEqualTo(2);
+        assertThat(report.totals().coveredCalls()).isEqualTo(3);
         assertThat(report.classes()).extracting(LibraryStatsModels.DynamicAccessClassCoverage::className)
                 .containsExactly("com.example.Bar", "com.example.Foo");
         assertThat(report.classes().get(0).sourceFile()).isEqualTo("Bar.java");
@@ -374,7 +390,7 @@ class LibraryStatsSupportTests {
                 .extracting(LibraryStatsModels.DynamicAccessCallSiteCoverage::covered)
                 .containsExactly(false, true);
         assertThat(report.classes().get(1).totalCalls()).isEqualTo(2);
-        assertThat(report.classes().get(1).coveredCalls()).isEqualTo(1);
+        assertThat(report.classes().get(1).coveredCalls()).isEqualTo(2);
     }
 
     @Test

@@ -7,6 +7,7 @@
 package com_esotericsoftware.kryo_shaded;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.esotericsoftware.reflectasm.shaded.org.objectweb.asm.ClassReader;
 import java.io.IOException;
@@ -23,5 +24,12 @@ public class ClassReaderTest {
         assertThat(reader.getClassName()).isEqualTo(CLASS_READER_INTERNAL_NAME);
         assertThat(reader.getSuperName()).isEqualTo("java/lang/Object");
         assertThat(reader.getInterfaces()).isEmpty();
+    }
+
+    @Test
+    void reportsMissingClassWhenSystemClassLoaderCannotFindResource() {
+        assertThatThrownBy(() -> new ClassReader("com_esotericsoftware.kryo_shaded.MissingClassReaderSubject"))
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Class not found");
     }
 }
