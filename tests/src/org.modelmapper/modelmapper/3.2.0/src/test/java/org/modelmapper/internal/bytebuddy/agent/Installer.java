@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.jar.JarFile;
 
 public final class Installer {
-    private static RecordingInstrumentation instrumentation = new RecordingInstrumentation();
+    private static RecordingInstrumentation instrumentation = new RecordingInstrumentation(false);
 
     private Installer() {
     }
@@ -28,12 +28,21 @@ public final class Installer {
     }
 
     public static RecordingInstrumentation resetInstrumentation() {
-        instrumentation = new RecordingInstrumentation();
+        return resetInstrumentation(false);
+    }
+
+    public static RecordingInstrumentation resetInstrumentation(boolean retransformClassesSupported) {
+        instrumentation = new RecordingInstrumentation(retransformClassesSupported);
         return instrumentation;
     }
 
     public static final class RecordingInstrumentation implements Instrumentation {
         private final List<ClassFileTransformer> addedTransformers = new ArrayList<>();
+        private final boolean retransformClassesSupported;
+
+        private RecordingInstrumentation(boolean retransformClassesSupported) {
+            this.retransformClassesSupported = retransformClassesSupported;
+        }
 
         public List<ClassFileTransformer> getAddedTransformers() {
             return Collections.unmodifiableList(addedTransformers);
@@ -56,7 +65,7 @@ public final class Installer {
 
         @Override
         public boolean isRetransformClassesSupported() {
-            return false;
+            return retransformClassesSupported;
         }
 
         @Override
