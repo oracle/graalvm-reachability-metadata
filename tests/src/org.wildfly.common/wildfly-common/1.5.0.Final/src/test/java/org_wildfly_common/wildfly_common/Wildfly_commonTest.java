@@ -68,7 +68,7 @@ public class Wildfly_commonTest {
                 .appendObject(null);
 
         String text = new String(builder.toArray(), StandardCharsets.UTF_8);
-        assertThat(text).isEqualTo("true:Snowman ☃|caf�|-42null");
+        assertThat(text).isEqualTo("true:Snowman \u2603|caf\ufffd|-42null");
         assertThat(builder.contentEquals(builder.toArray())).isTrue();
         assertThat(builder.contentEquals("xx".getBytes(StandardCharsets.UTF_8))).isFalse();
         assertThat(builder.byteAt(0)).isEqualTo((byte) 't');
@@ -93,7 +93,7 @@ public class Wildfly_commonTest {
 
         builder.setLength(builder.length() + 2);
         assertThat(builder.toArray()).endsWith((byte) 0, (byte) 0);
-        assertThatThrownBy(() -> new ByteStringBuilder().appendAscii(CodePointIterator.ofString("é")))
+        assertThatThrownBy(() -> new ByteStringBuilder().appendAscii(CodePointIterator.ofString("\u00e9")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -116,7 +116,7 @@ public class Wildfly_commonTest {
         assertThat(CodePointIterator.ofString("57696c64466c7920436f6d6d6f6e").hexDecode().drain()).isEqualTo(payload);
         assertThat(CodePointIterator.ofUtf8Bytes(payload).drainToString()).isEqualTo("WildFly Common");
         assertThat(CodePointIterator.ofLatin1Bytes(new byte[] {(byte) 0x41, (byte) 0xe9}).drainToString())
-                .isEqualTo("Aé");
+                .isEqualTo("A\u00e9");
 
         ByteIterator positioned = ByteIterator.ofBytes(new byte[] {1, 2, 3, 4, 5}, 1, 3);
         assertThat(positioned.peekNext()).isEqualTo(2);
