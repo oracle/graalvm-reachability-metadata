@@ -8,7 +8,7 @@ package org_hibernate.hibernate_jpamodelgen;
 
 import org.junit.jupiter.api.Test;
 
-class Hibernate_jpamodelgenTest {
+public class Hibernate_jpamodelgenTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
