@@ -75,6 +75,27 @@ public class Geronimo_osgi_locatorTest {
     }
 
     @Test
+    void singleServiceLookupSkipsEmptyDefinitionsBeforeUsingNextProvider() throws Exception {
+        Path emptyRoot = Files.createDirectory(tempDir.resolve("empty-definition-root"));
+        Path providerRoot = Files.createDirectory(tempDir.resolve("provider-definition-root"));
+        writeServiceDefinition(emptyRoot, GreetingService.class,
+                "# no provider in this resource\n"
+                        + "\n");
+        writeServiceDefinition(providerRoot, GreetingService.class, BetaProvider.class.getName() + "\n");
+
+        try (URLClassLoader loader = newServiceLoader(emptyRoot, providerRoot)) {
+            Class<?> serviceClass = ProviderLocator.getServiceClass(GreetingService.class.getName(),
+                    Geronimo_osgi_locatorTest.class, loader);
+            Object service = ProviderLocator.getService(GreetingService.class.getName(),
+                    Geronimo_osgi_locatorTest.class, loader);
+
+            assertThat(serviceClass).isEqualTo(BetaProvider.class);
+            assertThat(service).isInstanceOf(BetaProvider.class);
+            assertThat(((GreetingService) service).name()).isEqualTo("beta");
+        }
+    }
+
+    @Test
     void serviceLookupsReturnAllDistinctProvidersInDefinitionOrder() throws Exception {
         Path firstRoot = Files.createDirectory(tempDir.resolve("first-root"));
         Path secondRoot = Files.createDirectory(tempDir.resolve("second-root"));
@@ -136,7 +157,11 @@ public class Geronimo_osgi_locatorTest {
             assertThat(ProviderLocator.lookupByJREPropertyFile("conf/providers.properties", "unknown")).isNull();
             assertThat(ProviderLocator.lookupByJREPropertyFile("conf/missing.properties", "provider")).isNull();
         } finally {
-            System.setProperty("java.home", originalJavaHome);
+            if (originalJavaHome == null) {
+                System.clearProperty("java.home");
+            } else {
+                System.setProperty("java.home", originalJavaHome);
+            }
         }
     }
 
