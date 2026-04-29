@@ -10,6 +10,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String protocVersion = "3.23.4"
 
 dependencies {
     // Put well-known type .proto files on protoc include path only (do not generate code for them)
@@ -28,7 +29,8 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:$libraryVersion"
+        // Protobuf did not publish platform-specific protoc binaries for 3.23.3.
+        artifact = "com.google.protobuf:protoc:$protocVersion"
     }
 }
 
