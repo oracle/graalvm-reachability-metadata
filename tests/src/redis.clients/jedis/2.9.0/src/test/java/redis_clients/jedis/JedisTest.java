@@ -42,10 +42,13 @@ import redis.clients.jedis.exceptions.JedisNoScriptException;
 import redis.clients.jedis.params.geo.GeoRadiusParam;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 import redis.clients.jedis.params.sortedset.ZIncrByParams;
+import redis.clients.util.Hashing;
 import redis.clients.util.JedisClusterCRC16;
 import redis.clients.util.JedisClusterHashTagUtil;
 import redis.clients.util.RedisInputStream;
 import redis.clients.util.RedisOutputStream;
+import redis.clients.util.ShardInfo;
+import redis.clients.util.Sharded;
 import redis.clients.util.Slowlog;
 
 public class JedisTest {
@@ -257,6 +260,20 @@ public class JedisTest {
     }
 
     @Test
+    void routesKeysAcrossClientSideShardsUsingConsistentHashRing() {
+        TestShardInfo primary = new TestShardInfo("primary", "primary-resource");
+        TestShardInfo secondary = new TestShardInfo("secondary", "secondary-resource");
+        Sharded<String, TestShardInfo> sharded = new Sharded<>(
+                Arrays.asList(primary, secondary), new PredictableHashing());
+
+        assertThat(sharded.getAllShards()).containsExactly("primary-resource", "secondary-resource");
+        assertThat(sharded.getShard("before-primary")).isEqualTo("primary-resource");
+        assertThat(sharded.getShard("between-shards")).isEqualTo("secondary-resource");
+        assertThat(sharded.getShard("after-secondary")).isEqualTo("primary-resource");
+        assertThat(sharded.getShardInfo("between-shards")).isSameAs(secondary);
+    }
+
+    @Test
     void handlesHostAndPortParsingAndClusterHashSlots() {
         HostAndPort parsed = HostAndPort.parseString("redis.example.test:7001");
         assertThat(parsed.getHost()).isEqualTo("redis.example.test");
@@ -273,6 +290,55 @@ public class JedisTest {
         assertThat(JedisClusterHashTagUtil.isClusterCompliantMatchPattern("cart:user-*"))
                 .isFalse();
         assertThat(JedisClusterCRC16.getCRC16("123456789")).isEqualTo(12739);
+    }
+
+    private static final class TestShardInfo extends ShardInfo<String> {
+        private final String name;
+        private final String resource;
+
+        private TestShardInfo(String name, String resource) {
+            super(Sharded.DEFAULT_WEIGHT);
+            this.name = name;
+            this.resource = resource;
+        }
+
+        @Override
+        protected String createResource() {
+            return resource;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
+    private static final class PredictableHashing implements Hashing {
+        @Override
+        public long hash(String key) {
+            if (key.startsWith("primary*")) {
+                return 100L;
+            }
+            if (key.startsWith("secondary*")) {
+                return 200L;
+            }
+            throw new IllegalArgumentException(key);
+        }
+
+        @Override
+        public long hash(byte[] key) {
+            String keyText = asString(key);
+            switch (keyText) {
+                case "before-primary":
+                    return 50L;
+                case "between-shards":
+                    return 150L;
+                case "after-secondary":
+                    return 250L;
+                default:
+                    throw new IllegalArgumentException(keyText);
+            }
+        }
     }
 
     private static RedisInputStream input(String data) {
