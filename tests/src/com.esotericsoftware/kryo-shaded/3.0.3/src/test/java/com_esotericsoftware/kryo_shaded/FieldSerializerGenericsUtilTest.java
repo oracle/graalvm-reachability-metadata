@@ -12,6 +12,12 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -53,6 +59,26 @@ public class FieldSerializerGenericsUtilTest {
         assertThat((Integer[]) copy.values.get(0)).containsExactly(1, 2, 3);
     }
 
+    @Test
+    void resolvesSyntheticGenericArrayTypeArgumentsWithConcreteComponents() throws ReflectiveOperationException {
+        Kryo kryo = newKryo();
+        FieldSerializer<GenericArrayContainer> serializer =
+                new FieldSerializer<>(kryo, GenericArrayContainer.class, new Class[] {String.class});
+        Type genericType = new SingleArgumentParameterizedType(
+                List.class,
+                new ClassComponentGenericArrayType(String.class));
+
+        Class[] directGenerics = invokeGetGenerics(genericType, kryo);
+        Class[] computedGenerics = invokeComputeFieldGenerics(
+                serializer,
+                genericType,
+                GenericArrayContainer.class.getField("values"),
+                new Class[] {List.class});
+
+        assertThat(directGenerics).containsExactly(String[].class);
+        assertThat(computedGenerics).containsExactly(String[].class);
+    }
+
     private static Kryo newKryo() {
         Kryo kryo = new Kryo();
         kryo.setReferences(false);
@@ -70,10 +96,68 @@ public class FieldSerializerGenericsUtilTest {
         return read;
     }
 
+    private static Class[] invokeGetGenerics(Type genericType, Kryo kryo) throws ReflectiveOperationException {
+        Class<?> utilClass = Class.forName("com.esotericsoftware.kryo.serializers.FieldSerializerGenericsUtil");
+        Method getGenerics = utilClass.getDeclaredMethod("getGenerics", Type.class, Kryo.class);
+        getGenerics.setAccessible(true);
+        return (Class[]) getGenerics.invoke(null, genericType, kryo);
+    }
+
+    private static Class[] invokeComputeFieldGenerics(
+            FieldSerializer<?> serializer, Type genericType, Field field, Class[] fieldClass)
+            throws ReflectiveOperationException {
+        Class<?> utilClass = Class.forName("com.esotericsoftware.kryo.serializers.FieldSerializerGenericsUtil");
+        Constructor<?> constructor = utilClass.getDeclaredConstructor(FieldSerializer.class);
+        constructor.setAccessible(true);
+        Object genericsUtil = constructor.newInstance(serializer);
+        Method computeFieldGenerics = utilClass.getDeclaredMethod(
+                "computeFieldGenerics", Type.class, Field.class, Class[].class);
+        computeFieldGenerics.setAccessible(true);
+        return (Class[]) computeFieldGenerics.invoke(genericsUtil, genericType, field, fieldClass);
+    }
+
     public static class GenericArrayContainer<T> {
         public List<T[]> values;
 
         public GenericArrayContainer() {
+        }
+    }
+
+    private static final class SingleArgumentParameterizedType implements ParameterizedType {
+        private final Type rawType;
+        private final Type actualTypeArgument;
+
+        private SingleArgumentParameterizedType(Type rawType, Type actualTypeArgument) {
+            this.rawType = rawType;
+            this.actualTypeArgument = actualTypeArgument;
+        }
+
+        @Override
+        public Type[] getActualTypeArguments() {
+            return new Type[] {actualTypeArgument};
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawType;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            return null;
+        }
+    }
+
+    private static final class ClassComponentGenericArrayType implements GenericArrayType {
+        private final Type componentType;
+
+        private ClassComponentGenericArrayType(Type componentType) {
+            this.componentType = componentType;
+        }
+
+        @Override
+        public Type getGenericComponentType() {
+            return componentType;
         }
     }
 }
