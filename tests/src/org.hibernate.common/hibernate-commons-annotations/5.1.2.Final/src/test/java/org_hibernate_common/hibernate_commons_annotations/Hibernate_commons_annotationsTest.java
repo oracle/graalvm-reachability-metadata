@@ -8,7 +8,7 @@ package org_hibernate_common.hibernate_commons_annotations;
 
 import org.junit.jupiter.api.Test;
 
-class Hibernate_commons_annotationsTest {
+public class Hibernate_commons_annotationsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
