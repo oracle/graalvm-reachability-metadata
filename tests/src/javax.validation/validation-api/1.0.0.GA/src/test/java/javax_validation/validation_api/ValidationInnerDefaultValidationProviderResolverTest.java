@@ -47,8 +47,7 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
             TestValidationConfiguration configuration = configureWith(providerClassLoader);
 
             assertDiscoveredProvider(configuration);
-        }
-        finally {
+        } finally {
             Files.deleteIfExists(providerDefinition);
         }
     }
@@ -65,8 +64,7 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
             TestValidationConfiguration configuration = configureWith(providerClassLoader);
 
             assertDiscoveredProvider(configuration);
-        }
-        finally {
+        } finally {
             Files.deleteIfExists(providerDefinition);
         }
     }
@@ -85,8 +83,7 @@ public class ValidationInnerDefaultValidationProviderResolverTest {
         try {
             Thread.currentThread().setContextClassLoader(providerClassLoader);
             return (TestValidationConfiguration) Validation.byDefaultProvider().configure();
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
     }
