@@ -6,6 +6,7 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
+    id "com.google.protobuf" version "0.9.5"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -15,6 +16,21 @@ dependencies {
     testCompileOnly "com.google.protobuf:protobuf-java:$libraryVersion"
     testRuntimeOnly "com.google.protobuf:protobuf-java:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$libraryVersion"
+    }
+    generateProtoTasks {
+        all().configureEach { task ->
+            task.builtins {
+                java {
+                    option "lite"
+                }
+            }
+        }
+    }
 }
 
 graalvmNative {
