@@ -144,6 +144,53 @@ public class Scalajs_javalibTest {
     }
 
     @Test
+    void charsetResourcesExposeEncodingAndErrorHandlingApiSurface() throws IOException {
+        assertThat(resourceText("java/nio/charset/Charset.sjsir"))
+                .contains("java.nio.charset.Charset")
+                .contains("forName")
+                .contains("isSupported")
+                .contains("availableCharsets")
+                .contains("newEncoder")
+                .contains("newDecoder")
+                .contains("canEncode");
+
+        assertThat(resourceText("java/nio/charset/CharsetEncoder.sjsir"))
+                .contains("java.nio.charset.CharsetEncoder")
+                .contains("encode")
+                .contains("onMalformedInput")
+                .contains("onUnmappableCharacter")
+                .contains("java.nio.charset.CoderResult")
+                .contains("java.nio.charset.CodingErrorAction");
+
+        assertThat(resourceText("java/nio/charset/CharsetDecoder.sjsir"))
+                .contains("java.nio.charset.CharsetDecoder")
+                .contains("decode")
+                .contains("onMalformedInput")
+                .contains("onUnmappableCharacter")
+                .contains("java.nio.charset.CoderResult")
+                .contains("java.nio.charset.CodingErrorAction");
+
+        assertThat(resourceText("java/nio/charset/CoderResult.sjsir"))
+                .contains("java.nio.charset.CoderResult")
+                .contains("UNDERFLOW")
+                .contains("OVERFLOW")
+                .contains("malformedForLength")
+                .contains("unmappableForLength");
+
+        assertThat(resourceText("java/nio/charset/CodingErrorAction.sjsir"))
+                .contains("java.nio.charset.CodingErrorAction")
+                .contains("IGNORE")
+                .contains("REPLACE")
+                .contains("REPORT");
+
+        assertThat(resourceText("java/nio/charset/UTF_8.sjsir"))
+                .contains("java.nio.charset.UTF_8")
+                .contains("newEncoder")
+                .contains("newDecoder")
+                .contains("contains");
+    }
+
+    @Test
     void concurrentAndFunctionalResourcesArePackagedWithNestedTypes() throws IOException {
         assertThat(resourceText("java/util/concurrent/ConcurrentHashMap.sjsir"))
                 .contains("java.util.concurrent.ConcurrentHashMap")
