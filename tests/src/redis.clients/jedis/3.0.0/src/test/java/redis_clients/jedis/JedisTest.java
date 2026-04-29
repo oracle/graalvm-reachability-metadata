@@ -39,17 +39,17 @@ import redis.clients.jedis.exceptions.JedisBusyException;
 import redis.clients.jedis.exceptions.JedisClusterException;
 import redis.clients.jedis.exceptions.JedisMovedDataException;
 import redis.clients.jedis.exceptions.JedisNoScriptException;
-import redis.clients.jedis.params.geo.GeoRadiusParam;
-import redis.clients.jedis.params.sortedset.ZAddParams;
-import redis.clients.jedis.params.sortedset.ZIncrByParams;
-import redis.clients.util.Hashing;
-import redis.clients.util.JedisClusterCRC16;
-import redis.clients.util.JedisClusterHashTagUtil;
-import redis.clients.util.RedisInputStream;
-import redis.clients.util.RedisOutputStream;
-import redis.clients.util.ShardInfo;
-import redis.clients.util.Sharded;
-import redis.clients.util.Slowlog;
+import redis.clients.jedis.params.GeoRadiusParam;
+import redis.clients.jedis.params.ZAddParams;
+import redis.clients.jedis.params.ZIncrByParams;
+import redis.clients.jedis.util.Hashing;
+import redis.clients.jedis.util.JedisClusterCRC16;
+import redis.clients.jedis.util.JedisClusterHashTagUtil;
+import redis.clients.jedis.util.RedisInputStream;
+import redis.clients.jedis.util.RedisOutputStream;
+import redis.clients.jedis.util.ShardInfo;
+import redis.clients.jedis.util.Sharded;
+import redis.clients.jedis.util.Slowlog;
 
 public class JedisTest {
     @Test
@@ -116,7 +116,7 @@ public class JedisTest {
         assertThat(strings(scanParams.getParams())).containsExactly("match", "user:*", "count", "25");
         assertThat(asString(ScanParams.SCAN_POINTER_START_BINARY)).isEqualTo("0");
 
-        ZParams zParams = new ZParams().weightsByDouble(1.5D, 2D, 0.25D).aggregate(ZParams.Aggregate.MAX);
+        ZParams zParams = new ZParams().weights(1.5D, 2D, 0.25D).aggregate(ZParams.Aggregate.MAX);
         assertThat(strings(zParams.getParams())).containsExactly("weights", "1.5", "2.0", "0.25", "aggregate", "MAX");
 
         BitPosParams bitPosParams = new BitPosParams(3L, 14L);
