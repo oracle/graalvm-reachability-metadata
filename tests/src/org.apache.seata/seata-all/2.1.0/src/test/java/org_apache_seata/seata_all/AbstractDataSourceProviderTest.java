@@ -21,8 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class AbstractDataSourceProviderTest {
-    private static final String DRIVER_CLASS_NAME = TestDataSourceProvider.class.getName();
-
     @TempDir
     static Path classPathRoot;
 
@@ -42,7 +40,7 @@ public class AbstractDataSourceProviderTest {
         System.setProperty("java.class.path", classPathRoot.toString());
         System.setProperty("config.type", "file");
         System.setProperty("config.file.name", "file.conf");
-        System.setProperty("store.db.driverClassName", DRIVER_CLASS_NAME);
+        System.setProperty("store.db.driverClassName", TestDataSourceProvider.class.getName());
     }
 
     @AfterAll
