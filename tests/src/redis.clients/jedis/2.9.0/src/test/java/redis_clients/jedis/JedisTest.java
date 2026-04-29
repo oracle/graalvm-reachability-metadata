@@ -46,6 +46,7 @@ import redis.clients.util.JedisClusterCRC16;
 import redis.clients.util.JedisClusterHashTagUtil;
 import redis.clients.util.RedisInputStream;
 import redis.clients.util.RedisOutputStream;
+import redis.clients.util.Slowlog;
 
 public class JedisTest {
     @Test
@@ -195,6 +196,32 @@ public class JedisTest {
         assertThat(responses.get(0).getDistance()).isEqualTo(190.4424D);
         assertThat(responses.get(0).getCoordinate()).isEqualTo(new GeoCoordinate(13.361389D, 38.115556D));
         assertThat(responses.get(1).getMemberByString()).isEqualTo("Catania");
+    }
+
+    @Test
+    void convertsSlowlogRepliesIntoDomainObjects() {
+        List<Object> rawEntries = Arrays.<Object>asList(
+                Arrays.<Object>asList(
+                        7L,
+                        1_460_000_000L,
+                        321L,
+                        Arrays.asList(bytes("SET"), bytes("slowlog:key"), bytes("value"))),
+                Arrays.<Object>asList(
+                        8L,
+                        1_460_000_001L,
+                        42L,
+                        Arrays.asList(bytes("GET"), bytes("slowlog:key"))));
+
+        List<Slowlog> entries = Slowlog.from(rawEntries);
+
+        assertThat(entries).hasSize(2);
+        assertThat(entries.get(0).getId()).isEqualTo(7L);
+        assertThat(entries.get(0).getTimeStamp()).isEqualTo(1_460_000_000L);
+        assertThat(entries.get(0).getExecutionTime()).isEqualTo(321L);
+        assertThat(entries.get(0).getArgs()).containsExactly("SET", "slowlog:key", "value");
+        assertThat(entries.get(0).toString()).isEqualTo("7,1460000000,321,[SET, slowlog:key, value]");
+        assertThat(entries.get(1).getId()).isEqualTo(8L);
+        assertThat(entries.get(1).getArgs()).containsExactly("GET", "slowlog:key");
     }
 
     @Test
